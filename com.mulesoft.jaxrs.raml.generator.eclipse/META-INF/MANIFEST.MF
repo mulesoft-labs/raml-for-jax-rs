@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclipse
+Bundle-SymbolicName: com.mulesoft.jaxrs.raml.generator.eclipse;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: MULESOFT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.jdt.core;bundle-version="3.7.3",
+ org.eclipse.ui,
+ com.mulesoft.jaxrs.raml.generator;bundle-version="1.0.0",
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ rampl-plugin;bundle-version="1.0.0"

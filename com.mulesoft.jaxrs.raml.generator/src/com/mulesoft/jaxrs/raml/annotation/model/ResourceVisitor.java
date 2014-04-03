@@ -1,0 +1,174 @@
+	package com.mulesoft.jaxrs.raml.annotation.model;
+
+import org.raml.emitter.IRamlHierarchyTarget;
+import org.raml.emitter.RamlEmitterV2;
+import org.raml.model.Action;
+import org.raml.model.ActionType;
+import org.raml.model.MimeType;
+import org.raml.model.ParamType;
+import org.raml.model.Resource;
+import org.raml.model.Response;
+import org.raml.model.parameter.AbstractParam;
+import org.raml.model.parameter.Header;
+import org.raml.model.parameter.QueryParameter;
+import org.raml.model.parameter.UriParameter;
+
+
+public class ResourceVisitor {
+
+	private static final String PATH_PARAM = "PathParam";
+
+	private static final String HEADER_PARAM = "HeaderParam";
+
+	private static final String CONSUMES = "Consumes";
+
+	private static final String PRODUCES = "Produces";
+
+	private static final String QUERY_PARAM = "QueryParam";
+
+	private static final String PATH = "Path";
+
+	protected RAMLModelHelper spec = new RAMLModelHelper();
+
+	public void visit(ITypeModel t) {
+		String annotationValue = t.getAnnotationValue(PATH);
+		if (annotationValue != null) {
+			IMethodModel[] methods = t.getMethods();
+			for (IMethodModel m : methods) {
+				visit(m, annotationValue);
+			}
+		}
+	}
+
+	class StringHolder {
+		String content;
+	}
+
+	public String getRaml() {
+		RamlEmitterV2 emmitter = new RamlEmitterV2();
+		emmitter.setSingle(false);		
+		final StringHolder holder = new StringHolder();
+		emmitter.dump(new IRamlHierarchyTarget() {
+
+			@Override
+			public void write(String path, String content) {
+
+			}
+
+			@Override
+			public void writeRoot(String content) {
+				holder.content = content;
+			}
+
+		}, spec.getCoreRaml());
+		return holder.content;
+	}
+
+	private void visit(IMethodModel m, String annotationValue) {
+		boolean hasPath = m.hasAnnotation(PATH);
+		if (hasPath) {
+			annotationValue += m.getAnnotationValue(PATH);
+		}
+
+		boolean isWs = hasPath;
+		for (ActionType q : ActionType.values()) {
+			boolean hasAnnotation = m.hasAnnotation(q.name());
+			isWs |= hasAnnotation;
+		}
+		if (isWs) {
+			Resource res = new Resource();
+			IDocInfo documentation = m.getBasicDocInfo();
+			res.setDescription(documentation.getDocumentation());
+			res.setRelativeUri(annotationValue);
+			spec.addResource(res);
+			for (ActionType q : ActionType.values()) {
+				boolean hasAnnotation = m.hasAnnotation(q.name());
+				if (hasAnnotation) {
+					addMethod(q, res, m,documentation);
+				}
+			}
+		}
+	}
+
+	private void addMethod(ActionType q, Resource res, IMethodModel m, IDocInfo documentation) {
+		Action value = new Action();
+		value.setType(q);
+		res.getActions().put(q, value);
+		IParameterModel[] parameters = m.getParameters();
+		for (IParameterModel pm : parameters) {
+			if (pm.hasAnnotation(QUERY_PARAM)) {
+				String annotationValue = pm.getAnnotationValue(QUERY_PARAM);
+				String type = pm.getType();
+				QueryParameter value2 = new QueryParameter();
+				proceedType(type, value2);
+				value2.setDescription(documentation.getDocumentation(pm.getName()));
+				value.getQueryParameters().put(annotationValue,
+						value2);
+			}
+		}
+		for (IParameterModel pm : parameters) {
+			if (pm.hasAnnotation(HEADER_PARAM)) {
+				String annotationValue = pm.getAnnotationValue(HEADER_PARAM);
+				Header value2 = new Header();
+				proceedType(pm.getType(), value2);
+				value2.setDescription(documentation.getDocumentation(pm.getName()));
+				value.getHeaders().put(annotationValue,
+						value2);
+			}
+		}
+		for (IParameterModel pm : parameters) {
+			if (pm.hasAnnotation(PATH_PARAM)) {
+				String annotationValue = pm.getAnnotationValue(PATH_PARAM);
+				UriParameter value2 = new UriParameter();
+				value2.setDescription(documentation.getDocumentation(pm.getName()));
+				proceedType(pm.getType(), value2);
+				res.getUriParameters().put(annotationValue, value2);				
+			}
+		}
+		String[] consumesValue = m.getAnnotationValues(CONSUMES);
+		if (consumesValue != null) {
+			for (String s : consumesValue) {
+				MimeType value2 = new MimeType();
+				value2.setType(s);
+				value.getBody().put(s, value2);
+			}
+		}
+		String[] producesValue = m.getAnnotationValues(PRODUCES);
+		if (producesValue != null) {
+			Response value2 = new Response();
+			value2.setDescription(documentation.getReturnInfo());
+			for (String s : producesValue) {
+				
+				MimeType mimeType = new MimeType();
+				mimeType.setType(s);
+				value2.getBody().put(s, mimeType);
+				
+			}
+			value.getResponses().put("200", value2);
+		}
+	}
+
+	private void proceedType(String type, AbstractParam value2) {
+		if (type.equals("I")){
+			value2.setType(ParamType.INTEGER);
+			value2.setRequired(true);
+		}
+		if (type.equals("D")){
+			value2.setType(ParamType.NUMBER);
+			value2.setRequired(true);
+		}
+		if (type.equals("Z")){
+			value2.setType(ParamType.BOOLEAN);			
+		}
+		if (type.equals("QInteger;")){
+			value2.setType(ParamType.INTEGER);			
+		}
+		if (type.equals("QDouble;")){
+			value2.setType(ParamType.NUMBER);			
+		}
+		if (type.equals("QBoolean;")){
+			value2.setType(ParamType.BOOLEAN);
+			value2.setRequired(true);
+		}
+	}
+}

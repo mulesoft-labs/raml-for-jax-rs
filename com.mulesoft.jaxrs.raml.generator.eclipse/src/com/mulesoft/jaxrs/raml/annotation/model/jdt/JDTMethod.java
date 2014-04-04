@@ -162,7 +162,23 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 					}
 				};
 			}
-			return null;
+			return new IDocInfo() {
+				
+				@Override
+				public String getReturnInfo() {
+					return "";
+				}
+				
+				@Override
+				public String getDocumentation(String pName) {
+					return "";
+				}
+				
+				@Override
+				public String getDocumentation() {
+					return "";
+				}
+			};
 		} catch (JavaModelException e) {
 			throw new IllegalStateException();
 		}

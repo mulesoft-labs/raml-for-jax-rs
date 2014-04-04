@@ -30,9 +30,17 @@ public class ResourceVisitor {
 
 	protected RAMLModelHelper spec = new RAMLModelHelper();
 
+	protected String[] classConsumes;
+	protected String[] classProduces;
+	
 	public void visit(ITypeModel t) {
+		classConsumes=t.getAnnotationValues(CONSUMES);
+		classProduces=t.getAnnotationValues(PRODUCES);
 		String annotationValue = t.getAnnotationValue(PATH);
 		if (annotationValue != null) {
+			if (!annotationValue.endsWith("/")){
+				annotationValue=annotationValue+"/";
+			}
 			IMethodModel[] methods = t.getMethods();
 			for (IMethodModel m : methods) {
 				visit(m, annotationValue);
@@ -67,7 +75,14 @@ public class ResourceVisitor {
 	private void visit(IMethodModel m, String annotationValue) {
 		boolean hasPath = m.hasAnnotation(PATH);
 		if (hasPath) {
-			annotationValue += m.getAnnotationValue(PATH);
+			String annotationValue2 = m.getAnnotationValue(PATH);
+			if(annotationValue.endsWith("/")){
+				if (annotationValue2.startsWith("/")){
+					annotationValue2=annotationValue2.substring(1);
+				}
+			}
+					
+			annotationValue += annotationValue2;
 		}
 
 		boolean isWs = hasPath;
@@ -126,19 +141,26 @@ public class ResourceVisitor {
 			}
 		}
 		String[] consumesValue = m.getAnnotationValues(CONSUMES);
+		if (consumesValue==null){
+			consumesValue=classConsumes;
+		}
 		if (consumesValue != null) {
 			for (String s : consumesValue) {
+				s = sanitizeMediaType(s);
 				MimeType value2 = new MimeType();
 				value2.setType(s);
 				value.getBody().put(s, value2);
 			}
 		}
 		String[] producesValue = m.getAnnotationValues(PRODUCES);
+		if (producesValue==null){
+			producesValue=classProduces;
+		}
 		if (producesValue != null) {
 			Response value2 = new Response();
 			value2.setDescription(documentation.getReturnInfo());
 			for (String s : producesValue) {
-				
+				s = sanitizeMediaType(s);
 				MimeType mimeType = new MimeType();
 				mimeType.setType(s);
 				value2.getBody().put(s, mimeType);
@@ -146,6 +168,16 @@ public class ResourceVisitor {
 			}
 			value.getResponses().put("200", value2);
 		}
+	}
+
+	private String sanitizeMediaType(String s) {
+		if (s.contains("xml")){
+			s="application/xml";
+		}
+		if (s.contains("xml")){
+			s="application/json";
+		}
+		return s;
 	}
 
 	private void proceedType(String type, AbstractParam value2) {

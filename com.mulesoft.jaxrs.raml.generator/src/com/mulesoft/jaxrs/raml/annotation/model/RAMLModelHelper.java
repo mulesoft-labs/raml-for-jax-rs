@@ -26,11 +26,12 @@ public class RAMLModelHelper {
 	public static void placeResource(Map<String, Resource> resources,
 			Resource createResource) {
 		String relativeUri = createResource.getRelativeUri();
+		
 		Path path = new Path(relativeUri);
 		boolean restructure = false;
 		for (String s : new HashSet<String>(resources.keySet())) {
 			Path rp = new Path(s);
-			if (path.isPrefixOf(rp)) {
+			if (path.isPrefixOf(rp)&&!path.equals(rp)) {
 				restructure = true;
 				Resource remove = resources.remove(s);
 				Path removeFirstSegments = rp.removeFirstSegments(path
@@ -59,6 +60,7 @@ public class RAMLModelHelper {
 						.segmentCount());
 				String portableString = "/"
 						+ removeFirstSegments.toPortableString();
+				
 				createResource.setRelativeUri(portableString);				
 				Resource resource = resources.get(s);
 				Map<String, UriParameter> uriParameters = resource

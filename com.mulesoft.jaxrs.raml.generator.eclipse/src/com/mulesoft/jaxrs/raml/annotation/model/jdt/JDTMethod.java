@@ -5,14 +5,19 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.compiler.env.ISourceType;
+import org.eclipse.jdt.internal.core.SourceType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 
@@ -182,6 +187,28 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		} catch (JavaModelException e) {
 			throw new IllegalStateException();
 		}
+	}
+
+	@Override
+	public ITypeModel getReturnedType() {
+		IMethod iMethod = (IMethod) tm;
+		try{
+		String returnType = iMethod.getReturnType();
+		if (returnType.startsWith("Q")&&returnType.endsWith(";")){
+		IType ownerType= (IType) iMethod.getAncestor(IJavaElement.TYPE);
+		String[][] resolveType = ownerType.resolveType(returnType.substring(1,returnType.length()-1));
+		if (resolveType.length==1){
+			IType findType = ownerType.getJavaProject().findType(resolveType[0][0]+'.'+resolveType[0][1]);
+			if (findType!=null&&findType instanceof SourceType){
+				return new JDTType(findType);
+			}
+		}
+		}
+		
+		}catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+		return null;
 	}
 
 }

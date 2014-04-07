@@ -1,5 +1,7 @@
 	package com.mulesoft.jaxrs.raml.annotation.model;
 
+import java.util.HashSet;
+
 import org.raml.emitter.IRamlHierarchyTarget;
 import org.raml.emitter.RamlEmitterV2;
 import org.raml.model.Action;
@@ -33,10 +35,22 @@ public class ResourceVisitor {
 	protected String[] classConsumes;
 	protected String[] classProduces;
 	
+	protected HashSet<ITypeModel>consumedTypes=new HashSet<ITypeModel>();
+
+	private String basePath;
+	
 	public void visit(ITypeModel t) {
+		consumedTypes.add(t);
 		classConsumes=t.getAnnotationValues(CONSUMES);
 		classProduces=t.getAnnotationValues(PRODUCES);
 		String annotationValue = t.getAnnotationValue(PATH);
+		if (basePath!=null){
+			if (annotationValue==null)
+			{
+				annotationValue="";
+			}
+			annotationValue=basePath+annotationValue;
+		}
 		if (annotationValue != null) {
 			if (!annotationValue.endsWith("/")){
 				annotationValue=annotationValue+"/";
@@ -94,14 +108,34 @@ public class ResourceVisitor {
 			Resource res = new Resource();
 			IDocInfo documentation = m.getBasicDocInfo();
 			res.setDescription(documentation.getDocumentation());
-			res.setRelativeUri(annotationValue);
-			spec.addResource(res);
+			
+			
+			if (hasPath){
+				ITypeModel returnedType = m.getReturnedType();
+				if (returnedType!=null){
+					if (consumedTypes.add(returnedType)){
+					ResourceVisitor resourceVisitor = new ResourceVisitor();
+					resourceVisitor.consumedTypes.addAll(this.consumedTypes);
+					resourceVisitor.basePath=annotationValue;
+					resourceVisitor.spec=this.spec;
+					resourceVisitor.visit(returnedType);
+					}
+				}
+			}
+			if (annotationValue.endsWith("/")){
+				res.setRelativeUri(annotationValue.substring(0,annotationValue.length()-1));
+			}
+			else{
+				res.setRelativeUri(annotationValue);
+			}
 			for (ActionType q : ActionType.values()) {
 				boolean hasAnnotation = m.hasAnnotation(q.name());
 				if (hasAnnotation) {
 					addMethod(q, res, m,documentation);
 				}
 			}
+			spec.addResource(res);
+			
 		}
 	}
 
@@ -110,6 +144,7 @@ public class ResourceVisitor {
 		value.setType(q);
 		res.getActions().put(q, value);
 		IParameterModel[] parameters = m.getParameters();
+		
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(QUERY_PARAM)) {
 				String annotationValue = pm.getAnnotationValue(QUERY_PARAM);
@@ -168,13 +203,25 @@ public class ResourceVisitor {
 			}
 			value.getResponses().put("200", value2);
 		}
+		else{
+			Response value2 = new Response();
+			value2.setDescription(documentation.getReturnInfo());
+//			for (String s : producesValue) {
+//				s = sanitizeMediaType(s);
+//				MimeType mimeType = new MimeType();
+//				mimeType.setType(s);
+//				value2.getBody().put(s, mimeType);
+//				
+//			}
+			value.getResponses().put("200", value2);
+		}
 	}
 
 	private String sanitizeMediaType(String s) {
 		if (s.contains("xml")){
 			s="application/xml";
 		}
-		if (s.contains("xml")){
+		if (s.contains("json")){
 			s="application/json";
 		}
 		return s;

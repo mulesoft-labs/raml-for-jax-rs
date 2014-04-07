@@ -10,6 +10,7 @@ import javax.lang.model.element.VariableElement;
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class APTMethodModel extends APTModel implements IMethodModel {
 
@@ -55,6 +56,13 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	@Override
 	public Element element() {
 		return element;
+	}
+
+
+
+	@Override
+	public ITypeModel getReturnedType() {
+		return null;
 	}
 
 }

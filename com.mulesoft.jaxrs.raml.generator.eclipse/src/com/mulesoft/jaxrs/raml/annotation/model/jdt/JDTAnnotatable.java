@@ -11,6 +11,31 @@ public abstract class JDTAnnotatable implements IBasicModel{
 
 	private static final String VALUE = "value";
 	protected org.eclipse.jdt.core.IAnnotatable tm;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((tm == null) ? 0 : tm.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		JDTAnnotatable other = (JDTAnnotatable) obj;
+		if (tm == null) {
+			if (other.tm != null)
+				return false;
+		} else if (!tm.equals(other.tm))
+			return false;
+		return true;
+	}
+
 	private IAnnotationModel[] mms;
 
 

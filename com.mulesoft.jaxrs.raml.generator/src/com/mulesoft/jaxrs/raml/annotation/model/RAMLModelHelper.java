@@ -23,10 +23,10 @@ public class RAMLModelHelper {
 		placeResource(resources, res);
 	}
 	
+	//TODO More accurate resource merging
 	public static void placeResource(Map<String, Resource> resources,
 			Resource createResource) {
-		String relativeUri = createResource.getRelativeUri();
-		
+		String relativeUri = createResource.getRelativeUri();		
 		Path path = new Path(relativeUri);
 		boolean restructure = false;
 		for (String s : new HashSet<String>(resources.keySet())) {
@@ -39,7 +39,10 @@ public class RAMLModelHelper {
 				String portableString = "/"
 						+ removeFirstSegments.toPortableString();
 				remove.setRelativeUri(portableString);
-				resources.put(relativeUri, createResource);
+				Resource old = resources.put(relativeUri, createResource);
+				if (old!=null){
+					createResource.getActions().putAll(old.getActions());
+				}
 				Map<String, UriParameter> uriParameters = createResource
 						.getUriParameters();
 				Map<String, UriParameter> uriParameters2 = remove
@@ -48,6 +51,10 @@ public class RAMLModelHelper {
 					uriParameters2.remove(q);
 				}
 				createResource.getResources().put(portableString, remove);
+				Resource put = resources.put(relativeUri, createResource);
+				if (put!=null){
+					createResource.getActions().putAll(put.getActions());
+				}
 			}
 		}
 		if (restructure) {
@@ -55,9 +62,10 @@ public class RAMLModelHelper {
 		}
 		for (String s : resources.keySet()) {
 			Path rp = new Path(s);
-			if (rp.isPrefixOf(path)&&path.segmentCount()>1) {
-				Path removeFirstSegments = path.removeFirstSegments(rp
+			if (rp.isPrefixOf(path)&&path.segmentCount()-rp.segmentCount()>=1) {
+				Path removeFirstSegments2 = path.removeFirstSegments(rp
 						.segmentCount());
+				Path removeFirstSegments = removeFirstSegments2;
 				String portableString = "/"
 						+ removeFirstSegments.toPortableString();
 				
@@ -73,8 +81,12 @@ public class RAMLModelHelper {
 				placeResource(resource.getResources(), createResource);
 				return;
 			}
+		}				
+		Resource put = resources.put(relativeUri, createResource);
+		if (put!=null){
+			createResource.getActions().putAll(put.getActions());
+			createResource.getResources().putAll(put.getResources());
 		}
-		resources.put(relativeUri, createResource);
 	}
 
 	public void setMediaType(String mediaType) {

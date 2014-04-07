@@ -55,7 +55,7 @@ public class RAMLModelHelper {
 		}
 		for (String s : resources.keySet()) {
 			Path rp = new Path(s);
-			if (rp.isPrefixOf(path)) {
+			if (rp.isPrefixOf(path)&&path.segmentCount()>1) {
 				Path removeFirstSegments = path.removeFirstSegments(rp
 						.segmentCount());
 				String portableString = "/"

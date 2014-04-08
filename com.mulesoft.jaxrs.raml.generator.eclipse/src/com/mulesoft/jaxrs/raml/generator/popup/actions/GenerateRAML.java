@@ -80,7 +80,6 @@ public class GenerateRAML implements IObjectActionDelegate {
 		IJavaProject create = JavaCore.create(project);
 
 		if (create.exists()) {
-			IJavaElement create2 = JavaCore.create(q);
 			try {
 				IPackageFragmentRoot[] packageFragmentRoots = create
 						.getPackageFragmentRoots();

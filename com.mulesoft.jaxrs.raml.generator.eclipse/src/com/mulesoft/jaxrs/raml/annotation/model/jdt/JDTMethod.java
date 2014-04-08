@@ -11,7 +11,6 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.compiler.env.ISourceType;
 import org.eclipse.jdt.internal.core.SourceType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
@@ -19,6 +18,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+@SuppressWarnings("restriction")
 public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 
 	private static final String PARAM = "@param";

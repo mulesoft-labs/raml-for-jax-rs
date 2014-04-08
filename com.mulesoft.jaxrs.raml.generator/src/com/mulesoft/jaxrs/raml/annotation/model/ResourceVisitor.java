@@ -278,19 +278,33 @@ public class ResourceVisitor {
 	private void proceedType(String type, AbstractParam value2,
 			IParameterModel param) {
 		String annotationValue = param.getAnnotationValue(DEFAULT_VALUE);
+		boolean hasDefault=false;
 		if (annotationValue != null) {
 			value2.setDefaultValue(annotationValue);
+			hasDefault=true;
 		}
 		if (type.equals("I")) {
 			value2.setType(ParamType.INTEGER);
-			value2.setRequired(true);
+			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("D")) {
 			value2.setType(ParamType.NUMBER);
-			value2.setRequired(true);
+			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("Z")) {
 			value2.setType(ParamType.BOOLEAN);
+		}
+		if (type.equals("int")||type.equals("long")||type.equals("short")) {
+			value2.setType(ParamType.INTEGER);
+			value2.setRequired(!hasDefault);
+		}
+		if (type.equals("float")||type.equals("double")) {
+			value2.setType(ParamType.NUMBER);
+			value2.setRequired(!hasDefault);
+		}
+		if (type.equals("boolean")) {
+			value2.setType(ParamType.BOOLEAN);
+			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("QInteger;")) {
 			value2.setType(ParamType.INTEGER);
@@ -300,7 +314,7 @@ public class ResourceVisitor {
 		}
 		if (type.equals("QBoolean;")) {
 			value2.setType(ParamType.BOOLEAN);
-			value2.setRequired(true);
+			value2.setRequired(!hasDefault);
 		}
 	}
 }

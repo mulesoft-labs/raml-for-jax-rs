@@ -19,8 +19,35 @@ public class RAMLModelHelper {
 	}
 	
 	public void addResource(Resource res){
+		cleanupUrl(res);
 		Map<String, Resource> resources = getCoreRaml().getResources();
+		if(res.getRelativeUri().length()==0&&res.getActions().isEmpty()){
+			return;
+		}
 		placeResource(resources, res);
+	}
+
+	private void cleanupUrl(Resource res) {
+		String relativeUri = res.getRelativeUri();
+		String string = doCleanup(relativeUri);
+		res.setRelativeUri(string);
+	}
+
+	private static String doCleanup(String relativeUri) {
+		StringBuilder bld=new StringBuilder();
+		char pc=0;
+		for (int a=0;a<relativeUri.length();a++){
+			char c=relativeUri.charAt(a);
+			if (c=='/'&&pc=='/'){
+				continue;
+			}
+			else{
+				bld.append(c);
+				pc=c;
+			}
+		}
+		String string = bld.toString();
+		return string;
 	}
 	
 	//TODO More accurate resource merging
@@ -38,6 +65,7 @@ public class RAMLModelHelper {
 						.segmentCount());
 				String portableString = "/"
 						+ removeFirstSegments.toPortableString();
+				portableString=doCleanup(portableString);
 				remove.setRelativeUri(portableString);
 				Resource old = resources.put(relativeUri, createResource);
 				if (old!=null){

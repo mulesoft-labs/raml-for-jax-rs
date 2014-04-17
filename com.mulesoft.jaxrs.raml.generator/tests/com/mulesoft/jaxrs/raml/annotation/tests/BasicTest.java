@@ -1,6 +1,10 @@
 package com.mulesoft.jaxrs.raml.annotation.tests;
 
+import java.io.File;
 import java.util.List;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -13,6 +17,7 @@ import org.raml.model.parameter.Header;
 import org.raml.model.parameter.UriParameter;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
+import com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeRamlBuilder;
 
 import junit.framework.TestCase;
@@ -31,6 +36,14 @@ public class BasicTest extends TestCase{
 		UriParameter uriParameter = resource2.getUriParameters().get("version");
 		TestCase.assertTrue(uriParameter.isRequired());
 		TestCase.assertNotNull(resource2.getAction(ActionType.PUT));
+	}
+	
+	public void test01() {
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		final File f = new File(RAMLAnnotationProcessor.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+		String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath();
+		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource1.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor","-J","-agentlib:jdwp=transport=dt_socket,address=8000,server=n,suspend=y", "-XprintProcessorInfo");
+		System.out.println("Result: " + rc);
 	}
 	
 	public void test1(){

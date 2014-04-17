@@ -12,8 +12,11 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class APTType extends APTModel implements ITypeModel{
 
-	TypeElement element;
+	private TypeElement element;
 
+	public APTType(TypeElement element) {
+		this.element = element;
+	}
 	
 	@Override
 	public IMethodModel[] getMethods() {

@@ -42,7 +42,7 @@ public class BasicTest extends TestCase{
 		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
 		final File f = new File(RAMLAnnotationProcessor.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath();
-		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource1.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor","-J","-agentlib:jdwp=transport=dt_socket,address=8000,server=n,suspend=y", "-XprintProcessorInfo");
+		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource1.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor", "-XprintProcessorInfo", "-Aramlpath=E:\\tmp\\raml");
 		System.out.println("Result: " + rc);
 	}
 	

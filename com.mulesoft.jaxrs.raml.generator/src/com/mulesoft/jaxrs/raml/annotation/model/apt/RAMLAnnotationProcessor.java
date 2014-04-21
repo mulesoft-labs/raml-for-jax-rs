@@ -48,7 +48,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 
 	private static final String DEFAULT_GENERATED_NAME = "generated.raml"; //$NON-NLS-1$
 
-	static final String RAMLPATH_OPTION = "ramlpath";
+	static final String RAMLPATH_OPTION = "ramlpath"; //$NON-NLS-1$
 	
 	private Class<?>[] annotationClasses = new Class<?>[]{ApplicationPath.class, 
 			Consumes.class, 
@@ -76,23 +76,16 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations,
 			RoundEnvironment roundEnv) {
-		for (TypeElement typeElement : annotations) {
-			if (typeElement.getQualifiedName().toString().startsWith("javax.ws")) { //$NON-NLS-1$
-				continue;
-			}
-			System.out.println(typeElement.toString());
-		}
 		HashSet<TypeElement> result = new HashSet<TypeElement>();
 		for (int i = 0; i < annotationClasses.length; i++) {
 			Class<? extends Annotation> clazz = (Class<? extends Annotation>) annotationClasses[i];
 			Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(clazz);
 			for (Element element : elements) {
-				Element enclosingElement = element.getEnclosingElement();
-				while (enclosingElement != null && !(enclosingElement instanceof TypeElement)) {
-					enclosingElement = enclosingElement.getEnclosingElement();
+				while (element != null && !(element instanceof TypeElement)) {
+					element = element.getEnclosingElement();
 				}
-				if (enclosingElement instanceof TypeElement && accept(((TypeElement) enclosingElement).getQualifiedName().toString())) {
-					result.add((TypeElement) enclosingElement);
+				if (element instanceof TypeElement && accept(((TypeElement) element).getQualifiedName().toString())) {
+					result.add((TypeElement) element);
 				}
 			}
 			

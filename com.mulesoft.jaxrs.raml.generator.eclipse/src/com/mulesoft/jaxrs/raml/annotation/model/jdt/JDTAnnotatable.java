@@ -11,7 +11,7 @@ public abstract class JDTAnnotatable implements IBasicModel{
 
 	private static final String VALUE = "value";
 	protected org.eclipse.jdt.core.IAnnotatable tm;
-	@Override
+	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -19,7 +19,7 @@ public abstract class JDTAnnotatable implements IBasicModel{
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -44,7 +44,7 @@ public abstract class JDTAnnotatable implements IBasicModel{
 		this.tm = tm;
 	}
 
-	@Override
+	
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -55,7 +55,7 @@ public abstract class JDTAnnotatable implements IBasicModel{
 		return false;
 	}
 
-	@Override
+	
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -66,7 +66,7 @@ public abstract class JDTAnnotatable implements IBasicModel{
 		return null;
 	}
 	
-	@Override
+	
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -77,7 +77,7 @@ public abstract class JDTAnnotatable implements IBasicModel{
 		return null;
 	}
 	
-	@Override
+	
 	public IAnnotationModel[] getAnnotations() {
 		try{
 		if (mms!=null){

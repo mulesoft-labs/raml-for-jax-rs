@@ -28,12 +28,12 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		super(tm);
 	}
 
-	@Override
+	
 	public String getName() {
 		return ((IMethod) tm).getElementName();
 	}
 
-	@Override
+	
 	public IParameterModel[] getParameters() {
 		try {
 			ILocalVariable[] parameters = ((IMethod) tm).getParameters();
@@ -49,7 +49,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		}
 	}
 
-	@Override
+	
 	public String getDocumentation() {
 		try {
 			IMethod iMethod = (IMethod) tm;
@@ -95,7 +95,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		}
 	}
 
-	@Override
+	
 	public IDocInfo getBasicDocInfo() {
 		try {
 			IMethod iMethod = (IMethod) tm;
@@ -151,17 +151,17 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 				}
 				return new IDocInfo() {
 
-					@Override
+					
 					public String getDocumentation(String pName) {
 						return mmq.get(pName);
 					}
 
-					@Override
+					
 					public String getDocumentation() {
 						return bld.toString().trim();
 					}
 
-					@Override
+					
 					public String getReturnInfo() {
 						return mmq.get(RETURN);
 					}
@@ -169,17 +169,17 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 			}
 			return new IDocInfo() {
 				
-				@Override
+				
 				public String getReturnInfo() {
 					return "";
 				}
 				
-				@Override
+				
 				public String getDocumentation(String pName) {
 					return "";
 				}
 				
-				@Override
+				
 				public String getDocumentation() {
 					return "";
 				}
@@ -189,7 +189,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		}
 	}
 
-	@Override
+	
 	public ITypeModel getReturnedType() {
 		IMethod iMethod = (IMethod) tm;
 		try{

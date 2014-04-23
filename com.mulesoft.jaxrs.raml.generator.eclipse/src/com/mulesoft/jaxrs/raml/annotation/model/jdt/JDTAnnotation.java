@@ -20,12 +20,12 @@ public class JDTAnnotation implements IAnnotationModel {
 		this.annotation = annotation;
 	}
 
-	@Override
+	
 	public String getName() {
 		return annotation.getElementName();
 	}
 
-	@Override
+	
 	public String getValue(String pairName) {
 		IMemberValuePair[] memberValuePairs;
 		try {
@@ -41,7 +41,7 @@ public class JDTAnnotation implements IAnnotationModel {
 		return null;
 	}
 
-	@Override
+	
 	public String[] getValues(String value) {
 		IMemberValuePair[] memberValuePairs;
 		try {

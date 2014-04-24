@@ -18,7 +18,7 @@ public class APTType extends APTModel implements ITypeModel{
 		this.element = element;
 	}
 	
-	@Override
+	
 	public IMethodModel[] getMethods() {
 		List<? extends Element> enclosedElements = element.getEnclosedElements();
 		ArrayList<IMethodModel>result=new ArrayList<IMethodModel>();
@@ -31,12 +31,12 @@ public class APTType extends APTModel implements ITypeModel{
 		return result.toArray(new IMethodModel[result.size()]);
 	}
 
-	@Override
+	
 	public Element element() {
 		return element;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -44,7 +44,7 @@ public class APTType extends APTModel implements ITypeModel{
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -61,7 +61,7 @@ public class APTType extends APTModel implements ITypeModel{
 		return true;
 	}
 
-	@Override
+	
 	public String getFullyQualifiedName() {
 		return null; //Can't get it without utils
 	}

@@ -27,7 +27,6 @@ import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
 public abstract class ResourceVisitor {
-	
 
 	private static final String JSON = "json";
 
@@ -35,25 +34,26 @@ public abstract class ResourceVisitor {
 
 	public class CustomSchemaOutputResolver extends SchemaOutputResolver {
 
-	    private final String fileName;
+		private final String fileName;
 		private File file;
 
 		public CustomSchemaOutputResolver(String fileName) {
 			this.fileName = fileName;
 		}
 
-		public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
+		public Result createOutput(String namespaceURI, String suggestedFileName)
+				throws IOException {
 			if (outputFile != null) {
 				File dir = new File(outputFile.getParent(), "schemas"); //$NON-NLS-1$
 				dir.mkdirs();
-				file = new File(dir, fileName); 
+				file = new File(dir, fileName);
 			} else {
 				file = new File(fileName);
 			}
-	        StreamResult result = new StreamResult(file);
-	        result.setSystemId(file.toURI().toURL().toString());
-	        return result;
-	    }
+			StreamResult result = new StreamResult(file);
+			result.setSystemId(file.toURI().toURL().toString());
+			return result;
+		}
 
 		public File getFile() {
 			return file;
@@ -78,9 +78,9 @@ public abstract class ResourceVisitor {
 	private static final String PATH = "Path"; //$NON-NLS-1$
 
 	private static final String FORM_PARAM = "FormParam"; //$NON-NLS-1$
-	
+
 	private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
-	
+
 	protected final IResourceVisitorFactory factory;
 
 	protected RAMLModelHelper spec = new RAMLModelHelper();
@@ -95,7 +95,7 @@ public abstract class ResourceVisitor {
 	private final File outputFile;
 
 	protected ClassLoader classLoader;
-	
+
 	public ResourceVisitor(IResourceVisitorFactory factory, File outputFile) {
 		this.factory = factory;
 		this.outputFile = outputFile;
@@ -121,8 +121,7 @@ public abstract class ResourceVisitor {
 				visit(m, annotationValue);
 			}
 		}
-		
-		
+
 	}
 
 	protected abstract void generateXMLSchema(ITypeModel t);
@@ -137,12 +136,10 @@ public abstract class ResourceVisitor {
 		final StringHolder holder = new StringHolder();
 		emmitter.dump(new IRamlHierarchyTarget() {
 
-			@Override
 			public void write(String path, String content) {
 
 			}
 
-			@Override
 			public void writeRoot(String content) {
 				holder.content = content;
 			}
@@ -173,19 +170,20 @@ public abstract class ResourceVisitor {
 			Resource res = new Resource();
 			IDocInfo documentation = m.getBasicDocInfo();
 			res.setDescription(documentation.getDocumentation());
-			String returnName=null;
-			String parameterName=null;
-			if (hasPath) {
-				ITypeModel returnedType = m.getReturnedType();
-				
-				
-				if (returnedType != null) {
-					if (returnedType.hasAnnotation(XML_ROOT_ELEMENT)) {
-						generateXMLSchema(returnedType);
-						returnName=returnedType.getName().toLowerCase();
-					}
+			String returnName = null;
+			String parameterName = null;
+
+			ITypeModel returnedType = m.getReturnedType();
+
+			if (returnedType != null) {
+				if (returnedType.hasAnnotation(XML_ROOT_ELEMENT)) {
+					generateXMLSchema(returnedType);
+					returnName = returnedType.getName().toLowerCase();
+				}
+				if (hasPath) {
 					if (consumedTypes.add(returnedType)) {
-						ResourceVisitor resourceVisitor = factory.createResourceVisitor();
+						ResourceVisitor resourceVisitor = factory
+								.createResourceVisitor();
 						resourceVisitor.consumedTypes
 								.addAll(this.consumedTypes);
 						resourceVisitor.basePath = annotationValue;
@@ -195,10 +193,10 @@ public abstract class ResourceVisitor {
 				}
 			}
 			ITypeModel bodyType = m.getBodyType();
-			if (bodyType!=null){
+			if (bodyType != null) {
 				if (bodyType.hasAnnotation(XML_ROOT_ELEMENT)) {
 					generateXMLSchema(bodyType);
-					parameterName=bodyType.getName().toLowerCase();
+					parameterName = bodyType.getName().toLowerCase();
 				}
 			}
 			if (annotationValue.endsWith("/")) { //$NON-NLS-1$
@@ -210,7 +208,8 @@ public abstract class ResourceVisitor {
 			for (ActionType q : ActionType.values()) {
 				boolean hasAnnotation = m.hasAnnotation(q.name());
 				if (hasAnnotation) {
-					addMethod(q, res, m, documentation,returnName,parameterName);
+					addMethod(q, res, m, documentation, returnName,
+							parameterName);
 				}
 			}
 			spec.addResource(res);
@@ -265,16 +264,17 @@ public abstract class ResourceVisitor {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
 				MimeType bodyType = new MimeType();
-				if (s.contains(XML))
-				{
+				if (s.contains(XML)) {
 					bodyType.setSchema(parameterName);
-					bodyType.setExample("examples/"+parameterName+".xml");
-					bodyType.setExampleOrigin("examples/"+parameterName+".xml");
+					bodyType.setExample("examples/" + parameterName + ".xml");
+					bodyType.setExampleOrigin("examples/" + parameterName
+							+ ".xml");
 				}
-				if (s.contains(JSON)){
-					bodyType.setSchema(returnName+"-jsonshema");
-					bodyType.setExample("examples/"+returnName+".json");
-					bodyType.setExampleOrigin("examples/"+returnName+".json");
+				if (s.contains(JSON)) {
+					bodyType.setSchema(returnName + "-jsonshema");
+					bodyType.setExample("examples/" + returnName + ".json");
+					bodyType.setExampleOrigin("examples/" + returnName
+							+ ".json");
 				}
 				bodyType.setType(s);
 				if (s.contains(FORM)) {
@@ -288,8 +288,8 @@ public abstract class ResourceVisitor {
 							proceedType(pm.getType(), vl, pm);
 							ArrayList<FormParameter> arrayList = new ArrayList<FormParameter>();
 							arrayList.add(vl);
-							if (bodyType.getFormParameters()==null){
-								bodyType.setFormParameters(new HashMap<String,java.util.List<FormParameter>>());
+							if (bodyType.getFormParameters() == null) {
+								bodyType.setFormParameters(new HashMap<String, java.util.List<FormParameter>>());
 							}
 							bodyType.getFormParameters().put(annotationValue,
 									arrayList);
@@ -309,16 +309,18 @@ public abstract class ResourceVisitor {
 			for (String s : producesValue) {
 				s = sanitizeMediaType(s);
 				MimeType mimeType = new MimeType();
-				if (returnName!=null){
-					if (s.contains(XML)){
-					mimeType.setSchema(returnName);
-					mimeType.setExample("examples/"+returnName+".xml");				
-					mimeType.setExampleOrigin("examples/"+returnName+".xml");
+				if (returnName != null) {
+					if (s.contains(XML)) {
+						mimeType.setSchema(returnName);
+						mimeType.setExample("examples/" + returnName + ".xml");
+						mimeType.setExampleOrigin("examples/" + returnName
+								+ ".xml");
 					}
-					if (s.contains(JSON)){
-						mimeType.setSchema(returnName+"-jsonshema");
-						mimeType.setExample("examples/"+returnName+".json");
-						mimeType.setExampleOrigin("examples/"+returnName+".json");
+					if (s.contains(JSON)) {
+						mimeType.setSchema(returnName + "-jsonshema");
+						mimeType.setExample("examples/" + returnName + ".json");
+						mimeType.setExampleOrigin("examples/" + returnName
+								+ ".json");
 					}
 				}
 				mimeType.setType(s);
@@ -328,7 +330,7 @@ public abstract class ResourceVisitor {
 			value.getResponses().put("200", value2); //$NON-NLS-1$
 		} else {
 			Response value2 = new Response();
-			value2.setDescription(documentation.getReturnInfo());			
+			value2.setDescription(documentation.getReturnInfo());
 			value.getResponses().put("200", value2); //$NON-NLS-1$
 		}
 	}
@@ -366,10 +368,10 @@ public abstract class ResourceVisitor {
 	private void proceedType(String type, AbstractParam value2,
 			IParameterModel param) {
 		String annotationValue = param.getAnnotationValue(DEFAULT_VALUE);
-		boolean hasDefault=false;
+		boolean hasDefault = false;
 		if (annotationValue != null) {
 			value2.setDefaultValue(annotationValue);
-			hasDefault=true;
+			hasDefault = true;
 		}
 		if (type.equals("I")) { //$NON-NLS-1$
 			value2.setType(ParamType.INTEGER);
@@ -382,11 +384,11 @@ public abstract class ResourceVisitor {
 		if (type.equals("Z")) { //$NON-NLS-1$
 			value2.setType(ParamType.BOOLEAN);
 		}
-		if (type.equals("int")||type.equals("long")||type.equals("short")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		if (type.equals("int") || type.equals("long") || type.equals("short")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			value2.setType(ParamType.INTEGER);
 			value2.setRequired(!hasDefault);
 		}
-		if (type.equals("float")||type.equals("double")) { //$NON-NLS-1$ //$NON-NLS-2$
+		if (type.equals("float") || type.equals("double")) { //$NON-NLS-1$ //$NON-NLS-2$
 			value2.setType(ParamType.NUMBER);
 			value2.setRequired(!hasDefault);
 		}
@@ -411,11 +413,12 @@ public abstract class ResourceVisitor {
 			String name = element.getSimpleName().toLowerCase();
 			String fileName = name + ".xsd"; //$NON-NLS-1$
 			JAXBContext jaxbContext = JAXBContext.newInstance(element);
-			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(fileName);
+			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(
+					fileName);
 			jaxbContext.generateSchema(sor);
 			File file = sor.getFile();
 			String content = FileUtil.fileToString(file);
-			generateExamle(file,content);
+			generateExamle(file, content);
 			spec.getCoreRaml().addGlobalSchema(name, content, false, false);
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -425,7 +428,7 @@ public abstract class ResourceVisitor {
 	}
 
 	protected void generateExamle(File file, String content) {
-		
+
 	}
 
 	public void setClassLoader(ClassLoader classLoader) {

@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.mulesoft.jaxrs.raml.generator;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: MULESOFT
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: rampl-plugin;bundle-version="1.0.0"
+Require-Bundle: rampl-plugin
 Export-Package: com.mulesoft.jaxrs.raml.annotation.model,
  com.mulesoft.jaxrs.raml.annotation.model.apt,
  com.mulesoft.jaxrs.raml.annotation.model.reflection

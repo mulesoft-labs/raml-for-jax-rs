@@ -14,12 +14,12 @@ public class AnnotationModel implements IAnnotationModel {
 		this.annotation=annotation2;
 	}
 
-	@Override
+	
 	public String getName() {
 		return annotation.annotationType().getSimpleName();
 	}
 
-	@Override
+	
 	public String getValue(String pairName) {
 		try {
 			Method method = annotation.getClass().getMethod(pairName);
@@ -41,7 +41,7 @@ public class AnnotationModel implements IAnnotationModel {
 		}
 	}
 
-	@Override
+	
 	public String[] getValues(String value) {
 		try {
 			Method method = annotation.getClass().getMethod(value);

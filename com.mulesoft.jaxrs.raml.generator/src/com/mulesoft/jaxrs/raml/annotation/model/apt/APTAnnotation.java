@@ -17,13 +17,13 @@ public class APTAnnotation implements IAnnotationModel{
 		this.mirror=m;
 	}
 
-	@Override
+	
 	public String getName() {
 		DeclaredType annotationType = mirror.getAnnotationType();
 		return annotationType.asElement().getSimpleName().toString();
 	}
 
-	@Override
+	
 	public String getValue(String pairName) {
 		Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
 		for (ExecutableElement q:elementValues.keySet()){
@@ -35,7 +35,7 @@ public class APTAnnotation implements IAnnotationModel{
 		return null;
 	}
 
-	@Override
+	
 	public String[] getValues(String value) {
 		Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
 		for (ExecutableElement q:elementValues.keySet()){

@@ -9,8 +9,8 @@ import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
+//import com.google.common.base.Function;
+//import com.google.common.collect.Collections2;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 
@@ -70,15 +70,15 @@ public abstract class APTModel implements IBasicModel{
 						if (value2 instanceof String){
 							return new String[]{(String) value2};
 						} else if (value2 instanceof List) {
-							String[] result = Collections2.transform(((List<AnnotationValue>) value2), new Function<AnnotationValue,String>() {
-
-								@Override
-								public String apply(AnnotationValue arg0) {
-									return arg0.getValue().toString();
-								}
-								
-							}).toArray(new String[0]);
-							return result;
+//							String[] result = Collections2.transform(((List<AnnotationValue>) value2), new Function<AnnotationValue,String>() {
+//
+//								
+//								public String apply(AnnotationValue arg0) {
+//									return arg0.getValue().toString();
+//								}
+//								
+//							}).toArray(new String[0]);
+//							return result;
 						}
 						return (String[]) value2;
 					}

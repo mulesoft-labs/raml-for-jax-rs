@@ -11,7 +11,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	private static final String VALUE = "value";
 	protected T element;
 
-	@Override
+	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -19,7 +19,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -42,15 +42,15 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		this.element = element;
 	}
 
-	@Override
+	
 	public abstract String getName() ;
 
-	@Override
+	
 	public String getDocumentation() {
 		return "type some documentation here";
 	}
 
-	@Override
+	
 	public IAnnotationModel[] getAnnotations() {
 		Annotation[] annotations = element.getAnnotations();
 		IAnnotationModel[] ml=new IAnnotationModel[annotations.length];
@@ -60,7 +60,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return ml;
 	}
 
-	@Override
+	
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -71,7 +71,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return null;
 	}
 
-	@Override
+	
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -82,7 +82,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return null;
 	}
 
-	@Override
+	
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){

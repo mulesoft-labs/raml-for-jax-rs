@@ -15,7 +15,7 @@ public class RuntimeResourceVisitorFactory implements IResourceVisitorFactory {
 		this.classLoader = classLoader;
 	}
 
-	@Override
+	
 	public ResourceVisitor createResourceVisitor() {
 		RuntimeResourceVisitor visitor = new RuntimeResourceVisitor(this, outputFile);
 		visitor.setClassLoader(classLoader);

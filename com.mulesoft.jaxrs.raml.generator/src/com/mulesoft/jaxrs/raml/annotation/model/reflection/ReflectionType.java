@@ -12,7 +12,7 @@ public class ReflectionType extends BasicReflectionMember<Class<?>> implements I
 	
 	}
 
-	@Override
+	
 	public IMethodModel[] getMethods() {
 		Method[] declaredMethods = element.getDeclaredMethods();
 		IMethodModel[] methods=new IMethodModel[declaredMethods.length];
@@ -23,12 +23,12 @@ public class ReflectionType extends BasicReflectionMember<Class<?>> implements I
 		return methods;
 	}
 
-	@Override
+	
 	public String getName() {
 		return element.getSimpleName();
 	}
 
-	@Override
+	
 	public String getFullyQualifiedName() {
 		return element.getCanonicalName();
 	}

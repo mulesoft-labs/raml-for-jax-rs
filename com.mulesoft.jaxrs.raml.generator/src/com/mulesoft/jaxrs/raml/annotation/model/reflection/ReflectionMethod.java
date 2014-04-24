@@ -14,7 +14,7 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 		super(element);
 	}
 
-	@Override
+	
 	public IParameterModel[] getParameters() {
 		Class<?>[] parameterTypes = element.getParameterTypes();
 		Annotation[][] parameterAnnotations = element.getParameterAnnotations();
@@ -26,39 +26,39 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 		return models;
 	}
 
-	@Override
+	
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
 			
-			@Override
+			
 			public String getReturnInfo() {
 				return "";
 			}
 			
-			@Override
+			
 			public String getDocumentation(String pName) {
 				return "";
 			}
 			
-			@Override
+			
 			public String getDocumentation() {
 				return "";
 			}
 		};
 	}
 
-	@Override
+	
 	public ITypeModel getReturnedType() {
 		Class<?> returnType = element.getReturnType();
 		return new ReflectionType(returnType);
 	}
 
-	@Override
+	
 	public String getName() {
 		return element.getName();
 	}
 
-	@Override
+	
 	public ITypeModel getBodyType() {
 		return null;
 	}

@@ -14,7 +14,7 @@ public class APTResourceVisitorFactory implements IResourceVisitorFactory {
 		this.processingEnv = processingEnv;
 	}
 
-	@Override
+	
 	public ResourceVisitor createResourceVisitor() {
 		return new APTResourceVisitor(this, processingEnv);
 	}

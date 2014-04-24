@@ -26,12 +26,12 @@ public class ReflectionParameter implements IParameterModel{
 	
 	protected AnnotationModel[] model;
 
-	@Override
+	
 	public String getDocumentation() {
 		return "";
 	}
 	
-	@Override
+	
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -42,7 +42,7 @@ public class ReflectionParameter implements IParameterModel{
 		return null;
 	}
 
-	@Override
+	
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -53,7 +53,7 @@ public class ReflectionParameter implements IParameterModel{
 		return null;
 	}
 
-	@Override
+	
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -63,21 +63,21 @@ public class ReflectionParameter implements IParameterModel{
 		}
 		return false;
 	}
-	@Override
+	
 	public String getName() {
 		String name = type.getName();
 		return name;
 	}
-	@Override
+	
 	public String getType() {
 		String name = type.getName();		
 		return name;
 	}
-	@Override
+	
 	public boolean required() {
 		return type.element.isPrimitive();
 	}
-	@Override
+	
 	public IAnnotationModel[] getAnnotations() {
 		return model;
 	}

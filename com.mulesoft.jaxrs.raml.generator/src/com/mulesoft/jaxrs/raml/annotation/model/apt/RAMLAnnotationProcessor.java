@@ -75,7 +75,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 	private ProcessingEnvironment processingEnv;
 
 	@SuppressWarnings("unchecked")
-	@Override
+	
 	public boolean process(Set<? extends TypeElement> annotations,
 			RoundEnvironment roundEnv) {
 		
@@ -143,7 +143,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 		return !typeName.startsWith("java"); //$NON-NLS-1$
 	}
 	
-	@Override
+	
 	public synchronized void init(ProcessingEnvironment environment) {
 		this.processingEnv = environment;
 		super.init(environment);

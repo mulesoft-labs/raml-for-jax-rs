@@ -14,23 +14,23 @@ public class APTParameter extends APTModel implements IParameterModel{
 		this.element=q;
 	}
 
-	@Override
+	
 	public String getType() {
 		TypeMirror asType = element.asType();
 		return asType.toString();
 	}
 
-	@Override
+	
 	public boolean required() {
 		return false;
 	}
 
-	@Override
+	
 	public Element element() {
 		return element;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -38,7 +38,7 @@ public class APTParameter extends APTModel implements IParameterModel{
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

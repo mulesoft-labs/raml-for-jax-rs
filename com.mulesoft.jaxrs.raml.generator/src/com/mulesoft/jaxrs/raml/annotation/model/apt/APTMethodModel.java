@@ -23,7 +23,7 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 		this.element=x;
 	}
 
-	@Override
+	
 	public IParameterModel[] getParameters() {
 		List<? extends VariableElement> parameters = element.getParameters();
 		ArrayList<IParameterModel>result=new ArrayList<IParameterModel>();
@@ -33,33 +33,33 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 		return result.toArray(new IParameterModel[result.size()]);
 	}
 
-	@Override
+	
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
 			
-			@Override
+			
 			public String getReturnInfo() {
 				return ""; //$NON-NLS-1$
 			}
 			
-			@Override
+			
 			public String getDocumentation(String pName) {
 				return ""; //$NON-NLS-1$
 			}
 			
-			@Override
+			
 			public String getDocumentation() {
 				return ""; //$NON-NLS-1$
 			}
 		};
 	}
 
-	@Override
+	
 	public Element element() {
 		return element;
 	}
 
-	@Override
+	
 	public ITypeModel getReturnedType() {
 		TypeMirror returnType = element.getReturnType();
 		if (returnType != null && returnType instanceof DeclaredType) {
@@ -70,7 +70,7 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 		return null;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -78,7 +78,7 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -95,7 +95,7 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 		return true;
 	}
 	
-	@Override
+	
 	public ITypeModel getBodyType() {		
 		return null;
 	}

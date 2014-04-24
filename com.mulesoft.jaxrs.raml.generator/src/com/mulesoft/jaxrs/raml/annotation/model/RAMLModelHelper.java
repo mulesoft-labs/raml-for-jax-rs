@@ -1,9 +1,11 @@
 package com.mulesoft.jaxrs.raml.annotation.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
 
+import org.raml.model.Protocol;
 import org.raml.model.Raml2;
 import org.raml.model.Resource;
 import org.raml.model.parameter.UriParameter;
@@ -13,7 +15,10 @@ public class RAMLModelHelper {
 
 	protected Raml2 coreRaml = new Raml2();
 
-	
+	public RAMLModelHelper() {
+		coreRaml.setBaseUri("http://example.com");
+		coreRaml.setProtocols(Collections.singletonList(Protocol.HTTP));
+	}
 	public String getMediaType() {
 		return coreRaml.getMediaType();
 	}
@@ -30,6 +35,9 @@ public class RAMLModelHelper {
 	private void cleanupUrl(Resource res) {
 		String relativeUri = res.getRelativeUri();
 		String string = doCleanup(relativeUri);
+		if (string.length()==0){
+			string="/";
+		}
 		res.setRelativeUri(string);
 	}
 
@@ -47,6 +55,9 @@ public class RAMLModelHelper {
 			}
 		}
 		String string = bld.toString();
+		if (!string.startsWith("/")){
+			string="/"+string;
+		}
 		return string;
 	}
 	
@@ -97,7 +108,7 @@ public class RAMLModelHelper {
 				String portableString = "/"
 						+ removeFirstSegments.toPortableString();
 				
-				createResource.setRelativeUri(portableString);				
+				createResource.setRelativeUri(doCleanup(portableString));				
 				Resource resource = resources.get(s);
 				Map<String, UriParameter> uriParameters = resource
 						.getUriParameters();

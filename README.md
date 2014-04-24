@@ -11,7 +11,7 @@ Key supported features:
  * Including javadoc documentation to descriptions of resources, methods, parameters.
  * Statically determinable sub resources. (no overriding)
  * Default values for parameters
-
+ * XML/Json Schema generation with JAXB
 
 Thanks in advance for your feedback,
 Dmitry
@@ -28,4 +28,4 @@ Dmitry
 - Future features
   * Injection of request parameters to fields
   * Constraint annotations to raml constraints conversion
-  * XML/Json Schema generation with JAXB
+

@@ -12,13 +12,13 @@ public class JDTParameter extends JDTAnnotatable implements IParameterModel{
 		super(var);
 	}
 	
-	@Override
+	
 	public String getName() {
 		return ((ILocalVariable) tm).getElementName();
 	}
 	
 
-	@Override
+	
 	public String getDocumentation() {
 		try {
 			return ((ILocalVariable) tm).getAttachedJavadoc(new NullProgressMonitor());
@@ -27,12 +27,12 @@ public class JDTParameter extends JDTAnnotatable implements IParameterModel{
 		}
 	}
 
-	@Override
+	
 	public String getType() {
 		return ((ILocalVariable) tm).getTypeSignature();
 	}
 
-	@Override
+	
 	public boolean required() {
 		return false;
 	}

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.mulesoft.jaxrs.raml.feature_1.0.0.201404162126.jar" id="com.mulesoft.jaxrs.raml.feature" version="1.0.0.201404162126"/>
+   <feature url="features/com.mulesoft.jaxrs.raml.feature_1.0.0.201404240150.jar" id="com.mulesoft.jaxrs.raml.feature" version="1.0.0.201404240150"/>
 </site>

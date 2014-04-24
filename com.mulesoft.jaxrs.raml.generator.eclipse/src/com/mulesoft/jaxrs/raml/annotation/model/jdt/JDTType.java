@@ -14,12 +14,12 @@ public class JDTType extends JDTAnnotatable implements ITypeModel {
 		super(tm);
 	}
 
-	@Override
+	
 	public String getName() {
 		return ((IType) tm).getElementName();
 	}
 
-	@Override
+	
 	public IMethodModel[] getMethods() {
 		try {
 			IMethod[] methods = ((IType) tm).getMethods();
@@ -34,7 +34,7 @@ public class JDTType extends JDTAnnotatable implements ITypeModel {
 		}
 	}
 	
-	@Override
+	
 	public String getDocumentation() {
 		try {
 			return ((IType) tm).getAttachedJavadoc(new NullProgressMonitor());

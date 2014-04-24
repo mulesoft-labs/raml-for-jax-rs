@@ -3,9 +3,9 @@ package com.mulesoft.jaxrs.raml.generator.popup.actions;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
-
 import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorFactory;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
 public class JDTResourceVisitor extends RuntimeResourceVisitor {
@@ -18,8 +18,10 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 		DummyXMLGenerator m=new DummyXMLGenerator();
 		try {
 			String generateDummyXmlFor = m.generateDummyXmlFor(file.toURL().toExternalForm());
-			String generateSchema = new SchemaGenerator().generateSchema(generateDummyXmlFor);
-			System.out.println(generateSchema);
+			String convertToJSON = JsonUtil.convertToJSON(generateDummyXmlFor, true);
+			String generateSchema2 = new SchemaGenerator().generateSchema(convertToJSON);
+			String fName = file.getName().replace(".xsd", "-jsonshema");
+			spec.getCoreRaml().addGlobalSchema(fName,generateSchema2, true,false);
 			File parentFile = file.getParentFile().getParentFile();
 			File examples=new File(parentFile,"examples");
 			if (!examples.exists()){
@@ -28,15 +30,24 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 			String name = file.getName();
 			name=name.substring(0,name.lastIndexOf('.'));
 			File toSave=new File(examples,name+".xml");
-			try {
-				FileOutputStream fileOutputStream = new FileOutputStream(toSave);
-				fileOutputStream.write(generateDummyXmlFor.getBytes("UTF-8"));
-				fileOutputStream.close();
-			} catch (Exception e) {
-				throw new IllegalStateException(e);
-			}
+			writeString(generateDummyXmlFor, toSave);
+			toSave=new File(examples,name+".json");
+			writeString(convertToJSON, toSave);
+			File shemas=new File(parentFile,"schemas");
+			toSave=new File(shemas,fName+".json");
+			writeString(generateSchema2, toSave);
 		} catch (MalformedURLException e) {
 			throw new IllegalStateException(e);			
+		}
+	}
+
+	private void writeString(String generateDummyXmlFor, File toSave) {
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(toSave);
+			fileOutputStream.write(generateDummyXmlFor.getBytes("UTF-8"));
+			fileOutputStream.close();
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
 		}
 	}
 }

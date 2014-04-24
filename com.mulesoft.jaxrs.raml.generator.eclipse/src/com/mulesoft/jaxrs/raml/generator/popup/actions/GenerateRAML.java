@@ -119,12 +119,18 @@ public class GenerateRAML implements IObjectActionDelegate {
 				visitUnit((ICompilationUnit) q);
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			MessageDialog.openError(shell,e.getMessage(),e.getMessage());
 		}
 	}
 		if (project!=null){
 			saveResult(visitor, file);
+			try {
+			    project.refreshLocal(IProject.DEPTH_INFINITE, new NullProgressMonitor());
+			   } catch (CoreException e) {
+				   MessageDialog.openError(shell, e.getMessage(),e.getMessage());
+			   }
 		}
+		
 	}
 
 	private void visitType(IType q) {

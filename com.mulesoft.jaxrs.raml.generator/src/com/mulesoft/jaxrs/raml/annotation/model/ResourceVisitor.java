@@ -29,6 +29,10 @@ import org.raml.model.parameter.UriParameter;
 public abstract class ResourceVisitor {
 	
 
+	private static final String JSON = "json";
+
+	private static final String XML = "xml";
+
 	public class CustomSchemaOutputResolver extends SchemaOutputResolver {
 
 	    private final String fileName;
@@ -40,7 +44,7 @@ public abstract class ResourceVisitor {
 
 		public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
 			if (outputFile != null) {
-				File dir = new File(outputFile.getParent(), "schemes"); //$NON-NLS-1$
+				File dir = new File(outputFile.getParent(), "schemas"); //$NON-NLS-1$
 				dir.mkdirs();
 				file = new File(dir, fileName); 
 			} else {
@@ -260,13 +264,17 @@ public abstract class ResourceVisitor {
 		if (consumesValue != null) {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
-				MimeType value2 = new MimeType();
-				if (s.contains("xml"))
+				MimeType bodyType = new MimeType();
+				if (s.contains(XML))
 				{
-					value2.setSchema(parameterName);
-					value2.setExample("examples/"+parameterName+".xml");			
+					bodyType.setSchema(parameterName);
+					bodyType.setExample("examples/"+parameterName+".xml");			
 				}
-				value2.setType(s);
+				if (s.contains(JSON)){
+					bodyType.setSchema(returnName+"-json");
+					bodyType.setExample("examples/"+returnName+".json");					
+				}
+				bodyType.setType(s);
 				if (s.contains(FORM)) {
 					for (IParameterModel pm : parameters) {
 						if (pm.hasAnnotation(FORM_PARAM)) {
@@ -278,15 +286,15 @@ public abstract class ResourceVisitor {
 							proceedType(pm.getType(), vl, pm);
 							ArrayList<FormParameter> arrayList = new ArrayList<FormParameter>();
 							arrayList.add(vl);
-							if (value2.getFormParameters()==null){
-								value2.setFormParameters(new HashMap<String,java.util.List<FormParameter>>());
+							if (bodyType.getFormParameters()==null){
+								bodyType.setFormParameters(new HashMap<String,java.util.List<FormParameter>>());
 							}
-							value2.getFormParameters().put(annotationValue,
+							bodyType.getFormParameters().put(annotationValue,
 									arrayList);
 						}
 					}
 				}
-				value.getBody().put(s, value2);
+				value.getBody().put(s, bodyType);
 			}
 		}
 		String[] producesValue = m.getAnnotationValues(PRODUCES);
@@ -300,9 +308,13 @@ public abstract class ResourceVisitor {
 				s = sanitizeMediaType(s);
 				MimeType mimeType = new MimeType();
 				if (returnName!=null){
-					if (s.contains("xml")){
+					if (s.contains(XML)){
 					mimeType.setSchema(returnName);
 					mimeType.setExample("examples/"+returnName+".xml");					
+					}
+					if (s.contains(JSON)){
+						mimeType.setSchema(returnName+"-json");
+						mimeType.setExample("examples/"+returnName+".json");					
 					}
 				}
 				mimeType.setType(s);
@@ -338,10 +350,10 @@ public abstract class ResourceVisitor {
 		if (s.contains("octet")) { //$NON-NLS-1$
 			return "application/octet-stream"; //$NON-NLS-1$
 		}
-		if (s.contains("xml")) { //$NON-NLS-1$
+		if (s.contains(XML)) { //$NON-NLS-1$
 			s = "application/xml"; //$NON-NLS-1$
 		}
-		if (s.contains("json")) { //$NON-NLS-1$
+		if (s.contains(JSON)) { //$NON-NLS-1$
 			s = "application/json"; //$NON-NLS-1$
 		}
 		return s;

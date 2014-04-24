@@ -3,7 +3,9 @@ package com.mulesoft.jaxrs.raml.generator.popup.actions;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -61,29 +63,46 @@ public class GenerateRAML implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		visitor = new RuntimeResourceVisitorFactory()
-				.createResourceVisitor();
+		types.clear();
 		boolean cpInited=false;	
 		IProject project=null;
-		try{
-		for (Object q : selectionObject) {
-			if (!cpInited)
-			{
-				IJavaElement el=(IJavaElement) q;
-				IResource resource = el.getResource();
-				if( project!=null&&!project.equals(resource.getProject())){
-					MessageDialog.openInformation(shell, "Multiple Projects are not supported now","Multiple Projects are not supported now");
-					return;
-				}
-				project = resource.getProject();
-				Collection<String> constructProjectClassPath = new ClassPathCollector().constructProjectClassPath(project, true);
-				URL[] urls=new URL[constructProjectClassPath.size()];
-				int a=0;
-				for (String s:constructProjectClassPath)
+		URLClassLoader classLoader = null;
+		try {
+			for (Object q : selectionObject) {
+				if (!cpInited)
 				{
-					urls[a++]=new File(s).toURL();
-				}					
+					IJavaElement el=(IJavaElement) q;
+					IResource resource = el.getResource();
+					if( project!=null&&!project.equals(resource.getProject())){
+						MessageDialog.openInformation(shell, "Multiple Projects are not supported now","Multiple Projects are not supported now");
+						return;
+					}
+					project = resource.getProject();
+					Collection<String> constructProjectClassPath = new ClassPathCollector().constructProjectClassPath(project, true);
+					URL[] urls=new URL[constructProjectClassPath.size()];
+					int a=0;
+					for (String s:constructProjectClassPath)
+					{
+						urls[a++]=new File(s).toURL();
+					}		
+					
+					classLoader = new URLClassLoader(urls);
+					cpInited = true;
+				}
 			}
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		IFile file = getNewRAMLFile(project);
+		if (file == null) {
+			return;
+		}
+		File outputFile = file.getLocation().toFile();
+		visitor = new RuntimeResourceVisitorFactory(outputFile, classLoader)
+				.createResourceVisitor();
+		for (Object q : selectionObject) {
+		try{
 			if (q instanceof IType){
 				visitType((IType) q);
 			}
@@ -96,12 +115,15 @@ public class GenerateRAML implements IObjectActionDelegate {
 			if (q instanceof IJavaProject){
 				visitProject((IJavaProject) q);
 			}
-		}
+			if (q instanceof ICompilationUnit) {
+				visitUnit((ICompilationUnit) q);
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
 		if (project!=null){
-			saveResult(visitor, project);
+			saveResult(visitor, file);
 		}
 	}
 
@@ -140,23 +162,26 @@ public class GenerateRAML implements IObjectActionDelegate {
 		}
 	}
 
-	private void saveResult(ResourceVisitor visitor, IProject t) {
+	private void saveResult(ResourceVisitor visitor, IFile file) {
 		String raml = visitor.getRaml();
+		try {
+			save(raml, file);
+		} catch (UnsupportedEncodingException e) {
+			MessageDialog.openError(shell, "Error", e.getMessage());
+
+		} catch (CoreException e) {
+			MessageDialog.openError(shell, "Error", e.getMessage());
+		}
+	}
+	
+	private IFile getNewRAMLFile(IProject project){
 		InputDialog inputDialog = new InputDialog(shell, "Save RAML to",
 				"Please type file name for you raml file", "api.raml", null);
 		int open = inputDialog.open();
 		if (open == Dialog.OK) {
-			try {
-				save(raml,
-						t
-								.getFile(inputDialog.getValue()));
-			} catch (UnsupportedEncodingException e) {
-				MessageDialog.openError(shell, "Error", e.getMessage());
-
-			} catch (CoreException e) {
-				MessageDialog.openError(shell, "Error", e.getMessage());
-			}
+			return project.getFile(inputDialog.getValue());
 		}
+		return null;
 	}
 
 	private void save(String raml, IFile file) throws CoreException,

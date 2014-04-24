@@ -28,4 +28,9 @@ public class ReflectionType extends BasicReflectionMember<Class<?>> implements I
 		return element.getSimpleName();
 	}
 
+	@Override
+	public String getFullyQualifiedName() {
+		return element.getCanonicalName();
+	}
+
 }

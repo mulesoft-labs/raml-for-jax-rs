@@ -20,9 +20,8 @@ public class APTResourceVisitor extends ResourceVisitor {
 	private static final String DEFAULT_FILENAME = "schema1.xsd";
 	private static final String SCHEMAS_FOLDER = "schemas";
 	private final ProcessingEnvironment processingEnv;
-
 	public APTResourceVisitor(IResourceVisitorFactory factory, ProcessingEnvironment processingEnv) {
-		super(factory);
+		super(factory, null);
 		this.processingEnv = processingEnv;
 	}
 	
@@ -30,27 +29,43 @@ public class APTResourceVisitor extends ResourceVisitor {
 	protected void generateXMLSchema(ITypeModel t) {
 		APTType type = (APTType) t;
 		TypeElement element = (TypeElement) type.element();
+		//try just loading this class
+		Class<?> clazz;
 		try {
-			final File f = new File(RAMLAnnotationProcessor.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-			String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
-			String outputPath = processingEnv.getOptions().get(RAMLAnnotationProcessor.RAMLPATH_OPTION);
-			File parentDir = new File(outputPath);
-			if ((parentDir.exists() && parentDir.isFile()) || parentDir.getAbsolutePath().endsWith(".raml")) {
-				parentDir = parentDir.getParentFile();
-			} 
-			parentDir = new File(parentDir, SCHEMAS_FOLDER);
-			parentDir.mkdirs();
-			int code = SchemaGenerator.run(new String[]{"-d",parentDir.getAbsolutePath(),"-cp",classPath,processingEnv.getElementUtils().getBinaryName(element).toString()}); //$NON-NLS-1$ //$NON-NLS-2$
-			if (code == 0) {
-				File from = new File(parentDir, DEFAULT_FILENAME); //$NON-NLS-1$
-				File to = new File(parentDir, element.getSimpleName().toString().toLowerCase() + ".xsd"); //$NON-NLS-1$
-				Files.move(from,to);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());
+			generateXSDForClass(clazz);
+		} catch (ClassNotFoundException e1) {
+			// Ignore; try some of further approaches
 		}
-		super.generateXMLSchema(t);
+		if (classLoader != null) {
+			try {
+				clazz = classLoader.loadClass(processingEnv.getElementUtils().getBinaryName(element).toString());
+				generateXSDForClass(clazz);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				String classPath = System.getProperty("java.class.path"); //$NON-NLS-1$ 
+				String outputPath = processingEnv.getOptions().get(RAMLAnnotationProcessor.RAMLPATH_OPTION);
+				File parentDir = new File(outputPath);
+				if ((parentDir.exists() && parentDir.isFile()) || parentDir.getAbsolutePath().endsWith(".raml")) {
+					parentDir = parentDir.getParentFile();
+				} 
+				parentDir = new File(parentDir, SCHEMAS_FOLDER);
+				parentDir.mkdirs();
+				int code = SchemaGenerator.run(new String[]{"-d",parentDir.getAbsolutePath(),"-cp",classPath,processingEnv.getElementUtils().getBinaryName(element).toString()}); //$NON-NLS-1$ //$NON-NLS-2$
+				if (code == 0) {
+					File from = new File(parentDir, DEFAULT_FILENAME); //$NON-NLS-1$
+					File to = new File(parentDir, element.getSimpleName().toString().toLowerCase() + ".xsd"); //$NON-NLS-1$
+					Files.move(from,to);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

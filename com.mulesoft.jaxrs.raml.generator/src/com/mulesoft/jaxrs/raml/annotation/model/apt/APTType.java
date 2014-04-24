@@ -60,4 +60,9 @@ public class APTType extends APTModel implements ITypeModel{
 			return false;
 		return true;
 	}
+
+	@Override
+	public String getFullyQualifiedName() {
+		return null; //Can't get it without utils
+	}
 }

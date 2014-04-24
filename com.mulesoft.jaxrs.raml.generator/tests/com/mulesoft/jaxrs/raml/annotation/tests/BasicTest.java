@@ -129,7 +129,7 @@ public class BasicTest extends TestCase{
 		try {
 			File file = File.createTempFile("test11_",".raml"); //$NON-NLS-1$ //$NON-NLS-2$
 			int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource1.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor", "-XprintProcessorInfo", "-Aramlpath=" + file.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-			TestCase.assertEquals(rc,0);
+			TestCase.assertEquals(0,rc);
 			String raml;
 			raml = FileUtils.readFileToString(file);
 			Raml build = new RamlDocumentBuilder().build(raml);
@@ -151,7 +151,7 @@ public class BasicTest extends TestCase{
 		String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
 		File file = File.createTempFile("test12_",".raml"); //$NON-NLS-1$ //$NON-NLS-2$
 		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource2.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor", "-XprintProcessorInfo", "-Aramlpath=" + file.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		TestCase.assertEquals(rc,0);
+		TestCase.assertEquals(0,rc);
 		String raml;
 		raml = FileUtils.readFileToString(file);
 		Raml build = new RamlDocumentBuilder().build(raml);
@@ -170,7 +170,7 @@ public class BasicTest extends TestCase{
 		String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
 		File file = File.createTempFile("test13_",".raml"); //$NON-NLS-1$ //$NON-NLS-2$
 		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource2.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor", "-XprintProcessorInfo", "-Aramlpath=" + file.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		TestCase.assertEquals(rc,0);
+		TestCase.assertEquals(0,rc);
 		String raml;
 		raml = FileUtils.readFileToString(file);
 		Raml build = new RamlDocumentBuilder().build(raml);
@@ -189,7 +189,7 @@ public class BasicTest extends TestCase{
 		String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
 		File file = File.createTempFile("test14_",".raml"); //$NON-NLS-1$ //$NON-NLS-2$
 		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource4.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor", "-XprintProcessorInfo", "-Aramlpath=" + file.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		TestCase.assertEquals(rc,0);
+		TestCase.assertEquals(0,rc);
 		String raml;
 		raml = FileUtils.readFileToString(file);
 		Raml build = new RamlDocumentBuilder().build(raml);
@@ -210,7 +210,7 @@ public class BasicTest extends TestCase{
 		String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
 		File file = File.createTempFile("test15_",".raml"); //$NON-NLS-1$ //$NON-NLS-2$
 		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/annotation/tests/TestResource3.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor", "-XprintProcessorInfo", "-Aramlpath=" + file.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		TestCase.assertEquals(rc,0);
+		TestCase.assertEquals(0,rc);
 		String raml;
 		raml = FileUtils.readFileToString(file);
 		Raml build = new RamlDocumentBuilder().build(raml);

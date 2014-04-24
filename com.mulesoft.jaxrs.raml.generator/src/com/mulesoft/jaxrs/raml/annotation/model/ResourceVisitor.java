@@ -1,8 +1,16 @@
 package com.mulesoft.jaxrs.raml.annotation.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 
 import org.raml.emitter.IRamlHierarchyTarget;
 import org.raml.emitter.RamlEmitterV2;
@@ -18,7 +26,36 @@ import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
-public class ResourceVisitor {
+public abstract class ResourceVisitor {
+	
+
+	public class CustomSchemaOutputResolver extends SchemaOutputResolver {
+
+	    private final String fileName;
+		private File file;
+
+		public CustomSchemaOutputResolver(String fileName) {
+			this.fileName = fileName;
+		}
+
+		public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException {
+			if (outputFile != null) {
+				File dir = new File(outputFile.getParent(), "schemes"); //$NON-NLS-1$
+				dir.mkdirs();
+				file = new File(dir, fileName); 
+			} else {
+				file = new File(fileName);
+			}
+	        StreamResult result = new StreamResult(file);
+	        result.setSystemId(file.toURI().toURL().toString());
+	        return result;
+	    }
+
+		public File getFile() {
+			return file;
+		}
+
+	}
 
 	private static final String FORM = "form"; //$NON-NLS-1$
 
@@ -50,9 +87,14 @@ public class ResourceVisitor {
 	protected HashSet<ITypeModel> consumedTypes = new HashSet<ITypeModel>();
 
 	private String basePath;
+
+	private final File outputFile;
+
+	protected ClassLoader classLoader;
 	
-	public ResourceVisitor(IResourceVisitorFactory factory) {
+	public ResourceVisitor(IResourceVisitorFactory factory, File outputFile) {
 		this.factory = factory;
+		this.outputFile = outputFile;
 	}
 
 	public void visit(ITypeModel t) {
@@ -81,10 +123,7 @@ public class ResourceVisitor {
 		}
 	}
 
-	protected void generateXMLSchema(ITypeModel t) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected abstract void generateXMLSchema(ITypeModel t);
 
 	class StringHolder {
 		String content;
@@ -333,5 +372,25 @@ public class ResourceVisitor {
 			value2.setType(ParamType.BOOLEAN);
 			value2.setRequired(!hasDefault);
 		}
+	}
+
+	protected void generateXSDForClass(Class<?> element) {
+		try {
+			String name = element.getSimpleName().toLowerCase();
+			String fileName = name + ".xsd"; //$NON-NLS-1$
+			JAXBContext jaxbContext = JAXBContext.newInstance(element);
+			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(fileName);
+			jaxbContext.generateSchema(sor);
+			String content = FileUtil.fileToString(sor.getFile());				
+			spec.getCoreRaml().addGlobalSchema(name, content, false, false);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
 	}
 }

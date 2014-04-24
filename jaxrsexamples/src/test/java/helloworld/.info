@@ -1,0 +1,17 @@
+#
+#Mon Jun 11 18:29:53 IST 2012
+HelloWorldRest_getAllStates_PagingContext=UriContext[]
+HelloWorldRest_getStatesForCountry_int=int,UriContext[]
+HelloWorldRest_updateCountry_ApiContextInterface,int,Country=Country,UriContext,int[Updating country]
+HelloWorldRest_runCountriesReport_ScheduleContext=[Creating run-countries-report]
+HelloWorldRest_getAllCountries_PagingContext=UriContext[]
+HelloWorldRest_getState_int=int[]
+HelloWorldRest_getStateForCountry_int,int=int,int[]
+HelloWorldRest_updateState_ApiContextInterface,int,State=State,UriContext,int[Updating state]
+HelloWorldRest_addState_ApiContextInterface,State=State,UriContext[Creating state]
+HelloWorldRest_getCountry_int=int[]
+HelloWorldRest_deleteCountry_ApiContextInterface,int=UriContext,int[Deleting country]
+HelloWorldRest_deleteState_ApiContextInterface,int=UriContext,int[Deleting state]
+HelloWorldRest_addStateToCountry_ApiContextInterface,State,int=State_REF,UriContext,int[Creating country]
+HelloWorldRest_addCountry_ApiContextInterface,Country=Country,UriContext[Creating country]
+HelloWorldRest_deleteStateForCountry_ApiContextInterface,int,int=UriContext,int,int[Deleting country]

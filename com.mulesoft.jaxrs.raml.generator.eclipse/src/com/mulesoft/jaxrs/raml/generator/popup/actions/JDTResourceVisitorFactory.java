@@ -18,7 +18,7 @@ public class JDTResourceVisitorFactory implements IResourceVisitorFactory{
 	
 	
 
-	@Override
+	
 	public ResourceVisitor createResourceVisitor() {
 		JDTResourceVisitor jdtResourceVisitor = new JDTResourceVisitor(this,file);
 		jdtResourceVisitor.setClassLoader(loader);

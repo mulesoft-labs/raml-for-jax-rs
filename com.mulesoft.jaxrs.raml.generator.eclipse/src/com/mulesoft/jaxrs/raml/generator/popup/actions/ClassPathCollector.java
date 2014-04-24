@@ -119,6 +119,13 @@ public class ClassPathCollector {
 			}
 			else if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 				//we don't need source entries
+				IPath outputLocation = classpathEntry.getOutputLocation();
+				if (outputLocation!=null){
+					String resolvedPath = resolveEntryPath(outputLocation, project.getProject());
+					if (resolvedPath != null) {
+						result.add(resolvedPath);
+					}					
+				}
 			}
 			else if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
 				addEntryPathToResult(entry, project.getProject(), result);

@@ -203,7 +203,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		return null;
 	}
 
-	@Override
+	
 	public ITypeModel getBodyType() {
 		IMethod iMethod = (IMethod) tm;
 		try {

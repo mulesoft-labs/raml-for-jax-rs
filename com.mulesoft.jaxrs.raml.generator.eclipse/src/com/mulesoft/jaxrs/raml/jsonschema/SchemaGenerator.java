@@ -39,7 +39,7 @@ public class SchemaGenerator {
 		
 		File[] srcFiles = srcFolder.listFiles( new FilenameFilter() {
 			
-			@Override
+			
 			public boolean accept(File file, String name) {
 				return name.endsWith(".json");
 			}

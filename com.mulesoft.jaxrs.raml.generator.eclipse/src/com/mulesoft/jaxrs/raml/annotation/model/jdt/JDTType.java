@@ -44,7 +44,7 @@ public class JDTType extends JDTAnnotatable implements ITypeModel {
 	}
 
 
-	@Override
+	
 	public String getFullyQualifiedName() {
 		return ((IType) tm).getFullyQualifiedName();
 	}

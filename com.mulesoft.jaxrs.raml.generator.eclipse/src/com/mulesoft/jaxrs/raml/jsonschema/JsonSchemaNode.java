@@ -355,7 +355,7 @@ public class JsonSchemaNode implements ISchemaNode{
 		}
 	}
 
-	@Override
+	
 	public String toString() {
 		String name_ = getName();		
 		String type_ = getType();
@@ -376,12 +376,12 @@ public class JsonSchemaNode implements ISchemaNode{
 	
 	public class TypeNode implements ISchemaNode{
 
-		@Override
+		
 		public Collection<? extends ISchemaNode> getChildren() {
 			return null;
 		}
 		
-		@Override
+		
 		public String toString() {
 			return "type: "+ getType();
 		}		
@@ -389,12 +389,12 @@ public class JsonSchemaNode implements ISchemaNode{
 	
 	public class RequiredNode implements ISchemaNode{
 
-		@Override
+		
 		public Collection<? extends ISchemaNode> getChildren() {
 			return null;
 		}
 		
-		@Override
+		
 		public String toString() {
 			return "required: "+ isRequired();
 		}		
@@ -402,12 +402,12 @@ public class JsonSchemaNode implements ISchemaNode{
 	
 	public class PropertiesNode implements ISchemaNode{
 
-		@Override
+		
 		public Collection<? extends ISchemaNode> getChildren() {
 			return getProperties() ;
 		}
 		
-		@Override
+		
 		public String toString() {
 			return "properties:";
 		}		
@@ -415,12 +415,12 @@ public class JsonSchemaNode implements ISchemaNode{
 	
 	public class ArrayItemsNode implements ISchemaNode{
 
-		@Override
+		
 		public Collection<? extends ISchemaNode> getChildren() {
 			return getArrayItems() ;
 		}
 		
-		@Override
+		
 		public String toString() {
 			return "items:";
 		}		

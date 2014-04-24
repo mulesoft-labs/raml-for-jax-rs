@@ -2,29 +2,11 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.popupMenus">
+         point="org.eclipse.ui.popupMenus">      
       <objectContribution
-            id="com.mulesoft.jaxrs.raml.generator.contribution1"
-            objectClass="org.eclipse.core.resources.IResource">
-         <menu
-               id="com.mulesoft.jaxrs.raml.generator.menu1"
-               label="RAML Tools"
-               path="additions">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               class="com.mulesoft.jaxrs.raml.generator.popup.actions.GenerateRAML"
-               enablesFor="1"
-               id="com.mulesoft.jaxrs.raml.generator.newAction"
-               label="Generate RAML from classes"
-               menubarPath="com.mulesoft.jaxrs.raml.generator.menu1/group1">
-         </action>
-      </objectContribution>
-      <objectContribution
+            adaptable="true"
             id="com.mulesoft.jaxrs.raml.generator.contribution2"
-            objectClass="org.eclipse.jdt.core.IType">
+            objectClass="org.eclipse.jdt.core.IJavaElement">
          <menu
                id="com.mulesoft.jaxrs.raml.generator.menu1"
                label="RAML Tools"
@@ -35,30 +17,10 @@
          </menu>
          <action
                class="com.mulesoft.jaxrs.raml.generator.popup.actions.GenerateRAML"
-               enablesFor="1"
                id="com.mulesoft.jaxrs.raml.generator.newAction"
                label="Generate RAML from classes"
                menubarPath="com.mulesoft.jaxrs.raml.generator.menu1/group1">
          </action>
-      </objectContribution>
-      <objectContribution
-            id="com.mulesoft.jaxrs.raml.generator.contribution3"
-            objectClass="org.eclipse.jdt.core.ICompilationUnit">
-         <menu
-               id="com.mulesoft.jaxrs.raml.generator.menu1"
-               label="RAML Tools"
-               path="additions">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               class="com.mulesoft.jaxrs.raml.generator.popup.actions.GenerateRAML"
-               enablesFor="1"
-               id="com.mulesoft.jaxrs.raml.generator.newAction"
-               label="Generate RAML from classes"
-               menubarPath="com.mulesoft.jaxrs.raml.generator.menu1/group1">
-         </action>
-      </objectContribution>
+      </objectContribution>      
    </extension>
 </plugin>

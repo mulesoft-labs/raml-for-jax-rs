@@ -1,7 +1,12 @@
 package com.mulesoft.jaxrs.raml.generator.popup.actions;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -14,7 +19,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
@@ -34,7 +38,8 @@ import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisito
 public class GenerateRAML implements IObjectActionDelegate {
 
 	private Shell shell;
-	private Object selectionObject;
+	private List<?> selectionObject;
+	private ResourceVisitor visitor;
 
 	/**
 	 * Constructor for Action1.
@@ -51,68 +56,91 @@ public class GenerateRAML implements IObjectActionDelegate {
 
 	}
 
+	HashSet<IType>types=new HashSet<IType>();
 	/**
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		ResourceVisitor visitor = new RuntimeResourceVisitorFactory().createResourceVisitor();
-		if (selectionObject instanceof IType) {
-			IType t = (IType) selectionObject;
-			visitor.visit(new JDTType(t));
-			saveResult(visitor, t);
-			return;
-		}
-		if (selectionObject instanceof ICompilationUnit) {
-			ICompilationUnit unit = (ICompilationUnit) selectionObject;
-			IType[] allTypes;
-			try {
-				allTypes = unit.getAllTypes();
-				for (IType t : allTypes) {
-					visitor.visit(new JDTType(t));
+		visitor = new RuntimeResourceVisitorFactory()
+				.createResourceVisitor();
+		boolean cpInited=false;	
+		IProject project=null;
+		try{
+		for (Object q : selectionObject) {
+			if (!cpInited)
+			{
+				IJavaElement el=(IJavaElement) q;
+				IResource resource = el.getResource();
+				if( project!=null&&!project.equals(resource.getProject())){
+					MessageDialog.openInformation(shell, "Multiple Projects are not supported now","Multiple Projects are not supported now");
+					return;
 				}
-			} catch (JavaModelException e) {
-				MessageDialog.openError(shell, "Error", e.getMessage());
+				project = resource.getProject();
+				Collection<String> constructProjectClassPath = new ClassPathCollector().constructProjectClassPath(project, true);
+				URL[] urls=new URL[constructProjectClassPath.size()];
+				int a=0;
+				for (String s:constructProjectClassPath)
+				{
+					urls[a++]=new File(s).toURL();
+				}					
 			}
-			saveResult(visitor, unit);
+			if (q instanceof IType){
+				visitType((IType) q);
+			}
+			if (q instanceof IPackageFragment){
+				visitPackage((IPackageFragment) q);
+			}
+			if (q instanceof IPackageFragmentRoot){
+				visitPackageFragmentRoot((IPackageFragmentRoot) q);
+			}
+			if (q instanceof IJavaProject){
+				visitProject((IJavaProject) q);
+			}
 		}
-		IResource q = (IResource) selectionObject;
-
-		IProject project = q.getProject();
-		IJavaProject create = JavaCore.create(project);
-
-		if (create.exists()) {
-			try {
-				IPackageFragmentRoot[] packageFragmentRoots = create
-						.getPackageFragmentRoots();
-				for (IPackageFragmentRoot qq : packageFragmentRoots) {
-					if (qq.getKind() == IPackageFragmentRoot.K_SOURCE) {
-						IJavaElement[] children = qq.getChildren();
-						for (IJavaElement z : children) {
-							if (z instanceof IPackageFragment) {
-								IPackageFragment pp = (IPackageFragment) z;
-								ICompilationUnit[] compilationUnits = pp
-										.getCompilationUnits();
-								for (ICompilationUnit unit : compilationUnits) {
-									IType[] allTypes = unit.getAllTypes();
-									for (IType t : allTypes) {
-										visitor.visit(new JDTType(t));
-									}
-								}
-							}
-						}
-					}
-				}
-				String raml = visitor.getRaml();
-				String name = "api.raml";
-				IFile file = project.getFile(name);
-				save(raml, file);
-			} catch (Exception e) {
-				MessageDialog.openError(shell, "Error", e.getMessage());
-			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (project!=null){
+			saveResult(visitor, project);
 		}
 	}
 
-	private void saveResult(ResourceVisitor visitor, IJavaElement t) {
+	private void visitType(IType q) {
+		if (!types.add(q)){
+			return;
+		}
+		visitor.visit(new JDTType(q));
+	}
+	private void visitUnit(ICompilationUnit q) throws JavaModelException {
+		for (IType t:q.getAllTypes())
+		{
+			visitType(t);
+		}
+	}
+	private void visitPackage(IPackageFragment q) throws JavaModelException {
+		ICompilationUnit[] compilationUnits = q.getCompilationUnits();
+		for (ICompilationUnit unit:compilationUnits){
+			visitUnit(unit);
+		}
+	}
+	private void visitPackageFragmentRoot(IPackageFragmentRoot pr) throws JavaModelException {
+		if (pr.getKind()==IPackageFragmentRoot.K_SOURCE){
+			IJavaElement[] children = pr.getChildren();
+			for (IJavaElement z:children){
+				if (z instanceof IPackageFragment){
+					visitPackage((IPackageFragment) z);
+				}
+			}
+		}
+	}
+	private void visitProject(IJavaProject q) throws JavaModelException {
+		IPackageFragmentRoot[] packageFragmentRoots = q.getPackageFragmentRoots();
+		for (IPackageFragmentRoot pr:packageFragmentRoots){
+			visitPackageFragmentRoot(pr);
+		}
+	}
+
+	private void saveResult(ResourceVisitor visitor, IProject t) {
 		String raml = visitor.getRaml();
 		InputDialog inputDialog = new InputDialog(shell, "Save RAML to",
 				"Please type file name for you raml file", "api.raml", null);
@@ -120,7 +148,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 		if (open == Dialog.OK) {
 			try {
 				save(raml,
-						t.getJavaProject().getProject()
+						t
 								.getFile(inputDialog.getValue()));
 			} catch (UnsupportedEncodingException e) {
 				MessageDialog.openError(shell, "Error", e.getMessage());
@@ -146,7 +174,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		selectionObject = ((IStructuredSelection) selection).getFirstElement();
+		selectionObject = ((IStructuredSelection) selection).toList();
 	}
 
 }

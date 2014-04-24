@@ -181,8 +181,7 @@ public class ClassPathCollector {
 			} catch (Throwable th) {
 				th.printStackTrace();
 			}
-		}
-		
+		}		
 		return null;
 	}
 }

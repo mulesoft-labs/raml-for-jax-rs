@@ -29,6 +29,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.jdt.JDTType;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitorFactory;
 
 public class GenerateRAML implements IObjectActionDelegate {
 
@@ -54,7 +55,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-		ResourceVisitor visitor = new ResourceVisitor();
+		ResourceVisitor visitor = new RuntimeResourceVisitorFactory().createResourceVisitor();
 		if (selectionObject instanceof IType) {
 			IType t = (IType) selectionObject;
 			visitor.visit(new JDTType(t));

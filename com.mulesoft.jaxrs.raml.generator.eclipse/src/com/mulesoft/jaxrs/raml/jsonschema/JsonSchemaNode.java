@@ -13,8 +13,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class JsonSchemaNode implements ISchemaNode{
 	
-	private static final long serialVersionUID = -7901799568540379916L;
-
 	public JsonSchemaNode(String name, JSONObject object, JsonSchemaNode parent) {
 		super();
 		this.name = name != null ? name.trim() : "";

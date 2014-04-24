@@ -39,7 +39,7 @@ public class DummyXMLGenerator {
 		return null;
 	}
 
-	private String generateDummyXmlFor(String uri) {
+	String generateDummyXmlFor(String uri) {
 
 		HrefSchemaHandler hrefHandler = new HrefSchemaHandler(uri);
 		uri = hrefHandler.getEnhancedSchemaURI();

@@ -5,11 +5,13 @@ import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorFactory;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
 public class JDTResourceVisitor extends RuntimeResourceVisitor {
 
+	
 	public JDTResourceVisitor(IResourceVisitorFactory factory, File outputFile) {
 		super(factory, outputFile);
 	}
@@ -19,7 +21,9 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 		try {
 			String generateDummyXmlFor = m.generateDummyXmlFor(file.toURL().toExternalForm());
 			String convertToJSON = JsonUtil.convertToJSON(generateDummyXmlFor, true);
+			convertToJSON=JsonFormatter.format(convertToJSON);
 			String generateSchema2 = new SchemaGenerator().generateSchema(convertToJSON);
+			generateSchema2=JsonFormatter.format(generateSchema2);
 			String fName = file.getName().replace(".xsd", "-jsonshema");
 			spec.getCoreRaml().addGlobalSchema(fName,generateSchema2, true,false);
 			File parentFile = file.getParentFile().getParentFile();

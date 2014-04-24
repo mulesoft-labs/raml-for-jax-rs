@@ -35,7 +35,6 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.jdt.JDTType;
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitorFactory;
 
 public class GenerateRAML implements IObjectActionDelegate {
 

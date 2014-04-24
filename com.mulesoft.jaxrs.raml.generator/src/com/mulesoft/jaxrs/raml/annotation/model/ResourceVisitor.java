@@ -268,11 +268,13 @@ public abstract class ResourceVisitor {
 				if (s.contains(XML))
 				{
 					bodyType.setSchema(parameterName);
-					bodyType.setExample("examples/"+parameterName+".xml");			
+					bodyType.setExample("examples/"+parameterName+".xml");
+					bodyType.setExampleOrigin("examples/"+parameterName+".xml");
 				}
 				if (s.contains(JSON)){
-					bodyType.setSchema(returnName+"-json");
-					bodyType.setExample("examples/"+returnName+".json");					
+					bodyType.setSchema(returnName+"-jsonshema");
+					bodyType.setExample("examples/"+returnName+".json");
+					bodyType.setExampleOrigin("examples/"+returnName+".json");
 				}
 				bodyType.setType(s);
 				if (s.contains(FORM)) {
@@ -310,11 +312,13 @@ public abstract class ResourceVisitor {
 				if (returnName!=null){
 					if (s.contains(XML)){
 					mimeType.setSchema(returnName);
-					mimeType.setExample("examples/"+returnName+".xml");					
+					mimeType.setExample("examples/"+returnName+".xml");				
+					mimeType.setExampleOrigin("examples/"+returnName+".xml");
 					}
 					if (s.contains(JSON)){
-						mimeType.setSchema(returnName+"-json");
-						mimeType.setExample("examples/"+returnName+".json");					
+						mimeType.setSchema(returnName+"-jsonshema");
+						mimeType.setExample("examples/"+returnName+".json");
+						mimeType.setExampleOrigin("examples/"+returnName+".json");
 					}
 				}
 				mimeType.setType(s);

@@ -1,7 +1,3 @@
-/*
- * Copyright 2014, Genuitec, LLC
- * All Rights Reserved.
- */
 package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.io.File;

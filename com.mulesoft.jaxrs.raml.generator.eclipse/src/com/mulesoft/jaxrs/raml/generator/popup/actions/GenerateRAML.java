@@ -99,7 +99,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			return;
 		}
 		File outputFile = file.getLocation().toFile();
-		visitor = new RuntimeResourceVisitorFactory(outputFile, classLoader)
+		visitor = new JDTResourceVisitorFactory(outputFile, classLoader)
 				.createResourceVisitor();
 		for (Object q : selectionObject) {
 		try{

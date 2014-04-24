@@ -1,7 +1,4 @@
-/*
- * Copyright 2014, Genuitec, LLC
- * All Rights Reserved.
- */
+
 package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.io.File;
@@ -28,7 +25,6 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 				Class<?> element = classLoader.loadClass(t.getFullyQualifiedName());
 				generateXSDForClass(element);
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

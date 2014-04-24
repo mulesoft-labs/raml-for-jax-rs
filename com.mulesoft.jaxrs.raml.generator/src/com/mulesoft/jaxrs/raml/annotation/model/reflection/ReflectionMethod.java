@@ -57,4 +57,9 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 	public String getName() {
 		return element.getName();
 	}
+
+	@Override
+	public ITypeModel getBodyType() {
+		return null;
+	}
 }

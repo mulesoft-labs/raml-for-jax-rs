@@ -43,14 +43,7 @@ public abstract class AbstractSchemaHandler {
 	
 
 	protected static File uriToFile(String uri) {
-		String filePrefix = getFilePrefix();
-
-		if (!uri.startsWith(filePrefix)) {
-			return null;
-		}
-
-		String filePath = uri.substring(filePrefix.length(), uri.length());
-		return new File(filePath);
+		return new File(uri);
 	}
 
 	protected static String fileToUri(File file) {

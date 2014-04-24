@@ -94,5 +94,10 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public ITypeModel getBodyType() {		
+		return null;
+	}
 
 }

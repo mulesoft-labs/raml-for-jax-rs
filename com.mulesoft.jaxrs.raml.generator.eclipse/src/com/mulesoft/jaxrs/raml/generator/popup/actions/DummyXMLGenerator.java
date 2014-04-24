@@ -41,8 +41,6 @@ public class DummyXMLGenerator {
 
 	String generateDummyXmlFor(String uri) {
 
-		HrefSchemaHandler hrefHandler = new HrefSchemaHandler(uri);
-		uri = hrefHandler.getEnhancedSchemaURI();
 
 		SchemaCdataHandler cdataHandler = new SchemaCdataHandler(uri);
 		try {

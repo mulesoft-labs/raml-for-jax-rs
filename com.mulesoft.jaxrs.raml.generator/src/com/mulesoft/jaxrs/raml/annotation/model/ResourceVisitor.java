@@ -118,9 +118,7 @@ public abstract class ResourceVisitor {
 			}
 		}
 		
-		if (t.hasAnnotation(XML_ROOT_ELEMENT)) {
-			generateXMLSchema(t);
-		}
+		
 	}
 
 	protected abstract void generateXMLSchema(ITypeModel t);
@@ -171,10 +169,17 @@ public abstract class ResourceVisitor {
 			Resource res = new Resource();
 			IDocInfo documentation = m.getBasicDocInfo();
 			res.setDescription(documentation.getDocumentation());
-
+			String returnName=null;
+			String parameterName=null;
 			if (hasPath) {
 				ITypeModel returnedType = m.getReturnedType();
+				
+				
 				if (returnedType != null) {
+					if (returnedType.hasAnnotation(XML_ROOT_ELEMENT)) {
+						generateXMLSchema(returnedType);
+						returnName=returnedType.getName().toLowerCase();
+					}
 					if (consumedTypes.add(returnedType)) {
 						ResourceVisitor resourceVisitor = factory.createResourceVisitor();
 						resourceVisitor.consumedTypes
@@ -183,6 +188,13 @@ public abstract class ResourceVisitor {
 						resourceVisitor.spec = this.spec;
 						resourceVisitor.visit(returnedType);
 					}
+				}
+			}
+			ITypeModel bodyType = m.getBodyType();
+			if (bodyType!=null){
+				if (bodyType.hasAnnotation(XML_ROOT_ELEMENT)) {
+					generateXMLSchema(bodyType);
+					parameterName=bodyType.getName().toLowerCase();
 				}
 			}
 			if (annotationValue.endsWith("/")) { //$NON-NLS-1$
@@ -194,7 +206,7 @@ public abstract class ResourceVisitor {
 			for (ActionType q : ActionType.values()) {
 				boolean hasAnnotation = m.hasAnnotation(q.name());
 				if (hasAnnotation) {
-					addMethod(q, res, m, documentation);
+					addMethod(q, res, m, documentation,returnName,parameterName);
 				}
 			}
 			spec.addResource(res);
@@ -203,7 +215,7 @@ public abstract class ResourceVisitor {
 	}
 
 	private void addMethod(ActionType q, Resource res, IMethodModel m,
-			IDocInfo documentation) {
+			IDocInfo documentation, String returnName, String parameterName) {
 		Action value = new Action();
 		value.setType(q);
 		res.getActions().put(q, value);
@@ -249,6 +261,11 @@ public abstract class ResourceVisitor {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
 				MimeType value2 = new MimeType();
+				if (s.contains("xml"))
+				{
+					value2.setSchema(parameterName);
+					value2.setExample("examples/"+parameterName+".xml");			
+				}
 				value2.setType(s);
 				if (s.contains(FORM)) {
 					for (IParameterModel pm : parameters) {
@@ -282,6 +299,12 @@ public abstract class ResourceVisitor {
 			for (String s : producesValue) {
 				s = sanitizeMediaType(s);
 				MimeType mimeType = new MimeType();
+				if (returnName!=null){
+					if (s.contains("xml")){
+					mimeType.setSchema(returnName);
+					mimeType.setExample("examples/"+returnName+".xml");					
+					}
+				}
 				mimeType.setType(s);
 				value2.getBody().put(s, mimeType);
 
@@ -289,14 +312,7 @@ public abstract class ResourceVisitor {
 			value.getResponses().put("200", value2); //$NON-NLS-1$
 		} else {
 			Response value2 = new Response();
-			value2.setDescription(documentation.getReturnInfo());
-			// for (String s : producesValue) {
-			// s = sanitizeMediaType(s);
-			// MimeType mimeType = new MimeType();
-			// mimeType.setType(s);
-			// value2.getBody().put(s, mimeType);
-			//
-			// }
+			value2.setDescription(documentation.getReturnInfo());			
 			value.getResponses().put("200", value2); //$NON-NLS-1$
 		}
 	}
@@ -381,13 +397,19 @@ public abstract class ResourceVisitor {
 			JAXBContext jaxbContext = JAXBContext.newInstance(element);
 			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(fileName);
 			jaxbContext.generateSchema(sor);
-			String content = FileUtil.fileToString(sor.getFile());				
+			File file = sor.getFile();
+			String content = FileUtil.fileToString(file);
+			generateExamle(file,content);
 			spec.getCoreRaml().addGlobalSchema(name, content, false, false);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected void generateExamle(File file, String content) {
+		
 	}
 
 	public void setClassLoader(ClassLoader classLoader) {

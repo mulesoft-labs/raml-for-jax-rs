@@ -24,4 +24,10 @@ public interface IMethodModel extends IBasicModel {
 	 * @return information about return type
 	 */
 	ITypeModel getReturnedType();
+	
+	/**
+	 * 
+	 * @return information about body type
+	 */
+	ITypeModel getBodyType();
 }

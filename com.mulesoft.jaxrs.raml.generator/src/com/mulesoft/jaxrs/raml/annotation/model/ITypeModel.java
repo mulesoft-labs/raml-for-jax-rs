@@ -13,4 +13,6 @@ public interface ITypeModel extends IBasicModel{
 	 * @return methods declared in this type
 	 */
 	IMethodModel[] getMethods();
+	
+	String getFullyQualifiedName();
 }

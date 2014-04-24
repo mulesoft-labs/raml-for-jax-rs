@@ -92,4 +92,8 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		}
 		return false;
 	}
+
+	public T getElement() {
+		return element;
+	}
 }

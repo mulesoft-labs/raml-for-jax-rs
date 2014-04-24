@@ -73,11 +73,12 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 	private String outputPath;
 
 	private ProcessingEnvironment processingEnv;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations,
 			RoundEnvironment roundEnv) {
+		
 		HashSet<TypeElement> result = new HashSet<TypeElement>();
 		for (int i = 0; i < annotationClasses.length; i++) {
 			Class<? extends Annotation> clazz = (Class<? extends Annotation>) annotationClasses[i];

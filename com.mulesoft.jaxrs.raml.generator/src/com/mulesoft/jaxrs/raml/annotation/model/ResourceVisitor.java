@@ -20,23 +20,27 @@ import org.raml.model.parameter.UriParameter;
 
 public class ResourceVisitor {
 
-	private static final String FORM = "form";
+	private static final String FORM = "form"; //$NON-NLS-1$
 
-	private static final String DEFAULT_VALUE = "DefaultValue";
+	private static final String DEFAULT_VALUE = "DefaultValue"; //$NON-NLS-1$
 
-	private static final String PATH_PARAM = "PathParam";
+	private static final String PATH_PARAM = "PathParam"; //$NON-NLS-1$
 
-	private static final String HEADER_PARAM = "HeaderParam";
+	private static final String HEADER_PARAM = "HeaderParam"; //$NON-NLS-1$
 
-	private static final String CONSUMES = "Consumes";
+	private static final String CONSUMES = "Consumes"; //$NON-NLS-1$
 
-	private static final String PRODUCES = "Produces";
+	private static final String PRODUCES = "Produces"; //$NON-NLS-1$
 
-	private static final String QUERY_PARAM = "QueryParam";
+	private static final String QUERY_PARAM = "QueryParam"; //$NON-NLS-1$
 
-	private static final String PATH = "Path";
+	private static final String PATH = "Path"; //$NON-NLS-1$
 
-	private static final String FORM_PARAM = "FormParam";
+	private static final String FORM_PARAM = "FormParam"; //$NON-NLS-1$
+	
+	private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
+	
+	protected final IResourceVisitorFactory factory;
 
 	protected RAMLModelHelper spec = new RAMLModelHelper();
 
@@ -46,6 +50,10 @@ public class ResourceVisitor {
 	protected HashSet<ITypeModel> consumedTypes = new HashSet<ITypeModel>();
 
 	private String basePath;
+	
+	public ResourceVisitor(IResourceVisitorFactory factory) {
+		this.factory = factory;
+	}
 
 	public void visit(ITypeModel t) {
 		consumedTypes.add(t);
@@ -54,19 +62,28 @@ public class ResourceVisitor {
 		String annotationValue = t.getAnnotationValue(PATH);
 		if (basePath != null) {
 			if (annotationValue == null) {
-				annotationValue = "";
+				annotationValue = ""; //$NON-NLS-1$
 			}
 			annotationValue = basePath + annotationValue;
 		}
 		if (annotationValue != null) {
-			if (!annotationValue.endsWith("/")) {
-				annotationValue = annotationValue + "/";
+			if (!annotationValue.endsWith("/")) { //$NON-NLS-1$
+				annotationValue = annotationValue + "/"; //$NON-NLS-1$
 			}
 			IMethodModel[] methods = t.getMethods();
 			for (IMethodModel m : methods) {
 				visit(m, annotationValue);
 			}
 		}
+		
+		if (t.hasAnnotation(XML_ROOT_ELEMENT)) {
+			generateXMLSchema(t);
+		}
+	}
+
+	protected void generateXMLSchema(ITypeModel t) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	class StringHolder {
@@ -97,8 +114,8 @@ public class ResourceVisitor {
 		boolean hasPath = m.hasAnnotation(PATH);
 		if (hasPath) {
 			String annotationValue2 = m.getAnnotationValue(PATH);
-			if (annotationValue.endsWith("/")) {
-				if (annotationValue2.startsWith("/")) {
+			if (annotationValue.endsWith("/")) { //$NON-NLS-1$
+				if (annotationValue2.startsWith("/")) { //$NON-NLS-1$
 					annotationValue2 = annotationValue2.substring(1);
 				}
 			}
@@ -120,7 +137,7 @@ public class ResourceVisitor {
 				ITypeModel returnedType = m.getReturnedType();
 				if (returnedType != null) {
 					if (consumedTypes.add(returnedType)) {
-						ResourceVisitor resourceVisitor = new ResourceVisitor();
+						ResourceVisitor resourceVisitor = factory.createResourceVisitor();
 						resourceVisitor.consumedTypes
 								.addAll(this.consumedTypes);
 						resourceVisitor.basePath = annotationValue;
@@ -129,7 +146,7 @@ public class ResourceVisitor {
 					}
 				}
 			}
-			if (annotationValue.endsWith("/")) {
+			if (annotationValue.endsWith("/")) { //$NON-NLS-1$
 				res.setRelativeUri(annotationValue.substring(0,
 						annotationValue.length() - 1));
 			} else {
@@ -230,7 +247,7 @@ public class ResourceVisitor {
 				value2.getBody().put(s, mimeType);
 
 			}
-			value.getResponses().put("200", value2);
+			value.getResponses().put("200", value2); //$NON-NLS-1$
 		} else {
 			Response value2 = new Response();
 			value2.setDescription(documentation.getReturnInfo());
@@ -241,36 +258,36 @@ public class ResourceVisitor {
 			// value2.getBody().put(s, mimeType);
 			//
 			// }
-			value.getResponses().put("200", value2);
+			value.getResponses().put("200", value2); //$NON-NLS-1$
 		}
 	}
 
 	private String sanitizeMediaType(String s) {
 		s = s.toLowerCase();
 		if (s.contains(FORM)) {
-			if (s.contains("urlencoded")) {
-				s = "application/x-www-form-urlencoded";
+			if (s.contains("urlencoded")) { //$NON-NLS-1$
+				s = "application/x-www-form-urlencoded"; //$NON-NLS-1$
 			}
-			if (s.contains("multipart")) {
-				s = "multipart/form-data";
-			}
-		}
-		if (s.contains("text")) {
-			if (s.contains("html")) {
-				s = "text/html";
-			}
-			if (s.contains("plain")) {
-				s = "text/plain";
+			if (s.contains("multipart")) { //$NON-NLS-1$
+				s = "multipart/form-data"; //$NON-NLS-1$
 			}
 		}
-		if (s.contains("octet")) {
-			return "application/octet-stream";
+		if (s.contains("text")) { //$NON-NLS-1$
+			if (s.contains("html")) { //$NON-NLS-1$
+				s = "text/html"; //$NON-NLS-1$
+			}
+			if (s.contains("plain")) { //$NON-NLS-1$
+				s = "text/plain"; //$NON-NLS-1$
+			}
 		}
-		if (s.contains("xml")) {
-			s = "application/xml";
+		if (s.contains("octet")) { //$NON-NLS-1$
+			return "application/octet-stream"; //$NON-NLS-1$
 		}
-		if (s.contains("json")) {
-			s = "application/json";
+		if (s.contains("xml")) { //$NON-NLS-1$
+			s = "application/xml"; //$NON-NLS-1$
+		}
+		if (s.contains("json")) { //$NON-NLS-1$
+			s = "application/json"; //$NON-NLS-1$
 		}
 		return s;
 	}
@@ -283,36 +300,36 @@ public class ResourceVisitor {
 			value2.setDefaultValue(annotationValue);
 			hasDefault=true;
 		}
-		if (type.equals("I")) {
+		if (type.equals("I")) { //$NON-NLS-1$
 			value2.setType(ParamType.INTEGER);
 			value2.setRequired(!hasDefault);
 		}
-		if (type.equals("D")) {
+		if (type.equals("D")) { //$NON-NLS-1$
 			value2.setType(ParamType.NUMBER);
 			value2.setRequired(!hasDefault);
 		}
-		if (type.equals("Z")) {
+		if (type.equals("Z")) { //$NON-NLS-1$
 			value2.setType(ParamType.BOOLEAN);
 		}
-		if (type.equals("int")||type.equals("long")||type.equals("short")) {
+		if (type.equals("int")||type.equals("long")||type.equals("short")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			value2.setType(ParamType.INTEGER);
 			value2.setRequired(!hasDefault);
 		}
-		if (type.equals("float")||type.equals("double")) {
+		if (type.equals("float")||type.equals("double")) { //$NON-NLS-1$ //$NON-NLS-2$
 			value2.setType(ParamType.NUMBER);
 			value2.setRequired(!hasDefault);
 		}
-		if (type.equals("boolean")) {
+		if (type.equals("boolean")) { //$NON-NLS-1$
 			value2.setType(ParamType.BOOLEAN);
 			value2.setRequired(!hasDefault);
 		}
-		if (type.equals("QInteger;")) {
+		if (type.equals("QInteger;")) { //$NON-NLS-1$
 			value2.setType(ParamType.INTEGER);
 		}
-		if (type.equals("QDouble;")) {
+		if (type.equals("QDouble;")) { //$NON-NLS-1$
 			value2.setType(ParamType.NUMBER);
 		}
-		if (type.equals("QBoolean;")) {
+		if (type.equals("QBoolean;")) { //$NON-NLS-1$
 			value2.setType(ParamType.BOOLEAN);
 			value2.setRequired(!hasDefault);
 		}

@@ -48,7 +48,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 
 	private static final String DEFAULT_GENERATED_NAME = "generated.raml"; //$NON-NLS-1$
 
-	static final String RAMLPATH_OPTION = "ramlpath"; //$NON-NLS-1$
+	public static final String RAMLPATH_OPTION = "ramlpath"; //$NON-NLS-1$
 	
 	private Class<?>[] annotationClasses = new Class<?>[]{ApplicationPath.class, 
 			Consumes.class, 
@@ -71,6 +71,8 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 			QueryParam.class};
 
 	private String outputPath;
+
+	private ProcessingEnvironment processingEnv;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -93,7 +95,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 		if (result.size() == 0) {
 			return false;
 		}
-		ResourceVisitor visitor=new ResourceVisitor();
+		ResourceVisitor visitor = new APTResourceVisitorFactory(processingEnv).createResourceVisitor();
 		for (TypeElement typeElement : result) {
 			APTType aptType = new APTType(typeElement);
 			visitor.visit(aptType);
@@ -142,6 +144,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 	
 	@Override
 	public synchronized void init(ProcessingEnvironment environment) {
+		this.processingEnv = environment;
 		super.init(environment);
 		outputPath = environment.getOptions().get(RAMLPATH_OPTION);
 	}

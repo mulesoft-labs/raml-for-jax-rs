@@ -17,6 +17,7 @@ public class RAMLModelHelper {
 
 	public RAMLModelHelper() {
 		coreRaml.setBaseUri("http://example.com");
+		coreRaml.setTitle("Please type API title here");
 		coreRaml.setProtocols(Collections.singletonList(Protocol.HTTP));
 	}
 	public String getMediaType() {

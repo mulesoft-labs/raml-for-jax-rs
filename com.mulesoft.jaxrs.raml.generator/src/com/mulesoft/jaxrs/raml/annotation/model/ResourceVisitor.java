@@ -169,7 +169,10 @@ public abstract class ResourceVisitor {
 		if (isWs) {
 			Resource res = new Resource();
 			IDocInfo documentation = m.getBasicDocInfo();
-			res.setDescription(documentation.getDocumentation());
+			String text = documentation.getDocumentation();
+			if (!"".equals(text)) { //$NON-NLS-1$
+				res.setDescription(text);
+			}
 			String returnName = null;
 			String parameterName = null;
 
@@ -213,7 +216,6 @@ public abstract class ResourceVisitor {
 				}
 			}
 			spec.addResource(res);
-
 		}
 	}
 
@@ -230,8 +232,11 @@ public abstract class ResourceVisitor {
 				String type = pm.getType();
 				QueryParameter value2 = new QueryParameter();
 				proceedType(type, value2, pm);
-				value2.setDescription(documentation.getDocumentation(pm
-						.getName()));
+				String text = documentation.getDocumentation(pm
+						.getName());
+				if (!"".equals(text)) { //$NON-NLS-1$
+					value2.setDescription(text);
+				}
 				value.getQueryParameters().put(annotationValue, value2);
 			}
 		}
@@ -240,8 +245,11 @@ public abstract class ResourceVisitor {
 				String annotationValue = pm.getAnnotationValue(HEADER_PARAM);
 				Header value2 = new Header();
 				proceedType(pm.getType(), value2, pm);
-				value2.setDescription(documentation.getDocumentation(pm
-						.getName()));
+				String text = documentation.getDocumentation(pm
+						.getName());
+				if (!"".equals(text)) { //$NON-NLS-1$
+					value2.setDescription(text);
+				}
 				value.getHeaders().put(annotationValue, value2);
 			}
 		}
@@ -249,8 +257,11 @@ public abstract class ResourceVisitor {
 			if (pm.hasAnnotation(PATH_PARAM)) {
 				String annotationValue = pm.getAnnotationValue(PATH_PARAM);
 				UriParameter value2 = new UriParameter();
-				value2.setDescription(documentation.getDocumentation(pm
-						.getName()));
+				String text = documentation.getDocumentation(pm
+						.getName());
+				if (!"".equals(text)) { //$NON-NLS-1$
+					value2.setDescription(text);
+				}
 				proceedType(pm.getType(), value2, pm);
 				res.getUriParameters().put(annotationValue, value2);
 			}
@@ -283,8 +294,11 @@ public abstract class ResourceVisitor {
 							String annotationValue = pm
 									.getAnnotationValue(FORM_PARAM);
 							FormParameter vl = new FormParameter();
-							vl.setDescription(documentation.getDocumentation(pm
-									.getName()));
+							String text = documentation.getDocumentation(pm
+									.getName());
+							if (!"".equals(text)) { //$NON-NLS-1$
+								vl.setDescription(text);
+							}
 							proceedType(pm.getType(), vl, pm);
 							ArrayList<FormParameter> arrayList = new ArrayList<FormParameter>();
 							arrayList.add(vl);
@@ -305,7 +319,10 @@ public abstract class ResourceVisitor {
 		}
 		if (producesValue != null) {
 			Response value2 = new Response();
-			value2.setDescription(documentation.getReturnInfo());
+			String text = documentation.getReturnInfo();
+			if (!"".equals(text)) { //$NON-NLS-1$
+				value2.setDescription(text);
+			}
 			for (String s : producesValue) {
 				s = sanitizeMediaType(s);
 				MimeType mimeType = new MimeType();
@@ -330,7 +347,10 @@ public abstract class ResourceVisitor {
 			value.getResponses().put("200", value2); //$NON-NLS-1$
 		} else {
 			Response value2 = new Response();
-			value2.setDescription(documentation.getReturnInfo());
+			String text = documentation.getReturnInfo();
+			if (!"".equals(text)) { //$NON-NLS-1$
+				value2.setDescription(text);
+			}
 			value.getResponses().put("200", value2); //$NON-NLS-1$
 		}
 	}

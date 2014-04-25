@@ -24,10 +24,21 @@ public class RAMLModelHelper {
 		return coreRaml.getMediaType();
 	}
 	
-	public void addResource(Resource res){
+	public void addResource(Resource res) {
 		cleanupUrl(res);
+		String relativeUri = res.getRelativeUri();
+		int c = 0;
+		for (int a = 0; a < relativeUri.length(); a++) {
+			if (relativeUri.charAt(a) == '/') {
+				c++;
+			}
+		}
 		Map<String, Resource> resources = getCoreRaml().getResources();
-		if(res.getRelativeUri().length()==0&&res.getActions().isEmpty()){
+		if (c == 1) {
+			resources.put(relativeUri, res);
+			return;
+		}
+		if (res.getRelativeUri().length() == 0 && res.getActions().isEmpty()) {
 			return;
 		}
 		placeResource(resources, res);

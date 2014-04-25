@@ -2,6 +2,8 @@ package com.mulesoft.jaxrs.raml.generator.popup.actions;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,10 +30,23 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.raml.emitter.RamlEmitterV2;
+import org.raml.model.Raml2;
+import org.raml.parser.loader.FileResourceLoader;
+import org.raml.parser.loader.ResourceLoader;
+import org.raml.parser.tagresolver.IncludeResolver;
+import org.raml.parser.tagresolver.TagResolver;
+import org.raml.parser.visitor.PreservingTemplatesBuilder;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.jdt.JDTType;
@@ -57,34 +72,45 @@ public class GenerateRAML implements IObjectActionDelegate {
 
 	}
 
-	HashSet<IType>types=new HashSet<IType>();
+	HashSet<IType> types = new HashSet<IType>();
+
+	public Raml2 build(InputStream contents, ResourceLoader resourceLoader) {
+		PreservingTemplatesBuilder preservingTemplatesBuilder = new PreservingTemplatesBuilder(
+				resourceLoader, new TagResolver[] { new IncludeResolver() });
+		Raml2 build2 = (Raml2) preservingTemplatesBuilder.build(contents);
+		return build2;
+	}
+
 	/**
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
 		types.clear();
-		boolean cpInited=false;	
-		IProject project=null;
+		boolean cpInited = false;
+		IProject project = null;
+		boolean doSingle = isSingle;
 		URLClassLoader classLoader = null;
 		try {
 			for (Object q : selectionObject) {
-				if (!cpInited)
-				{
-					IJavaElement el=(IJavaElement) q;
+				if (!cpInited) {
+					IJavaElement el = (IJavaElement) q;
 					IResource resource = el.getResource();
-					if( project!=null&&!project.equals(resource.getProject())){
-						MessageDialog.openInformation(shell, "Multiple Projects are not supported now","Multiple Projects are not supported now");
+					if (project != null
+							&& !project.equals(resource.getProject())) {
+						MessageDialog.openInformation(shell,
+								"Multiple Projects are not supported now",
+								"Multiple Projects are not supported now");
 						return;
 					}
 					project = resource.getProject();
-					Collection<String> constructProjectClassPath = new ClassPathCollector().constructProjectClassPath(project, true);
-					URL[] urls=new URL[constructProjectClassPath.size()];
-					int a=0;
-					for (String s:constructProjectClassPath)
-					{
-						urls[a++]=new File(s).toURL();
-					}		
-					
+					Collection<String> constructProjectClassPath = new ClassPathCollector()
+							.constructProjectClassPath(project, true);
+					URL[] urls = new URL[constructProjectClassPath.size()];
+					int a = 0;
+					for (String s : constructProjectClassPath) {
+						urls[a++] = new File(s).toURL();
+					}
+
 					classLoader = new URLClassLoader(urls);
 					cpInited = true;
 				}
@@ -98,71 +124,104 @@ public class GenerateRAML implements IObjectActionDelegate {
 			return;
 		}
 		File outputFile = file.getLocation().toFile();
+		File actualFile = outputFile;
+		if (doSingle) {
+			File createTempFile;
+			try {
+				createTempFile = File.createTempFile("temp", "raml");
+				outputFile = createTempFile;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			// createTempFile.getParentFile();
+		}
+
 		visitor = new JDTResourceVisitorFactory(outputFile, classLoader)
 				.createResourceVisitor();
 		for (Object q : selectionObject) {
-		try{
-			if (q instanceof IType){
-				visitType((IType) q);
+			try {
+				if (q instanceof IType) {
+					visitType((IType) q);
+				}
+				if (q instanceof IPackageFragment) {
+					visitPackage((IPackageFragment) q);
+				}
+				if (q instanceof IPackageFragmentRoot) {
+					visitPackageFragmentRoot((IPackageFragmentRoot) q);
+				}
+				if (q instanceof IJavaProject) {
+					visitProject((IJavaProject) q);
+				}
+				if (q instanceof ICompilationUnit) {
+					visitUnit((ICompilationUnit) q);
+				}
+			} catch (Exception e) {
+				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
 			}
-			if (q instanceof IPackageFragment){
-				visitPackage((IPackageFragment) q);
-			}
-			if (q instanceof IPackageFragmentRoot){
-				visitPackageFragmentRoot((IPackageFragmentRoot) q);
-			}
-			if (q instanceof IJavaProject){
-				visitProject((IJavaProject) q);
-			}
-			if (q instanceof ICompilationUnit) {
-				visitUnit((ICompilationUnit) q);
-			}
-		}catch (Exception e) {
-			MessageDialog.openError(shell,e.getMessage(),e.getMessage());
 		}
-	}
-		if (project!=null){
+		if (project != null) {
+			if (doSingle) {
+				String raml = visitor.getRaml();
+				Raml2 build = build(new ByteArrayInputStream(raml.getBytes()),
+						new FileResourceLoader(outputFile.getParent()));
+				RamlEmitterV2 emmitter = new RamlEmitterV2();
+				emmitter.setSingle(true);
+				String dump = emmitter.dump(build);
+				try {
+					save(dump, file);
+				} catch (Exception e) {
+					MessageDialog.openError(shell, e.getMessage(),
+							e.getMessage());
+				}
+				return;
+			}
 			saveResult(visitor, file);
 			try {
-			    project.refreshLocal(IProject.DEPTH_INFINITE, new NullProgressMonitor());
-			   } catch (CoreException e) {
-				   MessageDialog.openError(shell, e.getMessage(),e.getMessage());
-			   }
+				project.refreshLocal(IProject.DEPTH_INFINITE,
+						new NullProgressMonitor());
+			} catch (CoreException e) {
+				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
+			}
 		}
-		
+
 	}
 
 	private void visitType(IType q) {
-		if (!types.add(q)){
+		if (!types.add(q)) {
 			return;
 		}
 		visitor.visit(new JDTType(q));
 	}
+
 	private void visitUnit(ICompilationUnit q) throws JavaModelException {
-		for (IType t:q.getAllTypes())
-		{
+		for (IType t : q.getAllTypes()) {
 			visitType(t);
 		}
 	}
+
 	private void visitPackage(IPackageFragment q) throws JavaModelException {
 		ICompilationUnit[] compilationUnits = q.getCompilationUnits();
-		for (ICompilationUnit unit:compilationUnits){
+		for (ICompilationUnit unit : compilationUnits) {
 			visitUnit(unit);
 		}
 	}
-	private void visitPackageFragmentRoot(IPackageFragmentRoot pr) throws JavaModelException {
-		if (pr.getKind()==IPackageFragmentRoot.K_SOURCE){
+
+	private void visitPackageFragmentRoot(IPackageFragmentRoot pr)
+			throws JavaModelException {
+		if (pr.getKind() == IPackageFragmentRoot.K_SOURCE) {
 			IJavaElement[] children = pr.getChildren();
-			for (IJavaElement z:children){
-				if (z instanceof IPackageFragment){
+			for (IJavaElement z : children) {
+				if (z instanceof IPackageFragment) {
 					visitPackage((IPackageFragment) z);
 				}
 			}
 		}
 	}
+
 	private void visitProject(IJavaProject q) throws JavaModelException {
-		IPackageFragmentRoot[] packageFragmentRoots = q.getPackageFragmentRoots();
-		for (IPackageFragmentRoot pr:packageFragmentRoots){
+		IPackageFragmentRoot[] packageFragmentRoots = q
+				.getPackageFragmentRoots();
+		for (IPackageFragmentRoot pr : packageFragmentRoots) {
 			visitPackageFragmentRoot(pr);
 		}
 	}
@@ -178,10 +237,30 @@ public class GenerateRAML implements IObjectActionDelegate {
 			MessageDialog.openError(shell, "Error", e.getMessage());
 		}
 	}
-	
-	private IFile getNewRAMLFile(IProject project){
+	private boolean isSingle=false;
+
+	private IFile getNewRAMLFile(IProject project) {
 		InputDialog inputDialog = new InputDialog(shell, "Save RAML to",
-				"Please type file name for you raml file", "api.raml", null);
+				"Please type file name for you raml file", "api.raml", null) {
+
+			@Override
+			protected Control createDialogArea(Composite parent) {
+				Composite createDialogArea = (Composite) super.createDialogArea(parent);
+				final Button bs = new Button(createDialogArea, SWT.CHECK);
+				bs.setText("Inline schemas and example in single raml file");
+				bs.setSelection(isSingle);
+				bs.addSelectionListener(new SelectionAdapter() {
+					
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						isSingle=bs.getSelection();
+					}
+				});
+				return createDialogArea;
+			}
+
+		};
 		int open = inputDialog.open();
 		if (open == Dialog.OK) {
 			return project.getFile(inputDialog.getValue());

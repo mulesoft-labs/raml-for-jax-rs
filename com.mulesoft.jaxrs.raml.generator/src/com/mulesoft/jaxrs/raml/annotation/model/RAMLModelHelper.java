@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
-
 import org.raml.model.Protocol;
 import org.raml.model.Raml2;
 import org.raml.model.Resource;
 import org.raml.model.parameter.UriParameter;
+
 
 
 public class RAMLModelHelper {
@@ -23,6 +23,8 @@ public class RAMLModelHelper {
 	public String getMediaType() {
 		return coreRaml.getMediaType();
 	}
+	
+	
 	
 	public void addResource(Resource res) {
 		cleanupUrl(res);

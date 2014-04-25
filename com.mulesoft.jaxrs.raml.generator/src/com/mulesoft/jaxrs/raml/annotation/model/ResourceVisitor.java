@@ -129,6 +129,8 @@ public abstract class ResourceVisitor {
 	class StringHolder {
 		String content;
 	}
+	
+	
 
 	public String getRaml() {
 		RamlEmitterV2 emmitter = new RamlEmitterV2();

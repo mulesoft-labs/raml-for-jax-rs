@@ -9,6 +9,7 @@ import java.util.HashSet;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
@@ -27,6 +28,12 @@ import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
 public abstract class ResourceVisitor {
+
+	protected static final String XML_FILE_EXT = ".xml";
+
+	private static final String JSON_FILE_EXT = ".json";
+
+	private static final String EXAMPLES_FOLDER = "examples/";
 
 	private static final String JSON = "json";
 
@@ -81,8 +88,6 @@ public abstract class ResourceVisitor {
 
 	private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
 
-	protected final IResourceVisitorFactory factory;
-
 	protected RAMLModelHelper spec = new RAMLModelHelper();
 
 	protected String[] classConsumes;
@@ -92,13 +97,13 @@ public abstract class ResourceVisitor {
 
 	private String basePath;
 
-	private final File outputFile;
+	protected final File outputFile;
 
-	protected ClassLoader classLoader;
+	protected final ClassLoader classLoader;
 
-	public ResourceVisitor(IResourceVisitorFactory factory, File outputFile) {
-		this.factory = factory;
+	public ResourceVisitor(File outputFile, ClassLoader classLoader) {
 		this.outputFile = outputFile;
+		this.classLoader = classLoader;
 	}
 
 	public void visit(ITypeModel t) {
@@ -187,8 +192,7 @@ public abstract class ResourceVisitor {
 				}
 				if (hasPath) {
 					if (consumedTypes.add(returnedType)) {
-						ResourceVisitor resourceVisitor = factory
-								.createResourceVisitor();
+						ResourceVisitor resourceVisitor = createResourceVisitor();
 						resourceVisitor.consumedTypes
 								.addAll(this.consumedTypes);
 						resourceVisitor.basePath = annotationValue;
@@ -220,6 +224,8 @@ public abstract class ResourceVisitor {
 			spec.addResource(res);
 		}
 	}
+
+	protected abstract ResourceVisitor createResourceVisitor();
 
 	private void addMethod(ActionType q, Resource res, IMethodModel m,
 			IDocInfo documentation, String returnName, String parameterName) {
@@ -280,18 +286,19 @@ public abstract class ResourceVisitor {
 				if (s.contains(XML)) {
 					bodyType.setSchema(parameterName);
 					if (parameterName!=null){
-					bodyType.setExample("examples/" + parameterName + ".xml");
-					bodyType.setExampleOrigin("examples/" + parameterName
-							+ ".xml");
+						bodyType.setExample(EXAMPLES_FOLDER + parameterName + XML_FILE_EXT);
+						bodyType.setExampleOrigin(EXAMPLES_FOLDER + parameterName
+								+ XML_FILE_EXT);
 					}
 				}
 				if (s.contains(JSON)) {
 					bodyType.setSchema(parameterName + "-jsonshema");
 					if (parameterName!=null){
-					bodyType.setExample("examples/" + parameterName + ".json");
-					bodyType.setExampleOrigin("examples/" + parameterName
-							+ ".json");
+						bodyType.setExample(EXAMPLES_FOLDER + returnName + JSON_FILE_EXT);
+						bodyType.setExampleOrigin(EXAMPLES_FOLDER + returnName
+							+ JSON_FILE_EXT);
 					}
+
 				}
 				bodyType.setType(s);
 				if (s.contains(FORM)) {
@@ -336,17 +343,17 @@ public abstract class ResourceVisitor {
 					if (s.contains(XML)) {
 						mimeType.setSchema(returnName);
 						if (returnName!=null){
-						mimeType.setExample("examples/" + returnName + ".xml");
-						mimeType.setExampleOrigin("examples/" + returnName
-								+ ".xml");
+							mimeType.setExample(EXAMPLES_FOLDER + returnName + XML_FILE_EXT);
+							mimeType.setExampleOrigin(EXAMPLES_FOLDER + returnName
+								+ XML_FILE_EXT);
 						}
 					}
 					if (s.contains(JSON)) {
 						mimeType.setSchema(returnName + "-jsonshema");
 						if (returnName!=null){
-						mimeType.setExample("examples/" + returnName + ".json");
-						mimeType.setExampleOrigin("examples/" + returnName
-								+ ".json");
+							mimeType.setExample(EXAMPLES_FOLDER + returnName + JSON_FILE_EXT);
+							mimeType.setExampleOrigin(EXAMPLES_FOLDER + returnName
+								+ JSON_FILE_EXT);
 						}
 					}
 				}
@@ -458,10 +465,7 @@ public abstract class ResourceVisitor {
 	}
 
 	protected void generateExamle(File file, String content) {
-
+		
 	}
-
-	public void setClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
-	}
+	
 }

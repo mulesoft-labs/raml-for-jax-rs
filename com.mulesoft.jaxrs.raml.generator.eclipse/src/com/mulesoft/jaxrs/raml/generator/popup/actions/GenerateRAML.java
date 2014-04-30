@@ -137,8 +137,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			// createTempFile.getParentFile();
 		}
 
-		visitor = new JDTResourceVisitorFactory(outputFile, classLoader)
-				.createResourceVisitor();
+		visitor = new JDTResourceVisitor(outputFile, classLoader);
 		for (Object q : selectionObject) {
 			try {
 				if (q instanceof IType) {

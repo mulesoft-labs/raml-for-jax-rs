@@ -5,7 +5,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 public class RuntimeRamlBuilder {
 
 	
-	protected ResourceVisitor visitor=new RuntimeResourceVisitorFactory(null,null).createResourceVisitor();
+	protected ResourceVisitor visitor=new RuntimeResourceVisitor(null, null);
 	
 	public void addClass(Class<?>clazz){
 		visitor.visit(new ReflectionType(clazz));

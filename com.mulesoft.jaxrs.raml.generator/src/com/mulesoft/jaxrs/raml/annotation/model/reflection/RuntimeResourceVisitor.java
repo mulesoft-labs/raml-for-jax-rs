@@ -3,15 +3,14 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.io.File;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorFactory;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;;
 
 public class RuntimeResourceVisitor extends ResourceVisitor {
 
 
-	public RuntimeResourceVisitor(IResourceVisitorFactory factory, File outputFile) {
-		super(factory, outputFile);
+	public RuntimeResourceVisitor(File outputFile, ClassLoader classLoader) {
+		super(outputFile, classLoader);
 	}
 
 	
@@ -28,6 +27,12 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 				e.printStackTrace();
 			}
 		}
+	}
+
+
+	@Override
+	protected ResourceVisitor createResourceVisitor() {
+		return new RuntimeResourceVisitor(outputFile, classLoader);
 	}
 
 }

@@ -7,5 +7,4 @@ Bundle-Vendor: MULESOFT
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: rampl-plugin
 Export-Package: com.mulesoft.jaxrs.raml.annotation.model,
- com.mulesoft.jaxrs.raml.annotation.model.apt,
  com.mulesoft.jaxrs.raml.annotation.model.reflection

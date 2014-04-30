@@ -1,0 +1,65 @@
+<INSTANCE-ROOT xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/1999/XMLSchema-instance'>
+<simpleType />
+<restriction />
+<list />
+<union />
+<minExclusive />
+<minInclusive />
+<maxExclusive />
+<maxInclusive />
+<totalDigits />
+<fractionDigits />
+<length />
+<minLength />
+<maxLength />
+<enumeration />
+<whiteSpace />
+<pattern />
+<Array />
+<Struct />
+<duration>P0D</duration>
+<dateTime>2006-01-01T00:00:00</dateTime>
+<time>00:00:00</time>
+<date>2006-01-01</date>
+<gYearMonth>2006-01</gYearMonth>
+<gYear>2006</gYear>
+<gMonthDay>01-01</gMonthDay>
+<gDay>01</gDay>
+<gMonth>01</gMonth>
+<boolean>false</boolean>
+<base64Binary />
+<hexBinary />
+<float>0</float>
+<double>0</double>
+<anyURI>http://</anyURI>
+<QName />
+<string />
+<normalizedString />
+<token />
+<language>de</language>
+<Name />
+<NMTOKEN />
+<NCName />
+<NMTOKENS>x x</NMTOKENS>
+<ID />
+<IDREF />
+<ENTITY />
+<IDREFS>x x</IDREFS>
+<ENTITIES>x x</ENTITIES>
+<decimal>0</decimal>
+<integer>0</integer>
+<nonPositiveInteger>0</nonPositiveInteger>
+<negativeInteger>-1</negativeInteger>
+<long>0</long>
+<int>0</int>
+<short>0</short>
+<byte>0</byte>
+<nonNegativeInteger>0</nonNegativeInteger>
+<unsignedLong>0</unsignedLong>
+<unsignedInt>0</unsignedInt>
+<unsignedShort>0</unsignedShort>
+<unsignedByte>0</unsignedByte>
+<positiveInteger>1</positiveInteger>
+<anyType />
+<country name='' />
+</INSTANCE-ROOT>

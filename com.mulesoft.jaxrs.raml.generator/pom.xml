@@ -18,17 +18,17 @@
     </plugins>
   </build>
   <dependencies>
-  	<dependency>
+  	 <dependency>
   		<groupId>org.raml</groupId>
   		<artifactId>raml-parser-ppa</artifactId>
   		<version>0.9-SNAPSHOT</version>
-  	</dependency>
+  	 </dependency>
   	 <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
             <scope>test</scope>
-        </dependency>
+     </dependency>
   	 <dependency>
   	 	<groupId>javax.ws.rs</groupId>
   	 	<artifactId>jsr311-api</artifactId>

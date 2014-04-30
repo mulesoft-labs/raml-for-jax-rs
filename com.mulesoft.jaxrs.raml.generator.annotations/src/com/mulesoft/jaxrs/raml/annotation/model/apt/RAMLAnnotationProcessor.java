@@ -96,12 +96,6 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 		if (result.size() == 0) {
 			return false;
 		}
-		ResourceVisitor visitor = new APTResourceVisitorFactory(processingEnv).createResourceVisitor();
-		for (TypeElement typeElement : result) {
-			APTType aptType = new APTType(typeElement);
-			visitor.visit(aptType);
-		}
-		String raml = visitor.getRaml();
 		if (outputPath != null) {
 			String defaultFileName = DEFAULT_GENERATED_NAME;
 			if (result.size() == 1) {
@@ -122,6 +116,13 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 				outputFile = new File(outputPath,defaultFileName);
 			}
 			PrintWriter writer = null;
+			ResourceVisitor visitor = new APTResourceVisitor(outputFile, processingEnv, null);
+			for (TypeElement typeElement : result) {
+				APTType aptType = new APTType(typeElement);
+				visitor.visit(aptType);
+			}
+			String raml = visitor.getRaml();
+			System.out.println(raml);
 			try {
 				FileWriter fileWriter = new FileWriter(outputFile);
 				writer = new PrintWriter(fileWriter);
@@ -135,7 +136,6 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 			}
 		}
 		
-		System.out.println(raml);
 		return true;
 	}
 
@@ -148,6 +148,9 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 		this.processingEnv = environment;
 		super.init(environment);
 		outputPath = environment.getOptions().get(RAMLPATH_OPTION);
+		if (outputPath == null) {
+			System.out.println("Output path should be specified. Use 'ramlpath' processor option");
+		}
 	}
 
 }

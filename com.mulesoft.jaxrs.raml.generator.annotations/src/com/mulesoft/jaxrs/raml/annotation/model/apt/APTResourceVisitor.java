@@ -57,18 +57,13 @@ public class APTResourceVisitor extends ResourceVisitor {
 		} else if (!name.endsWith(XML_FILE_EXT)) {
 			name = name + XML_FILE_EXT;
 		}
-		
-//		DocumentProcessor documentProcessor = new DocumentProcessor("file:///"
-//				+ file.getAbsolutePath());
-//		documentProcessor.setRootName("Root");
-//		documentProcessor
-//				.setRootNamespace("http://www.w3.org/2001/XMLSchema");
-//		documentProcessor.setUsePSVI(false);
-//		documentProcessor.createDocument();
-//		Document document = documentProcessor.getDocument();
-//		log.info(document.getClass().getName());
-//		System.out.println(documentToString(document, "UTF-8"));
-		new XSDUtil().instantiate(file.getAbsolutePath(),null,new File(file.getParent(),name).getAbsolutePath());
+
+		File parent = file.getParentFile();
+		if (parent.getName().endsWith("schemas")) { //$NON-NLS-1$
+			parent = new File(parent.getParent(),"examples"); //$NON-NLS-1$
+			parent.mkdirs();
+		}
+		new XSDUtil().instantiate(file.getAbsolutePath(),null,new File(parent,name).getAbsolutePath());
 	}
 	
 }

@@ -1,4 +1,4 @@
-package com.mulesoft.jaxrs.raml.annotation.model.apt;
+/*package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -150,4 +150,4 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 		outputPath = environment.getOptions().get(RAMLPATH_OPTION);
 	}
 
-}
+}*/

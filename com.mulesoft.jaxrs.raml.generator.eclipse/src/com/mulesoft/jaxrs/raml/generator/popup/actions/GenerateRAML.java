@@ -88,7 +88,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 		types.clear();
 		boolean cpInited = false;
 		IProject project = null;
-		boolean doSingle = isSingle;
+		
 		URLClassLoader classLoader = null;
 		try {
 			for (Object q : selectionObject) {
@@ -120,6 +120,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			e1.printStackTrace();
 		}
 		IFile file = getNewRAMLFile(project);
+		boolean doSingle = isSingle;
 		if (file == null) {
 			return;
 		}

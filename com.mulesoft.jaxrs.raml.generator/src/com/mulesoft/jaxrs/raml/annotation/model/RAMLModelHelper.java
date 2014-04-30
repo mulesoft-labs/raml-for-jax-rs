@@ -37,13 +37,42 @@ public class RAMLModelHelper {
 		}
 		Map<String, Resource> resources = getCoreRaml().getResources();
 		if (c == 1) {
-			resources.put(relativeUri, res);
+			Resource put = resources.put(relativeUri, res);
+			if (put!=null){
+				merge(res, put);
+			}
+			if (relativeUri.length()>0){
+				Path ps = new Path(relativeUri);
+				//lets search for sub resources to gather
+				for (String s:new HashSet<String>(resources.keySet())){
+					Path anotherPath = new Path(s);
+					if (ps.isPrefixOf(anotherPath)&&!ps.equals(anotherPath)){
+						Resource remove = resources.remove(s);
+						Path removeFirstSegments = anotherPath.removeFirstSegments(ps.segmentCount());
+						String portableString = removeFirstSegments.toPortableString();
+						String doCleanup = doCleanup("/"+portableString);
+						res.getResources().put(doCleanup, remove);						
+						remove.setRelativeUri(doCleanup);
+					}
+				}
+			}
 			return;
 		}
 		if (res.getRelativeUri().length() == 0 && res.getActions().isEmpty()) {
 			return;
 		}
 		placeResource(resources, res);
+	}
+	private static void merge(Resource res, Resource put) {
+		res.getActions().putAll(put.getActions());
+		for (String s:put.getResources().keySet()){
+			if (res.getResources().containsKey(s)){
+				merge(res.getResources().get(s), put.getResources().get(s));
+			}
+			else{
+				res.getResources().put(s, put.getResources().get(s));
+			}
+		}
 	}
 
 	private void cleanupUrl(Resource res) {
@@ -83,7 +112,13 @@ public class RAMLModelHelper {
 		boolean restructure = false;
 		for (String s : new HashSet<String>(resources.keySet())) {
 			Path rp = new Path(s);
-			if (path.isPrefixOf(rp)&&!path.equals(rp)) {
+			if (path.isPrefixOf(rp)) {
+				if (path.equals(rp))
+				{
+					Resource resource = resources.get(s);
+					resource.getActions().putAll(createResource.getActions());
+					return;
+				}
 				restructure = true;
 				Resource remove = resources.remove(s);
 				Path removeFirstSegments = rp.removeFirstSegments(path
@@ -137,8 +172,7 @@ public class RAMLModelHelper {
 		}				
 		Resource put = resources.put(relativeUri, createResource);
 		if (put!=null){
-			createResource.getActions().putAll(put.getActions());
-			createResource.getResources().putAll(put.getResources());
+			merge(createResource, put);
 		}
 	}
 

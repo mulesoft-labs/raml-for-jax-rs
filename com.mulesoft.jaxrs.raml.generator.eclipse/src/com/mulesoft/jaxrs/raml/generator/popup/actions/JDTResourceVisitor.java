@@ -3,7 +3,8 @@ package com.mulesoft.jaxrs.raml.generator.popup.actions;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
-import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorFactory;
+
+import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
@@ -12,8 +13,8 @@ import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 public class JDTResourceVisitor extends RuntimeResourceVisitor {
 
 	
-	public JDTResourceVisitor(IResourceVisitorFactory factory, File outputFile) {
-		super(factory, outputFile);
+	public JDTResourceVisitor(File outputFile, ClassLoader classLoader) {
+		super(outputFile, classLoader);
 	}
 
 	protected void generateExamle(File file, String content) {
@@ -53,5 +54,10 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
+	}
+	
+	@Override
+	protected ResourceVisitor createResourceVisitor() {
+		return new JDTResourceVisitor(outputFile, classLoader);
 	}
 }

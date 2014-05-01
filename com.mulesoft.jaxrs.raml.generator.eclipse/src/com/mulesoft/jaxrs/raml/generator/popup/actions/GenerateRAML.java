@@ -205,7 +205,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 		}
 		IFile file = container.getFile(new Path(q.getElementName()+".raml"));
 		if (separateFiles){
-			visitor = new JDTResourceVisitorFactory(file.getLocation().toFile(), classLoader)
+			visitor = new JDTResourceVisitor(file.getLocation().toFile(), classLoader)
 			.createResourceVisitor();
 			visitor.clear();
 		}

@@ -9,3 +9,6 @@ Require-Bundle: rampl-plugin
 Export-Package: com.mulesoft.jaxrs.raml.annotation.model,
  com.mulesoft.jaxrs.raml.annotation.model.reflection,
  com.mulesoft.jaxrs.raml.jsonschema
+Import-Package: org.apache.commons.lang
+Bundle-ClassPath: lib/jettison-1.3.3.jar,
+ .

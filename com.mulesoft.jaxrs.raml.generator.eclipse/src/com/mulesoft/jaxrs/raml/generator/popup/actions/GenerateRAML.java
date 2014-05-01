@@ -292,7 +292,11 @@ public class GenerateRAML implements IObjectActionDelegate {
 			protected Control createDialogArea(Composite parent) {
 				Composite createDialogArea = (Composite) super.createDialogArea(parent);
 				final Control[] children = createDialogArea.getChildren();
-				
+				if (separateFiles){
+					for (Control c:children){
+						c.setEnabled(false);
+					}
+					}
 				Composite t=new Composite(createDialogArea, SWT.NONE);
 				GridLayout gridLayout = new GridLayout(3,false);
 				gridLayout.marginHeight=0;
@@ -301,6 +305,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				l.setText("Folder:");
 				final Text ts=new Text(t, SWT.BORDER);
 				ts.setEditable(false);
+				
 				ts.setText(container.getFullPath().toPortableString());
 				Button browse=new Button(t,SWT.PUSH);
 				browse.setText("...");

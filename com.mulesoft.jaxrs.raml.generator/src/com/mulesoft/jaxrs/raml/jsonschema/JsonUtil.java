@@ -3,7 +3,6 @@ package com.mulesoft.jaxrs.raml.jsonschema;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,13 +14,6 @@ import org.codehaus.jettison.mapped.Configuration;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
 import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 import org.codehaus.jettison.mapped.SimpleConverter;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,9 +25,6 @@ import org.xml.sax.SAXException;
 
 
 public class JsonUtil {
-
-	private final static String JSON_EDITOR_PREFFIX = "json_";
-	private final static String JSON_EXT = ".json";
 
 	public static String convertToJSON(String xmlContent, boolean format) {
 		Document document = null;

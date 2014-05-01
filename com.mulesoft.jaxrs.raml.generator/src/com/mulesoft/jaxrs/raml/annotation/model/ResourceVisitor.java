@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.annotation.model;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +11,6 @@ import java.util.HashSet;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
-import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
@@ -30,17 +30,25 @@ import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
+import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
+import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
+
 public abstract class ResourceVisitor {
 
-	protected static final String XML_FILE_EXT = ".xml";
+	protected static final String XML_FILE_EXT = ".xml"; //$NON-NLS-1$
 
-	private static final String JSON_FILE_EXT = ".json";
+	private static final String JSON_FILE_EXT = ".json"; //$NON-NLS-1$
+	
+	protected static final String SCHEMAS_FOLDER = "schemas"; //$NON-NLS-1$
 
-	private static final String EXAMPLES_FOLDER = "examples/";
+	protected static final String EXAMPLES_FOLDER = "examples"; //$NON-NLS-1$
+	
+	protected static final String EXAMPLES_PREFFIX = EXAMPLES_FOLDER + "/"; //$NON-NLS-1$
 
-	private static final String JSON = "json";
+	private static final String JSON = "json"; //$NON-NLS-1$
 
-	private static final String XML = "xml";
+	private static final String XML = "xml"; //$NON-NLS-1$
 
 	public class CustomSchemaOutputResolver extends SchemaOutputResolver {
 
@@ -54,7 +62,7 @@ public abstract class ResourceVisitor {
 		public Result createOutput(String namespaceURI, String suggestedFileName)
 				throws IOException {
 			if (outputFile != null) {
-				File dir = new File(outputFile.getParent(), "schemas"); //$NON-NLS-1$
+				File dir = new File(outputFile.getParent(), SCHEMAS_FOLDER); //$NON-NLS-1$
 				dir.mkdirs();
 				file = new File(dir, fileName);
 			} else {
@@ -293,16 +301,16 @@ public abstract class ResourceVisitor {
 				if (s.contains(XML)) {
 					bodyType.setSchema(parameterName);
 					if (parameterName!=null){
-						bodyType.setExample(EXAMPLES_FOLDER + parameterName + XML_FILE_EXT);
-						bodyType.setExampleOrigin(EXAMPLES_FOLDER + parameterName
+						bodyType.setExample(EXAMPLES_PREFFIX + parameterName + XML_FILE_EXT);
+						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + parameterName
 								+ XML_FILE_EXT);
 					}
 				}
 				if (s.contains(JSON)) {
-					bodyType.setSchema(parameterName + "-jsonshema");
+					bodyType.setSchema(parameterName + "-jsonshema"); //$NON-NLS-1$
 					if (parameterName!=null){
-						bodyType.setExample(EXAMPLES_FOLDER + returnName + JSON_FILE_EXT);
-						bodyType.setExampleOrigin(EXAMPLES_FOLDER + returnName
+						bodyType.setExample(EXAMPLES_PREFFIX + returnName + JSON_FILE_EXT);
+						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
 							+ JSON_FILE_EXT);
 					}
 
@@ -350,16 +358,16 @@ public abstract class ResourceVisitor {
 					if (s.contains(XML)) {
 						mimeType.setSchema(returnName);
 						if (returnName!=null){
-							mimeType.setExample(EXAMPLES_FOLDER + returnName + XML_FILE_EXT);
-							mimeType.setExampleOrigin(EXAMPLES_FOLDER + returnName
+							mimeType.setExample(EXAMPLES_PREFFIX + returnName + XML_FILE_EXT);
+							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
 								+ XML_FILE_EXT);
 						}
 					}
 					if (s.contains(JSON)) {
-						mimeType.setSchema(returnName + "-jsonshema");
+						mimeType.setSchema(returnName + "-jsonshema"); //$NON-NLS-1$
 						if (returnName!=null){
-							mimeType.setExample(EXAMPLES_FOLDER + returnName + JSON_FILE_EXT);
-							mimeType.setExampleOrigin(EXAMPLES_FOLDER + returnName
+							mimeType.setExample(EXAMPLES_PREFFIX + returnName + JSON_FILE_EXT);
+							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
 								+ JSON_FILE_EXT);
 						}
 					}
@@ -477,12 +485,41 @@ public abstract class ResourceVisitor {
 	
 	public void clear() {
 		spec.coreRaml=new Raml2();
-		spec.coreRaml.setBaseUri("http://example.com");
-		spec.coreRaml.setTitle("Please type API title here");
+		spec.coreRaml.setBaseUri("http://example.com"); //$NON-NLS-1$
+		spec.coreRaml.setTitle("Please type API title here"); //$NON-NLS-1$
 		spec.coreRaml.setProtocols(Collections.singletonList(Protocol.HTTP));
 	}
 
 	public boolean isEmpty() {
 		return spec.coreRaml.getResources().isEmpty();
+	}
+
+	protected void doGenerateAndSave(File schemaFile, File parentDir, File examplesDir,
+			String dummyXml) {
+				String jsonText = JsonUtil.convertToJSON(dummyXml, true);
+				jsonText=JsonFormatter.format(jsonText);
+				String generatedSchema = new SchemaGenerator().generateSchema(jsonText);
+				generatedSchema=JsonFormatter.format(generatedSchema);
+				String fName = schemaFile.getName().replace(XML_FILE_EXT, "-jsonshema"); //$NON-NLS-1$
+				spec.getCoreRaml().addGlobalSchema(fName,generatedSchema, true,false);
+				String name = schemaFile.getName();
+				name=name.substring(0,name.lastIndexOf('.'));
+				File toSave=new File(examplesDir,name+XML_FILE_EXT);
+				writeString(dummyXml, toSave);
+				toSave=new File(examplesDir,name+JSON_FILE_EXT);
+				writeString(jsonText, toSave);
+				File shemas=new File(parentDir,SCHEMAS_FOLDER);
+				toSave=new File(shemas,fName+JSON_FILE_EXT);
+				writeString(generatedSchema, toSave);
+			}
+
+	private void writeString(String generateDummyXmlFor, File toSave) {
+		try {
+			FileOutputStream fileOutputStream = new FileOutputStream(toSave);
+			fileOutputStream.write(generateDummyXmlFor.getBytes("UTF-8")); //$NON-NLS-1$
+			fileOutputStream.close();
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 }

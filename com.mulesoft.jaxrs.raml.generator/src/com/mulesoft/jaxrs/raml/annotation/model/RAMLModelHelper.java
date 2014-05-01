@@ -46,7 +46,7 @@ public class RAMLModelHelper {
 				//lets search for sub resources to gather
 				for (String s:new HashSet<String>(resources.keySet())){
 					Path anotherPath = new Path(s);
-					if (ps.isPrefixOf(anotherPath)&&!ps.equals(anotherPath)){
+					if (ps.isPrefixOf(anotherPath)&&!ps.equals(anotherPath)&&ps.segmentCount() > 0){
 						Resource remove = resources.remove(s);
 						Path removeFirstSegments = anotherPath.removeFirstSegments(ps.segmentCount());
 						String portableString = removeFirstSegments.toPortableString();

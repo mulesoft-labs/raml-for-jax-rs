@@ -5,11 +5,7 @@ import java.io.File;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
-import javax.xml.namespace.QName;
-
 import org.dynvocation.lib.xsd4j.XSDUtil;
-import org.w3c.dom.Document;
-
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 
@@ -49,21 +45,15 @@ public class APTResourceVisitor extends ResourceVisitor {
 		return new APTResourceVisitor(outputFile, processingEnv, classLoader);
 	}
 	
-	protected void generateExamle(File file, String content) {
-		String name = file.getName();
-		int idx = name.lastIndexOf('.');
-		if (idx > 0) {
-			name = name.substring(0, idx) + XML_FILE_EXT;
-		} else if (!name.endsWith(XML_FILE_EXT)) {
-			name = name + XML_FILE_EXT;
-		}
+	protected void generateExamle(File schemaFile, String content) {
 
-		File parent = file.getParentFile();
-		if (parent.getName().endsWith("schemas")) { //$NON-NLS-1$
-			parent = new File(parent.getParent(),"examples"); //$NON-NLS-1$
-			parent.mkdirs();
+		File examplesDir = schemaFile.getParentFile();
+		if (examplesDir.getName().endsWith(SCHEMAS_FOLDER)) { 
+			examplesDir = new File(examplesDir.getParent(),EXAMPLES_FOLDER); 
+			examplesDir.mkdirs();
 		}
-		new XSDUtil().instantiate(file.getAbsolutePath(),null,new File(parent,name).getAbsolutePath());
+		String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
+		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);
 	}
 	
 }

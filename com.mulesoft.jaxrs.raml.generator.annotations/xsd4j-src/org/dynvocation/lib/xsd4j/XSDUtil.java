@@ -40,6 +40,19 @@ public class XSDUtil {
 
 		return ret;
 	}
+	
+	public String instantiateToString(String xsdfile, QName message) {
+		boolean ret;
+
+		ret = parser(xsdfile);
+
+		if (ret) {
+			String result = instantiator(this.testschema, this.namespaces, message);
+			return result;
+		}
+
+		return null;
+	}
 
 	public boolean parser(String xsdfile) {
 		XSDParser parser = new XSDParser();

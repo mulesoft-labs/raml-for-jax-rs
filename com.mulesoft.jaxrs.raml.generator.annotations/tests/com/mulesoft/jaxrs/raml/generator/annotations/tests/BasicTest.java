@@ -135,6 +135,26 @@ public class BasicTest extends TestCase{
 		Action action = resource.getAction(ActionType.POST);
 		TestCase.assertNotNull(action);
 	}
+	
+	public void test16() throws Exception {
+		JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+		final File f = new File(RAMLAnnotationProcessor.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+		String classPath = System.getProperty("java.class.path") + ";" + f.getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
+		final File parentDir = Files.createTempDir(); 
+		int rc = javac.run(System.in, System.out, System.err, "tests/com/mulesoft/jaxrs/raml/generator/annotations/tests/TestResource3.java", "-cp", classPath, "-processor", "com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor", "-XprintProcessorInfo", "-Aramlpath=" + parentDir.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+		TestCase.assertEquals(0,rc);
+		readRaml(new File(parentDir,"TestResource3.raml")); //$NON-NLS-1$
+		
+		File exampleFolder = new File(parentDir,"examples"); //$NON-NLS-1$
+		File example1 = new File(exampleFolder,"country.xml"); //$NON-NLS-1$
+		TestCase.assertTrue(example1.exists());
+		File example2 = new File(exampleFolder,"country.json"); //$NON-NLS-1$
+		TestCase.assertTrue(example2.exists());
+		
+		File schemaFolder = new File(parentDir,"schemas"); //$NON-NLS-1$
+		File schema1 = new File(schemaFolder,"country.xsd"); //$NON-NLS-1$
+		TestCase.assertTrue(schema1.exists());
+	}
 
 	protected Raml readRaml(final File file) throws IOException {
 		String raml = FileUtils.readFileToString(file);

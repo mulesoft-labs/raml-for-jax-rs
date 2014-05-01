@@ -158,19 +158,19 @@ public abstract class ResourceVisitor {
 		return holder.content;
 	}
 
-	private void visit(IMethodModel m, String annotationValue) {
+	private void visit(IMethodModel m, String path) {
 		boolean hasPath = m.hasAnnotation(PATH);
 		if (hasPath) {
-			String annotationValue2 = m.getAnnotationValue(PATH);
-			if (annotationValue.endsWith("/")) { //$NON-NLS-1$
-				if (annotationValue2.startsWith("/")) { //$NON-NLS-1$
-					annotationValue2 = annotationValue2.substring(1);
+			String localPath = m.getAnnotationValue(PATH);
+			if (path.endsWith("/")) { //$NON-NLS-1$
+				if (localPath.startsWith("/")) { //$NON-NLS-1$
+					localPath = localPath.substring(1);
 				}
 			}
 
-			annotationValue += annotationValue2;
+			path += localPath;
 		}
-
+		
 		boolean isWs = hasPath;
 		for (ActionType q : ActionType.values()) {
 			boolean hasAnnotation = m.hasAnnotation(q.name());
@@ -198,7 +198,7 @@ public abstract class ResourceVisitor {
 						ResourceVisitor resourceVisitor = createResourceVisitor();
 						resourceVisitor.consumedTypes
 								.addAll(this.consumedTypes);
-						resourceVisitor.basePath = annotationValue;
+						resourceVisitor.basePath = path;
 						resourceVisitor.spec = this.spec;
 						resourceVisitor.visit(returnedType);
 					}
@@ -211,11 +211,11 @@ public abstract class ResourceVisitor {
 					parameterName = bodyType.getName().toLowerCase();
 				}
 			}
-			if (annotationValue.endsWith("/")) { //$NON-NLS-1$
-				res.setRelativeUri(annotationValue.substring(0,
-						annotationValue.length() - 1));
+			if (path.endsWith("/")) { //$NON-NLS-1$
+				res.setRelativeUri(path.substring(0,
+						path.length() - 1));
 			} else {
-				res.setRelativeUri(annotationValue);
+				res.setRelativeUri(path);
 			}
 			for (ActionType q : ActionType.values()) {
 				boolean hasAnnotation = m.hasAnnotation(q.name());
@@ -227,6 +227,10 @@ public abstract class ResourceVisitor {
 			spec.addResource(res);
 		}
 	}
+
+	
+
+	
 
 	protected abstract ResourceVisitor createResourceVisitor();
 

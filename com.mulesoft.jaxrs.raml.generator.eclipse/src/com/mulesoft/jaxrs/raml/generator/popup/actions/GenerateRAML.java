@@ -12,11 +12,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -28,18 +32,23 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.raml.emitter.RamlEmitterV2;
 import org.raml.model.Raml2;
 import org.raml.parser.loader.FileResourceLoader;
@@ -89,7 +98,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 		boolean cpInited = false;
 		IProject project = null;
 		
-		URLClassLoader classLoader = null;
+		classLoader = null;
 		try {
 			for (Object q : selectionObject) {
 				if (!cpInited) {
@@ -161,7 +170,8 @@ public class GenerateRAML implements IObjectActionDelegate {
 			}
 		}
 		if (project != null) {
-			if (doSingle) {
+			if (!separateFiles){
+				if (doSingle) {
 				String raml = visitor.getRaml();
 				Raml2 build = build(new ByteArrayInputStream(raml.getBytes()),
 						new FileResourceLoader(outputFile.getParent()));
@@ -175,8 +185,11 @@ public class GenerateRAML implements IObjectActionDelegate {
 							e.getMessage());
 				}
 				return;
+				}
+				else{
+				saveResult(visitor, file);
+				}
 			}
-			saveResult(visitor, file);
 			try {
 				project.refreshLocal(IProject.DEPTH_INFINITE,
 						new NullProgressMonitor());
@@ -191,7 +204,34 @@ public class GenerateRAML implements IObjectActionDelegate {
 		if (!types.add(q)) {
 			return;
 		}
+		IFile file = container.getFile(new Path(q.getElementName()+".raml"));
+		if (separateFiles){
+			visitor = new JDTResourceVisitorFactory(file.getLocation().toFile(), classLoader)
+			.createResourceVisitor();
+			visitor.clear();
+		}
 		visitor.visit(new JDTType(q));
+		if (separateFiles&&!visitor.isEmpty()){
+			
+			if (isSingle) {
+				String raml = visitor.getRaml();
+				Raml2 build = build(new ByteArrayInputStream(raml.getBytes()),
+						new FileResourceLoader(container.getLocation().toFile()));
+				RamlEmitterV2 emmitter = new RamlEmitterV2();
+				emmitter.setSingle(true);
+				String dump = emmitter.dump(build);
+				try {
+					save(dump, file);
+				} catch (Exception e) {
+					MessageDialog.openError(shell, e.getMessage(),
+							e.getMessage());
+				}
+				return;
+			}
+			else{			
+			saveResult(visitor, file);
+			}
+		}
 	}
 
 	private void visitUnit(ICompilationUnit q) throws JavaModelException {
@@ -239,14 +279,50 @@ public class GenerateRAML implements IObjectActionDelegate {
 		}
 	}
 	private boolean isSingle=false;
+	private boolean separateFiles=false;
 
+	IContainer container;
+	private URLClassLoader classLoader;
+	
 	private IFile getNewRAMLFile(IProject project) {
-		InputDialog inputDialog = new InputDialog(shell, "Save RAML to",
+		container=project;
+		InputDialog inputDialog = new InputDialog(shell, "Generate RAML",
 				"Please type file name for you raml file", "api.raml", null) {
 
 			@Override
 			protected Control createDialogArea(Composite parent) {
 				Composite createDialogArea = (Composite) super.createDialogArea(parent);
+				final Control[] children = createDialogArea.getChildren();
+				
+				Composite t=new Composite(createDialogArea, SWT.NONE);
+				GridLayout gridLayout = new GridLayout(3,false);
+				gridLayout.marginHeight=0;
+				gridLayout.marginLeft=0;
+				Label l=new Label(t,SWT.NONE);
+				l.setText("Folder:");
+				final Text ts=new Text(t, SWT.BORDER);
+				ts.setEditable(false);
+				ts.setText(container.getFullPath().toPortableString());
+				Button browse=new Button(t,SWT.PUSH);
+				browse.setText("...");
+				browse.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						ContainerSelectionDialog dlg=new ContainerSelectionDialog(getShell(), 
+								ResourcesPlugin.getWorkspace().getRoot(), 
+								true, "Please select folder to store raml files");
+						int open = dlg.open();
+						if (open==Dialog.OK){
+							Object[] result = dlg.getResult();
+							ts.setText(result[0].toString());
+							IPath iPath = (IPath) result[0];
+							container=(IContainer) ResourcesPlugin.getWorkspace().getRoot().findMember(iPath);
+						}						
+					}
+				});
+				GridDataFactory.fillDefaults().grab(true, false).applyTo(ts);
+				GridDataFactory.fillDefaults().applyTo(t);
+				t.setLayout(gridLayout);
 				final Button bs = new Button(createDialogArea, SWT.CHECK);
 				bs.setText("Inline schemas and example in single raml file");
 				bs.setSelection(isSingle);
@@ -258,13 +334,31 @@ public class GenerateRAML implements IObjectActionDelegate {
 						isSingle=bs.getSelection();
 					}
 				});
+				final Button bs1 = new Button(createDialogArea, SWT.CHECK);
+				bs1.setText("Generate separate raml files for a different java classes");
+				bs1.setSelection(separateFiles);
+				
+				//bs.setEnabled(!bs1.getSelection());
+				bs1.addSelectionListener(new SelectionAdapter() {
+					
+
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						boolean selection = bs1.getSelection();
+						for (Control c:children){
+							c.setEnabled(!selection);
+						}
+						separateFiles=selection;
+						//bs.setEnabled(!selection);
+					}
+				});
 				return createDialogArea;
 			}
 
 		};
 		int open = inputDialog.open();
 		if (open == Dialog.OK) {
-			return project.getFile(inputDialog.getValue());
+			return container.getFile(new Path(inputDialog.getValue()));
 		}
 		return null;
 	}

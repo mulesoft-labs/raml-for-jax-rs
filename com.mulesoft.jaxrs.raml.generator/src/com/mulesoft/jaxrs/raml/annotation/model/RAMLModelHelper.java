@@ -76,7 +76,9 @@ public class RAMLModelHelper {
 	}
 
 	private void cleanupUrl(Resource res) {
+		
 		String relativeUri = res.getRelativeUri();
+		
 		String string = doCleanup(relativeUri);
 		if (string.length()==0){
 			string="/";
@@ -85,6 +87,7 @@ public class RAMLModelHelper {
 	}
 
 	private static String doCleanup(String relativeUri) {
+		relativeUri=PathCleanuper.cleanupPath(relativeUri);
 		StringBuilder bld=new StringBuilder();
 		char pc=0;
 		for (int a=0;a<relativeUri.length();a++){

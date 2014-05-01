@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.annotation.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -19,6 +20,8 @@ import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
+import org.raml.model.Protocol;
+import org.raml.model.Raml2;
 import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.model.parameter.AbstractParam;
@@ -468,4 +471,14 @@ public abstract class ResourceVisitor {
 		
 	}
 	
+	public void clear() {
+		spec.coreRaml=new Raml2();
+		spec.coreRaml.setBaseUri("http://example.com");
+		spec.coreRaml.setTitle("Please type API title here");
+		spec.coreRaml.setProtocols(Collections.singletonList(Protocol.HTTP));
+	}
+
+	public boolean isEmpty() {
+		return spec.coreRaml.getResources().isEmpty();
+	}
 }

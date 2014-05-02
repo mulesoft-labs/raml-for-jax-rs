@@ -17,12 +17,13 @@ import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.generator.popup.actions.GenerationException;
 
 @SuppressWarnings("restriction")
 public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 
-	private static final String PARAM = "@param";
-	private static final String RETURN = "@return";
+	private static final String PARAM = "@param"; //$NON-NLS-1$
+	private static final String RETURN = "@return"; //$NON-NLS-1$
 
 	public JDTMethod(IMethod tm) {
 		super(tm);
@@ -75,7 +76,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 							s = s.substring(indexOf + 1);
 						}
 						s = s.trim();
-						if (s.startsWith("@")) {
+						if (s.startsWith("@")) { //$NON-NLS-1$
 							continue;
 						}
 						bld.append(s);
@@ -121,7 +122,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 							s = s.substring(indexOf + 1);
 						}
 						s = s.trim();
-						if (s.startsWith("@")) {
+						if (s.startsWith("@")) { //$NON-NLS-1$
 							if (s.startsWith(PARAM)) {
 								s = s.substring(PARAM.length());
 								s = s.trim();
@@ -163,15 +164,15 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 			return new IDocInfo() {
 
 				public String getReturnInfo() {
-					return "";
+					return ""; //$NON-NLS-1$
 				}
 
 				public String getDocumentation(String pName) {
-					return "";
+					return ""; //$NON-NLS-1$
 				}
 
 				public String getDocumentation() {
-					return "";
+					return ""; //$NON-NLS-1$
 				}
 			};
 		} catch (JavaModelException e) {
@@ -183,11 +184,15 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		IMethod iMethod = (IMethod) tm;
 		try {
 			String returnType = iMethod.getReturnType();
-			if (returnType.startsWith("Q") && returnType.endsWith(";")) {
+			if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
 				IType ownerType = (IType) iMethod
 						.getAncestor(IJavaElement.TYPE);
-				String[][] resolveType = ownerType.resolveType(returnType
-						.substring(1, returnType.length() - 1));
+				String typeName = returnType
+						.substring(1, returnType.length() - 1);
+				String[][] resolveType = ownerType.resolveType(typeName);
+				if (resolveType == null) {
+					throw new GenerationException("Type " + typeName + " cannot be resolved", "Type " + typeName + " cannot be resolved, maybe because of the compilation errors"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				}
 				if (resolveType.length == 1) {
 					IType findType = ownerType.getJavaProject().findType(
 							resolveType[0][0] + '.' + resolveType[0][1]);
@@ -198,6 +203,9 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 			}
 
 		} catch (Exception e) {
+			if (e instanceof GenerationException) {
+				throw (GenerationException)e;
+			}
 			throw new IllegalStateException(e);
 		}
 		return null;
@@ -209,12 +217,12 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		try {
 			String[] parameterTypes = iMethod.getParameterTypes();
 			for (String s : parameterTypes) {
-				if (s.contains("java"))
+				if (s.contains("java")) //$NON-NLS-1$
 				{
 					continue;
 				}
 				String returnType = s;
-				if (returnType.startsWith("Q") && returnType.endsWith(";")) {
+				if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
 					IType ownerType = (IType) iMethod
 							.getAncestor(IJavaElement.TYPE);
 					String[][] resolveType = ownerType.resolveType(returnType

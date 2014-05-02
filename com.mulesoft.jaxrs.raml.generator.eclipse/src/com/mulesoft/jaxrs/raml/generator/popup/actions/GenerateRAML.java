@@ -164,6 +164,8 @@ public class GenerateRAML implements IObjectActionDelegate {
 				if (q instanceof ICompilationUnit) {
 					visitUnit((ICompilationUnit) q);
 				}
+			} catch (GenerationException e) {
+				MessageDialog.openError(shell, e.getShortMessage(), e.getDetailMessage());
 			} catch (Exception e) {
 				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
 			}

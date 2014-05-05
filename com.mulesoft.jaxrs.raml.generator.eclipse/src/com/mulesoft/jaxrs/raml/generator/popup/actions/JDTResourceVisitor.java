@@ -14,14 +14,14 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 	}
 
 	protected void generateExamle(File schemaFile, String content) {
-		DummyXMLGenerator m=new DummyXMLGenerator();
+		DummyXMLGenerator generator=new DummyXMLGenerator();
 		try {
 			File parentDir = schemaFile.getParentFile().getParentFile();
-			File examplesDir=new File(parentDir,"examples");
+			File examplesDir=new File(parentDir,"examples"); //$NON-NLS-1$
 			if (!examplesDir.exists()){
 				examplesDir.mkdir();
 			}
-			String dummyXml = m.generateDummyXmlFor(schemaFile.toURL().toExternalForm());
+			String dummyXml = generator.generateDummyXmlFor(schemaFile.toURL().toExternalForm());
 			doGenerateAndSave(schemaFile, parentDir, examplesDir, dummyXml);
 		} catch (MalformedURLException e) {
 			throw new IllegalStateException(e);			

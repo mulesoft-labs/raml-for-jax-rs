@@ -4,7 +4,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 import java.io.File;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;;
+import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 
 public class RuntimeResourceVisitor extends ResourceVisitor {
 

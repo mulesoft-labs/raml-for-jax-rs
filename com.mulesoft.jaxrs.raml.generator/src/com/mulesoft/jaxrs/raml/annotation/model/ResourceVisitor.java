@@ -14,6 +14,7 @@ import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import org.dynvocation.lib.xsd4j.XSDUtil;
 import org.raml.emitter.IRamlHierarchyTarget;
 import org.raml.emitter.RamlEmitterV2;
 import org.raml.model.Action;
@@ -479,10 +480,6 @@ public abstract class ResourceVisitor {
 		}
 	}
 
-	protected void generateExamle(File file, String content) {
-		
-	}
-	
 	public void clear() {
 		spec.coreRaml=new Raml2();
 		spec.coreRaml.setBaseUri("http://example.com"); //$NON-NLS-1$
@@ -521,5 +518,16 @@ public abstract class ResourceVisitor {
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	protected void generateExamle(File schemaFile, String content) {
+	
+		File examplesDir = schemaFile.getParentFile();
+		if (examplesDir.getName().endsWith(SCHEMAS_FOLDER)) { 
+			examplesDir = new File(examplesDir.getParent(),EXAMPLES_FOLDER); 
+			examplesDir.mkdirs();
+		}
+		String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
+		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);
 	}
 }

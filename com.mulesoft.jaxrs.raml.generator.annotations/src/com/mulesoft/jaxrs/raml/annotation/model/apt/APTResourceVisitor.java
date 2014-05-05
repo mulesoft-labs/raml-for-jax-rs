@@ -5,7 +5,7 @@ import java.io.File;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
-import org.dynvocation.lib.xsd4j.XSDUtil;
+
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 
@@ -43,17 +43,6 @@ public class APTResourceVisitor extends ResourceVisitor {
 	@Override
 	protected ResourceVisitor createResourceVisitor() {
 		return new APTResourceVisitor(outputFile, processingEnv, classLoader);
-	}
-	
-	protected void generateExamle(File schemaFile, String content) {
-
-		File examplesDir = schemaFile.getParentFile();
-		if (examplesDir.getName().endsWith(SCHEMAS_FOLDER)) { 
-			examplesDir = new File(examplesDir.getParent(),EXAMPLES_FOLDER); 
-			examplesDir.mkdirs();
-		}
-		String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
-		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);
 	}
 	
 }

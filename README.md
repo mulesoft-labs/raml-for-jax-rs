@@ -1,7 +1,9 @@
 # jaxrs-to-raml
 =============
 
-JAX - RS to RAML project is devoted to is Starting from JAX-RS-annotated Java code, generate a RAML API description
+JAX - RS to RAML project goal is to provide full featured easy to use components for generation of RAML apis description starting from from JAX-RS-annotated Java code
+
+Currently project contains following modules:
 
 ## Key supported features:
  * All basic action types, path annotations, path,query, and form parameters

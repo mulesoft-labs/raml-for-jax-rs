@@ -3,7 +3,12 @@
 
 JAX - RS to RAML project goal is to provide full featured easy to use components for generation of RAML apis description starting from from JAX-RS-annotated Java code
 
+## Project content
 Currently project contains following modules:
+
+- Eclipse/Mulestudio plugin
+- Plugin for Javac
+- API to generate RAML api description at runtime
 
 ## Key supported features:
  * All basic action types, path annotations, path,query, and form parameters

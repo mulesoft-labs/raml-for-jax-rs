@@ -16,7 +16,7 @@ Key supported features:
 Thanks in advance for your feedback,
 Dmitry
 
-- Installation instructions
+- [Installation instructions](https://github.com/mulesoft/jaxrs-to-raml/edit/master/)
  
   The repo contains eclipe update site project. It allows to install eclipse-plugin version using default eclipse
   functionality. 

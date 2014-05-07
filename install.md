@@ -18,3 +18,16 @@ The required component is placed in RAML Tools category . Select the checkbox ne
 Click Next again. Read the license agreements and then select I accept the terms of the license agreements. Click Finish.
 You will then be asked be asked if you would like to restart Eclipse. Click Restart Now.
 Now you are ready to generate RAML apis for your JAX RS Applications! 
+
+#Usage
+
+Select java class, or package or source folder, then do a right click to show popup menu. You should see something like this: http://prntscr.com/3h39zr
+
+Then select "Generate RAML from classes"
+
+Now you may configure some options:
+
+http://prntscr.com/3h3b7g
+
+Click finish and you RAML api is here...
+

@@ -13,13 +13,12 @@ Key supported features:
  * Default values for parameters
  * XML/Json Schema generation with JAXB
 
-Thanks in advance for your feedback,
-Dmitry
 
-- [Installation instructions](https://github.com/mulesoft/jaxrs-to-raml/edit/master/)
+- [Installation instructions for Eclipse or Mulestudio](https://github.com/mulesoft/jaxrs-to-raml/blob/master/install.md)
+- [Installation instructions for using as plugin to javac](https://github.com/mulesoft/jaxrs-to-raml/blob/master/javac.md)
+
+
  
-  The repo contains eclipe update site project. It allows to install eclipse-plugin version using default eclipse
-  functionality. 
   
   APT processor class name - com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
 

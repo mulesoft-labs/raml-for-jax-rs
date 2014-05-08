@@ -1,31 +1,32 @@
-jaxrs-to-raml
+# jaxrs-to-raml
 =============
 
-Starting from JAX-RS-annotated Java code, generate a RAML API description
-- Description
+JAX - RS to RAML project goal is to provide full featured easy to use components for generation of RAML apis description starting from from JAX-RS-annotated Java code
 
-Key supported features:
+## Project content
+Currently project contains following modules:
+
+- Eclipse/Mulestudio plugin
+- Plugin for Javac
+- API to generate RAML api description at runtime
+
+## Key supported features:
  * All basic action types, path annotations, path,query, and form parameters
  * Generating resource tree basing on jersey resources available on the source path
  * Inferring media types when possible
  * Including javadoc documentation to descriptions of resources, methods, parameters.
  * Statically determinable sub resources. (no overriding)
  * Default values for parameters
- * XML/Json Schema generation with JAXB
+ * XML/Json schemas and examples(stubs) generation with JAXB
 
-Thanks in advance for your feedback,
-Dmitry
 
-- Installation instructions
- 
-  The repo contains eclipe update site project. It allows to install eclipse-plugin version using default eclipse
-  functionality. 
-  
-  APT processor class name - com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
+## Installation and usage guides
 
-- Usage Example
+- [Installation instructions/Usage guide for Eclipse or Mulestudio](https://github.com/mulesoft/jaxrs-to-raml/blob/master/install.md)
+- [Installation instructions/Usage guide for using as plugin to javac](https://github.com/mulesoft/jaxrs-to-raml/blob/master/javac.md)
 
-- Future features
+
+## Future features
   * Injection of request parameters to fields
   * Constraint annotations to raml constraints conversion
 

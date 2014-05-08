@@ -45,4 +45,11 @@ public interface IBasicModel {
 	 * @return true if element has annotation with a given name
 	 */
 	boolean hasAnnotation(String name);
+	
+	/**
+	 * 
+	 * @param name
+	 * @return {@link IAnnotationModel} for annotation with given name if present, <code>null</code> otherwise
+	 */
+	IAnnotationModel getAnnotation(String name);
 }

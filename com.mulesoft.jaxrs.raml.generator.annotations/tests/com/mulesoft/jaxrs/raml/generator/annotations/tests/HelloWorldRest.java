@@ -1,5 +1,6 @@
 package com.mulesoft.jaxrs.raml.generator.annotations.tests;
 
+import javax.validation.constraints.Min;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -89,7 +90,7 @@ public interface HelloWorldRest {
 	@Path("countries/{countryId}")
 	@DELETE
 	public void deleteCountry(@Context UriContext uriContext,
-			@PathParam("countryId") int countryId);
+			@PathParam("countryId")@Min(value = 1) int countryId);
 
 	@Path("countries/{countryId}/states")
 	@POST

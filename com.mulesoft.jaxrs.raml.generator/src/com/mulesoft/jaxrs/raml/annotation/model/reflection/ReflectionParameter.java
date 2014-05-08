@@ -64,6 +64,16 @@ public class ReflectionParameter implements IParameterModel{
 		return false;
 	}
 	
+	public IAnnotationModel getAnnotation(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m:annotations){
+			if (m.getName().equals(name)){
+				return m;
+			}
+		}
+		return null;
+	}
+	
 	public String getName() {
 		String name = type.getName();
 		return name;

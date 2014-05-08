@@ -100,4 +100,14 @@ public abstract class APTModel implements IBasicModel{
 		}
 		return false;
 	}
+	
+	public IAnnotationModel getAnnotation(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m:annotations){
+			if (m.getName().equals(name)){
+				return m;
+			}
+		}
+		return null;
+	}
 }

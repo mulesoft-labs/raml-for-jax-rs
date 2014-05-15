@@ -54,6 +54,16 @@ public abstract class JDTAnnotatable implements IBasicModel{
 		}
 		return false;
 	}
+	
+	public IAnnotationModel getAnnotation(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m:annotations){
+			if (m.getName().equals(name)){
+				return m;
+			}
+		}
+		return null;
+	}
 
 	
 	public String getAnnotationValue(String annotation) {

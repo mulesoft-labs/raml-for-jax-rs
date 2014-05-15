@@ -92,6 +92,16 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		}
 		return false;
 	}
+	
+	public IAnnotationModel getAnnotation(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m:annotations){
+			if (m.getName().equals(name)){
+				return m;
+			}
+		}
+		return null;
+	}
 
 	public T getElement() {
 		return element;

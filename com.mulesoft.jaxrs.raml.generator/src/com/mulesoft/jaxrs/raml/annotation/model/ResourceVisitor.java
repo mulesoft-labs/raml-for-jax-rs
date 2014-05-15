@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.annotation.model;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -255,6 +256,7 @@ public abstract class ResourceVisitor {
 				String annotationValue = pm.getAnnotationValue(QUERY_PARAM);
 				String type = pm.getType();
 				QueryParameter value2 = new QueryParameter();
+				configureParam(pm, value2);
 				proceedType(type, value2, pm);
 				String text = documentation.getDocumentation(pm
 						.getName());
@@ -268,6 +270,7 @@ public abstract class ResourceVisitor {
 			if (pm.hasAnnotation(HEADER_PARAM)) {
 				String annotationValue = pm.getAnnotationValue(HEADER_PARAM);
 				Header value2 = new Header();
+				configureParam(pm, value2);
 				proceedType(pm.getType(), value2, pm);
 				String text = documentation.getDocumentation(pm
 						.getName());
@@ -281,6 +284,7 @@ public abstract class ResourceVisitor {
 			if (pm.hasAnnotation(PATH_PARAM)) {
 				String annotationValue = pm.getAnnotationValue(PATH_PARAM);
 				UriParameter value2 = new UriParameter();
+				configureParam(pm, value2);
 				String text = documentation.getDocumentation(pm
 						.getName());
 				if (!"".equals(text)) { //$NON-NLS-1$
@@ -323,6 +327,7 @@ public abstract class ResourceVisitor {
 							String annotationValue = pm
 									.getAnnotationValue(FORM_PARAM);
 							FormParameter vl = new FormParameter();
+							configureParam(pm,vl);
 							String text = documentation.getDocumentation(pm
 									.getName());
 							if (!"".equals(text)) { //$NON-NLS-1$
@@ -386,6 +391,35 @@ public abstract class ResourceVisitor {
 			}
 			value.getResponses().put("200", value2); //$NON-NLS-1$
 		}
+	}
+
+	private void configureParam(IParameterModel model, AbstractParam param) {
+		if (model.hasAnnotation("NotNull")) { //$NON-NLS-1$
+			param.setRequired(true);
+		}
+		if (model.hasAnnotation("Pattern")) { //$NON-NLS-1$
+			IAnnotationModel annotation = model.getAnnotation("Pattern"); //$NON-NLS-1$
+			String pattern = annotation.getValue("regexp"); //$NON-NLS-1$
+			param.setPattern(pattern);
+		}
+		if (model.hasAnnotation("Min")) { //$NON-NLS-1$
+			String min = model.getAnnotationValue("Min"); //$NON-NLS-1$
+			param.setMinimum(BigDecimal.valueOf(Double.parseDouble(min)));
+		}
+		if (model.hasAnnotation("DecimalMin")) { //$NON-NLS-1$
+			String min = model.getAnnotationValue("DecimalMin"); //$NON-NLS-1$
+			param.setMinimum(BigDecimal.valueOf(Double.parseDouble(min)));
+		}
+		if (model.hasAnnotation("Max")) { //$NON-NLS-1$
+			String max = model.getAnnotationValue("Max"); //$NON-NLS-1$
+			param.setMaximum(BigDecimal.valueOf(Double.parseDouble(max)));
+		}
+		if (model.hasAnnotation("DecimalMax")) { //$NON-NLS-1$
+			String max = model.getAnnotationValue("DecimalMax"); //$NON-NLS-1$
+			param.setMaximum(BigDecimal.valueOf(Double.parseDouble(max)));
+		}
+
+
 	}
 
 	private String sanitizeMediaType(String s) {

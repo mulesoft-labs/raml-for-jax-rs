@@ -15,5 +15,5 @@
 	<classpathentry kind="lib" path="lib/javax.json-1.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/jettison-1.3.3.jar"/>
 	<classpathentry kind="src" path="xsd4j-src"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -498,6 +498,7 @@ public abstract class ResourceVisitor {
 				String generatedSchema = new SchemaGenerator().generateSchema(jsonText);
 				generatedSchema=JsonFormatter.format(generatedSchema);
 				String fName = schemaFile.getName().replace(XML_FILE_EXT, "-jsonshema"); //$NON-NLS-1$
+				fName=fName.replace(".xsd",  "-jsonshema");
 				spec.getCoreRaml().addGlobalSchema(fName,generatedSchema, true,false);
 				String name = schemaFile.getName();
 				name=name.substring(0,name.lastIndexOf('.'));

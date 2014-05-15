@@ -42,6 +42,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -101,6 +102,9 @@ public class GenerateRAML implements IObjectActionDelegate {
 		classLoader = null;
 		try {
 			for (Object q : selectionObject) {
+				if (!(q instanceof IJavaElement)){
+					continue;
+				}
 				if (!cpInited) {
 					IJavaElement el = (IJavaElement) q;
 					IResource resource = el.getResource();
@@ -128,6 +132,10 @@ public class GenerateRAML implements IObjectActionDelegate {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		if (project==null){
+			MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Nothing selected", "Please select some Java elements");
+			return;
+		}
 		IFile file = getNewRAMLFile(project);
 		boolean doSingle = isSingle;
 		if (file == null) {
@@ -148,6 +156,9 @@ public class GenerateRAML implements IObjectActionDelegate {
 
 		visitor = new JDTResourceVisitor(outputFile, classLoader);
 		for (Object q : selectionObject) {
+			if (!(q instanceof IJavaElement)){
+				continue;
+			}
 			try {
 				if (q instanceof IType) {
 					visitType((IType) q);

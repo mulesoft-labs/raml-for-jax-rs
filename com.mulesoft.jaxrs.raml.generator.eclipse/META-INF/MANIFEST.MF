@@ -4,7 +4,6 @@ Bundle-Name: Eclipse
 Bundle-SymbolicName: com.mulesoft.jaxrs.raml.generator.eclipse;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: MULESOFT
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui,
  com.mulesoft.jaxrs.raml.generator,

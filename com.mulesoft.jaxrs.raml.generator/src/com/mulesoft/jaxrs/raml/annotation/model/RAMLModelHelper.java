@@ -27,6 +27,9 @@ public class RAMLModelHelper {
 	
 	
 	public void addResource(Resource res) {
+		if (res.getRelativeUri().contains("/world/countries")){
+			System.out.println("A");
+		}
 		cleanupUrl(res);
 		String relativeUri = res.getRelativeUri();
 		int c = 0;
@@ -152,6 +155,9 @@ public class RAMLModelHelper {
 			return;
 		}
 		for (String s : resources.keySet()) {
+			if (s.equals("/")){
+				continue;
+			}
 			Path rp = new Path(s);
 			if (rp.isPrefixOf(path)&&path.segmentCount()-rp.segmentCount()>=1) {
 				Path removeFirstSegments2 = path.removeFirstSegments(rp

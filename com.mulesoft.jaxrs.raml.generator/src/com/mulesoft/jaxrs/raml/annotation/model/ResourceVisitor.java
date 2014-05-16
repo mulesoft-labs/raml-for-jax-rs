@@ -151,6 +151,7 @@ public abstract class ResourceVisitor {
 	
 
 	public String getRaml() {
+		spec.optimize();
 		RamlEmitterV2 emmitter = new RamlEmitterV2();
 		emmitter.setSingle(false);
 		final StringHolder holder = new StringHolder();

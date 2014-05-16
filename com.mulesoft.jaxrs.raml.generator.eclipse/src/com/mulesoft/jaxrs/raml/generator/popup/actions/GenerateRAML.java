@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -62,6 +63,86 @@ import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.jdt.JDTType;
 
 public class GenerateRAML implements IObjectActionDelegate {
+
+	private final class RAMLConfigurationDialog extends InputDialog {
+		private RAMLConfigurationDialog(Shell parentShell, String dialogTitle,
+				String dialogMessage, String initialValue,
+				IInputValidator validator) {
+			super(parentShell, dialogTitle, dialogMessage, initialValue,
+					validator);
+		}
+
+		@Override
+		protected Control createDialogArea(Composite parent) {
+			Composite createDialogArea = (Composite) super.createDialogArea(parent);
+			final Control[] children = createDialogArea.getChildren();
+			if (separateFiles){
+				for (Control c:children){
+					c.setEnabled(false);
+				}
+				}
+			Composite t=new Composite(createDialogArea, SWT.NONE);
+			GridLayout gridLayout = new GridLayout(3,false);
+			gridLayout.marginHeight=0;
+			gridLayout.marginLeft=0;
+			Label l=new Label(t,SWT.NONE);
+			l.setText("Folder:");
+			final Text ts=new Text(t, SWT.BORDER);
+			ts.setEditable(false);
+			
+			ts.setText(container.getFullPath().toPortableString());
+			Button browse=new Button(t,SWT.PUSH);
+			browse.setText("...");
+			browse.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					ContainerSelectionDialog dlg=new ContainerSelectionDialog(getShell(), 
+							ResourcesPlugin.getWorkspace().getRoot(), 
+							true, "Please select folder to store raml files");
+					int open = dlg.open();
+					if (open==Dialog.OK){
+						Object[] result = dlg.getResult();
+						ts.setText(result[0].toString());
+						IPath iPath = (IPath) result[0];
+						container=(IContainer) ResourcesPlugin.getWorkspace().getRoot().findMember(iPath);
+					}						
+				}
+			});
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(ts);
+			GridDataFactory.fillDefaults().applyTo(t);
+			t.setLayout(gridLayout);
+			final Button bs = new Button(createDialogArea, SWT.CHECK);
+			bs.setText("Inline schemas and example in single raml file");
+			bs.setSelection(isSingle);
+			bs.addSelectionListener(new SelectionAdapter() {
+				
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					isSingle=bs.getSelection();
+				}
+			});
+			final Button bs1 = new Button(createDialogArea, SWT.CHECK);
+			bs1.setText("Generate separate raml files for a different java classes");
+			bs1.setSelection(separateFiles);
+			
+			//bs.setEnabled(!bs1.getSelection());
+			bs1.addSelectionListener(new SelectionAdapter() {
+				
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					boolean selection = bs1.getSelection();
+					for (Control c:children){
+						c.setEnabled(!selection);
+					}
+					separateFiles=selection;
+					//bs.setEnabled(!selection);
+				}
+			});
+			return createDialogArea;
+		}
+	}
 
 	private Shell shell;
 	private List<?> selectionObject;
@@ -298,81 +379,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 	
 	private IFile getNewRAMLFile(IProject project) {
 		container=project;
-		InputDialog inputDialog = new InputDialog(shell, "Generate RAML",
-				"Please type file name for you raml file", "api.raml", null) {
-
-			@Override
-			protected Control createDialogArea(Composite parent) {
-				Composite createDialogArea = (Composite) super.createDialogArea(parent);
-				final Control[] children = createDialogArea.getChildren();
-				if (separateFiles){
-					for (Control c:children){
-						c.setEnabled(false);
-					}
-					}
-				Composite t=new Composite(createDialogArea, SWT.NONE);
-				GridLayout gridLayout = new GridLayout(3,false);
-				gridLayout.marginHeight=0;
-				gridLayout.marginLeft=0;
-				Label l=new Label(t,SWT.NONE);
-				l.setText("Folder:");
-				final Text ts=new Text(t, SWT.BORDER);
-				ts.setEditable(false);
-				
-				ts.setText(container.getFullPath().toPortableString());
-				Button browse=new Button(t,SWT.PUSH);
-				browse.setText("...");
-				browse.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						ContainerSelectionDialog dlg=new ContainerSelectionDialog(getShell(), 
-								ResourcesPlugin.getWorkspace().getRoot(), 
-								true, "Please select folder to store raml files");
-						int open = dlg.open();
-						if (open==Dialog.OK){
-							Object[] result = dlg.getResult();
-							ts.setText(result[0].toString());
-							IPath iPath = (IPath) result[0];
-							container=(IContainer) ResourcesPlugin.getWorkspace().getRoot().findMember(iPath);
-						}						
-					}
-				});
-				GridDataFactory.fillDefaults().grab(true, false).applyTo(ts);
-				GridDataFactory.fillDefaults().applyTo(t);
-				t.setLayout(gridLayout);
-				final Button bs = new Button(createDialogArea, SWT.CHECK);
-				bs.setText("Inline schemas and example in single raml file");
-				bs.setSelection(isSingle);
-				bs.addSelectionListener(new SelectionAdapter() {
-					
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						isSingle=bs.getSelection();
-					}
-				});
-				final Button bs1 = new Button(createDialogArea, SWT.CHECK);
-				bs1.setText("Generate separate raml files for a different java classes");
-				bs1.setSelection(separateFiles);
-				
-				//bs.setEnabled(!bs1.getSelection());
-				bs1.addSelectionListener(new SelectionAdapter() {
-					
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						boolean selection = bs1.getSelection();
-						for (Control c:children){
-							c.setEnabled(!selection);
-						}
-						separateFiles=selection;
-						//bs.setEnabled(!selection);
-					}
-				});
-				return createDialogArea;
-			}
-
-		};
+		InputDialog inputDialog = new RAMLConfigurationDialog(shell, "Generate RAML", "Please type file name for you raml file", "api.raml", null);
 		int open = inputDialog.open();
 		if (open == Dialog.OK) {
 			return container.getFile(new Path(inputDialog.getValue()));

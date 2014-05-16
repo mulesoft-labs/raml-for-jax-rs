@@ -59,17 +59,32 @@ import org.raml.parser.tagresolver.IncludeResolver;
 import org.raml.parser.tagresolver.TagResolver;
 import org.raml.parser.visitor.PreservingTemplatesBuilder;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.jdt.JDTType;
 
 public class GenerateRAML implements IObjectActionDelegate {
 
 	private final class RAMLConfigurationDialog extends InputDialog {
+		private RamlConfigurationComposite ramlConfigurationComposite;
+
 		private RAMLConfigurationDialog(Shell parentShell, String dialogTitle,
 				String dialogMessage, String initialValue,
 				IInputValidator validator) {
 			super(parentShell, dialogTitle, dialogMessage, initialValue,
 					validator);
+		}
+		@Override
+		protected void buttonPressed(int buttonId) {
+			if (buttonId==Dialog.OK){
+				ramlConfigurationComposite.doOk();
+			}
+			super.buttonPressed(buttonId);
+		}
+		@Override
+		protected void okPressed() {
+			ramlConfigurationComposite.doOk();
+			super.okPressed();
 		}
 
 		@Override
@@ -82,6 +97,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				}
 				}
 			Composite t=new Composite(createDialogArea, SWT.NONE);
+			
 			GridLayout gridLayout = new GridLayout(3,false);
 			gridLayout.marginHeight=0;
 			gridLayout.marginLeft=0;
@@ -108,21 +124,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 					}						
 				}
 			});
-			GridDataFactory.fillDefaults().grab(true, false).applyTo(ts);
-			GridDataFactory.fillDefaults().applyTo(t);
-			t.setLayout(gridLayout);
-			final Button bs = new Button(createDialogArea, SWT.CHECK);
-			bs.setText("Inline schemas and example in single raml file");
-			bs.setSelection(isSingle);
-			bs.addSelectionListener(new SelectionAdapter() {
-				
-
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					isSingle=bs.getSelection();
-				}
-			});
-			final Button bs1 = new Button(createDialogArea, SWT.CHECK);
+			final Button bs1 = new Button(t, SWT.CHECK);
 			bs1.setText("Generate separate raml files for a different java classes");
 			bs1.setSelection(separateFiles);
 			
@@ -140,8 +142,20 @@ public class GenerateRAML implements IObjectActionDelegate {
 					//bs.setEnabled(!selection);
 				}
 			});
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(ts);
+			GridDataFactory.fillDefaults().grab(true, false).span(3,1).applyTo(bs1);
+			GridDataFactory.fillDefaults().applyTo(t);
+			ramlConfigurationComposite = new RamlConfigurationComposite(t, SWT.NONE,new PreferencesConfig());
+			GridDataFactory.fillDefaults().grab(true, true).span(3,1).applyTo(ramlConfigurationComposite);
+			t.setLayout(gridLayout);
+
+			
 			return createDialogArea;
 		}
+		
+	}
+	private boolean isSingle() {
+		return new PreferencesConfig().isSingle();
 	}
 
 	private Shell shell;
@@ -218,7 +232,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			return;
 		}
 		IFile file = getNewRAMLFile(project);
-		boolean doSingle = isSingle;
+		boolean doSingle = isSingle();
 		if (file == null) {
 			return;
 		}
@@ -236,6 +250,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 		}
 
 		visitor = new JDTResourceVisitor(outputFile, classLoader);
+		visitor.setPreferences(new PreferencesConfig());
 		for (Object q : selectionObject) {
 			if (!(q instanceof IJavaElement)){
 				continue;
@@ -306,7 +321,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 		visitor.visit(new JDTType(q));
 		if (separateFiles&&!visitor.isEmpty()){
 			
-			if (isSingle) {
+			if (isSingle()) {
 				String raml = visitor.getRaml();
 				Raml2 build = build(new ByteArrayInputStream(raml.getBytes()),
 						new FileResourceLoader(container.getLocation().toFile()));
@@ -371,7 +386,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			MessageDialog.openError(shell, "Error", e.getMessage());
 		}
 	}
-	private boolean isSingle=false;
+	
 	private boolean separateFiles=false;
 
 	IContainer container;

@@ -38,6 +38,8 @@ import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
 public abstract class ResourceVisitor {
 
+	private static final String JSONSCHEMA = "-jsonschema";
+
 	protected static final String XML_FILE_EXT = ".xml"; //$NON-NLS-1$
 
 	private static final String JSON_FILE_EXT = ".json"; //$NON-NLS-1$
@@ -113,6 +115,8 @@ public abstract class ResourceVisitor {
 	protected final File outputFile;
 
 	protected final ClassLoader classLoader;
+
+	private IRamlConfig config;
 
 	public ResourceVisitor(File outputFile, ClassLoader classLoader) {
 		this.outputFile = outputFile;
@@ -313,7 +317,7 @@ public abstract class ResourceVisitor {
 					}
 				}
 				if (s.contains(JSON)) {
-					bodyType.setSchema(parameterName + "-jsonshema"); //$NON-NLS-1$
+					bodyType.setSchema(parameterName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
 					if (parameterName!=null){
 						bodyType.setExample(EXAMPLES_PREFFIX + returnName + JSON_FILE_EXT);
 						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
@@ -371,7 +375,7 @@ public abstract class ResourceVisitor {
 						}
 					}
 					if (s.contains(JSON)) {
-						mimeType.setSchema(returnName + "-jsonshema"); //$NON-NLS-1$
+						mimeType.setSchema(returnName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
 						if (returnName!=null){
 							mimeType.setExample(EXAMPLES_PREFFIX + returnName + JSON_FILE_EXT);
 							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
@@ -532,8 +536,8 @@ public abstract class ResourceVisitor {
 				jsonText=JsonFormatter.format(jsonText);
 				String generatedSchema = new SchemaGenerator().generateSchema(jsonText);
 				generatedSchema=JsonFormatter.format(generatedSchema);
-				String fName = schemaFile.getName().replace(XML_FILE_EXT, "-jsonshema"); //$NON-NLS-1$
-				fName=fName.replace(".xsd",  "-jsonshema");
+				String fName = schemaFile.getName().replace(XML_FILE_EXT, ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
+				fName=fName.replace(".xsd",  ResourceVisitor.JSONSCHEMA);
 				spec.getCoreRaml().addGlobalSchema(fName,generatedSchema, true,false);
 				String name = schemaFile.getName();
 				name=name.substring(0,name.lastIndexOf('.'));
@@ -565,5 +569,24 @@ public abstract class ResourceVisitor {
 		}
 		String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
 		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);
+	}
+
+	public void setPreferences(IRamlConfig preferencesConfig) {
+		this.config=preferencesConfig;
+		if (preferencesConfig.getTitle()!=null&&preferencesConfig.getTitle().length()>0){
+			spec.getCoreRaml().setTitle(preferencesConfig.getTitle());
+		}
+		if (preferencesConfig.getVersion()!=null&&preferencesConfig.getVersion().length()>0){
+			spec.getCoreRaml().setVersion(preferencesConfig.getVersion());
+		}
+		if (preferencesConfig.getBaseUrl()!=null&&preferencesConfig.getBaseUrl().length()>0){
+			spec.getCoreRaml().setBaseUri(preferencesConfig.getBaseUrl());
+		}
+		if (preferencesConfig.getProtocols()!=null) {
+			ArrayList<Protocol> protocols = new ArrayList<Protocol>(preferencesConfig.getProtocols());
+			Collections.sort(protocols);
+			spec.getCoreRaml().setProtocols(protocols);
+		}
+		spec.doSort=preferencesConfig.isSorted();
 	}
 }

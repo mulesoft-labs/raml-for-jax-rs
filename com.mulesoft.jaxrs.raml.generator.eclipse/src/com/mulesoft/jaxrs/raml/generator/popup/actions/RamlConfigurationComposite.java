@@ -1,0 +1,191 @@
+package com.mulesoft.jaxrs.raml.generator.popup.actions;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.raml.model.Protocol;
+
+import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
+
+public class RamlConfigurationComposite extends Composite{
+
+	IRamlConfig config;
+	ArrayList<AbstractEditor>editors=new ArrayList<RamlConfigurationComposite.AbstractEditor>();
+	private Button http;
+	private Button https;
+	private Button sorted;
+	
+	public void doOk(){
+		for(AbstractEditor e:editors){
+			e.save((IEditableRamlConfig) config, e.getValue());
+		}
+		HashSet<Protocol>p=new HashSet<Protocol>();
+		if(http.getSelection()){
+			p.add(Protocol.HTTP);
+		}
+		if(https.getSelection()){
+			p.add(Protocol.HTTPS);
+		}
+		((IEditableRamlConfig) config).setProtocols(p);
+		((IEditableRamlConfig) config).setSorted(sorted.getSelection());
+	}
+	
+	public abstract class AbstractEditor{
+		
+		public AbstractEditor() {
+			editors.add(this);
+		}
+		
+		abstract Object init(IEditableRamlConfig cfg);
+		abstract void save(IEditableRamlConfig cfg,Object value);
+		abstract Object getValue();
+	}
+	
+	public abstract class StringEditor extends AbstractEditor{
+		
+		private Text text;
+
+		public StringEditor(Composite parent,String titleL) {
+			Label title=new Label(parent, SWT.NONE);
+			title.setText(titleL);
+			text = new Text(parent, SWT.BORDER);
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
+			text.setText((String) init((IEditableRamlConfig) config));
+		}
+		@Override
+		Object getValue() {
+			return text.getText();
+		}
+	}
+	
+	public abstract class CheckBoxEditor extends AbstractEditor{
+		
+		private Button text;
+
+		public CheckBoxEditor(Composite parent,String titleL) {
+			text = new Button(parent, SWT.CHECK);
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
+			text.setSelection((Boolean)init((IEditableRamlConfig) config));
+			text.setText(titleL);
+		}
+		@Override
+		Object getValue() {
+			return text.getSelection();
+		}
+	}
+	
+	public RamlConfigurationComposite(Composite parent, int style,IRamlConfig cfg) {
+		super(parent, style);
+		this.config=cfg;
+		CTabFolder fld=new CTabFolder(this, SWT.FLAT);
+		CTabItem item=new CTabItem(fld, SWT.NONE);
+		item.setText("Basic Settings");
+		item.setControl(generateBasicTab(fld));
+		
+		item=new CTabItem(fld, SWT.NONE);
+		item.setText("Response Codes");
+		item.setControl(generateResponseCodesTab(fld));
+		setLayout(new FillLayout());
+		fld.setSelection(0);
+	}
+
+	private Control generateResponseCodesTab(CTabFolder fld) {
+		Composite c=new Composite(fld, SWT.NONE);
+		return c;
+	}
+
+	private Control generateBasicTab(CTabFolder fld) {
+		Composite c=new Composite(fld, SWT.NONE);
+		c.setLayout(new GridLayout(2,false));
+		new StringEditor(c,"API Title:") {
+			
+
+			@Override
+			void save(IEditableRamlConfig cfg, Object value) {
+				cfg.setTitle((String) value);
+			}
+
+			@Override
+			Object init(IEditableRamlConfig cfg) {
+				return cfg.getTitle();
+			}
+		};
+		new StringEditor(c,"API Version:") {
+			
+
+			@Override
+			void save(IEditableRamlConfig cfg, Object value) {
+				cfg.setVersion((String) value);
+			}
+
+			@Override
+			Object init(IEditableRamlConfig cfg) {
+				return cfg.getVersion();
+			}
+		};
+		new StringEditor(c,"Base url:") {
+			
+
+			@Override
+			void save(IEditableRamlConfig cfg, Object value) {
+				cfg.setBaseUrl((String) value);
+			}
+
+			@Override
+			Object init(IEditableRamlConfig cfg) {
+				return cfg.getBaseUrl();
+			}
+		};
+		Composite cm=new Composite(c, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.marginWidth=0;
+		gridLayout.marginHeight=0;
+		Set<Protocol> protocols = config.getProtocols();
+		http = new Button(cm, SWT.CHECK);
+		if (protocols.contains(Protocol.HTTP)){
+			http.setSelection(true);
+		}
+		http.setText("HTTP");
+		https = new Button(cm, SWT.CHECK);
+		https.setText("HTTPS");
+		if (protocols.contains(Protocol.HTTPS)){
+			https.setSelection(true);
+		}
+		cm.setLayout(gridLayout);
+		sorted = new Button(c, SWT.CHECK);
+		sorted.setText("Sort resources alphabetically");
+		sorted.setSelection(config.isSorted());
+		final Button bs = new Button(c, SWT.CHECK);
+		bs.setText("Inline schemas and example in single raml file");
+		bs.setSelection(config.isSingle());
+		bs.addSelectionListener(new SelectionAdapter() {
+			
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				config.setSingle(bs.getSelection());
+			}
+		});
+		
+		
+		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(bs);
+		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(sorted);
+		return c;
+	}
+	
+
+}

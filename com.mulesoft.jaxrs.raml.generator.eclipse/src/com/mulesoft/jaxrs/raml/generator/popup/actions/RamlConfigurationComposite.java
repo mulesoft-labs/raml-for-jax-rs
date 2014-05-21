@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.generator.popup.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.raml.model.ActionType;
 import org.raml.model.Protocol;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
@@ -28,6 +30,7 @@ public class RamlConfigurationComposite extends Composite{
 	private Button http;
 	private Button https;
 	private Button sorted;
+	private Button doFull;
 	
 	public void doOk(){
 		for(AbstractEditor e:editors){
@@ -42,6 +45,11 @@ public class RamlConfigurationComposite extends Composite{
 		}
 		((IEditableRamlConfig) config).setProtocols(p);
 		((IEditableRamlConfig) config).setSorted(sorted.getSelection());
+		((IEditableRamlConfig) config).setDoFullTree(doFull.getSelection());
+		for (ActionType a:actionType_To_Code.keySet()){
+			Text t=actionType_To_Code.get(a);
+			((IEditableRamlConfig) config).setDefaultResponseCode(a,t.getText());
+		}
 	}
 	
 	public abstract class AbstractEditor{
@@ -101,10 +109,29 @@ public class RamlConfigurationComposite extends Composite{
 		item.setControl(generateResponseCodesTab(fld));
 		setLayout(new FillLayout());
 		fld.setSelection(0);
+		
 	}
+	HashMap<ActionType, Text>actionType_To_Code=new HashMap<ActionType, Text>();
 
 	private Control generateResponseCodesTab(CTabFolder fld) {
 		Composite c=new Composite(fld, SWT.NONE);
+		c.setLayout(new GridLayout(2, false));
+		Label l=new Label(c, SWT.NONE);
+		l.setText("Default response codes:");
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(l);
+		for(ActionType a:ActionType.values()){
+			Label la=new Label(c, SWT.NONE);
+			la.setText(a.name()+":");
+			Text t=new Text(c, SWT.BORDER);
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(t);
+			String responseCode = config.getResponseCode(a);
+			if (responseCode==null)
+			{
+				responseCode="200";
+			}
+			t.setText(responseCode);
+			actionType_To_Code.put(a, t);
+		}
 		return c;
 	}
 
@@ -162,13 +189,19 @@ public class RamlConfigurationComposite extends Composite{
 		http.setText("HTTP");
 		https = new Button(cm, SWT.CHECK);
 		https.setText("HTTPS");
+		
 		if (protocols.contains(Protocol.HTTPS)){
 			https.setSelection(true);
 		}
 		cm.setLayout(gridLayout);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(cm);
 		sorted = new Button(c, SWT.CHECK);
 		sorted.setText("Sort resources alphabetically");
 		sorted.setSelection(config.isSorted());
+		doFull = new Button(c, SWT.CHECK);
+		doFull.setText("Generate resources even for common URI path fragments that have no associated methods");
+		doFull.setSelection(config.doFullTree());
+		
 		final Button bs = new Button(c, SWT.CHECK);
 		bs.setText("Inline schemas and example in single raml file");
 		bs.setSelection(config.isSingle());
@@ -182,8 +215,9 @@ public class RamlConfigurationComposite extends Composite{
 		});
 		
 		
-		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(bs);
-		GridDataFactory.fillDefaults().grab(true, true).span(2, 1).applyTo(sorted);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bs);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(sorted);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(doFull);
 		return c;
 	}
 	

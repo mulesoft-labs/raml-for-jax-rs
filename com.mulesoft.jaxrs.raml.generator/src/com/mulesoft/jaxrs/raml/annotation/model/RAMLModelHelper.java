@@ -213,8 +213,12 @@ public class RAMLModelHelper {
 		sortIfNeeded(resources);
 		extractCommonPaths(resources);
 	}
+	boolean extractCommonParts=true;
 
 	private void extractCommonPaths(Map<String, Resource> resources) {
+		if(!extractCommonParts){
+			return;
+		}
 		LinkedHashMap<String, Resource> rs = (LinkedHashMap<String, Resource>) resources;
 		ArrayList<Entry> rt = getEntries(rs);
 		HashMap<String, ArrayList<Entry>>map=new HashMap<String, ArrayList<Entry>>();

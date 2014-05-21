@@ -38,6 +38,14 @@ import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
 public abstract class ResourceVisitor {
 
+	private static final String DEFAULT_RESPONSE = "200";
+
+	private static final String API_RESPONSE = "ApiResponse";
+
+	private static final String API_RESPONSES = "ApiResponses";
+
+	private static final String CODE = "code";
+
 	private static final String JSONSCHEMA = "-jsonschema";
 
 	protected static final String XML_FILE_EXT = ".xml"; //$NON-NLS-1$
@@ -249,13 +257,34 @@ public abstract class ResourceVisitor {
 
 	protected abstract ResourceVisitor createResourceVisitor();
 
-	private void addMethod(ActionType q, Resource res, IMethodModel m,
+	private void addMethod(ActionType action, Resource res, IMethodModel m,
 			IDocInfo documentation, String returnName, String parameterName) {
 		Action value = new Action();
-		value.setType(q);
-		res.getActions().put(q, value);
+		
+		value.setType(action);
+		res.getActions().put(action, value);
 		IParameterModel[] parameters = m.getParameters();
-
+		String[] responseCodes=new String[]{ResourceVisitor.DEFAULT_RESPONSE};
+		if (config!=null)
+		{
+			responseCodes=new String[]{config.getResponseCode(action)};
+		}
+		IAnnotationModel annotation = m.getAnnotation(ResourceVisitor.API_RESPONSE);
+		if (annotation!=null)
+		{
+			responseCodes=new String[]{annotation.getValue(ResourceVisitor.CODE)};
+		}
+		annotation = m.getAnnotation(ResourceVisitor.API_RESPONSES);
+		if (annotation!=null)
+		{
+			IAnnotationModel[] subAnnotations = annotation.getSubAnnotations("value");
+			responseCodes=new String[subAnnotations.length];
+			int a=0;
+			for (IAnnotationModel mq:subAnnotations){
+				responseCodes[a++]=mq.getValue(ResourceVisitor.CODE);
+				
+			}
+		}
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(QUERY_PARAM)) {
 				String annotationValue = pm.getAnnotationValue(QUERY_PARAM);
@@ -356,6 +385,7 @@ public abstract class ResourceVisitor {
 		if (producesValue == null) {
 			producesValue = classProduces;
 		}
+		for (String responseCode:responseCodes){
 		if (producesValue != null) {
 			Response value2 = new Response();
 			String text = documentation.getReturnInfo();
@@ -387,14 +417,15 @@ public abstract class ResourceVisitor {
 				value2.getBody().put(s, mimeType);
 
 			}
-			value.getResponses().put("200", value2); //$NON-NLS-1$
+			value.getResponses().put(responseCode, value2); //$NON-NLS-1$
 		} else {
 			Response value2 = new Response();
 			String text = documentation.getReturnInfo();
 			if (!"".equals(text)) { //$NON-NLS-1$
 				value2.setDescription(text);
 			}
-			value.getResponses().put("200", value2); //$NON-NLS-1$
+			value.getResponses().put(responseCode, value2); //$NON-NLS-1$
+		}
 		}
 	}
 
@@ -588,5 +619,6 @@ public abstract class ResourceVisitor {
 			spec.getCoreRaml().setProtocols(protocols);
 		}
 		spec.doSort=preferencesConfig.isSorted();
+		spec.extractCommonParts=preferencesConfig.doFullTree();
 	}
 }

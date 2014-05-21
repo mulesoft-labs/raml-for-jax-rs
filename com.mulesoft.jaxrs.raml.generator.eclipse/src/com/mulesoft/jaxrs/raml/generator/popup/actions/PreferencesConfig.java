@@ -18,6 +18,7 @@ final class PreferencesConfig implements IEditableRamlConfig {
 	public static final String PROTOCOLS="protocols";
 	private static final String SINGLE = "single";
 	private static final String SORTED = "sorted";
+	private static final String FULL_TREE = "fullTree";
 	
 	protected IPreferenceStore preferences=JAXRSTORamlPlagin.getInstance().getPreferenceStore();
 	
@@ -32,6 +33,10 @@ final class PreferencesConfig implements IEditableRamlConfig {
 
 	@Override
 	public String getResponseCode(ActionType type) {
+		String string = preferences.getString(getResponseCodeKey(type));
+		if (string!=null&&string.trim().length()>0){
+			return string;
+		}
 		return "200";
 	}
 
@@ -118,5 +123,24 @@ final class PreferencesConfig implements IEditableRamlConfig {
 	@Override
 	public void setSorted(boolean selection) {
 		preferences.setValue(SORTED, !selection);
+	}
+
+	@Override
+	public void setDefaultResponseCode(ActionType a, String text) {
+		preferences.putValue(getResponseCodeKey(a), text);
+	}
+
+	private String getResponseCodeKey(ActionType a) {
+		return a.name()+".responseCode";
+	}
+
+	@Override
+	public boolean doFullTree() {
+		return !preferences.getBoolean(FULL_TREE);
+	}
+
+	@Override
+	public void setDoFullTree(boolean selection) {
+		preferences.setValue(FULL_TREE, !selection);
 	}
 }

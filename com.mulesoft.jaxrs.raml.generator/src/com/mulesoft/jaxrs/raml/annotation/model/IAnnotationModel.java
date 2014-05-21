@@ -7,4 +7,6 @@ public interface IAnnotationModel {
 	public String getValue(String pairName);
 
 	public String[] getValues(String value);
+	
+	IAnnotationModel[] getSubAnnotations(String pairName);
 }

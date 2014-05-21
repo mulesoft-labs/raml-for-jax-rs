@@ -22,6 +22,8 @@ public interface IRamlConfig {
 	void setSingle(boolean selection);
 
 	boolean isSorted();
+
+	boolean doFullTree();
 	
 	
 

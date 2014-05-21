@@ -58,4 +58,28 @@ public class AnnotationModel implements IAnnotationModel {
 		}
 	}
 
+
+	@Override
+	public IAnnotationModel[] getSubAnnotations(String pairName) {
+		try {
+		Method method = annotation.getClass().getMethod(pairName);
+		Object invoke = method.invoke(annotation);
+		if (invoke!=null){
+			if (invoke instanceof Annotation[]){
+				Annotation[] anns = (Annotation[]) invoke;
+				int length = anns.length;
+				IAnnotationModel[] result=new IAnnotationModel[length];
+				for (int a=0;a<length;a++){
+					result[a]=new AnnotationModel(anns[a]);
+				}
+				return result;
+			}
+			return null;
+		}
+		return null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 }

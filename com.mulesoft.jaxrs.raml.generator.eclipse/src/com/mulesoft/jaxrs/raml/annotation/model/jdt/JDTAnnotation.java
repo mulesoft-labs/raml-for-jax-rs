@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMemberValuePair;
 import org.eclipse.jdt.core.ISourceRange;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
@@ -32,7 +33,19 @@ public class JDTAnnotation implements IAnnotationModel {
 			memberValuePairs = annotation.getMemberValuePairs();
 			for (IMemberValuePair pair:memberValuePairs){
 				if (pair.getMemberName().equals(pairName)){
-					return pair.getValue().toString();
+					int valueKind = pair.getValueKind();
+					String string = pair.getValue().toString();
+					if (valueKind==IMemberValuePair.K_SIMPLE_NAME){
+						IType ancestor = (IType) annotation.getAncestor(IJavaElement.TYPE);
+						
+						//TODO resolve value;
+						
+					}
+					if (valueKind==IMemberValuePair.K_QUALIFIED_NAME){
+						//resolve value;		
+						System.out.println(pair);
+					}					
+					return string;
 				}
 			}
 		} catch (JavaModelException e) {
@@ -85,6 +98,34 @@ public class JDTAnnotation implements IAnnotationModel {
 			throw new IllegalStateException(e);
 		}		
 		return null;
+	}
+
+
+	@Override
+	public IAnnotationModel[] getSubAnnotations(String pairName) {
+		IMemberValuePair[] memberValuePairs;
+		try {
+			memberValuePairs = annotation.getMemberValuePairs();
+			for (IMemberValuePair pair:memberValuePairs){
+				if (pair.getMemberName().equals(pairName)){
+					Object value = pair.getValue();
+					if (value instanceof Object[]){
+						Object[] objects = (Object[])value;
+						IAnnotationModel[] result=new IAnnotationModel[objects.length];
+						for (int a=0;a<objects.length;a++){
+							result[a]=new JDTAnnotation((IAnnotation) objects[a]);
+							
+						}
+						return result;
+					}
+					return null;
+				}
+			}
+		} catch (JavaModelException e) {
+			throw new IllegalStateException(e);
+		}		
+		return null;
+	
 	}
 
 }

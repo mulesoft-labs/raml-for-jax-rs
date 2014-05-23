@@ -74,20 +74,20 @@ public class GenerateRAML implements IObjectActionDelegate {
 			super(parentShell, dialogTitle, dialogMessage, initialValue,
 					validator);
 		}
-		@Override
+		
 		protected void buttonPressed(int buttonId) {
 			if (buttonId==Dialog.OK){
 				ramlConfigurationComposite.doOk();
 			}
 			super.buttonPressed(buttonId);
 		}
-		@Override
+		
 		protected void okPressed() {
 			ramlConfigurationComposite.doOk();
 			super.okPressed();
 		}
 
-		@Override
+		
 		protected Control createDialogArea(Composite parent) {
 			Composite createDialogArea = (Composite) super.createDialogArea(parent);
 			final Control[] children = createDialogArea.getChildren();
@@ -110,7 +110,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			Button browse=new Button(t,SWT.PUSH);
 			browse.setText("...");
 			browse.addSelectionListener(new SelectionAdapter() {
-				@Override
+				
 				public void widgetSelected(SelectionEvent e) {
 					ContainerSelectionDialog dlg=new ContainerSelectionDialog(getShell(), 
 							ResourcesPlugin.getWorkspace().getRoot(), 
@@ -132,7 +132,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			bs1.addSelectionListener(new SelectionAdapter() {
 				
 
-				@Override
+				
 				public void widgetSelected(SelectionEvent e) {
 					boolean selection = bs1.getSelection();
 					for (Control c:children){

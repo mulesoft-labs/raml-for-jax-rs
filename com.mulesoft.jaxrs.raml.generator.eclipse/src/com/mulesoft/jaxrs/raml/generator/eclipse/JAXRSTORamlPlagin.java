@@ -10,13 +10,13 @@ public class JAXRSTORamlPlagin extends AbstractUIPlugin {
 	
 	static JAXRSTORamlPlagin INSTANCE;
 	
-	@Override
+	
 	public void start(BundleContext context) throws Exception {
 		INSTANCE=this;
 		super.start(context);
 	}
 	
-	@Override
+	
 	public void stop(BundleContext context) throws Exception {
 		INSTANCE=null;
 		super.stop(context);

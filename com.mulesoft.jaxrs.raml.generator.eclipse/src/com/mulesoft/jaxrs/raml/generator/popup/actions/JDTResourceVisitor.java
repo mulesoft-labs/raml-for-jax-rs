@@ -28,7 +28,7 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 		}
 	}
 
-	@Override
+	
 	protected ResourceVisitor createResourceVisitor() {
 		return new JDTResourceVisitor(outputFile, classLoader);
 	}

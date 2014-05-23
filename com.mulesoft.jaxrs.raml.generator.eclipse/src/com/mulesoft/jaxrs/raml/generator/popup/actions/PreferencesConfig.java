@@ -22,7 +22,7 @@ final class PreferencesConfig implements IEditableRamlConfig {
 	
 	protected IPreferenceStore preferences=JAXRSTORamlPlagin.getInstance().getPreferenceStore();
 	
-	@Override
+	
 	public String getTitle() {
 		String string = preferences.getString(TITLE);
 		if (string==null||string.length()==0){
@@ -31,7 +31,7 @@ final class PreferencesConfig implements IEditableRamlConfig {
 		return string;
 	}
 
-	@Override
+	
 	public String getResponseCode(ActionType type) {
 		String string = preferences.getString(getResponseCodeKey(type));
 		if (string!=null&&string.trim().length()>0){
@@ -40,7 +40,7 @@ final class PreferencesConfig implements IEditableRamlConfig {
 		return "200";
 	}
 
-	@Override
+	
 	public Set<Protocol> getProtocols() {
 		String string = preferences.getString(PROTOCOLS);
 		if (string!=null&&string.length()>0){
@@ -53,7 +53,7 @@ final class PreferencesConfig implements IEditableRamlConfig {
 		}
 		return Collections.singleton(Protocol.HTTP);
 	}
-	@Override
+	
 	public void setProtocols(Set<Protocol> ps) {
 		StringBuilder bld=new StringBuilder();
 		int a=0;
@@ -68,7 +68,7 @@ final class PreferencesConfig implements IEditableRamlConfig {
 	}
 
 
-	@Override
+	
 	public String getBaseUrl() {
 		String string = preferences.getString(BASEURL);
 		if (string==null||string.length()==0){
@@ -77,23 +77,23 @@ final class PreferencesConfig implements IEditableRamlConfig {
 		return string;
 	}
 
-	@Override
+	
 	public void setTitle(String title) {
 		preferences.putValue(TITLE,title);
 	}
 
 
-	@Override
+	
 	public void setBaseUrl(String baseUrl) {
 		preferences.setValue(BASEURL, baseUrl);
 	}
 
-	@Override
+	
 	public void setVersion(String value) {
 		preferences.setValue(VERSION, value);
 	}
 
-	@Override
+	
 	public String getVersion() {
 		String string = preferences.getString(VERSION);
 		if (string==null||string.length()==0){
@@ -102,30 +102,30 @@ final class PreferencesConfig implements IEditableRamlConfig {
 		return string;
 	}
 
-	@Override
+	
 	public boolean isSingle() {
 		return preferences.getBoolean(SINGLE);
 	}
 
 	
 
-	@Override
+	
 	public void setSingle(boolean selection) {
 		preferences.setValue(SINGLE, selection);
 	}
 	
 
-	@Override
+	
 	public boolean isSorted() {
 		return !preferences.getBoolean(SORTED);
 	}
 
-	@Override
+	
 	public void setSorted(boolean selection) {
 		preferences.setValue(SORTED, !selection);
 	}
 
-	@Override
+	
 	public void setDefaultResponseCode(ActionType a, String text) {
 		preferences.putValue(getResponseCodeKey(a), text);
 	}
@@ -134,12 +134,12 @@ final class PreferencesConfig implements IEditableRamlConfig {
 		return a.name()+".responseCode";
 	}
 
-	@Override
+	
 	public boolean doFullTree() {
 		return !preferences.getBoolean(FULL_TREE);
 	}
 
-	@Override
+	
 	public void setDoFullTree(boolean selection) {
 		preferences.setValue(FULL_TREE, !selection);
 	}

@@ -30,7 +30,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	}
 
 
-	@Override
+	
 	protected ResourceVisitor createResourceVisitor() {
 		return new RuntimeResourceVisitor(outputFile, classLoader);
 	}

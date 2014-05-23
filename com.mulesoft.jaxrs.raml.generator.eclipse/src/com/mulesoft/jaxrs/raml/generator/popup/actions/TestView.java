@@ -18,7 +18,7 @@ public class TestView extends ViewPart {
 	
 	ISelectionListener iSelectionListener = new ISelectionListener() {
 		
-		@Override
+		
 		public void selectionChanged(IWorkbenchPart arg0, ISelection arg1) {
 			if (arg1!=null){
 			r.selectionChanged(null, arg1);
@@ -33,7 +33,7 @@ public class TestView extends ViewPart {
 		super.dispose();
 	};
 	
-	@Override
+	
 	public void createPartControl(Composite arg0) {
 		Composite mm=new Composite(arg0, SWT.NONE);
 		mm.setLayout(new GridLayout());
@@ -44,14 +44,14 @@ public class TestView extends ViewPart {
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().addSelectionListener(iSelectionListener);
 		s.setText("Generate RAML");
 		s.addSelectionListener(new SelectionAdapter() {
-			@Override
+			
 			public void widgetSelected(SelectionEvent e) {
 				r.run(null);
 			}
 		});
 	}
 
-	@Override
+	
 	public void setFocus() {
 
 	}

@@ -74,7 +74,7 @@ public class RamlConfigurationComposite extends Composite{
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
 			text.setText((String) init((IEditableRamlConfig) config));
 		}
-		@Override
+		
 		Object getValue() {
 			return text.getText();
 		}
@@ -90,7 +90,7 @@ public class RamlConfigurationComposite extends Composite{
 			text.setSelection((Boolean)init((IEditableRamlConfig) config));
 			text.setText(titleL);
 		}
-		@Override
+		
 		Object getValue() {
 			return text.getSelection();
 		}
@@ -141,12 +141,12 @@ public class RamlConfigurationComposite extends Composite{
 		new StringEditor(c,"API Title:") {
 			
 
-			@Override
+			
 			void save(IEditableRamlConfig cfg, Object value) {
 				cfg.setTitle((String) value);
 			}
 
-			@Override
+			
 			Object init(IEditableRamlConfig cfg) {
 				return cfg.getTitle();
 			}
@@ -154,12 +154,12 @@ public class RamlConfigurationComposite extends Composite{
 		new StringEditor(c,"API Version:") {
 			
 
-			@Override
+			
 			void save(IEditableRamlConfig cfg, Object value) {
 				cfg.setVersion((String) value);
 			}
 
-			@Override
+			
 			Object init(IEditableRamlConfig cfg) {
 				return cfg.getVersion();
 			}
@@ -167,12 +167,12 @@ public class RamlConfigurationComposite extends Composite{
 		new StringEditor(c,"Base url:") {
 			
 
-			@Override
+			
 			void save(IEditableRamlConfig cfg, Object value) {
 				cfg.setBaseUrl((String) value);
 			}
 
-			@Override
+			
 			Object init(IEditableRamlConfig cfg) {
 				return cfg.getBaseUrl();
 			}
@@ -208,7 +208,7 @@ public class RamlConfigurationComposite extends Composite{
 		bs.addSelectionListener(new SelectionAdapter() {
 			
 
-			@Override
+			
 			public void widgetSelected(SelectionEvent e) {
 				config.setSingle(bs.getSelection());
 			}

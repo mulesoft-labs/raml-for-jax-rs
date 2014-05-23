@@ -59,7 +59,7 @@ public class AnnotationModel implements IAnnotationModel {
 	}
 
 
-	@Override
+	
 	public IAnnotationModel[] getSubAnnotations(String pairName) {
 		try {
 		Method method = annotation.getClass().getMethod(pairName);

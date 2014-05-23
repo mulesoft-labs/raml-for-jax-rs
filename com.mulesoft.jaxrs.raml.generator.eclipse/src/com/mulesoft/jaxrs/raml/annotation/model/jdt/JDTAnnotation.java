@@ -101,7 +101,7 @@ public class JDTAnnotation implements IAnnotationModel {
 	}
 
 
-	@Override
+	
 	public IAnnotationModel[] getSubAnnotations(String pairName) {
 		IMemberValuePair[] memberValuePairs;
 		try {

@@ -201,7 +201,7 @@ public class RAMLModelHelper {
 	public void optimize() {
 		optimizeResourceMap(coreRaml.getResources());
 		coreRaml.visit(new RamlFileVisitorAdapter() {
-			@Override
+			
 			public boolean startVisit(Resource resource) {
 				optimizeResourceMap(resource.getResources());
 				return super.startVisit(resource);
@@ -292,7 +292,7 @@ public class RAMLModelHelper {
 
 		protected Resource res;
 
-		@Override
+		
 		public int compareTo(Entry o) {
 			return path.compareTo(o.path);
 		}

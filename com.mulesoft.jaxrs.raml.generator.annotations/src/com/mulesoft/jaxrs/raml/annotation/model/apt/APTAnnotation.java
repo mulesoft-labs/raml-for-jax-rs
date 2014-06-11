@@ -51,4 +51,10 @@ public class APTAnnotation implements IAnnotationModel{
 		return null;
 	}
 
+
+	@Override
+	public IAnnotationModel[] getSubAnnotations(String pairName) {
+		return new IAnnotationModel[0];
+	}
+
 }

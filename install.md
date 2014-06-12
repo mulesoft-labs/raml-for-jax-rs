@@ -2,7 +2,7 @@
 
 You can install the JAX RS to RAML plugin for Eclipse using the Software Update feature of Eclipse/Mulestudio.
 
-TO do it you can may just use the update site URL below. 
+To do it you can may just use the update site URL below. 
 http://jaxrstoraml.appspot.com/site/
 
 Detailed instructions:

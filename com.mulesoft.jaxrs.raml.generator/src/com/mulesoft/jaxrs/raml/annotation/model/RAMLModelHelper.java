@@ -28,9 +28,6 @@ public class RAMLModelHelper {
 	}
 
 	public void addResource(Resource res) {
-		if (res.getRelativeUri().contains("/world/countries")) {
-			System.out.println("A");
-		}
 		cleanupUrl(res);
 		String relativeUri = res.getRelativeUri();
 		int c = 0;

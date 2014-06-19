@@ -111,6 +111,8 @@ public abstract class ResourceVisitor {
 
 	private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
 
+	private static final String MESSAGE = "message";
+
 	protected RAMLModelHelper spec = new RAMLModelHelper();
 
 	protected String[] classConsumes;
@@ -265,6 +267,7 @@ public abstract class ResourceVisitor {
 		res.getActions().put(action, value);
 		IParameterModel[] parameters = m.getParameters();
 		String[] responseCodes=new String[]{ResourceVisitor.DEFAULT_RESPONSE};
+		String[] responseDescriptions=new String[]{null};
 		if (config!=null)
 		{
 			responseCodes=new String[]{config.getResponseCode(action)};
@@ -273,16 +276,18 @@ public abstract class ResourceVisitor {
 		if (annotation!=null)
 		{
 			responseCodes=new String[]{annotation.getValue(ResourceVisitor.CODE)};
+			responseDescriptions=new String[]{annotation.getValue(ResourceVisitor.MESSAGE)};
 		}
 		annotation = m.getAnnotation(ResourceVisitor.API_RESPONSES);
 		if (annotation!=null)
 		{
 			IAnnotationModel[] subAnnotations = annotation.getSubAnnotations("value");
 			responseCodes=new String[subAnnotations.length];
+			responseDescriptions=new String[subAnnotations.length];
 			int a=0;
 			for (IAnnotationModel mq:subAnnotations){
 				responseCodes[a++]=mq.getValue(ResourceVisitor.CODE);
-				
+				responseDescriptions[a-1]=mq.getValue(ResourceVisitor.MESSAGE);
 			}
 		}
 		for (IParameterModel pm : parameters) {
@@ -346,10 +351,10 @@ public abstract class ResourceVisitor {
 					}
 				}
 				if (s.contains(JSON)) {
-					bodyType.setSchema(parameterName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
 					if (parameterName!=null){
-						bodyType.setExample(EXAMPLES_PREFFIX + returnName + JSON_FILE_EXT);
-						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
+						bodyType.setSchema(parameterName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
+						bodyType.setExample(EXAMPLES_PREFFIX + parameterName + JSON_FILE_EXT);
+						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + parameterName
 							+ JSON_FILE_EXT);
 					}
 
@@ -385,10 +390,16 @@ public abstract class ResourceVisitor {
 		if (producesValue == null) {
 			producesValue = classProduces;
 		}
+		int a=0;
 		for (String responseCode:responseCodes){
 		if (producesValue != null) {
 			Response value2 = new Response();
 			String text = documentation.getReturnInfo();
+			String respDesc=responseDescriptions[a];
+			if (respDesc!=null&&respDesc.length()>0){
+				text=respDesc;
+			}
+			a++;
 			if (!"".equals(text)) { //$NON-NLS-1$
 				value2.setDescription(text);
 			}
@@ -405,8 +416,8 @@ public abstract class ResourceVisitor {
 						}
 					}
 					if (s.contains(JSON)) {
-						mimeType.setSchema(returnName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
 						if (returnName!=null){
+							mimeType.setSchema(returnName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
 							mimeType.setExample(EXAMPLES_PREFFIX + returnName + JSON_FILE_EXT);
 							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
 								+ JSON_FILE_EXT);

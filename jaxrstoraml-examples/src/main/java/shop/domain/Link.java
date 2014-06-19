@@ -83,6 +83,7 @@ public class Link
     * @param val
     * @return
     */
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    public static Link valueOf(String val)
    {
       Matcher matcher = parse.matcher(val);

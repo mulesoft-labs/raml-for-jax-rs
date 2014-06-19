@@ -1,6 +1,5 @@
 package shop.services;
 
-import org.springframework.transaction.annotation.Transactional;
 
 import shop.domain.Customer;
 import shop.domain.LineItem;
@@ -22,7 +21,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
 public class OrderResourceBean implements OrderResource
 {
    private EntityManager em;
@@ -108,6 +106,7 @@ public class OrderResourceBean implements OrderResource
 
    }
 
+   @SuppressWarnings("unused")
    public void purgeOrders()
    {
       int updated = em.createQuery("delete from PurchaseOrder o where o.cancelled = true").executeUpdate();
@@ -121,7 +120,8 @@ public class OrderResourceBean implements OrderResource
       return builder.build();
    }
 
-   public Response getOrders(int start,
+   @SuppressWarnings("rawtypes")
+public Response getOrders(int start,
                              int size,
                              UriInfo uriInfo)
    {

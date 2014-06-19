@@ -1,6 +1,5 @@
 package shop.services;
 
-import org.springframework.transaction.annotation.Transactional;
 
 import shop.domain.Link;
 import shop.domain.Product;
@@ -17,7 +16,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
 public class ProductResourceBean implements ProductResource
 {
    private EntityManager em;
@@ -58,6 +56,7 @@ public class ProductResourceBean implements ProductResource
       return product;
    }
 
+   @SuppressWarnings("rawtypes")
    public Products getProducts(int start,
                                int size,
                                String name,

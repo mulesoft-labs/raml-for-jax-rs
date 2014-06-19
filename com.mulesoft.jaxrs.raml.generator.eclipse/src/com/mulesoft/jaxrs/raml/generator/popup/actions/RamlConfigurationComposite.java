@@ -45,7 +45,7 @@ public class RamlConfigurationComposite extends Composite{
 		}
 		((IEditableRamlConfig) config).setProtocols(p);
 		((IEditableRamlConfig) config).setSorted(sorted.getSelection());
-		((IEditableRamlConfig) config).setDoFullTree(doFull.getSelection());
+		((IEditableRamlConfig) config).setDoFullTree(!doFull.getSelection());
 		for (ActionType a:actionType_To_Code.keySet()){
 			Text t=actionType_To_Code.get(a);
 			((IEditableRamlConfig) config).setDefaultResponseCode(a,t.getText());
@@ -199,8 +199,8 @@ public class RamlConfigurationComposite extends Composite{
 		sorted.setText("Sort resources alphabetically");
 		sorted.setSelection(config.isSorted());
 		doFull = new Button(c, SWT.CHECK);
-		doFull.setText("Generate resources even for common URI path fragments that have no associated methods");
-		doFull.setSelection(config.doFullTree());
+		doFull.setText("Skip resources with no methods");
+		doFull.setSelection(!config.doFullTree());
 		
 		final Button bs = new Button(c, SWT.CHECK);
 		bs.setText("Inline schemas and example in single raml file");

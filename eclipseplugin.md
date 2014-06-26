@@ -24,11 +24,11 @@ That's it. Now you are ready to start generating RAML APIs from your existing JA
 - Right click to show popup menu.
 - "Generate RAML from classes"
 
-![alt tag](http://prntscr.com/3wpqzo)
+See: http://prntscr.com/3wpqzo
 
 Configuration
 
-![alt tag](http://prntscr.com/3wqd8s)
+See: http://prntscr.com/3wqd8s
 
 
 Click finish and you RAML API is ready.

@@ -3,6 +3,8 @@
 
 JAX - RS to RAML project goal is to provide full featured easy to use components for generation of RAML apis description starting from from JAX-RS-annotated Java code
 
+JAX - RS to RAML is based on analizing annotations content.  at the moment following annotations are supported:[Supported annotations](https://github.com/mulesoft/jaxrs-to-raml/blob/master/annotations.md)
+
 ## Project content
 Currently project contains following modules:
 
@@ -16,8 +18,8 @@ Currently project contains following modules:
  * Inferring media types when possible
  * Including javadoc documentation to descriptions of resources, methods, parameters.
  * Statically determinable sub resources. (no overriding)
- * Default values for parameters
- * XML/Json schemas and examples(stubs) generation with JAXB
+ * Default values for parameters as well as specifying constraints on parameters using javax.validation annotations
+ * [XML/Json schemas and examples(stubs) generation with JAXB] (https://github.com/mulesoft/jaxrs-to-raml/blob/master/jaxb.md)
 
 
 ## Installation and usage guides

@@ -122,7 +122,6 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 				visitor.visit(aptType);
 			}
 			String raml = visitor.getRaml();
-			System.out.println(raml);
 			try {
 				FileWriter fileWriter = new FileWriter(outputFile);
 				writer = new PrintWriter(fileWriter);

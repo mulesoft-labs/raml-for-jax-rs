@@ -30,7 +30,7 @@ Now you are ready to generate RAML apis for your JAX RS Applications!
 
 #Usage
 
-Select java class, or package or source folder, then do a right click to show popup menu. You should see something like this: ![Popup Menu](http://prntscr.com/3wpqzo)
+Select java class, or package or source folder, then do a right click to show popup menu. You should see something like this: http://prntscr.com/3wpqzo
 
 Then select "Generate RAML from classes"
 
@@ -43,6 +43,20 @@ Click finish and you RAML api is here...
 ##Configuration Options
 
 Eclipse plugin supports following configuration options
+
+ * Please type the file name for your RAML file - this allows you to type a name for a generated RAML file
+
+ * Folder - this setting allows you to select folder for generated RAML files.
+
+ * Basic settings - section allows you to configure defaults for your RAML file. At the moment following defaults are
+   supported:
+
+  * API Title
+  * API Version
+  * Base Url 
+  * Protocols selection.
+ 
+ * Response codes tab - this tab allows to configure default response codes for various HTTP methods
 
  * Generate an individual RAML per each Java Class - when this option is turned on, separate RAML file will be generated for each java class
    with associated @Path annotation

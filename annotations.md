@@ -3,7 +3,7 @@ At the moment we support following annotations:
 JaxRS annotations:
 
  * Path
- * Consumes,@Produces,
+ * Consumes,Produces,
  * QueryParam,FormParam,PathParam,HeaderParam
  * DELETE,GET,HEAD,OPTIONS,POST,PUT
  * DefaultValue

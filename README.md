@@ -30,5 +30,6 @@ Currently project contains following modules:
 
 ## Future features
   * Injection of request parameters to fields
-  * Constraint annotations to raml constraints conversion
+  * Inferring of response codes (by analyzing method source code)
+  * Better JSON schemas and examples
 

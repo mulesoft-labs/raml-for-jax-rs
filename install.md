@@ -36,7 +36,29 @@ Then select "Generate RAML from classes"
 
 Now you may configure some options:
 
-http://prntscr.com/3h3b7g
+http://prntscr.com/3wqd8s
 
 Click finish and you RAML api is here...
+
+== Configuration Options==
+
+Eclipse plugin supports following configuration options
+
+ * Generate an individual RAML per each Java Class - when this option is turned on, separate RAML file will be generated for each java class
+   with associated @Path annotation
+   
+ * Sort resources alphabetically - this options allows to control order of resources in a RAML file. If it is turned off resources are generated
+   in the same sequence as a methods in java code. If it is turned on - resources will be sorted alphabetically
+   
+ * Skip resources with no methods - If this options is turned on the tool will not generate resources for url path segments which did not expose any HTTP methods. 
+   This will result in more flat resource tree. 
+ 
+ * Generate schemas and examples in a signle RAML file - if this option is turned on schemas and examples will be placed inside of generated RAML file, 
+ otherwise they will be placed in separate files and include links will be inserted in a generated RAML file.
+
+
+
+
+
+
 

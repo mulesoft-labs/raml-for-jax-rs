@@ -221,9 +221,18 @@ public class RamlConfigurationComposite extends Composite{
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(doFull);
 		return c;
 	}
+	
+	boolean oldSingleFileSelection;
 
 	public void setSeparateFilesSelected(boolean selection) {
 		singleFile.setEnabled(!selection);
+		if (!selection){
+			oldSingleFileSelection=singleFile.getSelection();
+			singleFile.setSelection(false);
+		}
+		else{
+			singleFile.setSelection(oldSingleFileSelection);
+		}
 	}
 	
 

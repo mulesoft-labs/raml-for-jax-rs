@@ -17,7 +17,12 @@ And press the enter key.
 The required component is placed in RAML Tools category . Select the checkbox next to RAML Tools. Click Next.
 Click Next again. Read the license agreements and then select I accept the terms of the license agreements. Click Finish.
 
-Then you will see security warning saying that you are installing software that contains unsigned content. Click 'Ok'.
+Then you will see security warning saying that you are installing software that contains unsigned content. 
+This warning means that plugin is unsigned and eclipse can not verify identity of plugin authors because some
+of the jars are not signed.
+
+
+Click 'Ok'.
 
 After that you will see dialog asking if you would like to restart Eclipse. Click Restart Now.
 

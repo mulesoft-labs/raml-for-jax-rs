@@ -24,7 +24,7 @@ Let's look on this command line in details:
  * -processorpath com.mulesoft.jaxrs.raml.generator.annotations.jar tells javac where to find annotation processor
  * -processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor adds annotation processor to javac flow
  * -Aramlpath=helloworld tells desctination folder for RAML
- * -implicit:class tells javac that annotations in dependent files should also be resolvable to processo.r.
+ * -implicit:class tells javac that annotations in dependent files should also be resolvable to processor.
 
 
 

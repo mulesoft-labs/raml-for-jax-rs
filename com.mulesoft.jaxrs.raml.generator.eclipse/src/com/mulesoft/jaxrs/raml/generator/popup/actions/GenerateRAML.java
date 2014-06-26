@@ -114,7 +114,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				public void widgetSelected(SelectionEvent e) {
 					ContainerSelectionDialog dlg=new ContainerSelectionDialog(getShell(), 
 							ResourcesPlugin.getWorkspace().getRoot(), 
-							true, "Please select folder to store raml files");
+							true, "Please select folder to store RAML files");
 					int open = dlg.open();
 					if (open==Dialog.OK){
 						Object[] result = dlg.getResult();
@@ -125,7 +125,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				}
 			});
 			final Button bs1 = new Button(t, SWT.CHECK);
-			bs1.setText("Generate separate raml files for a different java classes");
+			bs1.setText("Generate an individual RAML per each Java Class");
 			bs1.setSelection(separateFiles);
 			
 			//bs.setEnabled(!bs1.getSelection());
@@ -138,6 +138,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 					for (Control c:children){
 						c.setEnabled(!selection);
 					}
+					ramlConfigurationComposite.setSeparateFilesSelected(selection);
 					separateFiles=selection;
 					//bs.setEnabled(!selection);
 				}
@@ -146,6 +147,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			GridDataFactory.fillDefaults().grab(true, false).span(3,1).applyTo(bs1);
 			GridDataFactory.fillDefaults().applyTo(t);
 			ramlConfigurationComposite = new RamlConfigurationComposite(t, SWT.NONE,new PreferencesConfig());
+			ramlConfigurationComposite.setSeparateFilesSelected(separateFiles);
 			GridDataFactory.fillDefaults().grab(true, true).span(3,1).applyTo(ramlConfigurationComposite);
 			t.setLayout(gridLayout);
 
@@ -394,7 +396,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 	
 	private IFile getNewRAMLFile(IProject project) {
 		container=project;
-		InputDialog inputDialog = new RAMLConfigurationDialog(shell, "Generate RAML", "Please type file name for you raml file", "api.raml", null);
+		InputDialog inputDialog = new RAMLConfigurationDialog(shell, "Generate RAML", "Please type the file name for your RAML file", "api.raml", null);
 		int open = inputDialog.open();
 		if (open == Dialog.OK) {
 			return container.getFile(new Path(inputDialog.getValue()));

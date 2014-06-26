@@ -112,6 +112,7 @@ public class RamlConfigurationComposite extends Composite{
 		
 	}
 	HashMap<ActionType, Text>actionType_To_Code=new HashMap<ActionType, Text>();
+	private Button singleFile;
 
 	private Control generateResponseCodesTab(CTabFolder fld) {
 		Composite c=new Composite(fld, SWT.NONE);
@@ -202,23 +203,27 @@ public class RamlConfigurationComposite extends Composite{
 		doFull.setText("Skip resources with no methods");
 		doFull.setSelection(!config.doFullTree());
 		
-		final Button bs = new Button(c, SWT.CHECK);
-		bs.setText("Inline schemas and example in single raml file");
-		bs.setSelection(config.isSingle());
-		bs.addSelectionListener(new SelectionAdapter() {
+		singleFile = new Button(c, SWT.CHECK);
+		singleFile.setText("Generate schemas and examples in a single RAML file");
+		singleFile.setSelection(config.isSingle());
+		singleFile.addSelectionListener(new SelectionAdapter() {
 			
 
 			
 			public void widgetSelected(SelectionEvent e) {
-				config.setSingle(bs.getSelection());
+				config.setSingle(singleFile.getSelection());
 			}
 		});
 		
 		
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(bs);
+		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(singleFile);
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(sorted);
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(doFull);
 		return c;
+	}
+
+	public void setSeparateFilesSelected(boolean selection) {
+		singleFile.setEnabled(!selection);
 	}
 	
 

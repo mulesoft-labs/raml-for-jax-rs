@@ -40,7 +40,7 @@ http://prntscr.com/3wqd8s
 
 Click finish and you RAML api is here...
 
-== Configuration Options==
+##Configuration Options
 
 Eclipse plugin supports following configuration options
 

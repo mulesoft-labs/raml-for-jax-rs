@@ -28,6 +28,6 @@ Let's look on this command line in details:
 
 
 
-If (path) ends with .raml (smth like ramlfolder/testresource.raml), it would be treated as target filename. Else it would be treated as directory, and target filename would be (path)/generated.raml (e.g. -Aramplpath=myraml would result in dest file myraml/generated.raml). In both cases parent directories for destination file would be created automatically, if needed
+If (ramlpath) ends with .raml (smth like ramlfolder/testresource.raml), it would be treated as target filename. Else it would be treated as directory, and target filename would be (path)/generated.raml (e.g. -Aramplpath=myraml would result in dest file myraml/generated.raml). In both cases parent directories for destination file would be created automatically, if needed
 
 

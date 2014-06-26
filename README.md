@@ -17,7 +17,10 @@ Currently project contains following modules:
  * Including javadoc documentation to descriptions of resources, methods, parameters.
  * Statically determinable sub resources. (no overriding)
  * Default values for parameters
- * XML/Json schemas and examples(stubs) generation with JAXB
+ * [XML/Json schemas and examples(stubs) generation with JAXB] (https://github.com/mulesoft/jaxrs-to-raml/blob/master/jaxb.md)
+
+Tool is based on analizing annotations content  at the moment following annotations are supported:[Supported annotations](https://github.com/mulesoft/jaxrs-to-raml/blob/master/annotations.md)
+
 
 
 ## Installation and usage guides

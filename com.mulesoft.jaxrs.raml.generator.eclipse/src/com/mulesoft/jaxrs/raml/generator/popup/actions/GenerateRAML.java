@@ -125,7 +125,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				}
 			});
 			final Button bs1 = new Button(t, SWT.CHECK);
-			bs1.setText("Generate an individual RAML per each Java Class");
+			bs1.setText("Generate an individual RAML file per each Java Class");
 			bs1.setSelection(separateFiles);
 			
 			//bs.setEnabled(!bs1.getSelection());

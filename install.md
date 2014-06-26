@@ -30,7 +30,7 @@ Now you are ready to generate RAML apis for your JAX RS Applications!
 
 #Usage
 
-Select java class, or package or source folder, then do a right click to show popup menu. You should see something like this: http://prntscr.com/3h39zr
+Select java class, or package or source folder, then do a right click to show popup menu. You should see something like this: ![Popup Menu](http://prntscr.com/3wpqzo)
 
 Then select "Generate RAML from classes"
 

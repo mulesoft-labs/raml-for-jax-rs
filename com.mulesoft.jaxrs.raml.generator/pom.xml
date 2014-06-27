@@ -15,7 +15,8 @@
         	       
         </configuration>
       </plugin>
-    </plugins>   
+    </plugins>
+    <testSourceDirectory>tests</testSourceDirectory>   
   </build>
   <dependencies>  
        <dependency>

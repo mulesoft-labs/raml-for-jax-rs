@@ -1,16 +1,16 @@
-# Installation instructions:
+# Eclipse Plugin Installation Instructions:
 
 You can install the JAXRS-to-RAML plugin for Eclipse/Mule Studio by using the "Software Update" feature from your IDE.
 
 - Start Eclipse or Mule Studio.
 - Select Help > Install New Software.
-- In the emerging dialog, enter the update site URL (http://jaxrstoraml.appspot.com/site/) into the "Work with" textbox, and press the enter.
+- In the "New Software" window, enter the update site URL (http://jaxrstoraml.appspot.com/site/) into the "Work with" textbox, and press the enter.
 - Select the checkbox next to "RAML Tools". Click Next.
 - Click Next again.
 - Read the license agreements, accept these, and click Finish.
 
 At some point of the installation, you will see a pop-up warning that you are installing software that contains unsigned content.
-This means that eclipse cannot verify the identity of the plugin authors because some of the jars are not signed. Click 'Ok'.
+This means that Eclipse cannot verify the identity of the plugin authors because some of the jars are not signed. Click 'Ok'.
 
 **Note**: If you want to learn more about signing JARs, you can find useful information here: http://wiki.eclipse.org/JAR_Signing.
 
@@ -22,16 +22,13 @@ That's it. Now you are ready to start generating RAML APIs from your existing JA
 
 - Select a java class, package or source folder
 - Right click to show popup menu.
+
+![context-menu](https://raw.githubusercontent.com/mulesoft/jaxrs-to-raml/master/doc-images/context-menu.png?token=2273179__eyJzY29wZSI6IlJhd0Jsb2I6bXVsZXNvZnQvamF4cnMtdG8tcmFtbC9tYXN0ZXIvZG9jLWltYWdlcy9jb250ZXh0LW1lbnUucG5nIiwiZXhwaXJlcyI6MTQwNDQ4NTQ0NX0%3D--67c11aed28e27697a348a7d34fca6b231964911b)
 - "Generate RAML from classes"
 
-See: http://prntscr.com/3wpqzo
+![configuration-window](https://raw.githubusercontent.com/mulesoft/jaxrs-to-raml/master/doc-images/configuration-window.png?token=2273179__eyJzY29wZSI6IlJhd0Jsb2I6bXVsZXNvZnQvamF4cnMtdG8tcmFtbC9tYXN0ZXIvZG9jLWltYWdlcy9jb25maWd1cmF0aW9uLXdpbmRvdy5wbmciLCJleHBpcmVzIjoxNDA0NDg1NTE4fQ%3D%3D--fc0943b62351bede5c049d8b07bd1a0f73fd96bc)
 
-Configuration
-
-See: http://prntscr.com/3wqd8s
-
-
-Click finish and you RAML API is ready.
+Choose the options (check "Configuration Options" section for a detailed explanation) according to your needs and click OK. **Your API is ready!**
 
 ##Configuration Options
 
@@ -42,7 +39,7 @@ The plugin supports the following configuration options:
 - Basic settings tab: Configure the default options for your RAML file:
   - API Title
   - API Version
-  - Base Url
+  - Base URL
   - Protocols selection.
 - Response codes tab: Configure the default response codes for the HTTP methods.
 - Generate an individual RAML per each Java Class: When checked, a separate RAML file will be generated for each Java class annotated with @Path.

@@ -601,11 +601,12 @@ public abstract class ResourceVisitor {
 	}
 
 	protected void generateExamle(File schemaFile, String content) {
-	
+		if (schemaFile!=null){
 		File examplesDir = schemaFile.getParentFile();
-		if (examplesDir.getName().endsWith(SCHEMAS_FOLDER)) { 
+		if (examplesDir!=null&& examplesDir.getName().endsWith(SCHEMAS_FOLDER)) { 
 			examplesDir = new File(examplesDir.getParent(),EXAMPLES_FOLDER); 
 			examplesDir.mkdirs();
+		}
 		}
 		/*String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
 		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);*/

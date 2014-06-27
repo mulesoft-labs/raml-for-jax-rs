@@ -91,7 +91,7 @@ public class BasicTest extends TestCase{
 		TestCase.assertNotNull(list.get(0).getDefaultValue());
 	}
 	
-	public void test5(){
+	/*public void test5(){
 		RuntimeRamlBuilder runtimeRamlBuilder = new RuntimeRamlBuilder();
 		runtimeRamlBuilder.addClass(TestResource3.class);
 		String raml = runtimeRamlBuilder.toRAML();
@@ -101,5 +101,5 @@ public class BasicTest extends TestCase{
 		Action action = resource.getAction(ActionType.POST);
 		TestCase.assertNotNull(action);
 	}
-	
+	*/
 }

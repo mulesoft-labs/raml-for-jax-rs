@@ -17,9 +17,9 @@ This far, you can use JAXRS-to-RAML the following ways:
 
 ##Key Supported Features:
 - All basic action types, path annotations, path, query, and form parameters.
-- Generating a resource tree based on the jersey resources available in the source path.
+- Generating a resource tree based on the Jersey resources available in the source path.
 - Inferring media types when possible.
-- Including javadoc documentation to resources, methods, and parameters descriptions.
+- Including Javadoc documentation to resources, methods, and parameters descriptions.
 - Statically determinable sub-resources (no overriding).
 - Default values and validations for parameters (using javax.validation annotations).
 - [XML/Json schemas and examples(stubs) generation with JAXB](https://github.com/mulesoft/jaxrs-to-raml/blob/master/jaxb.md)
@@ -27,41 +27,42 @@ This far, you can use JAXRS-to-RAML the following ways:
 ### Supported Annotations
 ####JAXRS Annotations:
 These annotations have exactly the same semantical meaning than in JAXRS:
-- Path
-- Consumes, Produces
-- QueryParam, FormParam, PathParam, HeaderParam
-- DELETE, GET, HEAD, OPTIONS, POST, PUT
-- DefaultValue
+- Path.
+- Consumes, Produces.
+- QueryParam, FormParam, PathParam, HeaderParam.
+- DELETE, GET, HEAD, OPTIONS, POST, PUT.
+- DefaultValue.
 
 **Note:** CookieParam and MatrixParam annotations are not supported in this version. A deep discussion
 about how these should be represented in RAML must be held in order to have a good implementation. Feel free to [contribute
 with ideas/opinions about it](https://github.com/mulesoft/jaxrs-to-raml/issues?labels=Cookie%26Matrix+params&milestone=&page=1&state=closed).
 ####Extended Annotations
-The following annotations are not part of JAXRS specification itself. However, they are useful to descrobe RESTful APIs when working with
-JAVA projects, and so, it was decided to support them by the tool.
+The following annotations are not part of JAXRS specification itself. However, these are useful to describe RESTful APIs when working with
+JAVA projects, and so, it was decided to add support for them.
 
 #####Swagger Annotations:
-When these annotations exist, the tool is able to determine the possible response codes and generate the proper documentation.
+If the project is using these swagger annotations, the tool is able to determine the possible response codes
+and generate the proper documentation.
 - ApiResponse
 - ApiResponses
 
 #####Validation Annotations:
-These annotations are translated as RAML parameters contrains.
-- NotNull
-- Pattern
-- Min
-- DecimalMin
-- Max
-- DecimalMax
+These annotations are interpreted as RAML parameters contrains.
+- NotNull.
+- Pattern.
+- Min.
+- DecimalMin.
+- Max.
+- DecimalMax.
 
 ## Installation and Usage Guides
-- [Installation instructions/Usage guide for Eclipse or Mule Studio](https://github.com/mulesoft/jaxrs-to-raml/blob/master/eclipseplugin.md)
+- [Installation instructions/Usage guide for Eclipse/Mule Studio](https://github.com/mulesoft/jaxrs-to-raml/blob/master/eclipseplugin.md)
 - [Installation instructions/Usage guide for using as plugin to javac](https://github.com/mulesoft/jaxrs-to-raml/blob/master/javac.md)
 
 ##Examples
 Packed with the project source code, you can find an ["examples" folder](https://github.com/mulesoft/jaxrs-to-raml/tree/master/examples).
 This folder contains several Java Projects that you can use to try JAXRS-to-RAML.
-The following snippets show one Java Class included on the examples, and the RAML result for that class:
+The following snippets show one Java Class included on the examples, and the RAML result that the tool will generate for that class:
 
 Java Class (CustomerResource.java):
 ```java
@@ -240,4 +241,4 @@ schemas:
 
 ## Future Features
 - Injection of request parameters to fields.
-- Support for XML examples, JSON examples, and JSON Schemas for the javac plugin.
+- Support for XML examples, JSON examples, and JSON schemas for the javac plugin.

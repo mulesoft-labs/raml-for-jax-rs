@@ -3,9 +3,8 @@
   <groupId>com.mulesoft.jaxrs.raml.generator</groupId>
   <artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>tests</testSourceDirectory>
+  <build>      
+	<sourceDirectory>src</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -13,16 +12,68 @@
         <configuration>
           <source>1.7</source>
           <target>1.7</target>
+        	       
         </configuration>
       </plugin>
-    </plugins>
+    </plugins>   
   </build>
-  <dependencies>
-  	 <dependency>
-  		<groupId>org.raml</groupId>
-  		<artifactId>raml-parser-ppa</artifactId>
-  		<version>0.9-SNAPSHOT</version>
-  	 </dependency>
+  <dependencies>  
+       <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+	<groupId>org.glassfish</groupId>
+	<artifactId>javax.json</artifactId>
+	<version>1.0.4</version>
+	</dependency>
+       <dependency>
+	<groupId>org.bluestemsoftware.open.maven.tparty</groupId>
+	<artifactId>jettison</artifactId>
+	<version>1.1</version>
+</dependency>        
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kitchen-eel</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>1.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.1.1</version>
+        </dependency>      	 
   	 <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

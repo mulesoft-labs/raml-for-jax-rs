@@ -14,8 +14,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
-
-import org.dynvocation.lib.xsd4j.XSDUtil;
 import org.raml.emitter.IRamlHierarchyTarget;
 import org.raml.emitter.RamlEmitterV2;
 import org.raml.model.Action;
@@ -609,8 +607,9 @@ public abstract class ResourceVisitor {
 			examplesDir = new File(examplesDir.getParent(),EXAMPLES_FOLDER); 
 			examplesDir.mkdirs();
 		}
-		String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
-		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);
+		/*String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
+		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);*/
+		return;
 	}
 
 	public void setPreferences(IRamlConfig preferencesConfig) {

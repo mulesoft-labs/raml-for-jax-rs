@@ -1,0 +1,312 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building com.mulesoft.jaxrs.raml.generator.annotations 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ com.mulesoft.jaxrs.raml.generator.annotations ---
+[INFO] Deleting C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator.annotations\target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ com.mulesoft.jaxrs.raml.generator.annotations ---
+[debug] execute contextualize
+[WARNING] Using platform encoding (Cp1251 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator.annotations\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ com.mulesoft.jaxrs.raml.generator.annotations ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding Cp1251, i.e. build is platform dependent!
+[INFO] Compiling 7 source files to C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator.annotations\target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[10,48] cannot find symbol
+  symbol:   class IMethodModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[11,48] cannot find symbol
+  symbol:   class ITypeModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[16,48] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[17,48] cannot find symbol
+  symbol:   class IBasicModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[19,43] cannot find symbol
+  symbol: class IBasicModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[13,50] cannot find symbol
+  symbol: class ITypeModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[22,16] cannot find symbol
+  symbol:   class IMethodModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[34,16] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[104,16] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[9,48] cannot find symbol
+  symbol:   class ITypeModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[10,48] cannot find symbol
+  symbol:   class ResourceVisitor
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[12,41] cannot find symbol
+  symbol: class ResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[21,42] cannot find symbol
+  symbol:   class ITypeModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[44,19] cannot find symbol
+  symbol:   class ResourceVisitor
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[13,48] cannot find symbol
+  symbol:   class IDocInfo
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[14,48] cannot find symbol
+  symbol:   class IMethodModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[15,48] cannot find symbol
+  symbol:   class IParameterModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[16,48] cannot find symbol
+  symbol:   class ITypeModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[18,57] cannot find symbol
+  symbol: class IMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[27,16] cannot find symbol
+  symbol:   class IParameterModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[37,16] cannot find symbol
+  symbol:   class IDocInfo
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[63,16] cannot find symbol
+  symbol:   class ITypeModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[99,16] cannot find symbol
+  symbol:   class ITypeModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[10,48] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[12,39] cannot find symbol
+  symbol: class IAnnotationModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[56,16] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTAnnotation
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTParameter.java:[7,48] cannot find symbol
+  symbol:   class IParameterModel
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTParameter.java:[9,55] cannot find symbol
+  symbol: class IParameterModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/RAMLAnnotationProcessor.java:[40,48] cannot find symbol
+  symbol:   class ResourceVisitor
+  location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[40,38] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[105,17] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[106,22] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[24,27] cannot find symbol
+  symbol:   class IMethodModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[24,61] cannot find symbol
+  symbol:   class IMethodModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[31,43] cannot find symbol
+  symbol:   class IMethodModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[28,25] cannot find symbol
+  symbol:   method generateXSDForClass(java.lang.Class<capture#1 of ?>)
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[33,21] cannot find symbol
+  symbol:   variable classLoader
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[35,41] cannot find symbol
+  symbol:   variable classLoader
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[36,33] cannot find symbol
+  symbol:   method generateXSDForClass(java.lang.Class<capture#2 of ?>)
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[45,47] cannot find symbol
+  symbol:   variable outputFile
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[45,74] cannot find symbol
+  symbol:   variable classLoader
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[43,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[29,27] cannot find symbol
+  symbol:   class IParameterModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[29,64] cannot find symbol
+  symbol:   class IParameterModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[33,43] cannot find symbol
+  symbol:   class IParameterModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[38,28] cannot find symbol
+  symbol:   class IDocInfo
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[57,28] cannot find symbol
+  symbol:   class IAnnotationModel
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTAnnotation
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[55,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/RAMLAnnotationProcessor.java:[119,25] cannot find symbol
+  symbol:   class ResourceVisitor
+  location: class com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
+[INFO] 49 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.233s
+[INFO] Finished at: Fri Jun 27 23:47:33 NOVT 2014
+[INFO] Final Memory: 13M/152M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile) on project com.mulesoft.jaxrs.raml.generator.annotations: Compilation failure: Compilation failure:
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[10,48] cannot find symbol
+[ERROR] symbol:   class IMethodModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[11,48] cannot find symbol
+[ERROR] symbol:   class ITypeModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[16,48] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[17,48] cannot find symbol
+[ERROR] symbol:   class IBasicModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[19,43] cannot find symbol
+[ERROR] symbol: class IBasicModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[13,50] cannot find symbol
+[ERROR] symbol: class ITypeModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[22,16] cannot find symbol
+[ERROR] symbol:   class IMethodModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[34,16] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[104,16] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[9,48] cannot find symbol
+[ERROR] symbol:   class ITypeModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[10,48] cannot find symbol
+[ERROR] symbol:   class ResourceVisitor
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[12,41] cannot find symbol
+[ERROR] symbol: class ResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[21,42] cannot find symbol
+[ERROR] symbol:   class ITypeModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[44,19] cannot find symbol
+[ERROR] symbol:   class ResourceVisitor
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[13,48] cannot find symbol
+[ERROR] symbol:   class IDocInfo
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[14,48] cannot find symbol
+[ERROR] symbol:   class IMethodModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[15,48] cannot find symbol
+[ERROR] symbol:   class IParameterModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[16,48] cannot find symbol
+[ERROR] symbol:   class ITypeModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[18,57] cannot find symbol
+[ERROR] symbol: class IMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[27,16] cannot find symbol
+[ERROR] symbol:   class IParameterModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[37,16] cannot find symbol
+[ERROR] symbol:   class IDocInfo
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[63,16] cannot find symbol
+[ERROR] symbol:   class ITypeModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[99,16] cannot find symbol
+[ERROR] symbol:   class ITypeModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[10,48] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[12,39] cannot find symbol
+[ERROR] symbol: class IAnnotationModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[56,16] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTAnnotation
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTParameter.java:[7,48] cannot find symbol
+[ERROR] symbol:   class IParameterModel
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTParameter.java:[9,55] cannot find symbol
+[ERROR] symbol: class IParameterModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/RAMLAnnotationProcessor.java:[40,48] cannot find symbol
+[ERROR] symbol:   class ResourceVisitor
+[ERROR] location: package com.mulesoft.jaxrs.raml.annotation.model
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[40,38] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[105,17] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTModel.java:[106,22] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[24,27] cannot find symbol
+[ERROR] symbol:   class IMethodModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[24,61] cannot find symbol
+[ERROR] symbol:   class IMethodModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTType.java:[31,43] cannot find symbol
+[ERROR] symbol:   class IMethodModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTType
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[28,25] cannot find symbol
+[ERROR] symbol:   method generateXSDForClass(java.lang.Class<capture#1 of ?>)
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[33,21] cannot find symbol
+[ERROR] symbol:   variable classLoader
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[35,41] cannot find symbol
+[ERROR] symbol:   variable classLoader
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[36,33] cannot find symbol
+[ERROR] symbol:   method generateXSDForClass(java.lang.Class<capture#2 of ?>)
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[45,47] cannot find symbol
+[ERROR] symbol:   variable outputFile
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[45,74] cannot find symbol
+[ERROR] symbol:   variable classLoader
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTResourceVisitor
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTResourceVisitor.java:[43,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[29,27] cannot find symbol
+[ERROR] symbol:   class IParameterModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[29,64] cannot find symbol
+[ERROR] symbol:   class IParameterModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[33,43] cannot find symbol
+[ERROR] symbol:   class IParameterModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTMethodModel.java:[38,28] cannot find symbol
+[ERROR] symbol:   class IDocInfo
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTMethodModel
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[57,28] cannot find symbol
+[ERROR] symbol:   class IAnnotationModel
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.APTAnnotation
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/APTAnnotation.java:[55,9] method does not override or implement a method from a supertype
+[ERROR] /C:/Users/kor/git/jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.annotations/src/com/mulesoft/jaxrs/raml/annotation/model/apt/RAMLAnnotationProcessor.java:[119,25] cannot find symbol
+[ERROR] symbol:   class ResourceVisitor
+[ERROR] location: class com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

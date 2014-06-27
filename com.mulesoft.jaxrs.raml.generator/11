@@ -1,0 +1,48 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building com.mulesoft.jaxrs.raml.generator 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ com.mulesoft.jaxrs.raml.generator ---
+[INFO] Deleting C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator\target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ com.mulesoft.jaxrs.raml.generator ---
+[debug] execute contextualize
+[WARNING] Using platform encoding (Cp1251 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:compile (default-compile) @ com.mulesoft.jaxrs.raml.generator ---
+[WARNING] File encoding has not been set, using platform encoding Cp1251, i.e. build is platform dependent!
+[INFO] Compiling 169 source files to C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator\target\classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ com.mulesoft.jaxrs.raml.generator ---
+[debug] execute contextualize
+[WARNING] Using platform encoding (Cp1251 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:testCompile (default-testCompile) @ com.mulesoft.jaxrs.raml.generator ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ com.mulesoft.jaxrs.raml.generator ---
+[INFO] No tests to run.
+[INFO] Surefire report directory: C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.2:jar (default-jar) @ com.mulesoft.jaxrs.raml.generator ---
+[INFO] Building jar: C:\Users\kor\git\jaxrs-to-raml\com.mulesoft.jaxrs.raml.generator\target\com.mulesoft.jaxrs.raml.generator-0.0.1-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 5.085s
+[INFO] Finished at: Sat Jun 28 00:34:28 NOVT 2014
+[INFO] Final Memory: 16M/224M
+[INFO] ------------------------------------------------------------------------

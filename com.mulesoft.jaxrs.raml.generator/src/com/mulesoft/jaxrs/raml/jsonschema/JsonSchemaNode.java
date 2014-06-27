@@ -257,34 +257,7 @@ public class JsonSchemaNode implements ISchemaNode{
 		fireChanges();
 	}
 	
-	public void removeArrayItem(JsonSchemaNode item){
-		
-		if(this.arrayItems==null||this.arrayItems.isEmpty())
-			return;
-		
-		item.setName("");
-		if(this.arrayItems.size()==1){
-			if( this.arrayItems.remove(item) ){
-				this.object.remove("items");
-			}
-			return;
-		}
-		
-		this.arrayItems.remove(item);
-		try {
-			JSONArray arr = this.object.getJSONArray("items");
-			arr.remove(item.object);
-		} catch (JSONException e) {
-		}				
- 
-		if(this.arrayItems.size()==1){
-			try {
-				this.object.put("items", this.arrayItems.iterator().next().object );
-			} catch (JSONException e) {
-			}
-		}
-		fireChanges();
-	}
+	
 	
 	private void reFillProperties() {
 		try {
@@ -346,14 +319,7 @@ public class JsonSchemaNode implements ISchemaNode{
 		}
 	}
 	
-	public void removeChildNode(JsonSchemaNode node){
-		if(type.equals("array")){
-			this.removeArrayItem(node);
-		}
-		else if(type.equals("object")){
-			this.removeProperty(node);
-		}
-	}
+	
 
 	
 	public String toString() {

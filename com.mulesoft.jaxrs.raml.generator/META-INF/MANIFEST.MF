@@ -4,7 +4,6 @@ Bundle-Name: Generator
 Bundle-SymbolicName: com.mulesoft.jaxrs.raml.generator;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: MULESOFT
-Require-Bundle: rampl-plugin
 Export-Package: com.mulesoft.jaxrs.raml.annotation.model,
  com.mulesoft.jaxrs.raml.annotation.model.reflection,
  com.mulesoft.jaxrs.raml.jsonschema

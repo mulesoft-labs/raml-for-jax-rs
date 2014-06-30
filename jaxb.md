@@ -8,4 +8,4 @@ your DTOs (Data Transfer Objects) must be annotated with @XMLRootElement used by
 XML examples generation is based on the previously generated XML schema and is designed to be the minimal valid XML inferred from the schema.
 Having said that, if you needed a real life example you should use it as a draft and enrich it with real world values.
 
-JSON Schema and Example, JSON schema and example are currently generated from XML example
+*JSON Schema* and *Example* are currently generated from XML example

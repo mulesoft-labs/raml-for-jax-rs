@@ -10,13 +10,13 @@ It's based on analyzing the existing code annotations.
 
 
 ##Project Modules
-This far, you can use JAXRS-to-RAML the following ways:
+So far, you can use JAXRS-to-RAML in the following ways:
 - Eclipse/Mule Studio plugin: Perform the RAML generation from your IDE by selecting the package containing the source Java classes.
-- Javac plugin: Perform the RAML generation from Command Line.
+- Javac plugin: Perform the RAML generation from the Command Line.
 - Runtime: Use JAXRS-to-RAML in your Java application to generate a RAML definition from some Java Code in Runtime.
 
 ##Key Supported Features:
-- All basic action types, path annotations, path, query, and form parameters.
+- Accepting all basic action types, path annotations, path, query, and form parameters.
 - Generating a resource tree based on the Jersey resources available in the source path.
 - Inferring media types when possible.
 - Including Javadoc documentation to resources, methods, and parameters descriptions.
@@ -26,7 +26,7 @@ This far, you can use JAXRS-to-RAML the following ways:
 
 ### Supported Annotations
 ####JAXRS Annotations:
-These annotations have exactly the same semantical meaning than in JAXRS:
+In JAXRS-to-RAML, these annotations have exactly the same semantical meaning as in JAXRS:
 - Path.
 - Consumes, Produces.
 - QueryParam, FormParam, PathParam, HeaderParam.
@@ -47,7 +47,7 @@ and generate the proper documentation.
 - ApiResponses
 
 #####Validation Annotations:
-These annotations are interpreted as RAML parameters contrains.
+These annotations are interpreted as RAML parameters constrains.
 - NotNull.
 - Pattern.
 - Min.
@@ -241,4 +241,4 @@ schemas:
 
 ## Future Features
 - Injection of request parameters to fields.
-- Support for XML examples, JSON examples, and JSON schemas for the javac plugin.
+- Support for *XML examples*, *JSON examples*, and *JSON schemas* for the javac plugin.

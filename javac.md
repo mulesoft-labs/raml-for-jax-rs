@@ -1,6 +1,6 @@
 ## javac Plugin Installation Instructions
 
-You can download the command tool jar from http://jaxrstoraml.appspot.com/jaxrs.raml.apt.jar, or you can clone this repository and
+You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/jaxrs.raml.apt.jar, or you can clone this repository and
 build it locally by following these steps:
 
 1. Go to the project root folder.

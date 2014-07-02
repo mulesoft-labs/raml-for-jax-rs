@@ -32,7 +32,7 @@ For example:
 javac HelloWorldRest.java
       -sourcepath tests
       -classpath jsr311-api-1.1.1.jar
-      -processorpath com.mulesoft.jaxrs.raml.generator.annotations.jar
+      -processorpath jaxrs.raml.apt.jar
       -processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
       -Aramlpath=helloworld
       -implicit:class

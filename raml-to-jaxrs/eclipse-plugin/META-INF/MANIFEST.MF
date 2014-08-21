@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Raml-jaxrs-eclipse-plugin
+Bundle-SymbolicName: raml-jaxrs-eclipse-plugin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: raml.jaxrs.eclipse.plugin.Activator
+Bundle-Vendor: MuleSoft
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar,
+ .

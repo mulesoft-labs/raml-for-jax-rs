@@ -1,0 +1,74 @@
+#%RAML 0.8
+---
+title: param types
+/simple:
+    get:
+        queryParameters:
+
+            name:
+                displayName: name name
+                description: name description
+                type: string
+                enum:
+                    - one
+                    - two
+                    - three
+                pattern: '[a-z]{3,5}'
+                minLength: 3
+                maxLength: 5
+                example: two
+                repeat: false
+                required: false
+                default: three
+
+            age:
+                displayName: age name
+                description: age description
+                type: integer
+                minimum: 0
+                maximum: 190
+                example: 2
+                repeat: false
+                required: false
+                default: 3
+
+            selected-id:
+                displayName: selected ID
+                type: integer
+                repeat: true
+                required: false
+
+            price:
+                displayName: price name
+                description: price description
+                type: number
+                minimum: 0.10
+                maximum: 99.90
+                example: 17.30
+                repeat: false
+                required: false
+                default: 23.50
+
+            time:
+                displayName: time name
+                description: time description
+                type: date
+                example: Sun, 06 Nov 1994 08:49:37 GMT
+                repeat: false
+                required: false
+                default: Mon, 07 Nov 1994 11:23:41 GMT
+
+            alive:
+                displayName: alive name
+                description: alive description
+                type: boolean
+                example: true
+                repeat: false
+                required: false
+                default: false
+
+            default-enum:
+                enum: [one, two]
+
+
+

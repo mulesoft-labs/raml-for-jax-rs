@@ -1,0 +1,139 @@
+#%RAML 0.8
+---
+title: Sample API
+version: v1
+baseUri: https://{host}.sample.com:{port}/{path}
+baseUriParameters:
+    host:
+        displayName: Host
+        description: host name
+        type: string
+        minLength: 5
+        maxLength: 10
+        pattern: '[a-z]*'
+    port:
+        type: integer
+        minimum: 1025
+        maximum: 65535
+    path:
+        type: string
+        enum: [one,two,three]
+documentation:
+    - title: Home
+      content: |
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna...
+    - title: section
+      content: section content
+protocols: [HTTP, HTTPS]
+
+/:
+    displayName: Root resource
+    description: Root resource description
+    head:
+        protocols: [HTTP]
+/media:
+    displayName: Media collection
+    baseUriParameters:
+        host:
+            enum: [ api1 ]
+    head:
+        baseUriParameters:
+            host:
+                enum: [ api2 ]
+    post:
+        description: create media
+        headers:
+            api-key:
+                displayName: Api key
+                description: Api key description
+                type: string
+                required: true
+                minLength: 10
+                maxLength: 10
+                example: 0123456789
+        queryParameters:
+            page:
+                type: integer
+                default: 1
+                minimum: 1
+        body:
+            text/xml: !!null
+            application/json:
+                schema: |
+                    {
+                         "$schema": "http://json-schema.org/draft-03/schema",
+                         "properties": {
+                             "input": {
+                                 "required": false,
+                                 "type": "string"
+                             }
+                         },
+                         "required": false,
+                         "type": "object"
+                    }
+                example: '{ "input": "hola" }'
+            multipart/form-data:
+                formParameters:
+                    form-1:
+                        - displayName: form 1
+                          description: form 1 description
+                          type: number
+                          required: true
+                          minimum: 9.5
+                          maximum: 10.5
+                        - type: string
+                          enum: [one, two, three]
+        responses:
+            200:
+                headers:
+                    one:
+                        type: string
+                        required: true
+                    two:
+                        type: integer
+                body:
+                    application/json:
+                        example: '{ "key": "value" }'
+            400:
+                headers:
+                    x-meta-{?}:
+                        description: |
+                            Field names prefixed with x-meta- contain user-specified metadata.
+                body:
+                    text/xml:
+                        example: '<root>none</root>'
+                    text/plain: !!null
+            <<:
+                404:
+                    description: not found
+    /{mediaId}:
+        displayName: Media item
+        uriParameters:
+            mediaId:
+                type: string
+                maxLength: 10
+        head: !!null
+/tags:
+    head: !!null
+    /{tagId}:
+        head: !!null
+        patch: !!null
+/amazon:
+  post:
+    description: The POST operation adds an object to a specified bucket using HTML forms.
+    body:
+      application/x-www-form-urlencoded:
+        formParameters:
+          AWSAccessKeyId:
+            description: The AWS Access Key ID of the owner of the bucket who grants an Anonymous user access for a request that satisfies the set of constraints in the Policy.
+            type: string
+          acl:
+            description: Specifies an Amazon S3 access control list. If an invalid access control list is specified, an error is generated.
+            type: string
+          file:
+            - type: string
+              description: Text content. The text content must be the last field in the form.
+            - type: file
+              description: File to upload. The file must be the last field in the form.
+

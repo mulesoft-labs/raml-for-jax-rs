@@ -1,0 +1,28 @@
+#%RAML 0.8
+---
+title: GitHub API
+version: v3
+baseUri: https://api.github.com
+/user:
+ displayName: Authenticated User
+ /emails: { displayName: Emails }
+ /followers: { displayName: Followers }
+ /following: { displayName: Following }
+/users:
+ displayName: Users
+ /{userId}:
+   displayName: User
+   uriParameters:
+     userId:
+       displayName: User ID
+       type: integer
+   /followers: { displayName: Followers }
+   /following: { displayName: Following }
+   /keys:
+     displayName: Public Keys
+     /{keyId}:
+       displayName: Public Key
+       uriParameters:
+         keyId:
+           displayName: Public Key ID
+           type: integer

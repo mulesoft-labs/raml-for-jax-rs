@@ -31,13 +31,13 @@ import org.yaml.snakeyaml.nodes.Tag;
 public class PojoValidatorTagResolver implements TagResolver
 {
 
-    @Override
+    
     public boolean handles(Tag tag)
     {
         return JACKSON_TAG.equals(tag) || JAXB_TAG.equals(tag);
     }
 
-    @Override
+    
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         String className = ((ScalarNode) node).getValue();

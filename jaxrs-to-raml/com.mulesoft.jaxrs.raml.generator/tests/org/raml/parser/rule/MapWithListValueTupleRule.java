@@ -38,7 +38,7 @@ public class MapWithListValueTupleRule extends DefaultTupleRule<ScalarNode, Mapp
     }
 
 
-    @Override
+    
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         if (nodeTuple.getValueNode().getNodeId() == NodeId.sequence)
@@ -56,7 +56,7 @@ public class MapWithListValueTupleRule extends DefaultTupleRule<ScalarNode, Mapp
         }
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         fieldName = key.getValue();

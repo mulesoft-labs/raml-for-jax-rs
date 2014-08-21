@@ -42,19 +42,19 @@ public class TemplateBuilder extends SequenceTupleBuilder
     {
         super(fieldName, new ParameterizedType()
         {
-            @Override
+            
             public Type[] getActualTypeArguments()
             {
                 return new Type[] {String.class, Template.class};
             }
 
-            @Override
+            
             public Type getRawType()
             {
                 return Map.class;
             }
 
-            @Override
+            
             public Type getOwnerType()
             {
                 return null;
@@ -62,7 +62,7 @@ public class TemplateBuilder extends SequenceTupleBuilder
         }, null);
     }
 
-    @Override
+    
     public Object buildValue(Object parent, SequenceNode sequenceNode)
     {
         List<?> list = new ArrayList();
@@ -89,7 +89,7 @@ public class TemplateBuilder extends SequenceTupleBuilder
         return new MappingNode(Tag.MAP, outerTuples, false);
     }
 
-    @Override
+    
     public NodeBuilder getItemBuilder()
     {
         return super.getItemBuilder();

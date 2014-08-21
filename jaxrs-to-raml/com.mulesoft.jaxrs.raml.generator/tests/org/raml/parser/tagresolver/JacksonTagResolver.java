@@ -33,13 +33,13 @@ public class JacksonTagResolver implements TagResolver
 
     public static final Tag JACKSON_TAG = new Tag("!jackson");
 
-    @Override
+    
     public boolean handles(Tag tag)
     {
         return JACKSON_TAG.equals(tag);
     }
 
-    @Override
+    
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         String className = ((ScalarNode) node).getValue();

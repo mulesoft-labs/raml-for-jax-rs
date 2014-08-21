@@ -14,7 +14,7 @@ import org.yaml.snakeyaml.nodes.Tag;
 
 public class GlobalSchemasHandler implements ExtraHandler {
 
-	@Override
+	
 	public void handle(Object pojo, SequenceNode node) {
 		if (pojo instanceof Raml2) {
 			Raml2 r=(Raml2) pojo;

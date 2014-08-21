@@ -41,7 +41,7 @@ public class ImplicitMapEntryRule extends DefaultTupleRule<ScalarNode, MappingNo
 
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         if (rules.isEmpty())
@@ -51,7 +51,7 @@ public class ImplicitMapEntryRule extends DefaultTupleRule<ScalarNode, MappingNo
         return super.getRuleForTuple(nodeTuple);
     }
 
-    @Override
+    
     public List<ValidationResult> onRuleEnd()
     {
         List<ValidationResult> validationResults = super.onRuleEnd();
@@ -59,19 +59,19 @@ public class ImplicitMapEntryRule extends DefaultTupleRule<ScalarNode, MappingNo
         return validationResults;
     }
 
-    @Override
+    
     public Class<?>[] getValueNodeType()
     {
         return new Class[] {MappingNode.class};
     }
 
-    @Override
+    
     public void setValueType(Type valueType)
     {
         this.valueType = (Class) valueType;
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = super.validateKey(key);

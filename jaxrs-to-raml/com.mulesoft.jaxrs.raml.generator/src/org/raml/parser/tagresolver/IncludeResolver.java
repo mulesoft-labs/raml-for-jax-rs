@@ -36,13 +36,13 @@ public class IncludeResolver implements TagResolver
     public static final String SEPARATOR = "_";
     public static final String INCLUDE_APPLIED_TAG = "!include-applied" + SEPARATOR;
 
-    @Override
+    
     public boolean handles(Tag tag)
     {
         return INCLUDE_TAG.equals(tag) || tag.startsWith(INCLUDE_APPLIED_TAG);
     }
 
-    @Override
+    
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         if (node.getTag().startsWith(INCLUDE_APPLIED_TAG))

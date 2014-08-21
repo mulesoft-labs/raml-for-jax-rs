@@ -47,7 +47,7 @@ public class SchemaRule extends SimpleRule
         super("schema", String.class);
     }
 
-    @Override
+    
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();

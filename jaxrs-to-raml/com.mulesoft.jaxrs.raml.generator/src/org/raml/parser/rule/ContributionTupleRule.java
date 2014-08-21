@@ -36,7 +36,7 @@ public class ContributionTupleRule implements TupleRule<Node, Node>
         this.contributionRules = contributionRules;
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(Node key)
     {
         List<ValidationResult> result = new ArrayList<ValidationResult>();
@@ -48,13 +48,13 @@ public class ContributionTupleRule implements TupleRule<Node, Node>
         return result;
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         return rule.getRuleForTuple(nodeTuple);
     }
 
-    @Override
+    
     public void setParentTupleRule(TupleRule<?, ?> parent)
     {
         rule.setParentTupleRule(parent);
@@ -64,49 +64,49 @@ public class ContributionTupleRule implements TupleRule<Node, Node>
         }
     }
 
-    @Override
+    
     public TupleRule<?, ?> getParentTupleRule()
     {
         return rule.getParentTupleRule();
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRootTupleRule()
     {
         return rule.getRootTupleRule();
     }
 
-    @Override
+    
     public String getName()
     {
         return rule.getName();
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRuleByFieldName(String fieldName)
     {
         return rule.getRuleByFieldName(fieldName);
     }
 
-    @Override
+    
     public void setNestedRules(Map<String, TupleRule<?, ?>> innerBuilders)
     {
         rule.setNestedRules(innerBuilders);
     }
 
-    @Override
+    
     public void setHandler(TupleHandler tupleHandler)
     {
         rule.setHandler(tupleHandler);
     }
 
-    @Override
+    
     public TupleHandler getHandler()
     {
         return rule.getHandler();
     }
 
-    @Override
+    
     public void setRequired(boolean required)
     {
         rule.setRequired(required);
@@ -116,31 +116,31 @@ public class ContributionTupleRule implements TupleRule<Node, Node>
         }
     }
 
-    @Override
+    
     public void setNodeRuleFactory(NodeRuleFactory nodeRuleFactory)
     {
         rule.setNodeRuleFactory(nodeRuleFactory);
     }
 
-    @Override
+    
     public Node getKey()
     {
         return rule.getKey();
     }
 
-    @Override
+    
     public void setName(String name)
     {
         //ignore
     }
 
-    @Override
+    
     public void setValueType(Type valueType)
     {
         //ignore
     }
 
-    @Override
+    
     public List<ValidationResult> validateValue(Node value)
     {
         List<ValidationResult> result = new ArrayList<ValidationResult>();
@@ -152,7 +152,7 @@ public class ContributionTupleRule implements TupleRule<Node, Node>
         return result;
     }
 
-    @Override
+    
     public List<ValidationResult> onRuleEnd()
     {
         List<ValidationResult> result = new ArrayList<ValidationResult>();

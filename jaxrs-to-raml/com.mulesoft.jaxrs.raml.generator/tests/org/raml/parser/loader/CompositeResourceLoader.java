@@ -27,7 +27,7 @@ public class CompositeResourceLoader implements ResourceLoader
         this.resourceLoaders = resourceLoaders;
     }
 
-    @Override
+    
     public InputStream fetchResource(String resourceName)
     {
         InputStream inputStream = null;

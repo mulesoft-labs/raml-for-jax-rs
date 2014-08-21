@@ -9,7 +9,7 @@ import org.raml.model.TemplateUse;
 
 public class TraitsDumper implements IRAMLFieldDumper {
 
-	@Override
+	
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		List<TemplateUse> resourceTypeMap = null;

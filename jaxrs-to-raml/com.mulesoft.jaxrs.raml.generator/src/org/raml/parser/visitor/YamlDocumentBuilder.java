@@ -136,7 +136,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         return rootNode;
     }
 
-    @Override
+    
     public void onMappingNodeStart(MappingNode mappingNode, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -157,7 +157,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         
     }
 
-    @Override
+    
     public void onMappingNodeEnd(MappingNode mappingNode, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -167,7 +167,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         documentContext.pop();
     }
 
-    @Override
+    
     @SuppressWarnings("unchecked")
     public void onSequenceStart(SequenceNode node, TupleType tupleType)
     {
@@ -182,7 +182,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         documentContext.push(object);
     }
 
-    @Override
+    
     public void onSequenceEnd(SequenceNode node, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -193,7 +193,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         builderContext.pop();
     }
 
-    @Override
+    
     @SuppressWarnings("unchecked")
     public void onScalar(ScalarNode node, TupleType tupleType)
     {
@@ -218,7 +218,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
 
-    @Override
+    
     public void onDocumentStart(MappingNode node)
     {
         try
@@ -241,7 +241,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
 
-    @Override
+    
     public void onDocumentEnd(MappingNode node)
     {
         if (documentObject != documentContext.pop())
@@ -250,14 +250,14 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         }
     }
 
-    @Override
+    
     public void onTupleEnd(NodeTuple nodeTuple)
     {
         builderContext.pop();
 
     }
 
-    @Override
+    
     public void onTupleStart(NodeTuple nodeTuple)
     {
     	if (nodeTuple.getKeyNode() instanceof ScalarNode){
@@ -281,27 +281,27 @@ public class YamlDocumentBuilder<T> implements NodeHandler
 
     }
 
-    @Override
+    
     public void onSequenceElementStart(Node sequenceNode)
     {
     }
 
-    @Override
+    
     public void onSequenceElementEnd(Node sequenceNode)
     {
     }
 
-    @Override
+    
     public void onCustomTagStart(Tag tag, Node originalValueNode, Node node)
     {
     }
 
-    @Override
+    
     public void onCustomTagEnd(Tag tag, Node originalValueNode, Node node)
     {
     }
 
-    @Override
+    
     public void onCustomTagError(Tag tag, Node node, String message)
     {
         if (IncludeResolver.INCLUDE_TAG.equals(tag))

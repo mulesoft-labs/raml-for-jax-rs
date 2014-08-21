@@ -103,7 +103,7 @@ public class MimeType
         this.formParameters = formParameters;
     }
 
-    @Override
+    
     public String toString()
     {
         return "MimeType{" +
@@ -118,7 +118,7 @@ public class MimeType
     	
     	ArrayList<NamedFormParameter> result = new ArrayList<NamedFormParameter>(){
     
-    		@Override
+    		
     		public boolean remove(Object o) {
     			if (o instanceof NamedFormParameter){
     				NamedFormParameter qq=(NamedFormParameter) o;
@@ -301,7 +301,7 @@ public class MimeType
             return original.getType().validate(this, value);
         }
 
-		@Override
+		
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
@@ -309,7 +309,7 @@ public class MimeType
 			return result;
 		}
 
-		@Override
+		
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;

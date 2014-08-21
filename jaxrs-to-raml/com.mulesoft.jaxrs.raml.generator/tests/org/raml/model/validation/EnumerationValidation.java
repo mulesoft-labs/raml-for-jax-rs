@@ -33,7 +33,7 @@ public class EnumerationValidation implements Validation
         this.enumeration = new HashSet<String>(enumeration);
     }
 
-    @Override
+    
     public boolean check(String input)
     {
         return enumeration.contains(input);

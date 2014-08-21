@@ -35,7 +35,7 @@ public class MapWithListValueTupleBuilder extends MapTupleBuilder
         super(fieldName, valueClass);
     }
 
-    @Override
+    
     public TupleBuilder getBuilderForTuple(NodeTuple tuple)
     {
         final String fieldName = ((ScalarNode) tuple.getKeyNode()).getValue();
@@ -59,7 +59,7 @@ public class MapWithListValueTupleBuilder extends MapTupleBuilder
             super(fieldName, pojoClass);
         }
 
-        @Override
+        
         public Object buildValue(Object parent, Node node)
         {
             try

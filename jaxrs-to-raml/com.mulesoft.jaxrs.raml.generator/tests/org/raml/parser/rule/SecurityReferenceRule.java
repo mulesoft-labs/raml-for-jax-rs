@@ -32,7 +32,7 @@ public class SecurityReferenceRule extends PojoTupleRule
         super("securedBy", SecurityReference.class, nodeRuleFactory);
     }
 
-    @Override
+    
     public Class<?>[] getValueNodeType()
     {
         return new Class[] {ScalarNode.class, MappingNode.class};

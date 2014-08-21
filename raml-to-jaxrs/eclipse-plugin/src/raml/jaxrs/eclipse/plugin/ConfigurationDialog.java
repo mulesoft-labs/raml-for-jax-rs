@@ -104,7 +104,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		}
 		text.addModifyListener( new ModifyListener() {
 			
-			@Override
+			
 			public void modifyText(ModifyEvent e) {
 				container.set(text.getText());				
 			}
@@ -141,7 +141,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 		pathButton.addSelectionListener( new SelectionListener() {
 			
-			@Override
+			
 			public void widgetSelected(SelectionEvent e) {
 				ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
 						parentShell, new WorkbenchLabelProvider(), new BaseWorkbenchContentProvider());
@@ -165,7 +165,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 				container.set(selectedResource);
 				pathText.setText( container.get().getFullPath().toString() );
 			}			
-			@Override
+			
 			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 	}
@@ -177,7 +177,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		if(filterType.equals("file")){
 			dialog.addFilter(new ViewerFilter() {
 				
-				@Override
+				
 				public boolean select(Viewer viewer, Object parentElement, Object element) {
 					
 					if(element==null){
@@ -194,7 +194,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		else if(filterType.equals("folder")){
 			dialog.addFilter(new ViewerFilter() {
 				
-				@Override
+				
 				public boolean select(Viewer viewer, Object parentElement, Object element) {
 					
 					if(element==null){
@@ -238,13 +238,13 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 		combo.addSelectionListener(new SelectionListener() {
 			
-			@Override
+			
 			public void widgetSelected(SelectionEvent e) {
 				int selectionIndex = combo.getSelectionIndex();				
 				container.set(values.get(selectionIndex));
 			}
 			
-			@Override
+			
 			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 	}
@@ -266,12 +266,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 		button.addSelectionListener(new SelectionListener() {
 			
-			@Override
+			
 			public void widgetSelected(SelectionEvent e) {
 				container.set(button.getSelection());
 			}
 			
-			@Override
+			
 			public void widgetDefaultSelected(SelectionEvent e) {}
 		});
 	}

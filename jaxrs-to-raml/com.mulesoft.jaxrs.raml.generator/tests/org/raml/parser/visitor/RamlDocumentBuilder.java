@@ -66,7 +66,7 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
         return (TagResolver[]) ArrayUtils.addAll(defaultResolvers, tagResolvers);
     }
 
-    @Override
+    
     public void onMappingNodeStart(MappingNode mappingNode, TupleType tupleType)
     {
         super.onMappingNodeStart(mappingNode, tupleType);
@@ -81,7 +81,7 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
         }
     }
 
-    @Override
+    
     public void onMappingNodeEnd(MappingNode mappingNode, TupleType tupleType)
     {
         if (getDocumentContext().peek() instanceof Resource)
@@ -138,14 +138,14 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
         return mediaTypeResolver;
     }
 
-    @Override
+    
     protected void preBuildProcess()
     {
         getTemplateResolver().init(getRootNode());
         getMediaTypeResolver().beforeDocumentStart(getRootNode());
     }
 
-    @Override
+    
     protected void postBuildProcess()
     {
     }

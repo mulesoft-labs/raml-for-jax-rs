@@ -48,7 +48,7 @@ public class RamlValidationService extends YamlValidationService
         return (TagResolver[]) ArrayUtils.addAll(defaultResolvers, tagResolvers);
     }
 
-    @Override
+    
     protected List<ValidationResult> preValidation(MappingNode root)
     {
         List<ValidationResult> validationResults = validator.getTemplateResolver().init(root);

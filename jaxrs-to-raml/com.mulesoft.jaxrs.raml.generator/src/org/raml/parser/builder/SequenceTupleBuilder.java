@@ -54,7 +54,7 @@ public class SequenceTupleBuilder extends DefaultTupleBuilder<Node, SequenceNode
         return fieldName;
     }
 
-    @Override
+    
     public Object buildValue(Object parent, SequenceNode node)
     {
         List<?> list = new ArrayList();
@@ -65,7 +65,7 @@ public class SequenceTupleBuilder extends DefaultTupleBuilder<Node, SequenceNode
         return list;
     }
 
-    @Override
+    
     public NodeBuilder getItemBuilder()
     {
         if (itemType instanceof Class<?>)

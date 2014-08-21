@@ -41,7 +41,7 @@ public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
         this.setFieldClass(fieldClass);
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = super.validateKey(key);
@@ -54,7 +54,7 @@ public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
         return validationResults;
     }
 
-    @Override
+    
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();
@@ -71,7 +71,7 @@ public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
         return validationResults;
     }
 
-    @Override
+    
     public Class<?>[] getValueNodeType()
     {
         return new Class[] {ScalarNode.class};

@@ -58,7 +58,7 @@ public class BaseUriRule extends SimpleRule
     }
 
 
-    @Override
+    
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();

@@ -40,13 +40,13 @@ public class UriParametersRule extends DefaultTupleRule<ScalarNode, MappingNode>
         this.errors = new ArrayList<ValidationResult>();
     }
 
-    @Override
+    
     public List<ValidationResult> onRuleEnd()
     {
         return errors;
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
@@ -63,7 +63,7 @@ public class UriParametersRule extends DefaultTupleRule<ScalarNode, MappingNode>
     }
 
     @SuppressWarnings("rawtypes")
-    @Override
+    
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         Node keyNode = nodeTuple.getKeyNode();

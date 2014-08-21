@@ -22,7 +22,7 @@ public class TemplatesExtraHandler implements ExtraHandler {
 		this.field = field;
 	}
 
-	@Override
+	
 	public void handle(Object pojo, SequenceNode node) {
 		List<Node> value = node.getValue();
 		ArrayList<TemplateUse> str = new ArrayList<TemplateUse>();

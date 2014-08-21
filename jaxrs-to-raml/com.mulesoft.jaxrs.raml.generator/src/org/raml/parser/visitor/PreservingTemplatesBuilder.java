@@ -23,7 +23,7 @@ import org.yaml.snakeyaml.nodes.Tag;
 
 public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
 	
-	@Override
+	
 	public void onCustomTagError(Tag tag, Node node, String message) {
 		if (IncludeResolver.INCLUDE_TAG.equals(tag))
         {
@@ -49,7 +49,7 @@ public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
 				ResourceLoader resourceLoader, TagResolver[] tagResolvers) {
 			super(documentClass, resourceLoader, tagResolvers);
 		}
-		@Override
+		
 	    public void onMappingNodeStart(MappingNode mappingNode, TupleType tupleType)
 	    {
 	        super.onMappingNodeStart(mappingNode, tupleType);
@@ -81,7 +81,7 @@ public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
 	        }
 	    }
 
-		@Override
+		
 		protected void preBuildProcess() {
 			getTemplateResolver().init(getRootNode());
 			getMediaTypeResolver().beforeDocumentStart(getRootNode());
@@ -107,7 +107,7 @@ public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
 		return errorMap;
 	}
 
-	@Override
+	
 	public Raml2 build(Reader content) {
 		LinkedHashMap<String, ResourceType> resourceTypes = new LinkedHashMap<String, ResourceType>();
 		LinkedHashMap<String, TraitModel> traits = new LinkedHashMap<String, TraitModel>();

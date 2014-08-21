@@ -9,7 +9,7 @@ import org.raml.model.TraitModel;
 
 public class TraitEmitter implements IRAMLFieldDumper{
 
-	@Override
+	
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		if (pojo instanceof Raml2){

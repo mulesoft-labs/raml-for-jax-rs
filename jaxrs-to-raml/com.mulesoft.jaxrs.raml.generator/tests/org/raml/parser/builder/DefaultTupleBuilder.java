@@ -52,7 +52,7 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
         this.setHandler(tupleHandler);
     }
 
-    @Override
+    
     public NodeBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (builders == null || builders.isEmpty())
@@ -69,7 +69,7 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
         throw new RuntimeException("Builder not found for " + tuple);
     }
 
-    @Override
+    
     public Object buildValue(Object parent, V node)
     {
         return parent;
@@ -80,25 +80,25 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
         this.handler = handler;
     }
 
-    @Override
+    
     public TupleHandler getHandler()
     {
         return handler;
     }
 
-    @Override
+    
     public void buildKey(Object parent, K tuple)
     {
 
     }
 
-    @Override
+    
     public void setParentNodeBuilder(NodeBuilder parentBuilder)
     {
         parent = parentBuilder;
     }
 
-    @Override
+    
     public void setNestedBuilders(Map<String, TupleBuilder<?, ?>> nestedBuilders)
     {
         builders = nestedBuilders;

@@ -49,7 +49,7 @@ public class MapTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
     }
 
 
-    @Override
+    
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         TupleRule<?, ?> tupleRule;
@@ -81,13 +81,13 @@ public class MapTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
         return fieldName;
     }
 
-    @Override
+    
     public void setValueType(Type valueType)
     {
         this.valueType = (Class) valueType;
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         fieldName = key.getValue();

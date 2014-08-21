@@ -31,7 +31,7 @@ public class BooleanConverter implements Converter
      * java.lang.Object)
      */
     @SuppressWarnings("rawtypes")
-    @Override
+    
     public Object convert(Class type, Object value)
     {
         if (value instanceof Boolean)

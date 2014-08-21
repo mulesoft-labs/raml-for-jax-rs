@@ -42,7 +42,7 @@ public class MapTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
         this.valueClass = valueClass;
     }
 
-    @Override
+    
     public TupleBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (ReflectionUtils.isPojo(getValueClass()))
@@ -55,7 +55,7 @@ public class MapTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
         }
     }
 
-    @Override
+    
     public Object buildValue(Object parent, Node node)
     {
         final HashMap<String, Object> map = new LinkedHashMap<String, Object>();
@@ -74,7 +74,7 @@ public class MapTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
         return fieldName;
     }
 
-    @Override
+    
     public String toString()
     {
         return fieldName;

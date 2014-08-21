@@ -32,7 +32,7 @@ public class SimpleNullAllowedRule extends SimpleRule
         super(fieldName, fieldClass);
     }
 
-    @Override
+    
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();

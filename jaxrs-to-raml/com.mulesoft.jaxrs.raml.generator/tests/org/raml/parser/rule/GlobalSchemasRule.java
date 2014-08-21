@@ -33,7 +33,7 @@ public class GlobalSchemasRule extends SequenceTupleRule
         super("schemas", null);
     }
 
-    @Override
+    
     public NodeRule<?> getItemRule()
     {
         return new GlobalSchemaTupleRule(String.class, getNodeRuleFactory());
@@ -47,7 +47,7 @@ public class GlobalSchemasRule extends SequenceTupleRule
             super(valueType, nodeRuleFactory);
         }
 
-        @Override
+        
         public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
         {
             if (nodeTuple.getKeyNode().getNodeId() == scalar && nodeTuple.getValueNode().getNodeId() == scalar)

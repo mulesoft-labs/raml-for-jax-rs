@@ -30,7 +30,7 @@ public class EnumHandler implements TupleHandler
         this.enumClass = enumClass;
     }
 
-    @Override
+    
     public boolean handles(NodeTuple tuple)
     {
         if (tuple.getKeyNode() instanceof ScalarNode)

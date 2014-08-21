@@ -7,7 +7,7 @@ import org.raml.model.TemplateUse;
 
 public class TypeDumper implements IRAMLFieldDumper{
 
-	@Override
+	
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		Resource t=(Resource) pojo;

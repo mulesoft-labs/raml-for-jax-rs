@@ -64,38 +64,38 @@ public class DefaultTupleRule<K extends Node, V extends Node> implements TupleRu
         this.required = required;
     }
 
-    @Override
+    
     public void setNodeRuleFactory(NodeRuleFactory nodeRuleFactory)
     {
         this.nodeRuleFactory = nodeRuleFactory;
     }
 
-    @Override
+    
     public void setNestedRules(Map<String, TupleRule<?, ?>> rules)
     {
         this.rules = rules;
     }
 
-    @Override
+    
     public void setHandler(TupleHandler tupleHandler)
     {
         this.tupleHandler = tupleHandler;
     }
 
-    @Override
+    
     public TupleHandler getHandler()
     {
         return tupleHandler;
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(K key)
     {
         this.key = key;
         return new ArrayList<ValidationResult>();
     }
 
-    @Override
+    
     public final List<ValidationResult> validateValue(Node value)
     {
         ArrayList<ValidationResult> validationResults = new ArrayList<ValidationResult>();
@@ -132,7 +132,7 @@ public class DefaultTupleRule<K extends Node, V extends Node> implements TupleRu
         return new Class[] {Node.class};
     }
 
-    @Override
+    
     public List<ValidationResult> onRuleEnd()
     {
         List<ValidationResult> result = new ArrayList<ValidationResult>();
@@ -154,19 +154,19 @@ public class DefaultTupleRule<K extends Node, V extends Node> implements TupleRu
         return key != null;
     }
 
-    @Override
+    
     public K getKey()
     {
         return key;
     }
 
-    @Override
+    
     public void setName(String name)
     {
         this.name = name;
     }
 
-    @Override
+    
     public void setValueType(Type valueType)
     {
         //ignore
@@ -182,7 +182,7 @@ public class DefaultTupleRule<K extends Node, V extends Node> implements TupleRu
         return nodeRuleFactory;
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         for (TupleRule<?, ?> rule : rules.values())
@@ -195,32 +195,32 @@ public class DefaultTupleRule<K extends Node, V extends Node> implements TupleRu
         return new UnknownTupleRule<Node, Node>(nodeTuple.getKeyNode().toString());
     }
 
-    @Override
+    
     public void setParentTupleRule(TupleRule<?, ?> parent)
     {
 
         this.parent = parent;
     }
 
-    @Override
+    
     public String getName()
     {
         return name;
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRuleByFieldName(String fieldName)
     {
         return rules.get(fieldName);
     }
 
-    @Override
+    
     public TupleRule<?, ?> getParentTupleRule()
     {
         return parent;
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRootTupleRule()
     {
         TupleRule<?, ?> parentTupleRule = getParentTupleRule();

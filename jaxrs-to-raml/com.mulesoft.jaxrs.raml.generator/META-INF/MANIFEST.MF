@@ -22,3 +22,4 @@ Require-Bundle: snakeyaml;bundle-version="1.0.0",
  org.slf4j.api;bundle-version="1.6.4",
  rampl-plugin,
  jackson-databind
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

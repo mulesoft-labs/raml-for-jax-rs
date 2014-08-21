@@ -18,7 +18,7 @@ package org.raml.parser.rule;
 public class SequenceTupleNullsAllowedRule extends SequenceTupleRule
 {
 
-    @Override
+    
     protected DefaultTupleRule getScalarRule()
     {
         return new SimpleNullAllowedRule(getName(), (Class<?>) getItemType());

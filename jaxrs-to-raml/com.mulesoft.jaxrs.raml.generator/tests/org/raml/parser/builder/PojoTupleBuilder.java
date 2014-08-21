@@ -50,7 +50,7 @@ public class PojoTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
         this(null, pojoClass);
     }
 
-    @Override
+    
     public NodeBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (builders.isEmpty())     //Do it lazzy so it support recursive structures
@@ -61,7 +61,7 @@ public class PojoTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
     }
 
 
-    @Override
+    
     public Object buildValue(Object parent, Node node)
     {
         try
@@ -115,7 +115,7 @@ public class PojoTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
     }
 
 
-    @Override
+    
     public void buildKey(Object parent, ScalarNode node)
     {
         fieldName = node.getValue();

@@ -20,7 +20,7 @@ import java.io.InputStream;
 public class ClassPathResourceLoader implements ResourceLoader
 {
 
-    @Override
+    
     public InputStream fetchResource(String resourceName)
     {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourceName);

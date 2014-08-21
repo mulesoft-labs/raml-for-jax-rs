@@ -45,7 +45,7 @@ public class SequenceTupleRule extends DefaultTupleRule<ScalarNode, SequenceNode
 
     }
 
-    @Override
+    
     public NodeRule<?> getItemRule()
     {
         if (itemType instanceof Class<?>)
@@ -75,7 +75,7 @@ public class SequenceTupleRule extends DefaultTupleRule<ScalarNode, SequenceNode
         return new SimpleRule(getName(), (Class<?>) itemType);
     }
 
-    @Override
+    
     public void setValueType(Type valueType)
     {
         itemType = valueType;

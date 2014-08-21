@@ -31,7 +31,7 @@ public class ParamRule extends PojoTupleRule
         setNodeRuleFactory(nodeRuleFactory);
     }
 
-    @Override
+    
     public void addRulesFor(Class<?> pojoClass)
     {
         super.addRulesFor(pojoClass);
@@ -43,7 +43,7 @@ public class ParamRule extends PojoTupleRule
         rules.put("maximum", new EnumModifierRule("maximum", Arrays.asList("integer", "number"), typeRule));
     }
 
-    @Override
+    
     public List<ValidationResult> onRuleEnd()
     {
         return Collections.emptyList();

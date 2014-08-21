@@ -25,7 +25,7 @@ public class SecurityReferenceSequenceRule extends SequenceTupleRule
         super("securedBy", SecurityReference.class);
     }
 
-    @Override
+    
     public NodeRule<?> getItemRule()
     {
         return new SecurityReferenceRule(getNodeRuleFactory());

@@ -62,7 +62,7 @@ public class RamlDocumentValidator extends YamlDocumentValidator
         return mediaTypeResolver;
     }
 
-    @Override
+    
     public void onMappingNodeStart(MappingNode mappingNode, TupleType tupleType)
     {
         super.onMappingNodeStart(mappingNode, tupleType);

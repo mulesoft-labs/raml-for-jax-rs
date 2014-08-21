@@ -8,7 +8,7 @@ public class TypeExtraHandler extends TemplatesExtraHandler{
 		super("typeModel");
 	}
 	
-	@Override
+	
 	public void handle(Object pojo, SequenceNode node) {
 		super.handle(pojo, node);
 	}

@@ -70,7 +70,7 @@ public class YamlDocumentValidator implements YamlValidator
         return ruleContext;
     }
 
-    @Override
+    
     public void onMappingNodeStart(MappingNode node, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -79,12 +79,12 @@ public class YamlDocumentValidator implements YamlValidator
         }
     }
 
-    @Override
+    
     public void onMappingNodeEnd(MappingNode node, TupleType tupleType)
     {
     }
 
-    @Override
+    
     @SuppressWarnings("unchecked")
     public void onSequenceStart(SequenceNode node, TupleType tupleType)
     {
@@ -99,13 +99,13 @@ public class YamlDocumentValidator implements YamlValidator
         }
     }
 
-    @Override
+    
     public void onSequenceEnd(SequenceNode node, TupleType tupleType)
     {
 
     }
 
-    @Override
+    
     @SuppressWarnings("unchecked")
     public void onScalar(ScalarNode node, TupleType tupleType)
     {
@@ -137,13 +137,13 @@ public class YamlDocumentValidator implements YamlValidator
         addMessages(Collections.<ValidationResult>singletonList(errorResult));
     }
 
-    @Override
+    
     public void onDocumentStart(MappingNode node)
     {
         ruleContext.push(buildDocumentRule());
     }
 
-    @Override
+    
     public void onDocumentEnd(MappingNode node)
     {
         NodeRule<?> pop = ruleContext.pop();
@@ -153,7 +153,7 @@ public class YamlDocumentValidator implements YamlValidator
 
     }
 
-    @Override
+    
     public void onTupleEnd(NodeTuple nodeTuple)
     {
         NodeRule<?> rule = ruleContext.pop();
@@ -168,7 +168,7 @@ public class YamlDocumentValidator implements YamlValidator
         }
     }
 
-    @Override
+    
     public void onTupleStart(NodeTuple nodeTuple)
     {
 
@@ -185,7 +185,7 @@ public class YamlDocumentValidator implements YamlValidator
 
     }
 
-    @Override
+    
     public void onSequenceElementStart(Node sequenceNode)
     {
         NodeRule peek = ruleContext.peek();
@@ -199,7 +199,7 @@ public class YamlDocumentValidator implements YamlValidator
         }
     }
 
-    @Override
+    
     public void onSequenceElementEnd(Node sequenceNode)
     {
         NodeRule<?> rule = ruleContext.pop();
@@ -207,7 +207,7 @@ public class YamlDocumentValidator implements YamlValidator
         addMessages(validationResults);
     }
 
-    @Override
+    
     public void onCustomTagStart(Tag tag, Node originalValueNode, Node node)
     {
         if (INCLUDE_TAG.equals(tag) && originalValueNode.getNodeId() == scalar)
@@ -220,7 +220,7 @@ public class YamlDocumentValidator implements YamlValidator
         }
     }
 
-    @Override
+    
     public void onCustomTagEnd(Tag tag, Node originalValueNode, Node node)
     {
         if ((INCLUDE_TAG.equals(tag) && originalValueNode.getNodeId() == scalar) ||
@@ -230,7 +230,7 @@ public class YamlDocumentValidator implements YamlValidator
         }
     }
 
-    @Override
+    
     public void onCustomTagError(Tag tag, Node node, String message)
     {
         addMessages(Arrays.asList(createErrorResult(message, node.getStartMark(), node.getEndMark())));
@@ -244,7 +244,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
 
-    @Override
+    
     public List<ValidationResult> getMessages()
     {
         return messages;

@@ -36,13 +36,13 @@ public class JaxbTagResolver implements TagResolver
 
     public static final Tag JAXB_TAG = new Tag("!jaxb");
 
-    @Override
+    
     public boolean handles(Tag tag)
     {
         return JAXB_TAG.equals(tag);
     }
 
-    @Override
+    
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         String className = ((ScalarNode) node).getValue();
@@ -53,7 +53,7 @@ public class JaxbTagResolver implements TagResolver
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             context.generateSchema(new SchemaOutputResolver()
             {
-                @Override
+                
                 public Result createOutput(String namespaceURI, String suggestedFileName) throws IOException
                 {
                     StreamResult result = new StreamResult(baos);

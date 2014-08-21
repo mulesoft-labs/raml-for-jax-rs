@@ -34,7 +34,7 @@ public class EnumModifierRule extends SimpleRule
         this.enumRule = enumRule;
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
@@ -67,7 +67,7 @@ public class EnumModifierRule extends SimpleRule
         return types.toString();
     }
 
-    @Override
+    
     public List<ValidationResult> doValidateValue(ScalarNode value)
     {
         String valueNode = value.getValue();

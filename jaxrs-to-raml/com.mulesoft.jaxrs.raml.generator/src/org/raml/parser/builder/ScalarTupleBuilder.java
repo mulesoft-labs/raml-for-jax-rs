@@ -48,13 +48,13 @@ public class ScalarTupleBuilder extends DefaultTupleBuilder<ScalarNode, ScalarNo
         this.includeField=includeField;
     }
 
-    @Override
+    
     public TupleHandler getHandler() {
     	return super.getHandler();
     }
     
 
-    @Override
+    
     public Object buildValue(Object parent, ScalarNode node)
     {
 
@@ -80,7 +80,7 @@ public class ScalarTupleBuilder extends DefaultTupleBuilder<ScalarNode, ScalarNo
         return parent;
     }
 
-    @Override
+    
     public void buildKey(Object parent, ScalarNode tuple)
     {
         fieldName = tuple.getValue();

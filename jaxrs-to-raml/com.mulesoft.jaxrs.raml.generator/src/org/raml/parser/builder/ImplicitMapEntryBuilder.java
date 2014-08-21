@@ -43,7 +43,7 @@ public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Nod
         this.valueClass = valueClass;
     }
 
-    @Override
+    
     public NodeBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (builders.isEmpty())
@@ -53,7 +53,7 @@ public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Nod
         return super.getBuilderForTuple(tuple);
     }
 
-    @Override
+    
     public Object buildValue(Object parent, Node node)
     {
 
@@ -86,13 +86,13 @@ public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Nod
 
     }
 
-    @Override
+    
     public void buildKey(Object parent, ScalarNode tuple)
     {
         keyValue = tuple.getValue();
     }
 
-    @Override
+    
     public String toString()
     {
         return keyValue;

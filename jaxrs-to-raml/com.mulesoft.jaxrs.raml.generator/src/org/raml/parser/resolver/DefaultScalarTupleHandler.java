@@ -29,7 +29,7 @@ public class DefaultScalarTupleHandler implements TupleHandler
         this.fieldName = fieldName;
     }
 
-    @Override
+    
     public boolean handles(NodeTuple tuple)
     {
         if (tuple.getKeyNode() instanceof ScalarNode)

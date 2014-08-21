@@ -9,7 +9,7 @@ import org.raml.model.SecurityScheme;
 
 public class SecuritySchemeEmitter implements IRAMLFieldDumper{
 
-	@Override
+	
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		if (pojo instanceof Raml2){

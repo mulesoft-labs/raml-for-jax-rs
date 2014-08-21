@@ -40,7 +40,7 @@ public class PojoTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
         this.pojoClass = pojoClass;
     }
 
-    @Override
+    
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         if (rules.isEmpty())
@@ -50,19 +50,19 @@ public class PojoTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
         return super.getRuleForTuple(nodeTuple);
     }
 
-    @Override
+    
     public Class<?>[] getValueNodeType()
     {
         return new Class[] {MappingNode.class};
     }
 
-    @Override
+    
     public void setValueType(Type valueType)
     {
         pojoClass = (Class<?>) valueType;
     }
 
-    @Override
+    
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = super.validateKey(key);

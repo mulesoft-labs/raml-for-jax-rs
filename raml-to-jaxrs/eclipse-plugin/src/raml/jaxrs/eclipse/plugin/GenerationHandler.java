@@ -39,7 +39,7 @@ import org.raml.jaxrs.codegen.core.Generator;
 
 public class GenerationHandler extends AbstractHandler{
 
-	@Override
+	
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
 		ISelection selection = Workbench.getInstance().getActiveWorkbenchWindow().getActivePage().getSelection();

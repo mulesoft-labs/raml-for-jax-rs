@@ -28,7 +28,7 @@ public class DefaultResourceLoader implements ResourceLoader
                 new UrlResourceLoader(), new ClassPathResourceLoader());
     }
 
-    @Override
+    
     public InputStream fetchResource(String resourceName)
     {
         return resourceLoader.fetchResource(resourceName);

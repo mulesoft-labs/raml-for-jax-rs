@@ -23,7 +23,7 @@ import java.net.URL;
 public class UrlResourceLoader implements ResourceLoader
 {
 
-    @Override
+    
     public InputStream fetchResource(String resourceName)
     {
         InputStream inputStream = null;

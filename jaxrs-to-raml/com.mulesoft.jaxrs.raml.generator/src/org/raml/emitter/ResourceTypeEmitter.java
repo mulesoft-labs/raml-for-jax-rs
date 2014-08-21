@@ -9,7 +9,7 @@ import org.raml.model.ResourceType;
 
 public class ResourceTypeEmitter implements IRAMLFieldDumper {
 
-	@Override
+	
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		if (pojo instanceof Raml2){

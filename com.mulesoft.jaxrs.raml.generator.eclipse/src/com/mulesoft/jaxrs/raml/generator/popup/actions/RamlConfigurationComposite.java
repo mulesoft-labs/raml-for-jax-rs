@@ -206,6 +206,7 @@ public class RamlConfigurationComposite extends Composite{
 		singleFile = new Button(c, SWT.CHECK);
 		singleFile.setText("Generate schemas and examples in a single RAML file");
 		singleFile.setSelection(config.isSingle());
+		oldSingleFileSelection=config.isSingle();
 		singleFile.addSelectionListener(new SelectionAdapter() {
 			
 
@@ -226,7 +227,7 @@ public class RamlConfigurationComposite extends Composite{
 
 	public void setSeparateFilesSelected(boolean selection) {
 		singleFile.setEnabled(!selection);
-		if (!selection){
+		if (selection){
 			oldSingleFileSelection=singleFile.getSelection();
 			singleFile.setSelection(false);
 		}

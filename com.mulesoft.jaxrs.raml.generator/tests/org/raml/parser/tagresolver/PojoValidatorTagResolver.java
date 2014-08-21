@@ -15,28 +15,26 @@
  */
 package org.raml.parser.tagresolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
-
-import java.io.ByteArrayOutputStream;
+import static org.raml.parser.tagresolver.JacksonTagResolver.JACKSON_TAG;
+import static org.raml.parser.tagresolver.JaxbTagResolver.JAXB_TAG;
 
 import org.raml.parser.loader.ResourceLoader;
 import org.raml.parser.visitor.NodeHandler;
-import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
-
-public class JacksonTagResolver implements TagResolver
+/**
+ * This tag resolver validates that the classes referenced by
+ * jackson and jaxb tagged nodes are present.
+ */
+public class PojoValidatorTagResolver implements TagResolver
 {
-
-    public static final Tag JACKSON_TAG = new Tag("!jackson");
 
     @Override
     public boolean handles(Tag tag)
     {
-        return JACKSON_TAG.equals(tag);
+        return JACKSON_TAG.equals(tag) || JAXB_TAG.equals(tag);
     }
 
     @Override
@@ -45,17 +43,18 @@ public class JacksonTagResolver implements TagResolver
         String className = ((ScalarNode) node).getValue();
         try
         {
-            Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-            ObjectMapper objectMapper = new ObjectMapper();
-            //JsonSchema jsonSchema = objectMapper.generateJsonSchema(clazz);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //objectMapper.writeValue(baos, jsonSchema);
-            String schema = baos.toString();
-            return new ScalarNode(Tag.STR, schema, node.getStartMark(), node.getEndMark(), ((ScalarNode) node).getStyle());
+            Thread.currentThread().getContextClassLoader().loadClass(className);
         }
-        catch (Exception e)
+        //error thrown when class name differ in case
+        catch (NoClassDefFoundError e)
         {
-            throw new YAMLException(e);
+            nodeHandler.onCustomTagError(node.getTag(), node, "Class not found " + className);
         }
+        catch (ClassNotFoundException e)
+        {
+            nodeHandler.onCustomTagError(node.getTag(), node, "Class not found " + className);
+        }
+        return node;
     }
+
 }

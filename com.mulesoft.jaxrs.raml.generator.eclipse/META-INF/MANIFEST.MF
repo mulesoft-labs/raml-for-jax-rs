@@ -11,9 +11,10 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.core.runtime,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui,
- rampl-plugin,
+ org.eclipse.ui.ide,
  snakeyaml;bundle-version="1.0.0",
- org.eclipse.ui.ide
+ org.slf4j.api;bundle-version="1.6.4",
+ rampl-plugin
 Import-Package: 
  org.apache.commons.lang,
  org.eclipse.jface.text.source

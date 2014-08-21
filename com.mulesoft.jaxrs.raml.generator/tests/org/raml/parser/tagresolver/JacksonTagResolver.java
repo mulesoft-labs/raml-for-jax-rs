@@ -47,9 +47,9 @@ public class JacksonTagResolver implements TagResolver
         {
             Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
             ObjectMapper objectMapper = new ObjectMapper();
-            //JsonSchema jsonSchema = objectMapper.generateJsonSchema(clazz);
+            JsonSchema jsonSchema = objectMapper.generateJsonSchema(clazz);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //objectMapper.writeValue(baos, jsonSchema);
+            objectMapper.writeValue(baos, jsonSchema);
             String schema = baos.toString();
             return new ScalarNode(Tag.STR, schema, node.getStartMark(), node.getEndMark(), ((ScalarNode) node).getStyle());
         }

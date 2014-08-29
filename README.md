@@ -1,11 +1,6 @@
 RAML for JAXRS
 ===============
 
-_To deprecate:_
-> This project is devoted to two things :
-  - [Starting from JAX-RS-annotated Java code, generate a RAML API description](https://github.com/petrochenko-pavel-a/RAML-for-JAX-RS/blob/master/jaxrs-to-raml/README.md)
-  - [And starting from RAML api generating JAX-RS-annotated Java code](https://github.com/petrochenko-pavel-a/RAML-for-JAX-RS/blob/master/raml-to-jaxrs/README.md)
-
 #Introduction
 
 The goal of RAML for JAXRS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAXRS application based on an existing RAML API definition (Code Generation),

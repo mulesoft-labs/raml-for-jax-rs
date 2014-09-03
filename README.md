@@ -76,7 +76,7 @@ All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following
 - A response object wrapper is created for each resource action in order to guide the implementer in producing only results
 that are compatible with the RAML definition.
 - Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification.
-- Objects are generated based on schemas to represent request/response entities.
+- Objects are generated based on json schemas to represent request/response entities.
 - English is the language used in the interface and method names generation.
 
 ##Currently Supported
@@ -84,6 +84,19 @@ that are compatible with the RAML definition.
 - JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and javax.validation uses Java ones,
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
+
+###Supported annotations 
+
+Path.
+Consumes, Produces.
+QueryParam, FormParam, PathParam, HeaderParam.
+DELETE, GET, HEAD, OPTIONS, POST, PUT.
+DefaultValue.
+NotNull.
+Min.
+DecimalMin.
+Max.
+DecimalMax.
 
 ## Not yet supported
 

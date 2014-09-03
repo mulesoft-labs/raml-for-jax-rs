@@ -6,15 +6,15 @@ RAML for JAXRS
 The goal of RAML for JAXRS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAXRS application based on an existing RAML API definition (Code Generation),
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAXRS application (Documentation).
 
-## Consideration
+## Considerations
 RAML for JAXRS is the result of merging two projects that started individually and at different times. The idea of joining these, pursuits the purpose of providing a better experience to the developers when installing and using it.
 
 #Project Modules
 
-- [Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](jaxrs-to-raml/eclipseplugin.md)
-- [Maven Plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](/raml-to-jaxrs/maven-plugin/README.md)
-- [Javac plugin: Perform JAXRS->RAML from the command line. Installation instructions/User guide.](/jaxrs-to-raml/javac.md)
-- [Jar: Perform RAML->JAXRS from the command line. Installation instructions/User guide.](/raml-to-jaxrs/core/README.md)
+- Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. [Installation instructions/User guide.](jaxrs-to-raml/eclipseplugin.md)
+- Maven Plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. [Installation instructions/User guide.](/raml-to-jaxrs/maven-plugin/README.md)
+- Javac plugin: Perform JAXRS->RAML from the command line. [Installation instructions/User guide.](/jaxrs-to-raml/javac.md)
+- Jar: Perform RAML->JAXRS from the command line. [Installation instructions/User guide.](/raml-to-jaxrs/core/README.md)
 
 #Design principles
 
@@ -85,7 +85,7 @@ that are compatible with the RAML definition.
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
 
-###Supported annotations 
+###Supported annotations
 
 Path.
 Consumes, Produces.

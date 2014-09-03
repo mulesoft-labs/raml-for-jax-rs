@@ -19,6 +19,8 @@ Once the installation finishes, you will see a dialog asking you to restart Ecli
 
 That's it. Now you are ready to start generating RAML APIs from your existing JAXRS Applications!
 
+# JAX-RS to RAML codegen 
+
 #Usage
 
 - Select a Java class, package or source folder
@@ -50,9 +52,7 @@ The plugin supports the following configuration options:
  otherwise these will be placed in separate files and include links will be inserted in the generated RAML file. **Note:** This option is not available if you have selected "Generate an individual RAML per each Java Class" since there is not a single (not only one) RAML file where to include the schemas and examples.
 
 
-
-
-# RAML to JAX-RS codegen - Eclipse Plug-in
+# RAML to JAX-RS codegen
 
 This Eclipse plug-in generates JAX-RS annotated interfaces and supporting classes based on one or multiple RAML files.
 

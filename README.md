@@ -11,10 +11,10 @@ RAML for JAXRS is the result of merging two projects that started individually a
 
 #Project Modules
 
-- [Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](https://github.com/petrochenko-pavel-a/RAML-for-JAX-RS/blob/master/jaxrs-to-raml/eclipseplugin.md)
-- [Maven Plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](https://github.com/petrochenko-pavel-a/RAML-for-JAX-RS/blob/master/raml-to-jaxrs/maven-plugin/README.md)
-- [Javac plugin: Perform JAXRS->RAML from the command line. Installation instructions/User guide.](https://github.com/petrochenko-pavel-a/RAML-for-JAX-RS/blob/master/jaxrs-to-raml/javac.md)
-- [Jar: Perform RAML->JAXRS from the command line. Installation instructions/User guide.](https://github.com/petrochenko-pavel-a/RAML-for-JAX-RS/blob/master/raml-to-jaxrs/core/README.md)
+- [Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](jaxrs-to-raml/eclipseplugin.md)
+- [Maven Plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](/raml-to-jaxrs/maven-plugin/README.md)
+- [Javac plugin: Perform JAXRS->RAML from the command line. Installation instructions/User guide.](/jaxrs-to-raml/javac.md)
+- [Jar: Perform RAML->JAXRS from the command line. Installation instructions/User guide.](/raml-to-jaxrs/core/README.md)
 
 #Design principles
 
@@ -27,7 +27,7 @@ All distributions (Eclipse plugin, Maven Plugin, and Javac Plugin) works in the 
 - Including Javadoc documentation to resources, methods, and parameters descriptions.
 - Statically determinable sub-resources (no overriding).
 - Default values and validations for parameters (using javax.validation annotations).
-- [XML/Json schemas and examples(stubs) generation with JAXB](https://github.com/petrochenko-pavel-a/RAML-for-JAX-RS/blob/master/jaxrs-to-raml/jaxb.md)
+- [XML/Json schemas and examples(stubs) generation with JAXB](/jaxrs-to-raml/jaxb.md)
 
 ##Currently Supported
 

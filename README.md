@@ -11,10 +11,10 @@ RAML for JAXRS is the result of merging two projects that started individually a
 
 #Project Modules
 
-- Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.
-- Maven Plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.
-- Javac plugin: Perform JAXRS->RAML from the command line. Installation instructions/User guide.
-- Jar: Perform RAML->JAXRS from the command line. Installation instructions/User guide.
+- [Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](jaxrs-to-raml/eclipseplugin.md)
+- [Maven Plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](/raml-to-jaxrs/maven-plugin/README.md)
+- [Javac plugin: Perform JAXRS->RAML from the command line. Installation instructions/User guide.](/jaxrs-to-raml/javac.md)
+- [Jar: Perform RAML->JAXRS from the command line. Installation instructions/User guide.](/raml-to-jaxrs/core/README.md)
 
 #Design principles
 
@@ -27,7 +27,7 @@ All distributions (Eclipse plugin, Maven Plugin, and Javac Plugin) works in the 
 - Including Javadoc documentation to resources, methods, and parameters descriptions.
 - Statically determinable sub-resources (no overriding).
 - Default values and validations for parameters (using javax.validation annotations).
-- [XML/Json schemas and examples(stubs) generation with JAXB](https://github.com/mulesoft/jaxrs-to-raml/blob/master/jaxb.md)
+- [XML/Json schemas and examples(stubs) generation with JAXB](/jaxrs-to-raml/jaxb.md)
 
 ##Currently Supported
 
@@ -63,6 +63,9 @@ These annotations are interpreted as RAML parameters constrains.
 
 ## Not yet supported
 
+- Examples and JSON schema generation in javac compiler  plugin mode.
+- Extracting possible reponse codes by analizing java source code
+- Traits and resource type suggestions
 
 
 # JAXRS Generation (from RAML)
@@ -73,7 +76,7 @@ All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following
 - A response object wrapper is created for each resource action in order to guide the implementer in producing only results
 that are compatible with the RAML definition.
 - Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification.
-- Objects are generated based on schemas to represent request/response entities.
+- Objects are generated based on json schemas to represent request/response entities.
 - English is the language used in the interface and method names generation.
 
 ##Currently Supported
@@ -81,6 +84,19 @@ that are compatible with the RAML definition.
 - JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and javax.validation uses Java ones,
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
+
+###Supported annotations 
+
+Path.
+Consumes, Produces.
+QueryParam, FormParam, PathParam, HeaderParam.
+DELETE, GET, HEAD, OPTIONS, POST, PUT.
+DefaultValue.
+NotNull.
+Min.
+DecimalMin.
+Max.
+DecimalMax.
 
 ## Not yet supported
 
@@ -100,8 +116,8 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 
 #Examples
 
-- JAXRS->RAML examples  
-- RAML->JAXRS examples
+- [JAXRS->RAML examples] (/jaxrs-to-raml/examples/README.md)  
+- [RAML->JAXRS examples] (/raml-to-jaxrs/jersey-example/README.md)
 
 ### Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.

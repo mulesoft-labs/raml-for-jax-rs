@@ -1,0 +1,14 @@
+#%RAML 0.8
+---
+title: Application_OctetStream
+version: 2010-04-01
+baseUri: http://example.com/{version}
+/something:
+  /file:
+    post:
+      body:
+        application/octet-stream:
+      responses:
+        200:
+          body:
+            text/plain:

@@ -104,9 +104,8 @@ public class Names
         {
             return "";
         }
-
-        return remove(remove(StringUtils.substringAfter(mimeType.getType().toLowerCase(DEFAULT_LOCALE), "/"),
-            "x-www-"),"+");
+        return remove(remove(remove(StringUtils.substringAfter(mimeType.getType().toLowerCase(DEFAULT_LOCALE), "/"),
+        		                        "x-www-"),"+"), "-");        
     }
 
     private Names()

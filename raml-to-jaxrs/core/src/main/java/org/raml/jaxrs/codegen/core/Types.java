@@ -98,6 +98,10 @@ public class Types
         {
             return getGeneratorType(String.class);
         }
+        else if (MediaType.APPLICATION_OCTET_STREAM.equals(mimeType.getType()))
+        {
+        	            return getGeneratorType(InputStream.class);
+        }
         else
         {
             // fallback to a generic reader

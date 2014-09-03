@@ -1,3 +1,5 @@
+![](http://raml.org/images/logo.png)
+
 # Eclipse Plugin Installation Instructions:
 
 You can install the JAXRS-to-RAML plugin for Eclipse/Mule Studio by using the "Software Update" feature of your IDE. To do so, follow these steps:
@@ -16,6 +18,8 @@ This means that Eclipse cannot verify the identity of the plugin authors because
 Once the installation finishes, you will see a dialog asking you to restart Eclipse. Click "Restart Now".
 
 That's it. Now you are ready to start generating RAML APIs from your existing JAXRS Applications!
+
+# JAX-RS to RAML codegen 
 
 #Usage
 
@@ -46,3 +50,22 @@ The plugin supports the following configuration options:
 - Skip resources with no methods: When checked, the tool won't generate a resource entry (in the RAML definition) for those URL path segments which are not exposing any HTTP method. This will result in a more flat resource tree.
 - Generate schemas and examples in a single RAML file: When checked, schemas and examples will be placed in the generated RAML file,
  otherwise these will be placed in separate files and include links will be inserted in the generated RAML file. **Note:** This option is not available if you have selected "Generate an individual RAML per each Java Class" since there is not a single (not only one) RAML file where to include the schemas and examples.
+
+
+# RAML to JAX-RS codegen
+
+## Usage
+
+Select your RAML file in the Package Explorer. Invoke the context menu and click the "RAML to JAX-RS" item to open the configuration dialog.
+
+![](/raml-to-jaxrs/eclipse-plugin/doc/popup.png)
+
+Use the dialog to configure parameters and launch the generation process.
+
+![](/raml-to-jaxrs/eclipse-plugin/doc/dialog.png)
+
+| Option      | Description   |
+| -------------- |-------------| 
+| JAX-RS version | Version of JAX-RS framework to be used during generation |
+| JSON Mapper    | Annotation framework used to map JSON      |
+| Use JSR 303 Annotations   | Enable or not JSR 303 Java Bean validation    |

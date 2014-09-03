@@ -103,7 +103,7 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 
 #Examples
 
-- JAXRS->RAML examples  
+- [JAXRS->RAML examples] (/jaxrs-to-raml/examples/README.md)  
 - RAML->JAXRS examples
 
 ### Contributing

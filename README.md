@@ -63,6 +63,9 @@ These annotations are interpreted as RAML parameters constrains.
 
 ## Not yet supported
 
+- Examples and JSON schema generation in javac compiler  plugin mode.
+- Extracting possible reponse codes by analizing java source code
+- Traits and resource type suggestions
 
 
 # JAXRS Generation (from RAML)

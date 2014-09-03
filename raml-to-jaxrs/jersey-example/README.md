@@ -194,9 +194,8 @@ traits:
     /presentations: *presentations
 
 ```
-produces the set of java classes which will look like:
-
-Java Class included on the examples, and the RAML result that the tool will generate for that class:
+Produces the set of Java Class included on the examples which will look like:
+as well as required model and support classes
 
 ```java
 

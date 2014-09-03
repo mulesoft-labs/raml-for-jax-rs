@@ -104,7 +104,7 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 #Examples
 
 - [JAXRS->RAML examples] (/jaxrs-to-raml/examples/README.md)  
-- RAML->JAXRS examples
+- [RAML->JAXRS examples] (/raml-to-jaxrs/jersey-example/README.md)
 
 ### Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.

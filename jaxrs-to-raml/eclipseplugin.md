@@ -54,10 +54,6 @@ The plugin supports the following configuration options:
 
 # RAML to JAX-RS codegen
 
-This Eclipse plug-in generates JAX-RS annotated interfaces and supporting classes based on one or multiple RAML files.
-
-_NB. The following documentation will soon be superseded by the Maven-generated plug-in documentation._
-
 ## Usage
 
 Select your RAML file in the Package Explorer. Invoke the context menu and click the "RAML to JAX-RS" item to open the configuration dialog.

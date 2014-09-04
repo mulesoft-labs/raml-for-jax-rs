@@ -33,7 +33,7 @@ Also you should be able to us Java api to generate JAXRS on the fly:
 
 Actually API developers should seldom have to use the core generator but instead should use a plug-in for their build tool. But there is an example of how to do it:
 
-Example:
+##Example:
 
     File outputDirectory = new File("/some/path/to/target/code-gen");
 

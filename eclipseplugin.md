@@ -21,7 +21,7 @@ That's it. Now you are ready to start generating RAML APIs from your existing JA
 
 # JAX-RS to RAML converter 
 
-#Usage
+## Usage
 
 - Select a Java class, package or source folder
 - Right click to show the context menu.
@@ -54,7 +54,7 @@ The plugin supports the following configuration options:
 
 # RAML to JAX-RS converter
 
-## Usage
+##Usage
 
 Select your RAML file in the Package Explorer. Invoke the context menu and click the "RAML to JAX-RS" item to open the configuration dialog.
 

@@ -21,7 +21,7 @@ Then:
 
     curl -H "Authorization: s3cr3t" -H "Content-Type: application/json" -d '{"title":"New presentation"}' http://localhost:8181/presentations
 
-So In this example following RAML file:
+So In this example following RAML file (you may see full output in 'example-output' folder):
 ```yaml
 #%RAML 0.8
 ---

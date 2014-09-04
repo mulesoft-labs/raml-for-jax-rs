@@ -1,9 +1,8 @@
 ![](http://raml.org/images/logo.png)
 
-# RAML JAX-RS - Core Generator
+#Perform RAML->JAXRS from the command line. 
 
-
-Command line Installation Instructions
+##Installation instructions.
 
 You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/ramlToJaxrs.jar, or you can clone this repository and build it locally by following these steps:
 
@@ -16,7 +15,6 @@ This jar file (downloaded or built yourself) contains all that you need to run R
 
 
 ## Usage
-
 
 To do it you should type following commandline 
 

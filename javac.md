@@ -1,5 +1,5 @@
 ![](http://raml.org/images/logo.png)
-## javac Plugin Installation Instructions
+## Javac plugin: Perform JAXRS->RAML from the command line. Installation instructions/User guide.
 
 You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/jaxrs.raml.apt.jar, or you can clone this repository and
 build it locally by following these steps:

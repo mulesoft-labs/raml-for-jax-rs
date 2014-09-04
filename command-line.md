@@ -18,7 +18,7 @@ This jar file (downloaded or built yourself) contains all that you need to run R
 
 To do it you should type following commandline 
 
-    java -cp raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.JAX-RS.codegen.core.Launcher
+    java -cp raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.jaxrs.codegen.core.Launcher
 
 and add some configuration  options to it:
 
@@ -40,7 +40,7 @@ Actually API developers should seldom have to use the core generator but instead
     Configuration configuration = new Configuration();
     configuration.setOutputDirectory(outputDirectory);
     configuration.setSourceDirectory(inputDirectory)
-    configuration.setBasePackageName("org.raml.JAX-RS.test");
+    configuration.setBasePackageName("org.raml.jaxrs.test");
 
     InputStreamReader ramlReader = new InputStreamReader(getClass().getResourceAsStream("/org/raml/full-config-with-patch.yaml"));
 

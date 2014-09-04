@@ -86,12 +86,14 @@ that are compatible with the RAML definition.
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
 
-###Supported annotations 
+###JAXRS Annotations: 
 
 Path.
 Consumes, Produces.
 QueryParam, FormParam, PathParam, HeaderParam.
 DELETE, GET, HEAD, OPTIONS, POST, PUT.
+
+###Validation Annotations:
 DefaultValue.
 NotNull.
 Min.

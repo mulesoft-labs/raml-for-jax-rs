@@ -11,7 +11,7 @@ RAML for JAXRS is the result of merging two projects that started individually a
 
 #Project Modules
 
-- [Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](jaxrs-to-raml/eclipseplugin.md)
+- [Eclipse / Anypoint Studio plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](eclipseplugin.md)
 - [Maven Plugin: Perform RAML->JAXRS and JAXRS to RAML generation embedded in your IDE. Installation instructions/User guide.](/raml-to-jaxrs/maven-plugin/README.md)
 - [Javac plugin: Perform JAXRS->RAML from the command line. Installation instructions/User guide.](/jaxrs-to-raml/javac.md)
 - [Jar: Perform RAML->JAXRS from the command line. Installation instructions/User guide.](/raml-to-jaxrs/core/README.md)

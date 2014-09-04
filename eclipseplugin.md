@@ -64,8 +64,8 @@ Use the dialog to configure parameters and launch the generation process.
 
 ![](/raml-to-jaxrs/eclipse-plugin/doc/dialog.png)
 
-| Option      | Description   |
-| -------------- |-------------| 
-| JAX-RS version | Version of JAX-RS framework to be used during generation |
-| JSON Mapper    | Annotation framework used to map JSON      |
-| Use JSR 303 Annotations   | Enable or not JSR 303 Java Bean validation    |
+##Configuration Options
+ 
+-  JAX-RS version -version of JAX-RS framework to be used during generation 
+-  JSON Mapper - annotation framework used to map JSON
+-  Use JSR 303 Annotations - Enable or not JSR 303 Java Bean validation

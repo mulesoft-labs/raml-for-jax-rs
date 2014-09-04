@@ -2,7 +2,7 @@
 
 # RAML to JAX-RS converter - Jersey Example
 
-This project demonstrates the usage of the RAML-JAXRS Maven plug-in in a Jersey 2 API project.
+This project demonstrates the usage of the RAML-JAX-RS Maven plug-in in a Jersey 2 API project.
 
 ## Pre-requisites
 
@@ -11,7 +11,7 @@ This project demonstrates the usage of the RAML-JAXRS Maven plug-in in a Jersey 
 
 ## Running and Testing
 
-Run `org.raml.jaxrs.example.Main` for example with:
+Run `org.raml.JAX-RS.example.Main` for example with:
 
     mvn exec:java
 
@@ -199,7 +199,7 @@ as well as required model and support classes
 
 ```java
 
-package org.raml.jaxrs.example.resource;
+package org.raml.JAX-RS.example.resource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -212,8 +212,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.raml.jaxrs.example.model.Presentation;
-import org.raml.jaxrs.example.support.PATCH;
+import org.raml.JAX-RS.example.model.Presentation;
+import org.raml.JAX-RS.example.support.PATCH;
 
 @Path("presentations")
 public interface Presentations {
@@ -336,7 +336,7 @@ public interface Presentations {
         String authorization);
 
     public class GetPresentationsByPresentationIdResponse
-        extends org.raml.jaxrs.example.support.ResponseWrapper
+        extends org.raml.JAX-RS.example.support.ResponseWrapper
     {
 
 
@@ -368,7 +368,7 @@ public interface Presentations {
     }
 
     public class GetPresentationsResponse
-        extends org.raml.jaxrs.example.support.ResponseWrapper
+        extends org.raml.JAX-RS.example.support.ResponseWrapper
     {
 
 
@@ -391,7 +391,7 @@ public interface Presentations {
          * @param entity
          *     
          */
-        public static Presentations.GetPresentationsResponse jsonOK(org.raml.jaxrs.example.model.Presentations entity) {
+        public static Presentations.GetPresentationsResponse jsonOK(org.raml.JAX-RS.example.model.Presentations entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
             return new Presentations.GetPresentationsResponse(responseBuilder.build());
@@ -400,7 +400,7 @@ public interface Presentations {
     }
 
     public class PatchPresentationsByPresentationIdResponse
-        extends org.raml.jaxrs.example.support.ResponseWrapper
+        extends org.raml.JAX-RS.example.support.ResponseWrapper
     {
 
 
@@ -432,7 +432,7 @@ public interface Presentations {
     }
 
     public class PostPresentationsResponse
-        extends org.raml.jaxrs.example.support.ResponseWrapper
+        extends org.raml.JAX-RS.example.support.ResponseWrapper
     {
 
 
@@ -464,7 +464,7 @@ public interface Presentations {
     }
 
     public class PutPresentationsByPresentationIdResponse
-        extends org.raml.jaxrs.example.support.ResponseWrapper
+        extends org.raml.JAX-RS.example.support.ResponseWrapper
     {
 
 

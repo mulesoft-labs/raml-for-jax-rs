@@ -10,11 +10,11 @@ _NB. The following documentation will soon be superseded by the Maven-generated 
 
 Select your RAML file in the Package Explorer. Invoke the context menu and click the "RAML to JAX-RS" item to open the configuration dialog.
 
-![](/raml-to-jaxrs/eclipse-plugin/doc/popup.png)
+![](/raml-to-JAX-RS/eclipse-plugin/doc/popup.png)
 
 Use the dialog to configure parameters and launch the generation process.
 
-![](/raml-to-jaxrs/eclipse-plugin/doc/dialog.png)
+![](/raml-to-JAX-RS/eclipse-plugin/doc/dialog.png)
 
 | Option      | Description   |
 | -------------- |-------------| 

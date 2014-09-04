@@ -1,6 +1,6 @@
 ![](http://raml.org/images/logo.png)
 
-# RAML to JAX-RS codegen - Jersey Example
+# RAML to JAX-RS converter - Jersey Example
 
 This project demonstrates the usage of the RAML-JAXRS Maven plug-in in a Jersey 2 API project.
 

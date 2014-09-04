@@ -1,6 +1,6 @@
 ![](http://raml.org/images/logo.png)
 
-# RAML JAX-RS Codegen - Core Generator
+# RAML JAX-RS - Core Generator
 
 
 Command line Installation Instructions

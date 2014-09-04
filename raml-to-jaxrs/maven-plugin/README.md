@@ -1,6 +1,6 @@
 ![](http://raml.org/images/logo.png)
 
-# RAML to JAX-RS codegen - Maven Plug-in
+# RAML to JAX-RS converter - Maven Plug-in
 
 This plug-in generates JAX-RS annotated interfaces and supporting classes based on one or multiple RAML files.
 

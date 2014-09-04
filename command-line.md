@@ -4,10 +4,10 @@
 
 ##Installation instructions.
 
-You can download the command tool jar from http://raml-tools.mulesoft.com/JAX-RS-to-raml/javac/ramlToJAX-RS.jar, or you can clone this repository and build it locally by following these steps:
+You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/ramlToJAX-RS.jar, or you can clone this repository and build it locally by following these steps:
 
 Go to the project root folder.
-cd /raml-to-JAX-RS/core/
+cd /raml-to-jaxrs/core/
 mvn assembly:assembly -DdescriptorId=jar-with-dependencies
 cd target
 Inside this folder, you will find the generated jar (raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar).

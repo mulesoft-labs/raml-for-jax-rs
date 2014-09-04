@@ -3,7 +3,7 @@
 
 ##Installation instructions
 
-You can download the command tool jar from http://raml-tools.mulesoft.com/JAX-RS-to-raml/javac/JAX-RS.raml.apt.jar, or you can clone this repository and
+You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/JAX-RS.raml.apt.jar, or you can clone this repository and
 build it locally by following these steps:
 
 1. Go to the project root folder.

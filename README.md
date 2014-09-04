@@ -28,7 +28,7 @@ All distributions (Eclipse plugin, Maven Plugin, and Javac Plugin) works in the 
 - Including Javadoc documentation to resources, methods, and parameters descriptions.
 - Statically determinable sub-resources (no overriding).
 - Default values and validations for parameters (using javax.validation annotations).
-- [XML/Json schemas and examples(stubs) generation with JAXB](/JAX-RS-to-raml/jaxb.md)
+- [XML/Json schemas and examples(stubs) generation with JAXB](/jaxrs-to-raml/jaxb.md)
 
 ##Currently Supported
 
@@ -42,7 +42,7 @@ In JAX-RS-to-RAML, these annotations have exactly the same semantical meaning as
 
 **Note:** CookieParam and MatrixParam annotations are not supported in this version. A deep discussion
 about how these should be represented in RAML must be held in order to have a good implementation. Feel free to [contribute
-with ideas/opinions about it](https://github.com/mulesoft/JAX-RS-to-raml/issues?labels=Cookie%26Matrix+params&milestone=&page=1&state=closed).
+with ideas/opinions about it](https://github.com/mulesoft/jaxrs-to-raml/issues?labels=Cookie%26Matrix+params&milestone=&page=1&state=closed).
 ###Extended Annotations
 The following annotations are not part of JAX-RS specification itself. However, these are useful to describe RESTful APIs when working with
 JAVA projects, and so, it was decided to add support for them.
@@ -119,8 +119,8 @@ DecimalMax.
 
 #Examples
 
-- [JAX-RS->RAML examples] (/JAX-RS-to-raml/examples)  
-- [RAML->JAX-RS examples] (/raml-to-JAX-RS/jersey-example)
+- [JAX-RS->RAML examples] (/jaxrs-to-raml/examples)  
+- [RAML->JAX-RS examples] (/raml-to-jaxrs/jersey-example)
 
 ### Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.

@@ -33,7 +33,7 @@ That's it. Now you are ready to start generating RAML APIs from your existing JA
 
 Choose the options according to your needs (check "Configuration Options" section for a detailed explanation) and click OK. **Your API is ready!**
 
-##Configuration Options
+###Configuration Options
 
 The plugin supports the following configuration options:
 
@@ -64,7 +64,7 @@ Use the dialog to configure parameters and launch the generation process.
 
 ![](/raml-to-jaxrs/eclipse-plugin/doc/dialog.png)
 
-##Configuration Options
+###Configuration Options
  
 -  JAX-RS version -version of JAX-RS framework to be used during generation 
 -  JSON Mapper - annotation framework used to map JSON

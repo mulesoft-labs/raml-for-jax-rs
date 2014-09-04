@@ -1,3 +1,4 @@
+![](http://raml.org/images/logo.png)
 ## javac Plugin Installation Instructions
 
 You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/jaxrs.raml.apt.jar, or you can clone this repository and

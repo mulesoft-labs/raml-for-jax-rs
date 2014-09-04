@@ -1,3 +1,4 @@
+![](http://raml.org/images/logo.png)
 #JAXB and Schema Generation Support
 
 At the moment schema and example generation is based on JAXB annotations. So in order to get the schemas and examples generated,

@@ -1,3 +1,4 @@
+![](http://raml.org/images/logo.png)
 ##Examples
 
 This folder contains several Java Projects that you can use to try RAML for JAXRS (JAXRS->RAML generation).

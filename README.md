@@ -1,3 +1,4 @@
+![](http://raml.org/images/logo.png)
 RAML for JAXRS
 ===============
 

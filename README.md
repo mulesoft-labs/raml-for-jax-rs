@@ -89,17 +89,19 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 ###JAX-RS Annotations: 
 
 Path.
-Consumes, Produces.
-QueryParam, FormParam, PathParam, HeaderParam.
-DELETE, GET, HEAD, OPTIONS, POST, PUT.
+- Path
+- Consumes, Produces
+- QueryParam, FormParam, PathParam, HeaderParam.
+- DELETE, GET, HEAD, OPTIONS, POST, PUT.
+- DefaultValue.
+###Extended Annotations
 
 ###Validation Annotations:
-DefaultValue.
-NotNull.
-Min.
-DecimalMin.
-Max.
-DecimalMax.
+- NotNull.
+- Min.
+- DecimalMin.
+- Max.
+- DecimalMax.
 
 ## Not yet supported
 
@@ -120,7 +122,7 @@ DecimalMax.
 #Examples
 
 - [JAX-RS->RAML examples] (/jaxrs-to-raml/examples)  
-- [RAML->JAX-RS examples] (/raml-to-jaxrs/jersey-example)
+- [RAML->JAX-RS examples] (/raml-to-jaxrs/examples)
 
 ### Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.

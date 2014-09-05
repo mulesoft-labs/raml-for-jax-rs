@@ -19,9 +19,9 @@ Once the installation finishes, you will see a dialog asking you to restart Ecli
 
 That's it. Now you are ready to start generating RAML APIs from your existing JAX-RS Applications!
 
-# JAX-RS to RAML
+## JAX-RS to RAML
 
-## Usage
+### Usage
 
 - Select a Java class, package or source folder
 - Right click to show the context menu.
@@ -33,7 +33,7 @@ That's it. Now you are ready to start generating RAML APIs from your existing JA
 
 Choose the options according to your needs (check "Configuration Options" section for a detailed explanation) and click OK. **Your API is ready!**
 
-###Configuration Options
+####Configuration Options
 
 The plugin supports the following configuration options:
 
@@ -52,9 +52,9 @@ The plugin supports the following configuration options:
  otherwise these will be placed in separate files and include links will be inserted in the generated RAML file. **Note:** This option is not available if you have selected "Generate an individual RAML per each Java Class" since there is not a single (not only one) RAML file where to include the schemas and examples.
 
 
-# RAML to JAX-RS
+## RAML to JAX-RS
 
-##Usage
+###Usage
 
 Select your RAML file in the Package Explorer. Invoke the context menu and click the "RAML to JAX-RS" item to open the configuration dialog.
 
@@ -64,7 +64,7 @@ Use the dialog to configure parameters and launch the generation process.
 
 ![](/raml-to-jaxrs/eclipse-plugin/doc/dialog.png)
 
-###Configuration Options
+####Configuration Options
 
 -  JAX-RS version -version of JAX-RS framework to be used during generation
 -  JSON Mapper - annotation framework used to map JSON

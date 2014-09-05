@@ -7,7 +7,7 @@ RAML for JAX-RS
 The goal of RAML for JAX-RS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAX-RS application based on an existing RAML API definition (Code Generation),
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
 
-## Consideration
+## Considerations
 RAML for JAX-RS is the result of merging two projects that started individually and at different times. The idea of joining these, pursuits the purpose of providing a better experience to the developers when installing and using it.
 
 #Project Modules

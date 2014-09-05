@@ -12,10 +12,9 @@ RAML for JAX-RS is the result of merging two projects that started individually 
 
 #Project Modules
 
-- [Eclipse / Anypoint Studio plugin: Perform RAML->JAX-RS and JAX-RS to RAML generation embedded in your IDE. Installation instructions/User guide.](/eclipseplugin.md)
-- [Maven Plugin: Perform RAML->JAX-RS and JAX-RS to RAML generation embedded in your IDE. Installation instructions/User guide.](/maven-plugin.md)
-- [Javac plugin: Perform JAX-RS->RAML from the command line. Installation instructions/User guide.](/javac.md)
-- [Jar: Perform RAML->JAX-RS from the command line. Installation instructions/User guide.](/command-line.md)
+- [Eclipse / Anypoint Studio plugin: Perform RAML to JAX-RS and JAX-RS to RAML conversion embedded in your IDE. Installation instructions/User guide.](/eclipseplugin.md)
+- [Maven Plugin: Perform RAML to JAX-RS and JAX-RS to RAML conversion embedded in Maven. Installation instructions/User guide.](/maven-plugin.md)
+- [Command Line: Perform RAML to JAX-RS and JAX-RS to RAML conversion in command line. Installation instructions/User guide.](/command-line.md)
 
 #Design principles
 

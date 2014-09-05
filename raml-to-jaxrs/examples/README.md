@@ -1,8 +1,8 @@
 ![](http://raml.org/images/logo.png)
 
-# RAML to JAX-RS codegen - Jersey Example
+# RAML to JAX-RS converter - Jersey Example
 
-This project demonstrates the usage of the RAML-JAXRS Maven plug-in in a Jersey 2 API project.
+This project demonstrates the usage of the RAML-JAX-RS Maven plug-in in a Jersey 2 API project.
 
 ## Pre-requisites
 
@@ -21,7 +21,7 @@ Then:
 
     curl -H "Authorization: s3cr3t" -H "Content-Type: application/json" -d '{"title":"New presentation"}' http://localhost:8181/presentations
 
-So In this example following RAML file:
+So In this example following RAML file (you may see full output in 'example-output' folder):
 ```yaml
 #%RAML 0.8
 ---

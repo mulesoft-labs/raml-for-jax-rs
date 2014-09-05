@@ -1,6 +1,6 @@
 ![](http://raml.org/images/logo.png)
 
-# RAML to JAX-RS codegen - Eclipse Plug-in
+# RAML to JAX-RS converter - Eclipse Plug-in
 
 This Eclipse plug-in generates JAX-RS annotated interfaces and supporting classes based on one or multiple RAML files.
 

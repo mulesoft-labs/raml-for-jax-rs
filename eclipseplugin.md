@@ -2,7 +2,7 @@
 
 # Eclipse Plugin Installation Instructions:
 
-You can install the JAX-RS-to-RAML plugin for Eclipse/Mule Studio by using the "Software Update" feature of your IDE. To do so, follow these steps:
+You can install the "RAML for JAX-RS" plugin for Eclipse/Mule Studio by using the "Software Update" feature of your IDE. To do so, follow these steps:
 - Start Eclipse or Mule Studio.
 - Select Help > Install New Software.
 - In the "New Software" window, enter the update site URL (http://raml-tools.mulesoft.com/jaxrs-to-raml/eclipse) into the "Work with" textbox, and press the enter.

@@ -45,3 +45,7 @@ In your `pom.xml`, add the following build plug-in:
             </execution>
         </executions>
     </plugin>
+
+Now if you will run mvn compile or mvn package raml file will be processed and you will able to see generated classes as well as java source files in generated-sources folder.
+
+Consideration: m4e did not handles this well yet.

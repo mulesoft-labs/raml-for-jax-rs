@@ -15,7 +15,8 @@ _NB. The following documentation will soon be superseded by the Maven-generated 
 
 ### Usage
 
-at first you should install our plugin, to do it go to core project and run mvn install, then go to maven-plugin and run mvn install again, now you are ready to use it.
+at first you should install our plugin, to do it at first you should clone this repository or donwload snapshot. Then go to 
+'raml-to-jaxrs' folder, then go to 'core' folder and type 'mvn install' after it go to parent folder and then go to 'maven-plugin' folder and type 'mvn install' again. Now you are ready to use maven plugin.
 
 Add `<pluginGroup>org.raml.plugins</pluginGroup>` to the `pluginGroups` section of your Maven `settings.xml`.
 

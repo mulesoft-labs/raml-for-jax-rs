@@ -20,7 +20,7 @@ This jar file (downloaded or built yourself) contains all that you need to run R
 
 To do it you should type following commandline
 
-    java -cp raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.jaxrs.codegen.core.Launcher
+    java -cp raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.jaxrs.codegen.core.Launcher
 
 and add some configuration  options to it:
 
@@ -30,6 +30,10 @@ and add some configuration  options to it:
  * JAX-RSVersion default 1.1
  * useJsr303Annotations should we use Jsr301 or not
  * jsonMapper version of json mapper to use defaults to 'jackson1'
+
+So your sample command line might looks like: 
+ 
+`java -cp raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.jaxrs.codegen.core.Launcher  -basePackageName com.somecompany.sample -outputDirectory destination -sourceDirectory .`
 
 ###Using Java API to generate JAX-RS on the fly:
 

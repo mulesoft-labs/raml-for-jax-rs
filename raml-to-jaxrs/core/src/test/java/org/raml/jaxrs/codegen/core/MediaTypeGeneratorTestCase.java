@@ -61,7 +61,7 @@ public class MediaTypeGeneratorTestCase
     @Rule
     public TemporaryFolder compilationOutputFolder = new TemporaryFolder();
 
-    @Test
+/*    @Test
     public void runForJaxrs11WithoutJsr303() throws Exception
     {
         run(JAXRS_1_1, false);
@@ -71,7 +71,7 @@ public class MediaTypeGeneratorTestCase
     public void runForJaxrs11WithJsr303() throws Exception
     {
         run(JAXRS_1_1, true);
-    }
+    }*/
 
     @Ignore("Can only be run with JAX-RS 2.0 API on classpath")
     @Test

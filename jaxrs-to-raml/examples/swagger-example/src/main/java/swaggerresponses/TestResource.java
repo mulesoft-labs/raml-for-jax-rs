@@ -2,8 +2,12 @@ package swaggerresponses;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
@@ -25,5 +29,16 @@ public class TestResource {
 	@GET
 	String getMe1(){
 		return "";		
+	}
+	@Path("/{snt}")
+	@Produces({ "application/json" })
+	@GET
+	@ApiOperation(value="Get customer matching specified SNT code.", response=Customer.class)
+	@ApiResponses(value={
+	        @ApiResponse(code=404, message="Not Found"),
+	        @ApiResponse(code=500, message="Server Error")
+	})
+	public Customer getCustomerBySntCode(@ApiParam(required=true, name="snt") @PathParam("snt") String snt, @Context Object req) throws Throwable {
+		return null;		
 	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.mulesoft.jaxrs.raml.feature"
-      label="JAXRS -&gt; RAML"
+      label="RAML for JAX-RS"
       version="1.0.0.qualifier"
       provider-name="MULESOFT">
 

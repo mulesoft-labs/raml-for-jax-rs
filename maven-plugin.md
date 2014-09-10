@@ -15,6 +15,8 @@ _NB. The following documentation will soon be superseded by the Maven-generated 
 
 ### Usage
 
+at first you should install our plugin, to do it go to core project and run mvn install, then go to maven-plugin and run mvn install again, now you are ready to use it.
+
 Add `<pluginGroup>org.raml.plugins</pluginGroup>` to the `pluginGroups` section of your Maven `settings.xml`.
 
 In your `pom.xml`, add the following build plug-in:

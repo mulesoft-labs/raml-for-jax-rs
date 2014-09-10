@@ -1,8 +1,10 @@
 ![](http://raml.org/images/logo.png)
 
-#Perform RAML to JAX-RS conversion from the command line. 
+#Command Line Interface (CLI)
 
-##Installation instructions.
+##RAML to JAX-RS
+
+###Installation instructions.
 
 You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/ramlToJAX-RS.jar, or you can clone this repository and build it locally by following these steps:
 
@@ -14,26 +16,26 @@ Inside this folder, you will find the generated jar (raml-JAX-RS-codegen-core-1.
 This jar file (downloaded or built yourself) contains all that you need to run RAML-to-JAX-RS as a command line
 
 
-## Usage
+### Usage
 
-To do it you should type following commandline 
+To do it you should type following commandline
 
     java -cp raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.jaxrs.codegen.core.Launcher
 
 and add some configuration  options to it:
 
- * basePackageName - package name for generated sources 
+ * basePackageName - package name for generated sources
  * sourceDirectory - directory to look for raml files
  * outputDirectory - directory to store generated java files
  * JAX-RSVersion default 1.1
  * useJsr303Annotations should we use Jsr301 or not
  * jsonMapper version of json mapper to use defaults to 'jackson1'
 
-##Using Java API to generate JAX-RS on the fly:
+###Using Java API to generate JAX-RS on the fly:
 
 Actually API developers should seldom have to use the core generator but instead should use a plug-in for their build tool. But there is an example of how to do it:
 
-###Example:
+####Example:
 
     File outputDirectory = new File("/some/path/to/target/code-gen");
 
@@ -46,11 +48,12 @@ Actually API developers should seldom have to use the core generator but instead
 
     new Generator().run(ramlReader, configuration);
 
-# Javac plugin: JAX-RS to RAML conversion from the command line. 
+
+##JAX-RS to RAML.
 
 JAX-RS to RAML conversion is implemented as javac plugin, so to run it your need to run javac with our annotation processor
 
-##Installation instructions
+###Installation instructions
 
 You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/JAX-RS.raml.apt.jar, or you can clone this repository and
 build it locally by following these steps:
@@ -66,7 +69,7 @@ build it locally by following these steps:
 This jar file (downloaded or built yourself) contains all that you need to run JAX-RS-to-RAML as a javac plugin.
 
 
-## Usage Guide
+###Usage Guide
 
 ```
 javac TestResource1.java

@@ -1,12 +1,19 @@
 ![](http://raml.org/images/logo.png)
 
-# RAML to JAX-RS converter - Maven Plug-in
+# Maven Plug-ins
+
+## JAX-RS to RAML
+
+Coming soon.
+
+
+##RAML to JAX-RS
 
 This plug-in generates JAX-RS annotated interfaces and supporting classes based on one or multiple RAML files.
 
 _NB. The following documentation will soon be superseded by the Maven-generated plug-in documentation._
 
-## Usage
+### Usage
 
 Add `<pluginGroup>org.raml.plugins</pluginGroup>` to the `pluginGroups` section of your Maven `settings.xml`.
 
@@ -38,8 +45,3 @@ In your `pom.xml`, add the following build plug-in:
             </execution>
         </executions>
     </plugin>
-
-# JAX-RS to RAML converter- Maven Plug-in
-
-Coming soon.
-

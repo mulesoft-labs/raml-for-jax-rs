@@ -12,12 +12,7 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui,
  org.eclipse.ui.ide,
- snakeyaml;bundle-version="1.0.0",
- org.slf4j.api;bundle-version="1.6.4",
- rampl-plugin
-Import-Package: 
- org.apache.commons.lang,
- org.eclipse.jface.text.source
+ snakeyaml;bundle-version="1.0.0"
 Bundle-ClassPath: lib/jettison-1.3.3.jar,
  .
 Bundle-ActivationPolicy: lazy

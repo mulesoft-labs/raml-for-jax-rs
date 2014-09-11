@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -103,6 +104,15 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo
     @Parameter(property = "jsonMapper", defaultValue = "jackson1")
     private String jsonMapper;
     
+    
+    
+    /**
+    * Optional extra configuration provided to the JSON mapper. Supported keys are:
+    * "generateBuilders", "includeHashcodeAndEquals", "includeToString", "useLongIntegers"
+    */
+    @Parameter(property = "jsonMapperConfiguration")
+    private Map<String, String> jsonMapperConfiguration;
+    
     /**
     * Throw exception on Resource Method
     */
@@ -154,6 +164,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo
             configuration.setUseJsr303Annotations(useJsr303Annotations);
             configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
             configuration.setSourceDirectory(sourceDirectory);
+            configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
             /*
             if (methodThrowException != null) {
                 configuration.setMethodThrowException(Class.forName(methodThrowException));

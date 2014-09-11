@@ -18,6 +18,7 @@ package org.raml.jaxrs.codegen.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.AnnotationStyle;
@@ -61,7 +62,8 @@ public class Configuration
     private boolean useJsr303Annotations = false;
     private AnnotationStyle jsonMapper = AnnotationStyle.JACKSON1;
     private File sourceDirectory;
-    private Class methodThrowException = Exception.class;    
+    private Class methodThrowException = Exception.class;
+    private Map<String, String> jsonMapperConfiguration;
 
     public GenerationConfig createJsonSchemaGenerationConfig()
     {
@@ -78,23 +80,39 @@ public class Configuration
             {
                 return useJsr303Annotations;
             }
-
             @Override
             public boolean isGenerateBuilders()
             {
-                return true;
+                return getConfiguredValue("generateBuilders", true);
             }
 
             @Override
             public boolean isIncludeHashcodeAndEquals()
             {
-                return false;
+                return getConfiguredValue("includeHashcodeAndEquals", false);
             }
 
             @Override
             public boolean isIncludeToString()
             {
-                return false;
+                return getConfiguredValue("includeToString", false);
+            }
+
+            @Override
+            public boolean isUseLongIntegers()
+            {
+                return getConfiguredValue("useLongIntegers", false);
+            }
+
+            private boolean getConfiguredValue(final String key, final boolean def)
+            {
+                if (jsonMapperConfiguration == null || jsonMapperConfiguration.isEmpty())
+                {
+                    return def;
+               }
+
+                final String val = jsonMapperConfiguration.get(key);
+                return val!=null?Boolean.parseBoolean(val): def;
             }
         };
     }
@@ -163,5 +181,15 @@ public class Configuration
 
     public void setSourceDirectory(File sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
+    }
+    
+    public Map<String, String> getJsonMapperConfiguration()
+    {
+       return jsonMapperConfiguration;
+    }
+    
+    public void setJsonMapperConfiguration(Map<String, String> jsonMapperConfiguration)
+    {
+       this.jsonMapperConfiguration = jsonMapperConfiguration;
     }
 }

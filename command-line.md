@@ -4,38 +4,46 @@
 
 ##RAML to JAX-RS
 
-###Installation instructions.
+###Installation
 
-You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/ramlToJAX-RS.jar, or you can clone this repository and build it locally by following these steps:
+You can download the command line tool from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/ramlToJAX-RS.jar, or you can clone this repository and build it locally by following these steps:
 
-Go to the project root folder.
-cd /raml-to-jaxrs/core/
-mvn assembly:assembly -DdescriptorId=jar-with-dependencies
-cd target
-Inside this folder, you will find the generated jar (raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar).
-This jar file (downloaded or built yourself) contains all that you need to run RAML-to-JAX-RS as a command line
+- Go to the `raml-to-jaxrs/core/` folder.
+- Run `mvn assembly:assembly -DdescriptorId=jar-with-dependencies`
+- Go to `target` folder, where you will find the generated jar (`raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar`).
+- **Optional**: This documentation asumes that the JAR is called: `raml-to-jax-rs.jar`. You might want to rename yours to follow the documentation.
 
+This jar file (downloaded or built yourself) contains all that you need to run the RAML-to-JAX-RS tool from the command line.
 
 ### Usage
 
-To do it you should type following commandline
+In order to generate your JAX-RS code, you must run it by invoking
 
-    java -cp raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.jaxrs.codegen.core.Launcher
+```terminal
+java -cp [path-to-the-jar] org.raml.jaxrs.codegen.core.Launcher [options]
+```
 
-and add some configuration  options to it:
+####Options
 
- * basePackageName - package name for generated sources
- * sourceDirectory - directory to look for raml files
- * outputDirectory - directory to store generated java files
- * JAX-RSVersion default 1.1
- * useJsr303Annotations should we use Jsr301 or not
- * jsonMapper version of json mapper to use defaults to 'jackson1'
+ * basePackageName: The package name for generated sources.
+ * sourceDirectory: The directory where the RAML definition is located.
+ * outputDirectory: The directory where the generated JAVA files will be located.
+ * JAX-RSVersion: The JAX-RS version that the generated code will be compatible with. It's **optional** and `1.1` by default.
+ * useJsr303Annotations: Flag for indicating if Jsr301 should be used. It's **optional**.
+ * jsonMapper: Version of the JSON mapper to be used. It's **optional** and `jackson1` by default.
 
-So your sample command line might looks like: 
- 
-`java -cp raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar  org.raml.jaxrs.codegen.core.Launcher  -basePackageName com.somecompany.sample -outputDirectory destination -sourceDirectory .`
+####Example
 
-###Using Java API to generate JAX-RS on the fly:
+```terminal
+  java -cp raml-to-jax-rs.jar org.raml.jaxrs.codegen.core.Launcher  
+    -basePackageName com.somecompany.sample
+    -outputDirectory target/generatedCode
+    -sourceDirectory src/resources/raml
+```
+The command above will process the RAML definition located in `src/resources/raml` and generate the corresponding JAVA code in `target/generatedCode` folder.
+The JAVA classes will be in the `com.somecompany.sample` package.
+
+###Java API
 
 Actually API developers should seldom have to use the core generator but instead should use a plug-in for their build tool. But there is an example of how to do it:
 
@@ -51,6 +59,7 @@ Actually API developers should seldom have to use the core generator but instead
     InputStreamReader ramlReader = new InputStreamReader(getClass().getResourceAsStream("/org/raml/full-config-with-patch.yaml"));
 
     new Generator().run(ramlReader, configuration);
+
 
 
 ##JAX-RS to RAML.

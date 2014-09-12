@@ -57,7 +57,7 @@ javac src/java/main/services/CustomerResource.java src/java/main/services/Produc
 ```
 
 **Notes:**
-- If your Java packages are contained in more then one source folders, you must include all of them:```-sourcepath src1/java/main:src2/java/main```. Note that the path separator symbol is not the same for all operation systems. Mac OS and Linux use ```':'``` while Windows uses ```';'```.
+- If your Java packages are contained in more then one source folders, you must include all of them:```-sourcepath src1/java/main:src2/java/main```. Note that path separator symbol is not the same for all operation systems. Mac OS and Linux use ```':'``` while Windows uses ```';'```.
 - If a path of your web service Java file contains a space, it must be taken into quotes: ```-javac "/path to my project/Service.java" /src/main/java/services/CustomerResource.java ...```
 - If a value of some option contains a path with space, the whole value must be taken into quotes: ```-classpath "my libs/lib1.jar:lib/lib2.jar"```
 - A classpath option value can contain jars, class files and folders (which themselves contain jars and class files). Here is example of a complex classpath: ```-classpath folders/lib:/jars/myJar.jar:classes/myClass1.class```

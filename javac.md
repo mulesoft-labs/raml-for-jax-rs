@@ -71,5 +71,14 @@ Otherwise it is treated as directory, and the target filename is `generated.raml
 
 ___
 
-**Consideration**: The current version of the javac plugin do not support XML Examples, JSON Schemas, and JSON Examples.
-Eclipse Plugin is currently capable of these features, and they will be supported in future versions of the javac plugin as well.
+**Consideration**: The current version of the javac plugin do not support XML Examples, JSON Schemas, and JSON Examples. Despite this fact schemas and examples are already generated for response bodies. For example:
+```
+get: 
+  responses: 
+    200: 
+      body: 
+        application/xml: 
+          schema: customer
+          example: !include examples/customer.xml
+```
+They must be removed manually, otherwise RAML file will remain erroneous. Eclipse Plugin is already capable of generating schemas and examples, and these features will be supported in future versions of the javac plugin as well.

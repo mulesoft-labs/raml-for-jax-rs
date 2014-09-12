@@ -39,7 +39,7 @@ src
           CustomerResource.java
       
 ```
-* These two classes depend only on those classes which belong to packages located in the the same ```src/main/java``` subfolder.
+* These two depend only on those classes which belong to packages located in the the same ```src/main/java``` subfolder.
 * Classpath of Java project these classes belong to consists of jar files located in the ```lib``` subfolder.
 * The ```jaxrs.raml.apt.jar``` file is located in the ```jax-rs-to-raml``` subfolder.
 * You want to generate RAML files into the ```output/raml``` subfolder.

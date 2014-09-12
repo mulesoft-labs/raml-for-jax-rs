@@ -64,11 +64,10 @@ javac src/java/main/services/CustomerResource.java src/java/main/services/Produc
 - In all cases above you may use absolute paths instead of relative ones.
 - The ```-implicit:class``` option tells javac that the annotations in the dependent files must also be resolved by the processor.
 - Your input Java file must utilize one of the following JAVAX annotations: PUT, GET, POST, OPTIONS, Produces and Path. Otherwise, the plugin will not be activated.
-- If you built the jar yourself, it will probably have some name like `com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`.
-Remember that you need to pass that filename for the `processorpath` parameter.
-- If `ramlpath` ends with `.raml` (for example `ramlfolder/testresource.raml`), it will be treated as the target filename.
-Otherwise it will be treated as a directory, and the target filename will be `path/generated.raml` (e.g. `-Aramplpath=myraml` will result in the destination `myraml/generated.raml`).
-In both cases the parent directories for a destination file will be automatically created if needed.
+- If you have built the jar yourself, it probably has some name like `com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`.
+Remember that you must pass the exact filename for the `processorpath` parameter.
+- If `ramlpath` ends with `.raml` (for example `ramlfolder/testresource.raml`), it is treated as the target filename.
+Otherwise it is treated as a directory, and the target filename is `generated.raml` (e.g. `-Aramplpath=myraml` will result in the destination `myraml/generated.raml`). In both cases the parent directories for a destination file will be automatically created if needed.
 
 ___
 

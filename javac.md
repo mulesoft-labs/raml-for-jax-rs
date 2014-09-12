@@ -28,7 +28,7 @@ javac <classes>
 
 For example, assume that
 
-1. You want to process two web service Java classes which belong to the ```shop.services``` Java package located in the ```src/main/java``` subfolder:
+* You want to process two web service Java classes which belong to the ```shop.services``` Java package located in the ```src/main/java``` subfolder:
 ```
 src
   main
@@ -39,10 +39,10 @@ src
           CustomerResource.java
       
 ```
-2. These two classes depend only on those classes which belong to packages located in the the same ```src/main/java``` subfolder.
-3. Classpath of Java project these classes belong to consists of jar files located in the ```lib``` subfolder.
-4. The ```jaxrs.raml.apt.jar``` file is located in the ```jax-rs-to-raml``` subfolder.
-5. You want to generate RAML files into the ```output/raml``` subfolder.
+* These two classes depend only on those classes which belong to packages located in the the same ```src/main/java``` subfolder.
+* Classpath of Java project these classes belong to consists of jar files located in the ```lib``` subfolder.
+* The ```jaxrs.raml.apt.jar``` file is located in the ```jax-rs-to-raml``` subfolder.
+* You want to generate RAML files into the ```output/raml``` subfolder.
 
 Then your command line request is as follows:
 

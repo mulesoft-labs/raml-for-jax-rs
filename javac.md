@@ -28,7 +28,7 @@ javac <classes>
 
 For example, assume that
 
-1. You want to process two web service Java classes which belong to the ```shop.service``` Java package located in the ```src/main/java``` subfolder:
+1. You want to process two web service Java classes which belong to the ```shop.services``` Java package located in the ```src/main/java``` subfolder:
 ```
 src
   main

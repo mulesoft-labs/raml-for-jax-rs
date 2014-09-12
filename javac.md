@@ -17,7 +17,7 @@ This jar file (downloaded or built yourself) contains all that you need to run J
 ## Usage Guide
 
 ```
-javac TestResource1.java
+javac <classes>
       -sourcepath <path-to-your-java-source-code>
       -classpath <your-classpath>
       -processorpath <path-to-your-jar>/jaxrs.raml.apt.jar
@@ -26,28 +26,44 @@ javac TestResource1.java
       -implicit:class
 ```
 
-For example:
+For example, assume that
+
+1. We want to process two web service Java classes which belong to the ```shop.service``` Java package located in the ```src/main/java``` subfolder:
+```
+src
+  main
+    java
+      shop
+        services
+          ProductResource.java
+          CustomerResource.java
+      
+```
+2. These two classes depend only on those classes which belong to packages located in the the same ```src/main/java``` subfolder.
+3. Classpath of Java project these classes belong to consists of jar files located in the ```lib``` subfolder.
+4. The ```jaxrs.raml.apt.jar``` file is located in the ```jax-rs-to-raml``` subfolder.
+5. You want to generate RAML files into the ```output/raml``` subfolder.
+
+Then your command line request is as follows:
 
 ```
-javac HelloWorldRest.java
-      -sourcepath tests
-      -classpath jsr311-api-1.1.1.jar
-      -processorpath jaxrs.raml.apt.jar
+javac src/java/main/services/CustomerResource.java src/java/main/services/ProductResource.java
+      -sourcepath src/java/main
+      -classpath lib
+      -processorpath jax-rs-to-raml/jaxrs.raml.apt.jar
       -processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
-      -Aramlpath=helloworld
+      -Aramlpath=output/raml
       -implicit:class
 ```
 
-Let's take a look at the command line in more detail:
- * `HelloWorldRest.java`: Your web service Java file
- * `-sourcepath`: Tells javac where to find Java sources.
- * `-classpath jsr311-api-1.1.1.jar`: Adds jsr311 annotations to the classpath.
- * `-processorpath com.mulesoft.jaxrs.raml.generator.annotations.jar`: Tells javac where to find the annotation processor.
- * `-processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor`: Adds the annotation processor to the javac flow.
- * ``-Aramlpath=helloworld`: Tells javac which is the destination folder for the (to-be)-generated RAML definition.
- * `-implicit:class`: Tells javac that the annotations in the dependent files must also be resolved by the processor.
-
 **Notes:**
+- If your Java packages are contained in more then one source folders, you must include all of them:```-sourcepath src1/java/main:src2/java/main```
+Note the path separator symbol is not the same for all operation systems. Mac OS and Linux use ```':'``` while Windows uses ```';'```.
+- If a path of your web service Java file contains a space, it must be taken into quotes: ```-javac "/path to my project/Service.java" /src/main/java/services/CustomerResource.java ...```
+- If a value of some option contains a path with space, the whole value must be taken into quotes: ```-classpath "my libs/lib1.jar:lib/lib2.jar"```.
+- A classpath option value can contain jars, class files and folders (which themselves contain jars and class files). Here is example of a complex classpath: ```-classpath folders/lib:/jars/myJar.jar:classes/myClass1.class```
+- In all cases above you may use absolute paths instead of relative ones.
+- The ```-implicit:class``` option tells javac that the annotations in the dependent files must also be resolved by the processor.
 - Your input Java file must utilize one of the following JAVAX annotations: PUT, GET, POST, OPTIONS, Produces and Path. Otherwise, the plugin will not be activated.
 - If you built the jar yourself, it will probably have some name like `com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`.
 Remember that you need to pass that filename for the `processorpath` parameter.
@@ -57,5 +73,5 @@ In both cases the parent directories for a destination file will be automaticall
 
 ___
 
-**Consideration**: The current version of the javac plugin is not supporting XML Examples, JSON Schemas, and JSON Examples.
-These features are currently working on the Eclipse Plugin version and will be supported in future versions for the javac plugin as well.
+**Consideration**: The current version of the javac plugin do not support XML Examples, JSON Schemas, and JSON Examples.
+Eclipse Plugin is currently capable of these features, and they will be supported in future versions of the javac plugin as well.

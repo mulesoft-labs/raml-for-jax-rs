@@ -67,7 +67,7 @@ javac src/java/main/services/CustomerResource.java src/java/main/services/Produc
 - If you have built the jar yourself, it probably has some name like `com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`.
 Remember that you must pass the exact filename to the `processorpath` parameter.
 - If `ramlpath` ends with `.raml` (for example `ramlfolder/testresource.raml`), it is treated as target filename.
-Otherwise it is treated as directory, and the target filename is `generated.raml` (e.g. `-Aramplpath=myraml` will result in the destination `myraml/generated.raml`). In both cases the parent directories for a destination file will be automatically created if needed.
+Otherwise it is treated as directory, and the target filename is `generated.raml` (e.g. `-Aramplpath=myraml` will result in the destination `myraml/generated.raml`). In both cases parent directories for destination file are automatically created if needed.
 
 ___
 

@@ -39,7 +39,7 @@ javac HelloWorldRest.java
 ```
 
 Let's take a look at the command line in more detail:
- * `HelloWorldRest.java`: Your Java file
+ * `HelloWorldRest.java`: Your web service Java file
  * `-sourcepath`: Tells javac where to find Java sources.
  * `-classpath jsr311-api-1.1.1.jar`: Adds jsr311 annotations to the classpath.
  * `-processorpath com.mulesoft.jaxrs.raml.generator.annotations.jar`: Tells javac where to find the annotation processor.
@@ -48,6 +48,7 @@ Let's take a look at the command line in more detail:
  * `-implicit:class`: Tells javac that the annotations in the dependent files must also be resolved by the processor.
 
 **Notes:**
+- Your input Java file must utilize one of the following JAVAX annotations: PUT, GET, POST, OPTIONS, Produces and Path. Otherwise, the plugin will not be activated.
 - If you built the jar yourself, it will probably have some name like `com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`.
 Remember that you need to pass that filename for the `processorpath` parameter.
 - If `ramlpath` ends with `.raml` (for example `ramlfolder/testresource.raml`), it will be treated as the target filename.

@@ -105,7 +105,8 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo
     private String jsonMapper;
     
     
-    
+    @Parameter(property = "asyncResourceTrait")
+    private String asyncResourceTrait;
     /**
     * Optional extra configuration provided to the JSON mapper. Supported keys are:
     * "generateBuilders", "includeHashcodeAndEquals", "includeToString", "useLongIntegers"
@@ -162,6 +163,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo
             configuration.setJaxrsVersion(JaxrsVersion.fromAlias(jaxrsVersion));
             configuration.setOutputDirectory(outputDirectory);
             configuration.setUseJsr303Annotations(useJsr303Annotations);
+            configuration.setAsyncResourceTrait(asyncResourceTrait);
             configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
             configuration.setSourceDirectory(sourceDirectory);
             configuration.setJsonMapperConfiguration(jsonMapperConfiguration);

@@ -256,6 +256,10 @@ class Context
 
         return _enum;
     }
+    public JClass getGeneratorClass(final String clazzFQN)
+    {
+          return codeModel.ref(clazzFQN);
+    }
 
     @SuppressWarnings("unchecked")
     public Context addHttpMethodAnnotation(final String httpMethod, final JAnnotatable annotatable)

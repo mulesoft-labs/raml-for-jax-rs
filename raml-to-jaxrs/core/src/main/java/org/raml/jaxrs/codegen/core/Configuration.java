@@ -64,6 +64,17 @@ public class Configuration
     private File sourceDirectory;
     private Class methodThrowException = Exception.class;
     private Map<String, String> jsonMapperConfiguration;
+    private String asyncResourceTrait;
+    
+    public String getAsyncResourceTrait()
+    {
+         return asyncResourceTrait;
+    }
+    
+    public void setAsyncResourceTrait(final String asyncResourceTrait)
+    {
+         this.asyncResourceTrait = asyncResourceTrait;
+    }
 
     public GenerationConfig createJsonSchemaGenerationConfig()
     {

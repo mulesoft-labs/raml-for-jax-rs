@@ -100,12 +100,24 @@ public class Names
 
     public static String getShortMimeType(final MimeType mimeType)
     {
-        if (mimeType == null)
-        {
-            return "";
-        }
-        return remove(remove(remove(StringUtils.substringAfter(mimeType.getType().toLowerCase(DEFAULT_LOCALE), "/"),
-        		                        "x-www-"),"+"), "-");        
+		if (mimeType == null) {
+			return "";
+		}
+		String subType = StringUtils.substringAfter(mimeType.getType()
+				.toLowerCase(DEFAULT_LOCALE), "/");
+
+		if (subType.contains(".")) {
+			// handle types like application/vnd.example.v1+json
+			StringBuilder sb = new StringBuilder();
+			for (String s : subType.split("\\W+")) {
+				sb.append(sb.length() == 0 ? s : StringUtils.capitalize(s));
+			}
+			return sb.toString();
+		} else {
+			// handle any other types
+			return remove(remove(remove(subType, "x-www-"), "+"), "-");
+		}
+
     }
 
     private Names()

@@ -2,6 +2,12 @@
 RAML for JAX-RS
 ===============
 
+**The project was renamed. Please read**: This project was formerly known as JAX-RS to RAML. After a big refactor, we achieved merging it with other related project called "RAML JAX-RS Codegen", so we decided to rename the first one to RAML for JAX-RS.
+This new project includes all the capabilities of both, and will be the one being maintained and improved.
+
+You can still find older versions of JAX-RS to RAML in this repository, and you will also be able to find the RAML JAX-RS Codegen [here](https://github.com/mulesoft/raml-jaxrs-codegen) until we remove it.
+
+
 #Introduction
 
 The goal of RAML for JAX-RS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAX-RS application based on an existing RAML API definition (Code Generation),

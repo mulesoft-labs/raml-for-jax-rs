@@ -1,0 +1,31 @@
+{
+  "required" : true ,
+  "$schema" : "http://json-schema.org/draft-03/schema" ,
+  "type" : "object" ,
+  "properties" : {
+    "states" : {
+      "type" : "object" ,
+      "required" : false ,
+      "properties" : {
+        "state" : {
+          "type" : "object" ,
+          "required" : false ,
+          "properties" : {
+            "@href" : {
+              "type" : "string" ,
+              "required" : false
+            } ,
+            "name" : {
+              "type" : "string" ,
+              "required" : false
+            } ,
+            "population" : {
+              "type" : "string" ,
+              "required" : false
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+#%RAML 0.8
+---
+title: Twilio API
+version: 2010-04-01
+baseUri: https://api.twilio.com/{version}
+/Accounts:
+   /{AccountSid}:
+     uriParameters:
+       AccountSid:
+         description: |
+           An Account instance resource represents a single Twilio account.
+         type: string
+     /Calls:
+       post:
+         description: |
+           Using the Twilio REST API, you can make outgoing calls to phones,
+           SIP-enabled endpoints and Twilio Client connections.
+
+           Note that calls initiated via the REST API are rate-limited to one per
+           second. You can queue up as many calls as you like as fast as you like,
+           but each call is popped off the queue at a rate of one per second.
+         body:
+           application/x-www-form-urlencoded:
+             formParameters:
+               From:
+                 description: |
+                   The phone number or client identifier to use as the caller id. If
+                   using a phone number, it must be a Twilio number or a Verified
+                   outgoing caller id for your account.
+                 type: string
+                 required: yes
+                 pattern: (\+1|1)?([2-9]\d\d[2-9]\d{6}) # E.164 standard
+                 example: +14158675309

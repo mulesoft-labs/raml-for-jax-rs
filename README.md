@@ -1,32 +1,38 @@
-# JAXRS-to-RAML
+![](http://raml.org/images/logo.png)
+RAML for JAX-RS
+===============
 
-##Introduction
+#Introduction
 
-The goal of JAXRS-to-RAML is to provide a full featured and easy to use tool to generate
-a RAML API definition from an existing JAXRS-annotated Java code.
+The goal of RAML for JAX-RS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAX-RS application based on an existing RAML API definition (Code Generation),
+or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
 
-It's based on analyzing the existing code annotations.
-(See "Supported annotations" to understand which annotations are being handled in the current version).
+## Considerations
+RAML for JAX-RS is the result of merging two projects that started individually and at different times. The idea of joining these, pursuits the purpose of providing a better experience to the developers when installing and using it.
 
+#Project Modules
 
-##Project Modules
-So far, you can use JAXRS-to-RAML in the following ways:
-- Eclipse/Mule Studio plugin: Perform the RAML generation from your IDE by selecting the package containing the source Java classes.
-- Javac plugin: Perform the RAML generation from the Command Line.
-- Runtime: Use JAXRS-to-RAML in your Java application to generate a RAML definition from some Java Code in Runtime.
+- Eclipse / Anypoint Studio plugin: Perform both ways conversions from your IDE. [Installation instructions/User guide.](/eclipseplugin.md)
+- Maven Plugin: Perform both ways conversions by using Maven. [Installation instructions/User guide.](/maven-plugin.md)
+- Command Line: Perform both ways conversions in command line. [Installation instructions/User guide.](/command-line.md)
 
-##Key Supported Features:
+#Design principles
+
+## RAML Generation (from JAX-RS)
+All distributions (Eclipse plugin, Maven Plugin, and Javac Plugin) works in the following way.
+
 - Accepting all basic action types, path annotations, path, query, and form parameters.
 - Generating a resource tree based on the Jersey resources available in the source path.
 - Inferring media types when possible.
 - Including Javadoc documentation to resources, methods, and parameters descriptions.
 - Statically determinable sub-resources (no overriding).
 - Default values and validations for parameters (using javax.validation annotations).
-- [XML/Json schemas and examples(stubs) generation with JAXB](https://github.com/mulesoft/jaxrs-to-raml/blob/master/jaxb.md)
+- [XML/Json schemas and examples(stubs) generation with JAXB](/jaxrs-to-raml/jaxb.md)
 
-### Supported Annotations
-####JAXRS Annotations:
-In JAXRS-to-RAML, these annotations have exactly the same semantical meaning as in JAXRS:
+###Currently Supported
+
+####JAX-RS Annotations:
+In JAX-RS-to-RAML, these annotations have exactly the same semantical meaning as in JAX-RS:
 - Path.
 - Consumes, Produces.
 - QueryParam, FormParam, PathParam, HeaderParam.
@@ -36,15 +42,15 @@ In JAXRS-to-RAML, these annotations have exactly the same semantical meaning as 
 **Note:** CookieParam and MatrixParam annotations are not supported in this version. A deep discussion
 about how these should be represented in RAML must be held in order to have a good implementation. Feel free to [contribute
 with ideas/opinions about it](https://github.com/mulesoft/jaxrs-to-raml/issues?labels=Cookie%26Matrix+params&milestone=&page=1&state=closed).
-####Extended Annotations
-The following annotations are not part of JAXRS specification itself. However, these are useful to describe RESTful APIs when working with
+###Extended Annotations
+The following annotations are not part of JAX-RS specification itself. However, these are useful to describe RESTful APIs when working with
 JAVA projects, and so, it was decided to add support for them.
 
 #####Swagger Annotations:
 If the project is using these swagger annotations, the tool is able to determine the possible response codes
 and generate the proper documentation.
-- ApiResponse
-- ApiResponses
+- ApiResponse.
+- ApiResponses.
 
 #####Validation Annotations:
 These annotations are interpreted as RAML parameters constrains.
@@ -55,193 +61,68 @@ These annotations are interpreted as RAML parameters constrains.
 - Max.
 - DecimalMax.
 
-## Installation and Usage Guides
-- [Installation instructions/Usage guide for Eclipse/Mule Studio](https://github.com/mulesoft/jaxrs-to-raml/blob/master/eclipseplugin.md)
-- [Installation instructions/Usage guide for using as plugin to javac](https://github.com/mulesoft/jaxrs-to-raml/blob/master/javac.md)
+### Not yet supported
 
-##Examples
-Packed with the project source code, you can find an ["examples" folder](https://github.com/mulesoft/jaxrs-to-raml/tree/master/examples).
-This folder contains several Java Projects that you can use to try JAXRS-to-RAML.
-The following snippets show one Java Class included on the examples, and the RAML result that the tool will generate for that class:
+- Examples and JSON schema generation in javac compiler  plugin mode.
+- Extracting possible reponse codes by analizing java source code.
+- Traits and resource type suggestions.
 
-Java Class (CustomerResource.java):
-```java
-package shop.services;
-import ...
 
-@Path("/customers")
-public interface CustomerResource
-{
-   @POST
-   @Consumes("application/xml")
-   Response createCustomer(Customer customer, @Context UriInfo uriInfo);
+## JAX-RS Generation (from RAML)
+All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following ways:
 
-   @GET
-   @Produces("application/xml")
-   Customers getCustomers(@QueryParam("start") int start,
-                          @QueryParam("size") @DefaultValue("2") int size,
-                          @QueryParam("firstName") String firstName,
-                          @QueryParam("lastName") String lastName,
-                          @Context UriInfo uriInfo);
+- Interfaces are generated and will be regenerated when the RAML definition changes.
+- One interface is generated per top level resource, sub-resources are defined as different methods in the same interface.
+- A response object wrapper is created for each resource action in order to guide the implementer in producing only results
+that are compatible with the RAML definition.
+- Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification.
+- Objects are generated based on json schemas to represent request/response entities.
+- English is the language used in the interface and method names generation.
 
-   @GET
-   @Path("{id}")
-   @Produces({"application/xml", "application/json"})
-   Customer getCustomer(@PathParam("id") int id);
-}
+###Currently Supported
+- JAX-RS 1.1 and 2.0,
+- JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and javax.validation uses Java ones,
+and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
+- Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
 
-```
+####JAX-RS Annotations:
 
-Generated RAML definition file:
-```yaml
-#%RAML 0.8
-title: testJ2R
-version: v1
-baseUri: http://example.com
-protocols: [ HTTP ]
-schemas:
-  - customer-jsonschema: |
-        {
-          "required" : true ,
-          "$schema" : "http://json-schema.org/draft-03/schema" ,
-          "type" : "object" ,
-          "properties" : {
-            "customer" : {
-              "type" : "object" ,
-              "required" : false ,
-              "properties" : {
-                "@id" : {
-                  "type" : "string" ,
-                  "required" : false
-                }
-              }
-            }
-          }
-        }
-  - customer: |
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+- Path.
+- Consumes, Produces.
+- QueryParam, FormParam, PathParam, HeaderParam.
+- DELETE, GET, HEAD, OPTIONS, POST, PUT.
+- DefaultValue.
 
-          <xs:element name="customer" type="customer"/>
+####Extended Annotations:
 
-          <xs:complexType name="customer">
-            <xs:sequence>
-              <xs:element name="first-name" type="xs:string" minOccurs="0"/>
-              <xs:element name="last-name" type="xs:string" minOccurs="0"/>
-              <xs:element name="street" type="xs:string" minOccurs="0"/>
-              <xs:element name="city" type="xs:string" minOccurs="0"/>
-              <xs:element name="state" type="xs:string" minOccurs="0"/>
-              <xs:element name="zip" type="xs:string" minOccurs="0"/>
-              <xs:element name="country" type="xs:string" minOccurs="0"/>
-            </xs:sequence>
-            <xs:attribute name="id" type="xs:int" use="required"/>
-          </xs:complexType>
-        </xs:schema>
-  - customers-jsonschema: |
-        {
-          "required" : true ,
-          "$schema" : "http://json-schema.org/draft-03/schema" ,
-          "type" : "object" ,
-          "properties" : {
-            "customers" : {
-              "type" : "string" ,
-              "required" : false
-            }
-          }
-        }
-  - customers: |
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+#####Validation Annotations:
+- NotNull.
+- Min.
+- DecimalMin.
+- Max.
+- DecimalMax.
 
-          <xs:element name="customer" type="customer"/>
+### Not yet supported
 
-          <xs:element name="customers" type="customers"/>
+- Generation of JAXB annotated classes based on XML Schemas
 
-          <xs:element name="link" type="link"/>
 
-          <xs:complexType name="customers">
-            <xs:sequence>
-              <xs:element ref="customer" minOccurs="0" maxOccurs="unbounded"/>
-              <xs:element ref="link" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-          </xs:complexType>
+#Future Features
 
-          <xs:complexType name="customer">
-            <xs:sequence>
-              <xs:element name="first-name" type="xs:string" minOccurs="0"/>
-              <xs:element name="last-name" type="xs:string" minOccurs="0"/>
-              <xs:element name="street" type="xs:string" minOccurs="0"/>
-              <xs:element name="city" type="xs:string" minOccurs="0"/>
-              <xs:element name="state" type="xs:string" minOccurs="0"/>
-              <xs:element name="zip" type="xs:string" minOccurs="0"/>
-              <xs:element name="country" type="xs:string" minOccurs="0"/>
-            </xs:sequence>
-            <xs:attribute name="id" type="xs:int" use="required"/>
-          </xs:complexType>
+## For RAML->JAX-RS:
+ - Documentation needs a lot of improvements, completion and examples. Most developers will be able to figure the missing gaps by themselves and looking at the Jersey example, but we will enhance documentation soon.
+ - There is no hosting of Maven artifacts yet, so users need to download from git and install in the local repo for now.
+ - Maven Archetypes implementation, for the most common project types that this plug-in could be used with, like: plain JAR if this is used as part of another project, plain WAR if this is to be deployed on a JavaEE container, WAR+specific JAX-RS implementation (for example Jersey) if to be deployed on a web container that does not provide JAX-RS, standalone JAR with a particular JAX-RS implementation.
+ - Project assume developers are familiar with JAX-RS to get started. There is only one example in Jersey included, but we may want to add examples in other implementations of JAX-RS to help developers choose between the different options.
 
-          <xs:complexType name="link">
-            <xs:sequence/>
-            <xs:attribute name="href" type="xs:string"/>
-            <xs:attribute name="rel" type="xs:string"/>
-            <xs:attribute name="type" type="xs:string"/>
-          </xs:complexType>
-        </xs:schema>
-/customers:
-  get:
-    queryParameters:
-      start:
-        type: integer
-        required: true
-      size:
-        type: integer
-        default: 2
-      firstName:
-      lastName:
-    responses:
-      200:
-        body:
-          application/xml:
-            schema: customers
-            example: |
-              <?xml version="1.0" encoding="UTF-8"?>
-              <customers></customers>
-  post:
-    body:
-      application/xml:
-        schema: customer
-        example: |
-          <?xml version="1.0" encoding="UTF-8"?>
-          <customer id="0"></customer>
-    responses:
-      201:
-  /{id}:
-    uriParameters:
-      id:
-        type: integer
-        required: true
-    get:
-      responses:
-        200:
-          body:
-            application/xml:
-              schema: customer
-              example: |
-                <?xml version="1.0" encoding="UTF-8"?>
-                <customer id="0"></customer>
-            application/json:
-              schema: customer-jsonschema
-              example: |
-                {
-                  "customer" : {
-                    "@id" : "0"
-                  }
-                }
+## For JAX-RS->RAML:
+ - Injection of request parameters to fields.
+ - Support for XML examples, JSON examples, and JSON schemas for the Javac plugin.
 
-```
+#Examples
 
-## Future Features
-- Injection of request parameters to fields.
-- Support for *XML examples*, *JSON examples*, and *JSON schemas* for the javac plugin.
+- [JAX-RS->RAML examples](/jaxrs-to-raml/examples)  
+- [RAML->JAX-RS examples](/raml-to-jaxrs/examples)
 
 ### Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.

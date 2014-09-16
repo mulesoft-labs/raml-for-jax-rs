@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="country" type="country"/>
+
+  <xs:element name="state" type="state"/>
+
+  <xs:element name="states" type="states"/>
+
+  <xs:complexType name="country">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int" minOccurs="0"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="population" type="xs:int"/>
+      <xs:element ref="states" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="uri" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="states">
+    <xs:sequence>
+      <xs:element ref="state" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="uri" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="state">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int" minOccurs="0"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="population" type="xs:long"/>
+    </xs:sequence>
+    <xs:attribute name="href" type="xs:string" use="required"/>
+    <xs:attribute name="uri" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>
+

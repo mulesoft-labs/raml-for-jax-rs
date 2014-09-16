@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="raml-jaxrs-eclipse-plugin.generate"
+            name="Convert RAML to JAXRS">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="raml.jaxrs.eclipse.plugin.GenerationHandler"
+            commandId="raml-jaxrs-eclipse-plugin.generate">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="raml-jaxrs-eclipse-plugin.contribution1"
+            nameFilter="*.raml"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="ramljaxrseclipseplugin.popup.actions.NewAction"
+               enablesFor="1"
+               id="raml-jaxrs-eclipse-plugin.newAction"
+               label="Convert RAML to JAX-RS"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

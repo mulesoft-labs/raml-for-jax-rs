@@ -1,0 +1,554 @@
+#%RAML 0.8
+title: Please type API title here
+version: v1
+baseUri: http://example.com
+protocols: [ HTTP ]
+schemas:
+  - contact-jsonschema: !include schemas/contact-jsonschema.json
+  - contact: !include schemas/contact.xsd
+  - contacts-jsonschema: !include schemas/contacts-jsonschema.json
+  - contacts: !include schemas/contacts.xsd
+  - country-jsonschema: !include schemas/country-jsonschema.json
+  - country: !include schemas/country.xsd
+  - countries-jsonschema: !include schemas/countries-jsonschema.json
+  - countries: !include schemas/countries.xsd
+  - state_ref-jsonschema: !include schemas/state_ref-jsonschema.json
+  - state_ref: !include schemas/state_ref.xsd
+  - states_ref-jsonschema: !include schemas/states_ref-jsonschema.json
+  - states_ref: !include schemas/states_ref.xsd
+  - state-jsonschema: !include schemas/state-jsonschema.json
+  - state: !include schemas/state.xsd
+  - states-jsonschema: !include schemas/states-jsonschema.json
+  - states: !include schemas/states.xsd
+  - booklisting-jsonschema: !include schemas/booklisting-jsonschema.json
+  - booklisting: !include schemas/booklisting.xsd
+  - searchresult-jsonschema: !include schemas/searchresult-jsonschema.json
+  - searchresult: !include schemas/searchresult.xsd
+  - categoryinfo-jsonschema: !include schemas/categoryinfo-jsonschema.json
+  - categoryinfo: !include schemas/categoryinfo.xsd
+  - document-jsonschema: !include schemas/document-jsonschema.json
+  - document: !include schemas/document.xsd
+  - product-jsonschema: !include schemas/product-jsonschema.json
+  - product: !include schemas/product.xsd
+  - products-jsonschema: !include schemas/products-jsonschema.json
+  - products: !include schemas/products.xsd
+  - order-jsonschema: !include schemas/order-jsonschema.json
+  - order: !include schemas/order.xsd
+  - customer-jsonschema: !include schemas/customer-jsonschema.json
+  - customer: !include schemas/customer.xsd
+  - customers-jsonschema: !include schemas/customers-jsonschema.json
+  - customers: !include schemas/customers.xsd
+  - muleversionextdto-jsonschema: !include schemas/muleversionextdto-jsonschema.json
+  - muleversionextdto: !include schemas/muleversionextdto.xsd
+/: 
+  get: 
+    responses: 
+      200: 
+        body: 
+          application/xml: 
+            schema: contact
+            example: !include examples/contact.xml
+/admin: 
+  /mule-versions: 
+    post: 
+      body: 
+        application/json: 
+          schema: muleversionextdto-jsonschema
+          example: !include examples/muleversionextdto.json
+      responses: 
+        200: 
+          body: 
+            application/json: 
+    /{version}: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      put: 
+        body: 
+          application/json: 
+            schema: muleversionextdto-jsonschema
+            example: !include examples/muleversionextdto.json
+        responses: 
+          200: 
+            body: 
+              application/json: 
+      /w: 
+        put: 
+          body: 
+            application/json: 
+          responses: 
+            200: 
+              body: 
+                application/json: 
+                  schema: muleversionextdto-jsonschema
+                  example: !include examples/muleversionextdto.json
+/busUnit: 
+  /retail: 
+    /{unitID}: 
+      /status: 
+        /{enabled}: 
+          uriParameters: 
+            unitID: 
+              type: integer
+              required: true
+            enabled: 
+              type: integer
+              required: true
+          get: 
+            responses: 
+              200: 
+/contacts: 
+  get: 
+    responses: 
+      200: 
+        body: 
+          application/xml: 
+            schema: contacts
+            example: !include examples/contacts.xml
+/customers: 
+  get: 
+    queryParameters: 
+      start: 
+        type: integer
+        required: true
+      size: 
+        type: integer
+        default: 2
+      firstName: 
+      lastName: 
+    responses: 
+      200: 
+        body: 
+          application/xml: 
+            schema: customers
+            example: !include examples/customers.xml
+  post: 
+    body: 
+      application/xml: 
+        schema: customer
+        example: !include examples/customer.xml
+    responses: 
+      200: 
+  /{id}: 
+    uriParameters: 
+      id: 
+        type: integer
+        required: true
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+              schema: customer
+              example: !include examples/customer.xml
+            application/json: 
+              schema: customer-jsonschema
+              example: !include examples/customer.json
+/library: 
+  /books: 
+    /badger: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: booklisting-jsonschema
+                example: !include examples/booklisting.json
+    /badger.html: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              text/html: 
+    /mapped: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: booklisting-jsonschema
+                example: !include examples/booklisting.json
+    /mapped.html: 
+      get: 
+        responses: 
+          200: 
+            body: 
+              text/html: 
+/orders: 
+  get: 
+    queryParameters: 
+      start: 
+        type: integer
+        required: true
+      size: 
+        type: integer
+        default: 2
+    responses: 
+      200: 
+        body: 
+          application/xml: 
+  head: 
+    responses: 
+      200: 
+        body: 
+          application/xml: 
+  post: 
+    body: 
+      application/xml: 
+        schema: order
+        example: !include examples/order.xml
+    responses: 
+      200: 
+  /purge: 
+    post: 
+      responses: 
+        200: 
+  /{id}: 
+    uriParameters: 
+      id: 
+        type: integer
+        required: true
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+    head: 
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+    /cancel: 
+      post: 
+        responses: 
+          200: 
+/products: 
+  get: 
+    queryParameters: 
+      start: 
+        type: integer
+        required: true
+      size: 
+        type: integer
+        default: 2
+      name: 
+    responses: 
+      200: 
+        body: 
+          application/xml: 
+            schema: products
+            example: !include examples/products.xml
+  post: 
+    body: 
+      application/xml: 
+        schema: product
+        example: !include examples/product.xml
+    responses: 
+      200: 
+  /{id}: 
+    uriParameters: 
+      id: 
+        type: integer
+        required: true
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+              schema: product
+              example: !include examples/product.xml
+/rest: 
+  /schema.json: 
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/json: 
+              schema: categoryinfo-jsonschema
+              example: !include examples/categoryinfo.json
+  /search: 
+    /cats.json: 
+      get: 
+        queryParameters: 
+          url: 
+          cats: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /doc.json: 
+      get: 
+        queryParameters: 
+          id: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: document-jsonschema
+                example: !include examples/document.json
+    /docs.json: 
+      get: 
+        queryParameters: 
+          category: 
+          place: 
+          keywords: 
+          count: 
+            type: integer
+          dates: 
+          offset: 
+            type: integer
+        responses: 
+          200: 
+            body: 
+              application/json: 
+                schema: searchresult-jsonschema
+                example: !include examples/searchresult.json
+    /update.json: 
+      get: 
+        queryParameters: 
+          url: 
+          title: 
+          image: 
+          text: 
+          time: 
+          place: 
+          category: 
+          user: 
+            type: boolean
+          dateCreated: 
+          dateEdited: 
+        responses: 
+          200: 
+            body: 
+              application/json: 
+    /viewUpdate.json: 
+      get: 
+        queryParameters: 
+          url: 
+          viewCount: 
+            type: integer
+            required: true
+          likeCount: 
+            type: integer
+            required: true
+          favCount: 
+            type: integer
+            required: true
+          notLike: 
+            type: integer
+            required: true
+        responses: 
+          200: 
+            body: 
+              application/json: 
+/shop: 
+  head: 
+    responses: 
+      200: 
+/world: 
+  description: default method
+  get: 
+    responses: 
+      200: 
+        body: 
+          application/xml: 
+          application/json: 
+  /countries: 
+    post: 
+      body: 
+        application/xml: 
+          schema: country
+          example: !include examples/country.xml
+        application/json: 
+          schema: country-jsonschema
+          example: !include examples/country.json
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+              schema: country
+              example: !include examples/country.xml
+            application/json: 
+              schema: country-jsonschema
+              example: !include examples/country.json
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+              schema: countries
+              example: !include examples/countries.xml
+            application/json: 
+              schema: countries-jsonschema
+              example: !include examples/countries.json
+    /{countryId}: 
+      uriParameters: 
+        countryId: 
+          type: integer
+          required: true
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/xml: 
+                schema: country
+                example: !include examples/country.xml
+              application/json: 
+                schema: country-jsonschema
+                example: !include examples/country.json
+      put: 
+        body: 
+          application/xml: 
+            schema: country
+            example: !include examples/country.xml
+          application/json: 
+            schema: country-jsonschema
+            example: !include examples/country.json
+        responses: 
+          200: 
+            body: 
+              application/xml: 
+                schema: country
+                example: !include examples/country.xml
+              application/json: 
+                schema: country-jsonschema
+                example: !include examples/country.json
+      delete: 
+        responses: 
+          200: 
+      /states: 
+        post: 
+          body: 
+            application/xml: 
+              schema: state_ref
+              example: !include examples/state_ref.xml
+            application/json: 
+              schema: state_ref-jsonschema
+              example: !include examples/state_ref.json
+          responses: 
+            200: 
+              body: 
+                application/xml: 
+                  schema: state_ref
+                  example: !include examples/state_ref.xml
+                application/json: 
+                  schema: state_ref-jsonschema
+                  example: !include examples/state_ref.json
+        get: 
+          responses: 
+            200: 
+              body: 
+                application/xml: 
+                  schema: states_ref
+                  example: !include examples/states_ref.xml
+                application/json: 
+                  schema: states_ref-jsonschema
+                  example: !include examples/states_ref.json
+        /{stateId}: 
+          uriParameters: 
+            stateId: 
+              type: integer
+              required: true
+          get: 
+            responses: 
+              200: 
+                body: 
+                  application/xml: 
+                    schema: state_ref
+                    example: !include examples/state_ref.xml
+                  application/json: 
+                    schema: state_ref-jsonschema
+                    example: !include examples/state_ref.json
+          delete: 
+            responses: 
+              200: 
+  /run-countries-report: 
+    post: 
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+            application/json: 
+  /states: 
+    post: 
+      body: 
+        application/xml: 
+          schema: state
+          example: !include examples/state.xml
+        application/json: 
+          schema: state-jsonschema
+          example: !include examples/state.json
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+              schema: state
+              example: !include examples/state.xml
+            application/json: 
+              schema: state-jsonschema
+              example: !include examples/state.json
+    get: 
+      responses: 
+        200: 
+          body: 
+            application/xml: 
+              schema: states
+              example: !include examples/states.xml
+            application/json: 
+              schema: states-jsonschema
+              example: !include examples/states.json
+    /{stateId}: 
+      uriParameters: 
+        stateId: 
+          type: integer
+          required: true
+      get: 
+        responses: 
+          200: 
+            body: 
+              application/xml: 
+                schema: state
+                example: !include examples/state.xml
+              application/json: 
+                schema: state-jsonschema
+                example: !include examples/state.json
+      put: 
+        body: 
+          application/xml: 
+            schema: state
+            example: !include examples/state.xml
+          application/json: 
+            schema: state-jsonschema
+            example: !include examples/state.json
+        responses: 
+          200: 
+            body: 
+              application/xml: 
+                schema: state
+                example: !include examples/state.xml
+              application/json: 
+                schema: state-jsonschema
+                example: !include examples/state.json
+      delete: 
+        responses: 
+          200: 
+/ww: 
+  get: 
+    responses: 
+      201: 
+        description: Test message
+        body: 
+          text/html: 
+/ww1: 
+  get: 
+    responses: 
+      201: 
+        description: Test message
+        body: 
+          text/html: 
+      401: 
+        description: Not found
+        body: 
+          text/html: 

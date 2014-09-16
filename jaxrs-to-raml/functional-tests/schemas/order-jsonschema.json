@@ -1,0 +1,35 @@
+{
+  "required" : true ,
+  "$schema" : "http://json-schema.org/draft-03/schema" ,
+  "type" : "object" ,
+  "properties" : {
+    "order" : {
+      "type" : "object" ,
+      "required" : false ,
+      "properties" : {
+        "@id" : {
+          "type" : "string" ,
+          "required" : false
+        } ,
+        "total" : {
+          "type" : "string" ,
+          "required" : false
+        } ,
+        "cancelled" : {
+          "type" : "string" ,
+          "required" : false
+        } ,
+        "customer" : {
+          "type" : "object" ,
+          "required" : false ,
+          "properties" : {
+            "@id" : {
+              "type" : "string" ,
+              "required" : false
+            }
+          }
+        }
+      }
+    }
+  }
+}

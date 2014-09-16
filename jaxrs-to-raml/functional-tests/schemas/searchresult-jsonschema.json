@@ -1,0 +1,29 @@
+{
+  "required" : true ,
+  "$schema" : "http://json-schema.org/draft-03/schema" ,
+  "type" : "object" ,
+  "properties" : {
+    "searchResult" : {
+      "type" : "object" ,
+      "required" : false ,
+      "properties" : {
+        "@count" : {
+          "type" : "string" ,
+          "required" : false
+        } ,
+        "@errorCode" : {
+          "type" : "string" ,
+          "required" : false
+        } ,
+        "@offset" : {
+          "type" : "string" ,
+          "required" : false
+        } ,
+        "@totalCount" : {
+          "type" : "string" ,
+          "required" : false
+        }
+      }
+    }
+  }
+}

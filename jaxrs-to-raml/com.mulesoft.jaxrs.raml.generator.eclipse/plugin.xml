@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">      
+      <objectContribution
+            adaptable="true"
+            id="com.mulesoft.jaxrs.raml.generator.contribution2"
+            objectClass="org.eclipse.jdt.core.IJavaElement">
+         <!--<menu
+               id="com.mulesoft.jaxrs.raml.generator.menu1"
+               label="RAML Tools"
+               path="additions">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>-->
+         <action
+               class="com.mulesoft.jaxrs.raml.generator.popup.actions.GenerateRAML"
+               id="com.mulesoft.jaxrs.raml.generator.newAction"
+               label="Generate RAML from classes"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+            
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+         <view
+       class="com.mulesoft.jaxrs.raml.generator.popup.actions.TestView"
+       id="com.mulesoft.jaxrs.raml.generator.popup.actions.TestView"
+       name="Generate RAML Test">
+    </view>
+   </extension>
+</plugin>

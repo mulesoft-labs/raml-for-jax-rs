@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="categoryRef" type="categoryRef"/>
+
+  <xs:element name="document" type="document"/>
+
+  <xs:element name="locationRef" type="locationRef"/>
+
+  <xs:element name="searchResult" type="searchResult"/>
+
+  <xs:complexType name="searchResult">
+    <xs:sequence>
+      <xs:element name="doc" type="document" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="totalCount" type="xs:int" use="required"/>
+    <xs:attribute name="offset" type="xs:int" use="required"/>
+    <xs:attribute name="count" type="xs:int" use="required"/>
+    <xs:attribute name="message" type="xs:string"/>
+    <xs:attribute name="errorCode" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="document">
+    <xs:sequence>
+      <xs:element name="abstractText" type="xs:string" minOccurs="0"/>
+      <xs:element name="richText" type="xs:string" minOccurs="0"/>
+      <xs:element name="imageLink" type="xs:string" minOccurs="0"/>
+      <xs:element name="category" type="categoryRef" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="location" type="locationRef" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="url" type="xs:string"/>
+    <xs:attribute name="title" type="xs:string"/>
+    <xs:attribute name="richTextAbstract" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="categoryRef">
+    <xs:sequence/>
+    <xs:attribute name="categoryName" type="xs:string"/>
+    <xs:attribute name="categoryId" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="locationRef">
+    <xs:sequence/>
+    <xs:attribute name="locationName" type="xs:string"/>
+    <xs:attribute name="locationId" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>
+

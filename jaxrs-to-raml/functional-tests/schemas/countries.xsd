@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="countries" type="countries"/>
+
+  <xs:element name="country" type="country"/>
+
+  <xs:complexType name="countries">
+    <xs:sequence>
+      <xs:element ref="country" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="size" type="xs:int"/>
+    <xs:attribute name="uri" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="country">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int" minOccurs="0"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="population" type="xs:int"/>
+    </xs:sequence>
+    <xs:attribute name="uri" type="xs:string"/>
+    <xs:attribute name="href" type="xs:string" use="required"/>
+  </xs:complexType>
+</xs:schema>
+

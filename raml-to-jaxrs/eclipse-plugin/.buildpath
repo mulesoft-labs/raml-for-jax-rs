@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="lib" path="lib/raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar"/>
+</buildpath>

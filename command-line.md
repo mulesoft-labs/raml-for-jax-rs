@@ -6,11 +6,11 @@
 
 ###Installation
 
-You can download the command line tool from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/ramlToJAX-RS.jar, or you can clone this repository and build it locally by following these steps:
+You can download the command line tool from [here](http://raml-tools.mulesoft.com/raml-for-jax-rs/CLI/raml-to-jax-rs.jar), or you can clone this repository and build it locally by following these steps:
 
 - Go to the `raml-to-jaxrs/core/` folder.
 - Run `mvn assembly:assembly -DdescriptorId=jar-with-dependencies`
-- Go to `target` folder, where you will find the generated jar (`raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar`).
+- Go to the `target` folder, where you will find the generated jar (`raml-JAX-RS-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar`).
 - **Optional**: This documentation asumes that the JAR is called: `raml-to-jax-rs.jar`. You might want to rename yours to follow the documentation.
 
 This jar file (downloaded or built yourself) contains all that you need to run the RAML-to-JAX-RS tool from the command line.
@@ -64,63 +64,77 @@ Actually API developers should seldom have to use the core generator but instead
 
 ##JAX-RS to RAML.
 
-JAX-RS to RAML conversion is implemented as javac plugin, so to run it your need to run javac with our annotation processor
-
-###Installation instructions
-
-You can download the command tool jar from http://raml-tools.mulesoft.com/jaxrs-to-raml/javac/JAX-RS.raml.apt.jar, or you can clone this repository and
-build it locally by following these steps:
-
-1. Go to the project root folder.
-2. `cd com.mulesoft.jaxrs.raml.generator`
-3. `mvn clean package install`
-4. `cd ../com.mulesoft.jaxrs.raml.generator.annotations`
-5. `cd ../com.mulesoft.jaxrs.raml.generator.annotations/target`
-6. Inside this folder, you will find the generated jar (`com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`).
 
 
-This jar file (downloaded or built yourself) contains all that you need to run JAX-RS-to-RAML as a javac plugin.
+###Installation
+
+You can download the command line tool from [here](http://raml-tools.mulesoft.com/raml-for-jax-rs/CLI/jax-rs-to-raml.jar),
+or you can clone this repository and build it locally by following these steps:
+
+- Go to the `com.mulesoft.jaxrs.raml.generator` folder.
+- Run `mvn clean package install`
+- Go to the `com.mulesoft.jaxrs.raml.generator.annotations/target` folder where you will find the generated jar
+(`com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`).
+- **Optional:** This documentation asumes that the JAR is called: `jax-rs-to-raml.jar`. You might want to rename yours to follow the documentation.
 
 
-###Usage Guide
+This jar file (downloaded or built yourself) contains all that you need to run JAX-RS-to-RAML tool from the command line.
+
+
+###Usage
+
+In order to generate your RAML code, you must run it by invoking
+
 
 ```
-javac TestResource1.java
-      -sourcepath <path-to-your-java-source-code>
-      -classpath <your-classpath>
-      -processorpath <path-to-your-jar>/JAX-RS.raml.apt.jar
+javac [classes]
+      -sourcepath [path-to-your-java-source-code]
+      -classpath [your-classpath]
+      -processorpath [path-to-your-jar]/jax-rs-to-raml.jar
       -processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
-      -Aramlpath=<path>
+      -Aramlpath=[path]
       -implicit:class
 ```
+
+####Options
+- classes: The JAVA classes from which you want to generate a RAML representation. **Note:** The classes must represent web-services
+(this means, the classes must utilize, at least, one of the following JAVAX annotations: `PUT`, `GET`, `POST`, `OPTIONS`, `Produces` or `Path`).
+- sourcepath: The folder containing the packages where the classes (and classes' dependencies) are located.
+**Note:** If your Java packages are contained in more then one source folders, you must include all of them. For example: `-sourcepath src1/java/main:src2/java/main`.
+Note that path separator symbol is not the same for all OS. MacOS and Linux use ':' while Windows uses ';'.
+- classpath: The classpath of the Java project, the *classes* belong to. **Note**: If any path contains a space, the whole value must be passed between quotes. For example: `-classpath "my libs/lib1.jar:lib/lib2.jar"`. **Important**: This jar must be included as a dependency: `jsr311-api-1.1.1.jar`. You can download it [here](https://jsr311.java.net/)
+- processorpath: The path to the jar you downloaded (or built).
+- processor: Indicates the annotation processor. Use: `com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor`
+- -Aramlpath: The folder which the generated RAML definition will be placed.
+- -imlicit: `class` specifies that the annotations in the dependent files must also be resolved by the processor.
 
 For example:
 
+Consider a project with this structure (or part of it):
+```terminal
+.
+── src
+│   └── main
+│       └── java
+│           └── shop
+│               ├── services
+│               │   ├── ProductResource.java
+│               │   ├── CustomerResource.java
 ```
-javac HelloWorldRest.java
-      -sourcepath tests
-      -classpath jsr311-api-1.1.1.jar
-      -processorpath JAX-RS.raml.apt.jar
+
+
+Executing:
+```
+javac src/java/main/services/CustomerResource.java src/java/main/services/ProductResource.java
+      -sourcepath src/java/main
+      -classpath lib
+      -processorpath jax-rs-to-raml/jaxrs.raml.apt.jar
       -processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor
-      -Aramlpath=helloworld
+      -Aramlpath=output/raml
       -implicit:class
 ```
+will result in your generated RAML placed on the `output/raml` folder.
 
-Let's take a look at the command line in more detail:
- * `HelloWorldRest.java`: Your Java file
- * `-sourcepath`: Tells javac where to find Java sources.
- * `-classpath jsr311-api-1.1.1.jar`: Adds jsr311 annotations to the classpath.
- * `-processorpath com.mulesoft.jaxrs.raml.generator.annotations.jar`: Tells javac where to find the annotation processor.
- * `-processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor`: Adds the annotation processor to the javac flow.
- * ``-Aramlpath=helloworld`: Tells javac which is the destination folder for the (to-be)-generated RAML definition.
- * `-implicit:class`: Tells javac that the annotations in the dependent files must also be resolved by the processor.
-
-**Notes:**
-- If you built the jar yourself, it will probably have some name like `com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`.
-Remember that you need to pass that filename for the `processorpath` parameter.
-- If `ramlpath` ends with `.raml` (for example `ramlfolder/testresource.raml`), it will be treated as the target filename.
-Otherwise it will be treated as a directory, and the target filename will be `path/generated.raml` (e.g. `-Aramplpath=myraml` will result in the destination `myraml/generated.raml`).
-In both cases the parent directories for a destination file will be automatically created if needed.
 
 ___
 

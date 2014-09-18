@@ -132,7 +132,7 @@ public class Generator
             final List<String> validationErrors = Lists.transform(results,
                 new Function<ValidationResult, String>()
                 {
-                    @Override
+                    
                     public String apply(final ValidationResult vr)
                     {
                         return String.format("%s %s", vr.getStartColumn(), vr.getMessage());

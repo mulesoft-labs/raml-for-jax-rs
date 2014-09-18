@@ -247,6 +247,12 @@ class Context
                                             final String name,
                                             final List<String> values) throws Exception
     {
+    	JClass[] listClasses = resourceInterface.listClasses();
+    	for (JClass c:listClasses){
+    		if (c.name().equals(name)){
+    			return (JDefinedClass) c;
+    		}
+    	}
         final JDefinedClass _enum = resourceInterface._enum(name);
 
         for (final String value : values)

@@ -54,7 +54,10 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		super(parentShell);
 		this.setShellStyle( SWT.DIALOG_TRIM|SWT.RESIZE );
 		this.parentShell = parentShell;
-		this.uiConfig = uiConfig;		
+		this.uiConfig = uiConfig;	
+		if (this.uiConfig.dstFolder.get()==null){
+			this.uiConfig.dstFolder.set(dstFolder);
+		}
 	}
 	
 	private final Shell parentShell;
@@ -298,5 +301,12 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		)); 
 				
 		return result;
+	}
+	static IResource dstFolder;
+	
+	@Override
+	protected void okPressed() {
+		dstFolder=uiConfig.dstFolder.get();
+		super.okPressed();
 	}
 }

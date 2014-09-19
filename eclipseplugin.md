@@ -5,7 +5,7 @@
 You can install the "RAML for JAX-RS" plug-in for Eclipse/Mule Studio by using the "Software Update" feature of your IDE. To do so, follow these steps:
 - Start Eclipse or Mule Studio.
 - Select Help > Install New Software.
-- In the "New Software" window, enter the update site URL (http://raml-tools.mulesoft.com/jaxrs-to-raml/eclipse) into the "Work with" textbox, and press the enter.
+- In the "New Software" window, enter the update site URL (http://raml-tools.mulesoft.com/raml-for-jax-rs/eclipse) into the "Work with" textbox, and press the enter.
 - Select the checkbox next to "RAML Tools". Click Next.
 - Click Next again.
 - Read the license agreements, accept these, and click Finish.
@@ -26,10 +26,10 @@ That's it. Now you are ready to start generating RAML APIs from your existing JA
 - Select a Java class, package or source folder
 - Right click to show the context menu.
 
-![context-menu](https://raw.githubusercontent.com/mulesoft/jaxrs-to-raml/master/doc-images/context-menu.png?token=2273179__eyJzY29wZSI6IlJhd0Jsb2I6bXVsZXNvZnQvamF4cnMtdG8tcmFtbC9tYXN0ZXIvZG9jLWltYWdlcy9jb250ZXh0LW1lbnUucG5nIiwiZXhwaXJlcyI6MTQwNDQ4NTQ0NX0%3D--67c11aed28e27697a348a7d34fca6b231964911b)
+![context-menu](/jaxrs-to-raml/eclipse-plugin/doc/configuration-window.png)
 - "Generate RAML from classes"
 
-![configuration-window](https://raw.githubusercontent.com/mulesoft/jaxrs-to-raml/master/doc-images/configuration-window.png?token=2273179__eyJzY29wZSI6IlJhd0Jsb2I6bXVsZXNvZnQvamF4cnMtdG8tcmFtbC9tYXN0ZXIvZG9jLWltYWdlcy9jb25maWd1cmF0aW9uLXdpbmRvdy5wbmciLCJleHBpcmVzIjoxNDA0NDg1NTE4fQ%3D%3D--fc0943b62351bede5c049d8b07bd1a0f73fd96bc)
+![configuration-window](/jaxrs-to-raml/eclipse-plugin/doc/context-menu.png)
 
 Choose the options according to your needs (check "Configuration Options" section for a detailed explanation) and click OK. **Your API is ready!**
 

@@ -69,3 +69,4 @@ Use the dialog to configure parameters and launch the generation process.
 -  JAX-RS version -version of JAX-RS framework to be used during generation
 -  JSON Mapper - annotation framework used to map JSON
 -  Use JSR 303 Annotations - Enable or not JSR 303 Java Bean validation
+-  mapToVoid: If set this option to true methods with empty bodies will have void resource type, otherwise we still will generate response wrapper for them.

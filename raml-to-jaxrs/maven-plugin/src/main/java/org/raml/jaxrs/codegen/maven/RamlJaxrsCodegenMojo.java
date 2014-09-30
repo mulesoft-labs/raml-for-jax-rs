@@ -89,6 +89,13 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo
      */
     @Parameter(property = "useJsr303Annotations", defaultValue = "false")
     private boolean useJsr303Annotations;
+    
+    
+    /**
+     * The targeted JAX-RS version: either "1.1" or "2.0" .
+     */
+    @Parameter(property = "mapToVoid", defaultValue = "false")
+    private boolean mapToVoid;
 
     /**
      * Whether to empty the output directory before generation occurs, to clear out all source files
@@ -167,6 +174,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo
             configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
             configuration.setSourceDirectory(sourceDirectory);
             configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
+            configuration.setEmptyResponseReturnVoid(mapToVoid);
             /*
             if (methodThrowException != null) {
                 configuration.setMethodThrowException(Class.forName(methodThrowException));

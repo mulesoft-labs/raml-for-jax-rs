@@ -108,7 +108,7 @@ public class GenerationHandler extends AbstractHandler{
 		}
 		
 		configuration.setUseJsr303Annotations(uiConfig.getUseJsr303Annotations());
-		
+		configuration.setEmptyResponseReturnVoid(uiConfig.getEmptyResponseUsesVoid());
 		return configuration;
 	}
 
@@ -122,6 +122,7 @@ public class GenerationHandler extends AbstractHandler{
 		
 		Configuration config = new Configuration();
 		uiConfig.setJaxrsVersion(config.getJaxrsVersion().name());
+		uiConfig.setEmptyResponseUsesVoid(config.isEmptyResponseReturnVoid());
 		uiConfig.setJsonMapper(config.getJsonMapper().name());
 		uiConfig.setUseJsr303Annotations(config.isUseJsr303Annotations());
 		

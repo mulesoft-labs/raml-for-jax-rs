@@ -35,7 +35,17 @@ public class UIConfiguration {
 	
     ObjectReference<Boolean> useJsr303Annotations = new ObjectReference<Boolean>();
     
-    ObjectReference<String> jsonMapper = new ObjectReference<String>();
+    ObjectReference<Boolean> isEmptyResponseUsesVoid = new ObjectReference<Boolean>();
+    
+    public Boolean getEmptyResponseUsesVoid() {
+		return isEmptyResponseUsesVoid.get();
+	}
+
+	public void setEmptyResponseUsesVoid(boolean object) {
+		isEmptyResponseUsesVoid.set(object);
+	}
+
+	ObjectReference<String> jsonMapper = new ObjectReference<String>();
 	
 	public String getBasePackageName() {		
 		return basePackageName.get();

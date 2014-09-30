@@ -65,8 +65,11 @@ public class Configuration
     private Class methodThrowException = Exception.class;
     private Map<String, String> jsonMapperConfiguration;
     private String asyncResourceTrait;
+	private boolean emptyResponseReturnVoid;
     
-    public String getAsyncResourceTrait()
+    
+
+	public String getAsyncResourceTrait()
     {
          return asyncResourceTrait;
     }
@@ -203,4 +206,12 @@ public class Configuration
     {
        this.jsonMapperConfiguration = jsonMapperConfiguration;
     }
+
+	public boolean isEmptyResponseReturnVoid() {
+		return emptyResponseReturnVoid;
+	}
+	
+	public void setEmptyResponseReturnVoid(boolean emptyResponseReturnVoid) {
+		this.emptyResponseReturnVoid = emptyResponseReturnVoid;
+	}
 }

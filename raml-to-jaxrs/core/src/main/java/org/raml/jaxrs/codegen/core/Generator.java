@@ -310,7 +310,7 @@ public class Generator
     	   return types.getGeneratorType(void.class);
     	}
     	else
-        if (returnsVoid)
+        if (returnsVoid&&context.getConfiguration().isEmptyResponseReturnVoid())
         {
             return types.getGeneratorType(void.class);
         }

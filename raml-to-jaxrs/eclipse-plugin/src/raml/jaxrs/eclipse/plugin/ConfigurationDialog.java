@@ -86,7 +86,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		createCombo(hBox, "JSON Mapper", getAnnotationStyleRealm(), this.uiConfig.jsonMapper);
 		
 		createCheckBox(hBox, "Use JSR 303 Annotations", this.uiConfig.useJsr303Annotations);
-		
+		createCheckBox(hBox, "Map empty response to void", this.uiConfig.isEmptyResponseUsesVoid);
 		return parent;	
 	}
 

@@ -101,7 +101,8 @@ public class Launcher {
 		
 		String basePackageName = null;
 		String jaxrsVersion = "1.1";
-		boolean useJsr303Annotations = false;		
+		boolean useJsr303Annotations = false;
+		boolean mapToVoid = false;
 		String jsonMapper = "jackson1";
 		
 		
@@ -118,6 +119,9 @@ public class Launcher {
 			}
 			else if(argName.equals("jaxrsVersion")){
 				jaxrsVersion = argValue;
+			}
+			else if(argName.equals("mapToVoid")){
+				mapToVoid = Boolean.parseBoolean(argValue);
 			}
 			else if(argName.equals("basePackageName")){
 				basePackageName = argValue;

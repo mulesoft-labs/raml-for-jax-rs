@@ -83,8 +83,10 @@ public class PresentationResource implements Presentations
     }
 
     @Override
-    public void deletePresentationsByPresentationId(final String presentationId, final String authorization)
+    public DeletePresentationsByPresentationIdResponse deletePresentationsByPresentationId(final String presentationId, final String authorization)
     {
         // TODO implement me!
+    	return null;
     }
+    
 }

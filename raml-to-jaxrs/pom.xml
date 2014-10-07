@@ -10,7 +10,7 @@
     <modules>
         <module>core</module>
         <module>maven-plugin</module>
-        <module>jersey-example</module>
+        <module>examples/jersey-example</module>
     </modules>
 
     <properties>
@@ -38,6 +38,8 @@
                         <exclude>**/*.properties</exclude>
                         <exclude>**/*.md</exclude>
                         <exclude>**/*.template</exclude>
+                        <exclude>**/*.buildpath</exclude>
+                        <exclude>**/example-output/**</exclude>
                     </excludes>
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>

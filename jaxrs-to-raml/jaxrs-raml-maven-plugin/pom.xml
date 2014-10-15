@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+        <groupId>org.raml</groupId>
+        <artifactId>raml-jaxrs-codegen-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+   </parent>
+  <groupId>org.raml.plugins</groupId>
+  <artifactId>jaxrs-raml-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+  <name>JAX-RS RAML Maven Plug-in</name>
+  
+  <properties>
+        <org.apache.maven.plugin-tools.version>3.2</org.apache.maven.plugin-tools.version>
+        <licensePath>../LICENSE_HEADER.txt</licensePath>
+  </properties>
+  
+  <dependencies>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-jaxrs-codegen-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-tools-api</artifactId>
+            <version>${org.apache.maven.plugin-tools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-tools-annotations</artifactId>
+            <version>${org.apache.maven.plugin-tools.version}</version>
+        </dependency>
+    </dependencies>
+</project>

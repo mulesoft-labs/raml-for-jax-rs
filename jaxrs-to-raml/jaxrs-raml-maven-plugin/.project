@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>jaxrs-raml-maven-plugin</name>
+	<name>raml-jaxrs-maven-plugin</name>
 	<comment></comment>
 	<projects>
 	</projects>

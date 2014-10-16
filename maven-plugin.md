@@ -27,7 +27,7 @@ The plug-in should now be installed. You can check your `.m2/repository/org/raml
 ```
 
 Once installed, add the `pluginGroup` to the Maven `settings.xml` This one, should be located in `.m2/settings.xml`.
-If now, create it. The following one is an empty `settings.xml` template:
+If no, create it. The following one is an empty `settings.xml` template:
 ```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

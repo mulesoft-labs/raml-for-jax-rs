@@ -135,13 +135,41 @@ public class Generator
                     
                     public String apply(final ValidationResult vr)
                     {
-                        return String.format("%s %s", vr.getStartColumn(), vr.getMessage());
+                        return toDetailedString(vr);
                     }
                 });
 
             throw new IllegalArgumentException("Invalid RAML definition:\n" + join(validationErrors, "\n"));
         }
     }
+    
+    
+    private static String toDetailedString(ValidationResult item)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("\t");
+        stringBuilder.append(item.getLevel());
+        stringBuilder.append(" ");
+        stringBuilder.append(item.getMessage());
+        if (item.getLine() != -1)
+        {
+            stringBuilder.append(" (line ");
+            stringBuilder.append(item.getLine());
+            if (item.getStartColumn() != -1)
+            {
+                stringBuilder.append(", col ");
+                stringBuilder.append(item.getStartColumn());
+                if (item.getEndColumn() != item.getStartColumn())
+                {
+                    stringBuilder.append(" to ");
+                    stringBuilder.append(item.getEndColumn());
+                }
+            }
+            stringBuilder.append(")");
+        }
+        return stringBuilder.toString();
+    }    
+    
 
 	private ResourceLoader[] prepareResourceLoaders(final Configuration configuration)
 	{

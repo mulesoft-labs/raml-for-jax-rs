@@ -23,7 +23,7 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>generate-raml</goal>
+							<goal>generate_raml</goal>
 						</goals>
 						<phase>generate-sources</phase>
 					</execution>
@@ -62,7 +62,7 @@
 										<artifactId>jaxrs-raml-maven-plugin</artifactId>
 										<versionRange>0.0.1-SNAPSHOT</versionRange>
 										<goals>
-											<goal>generate-raml</goal>
+											<goal>generate_raml</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

@@ -41,7 +41,7 @@ import spoon.Launcher;
  * When invoked, this goals read one or more <a href="http://raml.org">RAML</a> files and produces
  * JAX-RS annotated Java classes.
  */
-@Mojo(name = "generate-raml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+@Mojo(name = "generate_raml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class JaxrsRamlCodegenMojo extends AbstractMojo
 {
 //    @Parameter(defaultValue = "${project}")

@@ -19,7 +19,10 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -33,9 +36,11 @@ import org.apache.maven.project.MavenProject;
 import org.raml.jaxrs.codegen.spoon.SpoonProcessor;
 
 import com.martiansoftware.jsap.JSAPException;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 import spoon.Launcher;
 import spoon.OutputType;
+import spoon.reflect.declaration.CtPackage;
 
 /**
  * When invoked, this goals read one or more <a href="http://raml.org">RAML</a>
@@ -44,11 +49,8 @@ import spoon.OutputType;
 @Mojo(name = "generate_raml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class JaxrsRamlCodegenMojo extends AbstractMojo {
 	
-	private static final String pathSeparator = System.getProperty("path.separator");	
 	
-	private static final Class<?>[] processorClasses = new Class<?>[]{
-		SpoonProcessor.class
-	}; 
+	private static final String pathSeparator = System.getProperty("path.separator");	
 
 	/**
 	 * Directory location of the JAX-RS file(s).
@@ -72,6 +74,8 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 			} else {
 				launcher.printUsage();
 			}
+			Collection<CtPackage> allRoots = launcher.getFactory().Package().getAllRoots();
+			new SpoonProcessor().process(allRoots);
 		} catch (JSAPException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -89,13 +93,13 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 		lst.add("--output-type");
 		lst.add("nooutput");
 		
-		StringBuilder bld = new StringBuilder();		
-		for(Class<?> clazz : processorClasses){
-			bld.append(clazz.getCanonicalName());
-			bld.append(pathSeparator);
-		}
-		lst.add("--processors");
-		lst.add(bld.substring(0,bld.length()-pathSeparator.length()));
+//		StringBuilder bld = new StringBuilder();		
+//		for(Class<?> clazz : processorClasses){
+//			bld.append(clazz.getCanonicalName());
+//			bld.append(pathSeparator);
+//		}
+//		lst.add("--processors");
+//		lst.add(bld.substring(0,bld.length()-pathSeparator.length()));
 		
 		String sourceClasspath = getSourceClassPath();
 		if(!isEmptyString(sourceClasspath)){

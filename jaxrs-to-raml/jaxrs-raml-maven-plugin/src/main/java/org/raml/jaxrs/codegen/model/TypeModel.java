@@ -35,4 +35,36 @@ public class TypeModel extends BasicModel implements ITypeModel{
 	public void setFullyQualifiedName(String qualifiedName) {
 		this.qualifiedName = qualifiedName;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((methods == null) ? 0 : methods.hashCode());
+		result = prime * result
+				+ ((qualifiedName == null) ? 0 : qualifiedName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TypeModel other = (TypeModel) obj;
+		if (methods == null) {
+			if (other.methods != null)
+				return false;
+		} else if (!methods.equals(other.methods))
+			return false;
+		if (qualifiedName == null) {
+			if (other.qualifiedName != null)
+				return false;
+		} else if (!qualifiedName.equals(other.qualifiedName))
+			return false;
+		return true;
+	}
 }

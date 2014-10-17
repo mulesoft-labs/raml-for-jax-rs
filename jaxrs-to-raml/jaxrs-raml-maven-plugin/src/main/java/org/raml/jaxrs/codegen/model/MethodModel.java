@@ -1,14 +1,6 @@
 package org.raml.jaxrs.codegen.model;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -17,22 +9,21 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class MethodModel extends BasicModel implements IMethodModel {
 
-	private ExecutableElement element;
-
-	public MethodModel(ExecutableElement x) {
-		this.element=x;
+	public MethodModel() {
 	}
+	
+	private ArrayList<IParameterModel> parameters = new ArrayList<IParameterModel>();
+	
+	private ITypeModel returnedType;
 
 	
 	public IParameterModel[] getParameters() {
-		List<? extends VariableElement> parameters = element.getParameters();
-		ArrayList<IParameterModel>result=new ArrayList<IParameterModel>();
-		for (VariableElement q:parameters){
-			result.add(new ParameterModel(q));
-		}
-		return result.toArray(new IParameterModel[result.size()]);
+		return parameters.toArray(new IParameterModel[parameters.size()]);
 	}
 
+	public void addParameter(IParameterModel param){
+		parameters.add(param);
+	}
 	
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
@@ -53,49 +44,49 @@ public class MethodModel extends BasicModel implements IMethodModel {
 			}
 		};
 	}
-
-	
-	public Element element() {
-		return element;
-	}
-
 	
 	public ITypeModel getReturnedType() {
-//		TypeMirror returnType = element.getReturnType();
-//		if (returnType != null && returnType instanceof DeclaredType) {
-//			DeclaredType declaredType = (DeclaredType) returnType;
-//			TypeElement returnTypeElement = (TypeElement) declaredType.asElement();
-//			return new APTType(returnTypeElement);
-//		}
-		return null;
+		return returnedType;
+	}
+	
+	
+	public void setReturnedType(ITypeModel returnType) {
+		this.returnedType = returnType;
 	}
 
-	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((element == null) ? 0 : element.hashCode());
+		int result = super.hashCode();
+		result = prime * result
+				+ ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result
+				+ ((returnedType == null) ? 0 : returnedType.hashCode());
 		return result;
 	}
 
-	
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		MethodModel other = (MethodModel) obj;
-		if (element == null) {
-			if (other.element != null)
+		if (parameters == null) {
+			if (other.parameters != null)
 				return false;
-		} else if (!element.equals(other.element))
+		} else if (!parameters.equals(other.parameters))
+			return false;
+		if (returnedType == null) {
+			if (other.returnedType != null)
+				return false;
+		} else if (!returnedType.equals(other.returnedType))
 			return false;
 		return true;
 	}
-	
-	
+
 	public ITypeModel getBodyType() {		
 		return null;
 	}

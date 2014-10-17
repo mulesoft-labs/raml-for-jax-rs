@@ -1,56 +1,63 @@
 package org.raml.jaxrs.codegen.model;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
-
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 
 public class ParameterModel extends BasicModel implements IParameterModel{
 
-	private VariableElement element;
-
-	public ParameterModel(VariableElement q) {
-		this.element=q;
+	public ParameterModel() {
 	}
-
+	
+	
+	String type;
+	
+	boolean required;
+	
 	
 	public String getType() {
-		TypeMirror asType = element.asType();
-		return asType.toString();
+		return type;
 	}
 
 	
 	public boolean required() {
-		return false;
+		return required;
 	}
 
-	
-	public Element element() {
-		return element;
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((element == null) ? 0 : element.hashCode());
+		int result = super.hashCode();
+		result = prime * result + (required ? 1231 : 1237);
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
-	
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		ParameterModel other = (ParameterModel) obj;
-		if (element == null) {
-			if (other.element != null)
+		if (required != other.required)
+			return false;
+		if (type == null) {
+			if (other.type != null)
 				return false;
-		} else if (!element.equals(other.element))
+		} else if (!type.equals(other.type))
 			return false;
 		return true;
 	}

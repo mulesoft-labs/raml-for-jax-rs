@@ -18,7 +18,7 @@
 				<artifactId>jaxrs-raml-maven-plugin</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 				<configuration>
-					<sourceDirectory>{$baseDir}/src/main/java</sourceDirectory>					
+					<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 				</configuration>
 				<executions>
 					<execution>

@@ -73,10 +73,15 @@ public class MethodModel extends BasicModel implements IMethodModel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((parameters == null) ? 0 : parameters.hashCode());
-		result = prime * result
-				+ ((returnedType == null) ? 0 : returnedType.hashCode());
+		if(parameters != null && !parameters.isEmpty()){
+			for(IParameterModel param : parameters){
+				result = prime * result + param.getType().hashCode();
+				result = prime * result + param.getName().hashCode();
+			}
+		}
+		if(returnedType != null){
+			result = prime * result + returnedType.getFullyQualifiedName().hashCode();			
+		}
 		return result;
 	}
 

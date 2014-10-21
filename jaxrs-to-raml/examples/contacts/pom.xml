@@ -19,11 +19,13 @@
 				<version>0.0.1-SNAPSHOT</version>
 				<configuration>
 					<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+					<outputFile>${project.build.directory}/generated-sources/jaxrs-raml/example.raml</outputFile>
+					<removeOldOutput>true</removeOldOutput>
 				</configuration>
 				<executions>
 					<execution>
 						<goals>
-							<goal>generate_raml</goal>
+							<goal>generate-raml</goal>
 						</goals>
 						<phase>generate-sources</phase>
 					</execution>
@@ -62,7 +64,7 @@
 										<artifactId>jaxrs-raml-maven-plugin</artifactId>
 										<versionRange>0.0.1-SNAPSHOT</versionRange>
 										<goals>
-											<goal>generate_raml</goal>
+											<goal>generate-raml</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

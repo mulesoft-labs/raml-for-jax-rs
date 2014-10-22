@@ -159,6 +159,7 @@ public class SpoonProcessor{
 					for(int i = 0 ; i < size ; i++){
 						arr[i] = elements.get(i).toString();
 					}
+					value = arr;
 				}
 				annotationModel.addValue(key, value);
 			}

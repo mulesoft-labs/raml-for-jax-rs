@@ -27,7 +27,7 @@ The plug-in should now be installed. You can check your `.m2/repository/org/raml
 ```
 
 Once installed, add the `pluginGroup` to the Maven `settings.xml` This one, should be located in `.m2/settings.xml`.
-If no, create it. The following one is an empty `settings.xml` template:
+If now, create it. The following one is an empty `settings.xml` template:
 ```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -83,4 +83,54 @@ You must include the plug-in in your project's pom.xml. For example:
 The RAML definition will be processed and the code will be generated when running `mvn compile` or `mvn package`.
 
 ## JAX-RS to RAML
-We are working on the MVN plug-in for the RAML generation.
+
+This Maven plug-in generates a RAML file based on JAX-RS annotated interfaces and supporting classes.
+
+###Installation
+
+In order to use this plug-in, it needs to be installed in the Maven Repositories. In order to do that:
+
+- Clone this repository or download a snapshot.
+- On the cloned repository, go to the `jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator` folder, and execute `mvn install`
+- Once installed, go to the `jaxrs-to-raml/jaxrs-raml-maven-plugin` folder and run `mvn install`.
+
+The plug-in should now be installed. You can check your `.m2/repository/org/raml/plugins/jaxrs-raml-maven-plugin`:
+```terminal
+├── 1.0-SNAPSHOT
+│   ├── _maven.repositories
+│   ├── m2e-lastUpdated.properties
+│   ├── maven-metadata-local.xml
+│   ├── jaxrs-raml-maven-plugin-1.0-SNAPSHOT.jar
+│   └── jaxrs-raml-maven-plugin-1.0-SNAPSHOT.pom
+└── maven-metadata-local.xml
+
+```
+
+Once installed, add the `pluginGroup` to the Maven `settings.xml` just the same way as described in the RAML to JAX-RS case.
+
+###Usage
+
+You must include the plug-in in your project's pom.xml. For example:
+
+```xml
+<plugin>
+	<groupId>org.raml.plugins</groupId>
+	<artifactId>jaxrs-raml-maven-plugin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<configuration>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<outputFile>${project.build.directory}/generated-sources/jaxrs-raml/example.raml</outputFile>
+		<removeOldOutput>true</removeOldOutput>
+	</configuration>
+	<executions>
+		<execution>
+			<goals>
+				<goal>generate-raml</goal>
+			</goals>
+			<phase>generate-sources</phase>
+		</execution>
+	</executions>
+</plugin>
+```
+
+The RAML definition will be processed and the code will be generated when running `mvn compile` or `mvn package`.

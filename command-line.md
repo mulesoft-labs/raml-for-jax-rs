@@ -28,7 +28,7 @@ java -cp [path-to-the-jar] org.raml.jaxrs.codegen.core.Launcher [options]
  * basePackageName: The package name for generated sources.
  * sourceDirectory: The directory where the RAML definition is located.
  * outputDirectory: The directory where the generated JAVA files will be located.
- * JAX-RSVersion: The JAX-RS version that the generated code will be compatible with. It's **optional** and `1.1` by default.
+ * jaxrsVersion: The JAX-RS version that the generated code will be compatible with. It's **optional** and `1.1` by default.
  * useJsr303Annotations: Flag for indicating if Jsr301 should be used. It's **optional**.
  * jsonMapper: Version of the JSON mapper to be used. It's **optional** and `jackson1` by default.
  * mapToVoid: If set this option to true methods with empty bodies will have void resource type, otherwise we still will generate response wrapper for them.

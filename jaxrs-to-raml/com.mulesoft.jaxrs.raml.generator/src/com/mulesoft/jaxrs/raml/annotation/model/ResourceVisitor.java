@@ -636,8 +636,7 @@ public abstract class ResourceVisitor {
 					return;
 				} else {
 					try {
-						File toSave = new File(examplesDir, schemaFile.getName()
-								+ XML_FILE_EXT);
+						File toSave = new File(examplesDir, schemaFile.getName());
 
 						XSElementDeclaration elem = elements.get(0);
 						javax.xml.namespace.QName rootElement = XSUtil.getQName(elem,new MyNamespaceSupport());
@@ -645,7 +644,7 @@ public abstract class ResourceVisitor {
 						XMLDocument sampleXml = new XMLDocument(new StreamResult(
 								writer), true, 4, null);
 						xsInstance.generate(xsModel, rootElement, sampleXml);
-						doGenerateAndSave(toSave, schemaFile.getParentFile(), examplesDir, 
+						doGenerateAndSave(toSave, schemaFile.getParentFile().getParentFile(), examplesDir, 
 								writer.toString());
 					} catch (TransformerConfigurationException e) {
 						throw new IllegalStateException(e);

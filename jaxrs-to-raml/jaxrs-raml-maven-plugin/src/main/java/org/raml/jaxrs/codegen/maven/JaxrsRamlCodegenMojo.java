@@ -122,14 +122,6 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 		
 		saveRaml(rv.getRaml(),allRoots);
 		
-//		RuntimeRamlBuilder runtimeRamlBuilder = new RuntimeRamlBuilder();
-//		for(CtPackage pck : allRoots){
-//			for( CtSimpleType<?> type : pck.getTypes()){
-//				runtimeRamlBuilder.addClass(type.getActualClass());
-//			}		
-//		}
-//		String raml2 = runtimeRamlBuilder.toRAML();
-//		System.out.print("done");
 	}
 
 	private void saveRaml(String raml, Collection<CtPackage> allRoots) {

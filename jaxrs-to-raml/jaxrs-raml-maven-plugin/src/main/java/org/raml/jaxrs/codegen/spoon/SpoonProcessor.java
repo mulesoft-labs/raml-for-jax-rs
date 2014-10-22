@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.raml.jaxrs.codegen.maven.ProxyType;
 import org.raml.jaxrs.codegen.maven.TypeModelRegistry;
 import org.raml.jaxrs.codegen.model.AnnotationModel;
 import org.raml.jaxrs.codegen.model.BasicModel;
@@ -44,6 +45,7 @@ import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtFieldReference;
@@ -65,23 +67,26 @@ public class SpoonProcessor{
 			return;
 		}
 		for(CtPackage package_ : packages ){
-			for( CtSimpleType<?> type : package_.getTypes()){
-				process(type);
-			} 
+			processPackage(package_); 
 		}
 		
+	}
+
+	private void processPackage(CtPackage package_) {
+		Set<CtPackage> subPackages = package_.getPackages();
+		if(subPackages!=null){
+			for(CtPackage subPackage:subPackages){
+				processPackage(subPackage);
+			}
+		}
+		for( CtSimpleType<?> type : package_.getTypes()){
+			process(type);
+		}
 	}
 	
 	public void process(CtSimpleType<?> classElement) {
 		
-		String qualifiedName = classElement.getQualifiedName();
-		ITypeModel type = registry.getType(qualifiedName);
-		if(type!=null){
-			registry.registerTargetType(type);
-			return;
-		}
-		
-		type = processType(classElement);
+		ITypeModel type = processType(classElement);
 		registry.registerTargetType(type);
 	}
 
@@ -94,8 +99,8 @@ public class SpoonProcessor{
 		
 		fillBasic(type,classElement);		
 		
-		if(classElement instanceof CtClass){
-			Set<CtMethod<?>> methods = ((CtClass<?>)classElement).getMethods();
+		if(classElement instanceof CtType){
+			Set<CtMethod<?>> methods = ((CtType<?>)classElement).getMethods();
 			for(CtMethod<?> m : methods){
 				IMethodModel methodModel = processMethod(m);
 				type.addMethod(methodModel);
@@ -273,7 +278,7 @@ public class SpoonProcessor{
 		String qualifiedName = typeReference.getQualifiedName();
 		ITypeModel existingType = registry.getType(qualifiedName);
 		if(existingType != null){
-			return existingType;
+			return new ProxyType(registry, qualifiedName);
 		}
 		
 		CtClass<Object> ctType = factory.Class().get(qualifiedName);
@@ -292,7 +297,7 @@ public class SpoonProcessor{
 			IMethodModel methodModel = processMethodReference(m);
 			type.addMethod(methodModel);
 		}		
-		return type;
+		return new ProxyType(registry, qualifiedName);
 	}
 	
 	private IMethodModel processMethodReference(CtExecutableReference<?> methodElement) {
@@ -311,6 +316,7 @@ public class SpoonProcessor{
 		
 		ParameterModel parameterModel = new ParameterModel();
 		parameterModel.setType(paramTypeReference.getQualifiedName());
+		parameterModel.setName(paramTypeReference.getSimpleName());
 		parameterModel.setRequired(paramTypeReference.isPrimitive());
 		
 		List<Annotation> annotations = paramTypeReference.getAnnotations();

@@ -584,25 +584,33 @@ public abstract class ResourceVisitor {
 		return spec.coreRaml.getResources().isEmpty();
 	}
 
-	protected void doGenerateAndSave(File schemaFile, File parentDir, File examplesDir,
-			String dummyXml) {
-				String jsonText = JsonUtil.convertToJSON(dummyXml, true);
-				jsonText=JsonFormatter.format(jsonText);
-				String generatedSchema = new SchemaGenerator().generateSchema(jsonText);
-				generatedSchema=JsonFormatter.format(generatedSchema);
-				String fName = schemaFile.getName().replace(XML_FILE_EXT, ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
-				fName=fName.replace(".xsd",  ResourceVisitor.JSONSCHEMA);
-				spec.getCoreRaml().addGlobalSchema(fName,generatedSchema, true,false);
-				String name = schemaFile.getName();
-				name=name.substring(0,name.lastIndexOf('.'));
-				File toSave=new File(examplesDir,name+XML_FILE_EXT);
-				writeString(dummyXml, toSave);
-				toSave=new File(examplesDir,name+JSON_FILE_EXT);
-				writeString(jsonText, toSave);
-				File shemas=new File(parentDir,SCHEMAS_FOLDER);
-				toSave=new File(shemas,fName+JSON_FILE_EXT);
-				writeString(generatedSchema, toSave);
-			}
+	protected void doGenerateAndSave(File schemaFile, File parentDir,
+			File examplesDir, String dummyXml) {
+
+		String jsonText = JsonUtil.convertToJSON(dummyXml, true);
+		jsonText = JsonFormatter.format(jsonText);	
+		String fName = schemaFile.getName().replace(XML_FILE_EXT,ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
+		fName = fName.replace(".xsd", ResourceVisitor.JSONSCHEMA);
+		
+		String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
+		generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
+		if(generatedSchema != null){
+			spec.getCoreRaml().addGlobalSchema(fName, generatedSchema, true, false);
+		}
+		String name = schemaFile.getName();
+		name = name.substring(0, name.lastIndexOf('.'));
+		File toSave = new File(examplesDir, name + XML_FILE_EXT);
+		writeString(dummyXml, toSave);		
+		toSave = new File(examplesDir, name + JSON_FILE_EXT);
+		if(jsonText != null){
+			writeString(jsonText, toSave);
+		}
+		File shemas = new File(parentDir, SCHEMAS_FOLDER);
+		toSave = new File(shemas, fName + JSON_FILE_EXT);
+		if(generatedSchema != null){
+			writeString(generatedSchema, toSave);
+		}
+	}
 
 	private void writeString(String generateDummyXmlFor, File toSave) {
 		try {

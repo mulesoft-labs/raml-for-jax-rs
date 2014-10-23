@@ -74,17 +74,25 @@ public class SpoonProcessor{
 
 		for(ITypeModel type : registry.getTypes()){
 			for(IMethodModel method : type.getMethods()){
-				adjustBodyType(method);
+				adjustReturnedAndBodyType(method);
 			}
 		}
 	}
 
-	private void adjustBodyType(IMethodModel method_) {
+	private void adjustReturnedAndBodyType(IMethodModel method_) {
 		
 		if(!(method_ instanceof MethodModel)){
 			return;
 		}		
 		MethodModel method = (MethodModel) method_;
+		
+		ITypeModel returnedType = method.getReturnedType();
+		if(returnedType!=null){
+			if(returnedType instanceof ProxyType){
+				ITypeModel rt = registry.getType(returnedType.getFullyQualifiedName());				
+				method.setReturnedType(rt);
+			}
+		}
 		
 		IAnnotationModel consumes = method.getAnnotation("Consumes");
 		if(consumes==null){

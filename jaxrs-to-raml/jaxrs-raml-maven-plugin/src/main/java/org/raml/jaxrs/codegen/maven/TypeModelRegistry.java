@@ -70,5 +70,9 @@ public class TypeModelRegistry {
 	public Collection<ITypeModel> getTargetTypes(){
 		return targetTypeMap.values();
 	}
+	
+	public boolean isTargetType(String qualifiedName){
+		return targetTypeMap.containsKey(qualifiedName);
+	}
 
 }

@@ -23,9 +23,10 @@ public class ParameterModel extends BasicModel implements IParameterModel{
 	}
 	
 	
-	String type;
+	private String type;
+
 	
-	boolean required;
+	private boolean required;
 	
 	
 	public String getType() {

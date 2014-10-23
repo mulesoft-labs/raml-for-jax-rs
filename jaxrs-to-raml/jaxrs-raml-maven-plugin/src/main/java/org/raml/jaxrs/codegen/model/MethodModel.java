@@ -30,6 +30,9 @@ public class MethodModel extends BasicModel implements IMethodModel {
 	private ArrayList<IParameterModel> parameters = new ArrayList<IParameterModel>();
 	
 	private ITypeModel returnedType;
+	
+	
+	private ITypeModel bodyType;
 
 	
 	public IParameterModel[] getParameters() {
@@ -108,7 +111,11 @@ public class MethodModel extends BasicModel implements IMethodModel {
 	}
 
 	public ITypeModel getBodyType() {		
-		return null;
+		return bodyType;
+	}
+
+	public void setBodyType(ITypeModel bodyType) {
+		this.bodyType = bodyType;
 	}
 
 }

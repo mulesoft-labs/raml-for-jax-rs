@@ -36,6 +36,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+import spoon.reflect.code.CtCodeElement;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
 import spoon.reflect.declaration.CtAnnotation;
@@ -46,6 +47,7 @@ import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtSimpleType;
 import spoon.reflect.declaration.CtType;
+import spoon.reflect.eval.PartialEvaluator;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtFieldReference;
@@ -68,6 +70,47 @@ public class SpoonProcessor{
 		}
 		for(CtPackage package_ : packages ){
 			processPackage(package_); 
+		}
+
+		for(ITypeModel type : registry.getTypes()){
+			for(IMethodModel method : type.getMethods()){
+				adjustBodyType(method);
+			}
+		}
+	}
+
+	private void adjustBodyType(IMethodModel method_) {
+		
+		if(!(method_ instanceof MethodModel)){
+			return;
+		}		
+		MethodModel method = (MethodModel) method_;
+		
+		IAnnotationModel consumes = method.getAnnotation("Consumes");
+		if(consumes==null){
+			return;
+		}
+		
+		IParameterModel[] parameters = method.getParameters();
+		for(IParameterModel param_ : parameters){
+			
+			String paramType = param_.getType();
+			if(paramType.startsWith("java.")){
+				continue;
+			}
+
+			ITypeModel type = registry.getType(paramType);
+			if(type==null){
+				continue;
+			}
+			IAnnotationModel typeAnnotation = type.getAnnotation("XmlType");
+			if(typeAnnotation==null){
+				continue;
+			}
+			method.setBodyType(type);
+			if(registry.isTargetType(paramType)){
+				break;
+			}
 		}
 		
 	}
@@ -126,8 +169,7 @@ public class SpoonProcessor{
 				continue;
 			}
 			
-			Object value = entry.getValue();
-			
+			Object value = entry.getValue();			
 			ArrayList<CtAnnotation<?>> annotationList = toCtAnnotationList(value);
 			if(annotationList!=null){
 				int size = annotationList.size();
@@ -142,29 +184,60 @@ public class SpoonProcessor{
 			else if(value instanceof String[]){
 				annotationModel.addValue(key, value);
 			}			
-			else{
-				if(value==null){
-					value = "null";
-				}
-				else if(value instanceof CtLiteral<?>){
+			else{				
+				if(value instanceof CtNewArray<?>){
+					List<?> elements = ((CtNewArray<?>) value).getElements();
+					int size = elements.size();
+					Object[] arr = new Object[size];
+					for(int i = 0 ; i < size ; i++){
+						Object elem = elements.get(i);
+						if(elem instanceof CtCodeElement){
+							PartialEvaluator eval = factory.Eval().createPartialEvaluator();
+							arr[i] = eval.evaluate(null, (CtCodeElement) elem);
+						}
+						else{
+							arr[i] = elem;
+						}
+					}
+					value = arr;
+				}				
+				if(value instanceof CtCodeElement){
+					PartialEvaluator eval = factory.Eval().createPartialEvaluator();
+					value = eval.evaluate(null, (CtCodeElement) value);
+				}				
+				
+				if(value instanceof CtLiteral<?>){
 					value = ((CtLiteral<?>)value).getValue().toString();
 				}
 				else if(value instanceof CtFieldReference<?>){
 					value = ((CtFieldReference<?>)value).getActualField().getName();
 				}
-				else if(value instanceof CtNewArray<?>){
-					List<?> elements = ((CtNewArray<?>) value).getElements();
-					int size = elements.size();
-					String[] arr = new String[size];
-					for(int i = 0 ; i < size ; i++){
-						arr[i] = elements.get(i).toString();
+				else if(value.getClass().isArray()){
+					int length = Array.getLength(value);
+					String[] arr = new String[length];
+					for(int i = 0 ; i < length ; i++){
+						
+						Object elem = Array.get(value, i);						
+						String sVal = elem.toString();
+						if(elem instanceof CtLiteral<?>){
+							sVal = ((CtLiteral<?>)elem).getValue().toString();
+						}
+						else if(elem instanceof CtFieldReference<?>){
+							sVal = ((CtFieldReference<?>)elem).getActualField().getName();
+						}
+						arr[i] = sVal;
 					}
 					value = arr;
 				}
+				else{
+					value = value.toString();
+				}
+				if(value==null){
+					value = "null";
+				}
 				annotationModel.addValue(key, value);
 			}
-		}
-		
+		}		
 		return annotationModel;
 	}
 
@@ -175,13 +248,16 @@ public class SpoonProcessor{
 			return null;
 		}
 		
+		if(value instanceof CtNewArray){
+			value = ((CtNewArray<?>)value).getElements();
+		}
+		
 		ArrayList<CtAnnotation<?>> list = new ArrayList<CtAnnotation<?>>();
 		if(value instanceof CtAnnotation<?>){			
 			list.add((CtAnnotation<?>) value);
 			
-		}		
-		
-		if(value.getClass().isArray()){
+		}
+		else if(value.getClass().isArray()){
 			Class<?> componentType = value.getClass().getComponentType();
 			if(checkIfCtAnnotation(componentType)){
 				int l = Array.getLength(value);
@@ -190,8 +266,7 @@ public class SpoonProcessor{
 					list.add(subAnnotation);
 				}
 			}
-		}
-		if(value instanceof Collection){
+		}else if(value instanceof Collection){
 			Collection<?> col = (Collection<?>) value;
 			for(Object member : col){
 				if(member instanceof CtAnnotation<?>){

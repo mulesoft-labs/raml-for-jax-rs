@@ -110,7 +110,7 @@ Once installed, add the `pluginGroup` to the Maven `settings.xml` just the same 
 
 ###Usage
 
-You must include the plug-in in your project's pom.xml. For example:
+You must include the plug-in in your project's pom.xml. For example, add the following element to `project/build/plugins`:
 
 ```xml
 <plugin>
@@ -132,5 +132,36 @@ You must include the plug-in in your project's pom.xml. For example:
 	</executions>
 </plugin>
 ```
-
+When developing in Eclipse, you must manage lifecycle mapping. For this purpose your `pom.xml` must have the following element inside `project/build/pluginManagement/plugins`:
+``` xml
+<plugin>
+	<groupId>org.eclipse.m2e</groupId>
+	<artifactId>lifecycle-mapping</artifactId>
+	<version>1.0.0</version>
+	<configuration>
+		<lifecycleMappingMetadata>
+			<pluginExecutions>
+			</pluginExecutions>
+		</lifecycleMappingMetadata>
+	</configuration>
+</plugin>
+```
+Create it if you do not already have one and add the following child element to `pluginExecutions`:
+``` xml
+<pluginExecution>
+	<pluginExecutionFilter>
+		<groupId>org.raml.plugins</groupId>
+		<artifactId>jaxrs-raml-maven-plugin</artifactId>
+		<versionRange>0.0.1-SNAPSHOT</versionRange>
+		<goals>
+			<goal>generate-raml</goal>
+		</goals>
+	</pluginExecutionFilter>
+	<action>
+		<execute>
+			<runOnIncremental>false</runOnIncremental>
+		</execute>
+	</action>
+</pluginExecution>
+```
 The RAML definition will be processed and the code will be generated when running `mvn compile` or `mvn package`.

@@ -54,6 +54,10 @@ import spoon.reflect.factory.PackageFactory;
 public class JaxrsRamlCodegenMojo extends AbstractMojo {
 	
 	
+	private static final String DEFAULT_RAML_FILENAME = "api.raml";
+
+	private static final String RAML_EXTENSION = ".raml";
+
 	private static final String pathSeparator = System.getProperty("path.separator");	
 
 	/**
@@ -127,18 +131,18 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 	private void saveRaml(String raml, Collection<CtPackage> allRoots) {
 		
 		if(outputFile.isDirectory()){
-			String defaultFileName = "generated.raml";
+			String defaultFileName = DEFAULT_RAML_FILENAME;
 l0:			for(CtPackage pkg : allRoots){
 				for(CtSimpleType<?> type : pkg.getTypes()){
-					defaultFileName = type.getSimpleName() + ".raml";
+					defaultFileName = type.getSimpleName() + RAML_EXTENSION;
 					break l0;
 				}				
 			}
 			outputFile = new File(outputFile,defaultFileName);
 		}
 		else{
-			if(!outputFile.getName().toLowerCase().endsWith(".raml")){
-				outputFile = new File(outputFile.getAbsolutePath()+".raml");
+			if(!outputFile.getName().toLowerCase().endsWith(RAML_EXTENSION)){
+				outputFile = new File(outputFile.getAbsolutePath()+RAML_EXTENSION);
 			}
 		}
 

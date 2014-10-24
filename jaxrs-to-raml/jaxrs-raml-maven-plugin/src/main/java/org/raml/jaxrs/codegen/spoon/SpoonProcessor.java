@@ -56,6 +56,10 @@ import spoon.reflect.reference.CtTypeReference;
 
 public class SpoonProcessor{
 	
+	private static final String JAVAX_XML_TYPE = "XmlType";
+
+	private static final String JAVAX_CONSUMES = "Consumes";
+
 	private TypeModelRegistry registry = new TypeModelRegistry();
 	
 	private Factory factory;
@@ -94,7 +98,7 @@ public class SpoonProcessor{
 			}
 		}
 		
-		IAnnotationModel consumes = method.getAnnotation("Consumes");
+		IAnnotationModel consumes = method.getAnnotation(JAVAX_CONSUMES);
 		if(consumes==null){
 			return;
 		}
@@ -111,7 +115,7 @@ public class SpoonProcessor{
 			if(type==null){
 				continue;
 			}
-			IAnnotationModel typeAnnotation = type.getAnnotation("XmlType");
+			IAnnotationModel typeAnnotation = type.getAnnotation(JAVAX_XML_TYPE);
 			if(typeAnnotation==null){
 				continue;
 			}

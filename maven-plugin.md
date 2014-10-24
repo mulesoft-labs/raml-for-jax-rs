@@ -144,7 +144,7 @@ The RAML definition will be processed and the code will be generated when runnin
 - removeOldOutput: Whether to clean or not the output directory before generation. Default value is `false`.
 - outputFile: Absolute or relative output loaction. If you specify a directory here then it is considered output directory, raml content is saved to `api.raml` file inside it, schema and examples are generated into corresponding subfolders. If you specify a file, then output directory is set to it's parent directory. Default value is `${project.build.directory}/generated-sources/jaxrs-raml/api.raml`.
 
-
+####Eclipse usage
 
 When developing in Eclipse, you must manage lifecycle mapping. For this purpose your `pom.xml` must have the following element inside `project/build/pluginManagement/plugins`:
 ``` xml

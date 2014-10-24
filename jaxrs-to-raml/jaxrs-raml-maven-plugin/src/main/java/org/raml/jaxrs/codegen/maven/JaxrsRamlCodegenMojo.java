@@ -75,7 +75,7 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
     /**
      * Generated RAML file.
      */
-    @Parameter(property = "outputFile", defaultValue = "${project.build.directory}/generated-sources/jaxrs-raml/generated.raml")
+    @Parameter(property = "outputFile", defaultValue = "${project.build.directory}/generated-sources/jaxrs-raml/api.raml")
     private File outputFile;
     
     private File outputDirectory;

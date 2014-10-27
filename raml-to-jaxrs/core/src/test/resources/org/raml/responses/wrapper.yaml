@@ -1,0 +1,33 @@
+#%RAML 0.8
+---
+title: "wrapper"
+version: v1
+schemas:
+  - userDTO: |
+      {  "$schema": "http://json-schema.org/draft-03/schema",
+         "type": "object",
+         "description": "User DTO",
+         "properties": {
+           "login":  { "type": "string", "required": true },
+           "password":  { "type": "string", "required": true },
+           "firstName":  { "type": "string" },
+           "lastName":  { "type": "string", "required": true },
+           "email":  { "type": "string", "required": true },
+           "langKey":  { "type": "string", "required": true },
+           "roles":  {
+              "type": "array",
+              "items": { "type": "string" }
+           }
+         }
+      }   
+/register:
+  post:
+    body:
+      application/json:
+        schema: userDTO        
+    responses:
+      201:
+        description: user created
+      304:
+        description: user already exists
+        

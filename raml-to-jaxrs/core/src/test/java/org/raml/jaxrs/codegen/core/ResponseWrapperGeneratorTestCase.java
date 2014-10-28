@@ -33,6 +33,7 @@ import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.apache.commons.jci.compilers.JavaCompilerSettings;
+import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.FileResourceReader;
 import org.apache.commons.jci.stores.FileResourceStore;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -60,7 +61,7 @@ public class ResponseWrapperGeneratorTestCase
     @Rule
     public TemporaryFolder compilationOutputFolder = new TemporaryFolder();
 
-    @Test
+    /*@Test
     public void runForJaxrs11WithoutJsr303() throws Exception
     {
         run(JAXRS_1_1, false);
@@ -70,7 +71,7 @@ public class ResponseWrapperGeneratorTestCase
     public void runForJaxrs11WithJsr303() throws Exception
     {
         run(JAXRS_1_1, true);
-    }
+    }*/
 
     @Ignore("Can only be run with JAX-RS 2.0 API on classpath")
     @Test
@@ -118,8 +119,9 @@ public class ResponseWrapperGeneratorTestCase
         final CompilationResult result = compiler.compile(sources, sourceReader, classWriter,
             Thread.currentThread().getContextClassLoader(), settings);
 
-        assertThat(ToStringBuilder.reflectionToString(result.getErrors(), ToStringStyle.SHORT_PREFIX_STYLE),
-            result.getErrors(), is(emptyArray()));
+        CompilationProblem[] errors = result.getErrors();
+		assertThat(ToStringBuilder.reflectionToString(errors, ToStringStyle.SHORT_PREFIX_STYLE),
+            errors, is(emptyArray()));
 
         assertThat(
             ToStringBuilder.reflectionToString(result.getWarnings(), ToStringStyle.SHORT_PREFIX_STYLE),

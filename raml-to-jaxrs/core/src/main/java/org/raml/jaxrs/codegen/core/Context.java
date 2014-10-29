@@ -28,6 +28,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.URL;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,6 +53,7 @@ import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.model.Raml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXParseException;
 
 import com.google.common.io.Files;
 import com.sun.codemodel.JAnnotatable;
@@ -63,6 +65,14 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import com.sun.tools.xjc.ErrorReceiver;
+import com.sun.tools.xjc.Language;
+import com.sun.tools.xjc.ModelLoader;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.model.Model;
+import com.sun.tools.xjc.outline.ClassOutline;
+import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.util.ErrorReceiverFilter;
 
 class Context
 {
@@ -325,5 +335,91 @@ class Context
     private String getSupportPackage()
     {
         return configuration.getBasePackageName() + ".support";
+    }
+
+    public Map<String, JClass> generateClassesFromXmlSchemas(Map<String, File> schemaFiles)
+    {
+        Map<String, JClass> result = new HashMap<String, JClass>();
+        if (schemaFiles == null || schemaFiles.isEmpty()) {
+            return result;
+        }
+
+        HashMap<String, String> classNameToKeyMap = new HashMap<String, String>();
+        for (Map.Entry<String, File> entry : schemaFiles.entrySet()) {
+            String key = entry.getKey();
+            File file = entry.getValue();
+
+            List<JDefinedClass> classes = generateClassesFromXmlSchemas(
+                    new JCodeModel(), file);
+            if (classes == null || classes.isEmpty()) {
+                continue;
+            }
+            String className = classes.get(0).name();
+            if (className != null) {
+                classNameToKeyMap.put(className, key);
+            }
+        }
+
+        File[] fileArray = schemaFiles.values().toArray(new File[schemaFiles.size()]);
+        List<JDefinedClass> classList = generateClassesFromXmlSchemas(codeModel, fileArray);
+        for (JDefinedClass cl : classList) {
+            String name = cl.name();
+            String key = classNameToKeyMap.get(name);
+            if (key == null) {
+                continue;
+            }
+            result.put(key, cl);
+        }
+        return result;
+    }
+
+    private List<JDefinedClass> generateClassesFromXmlSchemas(JCodeModel codeModel, File... schemaFiles)
+    {
+        ArrayList<JDefinedClass> classList = new ArrayList<JDefinedClass>();
+
+        ArrayList<String> argList = new ArrayList<String>();
+        argList.add("-mark-generated");
+        argList.add("-p");
+        argList.add(getModelPackage());
+        for (File f : schemaFiles) {
+            argList.add(f.getAbsolutePath());
+        }
+
+        String[] args = argList.toArray(new String[argList.size()]);
+
+        final Options opt = new Options();
+        opt.setSchemaLanguage(Language.XMLSCHEMA);
+        try {
+            opt.parseArguments(args);
+        } catch (Exception e) {
+        }
+
+        ErrorReceiver receiver = new ErrorReceiverFilter() {
+            @Override
+            public void info(SAXParseException exception) {
+                if (opt.verbose)
+                    super.info(exception);
+            }
+
+            @Override
+            public void warning(SAXParseException exception) {
+                if (!opt.quiet)
+                    super.warning(exception);
+            }
+
+        };
+        try {
+            Model model = ModelLoader.load(opt, codeModel, receiver);
+            Outline outline = model.generateCode(opt, receiver);
+            for (ClassOutline co : outline.getClasses()) {
+                JDefinedClass cl = co.implClass;
+                if (cl.outer() == null) {
+                    classList.add(cl);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return classList;
     }
 }

@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang.Validate;
+import org.raml.model.Action;
 import org.raml.model.MimeType;
+import org.raml.model.Resource;
+import org.raml.model.Response;
 import org.raml.model.parameter.AbstractParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,7 +168,7 @@ public class Types
 
         if (isCompatibleWith(mimeType, APPLICATION_XML, TEXT_XML))
         {
-            // TODO support XML schema
+            //at this point all classes generated from XSDs are contained in the schemaClasses map;
             return null;
         }
         else if (isCompatibleWith(mimeType, APPLICATION_JSON))
@@ -255,4 +259,68 @@ public class Types
         }
     }
     
+    public void generateClassesFromXmlSchemas(Collection<Resource> resources) {
+
+        if (resources == null) {
+            return;
+        }
+        HashMap<String, File> schemaFiles = new HashMap<String, File>();
+        for (Resource r : resources) {
+            collectXmlSchemaFiles(r, schemaFiles);
+        }
+        schemaClasses.putAll(context.generateClassesFromXmlSchemas(schemaFiles));
+    }
+
+    public void collectXmlSchemaFiles(Resource resource,
+            Map<String, File> schemaFiles) {
+
+        Collection<Action> actions = resource.getActions().values();
+        for (Action a : actions) {
+            Map<String, Response> responses = a.getResponses();
+            if (responses != null) {
+                for (Response resp : responses.values()) {
+                    Map<String, MimeType> body = resp.getBody();
+                    if (body != null) {
+                        for (MimeType mt : body.values()) {
+                            try {
+                                collectXmlSchemaFiles(mt, schemaFiles);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+            Map<String, MimeType> body = a.getBody();
+            if (body != null) {
+                for (MimeType mt : body.values()) {
+                    try {
+                        collectXmlSchemaFiles(mt, schemaFiles);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        Collection<Resource> resources = resource.getResources().values();
+        for (Resource r : resources) {
+            collectXmlSchemaFiles(r, schemaFiles);
+        }
+    }
+
+    private void collectXmlSchemaFiles(MimeType mimeType, Map<String, File> schemaFiles)
+            throws IOException {
+
+        if (!isCompatibleWith(mimeType, APPLICATION_XML, TEXT_XML)) {
+            return;
+        }
+
+        final String schemaNameOrContent = mimeType.getSchema();
+        if (isBlank(schemaNameOrContent)) {
+            return;
+        }
+        final String buildSchemaKey = buildSchemaKey(mimeType);
+        final Entry<File, String> schemaNameAndFile = context.getSchemaFile(schemaNameOrContent);
+        schemaFiles.put(buildSchemaKey, schemaNameAndFile.getKey());
+    }
 }

@@ -210,8 +210,11 @@ public class Generator
 
         context = new Context(configuration, raml);
         types = new Types(context);
-
-        for (final Resource resource : raml.getResources().values())
+        
+        Collection<Resource> resources = raml.getResources().values();
+        types.generateClassesFromXmlSchemas(resources);
+        
+        for (final Resource resource : resources)
         {
             createResourceInterface(resource);
         }

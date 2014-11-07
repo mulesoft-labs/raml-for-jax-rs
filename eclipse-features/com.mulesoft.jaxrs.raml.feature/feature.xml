@@ -2,7 +2,7 @@
 <feature
       id="com.mulesoft.jaxrs.raml.feature"
       label="RAML for JAX-RS"
-      version="1.0.0.qualifier"
+      version="1.0.6"
       provider-name="MULESOFT">
 
    <description url="https://github.com/mulesoft/jaxrs-to-raml/blob/master/README.md">
@@ -84,86 +84,36 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <requires>
-      <import plugin="org.eclipse.jdt.core" version="3.7.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" />
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="rampl-plugin" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="com.mulesoft.jaxrs.raml.generator" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="snakeyaml" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" />
+      <import plugin="raml-jaxrs-eclipse-plugin" />
+      <import plugin="com.mulesoft.jaxrs.raml.generator"/>
+      <import plugin="com.mulesoft.jaxrs.raml.generator.eclipse"/>
       <import plugin="org.apache.commons.lang"/>
-      <import plugin="jackson-databind" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="jackson-core" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="json-schema-validator2" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.io"/>
    </requires>
-
    <plugin
          id="com.mulesoft.jaxrs.raml.generator"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
    <plugin
          id="com.mulesoft.jaxrs.raml.generator.eclipse"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="rampl-plugin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jackson-core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="jackson-databind"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="snakeyaml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="json-schema-validator2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
    <plugin
          id="org.slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.wb.core.lib"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
    <plugin
          id="raml-jaxrs-eclipse-plugin"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
+         version="0.0.0"/>
 </feature>

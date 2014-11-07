@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <category-def name="jaxrs" label="RAML Tools"/>
+   <feature url="features/com.mulesoft.jaxrs.raml.feature" id="com.mulesoft.jaxrs.raml.feature" >
+      <category name="jaxrs"/>
+   </feature>
+</site>

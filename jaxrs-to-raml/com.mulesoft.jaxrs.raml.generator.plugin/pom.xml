@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+   <build>      
+	<sourceDirectory>../com.mulesoft.jaxrs.raml.generator/src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        	       
+        </configuration>
+      </plugin>
+    </plugins>
+    <testSourceDirectory>../com.mulesoft.jaxrs.raml.generator/tests</testSourceDirectory>   
+  </build>
+  <parent>
+    <relativePath>../../eclipse</relativePath>
+    <groupId>com.mulesoft.jaxrs-raml</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.6</version>
+  </parent>
+
+  <artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
+  <packaging>eclipse-plugin</packaging>
+</project>

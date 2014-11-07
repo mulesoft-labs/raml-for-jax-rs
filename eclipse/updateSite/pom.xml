@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <relativePath>../pom.xml</relativePath>
+    <groupId>com.mulesoft.jaxrs-raml</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.6</version>
+  </parent>
+  <artifactId>com.mulesoft.jaxrs-raml.p2updatesite</artifactId>
+  <packaging>eclipse-repository</packaging>
+</project> 

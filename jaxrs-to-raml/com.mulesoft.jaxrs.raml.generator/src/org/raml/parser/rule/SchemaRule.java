@@ -21,8 +21,6 @@ import static org.raml.parser.tagresolver.IncludeResolver.INCLUDE_APPLIED_TAG;
 import static org.raml.parser.tagresolver.IncludeResolver.IncludeScalarNode;
 import static org.yaml.snakeyaml.nodes.Tag.STR;
 
-import com.fasterxml.jackson.core.JsonLocation;
-import com.fasterxml.jackson.core.JsonParseException;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -32,7 +30,7 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
-import org.eel.kitchen.jsonschema.util.JsonLoader;
+//import org.eel.kitchen.jsonschema.util.JsonLoader;
 import org.raml.parser.visitor.IncludeInfo;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -77,18 +75,13 @@ public class SchemaRule extends SimpleRule
         {
             try
             {
-                JsonLoader.fromString(value);
+               // JsonLoader.fromString(value);
             }
-            catch (JsonParseException jpe)
+            catch (Exception jpe)
             {
-                String msg = "invalid JSON schema" + getSourceErrorDetail(node) + jpe.getOriginalMessage();
-                JsonLocation loc = jpe.getLocation();
-                validationResults.add(getErrorResult(msg, getLineOffset(schemaNode) + loc.getLineNr(), globaSchemaIncludeInfo));
-            }
-            catch (IOException e)
-            {
-                String prefix = "invalid JSON schema" + getSourceErrorDetail(node);
-                validationResults.add(getErrorResult(prefix + e.getMessage(), UNKNOWN, globaSchemaIncludeInfo));
+                //String msg = "invalid JSON schema" + getSourceErrorDetail(node) + jpe.getOriginalMessage();
+              //  JsonLocation loc = jpe.getLocation();
+                //validationResults.add(getErrorResult(msg, getLineOffset(schemaNode) + loc.getLineNr(), globaSchemaIncludeInfo));
             }
         }
         else if (mimeType.contains("xml"))

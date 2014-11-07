@@ -19,15 +19,8 @@ import javax.xml.transform.Result;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 
-import jlibs.xml.sax.XMLDocument;
-import jlibs.xml.sax.helpers.MyNamespaceSupport;
-import jlibs.xml.xsd.XSContentModel;
-import jlibs.xml.xsd.XSInstance;
-import jlibs.xml.xsd.XSParser;
-import jlibs.xml.xsd.XSUtil;
 
-import org.apache.xerces.xni.QName;
-import org.apache.xerces.xs.XSElementDeclaration;
+
 import org.raml.emitter.IRamlHierarchyTarget;
 import org.raml.emitter.RamlEmitterV2;
 import org.raml.model.Action;
@@ -623,48 +616,7 @@ public abstract class ResourceVisitor {
 	}
 
 	protected void generateExamle(File schemaFile, String content) {
-		if (schemaFile != null) {
-			File examplesDir = schemaFile.getParentFile();
-			if (examplesDir != null
-					&& examplesDir.getName().endsWith(SCHEMAS_FOLDER)) {
-				examplesDir = new File(examplesDir.getParent(), EXAMPLES_FOLDER);
-				examplesDir.mkdirs();
-				org.apache.xerces.xs.XSModel xsModel = new XSParser().parse(schemaFile.getAbsolutePath());
-
-				XSInstance xsInstance = new XSInstance();
-				xsInstance.minimumElementsGenerated = 2;
-				xsInstance.maximumElementsGenerated = 4;
-				xsInstance.generateOptionalElements = Boolean.TRUE; // null means
-																	// random
-
-				List<XSElementDeclaration> elements = XSUtil.guessRootElements(xsModel);
-				if (elements.size() == 0) {
-					System.err.println("no elements found in given xml schema: "
-							+ schemaFile.getName());
-					return;
-				} else {
-					try {
-						File toSave = new File(examplesDir, schemaFile.getName());
-
-						XSElementDeclaration elem = elements.get(0);
-						javax.xml.namespace.QName rootElement = XSUtil.getQName(elem,new MyNamespaceSupport());
-						StringWriter writer = new StringWriter();
-						XMLDocument sampleXml = new XMLDocument(new StreamResult(
-								writer), true, 4, null);
-						xsInstance.generate(xsModel, rootElement, sampleXml);
-						doGenerateAndSave(toSave, schemaFile.getParentFile().getParentFile(), examplesDir, 
-								writer.toString());
-					} catch (TransformerConfigurationException e) {
-						throw new IllegalStateException(e);
-					} catch (Exception e) {
-						throw new IllegalStateException(e.getMessage(), e);
-					}
-				}
-			}
-		}
 		
-		/*String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
-		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);*/
 		return;
 	}
 

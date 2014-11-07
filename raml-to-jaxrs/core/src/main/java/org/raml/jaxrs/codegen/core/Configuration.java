@@ -29,7 +29,7 @@ public class Configuration
 {
     public enum JaxrsVersion
     {
-        JAXRS_1_1("1.1"), JAXRS_2_0("2.0");
+        JAXRS_1_1("1.1"), JAXRS_2_0("2.0");//TEST
 
         private final String alias;
 

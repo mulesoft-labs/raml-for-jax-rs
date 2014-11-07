@@ -20,7 +20,7 @@
   	<dependency>
   		<groupId>com.mulesoft.jaxrs.raml.generator</groupId>
   		<artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>1.0.0-SNAPSHOT</version>
   		<exclusions>
 		    <exclusion>
 		      <artifactId>xml-apis</artifactId>

@@ -9,7 +9,7 @@
 
     <modules>
         <module>core</module>
-        <!-- <module>maven-plugin</module>-->
+        <module>maven-plugin</module>
         <module>examples/jersey-example</module>
     </modules>
 

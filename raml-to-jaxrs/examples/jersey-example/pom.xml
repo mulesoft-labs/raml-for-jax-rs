@@ -6,6 +6,7 @@
         <groupId>org.raml</groupId>
         <artifactId>raml-jaxrs-codegen-parent</artifactId>
         <version>1.0.3-SNAPSHOT</version>
+        <relativePath>../../</relativePath>
     </parent>
 
     <artifactId>raml-jaxrs-jersey-example</artifactId>

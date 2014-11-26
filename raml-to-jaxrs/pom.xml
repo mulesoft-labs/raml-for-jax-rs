@@ -12,14 +12,14 @@
         <module>maven-plugin</module>
         <module>examples/jersey-example</module>
     </modules>
-  <distributionManagement>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>Mule Release Repository</name>
+ <distributionManagement>
+       <repository>
+            <id>mule-ee-releases</id>
+            <name>Mule Release Repository</name>                                               
             <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
         </repository>
         <snapshotRepository>
-            <id>mulesoft-snapshots</id>
+            <id>mule-snapshots</id>
             <name>Mule Snapshot Repository</name>
             <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots</url>
             <uniqueVersion>false</uniqueVersion>

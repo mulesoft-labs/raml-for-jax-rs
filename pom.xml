@@ -2,21 +2,21 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mulesoft.jaxrs-raml</groupId>
   <artifactId>all</artifactId>
-  <version>1.0.6</version>
-  <packaging>pom</packaging>
+  <version>1.0.6-SNAPSHOT</version>
+  <packaging>pom</packaging>  
   <distributionManagement>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>Mule Release Repository</name>
+       <repository>
+            <id>mule-ee-releases</id>
+            <name>Mule Release Repository</name>                                               
             <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
         </repository>
         <snapshotRepository>
-            <id>mulesoft-snapshots</id>
+            <id>mule-snapshots</id>
             <name>Mule Snapshot Repository</name>
             <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
-  </distributionManagement>
+  </distributionManagement>  
   <modules>
 	<module>eclipse</module>
 	<module>jaxrs-to-raml</module>

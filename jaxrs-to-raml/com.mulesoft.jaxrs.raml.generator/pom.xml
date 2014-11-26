@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mulesoft.jaxrs.raml.generator</groupId>
   <artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <repositories>
       <repository>
     	<id>jlibs-repository</id>
@@ -12,13 +12,13 @@
 		</repository>      
   </repositories>
   <distributionManagement>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>Mule Release Repository</name>
+       <repository>
+            <id>mule-ee-releases</id>
+            <name>Mule Release Repository</name>                                               
             <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
         </repository>
         <snapshotRepository>
-            <id>mulesoft-snapshots</id>
+            <id>mule-snapshots</id>
             <name>Mule Snapshot Repository</name>
             <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots</url>
             <uniqueVersion>false</uniqueVersion>

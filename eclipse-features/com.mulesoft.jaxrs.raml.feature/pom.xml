@@ -11,4 +11,8 @@
 
   <artifactId>com.mulesoft.jaxrs.raml.feature</artifactId>
   <packaging>eclipse-feature</packaging>
+  <properties>
+      <maven.install.skip>true</maven.install.skip>
+      <maven.deploy.skip>true</maven.deploy.skip>
+   </properties>
 </project> 

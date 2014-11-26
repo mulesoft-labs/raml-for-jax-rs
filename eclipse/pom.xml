@@ -22,6 +22,8 @@
     <tycho.version>0.21.0</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
     <kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
+    <maven.install.skip>true</maven.install.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
   <repositories>

@@ -22,7 +22,10 @@
     <artifactId>parent</artifactId>
     <version>1.0.6</version>
   </parent>
-
+  <properties>
+      <maven.install.skip>true</maven.install.skip>
+      <maven.deploy.skip>true</maven.deploy.skip>
+   </properties>
   <artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
   <packaging>eclipse-plugin</packaging>
 </project>

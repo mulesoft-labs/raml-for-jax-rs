@@ -20,6 +20,9 @@
     </plugins>
     <testSourceDirectory>../com.mulesoft.jaxrs.raml.generator/tests</testSourceDirectory>   
   </build>
-
+  <properties>
+      <maven.install.skip>true</maven.install.skip>
+      <maven.deploy.skip>true</maven.deploy.skip>
+   </properties>
 <packaging>eclipse-plugin</packaging>
 </project>

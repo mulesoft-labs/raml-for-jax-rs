@@ -9,4 +9,8 @@
   </parent>
   <artifactId>com.mulesoft.jaxrs-raml.p2updatesite</artifactId>
   <packaging>eclipse-repository</packaging>
+  <properties>
+      <maven.install.skip>true</maven.install.skip>
+      <maven.deploy.skip>true</maven.deploy.skip>
+   </properties>
 </project> 

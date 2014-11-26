@@ -4,6 +4,19 @@
   <artifactId>all</artifactId>
   <version>1.0.6</version>
   <packaging>pom</packaging>
+  <distributionManagement>
+        <repository>
+            <id>mule-releases</id>
+            <name>Mule Release Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>mule-snapshots</id>
+            <name>Mule Snapshot Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+  </distributionManagement>
   <modules>
 	<module>eclipse</module>
 	<module>jaxrs-to-raml</module>

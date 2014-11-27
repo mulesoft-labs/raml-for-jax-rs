@@ -9,8 +9,31 @@
   </parent>
   <artifactId>com.mulesoft.jaxrs-raml.p2updatesite</artifactId>
   <packaging>eclipse-repository</packaging>
+<build>
+ <extensions>
+  <extension>
+    <groupId>org.kuali.maven.wagons</groupId>
+    <artifactId>maven-s3-wagon</artifactId>
+    <version>1.2.1</version>
+  </extension>
+ </extensions>
+</build>
+<distributionManagement>
+ <site>
+  <id>s3.site</id>
+  <url>s3://${s3.bucketName}/site</url>
+ </site>
+ <repository>
+  <id>s3.release</id>
+  <url>s3://${s3.bucketName}/release</url>
+ </repository>
+ <snapshotRepository>
+  <id>s3.snapshot</id>
+  <url>s3://${s3.bucketName}/snapshot</url>
+ </snapshotRepository>
+</distributionManagement>
   <properties>
-      <maven.install.skip>true</maven.install.skip>
-      <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>false</maven.install.skip>
+    <maven.deploy.skip>false</maven.deploy.skip>
    </properties>
 </project> 

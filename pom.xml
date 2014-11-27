@@ -17,6 +17,9 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
   </distributionManagement>  
+  <properties>
+    <s3.bucketName>1222222</s3.bucketName>
+  </properties>
   <modules>
 	<module>eclipse</module>
 	<module>jaxrs-to-raml</module>

@@ -23,6 +23,7 @@
   <properties>
       <maven.install.skip>true</maven.install.skip>
       <maven.deploy.skip>true</maven.deploy.skip>
+      <maven.invoker.plugin.version>1.8</maven.invoker.plugin.version>
    </properties>
 <packaging>eclipse-plugin</packaging>
 </project>

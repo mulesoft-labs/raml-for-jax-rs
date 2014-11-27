@@ -2,7 +2,7 @@
 <feature
       id="com.mulesoft.jaxrs.raml.feature"
       label="RAML for JAX-RS"
-      version="1.0.6"
+      version="1.0.6.qualifier"
       provider-name="MULESOFT">
 
    <description url="https://github.com/mulesoft/jaxrs-to-raml/blob/master/README.md">

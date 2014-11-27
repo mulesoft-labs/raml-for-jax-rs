@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Generator
 Bundle-SymbolicName: com.mulesoft.jaxrs.raml.generator;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.6.qualifier
 Bundle-Vendor: MULESOFT
 Export-Package: bin.org.yaml.snakeyaml,
  bin.org.yaml.snakeyaml.composer,

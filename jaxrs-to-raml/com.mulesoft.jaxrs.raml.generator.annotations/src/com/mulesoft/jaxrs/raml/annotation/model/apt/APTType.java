@@ -6,7 +6,9 @@ import java.util.List;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
@@ -64,5 +66,19 @@ public class APTType extends APTModel implements ITypeModel{
 	
 	public String getFullyQualifiedName() {
 		return null; //Can't get it without utils
+	}
+
+
+	@Override
+	public IFieldModel[] getFields() {
+		List<? extends Element> enclosedElements = element.getEnclosedElements();
+		ArrayList<IFieldModel>result=new ArrayList<IFieldModel>();
+		for (Element r:enclosedElements){
+			if (r instanceof VariableElement){
+				VariableElement x=(VariableElement) r;
+				result.add(new APTFieldModel(x));
+			}
+		}
+		return result.toArray(new IFieldModel[result.size()]);
 	}
 }

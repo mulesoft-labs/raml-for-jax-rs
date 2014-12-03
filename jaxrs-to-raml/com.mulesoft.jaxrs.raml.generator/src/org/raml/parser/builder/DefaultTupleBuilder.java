@@ -32,8 +32,6 @@ import org.raml.parser.resolver.DefaultTupleHandler;
 import org.raml.parser.resolver.ITransformHandler;
 import org.raml.parser.resolver.TupleHandler;
 import org.raml.parser.utils.ReflectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 
@@ -44,7 +42,7 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
     private NodeBuilder<?> parent;
     private TupleHandler handler;
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    //protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public DefaultTupleBuilder(TupleHandler tupleHandler)
     {
@@ -183,8 +181,8 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
                 }
                 else
                 {
-                    logger.info(String.format("parent reference field '%s' could not be set with %s onto %s",
-                                              declaredField.getName(), value.getClass(), pojo.getClass()));
+                    /*logger.info(String.format("parent reference field '%s' could not be set with %s onto %s",
+                                              declaredField.getName(), value.getClass(), pojo.getClass()));*/
                 }
             }
         }

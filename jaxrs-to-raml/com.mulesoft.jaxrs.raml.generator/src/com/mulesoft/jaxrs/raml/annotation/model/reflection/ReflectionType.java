@@ -1,7 +1,9 @@
 package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
@@ -31,6 +33,18 @@ public class ReflectionType extends BasicReflectionMember<Class<?>> implements I
 	
 	public String getFullyQualifiedName() {
 		return element.getCanonicalName();
+	}
+
+
+	@Override
+	public IFieldModel[] getFields() {
+		Field[] declaredFields= element.getFields();
+		IFieldModel[] fields=new IFieldModel[declaredFields.length];
+		int a=0;
+		for (Field m:declaredFields){
+			fields[a++]=new ReflectionField(m);
+		}
+		return fields;
 	}
 
 }

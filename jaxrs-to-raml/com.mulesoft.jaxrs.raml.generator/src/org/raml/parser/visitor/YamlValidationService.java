@@ -29,8 +29,6 @@ import java.util.List;
 import org.raml.parser.loader.ResourceLoader;
 import org.raml.parser.rule.ValidationResult;
 import org.raml.parser.tagresolver.TagResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -40,7 +38,7 @@ import org.yaml.snakeyaml.nodes.Node;
 public class YamlValidationService
 {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    //protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private List<ValidationResult> errorMessage;
     private YamlValidator yamlValidator;
@@ -102,10 +100,10 @@ public class YamlValidationService
 
         errorMessage.addAll(yamlValidator.getMessages());
 
-        if (logger.isDebugEnabled())
+        /*if (logger.isDebugEnabled())
         {
             logger.debug("validation time: " + (currentTimeMillis() - startTime) + "ms.");
-        }
+        }*/
 
         return errorMessage;
     }

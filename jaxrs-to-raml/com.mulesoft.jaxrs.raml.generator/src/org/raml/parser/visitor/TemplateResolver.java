@@ -41,8 +41,6 @@ import org.raml.parser.loader.ResourceLoader;
 import org.raml.parser.rule.ValidationResult;
 import org.raml.parser.tagresolver.IncludeResolver;
 import org.raml.parser.utils.Inflector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
@@ -57,7 +55,7 @@ public class TemplateResolver
     public static final String ALL_ACTIONS = "*";
     public static final String TRAIT_USE_KEY = "is";
     public static final String RESOURCE_TYPE_USE_KEY = "type";
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    //protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private IncludeResolver includeResolver = new IncludeResolver();
     private Map<String, MappingNode> resourceTypesMap = new HashMap<String, MappingNode>();

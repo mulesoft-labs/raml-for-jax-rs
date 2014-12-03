@@ -11,60 +11,6 @@
     		<layout>default</layout>
 		</repository>      
   </repositories>
-  <properties>
-      <maven.invoker.plugin.version>1.8</maven.invoker.plugin.version>
-   </properties>
-	<profiles>
-        <profile>
-            <id>integration</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-invoker-plugin</artifactId>
-                        <version>${maven.invoker.plugin.version}</version>
-                        <configuration>
-                            <debug>${debug}</debug>
-                            <streamLogs>${debug}</streamLogs>
-                            <showErrors>${debug}</showErrors>
-                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                            <postBuildHookScript>verify</postBuildHookScript>
-                            <invokerPropertiesFile>invoker.properties</invokerPropertiesFile>
-                            <settingsFile>${maven.invoker.settings}</settingsFile>
-                            <properties>
-                                <muleHomeProperty>${project.build.directory}/mule-enterprise-standalone</muleHomeProperty>
-                                <muleHomeCe>${project.build.directory}/mule-standalone</muleHomeCe>
-                                <mule.version>${mule.version}</mule.version>
-                                <mpp-port>${mpp-port}</mpp-port>
-                                <swpar-port>${swpar-port}</swpar-port>
-                                <http.port>${http.port}</http.port>
-                                <skipProperty>skipPlugin</skipProperty>
-                                <skipPlugin>true</skipPlugin>
-                                <mule.timeout>120000</mule.timeout>
-                            </properties>
-                            <goals>
-                                <goal>clean</goal>
-                                <goal>verify</goal>
-                            </goals>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>integration-test</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>install</goal>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-   </profiles>
   <distributionManagement>
        <repository>
             <id>mule-ee-releases</id>

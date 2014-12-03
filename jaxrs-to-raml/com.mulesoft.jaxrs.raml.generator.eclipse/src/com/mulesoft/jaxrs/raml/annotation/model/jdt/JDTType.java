@@ -1,10 +1,12 @@
 package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
@@ -49,4 +51,19 @@ public class JDTType extends JDTAnnotatable implements ITypeModel {
 		return ((IType) tm).getFullyQualifiedName();
 	}
 
+
+	@Override
+	public IFieldModel[] getFields() {
+		try {
+			IField[] methods = ((IType) tm).getFields();
+			IFieldModel[] mm = new IFieldModel[methods.length];
+			int a = 0;
+			for (IField m : methods) {
+				mm[a++] = new JDTField(m);
+			}
+			return mm;
+		} catch (JavaModelException e) {
+			throw new IllegalStateException(e);
+		}
+	}
 }

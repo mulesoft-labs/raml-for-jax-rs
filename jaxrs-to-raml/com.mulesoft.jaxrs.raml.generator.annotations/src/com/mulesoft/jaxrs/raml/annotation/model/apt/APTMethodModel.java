@@ -100,4 +100,28 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 		return null;
 	}
 
+
+	@Override
+	public ITypeModel getType() {
+		return null;
+	}
+
+
+	@Override
+	public boolean isStatic() {
+		return false;
+	}
+
+
+	@Override
+	public boolean isPublic() {
+		return false;
+	}
+
+
+	@Override
+	public ITypeModel getJAXBType() {
+		return null;
+	}
+
 }

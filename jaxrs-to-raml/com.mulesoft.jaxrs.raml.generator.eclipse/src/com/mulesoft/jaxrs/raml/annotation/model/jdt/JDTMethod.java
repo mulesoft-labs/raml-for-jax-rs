@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 
+import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.ILocalVariable;
+import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
@@ -48,50 +50,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		}
 	}
 
-	public String getDocumentation() {
-		try {
-			IMethod iMethod = (IMethod) tm;
-			ISourceRange javadocRange = iMethod.getJavadocRange();
-			if (javadocRange != null) {
-				String attachedJavadoc = iMethod
-						.getCompilationUnit()
-						.getSource()
-						.substring(
-								javadocRange.getOffset(),
-								javadocRange.getOffset()
-										+ javadocRange.getLength());
-				attachedJavadoc = attachedJavadoc.substring(3,
-						attachedJavadoc.length() - 2);
-				StringReader rr = new StringReader(attachedJavadoc);
-				BufferedReader mm = new BufferedReader(rr);
-				StringBuilder bld = new StringBuilder();
-				while (true) {
-					try {
-						String s = mm.readLine();
-						if (s == null) {
-							break;
-						}
-						int indexOf = s.indexOf('*');
-						if (indexOf != -1) {
-							s = s.substring(indexOf + 1);
-						}
-						s = s.trim();
-						if (s.startsWith("@")) { //$NON-NLS-1$
-							continue;
-						}
-						bld.append(s);
-						bld.append('\n');
-					} catch (IOException e) {
-						break;
-					}
-				}
-				return bld.toString().trim();
-			}
-			return null;
-		} catch (JavaModelException e) {
-			throw new IllegalStateException();
-		}
-	}
+	
 
 	public IDocInfo getBasicDocInfo() {
 		try {
@@ -184,23 +143,7 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		IMethod iMethod = (IMethod) tm;
 		try {
 			String returnType = iMethod.getReturnType();
-			if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
-				IType ownerType = (IType) iMethod
-						.getAncestor(IJavaElement.TYPE);
-				String typeName = returnType
-						.substring(1, returnType.length() - 1);
-				String[][] resolveType = ownerType.resolveType(typeName);
-				if (resolveType == null) {
-					throw new GenerationException("Type " + typeName + " cannot be resolved", "Type " + typeName + " cannot be resolved, maybe because of the compilation errors"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				}
-				if (resolveType.length == 1) {
-					IType findType = ownerType.getJavaProject().findType(
-							resolveType[0][0] + '.' + resolveType[0][1]);
-					if (findType != null && findType instanceof SourceType) {
-						return new JDTType(findType);
-					}
-				}
-			}
+			return doGetType(iMethod, returnType);
 
 		} catch (Exception e) {
 			if (e instanceof GenerationException) {
@@ -208,8 +151,9 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 			}
 			throw new IllegalStateException(e);
 		}
-		return null;
 	}
+
+	
 
 	
 	public ITypeModel getBodyType() {
@@ -241,5 +185,36 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 			throw new IllegalStateException(e);
 		}
 		return null;
+	}
+	@Override
+	public boolean isStatic() {
+		try {
+			return Flags.isStatic(((IMember)tm).getFlags());
+		} catch (JavaModelException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isPublic() {
+		try {
+			return Flags.isPublic(((IMember)tm).getFlags());
+		} catch (JavaModelException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public ITypeModel getType() {
+		return getReturnedType();
+	}
+
+	@Override
+	public ITypeModel getJAXBType() {
+		try {
+			return doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
+		} catch (JavaModelException e) {
+			return null;
+		}
 	}
 }

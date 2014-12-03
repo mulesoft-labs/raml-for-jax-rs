@@ -25,6 +25,7 @@ Export-Package: bin.org.yaml.snakeyaml,
  bin.org.yaml.snakeyaml.util,
  com.mulesoft.jaxrs.raml.annotation.model,
  com.mulesoft.jaxrs.raml.annotation.model.reflection,
+ com.mulesoft.jaxrs.raml.jaxb,
  com.mulesoft.jaxrs.raml.jsonschema,
  org.codehaus.jettison,
  org.codehaus.jettison.badgerfish,
@@ -67,6 +68,4 @@ Import-Package: org.apache.commons.beanutils,
  org.apache.commons.io,
  org.apache.commons.lang
 Bundle-ClassPath: lib/jettison-1.3.3.jar,lib/snakeyaml.jar,. 
-Require-Bundle: org.slf4j.api;bundle-version="1.6.4",
- org.junit;bundle-version="3.8.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

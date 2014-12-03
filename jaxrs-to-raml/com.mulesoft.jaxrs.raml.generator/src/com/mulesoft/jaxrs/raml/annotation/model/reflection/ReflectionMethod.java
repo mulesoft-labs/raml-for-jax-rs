@@ -2,6 +2,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -60,6 +61,30 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 
 	
 	public ITypeModel getBodyType() {
+		return null;
+	}
+
+
+	@Override
+	public boolean isStatic() {
+		return Modifier.isStatic(element.getModifiers());
+	}
+
+
+	@Override
+	public boolean isPublic() {
+		return Modifier.isPublic(element.getModifiers());		
+	}
+
+
+	@Override
+	public ITypeModel getType() {
+		return getReturnedType();
+	}
+
+
+	@Override
+	public ITypeModel getJAXBType() {
 		return null;
 	}
 }

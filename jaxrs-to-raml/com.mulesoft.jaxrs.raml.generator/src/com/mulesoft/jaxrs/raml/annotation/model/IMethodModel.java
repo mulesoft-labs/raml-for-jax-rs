@@ -5,7 +5,7 @@ package com.mulesoft.jaxrs.raml.annotation.model;
  * Model for a rest method
  *
  */
-public interface IMethodModel extends IBasicModel {
+public interface IMethodModel extends IBasicModel,IMember {
 	
 	/**
 	 * 
@@ -30,4 +30,7 @@ public interface IMethodModel extends IBasicModel {
 	 * @return information about body type
 	 */
 	ITypeModel getBodyType();
+
+	public abstract boolean isStatic();
+	public abstract boolean isPublic();	
 }

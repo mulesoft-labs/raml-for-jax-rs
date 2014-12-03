@@ -20,13 +20,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FileResourceLoader implements ResourceLoader
 {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    //protected final Logger logger = LoggerFactory.getLogger(getClass());
     private File parentPath;
 
     public FileResourceLoader(String path)
@@ -44,10 +42,10 @@ public class FileResourceLoader implements ResourceLoader
     {
         File includedFile = new File(parentPath, resourceName);
         FileInputStream inputStream = null;
-        if (logger.isDebugEnabled())
+        /*if (logger.isDebugEnabled())
         {
             logger.debug(String.format("Looking for resource: %s on directory: %s...", resourceName, parentPath));
-        }
+        }*/
         try
         {
             return new FileInputStream(includedFile);

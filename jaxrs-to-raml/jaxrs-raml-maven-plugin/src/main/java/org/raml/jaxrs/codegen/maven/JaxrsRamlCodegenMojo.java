@@ -1,0 +1,244 @@
+/*
+ * Copyright 2013 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
+package org.raml.jaxrs.codegen.maven;
+
+import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_RUNTIME;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.raml.jaxrs.codegen.spoon.SpoonProcessor;
+
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
+
+import spoon.Launcher;
+import spoon.reflect.declaration.CtPackage;
+import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.factory.Factory;
+import spoon.reflect.factory.PackageFactory;
+
+/**
+ * When invoked, this goals read one or more JAX-RS annotated Java
+ * classes and produces a <a href="http://raml.org">RAML</a> file.
+ */
+@Mojo(name = "generate-raml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
+public class JaxrsRamlCodegenMojo extends AbstractMojo {
+	
+	
+	private static final String DEFAULT_RAML_FILENAME = "api.raml";
+
+	private static final String RAML_EXTENSION = ".raml";
+
+	private static final String pathSeparator = System.getProperty("path.separator");	
+
+	/**
+	 * Directory location of the JAX-RS file(s).
+	 */
+	@Parameter(property = "sourceDirectory", defaultValue = "${basedir}/src/main/java")
+	private File sourceDirectory;
+	
+	/**
+     * An array of locations of the JAX-RS file(s).
+     */
+    @Parameter(property = "sourcePaths")
+    private File[] sourcePaths;
+    
+    /**
+     * Generated RAML file.
+     */
+    @Parameter(property = "outputFile", defaultValue = "${project.build.directory}/generated-sources/jaxrs-raml/api.raml")
+    private File outputFile;
+    
+    private File outputDirectory;
+	
+	/**
+     * Whether to empty the output directory before generation occurs, to clear out all source files
+     * that have been generated previously.
+     */
+    @Parameter(property = "removeOldOutput", defaultValue = "false")
+    private boolean removeOldOutput;
+
+	@Component
+	private MavenProject project;
+
+
+	public void execute() throws MojoExecutionException, MojoFailureException {
+
+		
+		checkAndPrepareDirectories();
+		
+		String[] args = prepareArguments();
+
+		Launcher launcher = null;
+		try {
+			launcher = new Launcher();
+			launcher.setArgs(args);
+			launcher.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(launcher == null){
+			return;
+		}
+		
+		Factory factory = launcher.getFactory();
+		PackageFactory packageFactory = factory.Package();
+		Collection<CtPackage> allRoots = packageFactory.getAllRoots();
+		
+		SpoonProcessor spoonProcessor = new SpoonProcessor(factory);
+		spoonProcessor.process(allRoots);
+		
+		ClassLoader classLoader = launcher.getFactory().getEnvironment().getClassLoader();
+		ResourceVisitor rv = new RuntimeResourceVisitor(outputFile, classLoader);
+		for(ITypeModel type : spoonProcessor.getRegistry().getTargetTypes()){
+			rv.visit(type);
+		}
+		
+		saveRaml(rv.getRaml(),allRoots);
+		
+	}
+
+	private void saveRaml(String raml, Collection<CtPackage> allRoots) {
+		
+		if(outputFile.isDirectory()){
+			String defaultFileName = DEFAULT_RAML_FILENAME;
+l0:			for(CtPackage pkg : allRoots){
+				for(CtSimpleType<?> type : pkg.getTypes()){
+					defaultFileName = type.getSimpleName() + RAML_EXTENSION;
+					break l0;
+				}				
+			}
+			outputFile = new File(outputFile,defaultFileName);
+		}
+		else{
+			if(!outputFile.getName().toLowerCase().endsWith(RAML_EXTENSION)){
+				outputFile = new File(outputFile.getAbsolutePath()+RAML_EXTENSION);
+			}
+		}
+
+		try {
+			if(!outputFile.exists()){
+				outputFile.createNewFile();
+			}
+			FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+			fileOutputStream.write(raml.getBytes("UTF-8")); //$NON-NLS-1$
+			fileOutputStream.close();
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	private void checkAndPrepareDirectories() throws MojoExecutionException
+	{
+		if(outputFile==null||outputFile.getAbsolutePath().isEmpty()){
+			throw new MojoExecutionException("The outputDirectory must not be empty.");
+		}
+		if(outputFile.isDirectory()){
+			outputDirectory = outputFile;
+		}
+		else{			
+			outputDirectory = outputFile.getParentFile();
+		}
+		outputDirectory.mkdirs();
+		if(removeOldOutput){
+			try
+            {
+                FileUtils.cleanDirectory(outputDirectory);
+            }
+            catch (final IOException ioe)
+            {
+                throw new MojoExecutionException("Failed to clean directory: " + outputFile, ioe);
+            }
+		}
+	}
+
+	private String[] prepareArguments() throws MojoExecutionException {
+		
+		ArrayList<String> lst = new ArrayList<String>();
+		
+		String inputValue = getInputValue();
+		if(isEmptyString(inputValue)){
+			throw new MojoExecutionException("One of sourceDirectory or sourcePaths parameters must not be empty.");
+		}		
+		lst.add("--input");
+		lst.add(inputValue);
+		lst.add("--output-type");
+		lst.add("nooutput");
+		
+		String sourceClasspath = getSourceClassPath();
+		if(!isEmptyString(sourceClasspath)){
+			lst.add("--source-classpath");
+			lst.add(sourceClasspath);
+		}		
+		String[] arr = lst.toArray(new String[lst.size()]);
+		return arr;
+	}
+
+	private String getInputValue() {
+		
+		if(sourcePaths!=null&&sourcePaths.length!=0){
+			StringBuilder bld = new StringBuilder(); 
+			for(File f : sourcePaths){
+				bld.append(f.getAbsolutePath()).append(pathSeparator);
+			}
+			String result = bld.substring(0, bld.length()-pathSeparator.length());
+			return result;			
+		}
+		String result = sourceDirectory.getAbsolutePath();		
+		return result;
+	}
+
+	private String getSourceClassPath() {
+		
+		StringBuilder bld = new StringBuilder();
+		List<?> compileClasspathElements = null;
+		try {
+			compileClasspathElements = project.getCompileClasspathElements();
+		} catch (DependencyResolutionRequiredException e1) {
+			e1.printStackTrace();
+		}
+		if(compileClasspathElements==null||compileClasspathElements.isEmpty()){
+			return null;
+		}		
+		for(Object obj : compileClasspathElements){
+			bld.append(obj.toString());
+			bld.append(pathSeparator);
+		}
+		String result = bld.substring(0, bld.length() - pathSeparator.length());
+		return result;
+	}
+	
+	private boolean isEmptyString(String str){
+		return str==null||str.trim().length()==0;
+	}
+}

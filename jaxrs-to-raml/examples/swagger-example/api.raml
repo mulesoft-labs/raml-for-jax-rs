@@ -1,0 +1,35 @@
+#%RAML 0.8
+title: Please type API title here
+version: v1
+baseUri: http://example.com
+protocols: [ HTTP ]
+/customer: 
+  /ww: 
+    get: 
+      responses: 
+        201: 
+          description: Test message
+          body: 
+            text/html: 
+  /ww1: 
+    get: 
+      responses: 
+        201: 
+          description: Test message
+          body: 
+            text/html: 
+        401: 
+          description: Not found
+          body: 
+            text/html: 
+  /{snt}: 
+    get: 
+      responses: 
+        404: 
+          description: Not Found
+          body: 
+            application/json: 
+        500: 
+          description: Server Error
+          body: 
+            application/json: 

@@ -14,6 +14,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	}
 
 	
+	
 	protected void generateXMLSchema(ITypeModel t) {
 		if (t instanceof ReflectionType) {
 			Class<?> element = ((ReflectionType) t).getElement();

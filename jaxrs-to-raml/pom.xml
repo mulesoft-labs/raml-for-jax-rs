@@ -15,6 +15,7 @@
   <modules>
     <module>com.mulesoft.jaxrs.raml.generator</module>
     <module>com.mulesoft.jaxrs.raml.generator.annotations</module>
+    <module>jaxrs-raml-maven-plugin</module>
   </modules>
   <build>
     <plugins>

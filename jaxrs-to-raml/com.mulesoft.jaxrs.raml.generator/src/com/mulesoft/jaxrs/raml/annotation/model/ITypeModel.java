@@ -14,5 +14,7 @@ public interface ITypeModel extends IBasicModel{
 	 */
 	IMethodModel[] getMethods();
 	
+	IFieldModel[] getFields();
+	
 	String getFullyQualifiedName();
 }

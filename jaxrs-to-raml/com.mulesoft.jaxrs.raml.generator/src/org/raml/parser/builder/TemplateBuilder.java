@@ -24,8 +24,6 @@ import java.util.Map;
 
 import org.raml.model.Template;
 import org.raml.parser.utils.ReflectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
@@ -36,7 +34,7 @@ import org.yaml.snakeyaml.nodes.Tag;
 public class TemplateBuilder extends SequenceTupleBuilder
 {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    //protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public TemplateBuilder(String fieldName)
     {

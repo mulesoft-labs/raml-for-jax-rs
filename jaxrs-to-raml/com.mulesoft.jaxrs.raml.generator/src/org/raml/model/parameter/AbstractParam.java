@@ -24,8 +24,6 @@ import org.raml.model.ParamType;
 import org.raml.parser.annotation.Scalar;
 import org.raml.parser.annotation.Sequence;
 import org.raml.parser.rule.SequenceTupleNullsAllowedRule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AbstractParam implements Cloneable
 {
@@ -64,7 +62,7 @@ public class AbstractParam implements Cloneable
     @Scalar
     private String example;
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    //protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     public AbstractParam()
     {

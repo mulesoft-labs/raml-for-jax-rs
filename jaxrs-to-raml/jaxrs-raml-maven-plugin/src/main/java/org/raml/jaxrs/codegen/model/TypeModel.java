@@ -16,6 +16,8 @@
 package org.raml.jaxrs.codegen.model;
 
 import java.util.ArrayList;
+
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
@@ -75,5 +77,10 @@ public class TypeModel extends BasicModel implements ITypeModel{
 		} else if (!qualifiedName.equals(other.qualifiedName))
 			return false;
 		return true;
+	}
+
+	@Override
+	public IFieldModel[] getFields() {
+		return null;
 	}
 }

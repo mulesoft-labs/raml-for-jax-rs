@@ -1,6 +1,7 @@
 package org.raml.jaxrs.codegen.maven;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
@@ -75,6 +76,11 @@ public class ProxyType implements ITypeModel {
 		} else if (!key.equals(other.key))
 			return false;
 		return true;
+	}
+
+	@Override
+	public IFieldModel[] getFields() {
+		return null;
 	}
 
 }

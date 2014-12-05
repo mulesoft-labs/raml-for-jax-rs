@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.io.StringWriter;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,13 +45,7 @@ public class XMLWriter implements IExampleWriter{
 	@Override
 	public void startEntity(String xmlName) {
 		Element newElement = document.createElement(xmlName);
-		if (currentElement==null){
-			document.appendChild(newElement);
-		}
-		else{
-			currentElement.appendChild(newElement);
-		}
-		currentElement=newElement;
+		onElement(newElement);
 	}
 	
 
@@ -63,7 +58,7 @@ public class XMLWriter implements IExampleWriter{
 	}
 
 	@Override
-	public void generateAttribute(String name, Class<?> type) {
+	public void generateAttribute(String name, Class<?> type, boolean required) {
 		currentElement.setAttribute(name, getValueString(type));
 	}
 
@@ -73,14 +68,34 @@ public class XMLWriter implements IExampleWriter{
 
 
 	@Override
-	public void generateElement(String name, Class<?> type) {
+	public void generateElement(String name, Class<?> type, boolean required) {
 		Element newElement = document.createElement(name);
 		newElement.setTextContent(getValueString(type));
 		currentElement.appendChild(newElement);
 	}
 
 	@Override
-	public void addValueSample(Class<?> type) {
+	public void addValueSample(Class<?> type, boolean required) {
 		currentElement.setTextContent(getValueString(type));
+	}
+
+	@Override
+	public void startEntityAndDeclareNamespaces(String xmlName,
+			HashMap<String, String> prefixes) {
+		Element newElement = document.createElement(xmlName);
+		for (String url:prefixes.keySet()){
+			newElement.setAttribute("xmlns:"+prefixes.get(url),prefixes.get(url));
+		}
+		onElement(newElement);
+	}
+
+	private void onElement(Element newElement) {
+		if (currentElement==null){
+			document.appendChild(newElement);
+		}
+		else{
+			currentElement.appendChild(newElement);
+		}
+		currentElement=newElement;
 	}
 }

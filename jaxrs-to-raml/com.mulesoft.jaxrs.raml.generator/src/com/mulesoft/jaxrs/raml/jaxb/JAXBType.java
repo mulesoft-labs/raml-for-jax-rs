@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -103,6 +104,26 @@ public class JAXBType extends JAXBModelElement {
 
 	public String getXMLName() {
 		return elementName!=null?elementName:originalType.getName().toLowerCase();
+	}
+
+	public HashMap<String, String> gatherNamespaces() {
+		int n=0;
+		HashMap<String, String>map=new HashMap<String, String>();
+		fillNamespaceMap(map,n);
+		return map;
+	}
+
+	private int fillNamespaceMap(HashMap<String, String> map, int n) {
+		for (JAXBProperty p:properties){
+			if (p.namespace!=null){
+				map.put(p.namespace, "n"+(n++));
+			}
+			JAXBType type = p.getType();
+			if (type!=null){
+				n=type.fillNamespaceMap(map, n);
+			}
+		}
+		return n;
 	}
 
 }

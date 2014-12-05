@@ -1,5 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import java.util.HashMap;
+
 public class ExampleGenerator {
 
 	public ExampleGenerator(IExampleWriter writer) {
@@ -11,18 +13,19 @@ public class ExampleGenerator {
 	
 	public void generateXML(JAXBType type){
 		String xmlName = type.getXMLName();
-		writer.startEntity(xmlName);
+		HashMap<String,String>prefixes=type.gatherNamespaces();
+		writer.startEntityAndDeclareNamespaces(xmlName,prefixes);		
 		for (JAXBProperty p:type.properties){
-			writeProperty(p);
+			writeProperty(p,prefixes);
 		}
 		writer.endEntity(xmlName);
 	}
 
-	private void writeProperty(JAXBProperty p) {
+	private void writeProperty(JAXBProperty p, HashMap<String, String> prefixes) {
 		String name=p.name();
 		if (p instanceof JAXBAttributeProperty){
 			JAXBAttributeProperty ap=(JAXBAttributeProperty) p;
-			writer.generateAttribute(name, ap.asJavaType());
+			writer.generateAttribute(name, ap.asJavaType(), ap.required);
 		}
 		if (p instanceof JAXBElementProperty){
 			JAXBElementProperty el=(JAXBElementProperty) p;
@@ -31,12 +34,12 @@ public class ExampleGenerator {
 				generateXML(jaxbType);
 			}
 			else{
-				writer.generateElement(name, el.asJavaType());
+				writer.generateElement(name, el.asJavaType(), el.required);
 			}
 			//writer.generateAttribute(p.getElementName(), type);
 		}
 		if (p instanceof JAXBValueProperty){
-			writer.addValueSample(p.asJavaType());
+			writer.addValueSample(p.asJavaType(), p.required);
 			//writer.generateAttribute(p.getElementName(), type);
 		}
 	}

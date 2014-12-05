@@ -142,4 +142,9 @@ public class MethodModel extends BasicModel implements IMethodModel {
 		return false;
 	}
 
+	@Override
+	public Class<?> getJavaType() {
+		return null;
+	}
+
 }

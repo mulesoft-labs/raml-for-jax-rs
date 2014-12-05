@@ -38,4 +38,9 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 	public ITypeModel getJAXBType() {
 		return null;
 	}
+
+	@Override
+	public Class<?> getJavaType() {
+		return element.getType();
+	}
 }

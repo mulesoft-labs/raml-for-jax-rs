@@ -8,4 +8,5 @@ public interface IMember extends IBasicModel{
 	ITypeModel getType();
 	
 	ITypeModel getJAXBType();
+	public abstract Class<?> getJavaType();
 }

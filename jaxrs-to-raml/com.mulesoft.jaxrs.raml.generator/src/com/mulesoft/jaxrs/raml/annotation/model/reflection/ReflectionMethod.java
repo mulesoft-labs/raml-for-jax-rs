@@ -87,4 +87,10 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 	public ITypeModel getJAXBType() {
 		return null;
 	}
+
+
+	@Override
+	public Class<?> getJavaType() {
+		return element.getReturnType();
+	}
 }

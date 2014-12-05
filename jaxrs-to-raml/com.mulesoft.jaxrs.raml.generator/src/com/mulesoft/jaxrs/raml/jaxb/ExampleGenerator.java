@@ -13,6 +13,10 @@ public class ExampleGenerator {
 	
 	public void generateXML(JAXBType type){
 		String xmlName = type.getXMLName();
+		generateType(type, xmlName);
+	}
+
+	private void generateType(JAXBType type, String xmlName) {
 		HashMap<String,String>prefixes=type.gatherNamespaces();
 		writer.startEntityAndDeclareNamespaces(xmlName,prefixes);		
 		for (JAXBProperty p:type.properties){
@@ -23,6 +27,12 @@ public class ExampleGenerator {
 
 	private void writeProperty(JAXBProperty p, HashMap<String, String> prefixes) {
 		String name=p.name();
+		if (p.namespace!=null){
+			String string = prefixes.get(p.namespace);
+			if (string!=null){
+				name=string+":"+name;
+			}
+		}
 		if (p instanceof JAXBAttributeProperty){
 			JAXBAttributeProperty ap=(JAXBAttributeProperty) p;
 			writer.generateAttribute(name, ap.asJavaType(), ap.required);
@@ -31,7 +41,7 @@ public class ExampleGenerator {
 			JAXBElementProperty el=(JAXBElementProperty) p;
 			JAXBType jaxbType = el.getJAXBType();
 			if (jaxbType!=null){
-				generateXML(jaxbType);
+				generateType(jaxbType,name);
 			}
 			else{
 				writer.generateElement(name, el.asJavaType(), el.required);

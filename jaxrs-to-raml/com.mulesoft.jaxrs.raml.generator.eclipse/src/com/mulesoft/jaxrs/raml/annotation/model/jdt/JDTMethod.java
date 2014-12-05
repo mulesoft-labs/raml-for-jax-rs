@@ -217,4 +217,16 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 			return null;
 		}
 	}
+
+	@Override
+	public Class<?> getJavaType() {
+		try {
+			String returnType = ((IMethod)tm).getReturnType();
+			return getBasicJavaType(returnType);
+		} catch (JavaModelException e) {
+			return null;
+		}
+	}
+
+	
 }

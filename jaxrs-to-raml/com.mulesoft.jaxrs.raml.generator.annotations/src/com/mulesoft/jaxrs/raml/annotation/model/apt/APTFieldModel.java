@@ -72,5 +72,9 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	public ITypeModel getJAXBType() {
 		return null;
 	}
+	@Override
+	public Class<?> getJavaType() {
+		return null;
+	}
 
 }

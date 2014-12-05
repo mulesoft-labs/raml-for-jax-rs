@@ -7,6 +7,8 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor.CustomSchemaOutputResolver;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 
 public class JDTResourceVisitor extends RuntimeResourceVisitor {
 
@@ -43,8 +45,10 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 					examplesDir.mkdir();
 				}
 				//String dummyXml = generator.generateDummyXmlFor(schemaFile.toURL().toExternalForm());
-				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+"2.xml"));
-			
+				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
+				String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
+				jsonText = JsonFormatter.format(jsonText);
+				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
 		}
 	}
 	

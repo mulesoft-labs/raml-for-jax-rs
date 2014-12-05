@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class JAXBElementProperty extends JAXBProperty{
 
@@ -12,6 +13,10 @@ public class JAXBElementProperty extends JAXBProperty{
 	}
 
 	public Class<?> asJavaType() {
+		if (originalType instanceof IMember){
+			IMember or=(IMember) originalType;
+			return or.getJavaType();
+		}
 		return null;
 	}
 

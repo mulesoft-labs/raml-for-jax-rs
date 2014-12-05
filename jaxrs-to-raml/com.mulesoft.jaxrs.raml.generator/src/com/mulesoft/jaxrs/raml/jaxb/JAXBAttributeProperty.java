@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.jaxb;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 
 public class JAXBAttributeProperty extends JAXBProperty{
 
@@ -11,7 +12,11 @@ public class JAXBAttributeProperty extends JAXBProperty{
 	}
 
 	public Class<?> asJavaType() {
-		return int.class;
+		if (originalType instanceof IMember){
+			IMember or=(IMember) originalType;
+			return or.getJavaType();
+		}
+		return null;
 	}
 
 	@Override

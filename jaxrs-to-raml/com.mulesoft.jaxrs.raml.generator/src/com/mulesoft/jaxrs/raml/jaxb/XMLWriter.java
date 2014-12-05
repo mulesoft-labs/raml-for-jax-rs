@@ -31,8 +31,12 @@ public class XMLWriter implements IExampleWriter{
 	@Override
 	public String toString() {
 		try{
-		Transformer newTransformer = TransformerFactory.newInstance().newTransformer();
+		TransformerFactory newInstance = TransformerFactory.newInstance();
+		newInstance.setAttribute("indent-number", 4);
+		Transformer newTransformer = newInstance.newTransformer();
+		
 		newTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
+		
 		StringWriter writer = new StringWriter();
 		newTransformer.transform(new DOMSource(document),new StreamResult(writer));
 		writer.close();
@@ -63,6 +67,12 @@ public class XMLWriter implements IExampleWriter{
 	}
 
 	private String getValueString(Class<?> type) {
+		if (type==byte[].class){
+			return "some base64 encoded binary";
+		}
+		if (type!=null){
+				return "some "+type.getSimpleName().toLowerCase()+" value";
+		}
 		return "some value";
 	}
 
@@ -84,7 +94,7 @@ public class XMLWriter implements IExampleWriter{
 			HashMap<String, String> prefixes) {
 		Element newElement = document.createElement(xmlName);
 		for (String url:prefixes.keySet()){
-			newElement.setAttribute("xmlns:"+prefixes.get(url),prefixes.get(url));
+			newElement.setAttribute("xmlns:"+prefixes.get(url),url);
 		}
 		onElement(newElement);
 	}

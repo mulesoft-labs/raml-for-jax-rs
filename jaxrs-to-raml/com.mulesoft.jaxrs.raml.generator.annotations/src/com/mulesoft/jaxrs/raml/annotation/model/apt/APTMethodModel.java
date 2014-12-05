@@ -124,4 +124,10 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 		return null;
 	}
 
+
+	@Override
+	public Class<?> getJavaType() {
+		return null;
+	}
+
 }

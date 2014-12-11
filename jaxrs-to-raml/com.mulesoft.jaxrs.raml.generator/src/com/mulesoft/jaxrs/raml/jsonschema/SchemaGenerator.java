@@ -102,7 +102,7 @@ public class SchemaGenerator {
 	 * @param content
 	 * @return scehama content
 	 */
-	public String generateSchema(String content){
+	public String2 generateSchema(String content){
 		
 		try {
 			JSONObject sch = new JSONObject();

@@ -1,0 +1,24 @@
+// Gradle Script
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.monochromeroad.gradle-plugins:gradle-aws-s3-sync:0.5"
+    }
+}
+
+import com.monochromeroad.gradle.plugin.aws.s3.S3Sync
+
+task deploy(type: S3Sync){
+    description = "Deploys my site on a s3 bucket."
+
+    accessKey awsAccessKey
+    secretKey awsSecretKey
+
+    configFile "synchronizer.properties"
+
+    from "local-site"
+    into "my.bucket.name/subdirectory-optional"
+}

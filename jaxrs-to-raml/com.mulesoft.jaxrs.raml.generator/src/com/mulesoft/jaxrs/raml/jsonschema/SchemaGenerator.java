@@ -97,7 +97,11 @@ public class SchemaGenerator {
 		}
 		
 	}
-	
+	/**
+	 * 
+	 * @param content
+	 * @return scehama content
+	 */
 	public String generateSchema(String content){
 		
 		try {

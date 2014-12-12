@@ -14,7 +14,7 @@ import com.monochromeroad.gradle.plugin.aws.s3.S3Sync
 ENV = System.getenv()
 awsAccessKey = ENV['AWSKEY']
 awsSecretKey = ENV['AWSSECRET']
-
+logger.warn('A warning log message 11.')
 task deploy(type: S3Sync){
     description = "Deploys my site on a s3 bucket."
 
@@ -23,6 +23,6 @@ task deploy(type: S3Sync){
 
     configFile "synchronizer.properties"
 
-    from "local-site"
-    into "my.bucket.name/subdirectory-optional"
+    from "eclipse"
+    into "raml-tools-stage.mulesoft.com/subdirectory-optional"
 }

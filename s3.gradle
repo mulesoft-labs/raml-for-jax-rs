@@ -11,6 +11,10 @@ buildscript {
 
 import com.monochromeroad.gradle.plugin.aws.s3.S3Sync
 
+ENV = System.getenv()
+awsAccessKey = ENV['AWSKEY']
+awsSecretKey = ENV['AWSSECRET']
+
 task deploy(type: S3Sync){
     description = "Deploys my site on a s3 bucket."
 

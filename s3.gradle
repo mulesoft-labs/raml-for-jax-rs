@@ -19,12 +19,13 @@ class Settings{
     String bucketName="raml-tools-stage.mulesoft.com";
     String versionStorage="all-versions/";
     String commonPrefix="raml-for-jax-rs-";
-    File projectFolder=new File("C:/Users/kor/git/raml-for-jax-rs3/");
+    File projectFolder;
 }
 Map ENV = System.getenv()
 ENV = System.getenv()
 String awsAccessKey = ENV['AWSKEY']
 String awsSecretKey = ENV['AWSSECRET']
+String bucketName=ENV['BUCKET'];
 File project=projectDir;
 
 
@@ -34,6 +35,7 @@ task deployS3(){
     RestS3Service z=new RestS3Service(z1);
     Settings settings=new Settings();
     settings.projectFolder=project;
+    settings.bucketName=bucketName;
     File td=prepareToDeploy(settings);
     File indexHtml=new File(settings.getProjectFolder(),"temp");
     File index=new File(indexHtml,"index.html");
@@ -43,9 +45,6 @@ task deployS3(){
     }
     String newVersion=determineBuildVersion(settings);
     println(newVersion);
-    if (true){
-        return;
-    }
     LinkedHashSet<String> versions=listVersions(z,settings);
     versions.add(newVersion);
     PrintStream ps=new PrintStream(new FileOutputStream(index));

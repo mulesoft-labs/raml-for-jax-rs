@@ -18,7 +18,9 @@ class Settings{
 
     String bucketName="raml-tools-stage.mulesoft.com";
     String versionStorage="all-versions/";
-    String commonPrefix="raml-for-jax-rs-";
+    String commonPart="raml-for-jax-rs";
+    String commonPrefix=commonPart+"-";
+
     File projectFolder;
 }
 Map ENV = System.getenv()
@@ -50,11 +52,11 @@ task deployS3(){
     PrintStream ps=new PrintStream(new FileOutputStream(index));
     generateIndexHTML(ps,versions,settings);
     ps.close();
-    processDirectory(z,new S3Bucket(new Settings().bucketName),indexHtml,indexHtml,"all-versions");
+    processDirectory(z,new S3Bucket(settings.bucketName),indexHtml,indexHtml,settings.commonPart+"/all-versions");
     //copy to versions list
-    processDirectory(z, new S3Bucket(new Settings().bucketName), td, td, "all-versions/" + settings.commonPrefix + newVersion);
+    processDirectory(z, new S3Bucket(settings.bucketName), td, td, settings.commonPart+"/all-versions/" + settings.commonPrefix + newVersion);
     //copy to current
-    processDirectory(z, new S3Bucket(new Settings().bucketName), td, td, "current");
+    processDirectory(z, new S3Bucket(settings.bucketName), td, td, settings.commonPart+"/current");
 }
 
 public String determineBuildVersion(Settings settings){

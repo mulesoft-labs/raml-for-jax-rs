@@ -1,28 +1,194 @@
-// Gradle Script
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
-
     dependencies {
-        classpath "com.monochromeroad.gradle-plugins:gradle-aws-s3-sync:0.5"
+        //testCompile group: 'junit', name: 'junit', version: '4.11'
+        //compile 'commons-lang:commons-lang:2.6'
+        classpath 'commons-lang:commons-lang:2.6','net.java.dev.jets3t:jets3t:0.9.2'
     }
 }
 
-import com.monochromeroad.gradle.plugin.aws.s3.S3Sync
+import org.jets3t.service.impl.rest.httpclient.RestS3Service;
+import org.jets3t.service.S3ServiceException;
+import org.jets3t.service.model.S3Object;
+import org.jets3t.service.model.S3Bucket;
 
+class Settings{
+
+    String bucketName="raml-tools-stage.mulesoft.com";
+    String versionStorage="all-versions/";
+    String commonPrefix="raml-for-jax-rs-";
+    File projectFolder=new File("C:/Users/kor/git/raml-for-jax-rs3/");
+}
+Map ENV = System.getenv()
 ENV = System.getenv()
-awsAccessKey = ENV['AWSKEY']
-awsSecretKey = ENV['AWSSECRET']
-logger.warn('A warning log message 11.')
-task deploy(type: S3Sync){
-    description = "Deploys my site on a s3 bucket."
+String awsAccessKey = ENV['AWSKEY']
+String awsSecretKey = ENV['AWSSECRET']
+File project=projectDir;
 
-    accessKey awsAccessKey
-    secretKey awsSecretKey
 
-    configFile "synchronizer.properties"
+task deployS3(){
+    org.jets3t.service.security.AWSCredentials z1=new org.jets3t.service.security.AWSCredentials(awsAccessKey,
+            awsSecretKey);
+    RestS3Service z=new RestS3Service(z1);
+    Settings settings=new Settings();
+    settings.projectFolder=project;
+    File td=prepareToDeploy(settings);
+    File indexHtml=new File(settings.getProjectFolder(),"temp");
+    File index=new File(indexHtml,"index.html");
+    indexHtml.mkdirs();
+    if (index.exists()){
+        index.delete();
+    }
+    String newVersion=determineBuildVersion(settings);
+    println(newVersion);
+    if (true){
+        return;
+    }
+    LinkedHashSet<String> versions=listVersions(z,settings);
+    versions.add(newVersion);
+    PrintStream ps=new PrintStream(new FileOutputStream(index));
+    generateIndexHTML(ps,versions,settings);
+    ps.close();
+    processDirectory(z,new S3Bucket(new Settings().bucketName),indexHtml,indexHtml,"all-versions");
+    //copy to versions list
+    processDirectory(z, new S3Bucket(new Settings().bucketName), td, td, "all-versions/" + settings.commonPrefix + newVersion);
+    //copy to current
+    processDirectory(z, new S3Bucket(new Settings().bucketName), td, td, "current");
+}
 
-    from "eclipse"
-    into "raml-tools-stage.mulesoft.com/subdirectory-optional"
+public String determineBuildVersion(Settings settings){
+    File fl=new File(settings.getProjectFolder(),"pom.xml");
+    for (String line:fl.readLines()){
+        int pos=line.indexOf("<version>");
+        if (pos!=-1){
+            line=line.substring(pos+"<version>".length());
+            pos=line.indexOf("</version>");
+            if (pos!=-1){
+                line=line.substring(0,pos).trim();
+                if (line.endsWith("-SNAPSHOT")){
+                    line=line.substring(0,line.length()-"-SNAPSHOT".length());
+                }
+                return line;
+            }
+        }
+    }
+}
+
+
+LinkedHashSet<String> listVersions(RestS3Service service,Settings settings){
+    LinkedHashSet<String>result=new LinkedHashSet<>();
+    for (v in service.listObjects(settings.bucketName,settings.versionStorage,null)){
+        String subKey=v.key.substring("all-versions/".length());
+        int slash=subKey.indexOf('/');
+        if (slash!=-1){
+            subKey=subKey.substring(0,slash);
+            if (subKey.startsWith(settings.commonPrefix)) {
+                subKey = subKey.substring(settings.commonPrefix.length());
+                result.add(subKey);
+            }
+        }
+    }
+    return result;
+}
+
+void generateIndexHTML(PrintStream ps,LinkedHashSet<String>versions,Settings settings) {
+    ps.println("<html>");
+    ps.println("<head>\n" +
+            "  <title>RAML for JAX-RS - all versions</title>\n" +
+            " </head>\n" +
+            " <body>");
+    for (String version in versions){
+        ps.println("<ul>");
+        ps.println("<li>"+settings.commonPrefix+version+"</li>");
+        //generating links
+        ps.println("<ul>");
+        String versionPrefix="http://"+settings.bucketName+"/"+settings.versionStorage+settings.commonPrefix+version;
+        printLink(ps,versionPrefix+"/eclipse","eclipse");
+        printLink(ps,versionPrefix+"/CLI/raml-to-jax-rs.jar","raml-to-jax-rs.jar");
+        printLink(ps,versionPrefix+"/CLI/jax-rs-to-raml.jar","jax-rs-to-raml.jar");
+        ps.println("</ul>");
+        ps.println("</ul>");
+    }
+    ps.println("</body>\n</html>");
+    //ps.close();
+}
+
+void printLink(PrintStream ps,String href,String title){
+    ps.println("<li>");
+    ps.println("<a href='"+href+"' target=\"_blank\"/>"+title+"</a>");
+    ps.println("</li>");
+}
+
+File prepareToDeploy(Settings settings){
+    File root=settings.getProjectFolder();
+    File annotationsProcessor=null;
+    File annotationsProcessorFolder=new File(new File(new File(root,"jaxrs-to-raml"),"com.mulesoft.jaxrs.raml.generator.annotations"),"target");
+    for (File f:annotationsProcessorFolder.listFiles()){
+        if (f.getName().endsWith("dependencies.jar")){
+            annotationsProcessor=f;
+            break;
+        }
+    }
+    File commandLine=null;
+    File commandLineFolder=new File(new File(new File(root,"raml-to-jaxrs"),"core"),"target");
+    for (File f:commandLineFolder.listFiles()){
+        if (f.getName().endsWith("dependencies.jar")){
+            commandLine=f;
+            break;
+        }
+    }
+    File sourceEclipse=new File(new File(new File(new File(root,"eclipse"),"updateSite"),"target"),"repository");
+
+    File toDeploy=new File(root,"toS3");
+    File toDeployClI=new File(toDeploy,"CLI");
+    File toDeployECLIPSE=new File(toDeploy,"eclipse");
+    toDeploy.mkdir();
+    toDeployClI.mkdir();
+    toDeployECLIPSE.mkdir();
+    new File(toDeployClI,"raml-to-jax-rs.jar").bytes=commandLine.bytes;
+    new File(toDeployClI,"jax-rs-to-raml.jar").bytes=annotationsProcessor.bytes;
+    ant.copy(todir: toDeployECLIPSE) {
+        fileset(dir : sourceEclipse)
+    }
+    return toDeploy;
+}
+
+void generateVersionContent(PrintStream ps,String versionNumber,Settings st){
+    ps.println("<ul>");
+    ps.println("<li>raml-for-jax-rs-"+versionNumber+"</li>");
+    println(st.rootDeployPath+versionNumber+"/"+st.cliPath+versionNumber+"/raml-to-jax-rs-");
+}
+void processDirectory(RestS3Service s3, S3Bucket b, File d,File source,prefix) throws Exception {
+    File [] files = d.listFiles();
+    for (int i=0; i<files.length; i++) {
+        if (files[i].isDirectory()) {
+            processDirectory(s3, b,  files[i],source,prefix);
+        }
+        else {
+            copyFile(s3, b, d, files[i].getPath(),source,prefix);
+        }
+    }
+}
+
+void copyFile(RestS3Service s3, S3Bucket b, File d, String file,File source,String prefix) throws Exception {
+    String key = (file).replace('\\', '/');
+    String rootKey=(source.getAbsolutePath()).replace('\\', '/');
+    key=prefix+key.substring(rootKey.length());
+    S3Object obj = new S3Object(b, key);
+    File f = new File(file);
+    obj.setContentLength(f.length());
+    try {
+        obj.setDataInputFile(f);
+        obj = s3.putObject(b, obj);
+    } catch (S3ServiceException e) {
+        throw e;
+    }
+    if (true) {
+        log("copied : "+key);
+    }
+}
+void log (String str){
+    println(str);
 }

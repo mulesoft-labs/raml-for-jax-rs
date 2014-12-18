@@ -22,6 +22,12 @@ class Settings{
     String commonPrefix=commonPart+"-";
 
     File projectFolder;
+
+    private Settings(){
+
+    }
+
+    public static Settings INSTANCE=new Settings();
 }
 Map ENV = System.getenv()
 ENV = System.getenv()
@@ -35,7 +41,7 @@ task deployS3(){
     org.jets3t.service.security.AWSCredentials z1=new org.jets3t.service.security.AWSCredentials(awsAccessKey,
             awsSecretKey);
     RestS3Service z=new RestS3Service(z1);
-    Settings settings=new Settings();
+    Settings settings=Settings.INSTANCE;
     settings.projectFolder=project;
     settings.bucketName=bucketName;
     File td=prepareToDeploy(settings);
@@ -58,7 +64,11 @@ task deployS3(){
     //copy to current
     processDirectory(z, new S3Bucket(settings.bucketName), td, td, settings.commonPart+"/current");
 }
-
+/**
+ *
+ * @param settings
+ * @return version number determined from the build
+ */
 public String determineBuildVersion(Settings settings){
     File fl=new File(settings.getProjectFolder(),"pom.xml");
     for (String line:fl.readLines()){
@@ -77,7 +87,12 @@ public String determineBuildVersion(Settings settings){
     }
 }
 
-
+/**
+ *
+ * @param service
+ * @param settings
+ * @return set of versions that are currently deployed to s3
+ */
 LinkedHashSet<String> listVersions(RestS3Service service,Settings settings){
     LinkedHashSet<String>result=new LinkedHashSet<>();
     for (v in service.listObjects(settings.bucketName,settings.versionStorage,null)){
@@ -93,7 +108,12 @@ LinkedHashSet<String> listVersions(RestS3Service service,Settings settings){
     }
     return result;
 }
-
+/**
+ * generates version listing
+ * @param ps
+ * @param versions
+ * @param settings
+ */
 void generateIndexHTML(PrintStream ps,LinkedHashSet<String>versions,Settings settings) {
     ps.println("<html>");
     ps.println("<head>\n" +
@@ -115,13 +135,22 @@ void generateIndexHTML(PrintStream ps,LinkedHashSet<String>versions,Settings set
     ps.println("</body>\n</html>");
     //ps.close();
 }
-
+/**
+ * prints a link to print stream
+ * @param ps
+ * @param href
+ * @param title
+ */
 void printLink(PrintStream ps,String href,String title){
     ps.println("<li>");
     ps.println("<a href='"+href+"' target=\"_blank\"/>"+title+"</a>");
     ps.println("</li>");
 }
-
+/**
+ *
+ * @param settings
+ * @return prepares tempfolder to deploy
+ */
 File prepareToDeploy(Settings settings){
     File root=settings.getProjectFolder();
     File annotationsProcessor=null;
@@ -155,12 +184,26 @@ File prepareToDeploy(Settings settings){
     }
     return toDeploy;
 }
-
+/**
+ * print version item to html
+ * @param ps
+ * @param versionNumber
+ * @param st
+ */
 void generateVersionContent(PrintStream ps,String versionNumber,Settings st){
     ps.println("<ul>");
     ps.println("<li>raml-for-jax-rs-"+versionNumber+"</li>");
     println(st.rootDeployPath+versionNumber+"/"+st.cliPath+versionNumber+"/raml-to-jax-rs-");
 }
+/**
+ * copy files recurrently
+ * @param s3
+ * @param b
+ * @param d
+ * @param source
+ * @param prefix
+ * @throws Exception
+ */
 void processDirectory(RestS3Service s3, S3Bucket b, File d,File source,prefix) throws Exception {
     File [] files = d.listFiles();
     for (int i=0; i<files.length; i++) {
@@ -173,6 +216,16 @@ void processDirectory(RestS3Service s3, S3Bucket b, File d,File source,prefix) t
     }
 }
 
+/**
+ * copy file to s3
+ * @param s3
+ * @param b
+ * @param d
+ * @param file
+ * @param source
+ * @param prefix
+ * @throws Exception
+ */
 void copyFile(RestS3Service s3, S3Bucket b, File d, String file,File source,String prefix) throws Exception {
     String key = (file).replace('\\', '/');
     String rootKey=(source.getAbsolutePath()).replace('\\', '/');

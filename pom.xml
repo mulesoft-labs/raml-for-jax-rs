@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mulesoft.jaxrs-raml</groupId>
   <artifactId>all</artifactId>
-  <version>1.0.8-SNAPSHOT</version>
+  <version>1.0.6-SNAPSHOT</version>
   <packaging>pom</packaging>  
   <distributionManagement>
        <repository>

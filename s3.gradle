@@ -180,6 +180,9 @@ public void rewriteAManifest(String newVersion,File fl){
 task deployS3(){
     org.jets3t.service.security.AWSCredentials z1=new org.jets3t.service.security.AWSCredentials(awsAccessKey,
             awsSecretKey);
+    if (true){
+	return;
+    }
     RestS3Service z=new RestS3Service(z1);
     Settings settings=Settings.INSTANCE;
     //settings.projectFolder=project;

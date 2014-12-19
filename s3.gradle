@@ -182,7 +182,7 @@ task deployS3(){
             awsSecretKey);
     RestS3Service z=new RestS3Service(z1);
     Settings settings=Settings.INSTANCE;
-    settings.projectFolder=project;
+    //settings.projectFolder=project;
     settings.bucketName=bucketName;
     File td=prepareToDeploy(settings);
     File indexHtml=new File(settings.getProjectFolder(),"temp");

@@ -34,7 +34,7 @@ ENV = System.getenv()
 String awsAccessKey = ENV['AWSKEY']
 String awsSecretKey = ENV['AWSSECRET']
 String bucketName=ENV['BUCKET'];
-File project=projectDir;
+Settings.INSTANCE.projectFolder=projectDir;
 
 task updateVersions(){
     String version=determineBuildVersion(Settings.INSTANCE,false);

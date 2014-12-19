@@ -6,12 +6,6 @@
   <artifactId>jaxrs-to-raml</artifactId>
   <version>1.0.6-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <parent>
-    <relativePath>..</relativePath>
-    <groupId>com.mulesoft.jaxrs-raml</groupId>
-    <artifactId>all</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
-  </parent>
   <modules>
     <module>com.mulesoft.jaxrs.raml.generator</module>
     <module>com.mulesoft.jaxrs.raml.generator.annotations</module>

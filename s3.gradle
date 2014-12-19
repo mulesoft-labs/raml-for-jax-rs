@@ -36,6 +36,146 @@ String awsSecretKey = ENV['AWSSECRET']
 String bucketName=ENV['BUCKET'];
 File project=projectDir;
 
+task updateVersions(){
+    String version=determineBuildVersion(Settings.INSTANCE,false);
+    updateVersionsRecurrently(version,Settings.INSTANCE.projectFolder);
+}
+public void updateVersionsRecurrently(String version,File folder){
+    File pom=new File(folder,"pom.xml");
+    if (pom.exists()){
+        rewriteAVersion(version,pom);
+    }
+    File mf=new File(folder,"MANIFEST.MF");
+    if (mf.exists()){
+        rewriteAManifest(version,mf);
+    }
+    File feature=new File(folder,"feature.xml");
+    if (feature.exists()){
+        rewriteAFeature(version,feature);
+    }
+    File category=new File(folder,"category.xml");
+    if (category.exists()){
+        rewriteACategory(version,category);
+    }
+    for (File f:folder.listFiles()){
+        if (f.isDirectory()){
+            updateVersionsRecurrently(version,f);
+        }
+    }
+}
+public void rewriteAVersion(String newVersion,File fl){
+    ArrayList<String>newLines=new ArrayList<>();
+    boolean  insideDetails=false;
+    for (String line:fl.readLines()){
+        int pos=line.indexOf("<version>");
+        if (line.indexOf("<dependency>")!=-1){
+            insideDetails=true;
+        }
+        if (line.indexOf("</dependency>")!=-1){
+            insideDetails=false;
+        }
+        if (line.indexOf("<plugin>")!=-1){
+            insideDetails=true;
+        }
+        if (line.indexOf("<extensions>")!=-1){
+            insideDetails=true;
+        }
+        if (line.indexOf("</extensions>")!=-1){
+            insideDetails=false;
+        }
+        if (line.indexOf("</plugin>")!=-1){
+            insideDetails=false;
+        }
+        if (!insideDetails) {
+            if (pos != -1) {
+                line = line.substring(pos + "<version>".length());
+                pos = line.indexOf("</version>");
+                if (pos != -1) {
+                    line = line.substring(0, pos).trim();
+                    if (line.endsWith("-SNAPSHOT")) {
+                        line = line.substring(0, line.length() - "-SNAPSHOT".length());
+                    }
+                    line = "<version>" + newVersion + "</version>";
+                }
+            }
+        }
+        newLines.add(line);
+    }
+    PrintWriter we=fl.newPrintWriter();
+    for (String q: newLines){
+        we.println(q);
+    }
+    we.close();
+}
+public void rewriteAFeature(String newVersion,File fl){
+    ArrayList<String>newLines=new ArrayList<>();
+    boolean  insideDetails=true;
+
+    for (String line:fl.readLines()){
+        if (line.trim().startsWith("<feature")){
+            insideDetails=false;
+        }
+        if (!insideDetails){
+            int c=line.indexOf("version=\"");
+            if (c!=-1){
+                String startLine=line.substring(0,c);
+                int e=line.indexOf('"',c+"version=\"".length());
+                String endLine=line.substring(e+1);
+                println(startLine);
+                println(endLine);
+                line=startLine+"version=\""+newVersion.replace("-SNAPSHOT",".qualifier")+"\"";
+            }
+        }
+        if (line.trim().contains(">")){
+            insideDetails=true;
+        }
+        newLines.add(line);
+    }
+    PrintWriter we=fl.newPrintWriter();
+    for (String q: newLines){
+        we.println(q);
+    }
+    we.close();
+}
+public void rewriteACategory(String newVersion,File fl){
+    ArrayList<String>newLines=new ArrayList<>();
+    boolean  insideDetails=true;
+    for (String line:fl.readLines()){
+        if (line.trim().startsWith("<feature")) {
+            int c=line.indexOf("id=\"");
+            if (c!=-1){
+                int e=line.indexOf('"',c+"id=\"".length());
+                String featureId=line.substring(c+"id=\"".length(),e);
+                String featureVer=newVersion.replace("-SNAPSHOT",".qualifier");
+                String newLine="<feature url=\"features/"+featureId+"_"+featureVer+".jar\"" +
+                        " id=\""+featureId+"\" version=\""+featureVer+"\">";
+                line=newLine;
+            }
+        }
+        newLines.add(line);
+    }
+    PrintWriter we=fl.newPrintWriter();
+    for (String q: newLines){
+        we.println(q);
+    }
+    we.close();
+}
+public void rewriteAManifest(String newVersion,File fl){
+    ArrayList<String>newLines=new ArrayList<>();
+    boolean  insideDetails=false;
+    for (String line:fl.readLines()){
+        if (line.trim().startsWith("Bundle-Version: ")){
+            String manifestVersion=newVersion.replace("-SNAPSHOT",".qualifier");
+            line="Bundle-Version: "+manifestVersion;
+        }
+        newLines.add(line);
+    }
+    PrintWriter we=fl.newPrintWriter();
+    for (String q: newLines){
+        we.println(q);
+    }
+    we.close();
+}
 
 task deployS3(){
     org.jets3t.service.security.AWSCredentials z1=new org.jets3t.service.security.AWSCredentials(awsAccessKey,
@@ -51,7 +191,7 @@ task deployS3(){
     if (index.exists()){
         index.delete();
     }
-    String newVersion=determineBuildVersion(settings);
+    String newVersion=determineBuildVersion(settings,true);
     println(newVersion);
     LinkedHashSet<String> versions=listVersions(z,settings);
     versions.add(newVersion);
@@ -69,7 +209,7 @@ task deployS3(){
  * @param settings
  * @return version number determined from the build
  */
-public String determineBuildVersion(Settings settings){
+public String determineBuildVersion(Settings settings,boolean stripSnapshot){
     File fl=new File(settings.getProjectFolder(),"pom.xml");
     for (String line:fl.readLines()){
         int pos=line.indexOf("<version>");
@@ -78,7 +218,7 @@ public String determineBuildVersion(Settings settings){
             pos=line.indexOf("</version>");
             if (pos!=-1){
                 line=line.substring(0,pos).trim();
-                if (line.endsWith("-SNAPSHOT")){
+                if (line.endsWith("-SNAPSHOT")&&stripSnapshot){
                     line=line.substring(0,line.length()-"-SNAPSHOT".length());
                 }
                 return line;
@@ -86,6 +226,7 @@ public String determineBuildVersion(Settings settings){
         }
     }
 }
+
 
 /**
  *

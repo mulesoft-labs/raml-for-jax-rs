@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse
 Bundle-SymbolicName: com.mulesoft.jaxrs.raml.generator.eclipse;singleton:=true
-Bundle-Version: 1.0.6.qualifier
+Bundle-Version: 1.3.2.qualifier
 Bundle-Vendor: MULESOFT
 Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui,
- com.mulesoft.jaxrs.raml.generator;bundle-version="1.0.6",
+ com.mulesoft.jaxrs.raml.generator,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.wst.xml.core,

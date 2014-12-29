@@ -78,8 +78,9 @@ public class Names
     {
         final String status = EnglishReasonPhraseCatalog.INSTANCE.getReason(statusCode, DEFAULT_LOCALE);
         
-       return "with" + getShortMimeType(mimeType)
-                            + buildJavaFriendlyName(defaultIfBlank(status, "_" + statusCode));
+       String string = getShortMimeType(mimeType)
+		                            + buildJavaFriendlyName(defaultIfBlank(status, "_" + statusCode));
+       return "with" + Character.toUpperCase(string.charAt(0))+string.substring(1);
     }
 
     public static String buildNestedSchemaName(final MimeType mimeType)

@@ -35,7 +35,7 @@ public class PresentationResource implements Presentations
 
         presentations.getPresentations().add(new Presentation().withId("fake-id").withTitle(title));
 
-        return GetPresentationsResponse.withjsonOK(presentations);
+        return GetPresentationsResponse.withJsonOK(presentations);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class PresentationResource implements Presentations
 
         entity.setId("fake-new-id");
 
-        return PostPresentationsResponse.withjsonCreated(entity);
+        return PostPresentationsResponse.withJsonCreated(entity);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class PresentationResource implements Presentations
             return GetPresentationsByPresentationIdResponse.withUnauthorized();
         }
 
-        return GetPresentationsByPresentationIdResponse.withjsonOK(new Presentation().withId(presentationId)
+        return GetPresentationsByPresentationIdResponse.withJsonOK(new Presentation().withId(presentationId)
             .withTitle("Title of " + presentationId));
     }
 

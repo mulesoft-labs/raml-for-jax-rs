@@ -229,7 +229,7 @@ public class Types
         return Names.getShortMimeType(mimeType) + "@" + mimeType.getSchema().hashCode();
     }
 
-    private static Class<?> getJavaType(final AbstractParam parameter)
+    static Class<?> getJavaType(final AbstractParam parameter)
     {
         if (parameter.getType() == null)
         {

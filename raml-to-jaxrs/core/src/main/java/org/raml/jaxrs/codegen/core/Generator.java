@@ -435,7 +435,7 @@ public class Generator
         }
 
         final StringBuilder freeFormHeadersDescription = new StringBuilder();
-
+        
         for (final Entry<String, Header> namedHeaderParameter : response.getHeaders().entrySet())
         {
             final String headerName = namedHeaderParameter.getKey();
@@ -448,9 +448,9 @@ public class Generator
             }
 
             final String argumentName = Names.buildVariableName(headerName);
-
-            builderArgument = builderArgument.invoke("header").arg(headerName).arg(JExpr.ref(argumentName));
-
+            if (!header.isRepeat()){
+            	builderArgument = builderArgument.invoke("header").arg(headerName).arg(JExpr.ref(argumentName));
+            }
             addParameterJavaDoc(header, argumentName, javadoc);
 
             responseBuilderMethod.param(types.buildParameterType(header, argumentName), argumentName);
@@ -486,7 +486,17 @@ public class Generator
                 GENERIC_PAYLOAD_ARGUMENT_NAME);
             javadoc.addParam(GENERIC_PAYLOAD_ARGUMENT_NAME).add(defaultString(responseMimeType.getExample()));
         }
+        for (final Entry<String, Header> namedHeaderParameter : response.getHeaders().entrySet())
+        {
+            final String headerName = namedHeaderParameter.getKey();
+            final Header header = namedHeaderParameter.getValue();
 
+            final String argumentName = Names.buildVariableName(headerName);
+            if (header.isRepeat()){
+            	JBlock body = responseBuilderMethod.body().forEach(context.getGeneratorType(Types.getJavaType(header)), "h", JExpr.ref(argumentName)).body();
+				body.add(JExpr.invoke(JExpr.ref("responseBuilder"), "header").arg(headerName).arg(JExpr.ref("h")));
+            }            
+        }
         responseBuilderMethodBody._return(JExpr._new(responseClass).arg(builderVariable.invoke("build")));
     }
 

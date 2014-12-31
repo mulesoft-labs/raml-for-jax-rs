@@ -68,6 +68,14 @@ You must include the plug-in in your project's pom.xml. For example:
         <!-- Valid values: jackson1 jackson2 gson none -->
         <jsonMapper>jackson2</jsonMapper>
         <removeOldOutput>true</removeOldOutput>
+        <!-- Optionally set extensions to a list of fully qualified names of classes
+        that implement org.raml.jaxrs.codegen.core.ext.GeneratorExtension -->
+        <!-- for example:
+		<extensions>
+			<param>com.abc.AuthorizationAnnotationExtension</param>
+		    <param>com.abc.ParameterFilterExtension</param>
+		</extensions>
+        -->
     </configuration>
     <executions>
         <execution>

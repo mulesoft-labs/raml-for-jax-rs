@@ -118,11 +118,9 @@ public class ResponseWrapperGeneratorTestCase
         final FileResourceStore classWriter = new FileResourceStore(compilationOutputFolder.getRoot());
         final CompilationResult result = compiler.compile(sources, sourceReader, classWriter,
             Thread.currentThread().getContextClassLoader(), settings);
-
         CompilationProblem[] errors = result.getErrors();
 		assertThat(ToStringBuilder.reflectionToString(errors, ToStringStyle.SHORT_PREFIX_STYLE),
             errors, is(emptyArray()));
-
         assertThat(
             ToStringBuilder.reflectionToString(result.getWarnings(), ToStringStyle.SHORT_PREFIX_STYLE),
             result.getWarnings(), is(emptyArray()));

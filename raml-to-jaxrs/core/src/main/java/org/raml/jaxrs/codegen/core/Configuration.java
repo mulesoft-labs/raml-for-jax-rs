@@ -24,6 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
+import org.raml.jaxrs.codegen.core.ext.AbstractGeneratorExtension;
+import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 
 public class Configuration
 {
@@ -66,6 +68,8 @@ public class Configuration
     private Map<String, String> jsonMapperConfiguration;
     private String asyncResourceTrait;
 	private boolean emptyResponseReturnVoid;
+	
+	private List<GeneratorExtension> extensions = new ArrayList<GeneratorExtension>();
     
     
 
@@ -214,4 +218,10 @@ public class Configuration
 	public void setEmptyResponseReturnVoid(boolean emptyResponseReturnVoid) {
 		this.emptyResponseReturnVoid = emptyResponseReturnVoid;
 	}
+	
+	public List<GeneratorExtension> getExtensions() {
+		return this.extensions;
+	}
+	
+
 }

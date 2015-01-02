@@ -565,6 +565,15 @@ public abstract class ResourceVisitor {
 			value2.setType(ParamType.BOOLEAN);
 			value2.setRequired(!hasDefault);
 		}
+		if (type.equals("java.lang.Integer") || type.equals("java.lang.Long") || type.equals("java.lang.Short")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			value2.setType(ParamType.INTEGER);
+		}
+		if (type.equals("java.lang.Float") || type.equals("java.lang.Double")) { //$NON-NLS-1$ //$NON-NLS-2$
+			value2.setType(ParamType.NUMBER);
+		}
+		if (type.equals("java.lang.Boolean")) { //$NON-NLS-1$
+			value2.setType(ParamType.BOOLEAN);
+		}
 	}
 
 	protected void generateXSDForClass(Class<?> element) {

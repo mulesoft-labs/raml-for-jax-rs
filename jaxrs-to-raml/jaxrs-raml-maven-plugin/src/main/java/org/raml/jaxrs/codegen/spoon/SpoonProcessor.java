@@ -17,6 +17,9 @@ package org.raml.jaxrs.codegen.spoon;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +34,7 @@ import org.raml.jaxrs.codegen.model.MethodModel;
 import org.raml.jaxrs.codegen.model.ParameterModel;
 import org.raml.jaxrs.codegen.model.TypeModel;
 
+import com.martiansoftware.jsap.stringparsers.ForNameStringParser;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
@@ -222,7 +226,27 @@ public class SpoonProcessor{
 					value = ((CtLiteral<?>)value).getValue().toString();
 				}
 				else if(value instanceof CtFieldReference<?>){
-					value = ((CtFieldReference<?>)value).getActualField().getName();
+					Member member = ((CtFieldReference<?>)value).getActualField();
+
+					//if field references a static final String, use string's value
+					if (member instanceof Field) {
+						Field field = (Field) member;
+
+						int mod = field.getModifiers();
+						if (Modifier.isStatic(mod) && Modifier.isFinal(mod) &&
+								field.getType().equals(String.class)) {
+							try {
+								value = field.get(null);
+							} catch (Throwable t) {				            
+								//NOOP tolerate any exception/error, and fall back to using name of field below
+							}
+						}
+					}
+
+					//fall back to using name of field reference
+					if (value == null) {
+						value = member.getName();
+					}
 				}
 				else if(value.getClass().isArray()){
 					int length = Array.getLength(value);

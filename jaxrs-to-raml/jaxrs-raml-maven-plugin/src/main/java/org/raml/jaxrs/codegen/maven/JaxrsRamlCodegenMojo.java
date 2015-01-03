@@ -36,6 +36,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.raml.jaxrs.codegen.spoon.SpoonProcessor;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
@@ -87,6 +88,24 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
     @Parameter(property = "removeOldOutput", defaultValue = "false")
     private boolean removeOldOutput;
 
+	/**
+     * API title
+     */
+    @Parameter(property = "title", defaultValue = "${project.artifactId}")
+    private String title;
+
+	/**
+     * API base URL
+     */
+    @Parameter(property = "baseUrl")
+    private String baseUrl;
+
+	/**
+     * API version
+     */
+    @Parameter(property = "version")
+    private String version;
+
 	@Component
 	private MavenProject project;
 
@@ -119,7 +138,9 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 		spoonProcessor.process(allRoots);
 		
 		ClassLoader classLoader = launcher.getFactory().getEnvironment().getClassLoader();
-		ResourceVisitor rv = new RuntimeResourceVisitor(outputFile, classLoader);
+		IRamlConfig config = new MavenRamlConfig(title, baseUrl, version);
+
+		ResourceVisitor rv = new RuntimeResourceVisitor(outputFile, classLoader, config);
 		for(ITypeModel type : spoonProcessor.getRegistry().getTargetTypes()){
 			rv.visit(type);
 		}

@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.io.File;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 
@@ -13,6 +14,10 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 		super(outputFile, classLoader);
 	}
 
+	public RuntimeResourceVisitor(File outputFile, ClassLoader classLoader, IRamlConfig preferencesConfig) {
+		super(outputFile, classLoader);
+		setPreferences(preferencesConfig);
+	}
 	
 	
 	protected void generateXMLSchema(ITypeModel t) {

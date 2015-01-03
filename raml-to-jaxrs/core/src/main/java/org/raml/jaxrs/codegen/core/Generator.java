@@ -66,6 +66,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
+import org.raml.jaxrs.codegen.core.ext.AbstractGeneratorExtension;
+import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Raml;
@@ -110,6 +112,8 @@ public class Generator
 
     private Context context;
     private Types types;
+    private List<GeneratorExtension> extensions;
+    
 
     public Set<String> run(final Reader ramlReader, final Configuration configuration) throws Exception
     {
@@ -119,7 +123,7 @@ public class Generator
         final String ramlBuffer = IOUtils.toString(ramlReader);
         
         ResourceLoader[] loaderArray = prepareResourceLoaders(configuration);
-        
+      
         final List<ValidationResult> results = RamlValidationService.createDefault(
                 new CompositeResourceLoader(loaderArray)).validate(ramlBuffer, "");
         if (ValidationResult.areValid(results))
@@ -167,7 +171,8 @@ public class Generator
             stringBuilder.append(")");
         }
         return stringBuilder.toString();
-    }  
+    }    
+
 
 	private ResourceLoader[] prepareResourceLoaders(final Configuration configuration)
 	{
@@ -207,22 +212,27 @@ public class Generator
     private Set<String> run(final Raml raml, final Configuration configuration) throws Exception
     {
         validate(configuration);
-
+        extensions = configuration.getExtensions();     
         context = new Context(configuration, raml);
         types = new Types(context);
+        
+        for (GeneratorExtension e : extensions) {
+        	e.setRaml(raml);
+        }
+
         
         Collection<Resource> resources = raml.getResources().values();
         types.generateClassesFromXmlSchemas(resources);
         
         for (final Resource resource : resources)
         {
-            createResourceInterface(resource);
+            createResourceInterface(resource, raml);
         }
 
         return context.generate();
     }
 
-    protected void createResourceInterface(final Resource resource) throws Exception
+    protected void createResourceInterface(final Resource resource, final Raml raml) throws Exception
     {
         final String resourceInterfaceName = Names.buildResourceInterfaceName(resource);
         final JDefinedClass resourceInterface = context.createResourceInterface(resourceInterfaceName);
@@ -236,8 +246,13 @@ public class Generator
         {
             resourceInterface.javadoc().add(resource.getDescription());
         }
-
+        
         addResourceMethods(resource, resourceInterface, path);
+        
+        /* call registered extensions */
+        for (GeneratorExtension e : extensions) {
+        	e.onCreateResourceInterface(resourceInterface, resource);
+        }        
     }
 
     private void addResourceMethods(final Resource resource,
@@ -304,9 +319,8 @@ public class Generator
         final JMethod method = context.createResourceMethod(resourceInterface, methodName,
             resourceMethodReturnType);
         
-        Configuration contiguration = context.getConfiguration();
-        if (contiguration.getMethodThrowException() != null ) {
-            method._throws(contiguration.getMethodThrowException());
+        if (configuration.getMethodThrowException() != null ) {
+            method._throws(configuration.getMethodThrowException());
         }
 
         context.addHttpMethodAnnotation(action.getType().toString(), method);
@@ -324,6 +338,13 @@ public class Generator
         if (asyncMethod) {
             addAsyncResponseParameter(asyncResourceTrait, method, javadoc);
         }
+        
+        /* call registered extensions */
+        for (GeneratorExtension e : extensions) {
+        	e.onAddResourceMethod(method, action, bodyMimeType, uniqueResponseMimeTypes);
+        }
+     
+
     }
 
     private JType getResourceMethodReturnType(final String methodName,
@@ -709,8 +730,15 @@ public class Generator
                               final JMethod method,
                               final JDocComment javadoc) throws Exception
     {
-        final String argumentName = Names.buildVariableName(name);
-
+    	
+       	for (GeneratorExtension e: extensions) {
+    		if (!e.AddParameterFilter(name, parameter, annotationClass, method)) {
+    			return;
+    		}
+    	}
+    	
+    	final String argumentName = Names.buildVariableName(name);
+   
         final JVar argumentVariable = method.param(types.buildParameterType(parameter, argumentName),
             argumentName);
 

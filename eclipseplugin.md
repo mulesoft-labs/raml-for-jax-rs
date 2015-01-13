@@ -19,7 +19,12 @@ Once the installation finishes, you will see a dialog asking you to restart Ecli
 
 That's it. Now you are ready to start generating RAML APIs from your existing JAX-RS Applications!
 
+### Aquiring staging build
+You may use http://raml-tools-stage.mulesoft.com.s3.amazonaws.com/raml-for-jax-rs/current/ as update site url to get latest staging build
+
 ## JAX-RS to RAML
+ 
+ You may use  the "New Software" window, enter the update site URL (http://raml-tools.mulesoft.com/raml-for-jax-rs/eclipse) 
 
 ### Usage
 

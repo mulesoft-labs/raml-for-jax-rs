@@ -15,6 +15,11 @@ You can download the command line tool from [here](http://raml-tools.mulesoft.co
 
 This jar file (downloaded or built yourself) contains all that you need to run the RAML-to-JAX-RS tool from the command line.
 
+### Aquiring staging build
+You may use following urls to aquite lates staging builds of command line tools:
+ - http://raml-tools-stage.mulesoft.com.s3.amazonaws.com/raml-for-jax-rs/CLI/jax-rs-to-raml.jar
+ - http://raml-tools-stage.mulesoft.com.s3.amazonaws.com/raml-for-jax-rs/CLI/raml-to-jax-rs.jar
+
 ### Usage
 
 In order to generate your JAX-RS code, you must run it by invoking

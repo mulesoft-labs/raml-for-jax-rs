@@ -154,9 +154,14 @@ public class GeneratorTestCase {
 		settings.setDebug(true);
 
 		final String[] sources = generatedSources.toArray(EMPTY_STRING_ARRAY);
+		int i=0;
+		for (String source:sources){
+			sources[i++]=source.replace('\\', '.');
+			
+		}
 		System.out.println("Test compiling: " + Arrays.toString(sources));
 
-		final FileResourceReader sourceReader = new FileResourceReader(codegenOutputFolder.getRoot());
+		final FileResourceReader2 sourceReader = new FileResourceReader2(codegenOutputFolder.getRoot());
 		final FileResourceStore classWriter = new FileResourceStore(compilationOutputFolder.getRoot());
 		final CompilationResult result = compiler.compile(sources, sourceReader, classWriter, Thread.currentThread()
 				.getContextClassLoader(), settings);

@@ -68,8 +68,7 @@ protocols: [HTTP, HTTPS]
                                  "required": false,
                                  "type": "string"
                              }
-                         },
-                         "required": false,
+                         },                         
                          "type": "object"
                     }
                 example: '{ "input": "hola" }'

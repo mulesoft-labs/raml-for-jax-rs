@@ -14,8 +14,8 @@ schemas:
            "description":  { "type": "string" },
            "fileUrl":  { "type": "string" },
            "productId":  { "type": "string" }
-         },
-         "required": [ "id", "title", "fileUrl", "productId" ]
+         }
+         
       }
   - presentations: |
       {  "$schema": "http://json-schema.org/draft-03/schema",
@@ -27,8 +27,8 @@ schemas:
               "type": "array",
               "items": { "$ref": "presentation" }
            }
-         },
-         "required": [ "size" ]
+         }
+         
       }
   - product: |
       {  "$schema": "http://json-schema.org/draft-03/schema",
@@ -40,8 +40,8 @@ schemas:
            "description":  { "type": "string" },
            "imageUrl":  { "type": "string" },
            "region": { "type": "string" }
-         },
-         "required": [ "id", "name", "region" ]
+         }
+         
       }
   - products: |
       {  "$schema": "http://json-schema.org/draft-03/schema",
@@ -53,8 +53,8 @@ schemas:
               "type": "array",
               "items": { "$ref": "product" }
            }
-         },
-         "required": [ "size" ]
+         }
+         
       }
 resourceTypes:
   - base:

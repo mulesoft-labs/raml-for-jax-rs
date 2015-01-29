@@ -1,0 +1,86 @@
+/*
+ * Copyright 2013 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
+apply plugin: 'groovy'
+apply plugin: 'license'
+apply from: 'gradle/publish.gradle'
+apply from: 'gradle/coverage.gradle'
+
+group = 'org.raml'
+version = '1.0-SNAPSHOT'
+
+description '''RAML JAX-RS Gradle Plug-in'''
+
+sourceCompatibility = '1.6'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
+        classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+    }
+}
+
+ext {
+    gradleVersion = '1.11'
+    spockVersion = '0.7-groovy-1.8' // Gradle API currently uses 1.8.6 of Groovy and there is no way to exclude/replace it (currently).
+}
+
+repositories {
+    mavenLocal()
+    if(additionalRepoUrl) {
+        maven { url additionalRepoUrl }
+    }
+    maven { url 'https://repository.mulesoft.org/snapshots/' }
+    maven { url 'https://repository.mulesoft.org/releases/' }
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile "org.raml:raml-jaxrs-codegen-core:${project.version}"
+    compile 'commons-io:commons-io:2.4'
+
+    testCompile("org.spockframework:spock-core:$spockVersion") {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
+    testCompile 'cglib:cglib-nodep:2.2.2'
+    testCompile 'junit:junit-dep:4.11'
+    testCompile 'org.objenesis:objenesis:1.2'
+}
+
+test {
+    filter {
+        includeTestsMatching "*Test"
+        includeTestsMatching "*Spec"
+    }
+}
+
+license {
+    header rootProject.file('../LICENSE_HEADER.txt')
+    // false for now until we can exclude *.properties without causing it to be excluded from the generated jar
+    // If you add a sourceSet to exclude the properties file as the documentation suggets, it also ends up
+    // excluding the properties file from the packaged JAR.  This is an issue, as the raml.properties file is
+    // what Gradle uses to declare the plugin.
+    strictCheck false
+    mapping {
+        java='SLASHSTAR_STYLE'
+        groovy='SLASHSTAR_STYLE'
+    }
+}

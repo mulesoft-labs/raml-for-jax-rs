@@ -9,6 +9,7 @@
     <modules>
         <module>core</module>
         <module>maven-plugin</module>
+        <module>gradle-plugin</module>
         <module>examples/jersey-example</module>
     </modules>
  <distributionManagement>

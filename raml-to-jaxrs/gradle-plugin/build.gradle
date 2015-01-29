@@ -16,7 +16,7 @@
 apply plugin: 'groovy'
 apply plugin: 'license'
 apply from: 'gradle/publish.gradle'
-apply from: 'gradle/coverage.gradle'
+
 
 group = 'org.raml'
 version = '1.0-SNAPSHOT'

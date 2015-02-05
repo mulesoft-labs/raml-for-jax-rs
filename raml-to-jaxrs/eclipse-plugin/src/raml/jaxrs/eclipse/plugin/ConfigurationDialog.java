@@ -17,7 +17,6 @@ package raml.jaxrs.eclipse.plugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -84,7 +83,7 @@ public class ConfigurationDialog extends TitleAreaDialog {
 		
 		createCombo(hBox, "JAX-RS Version", getJaxrsVersionRealm(), this.uiConfig.jaxrsVersion);
 		createCombo(hBox, "JSON Mapper", getAnnotationStyleRealm(), this.uiConfig.jsonMapper);
-		
+		createCheckBox(hBox, "Generate client proxy code", this.uiConfig.generateClientProxy);
 		createCheckBox(hBox, "Use JSR 303 Annotations", this.uiConfig.useJsr303Annotations);
 		createCheckBox(hBox, "Map empty response to void", this.uiConfig.isEmptyResponseUsesVoid);
 		return parent;	

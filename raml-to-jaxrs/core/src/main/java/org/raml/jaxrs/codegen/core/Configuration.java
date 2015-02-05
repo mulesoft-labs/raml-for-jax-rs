@@ -68,7 +68,16 @@ public class Configuration
     private Map<String, String> jsonMapperConfiguration;
     private String asyncResourceTrait;
 	private boolean emptyResponseReturnVoid;
+	private boolean generateClientInterface;
 	
+	public boolean isGenerateClientInterface() {
+		return generateClientInterface;
+	}
+
+	public void setGenerateClientInterface(boolean generateClientInterface) {
+		this.generateClientInterface = generateClientInterface;
+	}
+
 	private List<GeneratorExtension> extensions = new ArrayList<GeneratorExtension>();
     
     

@@ -90,6 +90,10 @@ class Context
     private JDefinedClass currentResourceInterface;
     private final File globalSchemaStore;
 
+    public JType ref(String name){
+    	return codeModel.ref(name);
+    }
+    
     public Context(final Configuration configuration, final Raml raml) throws IOException
     {
         Validate.notNull(configuration, "configuration can't be null");

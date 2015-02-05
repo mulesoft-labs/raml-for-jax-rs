@@ -33,9 +33,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.Workbench;
 import org.jsonschema2pojo.AnnotationStyle;
+import org.raml.jaxrs.codegen.core.ClientGenerator;
 import org.raml.jaxrs.codegen.core.Configuration;
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
 import org.raml.jaxrs.codegen.core.Generator;
+import org.raml.jaxrs.codegen.core.GeneratorProxy;
 
 public class GenerationHandler extends AbstractHandler{
 
@@ -75,7 +77,7 @@ public class GenerationHandler extends AbstractHandler{
 		try {
 			File ramlOSFile = uiConfig.getRamlFile().getLocation().toFile();
 			InputStreamReader ramlReader = new InputStreamReader( new FileInputStream(ramlOSFile) );
-			new Generator().run(ramlReader, configuration);		
+			new GeneratorProxy().run(ramlReader, configuration);		
 			uiConfig.getDstFolder().refreshLocal( IResource.DEPTH_ONE, new NullProgressMonitor() );
 			
 		} catch (Exception e) {
@@ -96,7 +98,7 @@ public class GenerationHandler extends AbstractHandler{
 		configuration.setOutputDirectory(dstOSFolder);
 		configuration.setSourceDirectory(srcOSFolder);
 		configuration.setBasePackageName(uiConfig.getBasePackageName());
-		
+		configuration.setGenerateClientInterface(uiConfig.getGenerateClientProxy());
 		JaxrsVersion jaxrsVersion = JaxrsVersion.valueOf(uiConfig.getJaxrsVersion());
 		if(jaxrsVersion!=null){
 			configuration.setJaxrsVersion(jaxrsVersion);

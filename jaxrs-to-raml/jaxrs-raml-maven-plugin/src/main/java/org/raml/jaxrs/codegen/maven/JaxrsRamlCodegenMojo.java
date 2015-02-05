@@ -87,6 +87,8 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
      */
     @Parameter(property = "removeOldOutput", defaultValue = "false")
     private boolean removeOldOutput;
+    
+    
 
 	/**
      * API title

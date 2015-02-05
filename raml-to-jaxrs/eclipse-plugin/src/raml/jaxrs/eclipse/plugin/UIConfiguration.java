@@ -37,6 +37,16 @@ public class UIConfiguration {
     
     ObjectReference<Boolean> isEmptyResponseUsesVoid = new ObjectReference<Boolean>();
     
+    ObjectReference<Boolean> generateClientProxy = new ObjectReference<Boolean>();
+    
+    public boolean getGenerateClientProxy(){
+    	Boolean boolean1 = generateClientProxy.get();
+		return boolean1!=null?boolean1:false;
+    }
+    public void setGenerateClientProxy(boolean gcp){
+    	generateClientProxy.set(gcp);
+    }
+    
     public Boolean getEmptyResponseUsesVoid() {
 		return isEmptyResponseUsesVoid.get();
 	}

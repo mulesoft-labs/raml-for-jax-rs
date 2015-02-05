@@ -42,7 +42,12 @@ public class Launcher {
 		if(removeOldOutputStringValue!=null){
 			removeOldOutput = Boolean.parseBoolean(removeOldOutputStringValue);
 		}
-		
+		boolean generateClient = false;	
+		String generateClientStringValue = argMap.get("generateClientProxy");
+		if(removeOldOutputStringValue!=null){
+			generateClient = Boolean.parseBoolean(generateClientStringValue);
+		}
+		configuration.setGenerateClientInterface(generateClient);
 		Collection<File> ramlFiles = getRamlFiles(argMap);
 		if(ramlFiles.isEmpty()){
 			return;
@@ -56,7 +61,7 @@ public class Launcher {
 				e.printStackTrace();
 			}            
         }
-		final Generator generator = new Generator();
+		final GeneratorProxy generator = new GeneratorProxy();
 		for (final File ramlFile : ramlFiles)
         {
             try {

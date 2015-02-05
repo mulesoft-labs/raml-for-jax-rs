@@ -110,6 +110,11 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 - Max.
 - DecimalMax.
 
+####Generating client proxy code:
+
+Currently JAX-RS Generation supports generation of client proxy code as experimental feature. If you would like
+to use this mode you may  use '''generateClientProxy''' parameter in command line and maven plugin or select 'Generate client proxy code' in Eclipse plugin. 
+
 <!---
 ### Not yet supported
 -->

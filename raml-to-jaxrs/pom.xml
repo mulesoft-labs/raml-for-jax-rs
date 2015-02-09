@@ -25,7 +25,7 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
   </distributionManagement>
-    <properties>
+    <properties>       
         <licensePath>LICENSE_HEADER.txt</licensePath>
     </properties>
 
@@ -37,6 +37,7 @@
                 <version>1.9.0</version>
                 <configuration>
                     <header>${licensePath}</header>
+                    <skip>false</skip>
                     <excludes>
                         <exclude>target/**</exclude>
                         <exclude>**/.gitignore</exclude>
@@ -57,6 +58,9 @@
                         <java>SLASHSTAR_STYLE</java>
                     </mapping>
                     <strictCheck>true</strictCheck>
+                    <properties>
+                        <license.year>2013-2015</license.year>
+                    </properties>
                 </configuration>
                 <executions>
                     <execution>

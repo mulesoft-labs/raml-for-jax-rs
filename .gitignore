@@ -2,7 +2,7 @@
 *.iml
 .idea
 .springBeans
-*/target/**
+target/
 Ddo*
 ddo*
 nogit/

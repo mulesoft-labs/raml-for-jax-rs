@@ -23,6 +23,11 @@ RAML for JAX-RS is the result of merging two projects that started individually 
 - Maven Plugin: Perform both ways conversions by using Maven. [Installation instructions/User guide.](/maven-plugin.md)
 - Command Line: Perform both ways conversions in command line. [Installation instructions/User guide.](/command-line.md)
 
+#Maven artifacts
+Maven artifacts are available at:
+ - https://repository-master.mulesoft.org/releases/ - release repository
+ - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
+ 
 #Design principles
 
 ## RAML Generation (from JAX-RS)

@@ -10,7 +10,10 @@
 
     <artifactId>raml-gradle-plugin</artifactId>
     <name>Gradle Plugin</name>
-
+  <properties>
+      <maven.install.skip>true</maven.install.skip>
+      <maven.deploy.skip>true</maven.deploy.skip>
+   </properties>
 <build>
 
 <plugins>

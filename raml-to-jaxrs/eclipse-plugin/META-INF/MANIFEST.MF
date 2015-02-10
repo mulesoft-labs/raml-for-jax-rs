@@ -9,6 +9,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar,
- .
+Bundle-ClassPath: .,/lib/raml-jaxrs-codegen-core-1.0-SNAPSHOT-jar-with-dependencies.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

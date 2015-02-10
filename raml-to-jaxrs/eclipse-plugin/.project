@@ -25,4 +25,11 @@
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>link</name>
+			<type>2</type>
+			<location>C:/Users/kor/git/raml-for-jax-rs3/raml-to-jaxrs/core</location>
+		</link>
+	</linkedResources>
 </projectDescription>

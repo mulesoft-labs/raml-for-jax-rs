@@ -34,17 +34,16 @@
       </plugin>
     </plugins>
   </build>
-
-  <distributionManagement>
+ <distributionManagement>
        <repository>
             <id>mule-ee-releases</id>
             <name>Mule Release Repository</name>                                               
-            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases</url>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <snapshotRepository>
             <id>mule-snapshots</id>
             <name>Mule Snapshot Repository</name>
-            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots</url>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
   </distributionManagement>

@@ -26,7 +26,7 @@ RAML for JAX-RS is the result of merging two projects that started individually 
 #Maven artifacts
 Maven artifacts are available at:
  - https://repository-master.mulesoft.org/releases/ - release repository
- -https://repository-master.mulesoft.org/snapshots/ - snaphots repository
+ - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
  
 #Design principles
 

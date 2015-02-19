@@ -31,10 +31,10 @@ You may use http://raml-tools-stage.mulesoft.com.s3.amazonaws.com/raml-for-jax-r
 - Select a Java class, package or source folder
 - Right click to show the context menu.
 
-![context-menu](/jaxrs-to-raml/eclipse-plugin/doc/configuration-window.png)
+![context-menu](/jaxrs-to-raml/doc/configuration-window.png)
 - "Generate RAML from classes"
 
-![configuration-window](/jaxrs-to-raml/eclipse-plugin/doc/context-menu.png)
+![configuration-window](/jaxrs-to-raml/doc/context-menu.png)
 
 Choose the options according to your needs (check "Configuration Options" section for a detailed explanation) and click OK. **Your API is ready!**
 

@@ -5,7 +5,7 @@
 You can install the "RAML for JAX-RS" plug-in for Eclipse/Mule Studio by using the "Software Update" feature of your IDE. To do so, follow these steps:
 - Start Eclipse or Mule Studio.
 - Select Help > Install New Software.
-- In the "New Software" window, enter the update site URL (http://raml-tools.mulesoft.com/raml-for-jax-rs/eclipse) into the "Work with" textbox, and press the enter.
+- In the "New Software" window, enter the update site URL (https://s3.amazonaws.com/raml-tools-stage.mulesoft.com/raml-for-jax-rs/current/eclipse) into the "Work with" textbox, and press the enter.
 - Select the checkbox next to "RAML Tools". Click Next.
 - Click Next again.
 - Read the license agreements, accept these, and click Finish.

@@ -6,7 +6,7 @@
     <relativePath>../../eclipse/pom.xml</relativePath>
     <groupId>com.mulesoft.jaxrs-raml</groupId>
     <artifactId>parent</artifactId>
-<version>1.3.2-SNAPSHOT</version>
+<version>1.3.2</version>
   </parent>
 
   <artifactId>com.mulesoft.jaxrs.raml.feature</artifactId>

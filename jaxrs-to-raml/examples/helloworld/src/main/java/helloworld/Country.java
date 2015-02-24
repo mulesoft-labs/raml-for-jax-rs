@@ -6,6 +6,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.xml.sax.SAXException;
 
 /*******************************************************************************
  * FILE NAME: Country.java
@@ -38,6 +42,13 @@ public class Country {
 	 * @param id
 	 */
 	public void setId(int id) {
+		try {
+			Schema newSchema = SchemaFactory.newInstance("").newSchema();
+			
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.id = id;
 	}
 

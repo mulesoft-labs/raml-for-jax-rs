@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mulesoft.jaxrs-raml</groupId>
   <artifactId>jaxrs-to-raml</artifactId>
-<version>1.3.2-SNAPSHOT</version>
+<version>1.3.2</version>
   <packaging>pom</packaging>
   <modules>
     <module>com.mulesoft.jaxrs.raml.generator</module>
@@ -15,7 +15,7 @@
        <repository>
             <id>mule-ee-releases</id>
             <name>Mule Release Repository</name>                                               
-            <url>https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/</url>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>mule-snapshots</id>

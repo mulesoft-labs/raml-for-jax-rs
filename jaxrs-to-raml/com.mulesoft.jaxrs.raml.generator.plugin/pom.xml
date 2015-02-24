@@ -20,7 +20,7 @@
     <relativePath>../../eclipse</relativePath>
     <groupId>com.mulesoft.jaxrs-raml</groupId>
     <artifactId>parent</artifactId>
-<version>1.3.2-SNAPSHOT</version>
+<version>1.3.2</version>
   </parent>
   <properties>
       <maven.install.skip>true</maven.install.skip>

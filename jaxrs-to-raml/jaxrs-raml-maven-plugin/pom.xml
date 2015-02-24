@@ -4,7 +4,7 @@
 	<parent>
         <groupId>com.mulesoft.jaxrs-raml</groupId>
         <artifactId>jaxrs-to-raml</artifactId>
-<version>1.3.2-SNAPSHOT</version>
+<version>1.3.2</version>
 	</parent>
 	<name>JAX-RS RAML Maven Plug-in</name>
 	<groupId>org.raml.plugins</groupId>
@@ -13,7 +13,7 @@
        <repository>
             <id>mule-ee-releases</id>
             <name>Mule Release Repository</name>                                               
-            <url>https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/</url>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>mule-snapshots</id>
@@ -22,7 +22,7 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
   </distributionManagement>
-<version>1.3.2-SNAPSHOT</version>
+<version>1.3.2</version>
 	<packaging>maven-plugin</packaging>
 
 	<properties>

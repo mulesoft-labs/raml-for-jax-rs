@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Raml-jaxrs-eclipse-plugin
 Bundle-SymbolicName: raml-jaxrs-eclipse-plugin;singleton:=true
-Bundle-Version: 1.3.2
+Bundle-Version: 1.3.3.qualifier
 Bundle-Activator: raml.jaxrs.eclipse.plugin.Activator
 Bundle-Vendor: MuleSoft
 Require-Bundle: org.eclipse.ui,

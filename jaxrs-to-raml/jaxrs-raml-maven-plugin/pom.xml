@@ -62,7 +62,7 @@
 			<version>2.3.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.mulesoft.jaxrs.raml.generator</groupId>
+			<groupId>org.raml</groupId>
 			<artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
 	  		<version>[1.0.0,)</version>
 		</dependency>

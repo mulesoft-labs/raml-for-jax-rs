@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.mulesoft.jaxrs-raml</groupId>
-  <artifactId>all</artifactId>
+  <groupId>org.raml</groupId>
+  <artifactId>com.mulesoft.jaxrs-raml.all</artifactId>
 <version>1.3.3-SNAPSHOT</version>
   <packaging>pom</packaging>  
   <distributionManagement>
@@ -17,6 +17,23 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
   </distributionManagement>  
+<profiles>
+    <profile>
+        <id>sonatype</id>
+        <distributionManagement>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+        </distributionManagement>
+    </profile>
+</profiles>
+    
+
   <modules>
 	<!-- <module>eclipse</module> -->
 	<module>jaxrs-to-raml</module>

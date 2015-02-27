@@ -64,7 +64,7 @@
 </profiles>
   <dependencies>
   	<dependency>
-  		<groupId>com.mulesoft.jaxrs.raml.generator</groupId>
+  		<groupId>org.raml</groupId>
   		<artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
   		<version>[1.0.0,)</version>
   		<exclusions>

@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public abstract class BasicModel implements IBasicModel{
 
@@ -29,6 +30,28 @@ public abstract class BasicModel implements IBasicModel{
 	private String simpleName;
 	
 	private String documentation;
+	
+	private boolean  publicM;
+	private boolean  staticM;
+	private Class<?> actualClass;
+	private ITypeModel jaxbType;
+	
+	public ITypeModel getJAXBType() {
+		return jaxbType;
+	}
+
+	public Class<?> getJavaType() {
+		return actualClass;
+	}
+
+
+	public boolean isStatic() {
+		return publicM;
+	}
+
+	public boolean isPublic() {
+		return staticM;
+	}
 	
 	
 	public String getName() {
@@ -121,5 +144,20 @@ public abstract class BasicModel implements IBasicModel{
 		} else if (!simpleName.equals(other.simpleName))
 			return false;
 		return true;
+	}
+
+	public void setStatic(boolean b) {
+		this.staticM=true;
+	}
+	public void setPublic(boolean b) {
+		this.publicM=true;
+	}
+
+	public void setJavaClass(Class<?> actualClass) {
+		this.actualClass=actualClass;
+	}
+
+	public void setJaxbType(ITypeModel processTypeReference) {
+		this.jaxbType=processTypeReference;
 	}
 }

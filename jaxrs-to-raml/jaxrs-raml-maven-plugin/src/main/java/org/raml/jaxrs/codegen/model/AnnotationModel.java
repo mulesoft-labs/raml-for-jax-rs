@@ -44,8 +44,13 @@ public class AnnotationModel implements IAnnotationModel{
 
 	
 	public String getValue(String pairName) {
-
-		return stringValues!=null ? stringValues.get(pairName).toString() : null;
+		if (stringValues!=null){
+			Object object = stringValues.get(pairName);
+			if (object!=null){
+				return object.toString();
+			}
+		}
+		return null;
 	}
 
 	

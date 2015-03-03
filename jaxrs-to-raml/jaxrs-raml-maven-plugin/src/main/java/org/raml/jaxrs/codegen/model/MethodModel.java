@@ -120,31 +120,7 @@ public class MethodModel extends BasicModel implements IMethodModel {
 
 	@Override
 	public ITypeModel getType() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
-
-	@Override
-	public ITypeModel getJAXBType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isStatic() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isPublic() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Class<?> getJavaType() {
-		return null;
-	}
-
+	
 }

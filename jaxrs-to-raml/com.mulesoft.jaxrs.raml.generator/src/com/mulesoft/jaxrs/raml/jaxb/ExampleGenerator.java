@@ -27,6 +27,7 @@ public class ExampleGenerator {
 
 	private void writeProperty(JAXBProperty p, HashMap<String, String> prefixes) {
 		String name=p.name();
+		
 		if (p.namespace!=null){
 			String string = prefixes.get(p.namespace);
 			if (string!=null){
@@ -42,9 +43,15 @@ public class ExampleGenerator {
 			JAXBType jaxbType = el.getJAXBType();
 			if (jaxbType!=null){
 				generateType(jaxbType,name);
+				if(p.isCollection()){
+					generateType(jaxbType,name);
+				}
 			}
 			else{
 				writer.generateElement(name, el.asJavaType(), el.required);
+				if(p.isCollection()){
+					writer.generateElement(name, el.asJavaType(), el.required);					
+				}
 			}
 			//writer.generateAttribute(p.getElementName(), type);
 		}

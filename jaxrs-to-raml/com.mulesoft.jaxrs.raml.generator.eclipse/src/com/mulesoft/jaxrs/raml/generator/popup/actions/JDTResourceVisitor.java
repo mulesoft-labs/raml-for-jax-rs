@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
-import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor.CustomSchemaOutputResolver;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
@@ -49,6 +48,7 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 				String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
 				jsonText = JsonFormatter.format(jsonText);
 				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
+				
 		}
 	}
 	

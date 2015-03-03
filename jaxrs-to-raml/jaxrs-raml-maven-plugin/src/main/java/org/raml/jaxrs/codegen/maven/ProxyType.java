@@ -80,7 +80,7 @@ public class ProxyType implements ITypeModel {
 
 	@Override
 	public IFieldModel[] getFields() {
-		return null;
+		return registry.getType(key).getFields();
 	}
 
 }

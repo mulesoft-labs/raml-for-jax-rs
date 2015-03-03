@@ -29,6 +29,7 @@ public class TypeModel extends BasicModel implements ITypeModel{
 	private String qualifiedName;
 	
 	private ArrayList<IMethodModel> methods = new ArrayList<IMethodModel>();
+	private ArrayList<IFieldModel> fields = new ArrayList<IFieldModel>();
 	
 	public IMethodModel[] getMethods() {
 		return methods.toArray(new IMethodModel[methods.size()]);
@@ -81,6 +82,10 @@ public class TypeModel extends BasicModel implements ITypeModel{
 
 	@Override
 	public IFieldModel[] getFields() {
-		return null;
+		return fields.toArray(new IFieldModel[fields.size()]);
+	}
+
+	public void addField(IFieldModel fieldModel) {
+		fields.add(fieldModel);
 	}
 }

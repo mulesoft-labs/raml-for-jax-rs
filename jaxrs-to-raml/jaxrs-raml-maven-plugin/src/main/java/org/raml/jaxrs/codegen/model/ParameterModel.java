@@ -29,10 +29,7 @@ public class ParameterModel extends BasicModel implements IParameterModel{
 	private boolean required;
 	
 	
-	public String getType() {
-		return type;
-	}
-
+	
 	
 	public boolean required() {
 		return required;
@@ -76,6 +73,12 @@ public class ParameterModel extends BasicModel implements IParameterModel{
 		} else if (!type.equals(other.type))
 			return false;
 		return true;
+	}
+
+
+	@Override
+	public String getType() {
+		return type;
 	}
 
 }

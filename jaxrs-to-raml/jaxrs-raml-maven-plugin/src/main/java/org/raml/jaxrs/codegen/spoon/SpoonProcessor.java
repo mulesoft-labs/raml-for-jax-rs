@@ -30,12 +30,14 @@ import org.raml.jaxrs.codegen.maven.ProxyType;
 import org.raml.jaxrs.codegen.maven.TypeModelRegistry;
 import org.raml.jaxrs.codegen.model.AnnotationModel;
 import org.raml.jaxrs.codegen.model.BasicModel;
+import org.raml.jaxrs.codegen.model.FieldModel;
 import org.raml.jaxrs.codegen.model.MethodModel;
 import org.raml.jaxrs.codegen.model.ParameterModel;
 import org.raml.jaxrs.codegen.model.TypeModel;
 
 import com.martiansoftware.jsap.stringparsers.ForNameStringParser;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
@@ -45,12 +47,14 @@ import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
 import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtSimpleType;
 import spoon.reflect.declaration.CtType;
+import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.eval.PartialEvaluator;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtExecutableReference;
@@ -163,6 +167,11 @@ public class SpoonProcessor{
 			for(CtMethod<?> m : methods){
 				IMethodModel methodModel = processMethod(m);
 				type.addMethod(methodModel);
+			}
+			Collection<CtField<?>> fields = ((CtType<?>)classElement).getFields();
+			for(CtField<?> m : fields){
+				IFieldModel methodModel = processField(m);
+				type.addField(methodModel);
 			}
 		}
 		return type;
@@ -376,7 +385,15 @@ public class SpoonProcessor{
 		
 		model.setName(simpleName);
 		model.setDocumentation(docComment);
-		
+		Set<ModifierKind> modifiers = namedElement.getModifiers();
+		for ( ModifierKind mod:modifiers){
+			if (mod==ModifierKind.STATIC){
+				model.setStatic(true);
+			}
+			if (mod==ModifierKind.PUBLIC){
+				model.setPublic(true);
+			}	
+		}
 		List<CtAnnotation<? extends Annotation>> annotations = namedElement.getAnnotations();
 		for(CtAnnotation<? extends Annotation> a : annotations ){
 			IAnnotationModel annotationModel = processAnnotation(a);
@@ -408,10 +425,43 @@ public class SpoonProcessor{
 		for(CtExecutableReference<?> m : methods){
 			IMethodModel methodModel = processMethodReference(m);
 			type.addMethod(methodModel);
-		}		
+		}
+		Collection<CtFieldReference<?>> fields = typeReference.getDeclaredFields();
+		for(CtFieldReference<?> m : fields){
+			IFieldModel methodModel = processFieldReference(m);
+			type.addField(methodModel);
+		}
 		return new ProxyType(registry, qualifiedName);
 	}
 	
+	private IFieldModel processFieldReference(CtFieldReference<?> m) {
+		FieldModel fm=new FieldModel();
+		fillReference(fm, m);
+		return fm;
+	}
+	private IFieldModel processField(CtField<?> m) {
+		FieldModel fm=new FieldModel();
+		fillBasic(fm, m);
+		CtTypeReference<?> type = m.getType();
+		fillJAXBType(fm,type);
+		return fm;
+	}
+
+	private void fillJAXBType(BasicModel fm, CtTypeReference<?> type) {
+		
+		Class<?> actualClass = type.getActualClass();
+		fm.setJavaClass(actualClass);
+		if (actualClass!=null&&Collection.class.isAssignableFrom(actualClass)){
+			List<CtTypeReference<?>> actualTypeArguments = type.getActualTypeArguments();
+			if (actualTypeArguments.size()==1){
+				CtTypeReference<?> ctTypeReference = actualTypeArguments.get(0);
+				ITypeModel processTypeReference = processTypeReference(ctTypeReference);
+				fm.setJaxbType(processTypeReference);
+			}
+			
+		}
+	}
+
 	private IMethodModel processMethodReference(CtExecutableReference<?> methodElement) {
 		
 		MethodModel methodModel = new MethodModel();

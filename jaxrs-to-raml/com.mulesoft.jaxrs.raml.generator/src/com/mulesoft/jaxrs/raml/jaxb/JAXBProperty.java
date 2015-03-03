@@ -1,5 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import java.util.Collection;
+
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
@@ -8,6 +10,7 @@ public abstract class JAXBProperty extends JAXBModelElement{
 
 	String propertyName;
 	boolean required;
+	private boolean isCollection;
 	
 	public JAXBProperty(IBasicModel model,JAXBRegistry r, String name) {
 		super(model,r);
@@ -37,5 +40,10 @@ public abstract class JAXBProperty extends JAXBModelElement{
 			return or.getJavaType();
 		}
 		return null;
+	}
+
+	public boolean isCollection() {
+		boolean b = isCollection||asJavaType()!=null&&Collection.class.isAssignableFrom(asJavaType());
+		return b;
 	}
 }

@@ -307,6 +307,9 @@ public abstract class ResourceVisitor {
 		if (annotation!=null)
 		{
 			IAnnotationModel[] subAnnotations = annotation.getSubAnnotations("value");
+			if (subAnnotations==null){
+				subAnnotations=new IAnnotationModel[0];
+			}
 			responseCodes=new String[subAnnotations.length];
 			responseDescriptions=new String[subAnnotations.length];
 			int a=0;

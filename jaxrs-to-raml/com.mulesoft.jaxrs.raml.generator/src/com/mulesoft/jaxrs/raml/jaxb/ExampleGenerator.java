@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ExampleGenerator {
 
@@ -16,18 +17,27 @@ public class ExampleGenerator {
 		generateType(type, xmlName);
 	}
 
+	HashSet<JAXBType>onStack=new HashSet<JAXBType>();
+	
 	private void generateType(JAXBType type, String xmlName) {
+		if(!onStack.add(type)){
+			return;
+		}
 		HashMap<String,String>prefixes=type.gatherNamespaces();
 		writer.startEntityAndDeclareNamespaces(xmlName,prefixes);		
 		for (JAXBProperty p:type.properties){
 			writeProperty(p,prefixes);
 		}
 		writer.endEntity(xmlName);
+		onStack.remove(type);
+		
 	}
 
 	private void writeProperty(JAXBProperty p, HashMap<String, String> prefixes) {
 		String name=p.name();
-		
+		if (name==null||name.length()==0){
+			return;
+		}
 		if (p.namespace!=null){
 			String string = prefixes.get(p.namespace);
 			if (string!=null){

@@ -39,7 +39,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 				String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
 				generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
 				if(generatedSchema != null){
-					String schemaName = t.getName().toLowerCase()+"-json";
+					String schemaName = t.getName().toLowerCase()+"-jsonschema";
 					spec.getCoreRaml().addGlobalSchema(schemaName, generatedSchema, true, false);
 					writeString(generatedSchema, new File(schemaFile,schemaName+".json"));
 				}

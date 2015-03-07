@@ -35,7 +35,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
 				String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
 				jsonText = JsonFormatter.format(jsonText);
-				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
+				writeString(jsonText, new File(examplesDir,t.getName().toLowerCase()+".json"));
 				String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
 				generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
 				if(generatedSchema != null){

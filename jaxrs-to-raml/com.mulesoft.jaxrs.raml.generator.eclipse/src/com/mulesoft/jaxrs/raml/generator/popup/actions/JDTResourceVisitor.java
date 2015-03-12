@@ -3,11 +3,15 @@ package com.mulesoft.jaxrs.raml.generator.popup.actions;
 import java.io.File;
 import java.net.MalformedURLException;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonUtils;
 
 public class JDTResourceVisitor extends RuntimeResourceVisitor {
 
@@ -43,10 +47,8 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 				if (!examplesDir.exists()){
 					examplesDir.mkdir();
 				}
-				//String dummyXml = generator.generateDummyXmlFor(schemaFile.toURL().toExternalForm());
 				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
-				String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
-				jsonText = JsonFormatter.format(jsonText);
+				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB);
 				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
 				
 		}

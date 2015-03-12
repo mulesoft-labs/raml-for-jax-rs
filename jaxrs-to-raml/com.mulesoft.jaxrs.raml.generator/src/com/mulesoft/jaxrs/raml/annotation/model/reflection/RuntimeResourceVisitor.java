@@ -3,6 +3,9 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.io.File;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
@@ -33,8 +36,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 				}
 				//String dummyXml = generator.generateDummyXmlFor(schemaFile.toURL().toExternalForm());
 				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
-				String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
-				jsonText = JsonFormatter.format(jsonText);
+				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB);
 				writeString(jsonText, new File(examplesDir,t.getName().toLowerCase()+".json"));
 				String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
 				generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
@@ -44,6 +46,21 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 					writeString(generatedSchema, new File(schemaFile,schemaName+".json"));
 				}
 		}
+	}
+
+	protected String getProperJSONExampleFromXML(String generateXMLExampleJAXB) {
+		String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
+		JSONObject c;
+		try {
+			c = new JSONObject(jsonText);
+			JSONObject v=(JSONObject)c.get((String) c.keys().next());
+			jsonText=v.toString();
+		} catch (JSONException e) {
+			//should never happen
+			throw new IllegalStateException(e);
+		}
+		jsonText = JsonFormatter.format(jsonText);
+		return jsonText;
 	}
 	
 	protected void generateXMLSchema(ITypeModel t) {

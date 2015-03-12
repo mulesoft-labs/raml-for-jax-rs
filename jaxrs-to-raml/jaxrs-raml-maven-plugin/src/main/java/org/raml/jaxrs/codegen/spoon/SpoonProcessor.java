@@ -35,13 +35,6 @@ import org.raml.jaxrs.codegen.model.MethodModel;
 import org.raml.jaxrs.codegen.model.ParameterModel;
 import org.raml.jaxrs.codegen.model.TypeModel;
 
-import com.martiansoftware.jsap.stringparsers.ForNameStringParser;
-import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-
 import spoon.reflect.code.CtCodeElement;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
@@ -61,6 +54,12 @@ import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtFieldReference;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeReference;
+
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class SpoonProcessor{
 	
@@ -246,16 +245,17 @@ public class SpoonProcessor{
 								field.getType().equals(String.class)) {
 							try {
 								value = field.get(null);
-							} catch (Throwable t) {				            
+							} catch (Throwable t) {		
+								value=member.getName();
 								//NOOP tolerate any exception/error, and fall back to using name of field below
 							}
 						}
+						//fall back to using name of field reference
+						else{
+						value=member.getName();
+						}
 					}
-
-					//fall back to using name of field reference
-					if (value == null) {
-						value = member.getName();
-					}
+					
 				}
 				else if(value.getClass().isArray()){
 					int length = Array.getLength(value);

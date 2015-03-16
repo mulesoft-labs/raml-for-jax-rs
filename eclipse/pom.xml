@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.raml</groupId>
   <artifactId>parent</artifactId>
-<version>1.3.3-SNAPSHOT</version>
+<version>1.3.3</version>
   <packaging>pom</packaging>
   <modules>
 	<module>../jaxrs-to-raml/com.mulesoft.jaxrs.raml.generator.plugin</module>

@@ -26,16 +26,29 @@ import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 
+/**
+ * <p>MapWithListValueTupleBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MapWithListValueTupleBuilder extends MapTupleBuilder
 {
 
 
+    /**
+     * <p>Constructor for MapWithListValueTupleBuilder.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param valueClass a {@link java.lang.Class} object.
+     */
     public MapWithListValueTupleBuilder(String fieldName, Class<?> valueClass)
     {
         super(fieldName, valueClass);
     }
 
     
+    /** {@inheritDoc} */
     public TupleBuilder getBuilderForTuple(NodeTuple tuple)
     {
         final String fieldName = ((ScalarNode) tuple.getKeyNode()).getValue();

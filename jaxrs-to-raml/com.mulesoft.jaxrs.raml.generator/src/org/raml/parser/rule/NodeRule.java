@@ -20,7 +20,10 @@ import java.util.List;
 import org.yaml.snakeyaml.nodes.Node;
 
 /**
+ * <p>NodeRule interface.</p>
  *
+ * @author kor
+ * @version $Id: $Id
  */
 public interface NodeRule<V extends Node>
 {
@@ -29,14 +32,14 @@ public interface NodeRule<V extends Node>
      * Validates the given value
      *
      * @param value The value to validate
-     * @return
+     * @return a {@link java.util.List} object.
      */
     List<ValidationResult> validateValue(V value);
 
     /**
      * Called when the ruled was ended to verify all mandatory fields are present
      *
-     * @return
+     * @return a {@link java.util.List} object.
      */
     List<ValidationResult> onRuleEnd();
 }

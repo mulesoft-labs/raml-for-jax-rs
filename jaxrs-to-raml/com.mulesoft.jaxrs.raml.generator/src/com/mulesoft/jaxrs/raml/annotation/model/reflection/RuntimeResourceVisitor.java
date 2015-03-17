@@ -13,17 +13,41 @@ import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
+/**
+ * <p>RuntimeResourceVisitor class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RuntimeResourceVisitor extends ResourceVisitor {
 
 
+	/**
+	 * <p>Constructor for RuntimeResourceVisitor.</p>
+	 *
+	 * @param outputFile a {@link java.io.File} object.
+	 * @param classLoader a {@link java.lang.ClassLoader} object.
+	 */
 	public RuntimeResourceVisitor(File outputFile, ClassLoader classLoader) {
 		super(outputFile, classLoader);
 	}
 
+	/**
+	 * <p>Constructor for RuntimeResourceVisitor.</p>
+	 *
+	 * @param outputFile a {@link java.io.File} object.
+	 * @param classLoader a {@link java.lang.ClassLoader} object.
+	 * @param preferencesConfig a {@link com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig} object.
+	 */
 	public RuntimeResourceVisitor(File outputFile, ClassLoader classLoader, IRamlConfig preferencesConfig) {
 		super(outputFile, classLoader);
 		setPreferences(preferencesConfig);
 	}
+	/**
+	 * <p>afterSchemaGen.</p>
+	 *
+	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	protected void afterSchemaGen(ITypeModel t) {
 		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
 		if (generateXMLExampleJAXB!=null){
@@ -48,6 +72,12 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 		}
 	}
 
+	/**
+	 * <p>getProperJSONExampleFromXML.</p>
+	 *
+	 * @param generateXMLExampleJAXB a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String getProperJSONExampleFromXML(String generateXMLExampleJAXB) {
 		String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
 		JSONObject c;
@@ -63,6 +93,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 		return jsonText;
 	}
 	
+	/** {@inheritDoc} */
 	protected void generateXMLSchema(ITypeModel t) {
 		if (t instanceof ReflectionType) {
 			Class<?> element = ((ReflectionType) t).getElement();
@@ -81,6 +112,11 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 
 
 	
+	/**
+	 * <p>createResourceVisitor.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor} object.
+	 */
 	protected ResourceVisitor createResourceVisitor() {
 		return new RuntimeResourceVisitor(outputFile, classLoader);
 	}

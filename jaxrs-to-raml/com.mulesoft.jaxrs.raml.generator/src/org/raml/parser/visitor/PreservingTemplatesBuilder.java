@@ -21,9 +21,16 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>PreservingTemplatesBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
 	
 	
+	/** {@inheritDoc} */
 	public void onCustomTagError(Tag tag, Node node, String message) {
 		if (IncludeResolver.INCLUDE_TAG.equals(tag))
         {
@@ -34,6 +41,11 @@ public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
         }		
 	}
 	
+	/**
+	 * <p>getTemplateResolver.</p>
+	 *
+	 * @return a {@link org.raml.parser.visitor.TemplateResolver} object.
+	 */
 	public TemplateResolver getTemplateResolver()
     {
         if (templateResolver == null)
@@ -90,11 +102,20 @@ public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
 
 	protected TagResolver[] rs;
 	
+	/**
+	 * <p>Constructor for PreservingTemplatesBuilder.</p>
+	 */
 	public PreservingTemplatesBuilder() {
 		super(Raml2.class, new ClassPathResourceLoader(), new TagResolver[]{});
 		this.rs = new TagResolver[0];
 	}
 
+	/**
+	 * <p>Constructor for PreservingTemplatesBuilder.</p>
+	 *
+	 * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+	 * @param tagResolvers an array of {@link org.raml.parser.tagresolver.TagResolver} objects.
+	 */
 	public PreservingTemplatesBuilder(ResourceLoader resourceLoader,
 			TagResolver[] tagResolvers) {
 		super(Raml2.class, resourceLoader, tagResolvers);
@@ -103,11 +124,22 @@ public final class PreservingTemplatesBuilder extends RamlDocumentBuilder {
 	protected HashMap<String, Exception>errorMap=new HashMap<String, Exception>();
 	
 
+	/**
+	 * <p>Getter for the field <code>errorMap</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, Exception> getErrorMap() {
 		return errorMap;
 	}
 
 	
+	/**
+	 * <p>build.</p>
+	 *
+	 * @param content a {@link java.io.Reader} object.
+	 * @return a {@link org.raml.model.Raml2} object.
+	 */
 	public Raml2 build(Reader content) {
 		LinkedHashMap<String, ResourceType> resourceTypes = new LinkedHashMap<String, ResourceType>();
 		LinkedHashMap<String, TraitModel> traits = new LinkedHashMap<String, TraitModel>();

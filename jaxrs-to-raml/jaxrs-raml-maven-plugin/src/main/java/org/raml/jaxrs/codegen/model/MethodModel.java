@@ -22,8 +22,17 @@ import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>MethodModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MethodModel extends BasicModel implements IMethodModel {
 
+	/**
+	 * <p>Constructor for MethodModel.</p>
+	 */
 	public MethodModel() {
 	}
 	
@@ -35,14 +44,29 @@ public class MethodModel extends BasicModel implements IMethodModel {
 	private ITypeModel bodyType;
 
 	
+	/**
+	 * <p>Getter for the field <code>parameters</code>.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IParameterModel} objects.
+	 */
 	public IParameterModel[] getParameters() {
 		return parameters.toArray(new IParameterModel[parameters.size()]);
 	}
 
+	/**
+	 * <p>addParameter.</p>
+	 *
+	 * @param param a {@link com.mulesoft.jaxrs.raml.annotation.model.IParameterModel} object.
+	 */
 	public void addParameter(IParameterModel param){
 		parameters.add(param);
 	}
 	
+	/**
+	 * <p>getBasicDocInfo.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.IDocInfo} object.
+	 */
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
 			
@@ -63,15 +87,26 @@ public class MethodModel extends BasicModel implements IMethodModel {
 		};
 	}
 	
+	/**
+	 * <p>Getter for the field <code>returnedType</code>.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public ITypeModel getReturnedType() {
 		return returnedType;
 	}
 	
 	
+	/**
+	 * <p>Setter for the field <code>returnedType</code>.</p>
+	 *
+	 * @param returnType a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public void setReturnedType(ITypeModel returnType) {
 		this.returnedType = returnType;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -88,6 +123,7 @@ public class MethodModel extends BasicModel implements IMethodModel {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -110,14 +146,25 @@ public class MethodModel extends BasicModel implements IMethodModel {
 		return true;
 	}
 
+	/**
+	 * <p>Getter for the field <code>bodyType</code>.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public ITypeModel getBodyType() {		
 		return bodyType;
 	}
 
+	/**
+	 * <p>Setter for the field <code>bodyType</code>.</p>
+	 *
+	 * @param bodyType a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public void setBodyType(ITypeModel bodyType) {
 		this.bodyType = bodyType;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getType() {
 		throw new UnsupportedOperationException();

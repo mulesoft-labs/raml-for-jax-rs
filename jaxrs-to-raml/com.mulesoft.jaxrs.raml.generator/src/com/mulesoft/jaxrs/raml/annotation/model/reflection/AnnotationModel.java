@@ -6,20 +6,37 @@ import java.lang.reflect.Method;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 
+/**
+ * <p>AnnotationModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class AnnotationModel implements IAnnotationModel {
 
 	Annotation annotation;
 	
+	/**
+	 * <p>Constructor for AnnotationModel.</p>
+	 *
+	 * @param annotation2 a {@link java.lang.annotation.Annotation} object.
+	 */
 	public AnnotationModel(Annotation annotation2) {
 		this.annotation=annotation2;
 	}
 
 	
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return annotation.annotationType().getSimpleName();
 	}
 
 	
+	/** {@inheritDoc} */
 	public String getValue(String pairName) {
 		try {
 			Method method = annotation.getClass().getMethod(pairName);
@@ -42,6 +59,7 @@ public class AnnotationModel implements IAnnotationModel {
 	}
 
 	
+	/** {@inheritDoc} */
 	public String[] getValues(String value) {
 		try {
 			Method method = annotation.getClass().getMethod(value);
@@ -60,6 +78,7 @@ public class AnnotationModel implements IAnnotationModel {
 
 
 	
+	/** {@inheritDoc} */
 	public IAnnotationModel[] getSubAnnotations(String pairName) {
 		try {
 		Method method = annotation.getClass().getMethod(pairName);

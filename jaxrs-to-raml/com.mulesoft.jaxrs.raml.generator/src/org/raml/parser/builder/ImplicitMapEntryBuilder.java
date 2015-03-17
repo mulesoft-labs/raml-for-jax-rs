@@ -25,6 +25,12 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>ImplicitMapEntryBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Node>
 {
 
@@ -35,6 +41,13 @@ public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Nod
     private Class valueClass;
 
 
+    /**
+     * <p>Constructor for ImplicitMapEntryBuilder.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param keyClass a {@link java.lang.Class} object.
+     * @param valueClass a {@link java.lang.Class} object.
+     */
     public ImplicitMapEntryBuilder(String fieldName, Class<?> keyClass, Class<?> valueClass)
     {
         super(new DefaultScalarTupleHandler(fieldName));
@@ -44,6 +57,7 @@ public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Nod
     }
 
     
+    /** {@inheritDoc} */
     public NodeBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (builders.isEmpty())
@@ -54,6 +68,7 @@ public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Nod
     }
 
     
+    /** {@inheritDoc} */
     public Object buildValue(Object parent, Node node)
     {
 
@@ -87,12 +102,23 @@ public class ImplicitMapEntryBuilder extends DefaultTupleBuilder<ScalarNode, Nod
     }
 
     
+    /**
+     * <p>buildKey.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param tuple a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public void buildKey(Object parent, ScalarNode tuple)
     {
         keyValue = tuple.getValue();
     }
 
     
+    /**
+     * <p>toString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toString()
     {
         return keyValue;

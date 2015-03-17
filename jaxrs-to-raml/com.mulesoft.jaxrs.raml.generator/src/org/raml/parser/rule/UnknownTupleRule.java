@@ -21,15 +21,31 @@ import java.util.List;
 import org.raml.parser.resolver.DefaultTupleHandler;
 import org.yaml.snakeyaml.nodes.Node;
 
+/**
+ * <p>UnknownTupleRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class UnknownTupleRule<K extends Node, V extends Node> extends DefaultTupleRule<K, V>
 {
 
+    /**
+     * <p>Constructor for UnknownTupleRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     */
     public UnknownTupleRule(String fieldName)
     {
         super(fieldName, new DefaultTupleHandler());
     }
 
     
+    /**
+     * <p>onRuleEnd.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> onRuleEnd()
     {       
         final List<ValidationResult> result = new ArrayList<ValidationResult>();

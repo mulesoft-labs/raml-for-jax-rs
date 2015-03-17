@@ -31,12 +31,24 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>PojoTupleBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class PojoTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
 {
 
     private Class<?> pojoClass;
     private String fieldName;
 
+    /**
+     * <p>Constructor for PojoTupleBuilder.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param pojoClass a {@link java.lang.Class} object.
+     */
     public PojoTupleBuilder(String fieldName, Class<?> pojoClass)
     {
         super(new DefaultScalarTupleHandler(fieldName));
@@ -45,12 +57,18 @@ public class PojoTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
 
     }
 
+    /**
+     * <p>Constructor for PojoTupleBuilder.</p>
+     *
+     * @param pojoClass a {@link java.lang.Class} object.
+     */
     public PojoTupleBuilder(Class<?> pojoClass)
     {
         this(null, pojoClass);
     }
 
     
+    /** {@inheritDoc} */
     public NodeBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (builders.isEmpty())     //Do it lazzy so it support recursive structures
@@ -62,6 +80,7 @@ public class PojoTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
 
 
     
+    /** {@inheritDoc} */
     public Object buildValue(Object parent, Node node)
     {
         try
@@ -116,21 +135,42 @@ public class PojoTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
 
 
     
+    /**
+     * <p>buildKey.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param node a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public void buildKey(Object parent, ScalarNode node)
     {
         fieldName = node.getValue();
     }
 
+    /**
+     * <p>Getter for the field <code>fieldName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getFieldName()
     {
         return fieldName;
     }
 
+    /**
+     * <p>Getter for the field <code>pojoClass</code>.</p>
+     *
+     * @return a {@link java.lang.Class} object.
+     */
     public Class<?> getPojoClass()
     {
         return pojoClass;
     }
 
+    /**
+     * <p>toString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toString()
     {
         return fieldName;

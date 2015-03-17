@@ -18,10 +18,17 @@ package org.raml.parser.resolver;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>ResourceHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ResourceHandler implements TupleHandler
 {
 
     
+    /** {@inheritDoc} */
     public boolean handles(NodeTuple tuple)
     {
         if (tuple.getKeyNode() instanceof ScalarNode)

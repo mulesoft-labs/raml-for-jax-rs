@@ -37,15 +37,25 @@ import org.xml.sax.SAXParseException;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>SchemaRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SchemaRule extends SimpleRule
 {
 
+    /**
+     * <p>Constructor for SchemaRule.</p>
+     */
     public SchemaRule()
     {
         super("schema", String.class);
     }
 
     
+    /** {@inheritDoc} */
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();

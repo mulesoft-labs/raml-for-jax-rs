@@ -8,6 +8,12 @@ import javax.xml.bind.annotation.XmlType;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 
+/**
+ * <p>JAXBModelElement class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JAXBModelElement {
 
 	private static final String NAMESPACE = "namespace";
@@ -18,6 +24,12 @@ public class JAXBModelElement {
 	protected String elementName;
 	final JAXBRegistry registry;
 
+	/**
+	 * <p>Constructor for JAXBModelElement.</p>
+	 *
+	 * @param model a {@link com.mulesoft.jaxrs.raml.annotation.model.IBasicModel} object.
+	 * @param registry a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
+	 */
 	public JAXBModelElement(IBasicModel model,JAXBRegistry registry) {
 		super();
 		this.registry=registry;
@@ -30,6 +42,13 @@ public class JAXBModelElement {
 		typeName=value(XmlType.class,NAME);
 	}
 
+	/**
+	 * <p>value.</p>
+	 *
+	 * @param cl a {@link java.lang.Class} object.
+	 * @param name a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String value(Class<? extends Annotation>cl,String name){
 		IAnnotationModel annotation = originalType.getAnnotation(cl.getSimpleName());
 		if( annotation!=null){

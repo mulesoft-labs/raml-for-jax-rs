@@ -15,6 +15,12 @@
  */
 package org.raml.model.parameter;
 
+/**
+ * <p>FormParameter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class FormParameter extends AbstractParam
 {
 }

@@ -24,17 +24,34 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>MapTupleBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MapTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
 {
 
     private Class valueClass;
     private String fieldName;
 
+    /**
+     * <p>Constructor for MapTupleBuilder.</p>
+     *
+     * @param valueClass a {@link java.lang.Class} object.
+     */
     public MapTupleBuilder(Class<?> valueClass)
     {
         this(null, valueClass);
     }
 
+    /**
+     * <p>Constructor for MapTupleBuilder.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param valueClass a {@link java.lang.Class} object.
+     */
     public MapTupleBuilder(String fieldName, Class<?> valueClass)
     {
         super(new DefaultScalarTupleHandler(fieldName));
@@ -43,6 +60,7 @@ public class MapTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
     }
 
     
+    /** {@inheritDoc} */
     public TupleBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (ReflectionUtils.isPojo(getValueClass()))
@@ -56,6 +74,7 @@ public class MapTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
     }
 
     
+    /** {@inheritDoc} */
     public Object buildValue(Object parent, Node node)
     {
         final HashMap<String, Object> map = new LinkedHashMap<String, Object>();
@@ -64,17 +83,32 @@ public class MapTupleBuilder extends DefaultTupleBuilder<ScalarNode, Node>
     }
 
 
+    /**
+     * <p>Getter for the field <code>valueClass</code>.</p>
+     *
+     * @return a {@link java.lang.Class} object.
+     */
     public Class getValueClass()
     {
         return valueClass;
     }
 
+    /**
+     * <p>Getter for the field <code>fieldName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getFieldName()
     {
         return fieldName;
     }
 
     
+    /**
+     * <p>toString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toString()
     {
         return fieldName;

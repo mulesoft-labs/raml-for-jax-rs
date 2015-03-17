@@ -19,9 +19,23 @@ import org.raml.parser.resolver.DefaultScalarTupleHandler;
 import org.raml.parser.resolver.TupleHandler;
 import org.yaml.snakeyaml.nodes.Node;
 
+/**
+ * <p>AbastractFactory class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class AbastractFactory
 {
 
+    /**
+     * <p>createHandler.</p>
+     *
+     * @param handler a {@link java.lang.Class} object.
+     * @param alias a {@link java.lang.String} object.
+     * @param nodeClass a {@link java.lang.Class} object.
+     * @return a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     protected TupleHandler createHandler(Class<? extends TupleHandler> handler, String alias,
                                          Class<? extends Node> nodeClass)
     {
@@ -37,6 +51,13 @@ public class AbastractFactory
         return tupleHandler;
     }
 
+    /**
+     * <p>createInstanceOf.</p>
+     *
+     * @param handler a {@link java.lang.Class} object.
+     * @param <T> a T object.
+     * @return a T object.
+     */
     protected <T> T createInstanceOf(Class<? extends T> handler)
     {
         try

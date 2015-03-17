@@ -7,9 +7,16 @@ import org.raml.model.Action;
 import org.raml.model.Resource;
 import org.raml.model.TemplateUse;
 
+/**
+ * <p>TraitsDumper class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TraitsDumper implements IRAMLFieldDumper {
 
 	
+	/** {@inheritDoc} */
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		List<TemplateUse> resourceTypeMap = null;

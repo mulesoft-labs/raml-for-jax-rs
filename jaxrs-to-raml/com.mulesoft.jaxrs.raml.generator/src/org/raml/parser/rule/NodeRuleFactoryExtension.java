@@ -18,11 +18,31 @@ package org.raml.parser.rule;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+/**
+ * <p>NodeRuleFactoryExtension interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface NodeRuleFactoryExtension
 {
 
+    /**
+     * <p>handles.</p>
+     *
+     * @param field a {@link java.lang.reflect.Field} object.
+     * @param annotation a {@link java.lang.annotation.Annotation} object.
+     * @return a boolean.
+     */
     boolean handles(Field field, Annotation annotation);
 
+    /**
+     * <p>createRule.</p>
+     *
+     * @param field a {@link java.lang.reflect.Field} object.
+     * @param annotation a {@link java.lang.annotation.Annotation} object.
+     * @return a {@link org.raml.parser.rule.TupleRule} object.
+     */
     TupleRule<?,?> createRule(Field field,Annotation annotation);
 
 }

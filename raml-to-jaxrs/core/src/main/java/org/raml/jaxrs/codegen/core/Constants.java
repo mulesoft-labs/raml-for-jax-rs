@@ -30,8 +30,15 @@ import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 
+/**
+ * <p>Abstract Constants class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class Constants
 {
+    /** Constant <code>JAVA_KEYWORDS</code> */
     public static final Set<String> JAVA_KEYWORDS = Collections.unmodifiableSet(new HashSet<String>(
         Arrays.asList("abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class",
             "const", "continue", "default", "do", "double", "else", "enum", "extends", "false", "final",
@@ -40,12 +47,15 @@ public abstract class Constants
             "return", "short", "static", "strictfp", "super", "switch", "synchronized", "this", "throw",
             "throws", "transient", "true", "try", "void", "volatile", "while")));
 
+    /** Constant <code>JAXRS_HTTP_METHODS</code> */
     @SuppressWarnings("unchecked")
     public static final List<Class<? extends Annotation>> JAXRS_HTTP_METHODS = Arrays.asList(DELETE.class,
         GET.class, HEAD.class, OPTIONS.class, POST.class, PUT.class);
 
+    /** Constant <code>DEFAULT_LOCALE</code> */
     public static Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
+    /** Constant <code>RESPONSE_HEADER_WILDCARD_SYMBOL="{?}"</code> */
     public static final String RESPONSE_HEADER_WILDCARD_SYMBOL = "{?}";
 
     private Constants()

@@ -17,17 +17,29 @@ package org.raml.parser.loader;
 
 import java.io.InputStream;
 
+/**
+ * <p>CompositeResourceLoader class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class CompositeResourceLoader implements ResourceLoader
 {
 
     private ResourceLoader[] resourceLoaders;
 
+    /**
+     * <p>Constructor for CompositeResourceLoader.</p>
+     *
+     * @param resourceLoaders a {@link org.raml.parser.loader.ResourceLoader} object.
+     */
     public CompositeResourceLoader(ResourceLoader... resourceLoaders)
     {
         this.resourceLoaders = resourceLoaders;
     }
 
     
+    /** {@inheritDoc} */
     public InputStream fetchResource(String resourceName)
     {
         InputStream inputStream = null;

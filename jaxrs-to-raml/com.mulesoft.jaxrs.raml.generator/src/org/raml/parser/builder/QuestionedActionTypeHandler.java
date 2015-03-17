@@ -4,8 +4,15 @@ import org.raml.model.Action;
 import org.raml.model.ActionType;
 import org.raml.parser.resolver.ITransformHandler;
 
+/**
+ * <p>QuestionedActionTypeHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class QuestionedActionTypeHandler implements ITransformHandler{
 
+	/** {@inheritDoc} */
 	public Object handle(Object value,Object parent){
 		if (value.toString().endsWith("?")){
 		Action c=(Action) parent;

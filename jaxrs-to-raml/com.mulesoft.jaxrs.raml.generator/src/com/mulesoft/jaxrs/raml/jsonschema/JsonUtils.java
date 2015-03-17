@@ -7,8 +7,15 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * <p>JsonUtils class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JsonUtils {
 	
+	/** Constant <code>EMPTY_SCHEMA="new String[]{{,  \"type\" : \"object\" "{trunked}</code> */
 	public static final String[] EMPTY_SCHEMA = new String[]{
 		"{",
 		"  \"type\" : \"object\" ,",
@@ -20,10 +27,22 @@ public class JsonUtils {
 		"}"
 	};
 
+	/**
+	 * <p>isJson.</p>
+	 *
+	 * @param example a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public static boolean isJson(String example) {		 
 		return example.trim().startsWith("{")||example.trim().startsWith("[");
 	}
 	
+	/**
+	 * <p>createSchemaNode.</p>
+	 *
+	 * @param text a {@link java.lang.String} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 */
 	public static JsonSchemaNode createSchemaNode(String text){
 		
 		try {
@@ -37,6 +56,14 @@ public class JsonUtils {
 		return null;
 	}
 
+	/**
+	 * <p>transformObjectToString.</p>
+	 *
+	 * @param object a {@link org.codehaus.jettison.json.JSONObject} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws org.codehaus.jettison.json.JSONException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	static public String transformObjectToString(JSONObject object)
 			throws JSONException, IOException
 	{
@@ -48,6 +75,14 @@ public class JsonUtils {
 		return result;
 	}
 	
+	/**
+	 * <p>transformObjectToStringAndFormat.</p>
+	 *
+	 * @param object a {@link org.codehaus.jettison.json.JSONObject} object.
+	 * @return a {@link java.lang.String} object.
+	 * @throws org.codehaus.jettison.json.JSONException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	static public String transformObjectToStringAndFormat(JSONObject object)
 			throws JSONException, IOException
 	{		
@@ -56,6 +91,11 @@ public class JsonUtils {
 		return formatted;
 	}
 
+	/**
+	 * <p>getEmptySchema.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getEmptySchema() {
 		StringBuilder bld = new StringBuilder();
 		for( int i = 0 ; i < EMPTY_SCHEMA.length ; i++ ){

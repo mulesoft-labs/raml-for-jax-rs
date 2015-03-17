@@ -17,10 +17,17 @@ package org.raml.parser.loader;
 
 import java.io.InputStream;
 
+/**
+ * <p>ClassPathResourceLoader class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ClassPathResourceLoader implements ResourceLoader
 {
 
     
+    /** {@inheritDoc} */
     public InputStream fetchResource(String resourceName)
     {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourceName);

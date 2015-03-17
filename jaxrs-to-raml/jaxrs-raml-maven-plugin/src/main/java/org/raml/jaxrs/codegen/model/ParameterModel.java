@@ -17,8 +17,17 @@ package org.raml.jaxrs.codegen.model;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 
+/**
+ * <p>ParameterModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ParameterModel extends BasicModel implements IParameterModel{
 
+	/**
+	 * <p>Constructor for ParameterModel.</p>
+	 */
 	public ParameterModel() {
 	}
 	
@@ -31,21 +40,37 @@ public class ParameterModel extends BasicModel implements IParameterModel{
 	
 	
 	
+	/**
+	 * <p>required.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean required() {
 		return required;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>type</code>.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
 
+	/**
+	 * <p>Setter for the field <code>required</code>.</p>
+	 *
+	 * @param required a boolean.
+	 */
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -56,6 +81,7 @@ public class ParameterModel extends BasicModel implements IParameterModel{
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -76,6 +102,7 @@ public class ParameterModel extends BasicModel implements IParameterModel{
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public String getType() {
 		return type;

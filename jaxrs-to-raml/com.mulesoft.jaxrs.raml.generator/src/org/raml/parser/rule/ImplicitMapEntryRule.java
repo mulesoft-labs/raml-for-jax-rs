@@ -28,12 +28,24 @@ import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>ImplicitMapEntryRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ImplicitMapEntryRule extends DefaultTupleRule<ScalarNode, MappingNode>
 {
 
     private Class valueType;
     private final Set<String> keys = new HashSet<String>();
 
+    /**
+     * <p>Constructor for ImplicitMapEntryRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param valueType a {@link java.lang.Class} object.
+     */
     public ImplicitMapEntryRule(String fieldName, Class valueType)
     {
         super(fieldName, new DefaultScalarTupleHandler(fieldName));
@@ -42,6 +54,7 @@ public class ImplicitMapEntryRule extends DefaultTupleRule<ScalarNode, MappingNo
     }
 
     
+    /** {@inheritDoc} */
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         if (rules.isEmpty())
@@ -52,6 +65,11 @@ public class ImplicitMapEntryRule extends DefaultTupleRule<ScalarNode, MappingNo
     }
 
     
+    /**
+     * <p>onRuleEnd.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> onRuleEnd()
     {
         List<ValidationResult> validationResults = super.onRuleEnd();
@@ -60,18 +78,30 @@ public class ImplicitMapEntryRule extends DefaultTupleRule<ScalarNode, MappingNo
     }
 
     
+    /**
+     * <p>getValueNodeType.</p>
+     *
+     * @return an array of {@link java.lang.Class} objects.
+     */
     public Class<?>[] getValueNodeType()
     {
         return new Class[] {MappingNode.class};
     }
 
     
+    /** {@inheritDoc} */
     public void setValueType(Type valueType)
     {
         this.valueType = (Class) valueType;
     }
 
     
+    /**
+     * <p>validateKey.</p>
+     *
+     * @param key a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = super.validateKey(key);

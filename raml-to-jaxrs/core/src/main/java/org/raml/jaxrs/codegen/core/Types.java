@@ -56,6 +56,12 @@ import org.slf4j.LoggerFactory;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JType;
 
+/**
+ * <p>Types class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Types
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Types.class);
@@ -63,6 +69,11 @@ public class Types
     private final Context context;
     private final Map<String, JClass> schemaClasses;
 
+    /**
+     * <p>Constructor for Types.</p>
+     *
+     * @param context a {@link org.raml.jaxrs.codegen.core.Context} object.
+     */
     public Types(final Context context)
     {
         Validate.notNull(context, "context can't be null");
@@ -72,6 +83,14 @@ public class Types
         schemaClasses = new HashMap<String, JClass>();
     }
 
+    /**
+     * <p>buildParameterType.</p>
+     *
+     * @param parameter a {@link org.raml.model.parameter.AbstractParam} object.
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link com.sun.codemodel.JType} object.
+     * @throws java.lang.Exception if any.
+     */
     public JType buildParameterType(final AbstractParam parameter, final String name) throws Exception
     {
         if ((parameter.getEnumeration() != null) && (!parameter.getEnumeration().isEmpty()))
@@ -92,6 +111,13 @@ public class Types
         }
     }
 
+    /**
+     * <p>getRequestEntityClass.</p>
+     *
+     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @return a {@link com.sun.codemodel.JType} object.
+     * @throws java.io.IOException if any.
+     */
     public JType getRequestEntityClass(final MimeType mimeType) throws IOException
     {
         final JClass schemaClass = getSchemaClass(mimeType);
@@ -115,6 +141,13 @@ public class Types
         }
     }
 
+    /**
+     * <p>getResponseEntityClass.</p>
+     *
+     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @return a {@link com.sun.codemodel.JType} object.
+     * @throws java.io.IOException if any.
+     */
     public JType getResponseEntityClass(final MimeType mimeType) throws IOException
     {
         final JClass schemaClass = getSchemaClass(mimeType);
@@ -134,17 +167,35 @@ public class Types
         }
     }
 
+    /**
+     * <p>getGeneratorType.</p>
+     *
+     * @param clazz a {@link java.lang.Class} object.
+     * @return a {@link com.sun.codemodel.JType} object.
+     */
     public JType getGeneratorType(final Class<?> clazz)
     {
         return context.getGeneratorType(clazz);
     }
 
+    /**
+     * <p>getGeneratorClass.</p>
+     *
+     * @param clazz a {@link java.lang.Class} object.
+     * @return a {@link com.sun.codemodel.JClass} object.
+     */
     public JClass getGeneratorClass(final Class<?> clazz)
     {
         return (JClass) context.getGeneratorType(clazz);
     }
 
     
+    /**
+     * <p>getGeneratorClass.</p>
+     *
+     * @param classFQN a {@link java.lang.String} object.
+     * @return a {@link com.sun.codemodel.JClass} object.
+     */
     public JClass getGeneratorClass(final String classFQN)
     {
          return context.getGeneratorClass(classFQN);
@@ -259,6 +310,11 @@ public class Types
         }
     }
     
+    /**
+     * <p>generateClassesFromXmlSchemas.</p>
+     *
+     * @param resources a {@link java.util.Collection} object.
+     */
     public void generateClassesFromXmlSchemas(Collection<Resource> resources) {
 
         if (resources == null) {
@@ -271,6 +327,12 @@ public class Types
         schemaClasses.putAll(context.generateClassesFromXmlSchemas(schemaFiles));
     }
 
+    /**
+     * <p>collectXmlSchemaFiles.</p>
+     *
+     * @param resource a {@link org.raml.model.Resource} object.
+     * @param schemaFiles a {@link java.util.Map} object.
+     */
     public void collectXmlSchemaFiles(Resource resource,
             Map<String, File> schemaFiles) {
 

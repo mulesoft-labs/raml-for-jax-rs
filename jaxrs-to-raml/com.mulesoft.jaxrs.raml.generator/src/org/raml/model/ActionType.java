@@ -15,6 +15,12 @@
  */
 package org.raml.model;
 
+/**
+ * <p>ActionType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public enum ActionType
 {
 

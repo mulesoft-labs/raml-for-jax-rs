@@ -19,11 +19,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * <p>EnumerationValidation class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class EnumerationValidation implements Validation
 {
 
     private Set<String> enumeration;
 
+    /**
+     * <p>Constructor for EnumerationValidation.</p>
+     *
+     * @param enumeration a {@link java.util.List} object.
+     */
     public EnumerationValidation(List<String> enumeration)
     {
         if (enumeration == null)
@@ -34,6 +45,7 @@ public class EnumerationValidation implements Validation
     }
 
     
+    /** {@inheritDoc} */
     public boolean check(String input)
     {
         return enumeration.contains(input);

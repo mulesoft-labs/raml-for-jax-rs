@@ -50,6 +50,9 @@ import spoon.reflect.factory.PackageFactory;
 /**
  * When invoked, this goals read one or more JAX-RS annotated Java
  * classes and produces a <a href="http://raml.org">RAML</a> file.
+ *
+ * @author kor
+ * @version $Id: $Id
  */
 @Mojo(name = "generate-raml", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class JaxrsRamlCodegenMojo extends AbstractMojo {
@@ -112,6 +115,12 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 	private MavenProject project;
 
 
+	/**
+	 * <p>execute.</p>
+	 *
+	 * @throws org.apache.maven.plugin.MojoExecutionException if any.
+	 * @throws org.apache.maven.plugin.MojoFailureException if any.
+	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		

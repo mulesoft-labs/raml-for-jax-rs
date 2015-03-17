@@ -26,18 +26,30 @@ import java.util.regex.Pattern;
 
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>BaseUriRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class BaseUriRule extends SimpleRule
 {
 
+    /** Constant <code>URI_NOT_VALID_MESSAGE="The baseUri element is not a valid URI"</code> */
     public static final String URI_NOT_VALID_MESSAGE = "The baseUri element is not a valid URI";
+    /** Constant <code>VERSION_NOT_PRESENT_MESSAGE="version parameter must exist in the API"{trunked}</code> */
     public static final String VERSION_NOT_PRESENT_MESSAGE = "version parameter must exist in the API definition";
 
+    /** Constant <code>URI_PATTERN="[.*]?\\{(\\w+)?\\}[.*]*"</code> */
     public static final String URI_PATTERN = "[.*]?\\{(\\w+)?\\}[.*]*";
     private String baseUri;
     private Set<String> parameters;
     private Pattern pattern;
 
 
+    /**
+     * <p>Constructor for BaseUriRule.</p>
+     */
     public BaseUriRule()
     {
         super("baseUri", String.class);
@@ -47,11 +59,21 @@ public class BaseUriRule extends SimpleRule
 
     }
 
+    /**
+     * <p>Getter for the field <code>baseUri</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getBaseUri()
     {
         return baseUri;
     }
 
+    /**
+     * <p>Getter for the field <code>parameters</code>.</p>
+     *
+     * @return a {@link java.util.Set} object.
+     */
     public Set<String> getParameters()
     {
         return parameters;
@@ -59,6 +81,7 @@ public class BaseUriRule extends SimpleRule
 
 
     
+    /** {@inheritDoc} */
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();
@@ -99,6 +122,11 @@ public class BaseUriRule extends SimpleRule
         }
     }
 
+    /**
+     * <p>getVersionRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.SimpleRule} object.
+     */
     public SimpleRule getVersionRule()
     {
         return (SimpleRule) getParentTupleRule().getRuleByFieldName("version");

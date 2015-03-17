@@ -20,10 +20,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * <p>UrlResourceLoader class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class UrlResourceLoader implements ResourceLoader
 {
 
     
+    /** {@inheritDoc} */
     public InputStream fetchResource(String resourceName)
     {
         InputStream inputStream = null;

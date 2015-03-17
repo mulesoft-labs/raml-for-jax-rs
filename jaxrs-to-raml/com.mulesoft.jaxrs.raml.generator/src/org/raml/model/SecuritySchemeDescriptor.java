@@ -22,6 +22,12 @@ import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.parser.annotation.Mapping;
 
+/**
+ * <p>SecuritySchemeDescriptor class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SecuritySchemeDescriptor
 {
 
@@ -34,31 +40,61 @@ public class SecuritySchemeDescriptor
     @Mapping
     private Map<String, Response> responses = new HashMap<String, Response>();
 
+    /**
+     * <p>Getter for the field <code>headers</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, Header> getHeaders()
     {
         return headers;
     }
 
+    /**
+     * <p>Setter for the field <code>headers</code>.</p>
+     *
+     * @param headers a {@link java.util.Map} object.
+     */
     public void setHeaders(Map<String, Header> headers)
     {
         this.headers = headers;
     }
 
+    /**
+     * <p>Getter for the field <code>queryParameters</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, QueryParameter> getQueryParameters()
     {
         return queryParameters;
     }
 
+    /**
+     * <p>Setter for the field <code>queryParameters</code>.</p>
+     *
+     * @param queryParameters a {@link java.util.Map} object.
+     */
     public void setQueryParameters(Map<String, QueryParameter> queryParameters)
     {
         this.queryParameters = queryParameters;
     }
 
+    /**
+     * <p>Getter for the field <code>responses</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, Response> getResponses()
     {
         return responses;
     }
 
+    /**
+     * <p>Setter for the field <code>responses</code>.</p>
+     *
+     * @param responses a {@link java.util.Map} object.
+     */
     public void setResponses(Map<String, Response> responses)
     {
         this.responses = responses;

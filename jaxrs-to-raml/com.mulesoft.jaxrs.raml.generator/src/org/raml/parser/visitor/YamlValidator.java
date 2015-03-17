@@ -19,8 +19,19 @@ import java.util.List;
 
 import org.raml.parser.rule.ValidationResult;
 
+/**
+ * <p>YamlValidator interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface YamlValidator extends NodeHandler
 {
 
+    /**
+     * <p>getMessages.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     List<ValidationResult> getMessages();
 }

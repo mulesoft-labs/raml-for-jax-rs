@@ -28,6 +28,12 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
+/**
+ * <p>ReflectionUtils class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ReflectionUtils
 {
 
@@ -48,11 +54,23 @@ public class ReflectionUtils
         WRAPPERS_PLUS_STRING.add(String.class);
     }
 
+    /**
+     * <p>isWrapperOrString.</p>
+     *
+     * @param type a {@link java.lang.Class} object.
+     * @return a boolean.
+     */
     public static boolean isWrapperOrString(Class<?> type)
     {
         return WRAPPERS_PLUS_STRING.contains(type);
     }
 
+    /**
+     * <p>getInheritedFields.</p>
+     *
+     * @param type a {@link java.lang.Class} object.
+     * @return a {@link java.util.List} object.
+     */
     public static List<Field> getInheritedFields(Class<?> type)
     {
         List<Field> fields = new ArrayList<Field>();
@@ -63,6 +81,13 @@ public class ReflectionUtils
         return fields;
     }
 
+    /**
+     * <p>setProperty.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param fieldName a {@link java.lang.String} object.
+     * @param value a {@link java.lang.Object} object.
+     */
     @SuppressWarnings("unchecked")
     public static void setProperty(Object parent, String fieldName, Object value)
     {
@@ -95,11 +120,23 @@ public class ReflectionUtils
         }
     }
 
+    /**
+     * <p>isPojo.</p>
+     *
+     * @param type a {@link java.lang.Class} object.
+     * @return a boolean.
+     */
     public static boolean isPojo(Class<?> type)
     {
         return !(isWrapperOrString(type) || isEnum(type) || type.isPrimitive());
     }
 
+    /**
+     * <p>isEnum.</p>
+     *
+     * @param type a {@link java.lang.Class} object.
+     * @return a boolean.
+     */
     public static boolean isEnum(Class<?> type)
     {
         return type.isEnum() || (type.getSuperclass() != null && type.getSuperclass().isEnum());

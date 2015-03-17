@@ -42,6 +42,9 @@ import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 /**
  * When invoked, this goals read one or more <a href="http://raml.org">RAML</a>
  * files and produces JAX-RS annotated Java classes.
+ *
+ * @author kor
+ * @version $Id: $Id
  */
 @Mojo(name = "generate", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME, defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class RamlJaxrsCodegenMojo extends AbstractMojo {
@@ -134,11 +137,12 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	private String[] extensions;
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Throw exception on Resource Method
 	 */
 	// @Parameter(property = "methodThrowException")
 	// private String methodThrowException;
-
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (skip) {

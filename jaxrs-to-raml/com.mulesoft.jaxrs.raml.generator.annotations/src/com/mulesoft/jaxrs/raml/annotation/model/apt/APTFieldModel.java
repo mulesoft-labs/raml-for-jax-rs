@@ -9,13 +9,29 @@ import javax.lang.model.type.TypeMirror;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>APTFieldModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class APTFieldModel extends APTModel implements IFieldModel{
 
 	private VariableElement element;
 
+	/**
+	 * <p>Constructor for APTFieldModel.</p>
+	 *
+	 * @param q a {@link javax.lang.model.element.VariableElement} object.
+	 */
 	public APTFieldModel(VariableElement q) {
 		this.element=q;
 	}
+	/**
+	 * <p>getType.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public ITypeModel getType() {
 		TypeMirror returnType = element.asType();
 		if (returnType != null && returnType instanceof DeclaredType) {
@@ -27,16 +43,31 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	}
 
 	
+	/**
+	 * <p>required.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean required() {
 		return false;
 	}
 
 	
+	/**
+	 * <p>element.</p>
+	 *
+	 * @return a {@link javax.lang.model.element.Element} object.
+	 */
 	public Element element() {
 		return element;
 	}
 
 	
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -45,6 +76,7 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -60,18 +92,22 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 			return false;
 		return true;
 	}
+	/** {@inheritDoc} */
 	@Override
 	public boolean isStatic() {
 		return false;
 	}
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPublic() {
 		return false;
 	}
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getJAXBType() {
 		return null;
 	}
+	/** {@inheritDoc} */
 	@Override
 	public Class<?> getJavaType() {
 		return null;

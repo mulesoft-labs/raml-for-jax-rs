@@ -17,12 +17,24 @@ package org.raml.parser.visitor;
 
 import org.yaml.snakeyaml.nodes.Node;
 
+/**
+ * <p>ErrorMessage class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ErrorMessage
 {
 
     private String errorMessage;
     private Node node;
 
+    /**
+     * <p>Constructor for ErrorMessage.</p>
+     *
+     * @param errorMessage a {@link java.lang.String} object.
+     * @param node a {@link org.yaml.snakeyaml.nodes.Node} object.
+     */
     public ErrorMessage(String errorMessage, Node node)
     {
         super();
@@ -30,11 +42,21 @@ public class ErrorMessage
         this.node = node;
     }
 
+    /**
+     * <p>Getter for the field <code>errorMessage</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getErrorMessage()
     {
         return errorMessage;
     }
 
+    /**
+     * <p>Getter for the field <code>node</code>.</p>
+     *
+     * @return a {@link org.yaml.snakeyaml.nodes.Node} object.
+     */
     public Node getNode()
     {
         return node;

@@ -30,12 +30,27 @@ import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Resource;
 
+/**
+ * <p>Names class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Names
 {
+    /** Constant <code>GENERIC_PAYLOAD_ARGUMENT_NAME="entity"</code> */
     public static final String GENERIC_PAYLOAD_ARGUMENT_NAME = "entity";
+    /** Constant <code>MULTIPLE_RESPONSE_HEADERS_ARGUMENT_NAME="headers"</code> */
     public static final String MULTIPLE_RESPONSE_HEADERS_ARGUMENT_NAME = "headers";
+    /** Constant <code>EXAMPLE_PREFIX=" e.g. "</code> */
     public static final String EXAMPLE_PREFIX = " e.g. ";
 
+    /**
+     * <p>buildResourceInterfaceName.</p>
+     *
+     * @param resource a {@link org.raml.model.Resource} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String buildResourceInterfaceName(final Resource resource)
     {
         final String resourceInterfaceName = buildJavaFriendlyName(defaultIfBlank(resource.getDisplayName(),
@@ -44,6 +59,12 @@ public class Names
         return isBlank(resourceInterfaceName) ? "Root" : resourceInterfaceName;
     }
 
+    /**
+     * <p>buildVariableName.</p>
+     *
+     * @param source a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String buildVariableName(final String source)
     {
         final String name = uncapitalize(buildJavaFriendlyName(source));
@@ -51,6 +72,12 @@ public class Names
         return Constants.JAVA_KEYWORDS.contains(name) ? "$" + name : name;
     }
 
+    /**
+     * <p>buildJavaFriendlyName.</p>
+     *
+     * @param source a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String buildJavaFriendlyName(final String source)
     {
         final String baseName = source.replaceAll("[\\W_]", " ");
@@ -65,6 +92,13 @@ public class Names
         return friendlyName;
     }
 
+    /**
+     * <p>buildResourceMethodName.</p>
+     *
+     * @param action a {@link org.raml.model.Action} object.
+     * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String buildResourceMethodName(final Action action, final MimeType bodyMimeType)
     {
         final String methodBaseName = buildJavaFriendlyName(action.getResource()
@@ -74,6 +108,13 @@ public class Names
         return action.getType().toString().toLowerCase() + buildMimeTypeInfix(bodyMimeType) + methodBaseName;
     }
 
+    /**
+     * <p>buildResponseMethodName.</p>
+     *
+     * @param statusCode a int.
+     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String buildResponseMethodName(final int statusCode, final MimeType mimeType)
     {
         final String status = EnglishReasonPhraseCatalog.INSTANCE.getReason(statusCode, DEFAULT_LOCALE);
@@ -83,6 +124,12 @@ public class Names
        return "with" + Character.toUpperCase(string.charAt(0))+string.substring(1);
     }
 
+    /**
+     * <p>buildNestedSchemaName.</p>
+     *
+     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String buildNestedSchemaName(final MimeType mimeType)
     {
         // TODO improve naming strategy for nested schemas
@@ -95,6 +142,12 @@ public class Names
         return bodyMimeType != null ? buildJavaFriendlyName(getShortMimeType(bodyMimeType)) : "";
     }
 
+    /**
+     * <p>getShortMimeType.</p>
+     *
+     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String getShortMimeType(final MimeType mimeType)
     {
 		if (mimeType == null) {

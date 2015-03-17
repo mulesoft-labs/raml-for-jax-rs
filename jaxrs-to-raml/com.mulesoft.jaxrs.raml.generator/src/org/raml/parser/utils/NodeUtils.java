@@ -28,6 +28,12 @@ import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
 
+/**
+ * <p>NodeUtils class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class NodeUtils
 {
 
@@ -50,6 +56,12 @@ public class NodeUtils
                     Tag.MAP
             }));
 
+    /**
+     * <p>getNodeValue.</p>
+     *
+     * @param node a {@link org.yaml.snakeyaml.nodes.Node} object.
+     * @return a {@link java.lang.Object} object.
+     */
     public static Object getNodeValue(Node node)
     {
         Object value = null;
@@ -76,6 +88,12 @@ public class NodeUtils
         return value;
     }
 
+    /**
+     * <p>isStandardTag.</p>
+     *
+     * @param tag a {@link org.yaml.snakeyaml.nodes.Tag} object.
+     * @return a boolean.
+     */
     public static boolean isStandardTag(Tag tag)
     {
         return STANDARD_TAGS.contains(tag);

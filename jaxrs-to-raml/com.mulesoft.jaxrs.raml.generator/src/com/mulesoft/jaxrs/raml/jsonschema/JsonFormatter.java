@@ -9,10 +9,22 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * <p>JsonFormatter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JsonFormatter {
 	
 	private static final String INDENT_INCREMENT = "  ";
 	
+	/**
+	 * <p>formatExternal.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String formatExternal(String content){
 		
 		String trim = content.trim();
@@ -40,6 +52,12 @@ public class JsonFormatter {
 		return result;
 	}
 
+	/**
+	 * <p>format.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String format(String content){
 		
 		if(content==null)

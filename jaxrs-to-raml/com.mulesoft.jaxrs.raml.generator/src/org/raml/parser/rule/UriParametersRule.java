@@ -27,12 +27,21 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>UriParametersRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class UriParametersRule extends DefaultTupleRule<ScalarNode, MappingNode>
 {
 
     private List<ValidationResult> errors;
     private ScalarNode keyNode;
 
+    /**
+     * <p>Constructor for UriParametersRule.</p>
+     */
     public UriParametersRule()
     {
         super("baseUriParameters", new DefaultScalarTupleHandler("baseUriParameters"));
@@ -41,12 +50,23 @@ public class UriParametersRule extends DefaultTupleRule<ScalarNode, MappingNode>
     }
 
     
+    /**
+     * <p>onRuleEnd.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> onRuleEnd()
     {
         return errors;
     }
 
     
+    /**
+     * <p>validateKey.</p>
+     *
+     * @param key a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
@@ -62,6 +82,7 @@ public class UriParametersRule extends DefaultTupleRule<ScalarNode, MappingNode>
         return validationResults;
     }
 
+    /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
@@ -92,16 +113,31 @@ public class UriParametersRule extends DefaultTupleRule<ScalarNode, MappingNode>
         return new DefaultTupleRule(keyNode.toString(), new DefaultTupleHandler(), getNodeRuleFactory());
     }
 
+    /**
+     * <p>wasAlreadyDefined.</p>
+     *
+     * @return a boolean.
+     */
     public boolean wasAlreadyDefined()
     {
         return keyNode != null;
     }
 
+    /**
+     * <p>Setter for the field <code>keyNode</code>.</p>
+     *
+     * @param rulePresent a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public void setKeyNode(ScalarNode rulePresent)
     {
         this.keyNode = rulePresent;
     }
 
+    /**
+     * <p>getUriRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.BaseUriRule} object.
+     */
     public BaseUriRule getUriRule()
     {
         return (BaseUriRule) getRootTupleRule().getRuleByFieldName("baseUri");

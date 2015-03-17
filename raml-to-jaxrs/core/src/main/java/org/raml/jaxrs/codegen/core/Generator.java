@@ -82,10 +82,17 @@ import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
+/**
+ * <p>Generator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Generator extends AbstractGenerator
 {
     
 
+    /** {@inheritDoc} */
     protected void createResourceInterface(final Resource resource, final Raml raml) throws Exception
     {
         final String resourceInterfaceName = Names.buildResourceInterfaceName(resource);
@@ -111,6 +118,7 @@ public class Generator extends AbstractGenerator
 
     
 
+    /** {@inheritDoc} */
     protected void addResourceMethod(final JDefinedClass resourceInterface,
                                    final String resourceInterfacePath,
                                    final Action action,

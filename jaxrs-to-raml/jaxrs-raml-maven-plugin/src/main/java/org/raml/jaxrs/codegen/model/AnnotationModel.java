@@ -19,6 +19,12 @@ import java.util.HashMap;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 
+/**
+ * <p>AnnotationModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class AnnotationModel implements IAnnotationModel{
 
 	private String name;
@@ -29,20 +35,34 @@ public class AnnotationModel implements IAnnotationModel{
 	
 	private HashMap<String,IAnnotationModel[]> annotationArrayValues;
 
+	/**
+	 * <p>Constructor for AnnotationModel.</p>
+	 */
 	public AnnotationModel() {
 	}
 
 	
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {		
 
 		return name;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setName(String name){
 		this.name = name;
 	}
 
 	
+	/** {@inheritDoc} */
 	public String getValue(String pairName) {
 		if (stringValues!=null){
 			Object object = stringValues.get(pairName);
@@ -54,6 +74,7 @@ public class AnnotationModel implements IAnnotationModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public String[] getValues(String key) {
 
 		String[] values = stringArrayValues != null ? stringArrayValues.get(key) : null;
@@ -67,11 +88,18 @@ public class AnnotationModel implements IAnnotationModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public IAnnotationModel[] getSubAnnotations(String pairName) {
 		
 		return annotationArrayValues != null ? annotationArrayValues.get(pairName) : null;
 	}
 	
+	/**
+	 * <p>addValue.</p>
+	 *
+	 * @param key a {@link java.lang.String} object.
+	 * @param value a {@link java.lang.Object} object.
+	 */
 	public void addValue(String key, Object value) {
 		
 		if(value==null||key==null){

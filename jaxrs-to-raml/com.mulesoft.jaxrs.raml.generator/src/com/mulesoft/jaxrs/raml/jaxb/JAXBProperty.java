@@ -6,12 +6,25 @@ import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 
+/**
+ * <p>Abstract JAXBProperty class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class JAXBProperty extends JAXBModelElement{
 
 	String propertyName;
 	boolean required;
 	private boolean isCollection;
 	
+	/**
+	 * <p>Constructor for JAXBProperty.</p>
+	 *
+	 * @param model a {@link com.mulesoft.jaxrs.raml.annotation.model.IBasicModel} object.
+	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public JAXBProperty(IBasicModel model,JAXBRegistry r, String name) {
 		super(model,r);
 		this.propertyName=name;
@@ -24,16 +37,31 @@ public abstract class JAXBProperty extends JAXBModelElement{
 		}
 	}
 	
+	/**
+	 * <p>getPropertyAnnotation.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected abstract String getPropertyAnnotation();
 
 	JAXBType getType(){
 		return null;		
 	}
 
+	/**
+	 * <p>name.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String name() {
 		return elementName!=null?elementName:propertyName.toLowerCase();
 	}
 
+	/**
+	 * <p>asJavaType.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public Class<?> asJavaType() {
 		if (originalType instanceof IMember){
 			IMember or=(IMember) originalType;
@@ -42,6 +70,11 @@ public abstract class JAXBProperty extends JAXBModelElement{
 		return null;
 	}
 
+	/**
+	 * <p>isCollection.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isCollection() {
 		boolean b = isCollection||asJavaType()!=null&&Collection.class.isAssignableFrom(asJavaType());
 		return b;

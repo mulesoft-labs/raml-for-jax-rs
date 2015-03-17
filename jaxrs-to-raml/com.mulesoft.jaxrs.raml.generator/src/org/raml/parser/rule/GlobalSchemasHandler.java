@@ -12,9 +12,16 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>GlobalSchemasHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class GlobalSchemasHandler implements ExtraHandler {
 
 	
+	/** {@inheritDoc} */
 	public void handle(Object pojo, SequenceNode node) {
 		if (pojo instanceof Raml2) {
 			Raml2 r=(Raml2) pojo;

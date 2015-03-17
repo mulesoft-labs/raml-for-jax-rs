@@ -15,21 +15,47 @@ import com.google.common.collect.Collections2;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 
+/**
+ * <p>Abstract APTModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class APTModel implements IBasicModel{
 
 	private static final String VALUE_METHOD_ID = "value"; //$NON-NLS-1$
 
+	/**
+	 * <p>element.</p>
+	 *
+	 * @return a {@link javax.lang.model.element.Element} object.
+	 */
 	public abstract Element element();
 	
 	
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return element().getSimpleName().toString();
 	}
 	
+	/**
+	 * <p>getDocumentation.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDocumentation() {
 		return "Needs to be documented";
 	}
 
+	/**
+	 * <p>getAnnotations.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} objects.
+	 */
 	public IAnnotationModel[] getAnnotations() {
 		List<? extends AnnotationMirror> annotationMirrors = element().getAnnotationMirrors();
 		ArrayList<APTAnnotation>w=new ArrayList<APTAnnotation>();
@@ -39,6 +65,7 @@ public abstract class APTModel implements IBasicModel{
 		return w.toArray(new IAnnotationModel[w.size()]);
 	}
 
+	/** {@inheritDoc} */
 	public String getAnnotationValue(String annotation) {
 		List<? extends AnnotationMirror> annotationMirrors = element().getAnnotationMirrors();
 		for (AnnotationMirror annotationMirror : annotationMirrors) {
@@ -57,6 +84,7 @@ public abstract class APTModel implements IBasicModel{
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	public String[] getAnnotationValues(String annotation) {
 		List<? extends AnnotationMirror> annotationMirrors = element().getAnnotationMirrors();
@@ -89,6 +117,7 @@ public abstract class APTModel implements IBasicModel{
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	public boolean hasAnnotation(String annotationName) {
 		List<? extends AnnotationMirror> annotationMirrors = element().getAnnotationMirrors();
 		for (AnnotationMirror annotationMirror : annotationMirrors) {
@@ -100,6 +129,7 @@ public abstract class APTModel implements IBasicModel{
 		return false;
 	}
 	
+	/** {@inheritDoc} */
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){

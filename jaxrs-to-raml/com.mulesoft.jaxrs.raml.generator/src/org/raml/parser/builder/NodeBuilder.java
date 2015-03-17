@@ -23,6 +23,9 @@ import org.yaml.snakeyaml.nodes.Node;
  * Date: 6/28/13
  * Time: 5:48 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * @author kor
+ * @version $Id: $Id
  */
 public interface NodeBuilder<V extends Node>
 {
@@ -38,7 +41,8 @@ public interface NodeBuilder<V extends Node>
 
     /**
      * Sets the parent builder
-     * @param parentBuilder
+     *
+     * @param parentBuilder a {@link org.raml.parser.builder.NodeBuilder} object.
      */
     void setParentNodeBuilder(NodeBuilder parentBuilder);
 

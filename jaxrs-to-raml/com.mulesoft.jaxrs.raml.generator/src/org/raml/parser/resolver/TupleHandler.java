@@ -17,8 +17,20 @@ package org.raml.parser.resolver;
 
 import org.yaml.snakeyaml.nodes.NodeTuple;
 
+/**
+ * <p>TupleHandler interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface TupleHandler
 {
 
+    /**
+     * <p>handles.</p>
+     *
+     * @param tuple a {@link org.yaml.snakeyaml.nodes.NodeTuple} object.
+     * @return a boolean.
+     */
     boolean handles(NodeTuple tuple);
 }

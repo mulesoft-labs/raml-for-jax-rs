@@ -5,9 +5,16 @@ import java.util.Map;
 
 import org.raml.model.Raml2;
 
+/**
+ * <p>SchemasEmitter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SchemasEmitter implements IRAMLFieldDumper {
 
 	
+	/** {@inheritDoc} */
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		if (pojo instanceof Raml2){

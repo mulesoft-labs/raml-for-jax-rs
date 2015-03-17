@@ -23,6 +23,12 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * <p>Inflector class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Inflector
 {
 
@@ -120,6 +126,12 @@ public class Inflector
         return matcher.find() ? matcher.replaceFirst(replacement) : null;
     }
 
+    /**
+     * <p>pluralize.</p>
+     *
+     * @param word a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String pluralize(String word)
     {
 
@@ -149,6 +161,12 @@ public class Inflector
     }
 
 
+    /**
+     * <p>singularize.</p>
+     *
+     * @param word a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String singularize(String word)
     {
 

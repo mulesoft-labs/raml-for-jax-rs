@@ -7,9 +7,16 @@ import java.util.Map;
 import org.raml.model.Raml2;
 import org.raml.model.SecurityScheme;
 
+/**
+ * <p>SecuritySchemeEmitter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SecuritySchemeEmitter implements IRAMLFieldDumper{
 
 	
+	/** {@inheritDoc} */
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		if (pojo instanceof Raml2){

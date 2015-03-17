@@ -9,9 +9,10 @@ import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
 /**
- * Extension to RAML model which keeps information about traits and resource types  
- * @author pavel
+ * Extension to RAML model which keeps information about traits and resource types
  *
+ * @author pavel
+ * @version $Id: $Id
  */
 public class Raml2 extends Raml {
 
@@ -19,10 +20,21 @@ public class Raml2 extends Raml {
 	private Map<String, TraitModel> traitsModel = new LinkedHashMap<String, TraitModel>();
 	private Map<String, String> schemaMap=new LinkedHashMap<String, String>();
 
+    /**
+     * <p>Getter for the field <code>schemaMap</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, String> getSchemaMap() {
 		return schemaMap;
 	}
 
+    /**
+     * <p>getSchemaContent.</p>
+     *
+     * @param schemaName a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public String getSchemaContent(String schemaName){
     	for (Map<String,String>q:schemas){
     		if (q.containsKey(schemaName)){
@@ -51,10 +63,13 @@ public class Raml2 extends Raml {
         return null;
     }
     
-    /**
+	/**
+	 * <p>addGlobalSchema.</p>
+	 *
 	 * @param schemaName Schema name will be used as filename without extension and relative path.
-	 * @param content
+	 * @param content a {@link java.lang.String} object.
 	 * @param json If this parameter is false then it suppose that one should add an XML Schema.
+	 * @param addSchemaSuffix a boolean.
 	 */
 	public void addGlobalSchema(
         final String schemaName,
@@ -71,6 +86,12 @@ public class Raml2 extends Raml {
 	    }
 	}
 	
+	/**
+	 * <p>addOrReplaceSchemaContent.</p>
+	 *
+	 * @param schemaName a {@link java.lang.String} object.
+	 * @param content a {@link java.lang.String} object.
+	 */
 	public void addOrReplaceSchemaContent(
         final String schemaName,
         final String content)
@@ -86,22 +107,47 @@ public class Raml2 extends Raml {
         }
     }
 	
+	/**
+	 * <p>Getter for the field <code>resourceTypesModel</code>.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<String, ResourceType> getResourceTypesModel() {
 		return resourceTypesModel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>resourceTypesModel</code>.</p>
+	 *
+	 * @param resourceTypesModel a {@link java.util.Map} object.
+	 */
 	public void setResourceTypesModel(Map<String, ResourceType> resourceTypesModel) {
 		this.resourceTypesModel = resourceTypesModel;
 	}
 
+	/**
+	 * <p>Getter for the field <code>traitsModel</code>.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<String, TraitModel> getTraitsModel() {
 		return traitsModel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>traitsModel</code>.</p>
+	 *
+	 * @param traitsModel a {@link java.util.Map} object.
+	 */
 	public void setTraitsModel(Map<String, TraitModel> traitsModel) {
 		this.traitsModel = traitsModel;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param v a {@link org.raml.model.IRamlFileVisitor} object.
+	 */
 	public void visit(IRamlFileVisitor v) {
 		visitResources(this.getResources(), v);
 		Map<String, ResourceType> resourceTypesModel2 = getResourceTypesModel();
@@ -114,6 +160,13 @@ public class Raml2 extends Raml {
 		}
 	}
 	
+	/**
+	 * <p>addGlobalSchema.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param content a {@link java.lang.String} object.
+	 * @param json a boolean.
+	 */
 	public void addGlobalSchema(String name,String content,boolean json){
 		HashMap<String, String> e = new HashMap<String, String>();
 		String path=name;

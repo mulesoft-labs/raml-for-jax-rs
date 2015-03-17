@@ -36,17 +36,34 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 
+/**
+ * <p>NodeRuleFactory class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class NodeRuleFactory extends AbastractFactory
 {
 
     private NodeRuleFactoryExtension[] extensions;
 
 
+    /**
+     * <p>Constructor for NodeRuleFactory.</p>
+     *
+     * @param extensions a {@link org.raml.parser.rule.NodeRuleFactoryExtension} object.
+     */
     public NodeRuleFactory(NodeRuleFactoryExtension... extensions)
     {
         this.extensions = extensions;
     }
 
+    /**
+     * <p>createDocumentRule.</p>
+     *
+     * @param documentClass a {@link java.lang.Class} object.
+     * @return a {@link org.raml.parser.rule.DefaultTupleRule} object.
+     */
     public DefaultTupleRule<Node, MappingNode> createDocumentRule(Class<?> documentClass)
     {
         DefaultTupleRule<Node, MappingNode> documentRule = new DefaultTupleRule<Node, MappingNode>(null, new DefaultTupleHandler());
@@ -56,6 +73,12 @@ public class NodeRuleFactory extends AbastractFactory
     }
 
 
+    /**
+     * <p>addRulesTo.</p>
+     *
+     * @param pojoClass a {@link java.lang.Class} object.
+     * @param parent a {@link org.raml.parser.rule.TupleRule} object.
+     */
     public void addRulesTo(Class<?> pojoClass, TupleRule<?, ?> parent)
     {
         final List<Field> declaredFields = ReflectionUtils.getInheritedFields(pojoClass);

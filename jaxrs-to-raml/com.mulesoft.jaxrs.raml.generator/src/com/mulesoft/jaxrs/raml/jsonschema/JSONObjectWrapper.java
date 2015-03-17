@@ -7,6 +7,12 @@ import java.util.Set;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * <p>JSONObjectWrapper class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JSONObjectWrapper {
 	
 	
@@ -16,6 +22,11 @@ public class JSONObjectWrapper {
 	
 	private String type;
 
+	/**
+	 * <p>Constructor for JSONObjectWrapper.</p>
+	 *
+	 * @param object a {@link org.codehaus.jettison.json.JSONObject} object.
+	 */
 	public JSONObjectWrapper(JSONObject object) {
 		super();
 		this.object = object;
@@ -48,6 +59,11 @@ public class JSONObjectWrapper {
 		}
 	}
 	
+	/**
+	 * <p>Getter for the field <code>object</code>.</p>
+	 *
+	 * @return a {@link org.codehaus.jettison.json.JSONObject} object.
+	 */
 	public JSONObject getObject() {
 		return object;
 	}
@@ -55,6 +71,7 @@ public class JSONObjectWrapper {
 	
 
 	
+	/** {@inheritDoc} */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -89,6 +106,11 @@ public class JSONObjectWrapper {
 	}
 
 	
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

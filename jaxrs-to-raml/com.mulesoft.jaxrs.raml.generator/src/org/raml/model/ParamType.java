@@ -19,6 +19,12 @@ import java.math.BigDecimal;
 
 import org.raml.model.parameter.AbstractParam;
 
+/**
+ * <p>ParamType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public enum ParamType
 {
     STRING
@@ -106,6 +112,13 @@ public enum ParamType
                 }
             };
 
+    /**
+     * <p>validate.</p>
+     *
+     * @param param a {@link org.raml.model.parameter.AbstractParam} object.
+     * @param value a {@link java.lang.String} object.
+     * @return a boolean.
+     */
     public boolean validate(AbstractParam param, String value)
     {
         return true;

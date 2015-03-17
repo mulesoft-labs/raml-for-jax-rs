@@ -28,8 +28,15 @@ import com.sun.codemodel.JDocComment;
 import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JType;
 
+/**
+ * <p>ClientGenerator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ClientGenerator extends AbstractGenerator {
 
+	/** {@inheritDoc} */
 	protected void addResourceMethod(final JDefinedClass resourceInterface,
 			final String resourceInterfacePath, final Action action,
 			final MimeType bodyMimeType,

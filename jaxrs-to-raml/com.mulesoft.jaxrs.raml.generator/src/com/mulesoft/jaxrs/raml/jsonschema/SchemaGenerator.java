@@ -14,9 +14,20 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * <p>SchemaGenerator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SchemaGenerator {
 	
 	
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args){
 		
 		String in="C:/workspaces/RAML-100apis/100apis/salesforce/examples";		
@@ -25,6 +36,12 @@ public class SchemaGenerator {
 		new SchemaGenerator().processDir(in, out);		
 	}
 	
+	/**
+	 * <p>processDir.</p>
+	 *
+	 * @param src a {@link java.lang.String} object.
+	 * @param dst a {@link java.lang.String} object.
+	 */
 	public void processDir(String src, String dst){
 		
 		File srcFolder = new File(src);
@@ -56,6 +73,12 @@ public class SchemaGenerator {
 		}
 	}
 	
+	/**
+	 * <p>generateSchema.</p>
+	 *
+	 * @param in a {@link java.lang.String} object.
+	 * @param out a {@link java.lang.String} object.
+	 */
 	public void generateSchema(String in, String out){
 		
 		File file = new File(in);
@@ -98,8 +121,9 @@ public class SchemaGenerator {
 		
 	}
 	/**
-	 * 
-	 * @param content
+	 * <p>generateSchema.</p>
+	 *
+	 * @param content a {@link java.lang.String} object.
 	 * @return scehama content
 	 */
 	public String generateSchema(String content){

@@ -27,6 +27,12 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.codegen.core.ext.AbstractGeneratorExtension;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 
+/**
+ * <p>Configuration class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Configuration
 {
     public enum JaxrsVersion
@@ -70,10 +76,20 @@ public class Configuration
 	private boolean emptyResponseReturnVoid;
 	private boolean generateClientInterface;
 	
+	/**
+	 * <p>isGenerateClientInterface.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isGenerateClientInterface() {
 		return generateClientInterface;
 	}
 
+	/**
+	 * <p>Setter for the field <code>generateClientInterface</code>.</p>
+	 *
+	 * @param generateClientInterface a boolean.
+	 */
 	public void setGenerateClientInterface(boolean generateClientInterface) {
 		this.generateClientInterface = generateClientInterface;
 	}
@@ -82,16 +98,31 @@ public class Configuration
     
     
 
+	/**
+	 * <p>Getter for the field <code>asyncResourceTrait</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getAsyncResourceTrait()
     {
          return asyncResourceTrait;
     }
     
+    /**
+     * <p>Setter for the field <code>asyncResourceTrait</code>.</p>
+     *
+     * @param asyncResourceTrait a {@link java.lang.String} object.
+     */
     public void setAsyncResourceTrait(final String asyncResourceTrait)
     {
          this.asyncResourceTrait = asyncResourceTrait;
     }
 
+    /**
+     * <p>createJsonSchemaGenerationConfig.</p>
+     *
+     * @return a {@link org.jsonschema2pojo.GenerationConfig} object.
+     */
     public GenerationConfig createJsonSchemaGenerationConfig()
     {
         return new DefaultGenerationConfig()
@@ -144,90 +175,185 @@ public class Configuration
         };
     }
 
+    /**
+     * <p>Getter for the field <code>outputDirectory</code>.</p>
+     *
+     * @return a {@link java.io.File} object.
+     */
     public File getOutputDirectory()
     {
         return outputDirectory;
     }
 
+    /**
+     * <p>Setter for the field <code>outputDirectory</code>.</p>
+     *
+     * @param outputDirectory a {@link java.io.File} object.
+     */
     public void setOutputDirectory(final File outputDirectory)
     {
         this.outputDirectory = outputDirectory;
     }
 
+    /**
+     * <p>Getter for the field <code>jaxrsVersion</code>.</p>
+     *
+     * @return a {@link org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion} object.
+     */
     public JaxrsVersion getJaxrsVersion()
     {
         return jaxrsVersion;
     }
 
+    /**
+     * <p>Setter for the field <code>jaxrsVersion</code>.</p>
+     *
+     * @param jaxrsVersion a {@link org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion} object.
+     */
     public void setJaxrsVersion(final JaxrsVersion jaxrsVersion)
     {
         this.jaxrsVersion = jaxrsVersion;
     }
 
+    /**
+     * <p>Getter for the field <code>basePackageName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getBasePackageName()
     {
         return basePackageName;
     }
 
+    /**
+     * <p>Setter for the field <code>basePackageName</code>.</p>
+     *
+     * @param basePackageName a {@link java.lang.String} object.
+     */
     public void setBasePackageName(final String basePackageName)
     {
         this.basePackageName = basePackageName;
     }
 
+    /**
+     * <p>isUseJsr303Annotations.</p>
+     *
+     * @return a boolean.
+     */
     public boolean isUseJsr303Annotations()
     {
         return useJsr303Annotations;
     }
 
+    /**
+     * <p>Setter for the field <code>useJsr303Annotations</code>.</p>
+     *
+     * @param useJsr303Annotations a boolean.
+     */
     public void setUseJsr303Annotations(final boolean useJsr303Annotations)
     {
         this.useJsr303Annotations = useJsr303Annotations;
     }
 
+    /**
+     * <p>Getter for the field <code>jsonMapper</code>.</p>
+     *
+     * @return a {@link org.jsonschema2pojo.AnnotationStyle} object.
+     */
     public AnnotationStyle getJsonMapper()
     {
         return jsonMapper;
     }
 
+    /**
+     * <p>Setter for the field <code>jsonMapper</code>.</p>
+     *
+     * @param jsonMapper a {@link org.jsonschema2pojo.AnnotationStyle} object.
+     */
     public void setJsonMapper(final AnnotationStyle jsonMapper)
     {
         this.jsonMapper = jsonMapper;
     }
     
+    /**
+     * <p>Getter for the field <code>methodThrowException</code>.</p>
+     *
+     * @return a {@link java.lang.Class} object.
+     */
     public Class getMethodThrowException() {
         return methodThrowException;
     }
     
+    /**
+     * <p>Setter for the field <code>methodThrowException</code>.</p>
+     *
+     * @param methodThrowException a {@link java.lang.Class} object.
+     */
     public void setMethodThrowException(Class methodThrowException) {
         this.methodThrowException = methodThrowException;
     }
 
+    /**
+     * <p>Getter for the field <code>sourceDirectory</code>.</p>
+     *
+     * @return a {@link java.io.File} object.
+     */
     public File getSourceDirectory() {
         return sourceDirectory;
     }
 
+    /**
+     * <p>Setter for the field <code>sourceDirectory</code>.</p>
+     *
+     * @param sourceDirectory a {@link java.io.File} object.
+     */
     public void setSourceDirectory(File sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
     }
     
+    /**
+     * <p>Getter for the field <code>jsonMapperConfiguration</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, String> getJsonMapperConfiguration()
     {
        return jsonMapperConfiguration;
     }
     
+    /**
+     * <p>Setter for the field <code>jsonMapperConfiguration</code>.</p>
+     *
+     * @param jsonMapperConfiguration a {@link java.util.Map} object.
+     */
     public void setJsonMapperConfiguration(Map<String, String> jsonMapperConfiguration)
     {
        this.jsonMapperConfiguration = jsonMapperConfiguration;
     }
 
+	/**
+	 * <p>isEmptyResponseReturnVoid.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmptyResponseReturnVoid() {
 		return emptyResponseReturnVoid;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>emptyResponseReturnVoid</code>.</p>
+	 *
+	 * @param emptyResponseReturnVoid a boolean.
+	 */
 	public void setEmptyResponseReturnVoid(boolean emptyResponseReturnVoid) {
 		this.emptyResponseReturnVoid = emptyResponseReturnVoid;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>extensions</code>.</p>
+	 *
+	 * @return a {@link java.util.List} object.
+	 */
 	public List<GeneratorExtension> getExtensions() {
 		return this.extensions;
 	}

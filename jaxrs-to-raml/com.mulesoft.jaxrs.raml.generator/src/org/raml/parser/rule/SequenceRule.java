@@ -16,10 +16,18 @@
 package org.raml.parser.rule;
 
 /**
+ * <p>SequenceRule interface.</p>
  *
+ * @author kor
+ * @version $Id: $Id
  */
 public interface SequenceRule
 {
 
+    /**
+     * <p>getItemRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.NodeRule} object.
+     */
     NodeRule<?> getItemRule();
 }

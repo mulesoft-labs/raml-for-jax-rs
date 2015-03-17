@@ -27,22 +27,31 @@ import org.raml.model.parameter.AbstractParam;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
+/**
+ * <p>GeneratorExtension interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface GeneratorExtension {
 
 	
 	/**
 	 * Called after a class is added to the Java model by the code generator
+	 *
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
 	 * @param resourceInterface
-	 * @param resource
+	 * @param resource a {@link org.raml.model.Resource} object.
 	 */
 	public void onCreateResourceInterface(final JDefinedClass resourceInterface, Resource resource);
 	
 	/**
 	 * Called after a method is added to the Java model by the code generator
-	 * @param method
-	 * @param action
-	 * @param bodyMimeType
-	 * @param uniqueResponseMimeTypes
+	 *
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param uniqueResponseMimeTypes a {@link java.util.Collection} object.
 	 */
 	public void onAddResourceMethod(final JMethod method, final Action action, 
 			final MimeType bodyMimeType, final Collection<MimeType> uniqueResponseMimeTypes);
@@ -50,10 +59,11 @@ public interface GeneratorExtension {
 	/**
 	 * Called to decide if a given parameter should be added to a method.  Is used to avoid passing request parameters to a method (or response parameteres from a method) if
 	 * the parameter is handled solely in a servlet filter.
-	 * @param name
-	 * @param parameter
-	 * @param annotationClass
-	 * @param method
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param parameter a {@link org.raml.model.parameter.AbstractParam} object.
+	 * @param annotationClass a {@link java.lang.Class} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @return true if the parameter should be added; false if it is should be ignored
 	 */
 	public boolean AddParameterFilter(final String name,
@@ -63,9 +73,9 @@ public interface GeneratorExtension {
 	
 	
 	/**
-	 * Sets the {@link Raml}.
-	 * 
-	 * @param raml
+	 * Sets the {@link org.raml.model.Raml}.
+	 *
+	 * @param raml a {@link org.raml.model.Raml} object.
 	 */
 	void setRaml(Raml raml);
 }

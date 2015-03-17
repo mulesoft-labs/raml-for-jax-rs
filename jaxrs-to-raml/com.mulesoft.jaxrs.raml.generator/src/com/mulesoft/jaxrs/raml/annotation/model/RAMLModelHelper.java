@@ -13,20 +13,39 @@ import org.raml.model.RamlFileVisitorAdapter;
 import org.raml.model.Resource;
 import org.raml.model.parameter.UriParameter;
 
+/**
+ * <p>RAMLModelHelper class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RAMLModelHelper {
 
 	protected Raml2 coreRaml = new Raml2();
 
+	/**
+	 * <p>Constructor for RAMLModelHelper.</p>
+	 */
 	public RAMLModelHelper() {
 		coreRaml.setBaseUri("http://example.com");
 		coreRaml.setTitle("Please type API title here");
 		coreRaml.setProtocols(Collections.singletonList(Protocol.HTTP));
 	}
 
+	/**
+	 * <p>getMediaType.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getMediaType() {
 		return coreRaml.getMediaType();
 	}
 
+	/**
+	 * <p>addResource.</p>
+	 *
+	 * @param res a {@link org.raml.model.Resource} object.
+	 */
 	public void addResource(Resource res) {
 		cleanupUrl(res);
 		String relativeUri = res.getRelativeUri();
@@ -111,6 +130,12 @@ public class RAMLModelHelper {
 	}
 
 	// TODO More accurate resource merging
+	/**
+	 * <p>placeResource.</p>
+	 *
+	 * @param resources a {@link java.util.Map} object.
+	 * @param createResource a {@link org.raml.model.Resource} object.
+	 */
 	public static void placeResource(Map<String, Resource> resources,
 			Resource createResource) {
 		String relativeUri = createResource.getRelativeUri();
@@ -185,16 +210,29 @@ public class RAMLModelHelper {
 		}
 	}
 
+	/**
+	 * <p>setMediaType.</p>
+	 *
+	 * @param mediaType a {@link java.lang.String} object.
+	 */
 	public void setMediaType(String mediaType) {
 		coreRaml.setMediaType(mediaType);
 	}
 	
 
+	/**
+	 * <p>Getter for the field <code>coreRaml</code>.</p>
+	 *
+	 * @return a {@link org.raml.model.Raml2} object.
+	 */
 	public Raml2 getCoreRaml() {
 		
 		return coreRaml;
 	}
 
+	/**
+	 * <p>optimize.</p>
+	 */
 	public void optimize() {
 		optimizeResourceMap(coreRaml.getResources());
 		coreRaml.visit(new RamlFileVisitorAdapter() {
@@ -206,6 +244,11 @@ public class RAMLModelHelper {
 		});
 	}
 
+	/**
+	 * <p>optimizeResourceMap.</p>
+	 *
+	 * @param resources a {@link java.util.Map} object.
+	 */
 	protected void optimizeResourceMap(Map<String, Resource> resources) {
 		sortIfNeeded(resources);
 		extractCommonPaths(resources);

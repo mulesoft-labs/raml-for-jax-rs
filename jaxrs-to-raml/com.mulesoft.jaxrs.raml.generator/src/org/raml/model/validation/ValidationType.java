@@ -15,6 +15,12 @@
  */
 package org.raml.model.validation;
 
+/**
+ * <p>ValidationType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public enum ValidationType
 {
     ENUM, PATTERN, MINLENGTH, MAXLENGTH, MINIMUM, MAXIMUM

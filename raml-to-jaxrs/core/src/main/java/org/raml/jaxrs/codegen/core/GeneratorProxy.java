@@ -17,8 +17,21 @@ package org.raml.jaxrs.codegen.core;
 
 import java.io.InputStreamReader;
 
+/**
+ * <p>GeneratorProxy class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class GeneratorProxy {
 
+	/**
+	 * <p>run.</p>
+	 *
+	 * @param ramlReader a {@link java.io.InputStreamReader} object.
+	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public void run(InputStreamReader ramlReader, Configuration configuration) throws Exception {
 		if (configuration.isGenerateClientInterface()){
 			new ClientGenerator().run(ramlReader, configuration);

@@ -15,8 +15,19 @@
  */
 package org.raml.parser;
 
+/**
+ * <p>ParseException class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ParseException extends RuntimeException
 {
+    /**
+     * <p>Constructor for ParseException.</p>
+     *
+     * @param message a {@link java.lang.String} object.
+     */
     public ParseException(String message)
     {
         super(message);

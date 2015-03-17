@@ -15,9 +15,16 @@
  */
 package org.raml.parser.rule;
 
+/**
+ * <p>ValidationMessage class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public final class ValidationMessage
 {
 
+    /** Constant <code>NON_SCALAR_KEY_MESSAGE="Only scalar keys are allowed"</code> */
     public static final String NON_SCALAR_KEY_MESSAGE = "Only scalar keys are allowed";
 
     private static final String EMPTY_MESSAGE = "can not be empty";
@@ -29,22 +36,47 @@ public final class ValidationMessage
     {
     }
 
+    /**
+     * <p>getRuleEmptyMessage.</p>
+     *
+     * @param ruleName a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String getRuleEmptyMessage(String ruleName)
     {
         return ruleName + " " + EMPTY_MESSAGE;
     }
 
+    /**
+     * <p>getDuplicateRuleMessage.</p>
+     *
+     * @param ruleName a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String getDuplicateRuleMessage(String ruleName)
     {
         return DUPLICATE_MESSAGE + " " + ruleName;
     }
 
 
+    /**
+     * <p>getRuleTypeMisMatch.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @param fieldType a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String getRuleTypeMisMatch(String name, String fieldType)
     {
         return TYPE_MISMATCH_MESSAGE + name + " must be of type " + fieldType;
     }
 
+    /**
+     * <p>getMissingRuleMessage.</p>
+     *
+     * @param ruleName a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String getMissingRuleMessage(String ruleName)
     {
         return ruleName + " " + IS_MISSING;

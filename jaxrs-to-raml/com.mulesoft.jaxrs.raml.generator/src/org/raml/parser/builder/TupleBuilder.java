@@ -21,22 +21,50 @@ import org.raml.parser.resolver.TupleHandler;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 
+/**
+ * <p>TupleBuilder interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface TupleBuilder<K extends Node, V extends Node> extends NodeBuilder<V>
 {
 
     /**
      * Returns the
-     * @param tuple
-     * @return
+     *
+     * @param tuple a {@link org.yaml.snakeyaml.nodes.NodeTuple} object.
+     * @return a {@link org.raml.parser.builder.NodeBuilder} object.
      */
     NodeBuilder getBuilderForTuple(NodeTuple tuple);
 
+    /**
+     * <p>buildKey.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param tuple a K object.
+     */
     void buildKey(Object parent, K tuple);
 
+    /**
+     * <p>setHandler.</p>
+     *
+     * @param handler a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     void setHandler(TupleHandler handler);
 
+    /**
+     * <p>getHandler.</p>
+     *
+     * @return a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     TupleHandler getHandler();
 
+    /**
+     * <p>setNestedBuilders.</p>
+     *
+     * @param nestedBuilders a {@link java.util.Map} object.
+     */
     void setNestedBuilders(Map<String, TupleBuilder<?,?>> nestedBuilders);
 
 }

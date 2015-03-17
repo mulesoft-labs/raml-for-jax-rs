@@ -23,17 +23,31 @@ import java.util.Map;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>GlobalSchemasRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class GlobalSchemasRule extends SequenceTupleRule
 {
 
     private Map<String, ScalarNode> schemas = new HashMap<String, ScalarNode>();
 
+    /**
+     * <p>Constructor for GlobalSchemasRule.</p>
+     */
     public GlobalSchemasRule()
     {
         super("schemas", null);
     }
 
     
+    /**
+     * <p>getItemRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.NodeRule} object.
+     */
     public NodeRule<?> getItemRule()
     {
         return new GlobalSchemaTupleRule(String.class, getNodeRuleFactory());
@@ -60,6 +74,12 @@ public class GlobalSchemasRule extends SequenceTupleRule
         }
     }
 
+    /**
+     * <p>getSchema.</p>
+     *
+     * @param key a {@link java.lang.String} object.
+     * @return a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public ScalarNode getSchema(String key)
     {
         return schemas.get(key);

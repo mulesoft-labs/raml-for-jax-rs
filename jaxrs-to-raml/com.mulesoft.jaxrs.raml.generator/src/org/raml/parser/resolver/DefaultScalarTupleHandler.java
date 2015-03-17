@@ -18,18 +18,30 @@ package org.raml.parser.resolver;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>DefaultScalarTupleHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class DefaultScalarTupleHandler implements TupleHandler
 {
 
 
     private String fieldName;
 
+    /**
+     * <p>Constructor for DefaultScalarTupleHandler.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     */
     public DefaultScalarTupleHandler(String fieldName)
     {
         this.fieldName = fieldName;
     }
 
     
+    /** {@inheritDoc} */
     public boolean handles(NodeTuple tuple)
     {
         if (tuple.getKeyNode() instanceof ScalarNode)

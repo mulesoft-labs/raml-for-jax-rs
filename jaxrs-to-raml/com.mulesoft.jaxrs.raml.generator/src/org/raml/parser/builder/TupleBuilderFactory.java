@@ -33,9 +33,21 @@ import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 
+/**
+ * <p>TupleBuilderFactory class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TupleBuilderFactory extends AbastractFactory
 {
 
+    /**
+     * <p>addBuildersTo.</p>
+     *
+     * @param pojoClass a {@link java.lang.Class} object.
+     * @param parent a {@link org.raml.parser.builder.TupleBuilder} object.
+     */
     public void addBuildersTo(Class<?> pojoClass, TupleBuilder parent)
     {
         final List<Field> declaredFields = ReflectionUtils.getInheritedFields(pojoClass);

@@ -21,12 +21,25 @@ import java.util.List;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
 
+/**
+ * <p>EnumModifierRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class EnumModifierRule extends SimpleRule
 {
 
     private SimpleRule enumRule;
     private List<String> enumTypes;
 
+    /**
+     * <p>Constructor for EnumModifierRule.</p>
+     *
+     * @param ruleName a {@link java.lang.String} object.
+     * @param enumTypes a {@link java.util.List} object.
+     * @param enumRule a {@link org.raml.parser.rule.SimpleRule} object.
+     */
     public EnumModifierRule(String ruleName, List<String> enumTypes, SimpleRule enumRule)
     {
         super(ruleName, Integer.class);
@@ -35,6 +48,7 @@ public class EnumModifierRule extends SimpleRule
     }
 
     
+    /** {@inheritDoc} */
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
@@ -68,6 +82,7 @@ public class EnumModifierRule extends SimpleRule
     }
 
     
+    /** {@inheritDoc} */
     public List<ValidationResult> doValidateValue(ScalarNode value)
     {
         String valueNode = value.getValue();

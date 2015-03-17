@@ -26,18 +26,27 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
 
+/**
+ * <p>JacksonTagResolver class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JacksonTagResolver implements TagResolver
 {
 
+    /** Constant <code>JACKSON_TAG</code> */
     public static final Tag JACKSON_TAG = new Tag("!jackson");
 
     
+    /** {@inheritDoc} */
     public boolean handles(Tag tag)
     {
         return JACKSON_TAG.equals(tag);
     }
 
     
+    /** {@inheritDoc} */
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         String className = ((ScalarNode) node).getValue();

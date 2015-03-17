@@ -6,12 +6,23 @@ import java.lang.reflect.AnnotatedElement;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 
+/**
+ * <p>Abstract BasicReflectionMember class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class BasicReflectionMember<T extends AnnotatedElement> implements IBasicModel{
 
 	private static final String VALUE = "value";
 	protected T element;
 
 	
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -20,6 +31,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -37,20 +49,40 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return true;
 	}
 
+	/**
+	 * <p>Constructor for BasicReflectionMember.</p>
+	 *
+	 * @param element a T object.
+	 */
 	public BasicReflectionMember(T element) {
 		super();
 		this.element = element;
 	}
 
 	
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String getName() ;
 
 	
+	/**
+	 * <p>getDocumentation.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDocumentation() {
 		return "type some documentation here";
 	}
 
 	
+	/**
+	 * <p>getAnnotations.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} objects.
+	 */
 	public IAnnotationModel[] getAnnotations() {
 		Annotation[] annotations = element.getAnnotations();
 		IAnnotationModel[] ml=new IAnnotationModel[annotations.length];
@@ -61,6 +93,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	}
 
 	
+	/** {@inheritDoc} */
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -72,6 +105,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	}
 
 	
+	/** {@inheritDoc} */
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -83,6 +117,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -93,6 +128,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return false;
 	}
 	
+	/** {@inheritDoc} */
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -103,6 +139,11 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 		return null;
 	}
 
+	/**
+	 * <p>Getter for the field <code>element</code>.</p>
+	 *
+	 * @return a T object.
+	 */
 	public T getElement() {
 		return element;
 	}

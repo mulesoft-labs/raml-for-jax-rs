@@ -45,6 +45,12 @@ import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
+/**
+ * <p>Abstract ResourceVisitor class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class ResourceVisitor {
 
 	private static final String DEFAULT_RESPONSE = "200";
@@ -57,14 +63,18 @@ public abstract class ResourceVisitor {
 
 	private static final String JSONSCHEMA = "-jsonschema";
 
+	/** Constant <code>XML_FILE_EXT=".xml"</code> */
 	protected static final String XML_FILE_EXT = ".xml"; //$NON-NLS-1$
 
 	private static final String JSON_FILE_EXT = ".json"; //$NON-NLS-1$
 	
+	/** Constant <code>SCHEMAS_FOLDER="schemas"</code> */
 	protected static final String SCHEMAS_FOLDER = "schemas"; //$NON-NLS-1$
 
+	/** Constant <code>EXAMPLES_FOLDER="examples"</code> */
 	protected static final String EXAMPLES_FOLDER = "examples"; //$NON-NLS-1$
 	
+	/** Constant <code>EXAMPLES_PREFFIX="EXAMPLES_FOLDER + /"</code> */
 	protected static final String EXAMPLES_PREFFIX = EXAMPLES_FOLDER + "/"; //$NON-NLS-1$
 
 	private static final String JSON = "json"; //$NON-NLS-1$
@@ -139,11 +149,22 @@ public abstract class ResourceVisitor {
 
 	private IRamlConfig config;
 
+	/**
+	 * <p>Constructor for ResourceVisitor.</p>
+	 *
+	 * @param outputFile a {@link java.io.File} object.
+	 * @param classLoader a {@link java.lang.ClassLoader} object.
+	 */
 	public ResourceVisitor(File outputFile, ClassLoader classLoader) {
 		this.outputFile = outputFile;
 		this.classLoader = classLoader;
 	}
 
+	/**
+	 * <p>visit.</p>
+	 *
+	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public void visit(ITypeModel t) {
 		consumedTypes.add(t);
 		classConsumes = t.getAnnotationValues(CONSUMES);
@@ -167,10 +188,21 @@ public abstract class ResourceVisitor {
 
 	}
 
+	/**
+	 * <p>generateXMLSchema.</p>
+	 *
+	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	protected void generateXMLSchema(ITypeModel t){
 			
 	}
 	
+	/**
+	 * <p>generateXMLExampleJAXB.</p>
+	 *
+	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String generateXMLExampleJAXB(ITypeModel t){
 		JAXBRegistry rs=new JAXBRegistry();
 		JAXBType jaxbModel = rs.getJAXBModel(t);
@@ -189,6 +221,11 @@ public abstract class ResourceVisitor {
 	
 	
 
+	/**
+	 * <p>getRaml.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRaml() {
 		spec.optimize();
 		RamlEmitterV2 emmitter = new RamlEmitterV2();
@@ -282,6 +319,11 @@ public abstract class ResourceVisitor {
 
 	
 
+	/**
+	 * <p>createResourceVisitor.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor} object.
+	 */
 	protected abstract ResourceVisitor createResourceVisitor();
 
 	private void addMethod(ActionType action, Resource res, IMethodModel m,
@@ -579,6 +621,11 @@ public abstract class ResourceVisitor {
 		}
 	}
 
+	/**
+	 * <p>generateXSDForClass.</p>
+	 *
+	 * @param element a {@link java.lang.Class} object.
+	 */
 	protected void generateXSDForClass(Class<?> element) {
 		try {
 			String name = element.getSimpleName().toLowerCase();
@@ -598,6 +645,9 @@ public abstract class ResourceVisitor {
 		}
 	}
 
+	/**
+	 * <p>clear.</p>
+	 */
 	public void clear() {
 		spec.coreRaml=new Raml2();
 		spec.coreRaml.setBaseUri("http://example.com"); //$NON-NLS-1$
@@ -605,10 +655,23 @@ public abstract class ResourceVisitor {
 		spec.coreRaml.setProtocols(Collections.singletonList(Protocol.HTTP));
 	}
 
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isEmpty() {
 		return spec.coreRaml.getResources().isEmpty();
 	}
 
+	/**
+	 * <p>doGenerateAndSave.</p>
+	 *
+	 * @param schemaFile a {@link java.io.File} object.
+	 * @param parentDir a {@link java.io.File} object.
+	 * @param examplesDir a {@link java.io.File} object.
+	 * @param dummyXml a {@link java.lang.String} object.
+	 */
 	protected void doGenerateAndSave(File schemaFile, File parentDir,
 			File examplesDir, String dummyXml) {
 
@@ -637,6 +700,12 @@ public abstract class ResourceVisitor {
 		}
 	}
 
+	/**
+	 * <p>writeString.</p>
+	 *
+	 * @param generateDummyXmlFor a {@link java.lang.String} object.
+	 * @param toSave a {@link java.io.File} object.
+	 */
 	protected void writeString(String generateDummyXmlFor, File toSave) {
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(toSave);
@@ -647,6 +716,12 @@ public abstract class ResourceVisitor {
 		}
 	}
 
+	/**
+	 * <p>generateExamle.</p>
+	 *
+	 * @param schemaFile a {@link java.io.File} object.
+	 * @param content a {@link java.lang.String} object.
+	 */
 	protected void generateExamle(File schemaFile, String content) {
 		/*if (schemaFile != null) {
 			File examplesDir = schemaFile.getParentFile();
@@ -692,6 +767,11 @@ public abstract class ResourceVisitor {
 		return;
 	}
 
+	/**
+	 * <p>setPreferences.</p>
+	 *
+	 * @param preferencesConfig a {@link com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig} object.
+	 */
 	public void setPreferences(IRamlConfig preferencesConfig) {
 		this.config=preferencesConfig;
 		if (preferencesConfig.getTitle()!=null&&preferencesConfig.getTitle().length()>0){

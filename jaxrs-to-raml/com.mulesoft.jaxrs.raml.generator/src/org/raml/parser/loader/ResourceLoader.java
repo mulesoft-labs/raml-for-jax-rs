@@ -17,9 +17,21 @@ package org.raml.parser.loader;
 
 import java.io.InputStream;
 
+/**
+ * <p>ResourceLoader interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface ResourceLoader
 {
 
+    /**
+     * <p>fetchResource.</p>
+     *
+     * @param resourceName a {@link java.lang.String} object.
+     * @return a {@link java.io.InputStream} object.
+     */
     InputStream fetchResource(String resourceName);
 
 }

@@ -23,36 +23,120 @@ import org.raml.parser.resolver.TupleHandler;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 
+/**
+ * <p>TupleRule interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface TupleRule<K extends Node, V extends Node> extends NodeRule<V>
 {
 
+    /**
+     * <p>validateKey.</p>
+     *
+     * @param key a K object.
+     * @return a {@link java.util.List} object.
+     */
     List<ValidationResult> validateKey(K key);
 
+    /**
+     * <p>getRuleForTuple.</p>
+     *
+     * @param nodeTuple a {@link org.yaml.snakeyaml.nodes.NodeTuple} object.
+     * @return a {@link org.raml.parser.rule.TupleRule} object.
+     */
     TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple);
 
+    /**
+     * <p>setParentTupleRule.</p>
+     *
+     * @param parent a {@link org.raml.parser.rule.TupleRule} object.
+     */
     void setParentTupleRule(TupleRule<?, ?> parent);
 
+    /**
+     * <p>getParentTupleRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.TupleRule} object.
+     */
     TupleRule<?, ?> getParentTupleRule();
 
+    /**
+     * <p>getRootTupleRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.TupleRule} object.
+     */
     TupleRule<?, ?> getRootTupleRule();
 
+    /**
+     * <p>getName.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     String getName();
 
+    /**
+     * <p>setName.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     */
     void setName(String name);
 
+    /**
+     * <p>getRuleByFieldName.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @return a {@link org.raml.parser.rule.TupleRule} object.
+     */
     TupleRule<?, ?> getRuleByFieldName(String fieldName);
 
+    /**
+     * <p>setNestedRules.</p>
+     *
+     * @param innerBuilders a {@link java.util.Map} object.
+     */
     void setNestedRules(Map<String, TupleRule<?, ?>> innerBuilders);
 
+    /**
+     * <p>setHandler.</p>
+     *
+     * @param tupleHandler a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     void setHandler(TupleHandler tupleHandler);
 
+    /**
+     * <p>getHandler.</p>
+     *
+     * @return a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     TupleHandler getHandler();
 
+    /**
+     * <p>setRequired.</p>
+     *
+     * @param required a boolean.
+     */
     void setRequired(boolean required);
 
+    /**
+     * <p>setNodeRuleFactory.</p>
+     *
+     * @param nodeRuleFactory a {@link org.raml.parser.rule.NodeRuleFactory} object.
+     */
     void setNodeRuleFactory(NodeRuleFactory nodeRuleFactory);
 
+    /**
+     * <p>getKey.</p>
+     *
+     * @return a K object.
+     */
     K getKey();
 
+    /**
+     * <p>setValueType.</p>
+     *
+     * @param valueType a {@link java.lang.reflect.Type} object.
+     */
     void setValueType(Type valueType);
 }

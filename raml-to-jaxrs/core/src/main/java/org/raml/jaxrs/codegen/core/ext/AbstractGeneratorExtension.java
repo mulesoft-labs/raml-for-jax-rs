@@ -30,24 +30,28 @@ import com.sun.codemodel.JMethod;
 
 /**
  * Generator extensions can extend this class
- * @author pbober
  *
+ * @author pbober
+ * @version $Id: $Id
  */
 public abstract class AbstractGeneratorExtension implements GeneratorExtension {
 
 	private Raml raml;
 	
+	/** {@inheritDoc} */
 	public void onAddResourceMethod(JMethod method,  Action action,  MimeType bodyMimeType,
 			 Collection<MimeType> uniqueResponseMimeTypes) {
 
 		
 	}
 
+	/** {@inheritDoc} */
 	public void onCreateResourceInterface(JDefinedClass resourceInterface, Resource resource) {
 
 		
 	}
 
+	/** {@inheritDoc} */
 	public boolean AddParameterFilter(String name,
              AbstractParam parameter,
              Class<? extends Annotation> annotationClass,
@@ -55,10 +59,16 @@ public abstract class AbstractGeneratorExtension implements GeneratorExtension {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	public void setRaml(Raml raml) {
 		this.raml = raml;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>raml</code>.</p>
+	 *
+	 * @return a {@link org.raml.model.Raml} object.
+	 */
 	protected  Raml getRaml() {
 		return raml;
 	}

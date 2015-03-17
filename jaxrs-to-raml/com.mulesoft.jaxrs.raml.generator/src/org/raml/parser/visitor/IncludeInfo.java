@@ -22,6 +22,12 @@ import org.yaml.snakeyaml.error.Mark;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>IncludeInfo class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class IncludeInfo
 {
 
@@ -30,6 +36,14 @@ public class IncludeInfo
     private int endColumn;
     private String includeName;
 
+    /**
+     * <p>Constructor for IncludeInfo.</p>
+     *
+     * @param line a int.
+     * @param startColumn a int.
+     * @param endColumn a int.
+     * @param includeName a {@link java.lang.String} object.
+     */
     public IncludeInfo(int line, int startColumn, int endColumn, String includeName)
     {
         this.line = line;
@@ -38,16 +52,33 @@ public class IncludeInfo
         this.includeName = includeName;
     }
 
+    /**
+     * <p>Constructor for IncludeInfo.</p>
+     *
+     * @param startMark a {@link org.yaml.snakeyaml.error.Mark} object.
+     * @param endMark a {@link org.yaml.snakeyaml.error.Mark} object.
+     * @param includeName a {@link java.lang.String} object.
+     */
     public IncludeInfo(Mark startMark, Mark endMark, String includeName)
     {
         this(startMark.getLine(), startMark.getColumn(), endMark.getColumn(), includeName);
     }
 
+    /**
+     * <p>Constructor for IncludeInfo.</p>
+     *
+     * @param node a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public IncludeInfo(ScalarNode node)
     {
         this(node.getStartMark(), node.getEndMark(), node.getValue());
     }
 
+    /**
+     * <p>Constructor for IncludeInfo.</p>
+     *
+     * @param tag a {@link org.yaml.snakeyaml.nodes.Tag} object.
+     */
     public IncludeInfo(Tag tag)
     {
         StringBuilder encodedInclude = new StringBuilder(tag.getValue());
@@ -65,21 +96,41 @@ public class IncludeInfo
         return result;
     }
 
+    /**
+     * <p>Getter for the field <code>line</code>.</p>
+     *
+     * @return a int.
+     */
     public int getLine()
     {
         return line;
     }
 
+    /**
+     * <p>Getter for the field <code>startColumn</code>.</p>
+     *
+     * @return a int.
+     */
     public int getStartColumn()
     {
         return startColumn;
     }
 
+    /**
+     * <p>Getter for the field <code>endColumn</code>.</p>
+     *
+     * @return a int.
+     */
     public int getEndColumn()
     {
         return endColumn;
     }
 
+    /**
+     * <p>Getter for the field <code>includeName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getIncludeName()
     {
         return includeName;

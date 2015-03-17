@@ -11,8 +11,21 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * <p>JsonSchemaNode class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JsonSchemaNode implements ISchemaNode{
 	
+	/**
+	 * <p>Constructor for JsonSchemaNode.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param object a {@link org.codehaus.jettison.json.JSONObject} object.
+	 * @param parent a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 */
 	public JsonSchemaNode(String name, JSONObject object, JsonSchemaNode parent) {
 		super();
 		this.name = name != null ? name.trim() : "";
@@ -34,14 +47,29 @@ public class JsonSchemaNode implements ISchemaNode{
 	
 	private Boolean required = null;
 	
+	/**
+	 * <p>Getter for the field <code>parent</code>.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 */
 	public JsonSchemaNode getParent() {
 		return parent;
 	}
 
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setName(String name) {
 		if(this.name==null){
 			if(name==null)
@@ -55,6 +83,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		fireChanges();
 	}
 
+	/**
+	 * <p>Getter for the field <code>type</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getType(){
 		
 		if(type != null)
@@ -72,6 +105,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		return type;		
 	}
 	
+	/**
+	 * <p>Setter for the field <code>type</code>.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 */
 	public void setType(String type){
 		
 		if(this.type==null){
@@ -94,6 +132,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		}
 	}
 	
+	/**
+	 * <p>getChildren.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<JsonSchemaNode> getChildren(){
 		
 		Collection<JsonSchemaNode> children = null;
@@ -132,6 +175,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		return arrayItems;
 	}	
 
+	/**
+	 * <p>Getter for the field <code>properties</code>.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<JsonSchemaNode> getProperties(){
 		if(properties != null)
 			return properties.values();
@@ -141,6 +189,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		return properties.values();
 	}	
 	
+	/**
+	 * <p>isRequired.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isRequired(){
 		if(required!=null)
 			return required;
@@ -158,6 +211,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		return required;
 	}
 	
+	/**
+	 * <p>Setter for the field <code>required</code>.</p>
+	 *
+	 * @param required a boolean.
+	 */
 	public void setRequired(boolean required){
 		
 		if(this.required!=null&&required == this.required)
@@ -176,6 +234,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		}
 	}
 	
+	/**
+	 * <p>setProperty.</p>
+	 *
+	 * @param property a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 */
 	public void setProperty(JsonSchemaNode property){
 		
 		JSONObject propertiesObject = null;
@@ -201,6 +264,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		fireChanges();
 	}
 	
+	/**
+	 * <p>addArrayItem.</p>
+	 *
+	 * @param item a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 */
 	public void addArrayItem(JsonSchemaNode item){
 		
 		try {
@@ -240,6 +308,11 @@ public class JsonSchemaNode implements ISchemaNode{
 		fireChanges();
 	}
 	
+	/**
+	 * <p>removeProperty.</p>
+	 *
+	 * @param property a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 */
 	public void removeProperty(JsonSchemaNode property){
 		
 		JSONObject propertiesObject = null;
@@ -305,11 +378,23 @@ public class JsonSchemaNode implements ISchemaNode{
 		}
 	}
 	
+	/**
+	 * <p>getFormattedStringValue.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 * @throws org.codehaus.jettison.json.JSONException if any.
+	 * @throws java.io.IOException if any.
+	 */
 	public String getFormattedStringValue() throws JSONException, IOException{
 		String value = JsonUtils.transformObjectToStringAndFormat(object);
 		return value;
 	}
 	
+	/**
+	 * <p>addChildNode.</p>
+	 *
+	 * @param node a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 */
 	public void addChildNode(JsonSchemaNode node){
 		if(type.equals("array")){
 			this.addArrayItem(node);
@@ -322,6 +407,11 @@ public class JsonSchemaNode implements ISchemaNode{
 	
 
 	
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		String name_ = getName();		
 		String type_ = getType();
@@ -398,6 +488,13 @@ public class JsonSchemaNode implements ISchemaNode{
 			
 	}
 
+	/**
+	 * <p>compare.</p>
+	 *
+	 * @param node1 a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @param node2 a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @return a boolean.
+	 */
 	public static boolean compare(JsonSchemaNode node1, JsonSchemaNode node2) {
 		
 		ArrayList<JsonSchemaNode> list1 = new ArrayList<JsonSchemaNode>() ;
@@ -475,6 +572,13 @@ public class JsonSchemaNode implements ISchemaNode{
 		return true;
 	}
 
+	/**
+	 * <p>update.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @param type a {@link java.lang.String} object.
+	 * @param required a boolean.
+	 */
 	public void update(String name, String type, boolean required) {
 		
 		boolean gotChange = false;

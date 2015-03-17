@@ -5,9 +5,16 @@ import java.lang.reflect.Field;
 import org.raml.model.Resource;
 import org.raml.model.TemplateUse;
 
+/**
+ * <p>TypeDumper class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TypeDumper implements IRAMLFieldDumper{
 
 	
+	/** {@inheritDoc} */
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		Resource t=(Resource) pojo;

@@ -27,6 +27,12 @@ import org.raml.parser.utils.ReflectionUtils;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 
+/**
+ * <p>SequenceTupleBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SequenceTupleBuilder extends DefaultTupleBuilder<Node, SequenceNode> implements SequenceBuilder
 {
 
@@ -35,6 +41,13 @@ public class SequenceTupleBuilder extends DefaultTupleBuilder<Node, SequenceNode
     private Type itemType;
 	private ExtraHandler additionalHandler;
 
+    /**
+     * <p>Constructor for SequenceTupleBuilder.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param itemType a {@link java.lang.reflect.Type} object.
+     * @param extraHandler a {@link java.lang.Class} object.
+     */
     public SequenceTupleBuilder(String fieldName, Type itemType, Class<? extends ExtraHandler> extraHandler)
     {
         super(new DefaultScalarTupleHandler(fieldName));
@@ -49,12 +62,24 @@ public class SequenceTupleBuilder extends DefaultTupleBuilder<Node, SequenceNode
         }
     }
 
+    /**
+     * <p>Getter for the field <code>fieldName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     protected String getFieldName()
     {
         return fieldName;
     }
 
     
+    /**
+     * <p>buildValue.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param node a {@link org.yaml.snakeyaml.nodes.SequenceNode} object.
+     * @return a {@link java.lang.Object} object.
+     */
     public Object buildValue(Object parent, SequenceNode node)
     {
         List<?> list = new ArrayList();
@@ -66,6 +91,11 @@ public class SequenceTupleBuilder extends DefaultTupleBuilder<Node, SequenceNode
     }
 
     
+    /**
+     * <p>getItemBuilder.</p>
+     *
+     * @return a {@link org.raml.parser.builder.NodeBuilder} object.
+     */
     public NodeBuilder getItemBuilder()
     {
         if (itemType instanceof Class<?>)

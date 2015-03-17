@@ -23,6 +23,12 @@ import org.raml.parser.annotation.Mapping;
 import org.raml.parser.annotation.Value;
 import org.raml.parser.resolver.MatchAllHandler;
 
+/**
+ * <p>SecurityReference class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SecurityReference
 {
 
@@ -33,26 +39,51 @@ public class SecurityReference
     private Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 
 
+    /**
+     * <p>Constructor for SecurityReference.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     */
     public SecurityReference(@Value String name)
     {
         this.name = name;
     }
 
+    /**
+     * <p>Getter for the field <code>name</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * <p>Setter for the field <code>name</code>.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     */
     public void setName(String name)
     {
         this.name = name;
     }
 
+    /**
+     * <p>Getter for the field <code>parameters</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, List<String>> getParameters()
     {
         return parameters;
     }
 
+    /**
+     * <p>Setter for the field <code>parameters</code>.</p>
+     *
+     * @param parameters a {@link java.util.Map} object.
+     */
     public void setParameters(Map<String, List<String>> parameters)
     {
         this.parameters = parameters;

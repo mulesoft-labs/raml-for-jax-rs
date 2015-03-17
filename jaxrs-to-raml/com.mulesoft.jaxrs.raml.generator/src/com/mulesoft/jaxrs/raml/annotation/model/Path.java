@@ -3,10 +3,10 @@ package com.mulesoft.jaxrs.raml.annotation.model;
 import java.io.File;
 import java.util.Arrays;
 
-/** 
+/**
  * The standard implementation of the <code>Path</code> interface.
  * Paths are always maintained in canonicalized form.  That is, parent
- * references (i.e., <code>../../</code>) and duplicate separators are 
+ * references (i.e., <code>../../</code>) and duplicate separators are
  * resolved.  For example,
  * <pre>     new Path("/a/b").append("../foo/bar")</pre>
  * will yield the path
@@ -17,8 +17,10 @@ import java.util.Arrays;
  * This class is not intended to be subclassed by clients but
  * may be instantiated.
  * </p>
+ *
  * @see Path
- * @noextend This class is not intended to be subclassed by clients.
+ * @author kor
+ * @version $Id: $Id
  */
 public class Path implements  Cloneable {
 	
@@ -75,10 +77,10 @@ public class Path implements  Cloneable {
 	/** flags indicating separators (has leading, is UNC, has trailing) */
 	private int separators;
 
-	/** 
+	/**
 	 * Constructs a new path from the given string path.
 	 * The string path must represent a valid file system path
-	 * on the local file system. 
+	 * on the local file system.
 	 * The path is canonicalized and double slashes are removed
 	 * except at the beginning. (to handle UNC paths). All forward
 	 * slashes ('/') are treated as segment delimiters, and any
@@ -88,12 +90,13 @@ public class Path implements  Cloneable {
 	 * @param pathString the portable string path
 	 * @see Path#toPortableString()
 	 * @since 3.1
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public static Path fromOSString(String pathString) {
 		return new Path(pathString);
 	}
 
-	/** 
+	/**
 	 * Constructs a new path from the given path string.
 	 * The path string must have been produced by a previous
 	 * call to <code>Path.toPortableString</code>.
@@ -101,6 +104,7 @@ public class Path implements  Cloneable {
 	 * @param pathString the portable path string
 	 * @see Path#toPortableString()
 	 * @since 3.1
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public static Path fromPortableString(String pathString) {
 		int firstMatch = pathString.indexOf(DEVICE_SEPARATOR) + 1;
@@ -136,10 +140,10 @@ public class Path implements  Cloneable {
 		// not allowed
 	}
 
-	/** 
+	/**
 	 * Constructs a new path from the given string path.
 	 * The string path must represent a valid file system path
-	 * on the local file system. 
+	 * on the local file system.
 	 * The path is canonicalized and double slashes are removed
 	 * except at the beginning. (to handle UNC paths). All forward
 	 * slashes ('/') are treated as segment delimiters, and any
@@ -166,7 +170,7 @@ public class Path implements  Cloneable {
 		initialize(devicePart, fullPath);
 	}
 
-	/** 
+	/**
 	 * Constructs a new path from the given device id and string path.
 	 * The given string path must be valid.
 	 * The path is canonicalized and double slashes are removed except
@@ -177,6 +181,8 @@ public class Path implements  Cloneable {
 	 *
 	 * @param device the device id
 	 * @param path the string path
+	 * @see #isValidPath(String)
+	 * @see #setDevice(String)
 	 * @see #isValidPath(String)
 	 * @see #setDevice(String)
 	 */
@@ -202,6 +208,12 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#addFileExtension
 	 */
+	/**
+	 * <p>addFileExtension.</p>
+	 *
+	 * @param extension a {@link java.lang.String} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 */
 	public Path addFileExtension(String extension) {
 		if (isRoot() || isEmpty() || hasTrailingSeparator())
 			return this;
@@ -214,6 +226,11 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#addTrailingSeparator
+	 */
+	/**
+	 * <p>addTrailingSeparator.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path addTrailingSeparator() {
 		if (hasTrailingSeparator() || isRoot()) {
@@ -228,6 +245,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#append(Path)
+	 */
+	/**
+	 * <p>append.</p>
+	 *
+	 * @param tail a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path append(Path tail) {
 		//optimize some easy cases
@@ -258,6 +281,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#append(java.lang.String)
+	 */
+	/**
+	 * <p>append.</p>
+	 *
+	 * @param tail a {@link java.lang.String} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path append(String tail) {
 		//optimize addition of a single segment
@@ -311,6 +340,11 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * Clones this object.
+	 */
+	/**
+	 * <p>clone.</p>
+	 *
+	 * @return a {@link java.lang.Object} object.
 	 */
 	public Object clone() {
 		try {
@@ -512,6 +546,7 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * Compares objects for equality.
 	 */
+	/** {@inheritDoc} */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -537,12 +572,22 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#getDevice
 	 */
+	/**
+	 * <p>Getter for the field <code>device</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDevice() {
 		return device;
 	}
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#getFileExtension
+	 */
+	/**
+	 * <p>getFileExtension.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String getFileExtension() {
 		if (hasTrailingSeparator()) {
@@ -562,12 +607,22 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * Computes the hash code for this object.
 	 */
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		return separators & HASH_MASK;
 	}
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#hasTrailingSeparator2
+	 */
+	/**
+	 * <p>hasTrailingSeparator.</p>
+	 *
+	 * @return a boolean.
 	 */
 	public boolean hasTrailingSeparator() {
 		return (separators & HAS_TRAILING) != 0;
@@ -612,6 +667,11 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#isAbsolute
 	 */
+	/**
+	 * <p>isAbsolute.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isAbsolute() {
 		//it's absolute if it has a leading separator
 		return (separators & HAS_LEADING) != 0;
@@ -619,6 +679,11 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#isEmpty
+	 */
+	/**
+	 * <p>isEmpty.</p>
+	 *
+	 * @return a boolean.
 	 */
 	public boolean isEmpty() {
 		//true if no segments and no leading prefix
@@ -628,6 +693,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#isPrefixOf
+	 */
+	/**
+	 * <p>isPrefixOf.</p>
+	 *
+	 * @param anotherPath a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 * @return a boolean.
 	 */
 	public boolean isPrefixOf(Path anotherPath) {
 		if (device == null) {
@@ -656,6 +727,11 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#isRoot
 	 */
+	/**
+	 * <p>isRoot.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isRoot() {
 		//must have no segments, a leading separator, and not be a UNC path.
 		return this == ROOT || (segments.length == 0 && ((separators & ALL_SEPARATORS) == HAS_LEADING));
@@ -663,6 +739,11 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#isUNC
+	 */
+	/**
+	 * <p>isUNC.</p>
+	 *
+	 * @return a boolean.
 	 */
 	public boolean isUNC() {
 		if (device != null)
@@ -672,6 +753,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#isValidPath(String)
+	 */
+	/**
+	 * <p>isValidPath.</p>
+	 *
+	 * @param path a {@link java.lang.String} object.
+	 * @return a boolean.
 	 */
 	public boolean isValidPath(String path) {
 		Path test = new Path(path);
@@ -683,6 +770,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#isValidSegment(String)
+	 */
+	/**
+	 * <p>isValidSegment.</p>
+	 *
+	 * @param segment a {@link java.lang.String} object.
+	 * @return a boolean.
 	 */
 	public boolean isValidSegment(String segment) {
 		int size = segment.length();
@@ -701,6 +794,11 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#lastSegment()
 	 */
+	/**
+	 * <p>lastSegment.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String lastSegment() {
 		int len = segments.length;
 		return len == 0 ? null : segments[len - 1];
@@ -708,6 +806,11 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#makeAbsolute()
+	 */
+	/**
+	 * <p>makeAbsolute.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path makeAbsolute() {
 		if (isAbsolute()) {
@@ -727,6 +830,11 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#makeRelative()
 	 */
+	/**
+	 * <p>makeRelative.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 */
 	public Path makeRelative() {
 		if (!isAbsolute()) {
 			return this;
@@ -736,7 +844,10 @@ public class Path implements  Cloneable {
 
 	/**
 	 * {@inheritDoc}
+	 *
 	 * @since org.eclipse.equinox.common 3.5
+	 * @param base a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path makeRelativeTo(Path base) {
 		//can't make relative if devices are not equal
@@ -758,6 +869,12 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#makeUNC(boolean)
 	 */
+	/**
+	 * <p>makeUNC.</p>
+	 *
+	 * @param toUNC a boolean.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 */
 	public Path makeUNC(boolean toUNC) {
 		// if we are already in the right form then just return
 		if (!(toUNC ^ isUNC()))
@@ -776,6 +893,12 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#matchingFirstSegments(Path)
 	 */
+	/**
+	 * <p>matchingFirstSegments.</p>
+	 *
+	 * @param anotherPath a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 * @return a int.
+	 */
 	public int matchingFirstSegments(Path anotherPath) {
 		int anotherPathLen = anotherPath.segmentCount();
 		int max = Math.min(segments.length, anotherPathLen);
@@ -792,6 +915,11 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#removeFileExtension()
 	 */
+	/**
+	 * <p>removeFileExtension.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 */
 	public Path removeFileExtension() {
 		String extension = getFileExtension();
 		if (extension == null || extension.equals("")) { //$NON-NLS-1$
@@ -804,6 +932,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#removeFirstSegments(int)
+	 */
+	/**
+	 * <p>removeFirstSegments.</p>
+	 *
+	 * @param count a int.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path removeFirstSegments(int count) {
 		if (count == 0)
@@ -822,6 +956,12 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#removeLastSegments(int)
 	 */
+	/**
+	 * <p>removeLastSegments.</p>
+	 *
+	 * @param count a int.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 */
 	public Path removeLastSegments(int count) {
 		if (count == 0)
 			return this;
@@ -838,6 +978,11 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#removeTrailingSeparator()
 	 */
+	/**
+	 * <p>removeTrailingSeparator.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
+	 */
 	public Path removeTrailingSeparator() {
 		if (!hasTrailingSeparator()) {
 			return this;
@@ -848,6 +993,12 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#segment(int)
 	 */
+	/**
+	 * <p>segment.</p>
+	 *
+	 * @param index a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String segment(int index) {
 		if (index >= segments.length)
 			return null;
@@ -857,12 +1008,22 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#segmentCount()
 	 */
+	/**
+	 * <p>segmentCount.</p>
+	 *
+	 * @return a int.
+	 */
 	public int segmentCount() {
 		return segments.length;
 	}
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#segments()
+	 */
+	/**
+	 * <p>segments.</p>
+	 *
+	 * @return an array of {@link java.lang.String} objects.
 	 */
 	public String[] segments() {
 		String[] segmentCopy = new String[segments.length];
@@ -872,6 +1033,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#setDevice(String)
+	 */
+	/**
+	 * <p>Setter for the field <code>device</code>.</p>
+	 *
+	 * @param value a {@link java.lang.String} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path setDevice(String value) {
 		
@@ -885,12 +1052,22 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#toFile()
 	 */
+	/**
+	 * <p>toFile.</p>
+	 *
+	 * @return a {@link java.io.File} object.
+	 */
 	public File toFile() {
 		return new File(toOSString());
 	}
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#toOSString()
+	 */
+	/**
+	 * <p>toOSString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String toOSString() {
 		//Note that this method is identical to toString except
@@ -932,6 +1109,11 @@ public class Path implements  Cloneable {
 	/* (Intentionally not included in javadoc)
 	 * @see Path#toPortableString()
 	 */
+	/**
+	 * <p>toPortableString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toPortableString() {
 		int resultSize = computeLength();
 		if (resultSize <= 0)
@@ -958,6 +1140,11 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#toString()
+	 */
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
 	 */
 	public String toString() {
 		int resultSize = computeLength();
@@ -995,6 +1182,12 @@ public class Path implements  Cloneable {
 
 	/* (Intentionally not included in javadoc)
 	 * @see Path#uptoSegment(int)
+	 */
+	/**
+	 * <p>uptoSegment.</p>
+	 *
+	 * @param count a int.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.Path} object.
 	 */
 	public Path uptoSegment(int count) {
 		if (count == 0)

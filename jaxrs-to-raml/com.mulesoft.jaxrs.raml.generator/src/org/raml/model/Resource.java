@@ -36,6 +36,12 @@ import org.raml.parser.builder.TraitsExtraHandler;
 import org.raml.parser.resolver.ResourceHandler;
 import org.raml.parser.rule.SecurityReferenceSequenceRule;
 
+/**
+ * <p>Resource class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Resource
 {
 
@@ -74,10 +80,20 @@ public class Resource
     
     private List<TemplateUse>typeModel=new ArrayList<TemplateUse>();
 
+    /**
+     * <p>Getter for the field <code>isModel</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<TemplateUse> getIsModel() {
 		return isModel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>isModel</code>.</p>
+	 *
+	 * @param isModel a {@link java.util.List} object.
+	 */
 	public void setIsModel(List<TemplateUse> isModel) {
 		this.isModel = isModel;
 	}
@@ -93,109 +109,219 @@ public class Resource
     @Mapping(handler = ResourceHandler.class, implicit = true)
     private Map<String, Resource> resources = new LinkedHashMap<String, Resource>();
 
+    /**
+     * <p>Constructor for Resource.</p>
+     */
     public Resource()
     {
     }
 
+    /**
+     * <p>Setter for the field <code>relativeUri</code>.</p>
+     *
+     * @param relativeUri a {@link java.lang.String} object.
+     */
     public void setRelativeUri(String relativeUri)
     {    	
     	this.relativeUri = relativeUri;
     }
 
+    /**
+     * <p>Getter for the field <code>parentUri</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getParentUri()
     {
         return parentUri;
     }
 
+    /**
+     * <p>Setter for the field <code>parentUri</code>.</p>
+     *
+     * @param parentUri a {@link java.lang.String} object.
+     */
     public void setParentUri(String parentUri)
     {
         this.parentUri = parentUri;
     }
 
+    /**
+     * <p>Setter for the field <code>uriParameters</code>.</p>
+     *
+     * @param uriParameters a {@link java.util.Map} object.
+     */
     public void setUriParameters(Map<String, UriParameter> uriParameters)
     {
         this.uriParameters = uriParameters;
     }
 
+    /**
+     * <p>Getter for the field <code>actions</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<ActionType, Action> getActions()
     {
         return actions;
     }
 
+    /**
+     * <p>Setter for the field <code>actions</code>.</p>
+     *
+     * @param actions a {@link java.util.Map} object.
+     */
     public void setActions(Map<ActionType, Action> actions)
     {
         this.actions = actions;
     }
 
+    /**
+     * <p>Setter for the field <code>displayName</code>.</p>
+     *
+     * @param displayName a {@link java.lang.String} object.
+     */
     public void setDisplayName(String displayName)
     {
         this.displayName = displayName;
     }
 
+    /**
+     * <p>Getter for the field <code>displayName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getDisplayName()
     {
         return displayName;
     }
 
+    /**
+     * <p>Getter for the field <code>description</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getDescription()
     {
         return description;
     }
 
+    /**
+     * <p>Setter for the field <code>description</code>.</p>
+     *
+     * @param description a {@link java.lang.String} object.
+     */
     public void setDescription(String description)
     {
         this.description = description;
     }
 
+    /**
+     * <p>Getter for the field <code>relativeUri</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getRelativeUri()
     {
         return relativeUri;
     }
 
+    /**
+     * <p>getUri.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getUri()
     {
         return parentUri + relativeUri;
     }
 
+    /**
+     * <p>getAction.</p>
+     *
+     * @param name a {@link org.raml.model.ActionType} object.
+     * @return a {@link org.raml.model.Action} object.
+     */
     public Action getAction(ActionType name)
     {
         return actions.get(name);
     }
 
+    /**
+     * <p>getAction.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link org.raml.model.Action} object.
+     */
     public Action getAction(String name)
     {
         return actions.get(ActionType.valueOf(name.toUpperCase()));
     }
 
+    /**
+     * <p>Getter for the field <code>resources</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, Resource> getResources()
     {
         return resources;
     }
 
+    /**
+     * <p>Setter for the field <code>resources</code>.</p>
+     *
+     * @param resources a {@link java.util.Map} object.
+     */
     public void setResources(Map<String, Resource> resources)
     {
         this.resources = resources;
     }
 
+    /**
+     * <p>Getter for the field <code>uriParameters</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, UriParameter> getUriParameters()
     {
         return uriParameters;
     }
 
+    /**
+     * <p>Getter for the field <code>is</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<String> getIs()
     {
         return is;
     }
 
+    /**
+     * <p>Setter for the field <code>is</code>.</p>
+     *
+     * @param is a {@link java.util.List} object.
+     */
     public void setIs(List<String> is)
     {
         this.is = is;
     }
 
+    /**
+     * <p>Getter for the field <code>type</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getType()
     {
     	return type;
     }
+    /**
+     * <p>getTypeModelT.</p>
+     *
+     * @return a {@link org.raml.model.TemplateUse} object.
+     */
     public TemplateUse getTypeModelT(){
     	if (typeModel.isEmpty()){
     		return null;
@@ -203,18 +329,38 @@ public class Resource
         return typeModel.iterator().next();
     }
     
+    /**
+     * <p>Getter for the field <code>typeModel</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<TemplateUse> getTypeModel() {
 		return typeModel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>typeModel</code>.</p>
+	 *
+	 * @param typeModel a {@link java.util.List} object.
+	 */
 	public void setTypeModel(List<TemplateUse> typeModel) {
 		this.typeModel = typeModel;
 	}
 
+	/**
+	 * <p>Setter for the field <code>type</code>.</p>
+	 *
+	 * @param type a {@link java.lang.String} object.
+	 */
 	public void setType(String type){
     	this.type=type;
     }
 
+    /**
+     * <p>setTypeModelT.</p>
+     *
+     * @param type a {@link org.raml.model.TemplateUse} object.
+     */
     public void setTypeModelT(TemplateUse type)
     {
     	typeModel.clear();
@@ -224,27 +370,48 @@ public class Resource
     }
     
 
+    /**
+     * <p>Getter for the field <code>securedBy</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<SecurityReference> getSecuredBy()
     {
         return securedBy;
     }
 
+    /**
+     * <p>Setter for the field <code>securedBy</code>.</p>
+     *
+     * @param securedBy a {@link java.util.List} object.
+     */
     public void setSecuredBy(List<SecurityReference> securedBy)
     {
         this.securedBy = securedBy;
     }
 
+    /**
+     * <p>Getter for the field <code>baseUriParameters</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, List<UriParameter>> getBaseUriParameters()
     {
         return baseUriParameters;
     }
 
+    /**
+     * <p>Setter for the field <code>baseUriParameters</code>.</p>
+     *
+     * @param baseUriParameters a {@link java.util.Map} object.
+     */
     public void setBaseUriParameters(Map<String, List<UriParameter>> baseUriParameters)
     {
         this.baseUriParameters = baseUriParameters;
     }
 
     
+    /** {@inheritDoc} */
     public boolean equals(Object o)
     {
        return super.equals(o);
@@ -252,18 +419,34 @@ public class Resource
     }
 
     
+    /**
+     * <p>hashCode.</p>
+     *
+     * @return a int.
+     */
     public int hashCode()
     {
         return super.hashCode();
     }
 
     
+    /**
+     * <p>toString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toString()
     {
         return "Resource{displayName='" + displayName + '\'' +
                ", uri='" + (parentUri != null ? getUri() : "-" + '\'') + '}';
     }
 
+    /**
+     * <p>getResource.</p>
+     *
+     * @param path a {@link java.lang.String} object.
+     * @return a {@link org.raml.model.Resource} object.
+     */
     public Resource getResource(String path)
     {
         for (Resource resource : resources.values())

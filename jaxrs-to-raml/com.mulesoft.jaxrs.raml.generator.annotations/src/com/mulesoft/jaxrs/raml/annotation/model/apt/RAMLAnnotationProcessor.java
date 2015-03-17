@@ -39,6 +39,12 @@ import javax.ws.rs.QueryParam;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 
+/**
+ * <p>RAMLAnnotationProcessor class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 @SupportedAnnotationTypes({"javax.ws.rs.PUT","javax.ws.rs.GET","javax.ws.rs.POST","javax.ws.rs.OPTIONS", "javax.ws.rs.Produces", "javax.ws.rs.Path"})
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 @SupportedOptions({ RAMLAnnotationProcessor.RAMLPATH_OPTION })
@@ -48,6 +54,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 
 	private static final String DEFAULT_GENERATED_NAME = "generated.raml"; //$NON-NLS-1$
 
+	/** Constant <code>RAMLPATH_OPTION="ramlpath"</code> */
 	public static final String RAMLPATH_OPTION = "ramlpath"; //$NON-NLS-1$
 	
 	private Class<?>[] annotationClasses = new Class<?>[]{ApplicationPath.class, 
@@ -74,6 +81,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 
 	private ProcessingEnvironment processingEnv;
 
+	/** {@inheritDoc} */
 	@SuppressWarnings("unchecked")
 	
 	public boolean process(Set<? extends TypeElement> annotations,
@@ -143,6 +151,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 	}
 	
 	
+	/** {@inheritDoc} */
 	public synchronized void init(ProcessingEnvironment environment) {
 		this.processingEnv = environment;
 		super.init(environment);

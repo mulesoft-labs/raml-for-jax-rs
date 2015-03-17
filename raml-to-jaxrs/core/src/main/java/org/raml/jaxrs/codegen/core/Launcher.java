@@ -29,8 +29,19 @@ import org.apache.commons.io.FileUtils;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
 
+/**
+ * <p>Launcher class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Launcher {
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args) {
 		
 		Map<String,String> argMap = createArgMap(args);

@@ -34,6 +34,12 @@ import org.raml.parser.rule.GlobalSchemasHandler;
 import org.raml.parser.rule.SecurityReferenceSequenceRule;
 
 
+/**
+ * <p>Raml class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Raml
 {
 
@@ -82,60 +88,118 @@ public class Raml
     @Sequence
     private List<DocumentationItem> documentation;
 
+    /**
+     * <p>Constructor for Raml.</p>
+     */
     public Raml()
     {
     }
 
+    /**
+     * <p>Setter for the field <code>documentation</code>.</p>
+     *
+     * @param documentation a {@link java.util.List} object.
+     */
     public void setDocumentation(List<DocumentationItem> documentation)
     {
         this.documentation = documentation;
     }
 
+    /**
+     * <p>Getter for the field <code>documentation</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<DocumentationItem> getDocumentation()
     {
         return documentation;
     }
 
+    /**
+     * <p>Setter for the field <code>baseUriParameters</code>.</p>
+     *
+     * @param uriParameters a {@link java.util.Map} object.
+     */
     public void setBaseUriParameters(Map<String, UriParameter> uriParameters)
     {
         this.baseUriParameters = uriParameters;
     }
 
+    /**
+     * <p>Setter for the field <code>resources</code>.</p>
+     *
+     * @param resources a {@link java.util.Map} object.
+     */
     public void setResources(Map<String, Resource> resources)
     {
         this.resources = resources;
     }
 
+    /**
+     * <p>Getter for the field <code>title</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getTitle()
     {
         return title;
     }
 
+    /**
+     * <p>Setter for the field <code>title</code>.</p>
+     *
+     * @param title a {@link java.lang.String} object.
+     */
     public void setTitle(String title)
     {
         this.title = title;
     }
 
+    /**
+     * <p>Getter for the field <code>version</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getVersion()
     {
         return version;
     }
 
+    /**
+     * <p>Setter for the field <code>version</code>.</p>
+     *
+     * @param version a {@link java.lang.String} object.
+     */
     public void setVersion(String version)
     {
         this.version = version;
     }
 
+    /**
+     * <p>Getter for the field <code>baseUri</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getBaseUri()
     {
         return baseUri;
     }
 
+    /**
+     * <p>Setter for the field <code>baseUri</code>.</p>
+     *
+     * @param baseUri a {@link java.lang.String} object.
+     */
     public void setBaseUri(String baseUri)
     {
         this.baseUri = baseUri;
     }
 
+    /**
+     * <p>getBasePath.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getBasePath()
     {
         //skip protocol separator "//"
@@ -149,92 +213,182 @@ public class Raml
         return baseUri.substring(start);
     }
 
+    /**
+     * <p>getUri.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getUri()
     {
         return "";
     }
 
+    /**
+     * <p>Getter for the field <code>mediaType</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getMediaType()
     {
         return mediaType;
     }
 
+    /**
+     * <p>Setter for the field <code>mediaType</code>.</p>
+     *
+     * @param mediaType a {@link java.lang.String} object.
+     */
     public void setMediaType(String mediaType)
     {
         this.mediaType = mediaType;
     }
 
+    /**
+     * <p>Getter for the field <code>resources</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, Resource> getResources()
     {
         return resources;
     }
 
+    /**
+     * <p>Getter for the field <code>baseUriParameters</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, UriParameter> getBaseUriParameters()
     {
         return baseUriParameters;
     }
 
+    /**
+     * <p>Getter for the field <code>resourceTypes</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<Map<String, Template>> getResourceTypes()
     {
         return resourceTypes;
     }
 
+    /**
+     * <p>Setter for the field <code>resourceTypes</code>.</p>
+     *
+     * @param resourceTypes a {@link java.util.List} object.
+     */
     public void setResourceTypes(List<Map<String, Template>> resourceTypes)
     {
         this.resourceTypes = resourceTypes;
     }
 
+    /**
+     * <p>Getter for the field <code>traits</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<Map<String, Template>> getTraits()
     {
         return traits;
     }
 
+    /**
+     * <p>Setter for the field <code>traits</code>.</p>
+     *
+     * @param traits a {@link java.util.List} object.
+     */
     public void setTraits(List<Map<String, Template>> traits)
     {
         this.traits = traits;
     }
 
+    /**
+     * <p>Getter for the field <code>schemas</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<Map<String, String>> getSchemas()
     {
         return schemas;
     }
     
 
+    /**
+     * <p>Setter for the field <code>schemas</code>.</p>
+     *
+     * @param schemas a {@link java.util.List} object.
+     */
     public void setSchemas(List<Map<String, String>> schemas)
     {
         this.schemas = schemas;
     }
 
+    /**
+     * <p>Getter for the field <code>protocols</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<Protocol> getProtocols()
     {
         return protocols;
     }
 
+    /**
+     * <p>Setter for the field <code>protocols</code>.</p>
+     *
+     * @param protocols a {@link java.util.List} object.
+     */
     public void setProtocols(List<Protocol> protocols)
     {
         this.protocols = protocols;
     }	
 
+    /**
+     * <p>Getter for the field <code>securitySchemes</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<Map<String, SecurityScheme>> getSecuritySchemes()
     {
         return securitySchemes;
     }
 
+    /**
+     * <p>Setter for the field <code>securitySchemes</code>.</p>
+     *
+     * @param securitySchemes a {@link java.util.List} object.
+     */
     public void setSecuritySchemes(List<Map<String, SecurityScheme>> securitySchemes)
     {
         this.securitySchemes = securitySchemes;
     }
 
+    /**
+     * <p>Getter for the field <code>securedBy</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<SecurityReference> getSecuredBy()
     {
         return securedBy;
     }
 
+    /**
+     * <p>Setter for the field <code>securedBy</code>.</p>
+     *
+     * @param securedBy a {@link java.util.List} object.
+     */
     public void setSecuredBy(List<SecurityReference> securedBy)
     {
         this.securedBy = securedBy;
     }
 
+    /**
+     * <p>getConsolidatedSchemas.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, String> getConsolidatedSchemas()
     {
         Map<String, String> consolidated = new HashMap<String, String>();
@@ -245,6 +399,12 @@ public class Raml
         return consolidated;
     }
 
+    /**
+     * <p>getResource.</p>
+     *
+     * @param path a {@link java.lang.String} object.
+     * @return a {@link org.raml.model.Resource} object.
+     */
     public Resource getResource(String path)
     {
     	

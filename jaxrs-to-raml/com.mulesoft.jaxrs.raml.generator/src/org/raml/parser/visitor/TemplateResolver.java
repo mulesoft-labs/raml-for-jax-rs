@@ -48,12 +48,22 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>TemplateResolver class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TemplateResolver
 {
 
+    /** Constant <code>OPTIONAL_MODIFIER="?"</code> */
     public static final String OPTIONAL_MODIFIER = "?";
+    /** Constant <code>ALL_ACTIONS="*"</code> */
     public static final String ALL_ACTIONS = "*";
+    /** Constant <code>TRAIT_USE_KEY="is"</code> */
     public static final String TRAIT_USE_KEY = "is";
+    /** Constant <code>RESOURCE_TYPE_USE_KEY="type"</code> */
     public static final String RESOURCE_TYPE_USE_KEY = "type";
     //protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -70,6 +80,13 @@ public class TemplateResolver
         RESOURCE_TYPE, TRAIT
     }
 
+    /**
+     * <p>Constructor for TemplateResolver.</p>
+     *
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     * @param nodeNandler a {@link org.raml.parser.visitor.NodeHandler} object.
+     * @param doResolve a boolean.
+     */
     public TemplateResolver(ResourceLoader resourceLoader, NodeHandler nodeNandler,boolean doResolve)
     {
         this.resourceLoader = resourceLoader;
@@ -77,16 +94,32 @@ public class TemplateResolver
         this.doResolve=doResolve;
     }
 
+    /**
+     * <p>Getter for the field <code>resourceTypesMap</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, MappingNode> getResourceTypesMap()
     {
         return resourceTypesMap;
     }
 
+    /**
+     * <p>Getter for the field <code>traitsMap</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, MappingNode> getTraitsMap()
     {
         return traitsMap;
     }
 
+    /**
+     * <p>init.</p>
+     *
+     * @param rootNode a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> init(MappingNode rootNode)
     {
         List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
@@ -214,6 +247,14 @@ public class TemplateResolver
         return new MappingNode(Tag.MAP, outerTuples, false);
     }
 
+    /**
+     * <p>resolve.</p>
+     *
+     * @param resourceNode a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     * @param relativeUri a {@link java.lang.String} object.
+     * @param fullUri a {@link java.lang.String} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> resolve(MappingNode resourceNode, String relativeUri, String fullUri)
     {
         List<ValidationResult> templateValidations = new ArrayList<ValidationResult>();

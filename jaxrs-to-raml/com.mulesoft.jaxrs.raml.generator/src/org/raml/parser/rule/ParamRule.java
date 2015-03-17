@@ -21,10 +21,22 @@ import java.util.List;
 
 import org.raml.model.parameter.UriParameter;
 
+/**
+ * <p>ParamRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ParamRule extends PojoTupleRule
 {
 
 
+    /**
+     * <p>Constructor for ParamRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param nodeRuleFactory a {@link org.raml.parser.rule.NodeRuleFactory} object.
+     */
     public ParamRule(String fieldName, NodeRuleFactory nodeRuleFactory)
     {
         super(fieldName, UriParameter.class);
@@ -32,6 +44,7 @@ public class ParamRule extends PojoTupleRule
     }
 
     
+    /** {@inheritDoc} */
     public void addRulesFor(Class<?> pojoClass)
     {
         super.addRulesFor(pojoClass);
@@ -44,6 +57,11 @@ public class ParamRule extends PojoTupleRule
     }
 
     
+    /**
+     * <p>onRuleEnd.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> onRuleEnd()
     {
         return Collections.emptyList();

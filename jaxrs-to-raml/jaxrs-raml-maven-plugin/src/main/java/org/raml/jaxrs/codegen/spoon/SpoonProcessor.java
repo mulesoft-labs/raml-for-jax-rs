@@ -61,6 +61,12 @@ import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>SpoonProcessor class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SpoonProcessor{
 	
 	private static final String JAVAX_XML_TYPE = "XmlType";
@@ -71,10 +77,20 @@ public class SpoonProcessor{
 	
 	private Factory factory;
 	
+	/**
+	 * <p>Constructor for SpoonProcessor.</p>
+	 *
+	 * @param factory a {@link spoon.reflect.factory.Factory} object.
+	 */
 	public SpoonProcessor(Factory factory) {
 		this.factory = factory;
 	}
 
+	/**
+	 * <p>process.</p>
+	 *
+	 * @param packages a {@link java.util.Collection} object.
+	 */
 	public void process(Collection<CtPackage> packages){
 		if(packages==null){
 			return;
@@ -146,6 +162,11 @@ public class SpoonProcessor{
 		}
 	}
 	
+	/**
+	 * <p>process.</p>
+	 *
+	 * @param classElement a {@link spoon.reflect.declaration.CtSimpleType} object.
+	 */
 	public void process(CtSimpleType<?> classElement) {
 		
 		ITypeModel type = processType(classElement);
@@ -503,6 +524,11 @@ public class SpoonProcessor{
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>registry</code>.</p>
+	 *
+	 * @return a {@link org.raml.jaxrs.codegen.maven.TypeModelRegistry} object.
+	 */
 	public TypeModelRegistry getRegistry() {
 		return registry;
 	}

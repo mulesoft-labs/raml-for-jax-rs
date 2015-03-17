@@ -7,9 +7,16 @@ import org.raml.model.Raml2;
 import org.raml.model.Resource;
 import org.raml.model.ResourceType;
 
+/**
+ * <p>ResourceTypeEmitter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ResourceTypeEmitter implements IRAMLFieldDumper {
 
 	
+	/** {@inheritDoc} */
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		if (pojo instanceof Raml2){

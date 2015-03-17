@@ -24,8 +24,20 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.simple.SimpleContainerFactory;
 import org.raml.jaxrs.example.impl.PresentationResource;
 
+/**
+ * <p>Main class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Main
 {
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.lang.Exception if any.
+     */
     @SuppressWarnings("resource")
     public static void main(final String[] args) throws Exception
     {

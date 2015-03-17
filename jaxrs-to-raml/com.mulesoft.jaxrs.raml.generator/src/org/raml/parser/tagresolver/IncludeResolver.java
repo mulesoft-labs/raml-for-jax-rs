@@ -29,20 +29,31 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>IncludeResolver class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class IncludeResolver implements TagResolver
 {
 
+    /** Constant <code>INCLUDE_TAG</code> */
     public static final Tag INCLUDE_TAG = new Tag("!include");
+    /** Constant <code>SEPARATOR="_"</code> */
     public static final String SEPARATOR = "_";
+    /** Constant <code>INCLUDE_APPLIED_TAG="!include-applied + SEPARATOR"</code> */
     public static final String INCLUDE_APPLIED_TAG = "!include-applied" + SEPARATOR;
 
     
+    /** {@inheritDoc} */
     public boolean handles(Tag tag)
     {
         return INCLUDE_TAG.equals(tag) || tag.startsWith(INCLUDE_APPLIED_TAG);
     }
 
     
+    /** {@inheritDoc} */
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         if (node.getTag().startsWith(INCLUDE_APPLIED_TAG))

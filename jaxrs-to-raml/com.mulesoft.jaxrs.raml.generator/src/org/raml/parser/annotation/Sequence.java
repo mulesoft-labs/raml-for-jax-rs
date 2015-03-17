@@ -22,6 +22,12 @@ import org.raml.parser.builder.TupleBuilder;
 import org.raml.parser.resolver.TupleHandler;
 import org.raml.parser.rule.TupleRule;
 
+/**
+ * <p>Sequence class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Sequence
 {

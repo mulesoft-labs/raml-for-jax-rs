@@ -24,9 +24,16 @@ import org.raml.parser.visitor.IncludeInfo;
 import org.yaml.snakeyaml.error.Mark;
 import org.yaml.snakeyaml.nodes.Node;
 
+/**
+ * <p>ValidationResult class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ValidationResult
 {
 
+    /** Constant <code>UNKNOWN=-1</code> */
     public static int UNKNOWN = -1;
 
     public enum Level
@@ -50,36 +57,71 @@ public class ValidationResult
         this.endColumn = endColumn;
     }
 
+    /**
+     * <p>Getter for the field <code>level</code>.</p>
+     *
+     * @return a {@link org.raml.parser.rule.ValidationResult.Level} object.
+     */
     public Level getLevel()
     {
         return level;
     }
 
+    /**
+     * <p>Getter for the field <code>message</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getMessage()
     {
         return message;
     }
 
+    /**
+     * <p>Getter for the field <code>line</code>.</p>
+     *
+     * @return a int.
+     */
     public int getLine()
     {
         return line;
     }
 
+    /**
+     * <p>Getter for the field <code>startColumn</code>.</p>
+     *
+     * @return a int.
+     */
     public int getStartColumn()
     {
         return startColumn;
     }
 
+    /**
+     * <p>Getter for the field <code>endColumn</code>.</p>
+     *
+     * @return a int.
+     */
     public int getEndColumn()
     {
         return endColumn;
     }
 
+    /**
+     * <p>isValid.</p>
+     *
+     * @return a boolean.
+     */
     public boolean isValid()
     {
         return level != Level.ERROR;
     }
 
+    /**
+     * <p>getIncludeName.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getIncludeName()
     {
         if (includeContext.isEmpty())
@@ -89,21 +131,42 @@ public class ValidationResult
         return includeContext.peek().getIncludeName();
     }
 
+    /**
+     * <p>Getter for the field <code>includeContext</code>.</p>
+     *
+     * @return a {@link java.util.Deque} object.
+     */
     public Deque<IncludeInfo> getIncludeContext()
     {
         return includeContext;
     }
 
+    /**
+     * <p>Setter for the field <code>includeContext</code>.</p>
+     *
+     * @param includeContext a {@link java.util.Deque} object.
+     */
     public void setIncludeContext(Deque<IncludeInfo> includeContext)
     {
         this.includeContext = new ArrayDeque<IncludeInfo>(includeContext);
     }
 
+    /**
+     * <p>addIncludeContext.</p>
+     *
+     * @param includeContext a {@link java.util.Deque} object.
+     */
     public void addIncludeContext(Deque<IncludeInfo> includeContext)
     {
         this.includeContext.addAll(includeContext);
     }
 
+    /**
+     * <p>areValid.</p>
+     *
+     * @param validationResults a {@link java.util.List} object.
+     * @return a boolean.
+     */
     public static boolean areValid(List<ValidationResult> validationResults)
     {
         for (ValidationResult result : validationResults)
@@ -116,6 +179,13 @@ public class ValidationResult
         return true;
     }
 
+    /**
+     * <p>Getter for the field <code>level</code>.</p>
+     *
+     * @param level a {@link org.raml.parser.rule.ValidationResult.Level} object.
+     * @param results a {@link java.util.List} object.
+     * @return a {@link java.util.List} object.
+     */
     public static List<ValidationResult> getLevel(Level level, List<ValidationResult> results)
     {
         List<ValidationResult> filtered = new ArrayList<ValidationResult>();
@@ -130,6 +200,11 @@ public class ValidationResult
     }
 
     
+    /**
+     * <p>toString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toString()
     {
         return "ValidationResult{" +
@@ -138,11 +213,28 @@ public class ValidationResult
                '}';
     }
 
+    /**
+     * <p>createErrorResult.</p>
+     *
+     * @param message a {@link java.lang.String} object.
+     * @param line a int.
+     * @param startIndex a int.
+     * @param endIndex a int.
+     * @return a {@link org.raml.parser.rule.ValidationResult} object.
+     */
     public static ValidationResult createErrorResult(String message, int line, int startIndex, int endIndex)
     {
         return new ValidationResult(Level.ERROR, message, line, startIndex, endIndex);
     }
 
+    /**
+     * <p>createErrorResult.</p>
+     *
+     * @param message a {@link java.lang.String} object.
+     * @param startMark a {@link org.yaml.snakeyaml.error.Mark} object.
+     * @param endMark a {@link org.yaml.snakeyaml.error.Mark} object.
+     * @return a {@link org.raml.parser.rule.ValidationResult} object.
+     */
     public static ValidationResult createErrorResult(String message, Mark startMark, Mark endMark)
     {
     	if (startMark==null){
@@ -154,16 +246,36 @@ public class ValidationResult
         return createErrorResult(message, startMark.getLine(), startMark.getColumn(), endMark.getColumn());
     }
 
+    /**
+     * <p>createErrorResult.</p>
+     *
+     * @param message a {@link java.lang.String} object.
+     * @param node a {@link org.yaml.snakeyaml.nodes.Node} object.
+     * @return a {@link org.raml.parser.rule.ValidationResult} object.
+     */
     public static ValidationResult createErrorResult(String message, Node node)
     {
         return createErrorResult(message, node.getStartMark(), node.getEndMark());
     }
 
+    /**
+     * <p>createErrorResult.</p>
+     *
+     * @param message a {@link java.lang.String} object.
+     * @return a {@link org.raml.parser.rule.ValidationResult} object.
+     */
     public static ValidationResult createErrorResult(String message)
     {
         return createErrorResult(message, UNKNOWN, UNKNOWN, UNKNOWN);
     }
 
+    /**
+     * <p>create.</p>
+     *
+     * @param level a {@link org.raml.parser.rule.ValidationResult.Level} object.
+     * @param message a {@link java.lang.String} object.
+     * @return a {@link org.raml.parser.rule.ValidationResult} object.
+     */
     public static ValidationResult create(Level level, String message)
     {
         return new ValidationResult(level, message, UNKNOWN, UNKNOWN, UNKNOWN);

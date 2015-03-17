@@ -17,17 +17,33 @@ package org.raml.model;
 
 import org.raml.parser.annotation.Scalar;
 
+/**
+ * <p>Template class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Template
 {
 
     @Scalar
     private String displayName;
 
+    /**
+     * <p>Getter for the field <code>displayName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getDisplayName()
     {
         return displayName;
     }
 
+    /**
+     * <p>Setter for the field <code>displayName</code>.</p>
+     *
+     * @param displayName a {@link java.lang.String} object.
+     */
     public void setDisplayName(String displayName)
     {
         this.displayName = displayName;

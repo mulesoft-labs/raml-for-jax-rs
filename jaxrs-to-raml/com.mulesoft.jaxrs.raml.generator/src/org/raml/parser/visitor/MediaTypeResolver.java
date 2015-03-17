@@ -31,6 +31,12 @@ import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>MediaTypeResolver class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MediaTypeResolver
 {
 
@@ -43,6 +49,12 @@ public class MediaTypeResolver
         MEDIA_TYPE_KEYS = new HashSet<String>(Arrays.asList(keys));
     }
 
+    /**
+     * <p>beforeDocumentStart.</p>
+     *
+     * @param rootNode a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> beforeDocumentStart(MappingNode rootNode)
     {
         List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
@@ -86,6 +98,12 @@ public class MediaTypeResolver
         return value.matches(".+/.+");
     }
 
+    /**
+     * <p>resolve.</p>
+     *
+     * @param bodyNode a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> resolve(MappingNode bodyNode)
     {
         List<ValidationResult> validationResults = new ArrayList<ValidationResult>();

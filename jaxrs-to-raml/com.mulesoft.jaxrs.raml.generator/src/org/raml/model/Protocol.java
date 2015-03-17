@@ -15,6 +15,12 @@
  */
 package org.raml.model;
 
+/**
+ * <p>Protocol class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public enum Protocol
 {
     HTTP, HTTPS

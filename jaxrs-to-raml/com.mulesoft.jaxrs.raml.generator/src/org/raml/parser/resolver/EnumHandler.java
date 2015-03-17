@@ -19,18 +19,31 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>EnumHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class EnumHandler implements TupleHandler
 {
 
 
     private Class<? extends Enum> enumClass;
 
+    /**
+     * <p>Constructor for EnumHandler.</p>
+     *
+     * @param tupleValueType a {@link java.lang.Class} object.
+     * @param enumClass a {@link java.lang.Class} object.
+     */
     public EnumHandler(Class<? extends Node> tupleValueType, Class<? extends Enum> enumClass)
     {
         this.enumClass = enumClass;
     }
 
     
+    /** {@inheritDoc} */
     public boolean handles(NodeTuple tuple)
     {
         if (tuple.getKeyNode() instanceof ScalarNode)

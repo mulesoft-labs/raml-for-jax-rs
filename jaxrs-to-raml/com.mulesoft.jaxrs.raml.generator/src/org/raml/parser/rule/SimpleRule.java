@@ -28,6 +28,12 @@ import org.raml.parser.utils.ConvertUtils;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
 
+/**
+ * <p>SimpleRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
 {
 
@@ -35,6 +41,12 @@ public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
     private ScalarNode valueNode;
     private Class<?> fieldClass;
 
+    /**
+     * <p>Constructor for SimpleRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param fieldClass a {@link java.lang.Class} object.
+     */
     public SimpleRule(String fieldName, Class<?> fieldClass)
     {
         super(fieldName, new DefaultScalarTupleHandler(fieldName));
@@ -42,6 +54,12 @@ public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
     }
 
     
+    /**
+     * <p>validateKey.</p>
+     *
+     * @param key a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         List<ValidationResult> validationResults = super.validateKey(key);
@@ -55,6 +73,12 @@ public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
     }
 
     
+    /**
+     * <p>doValidateValue.</p>
+     *
+     * @param node a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();
@@ -72,41 +96,81 @@ public class SimpleRule extends DefaultTupleRule<ScalarNode, ScalarNode>
     }
 
     
+    /**
+     * <p>getValueNodeType.</p>
+     *
+     * @return an array of {@link java.lang.Class} objects.
+     */
     public Class<?>[] getValueNodeType()
     {
         return new Class[] {ScalarNode.class};
     }
 
+    /**
+     * <p>wasAlreadyDefined.</p>
+     *
+     * @return a boolean.
+     */
     public boolean wasAlreadyDefined()
     {
         return keyNode != null;
     }
 
+    /**
+     * <p>Setter for the field <code>keyNode</code>.</p>
+     *
+     * @param rulePresent a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public void setKeyNode(ScalarNode rulePresent)
     {
         this.keyNode = rulePresent;
     }
 
+    /**
+     * <p>Getter for the field <code>keyNode</code>.</p>
+     *
+     * @return a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public ScalarNode getKeyNode()
     {
         return keyNode;
     }
 
+    /**
+     * <p>Getter for the field <code>valueNode</code>.</p>
+     *
+     * @return a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public ScalarNode getValueNode()
     {
         return valueNode;
     }
 
+    /**
+     * <p>Setter for the field <code>valueNode</code>.</p>
+     *
+     * @param valueNode a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public void setValueNode(ScalarNode valueNode)
     {
         this.valueNode = valueNode;
     }
 
+    /**
+     * <p>Getter for the field <code>fieldClass</code>.</p>
+     *
+     * @return a {@link java.lang.Class} object.
+     */
     public Class<?> getFieldClass()
     {
         return fieldClass;
     }
 
+    /**
+     * <p>Setter for the field <code>fieldClass</code>.</p>
+     *
+     * @param fieldClass a {@link java.lang.Class} object.
+     */
     public void setFieldClass(Class<?> fieldClass)
     {
         this.fieldClass = fieldClass;

@@ -20,11 +20,25 @@ import java.lang.reflect.Constructor;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang.ClassUtils;
 
+/**
+ * <p>ConvertUtils class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ConvertUtils
 {
 
     private static BooleanConverter booleanConverter = new BooleanConverter();
 
+    /**
+     * <p>convertTo.</p>
+     *
+     * @param value a {@link java.lang.String} object.
+     * @param type a {@link java.lang.Class} object.
+     * @param <T> a T object.
+     * @return a T object.
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T convertTo(String value, Class<T> type)
     {
@@ -54,6 +68,13 @@ public class ConvertUtils
         return clazz.cast(org.apache.commons.beanutils.ConvertUtils.convert(value, type));
     }
 
+    /**
+     * <p>canBeConverted.</p>
+     *
+     * @param value a {@link java.lang.String} object.
+     * @param type a {@link java.lang.Class} object.
+     * @return a boolean.
+     */
     public static boolean canBeConverted(String value, Class<?> type)
     {
         if (type.isEnum())

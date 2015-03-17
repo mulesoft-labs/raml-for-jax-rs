@@ -17,17 +17,29 @@ package org.raml.model.validation;
 
 import java.util.regex.Pattern;
 
+/**
+ * <p>PatternValidation class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class PatternValidation implements Validation
 {
 
     private Pattern pattern;
 
+    /**
+     * <p>Constructor for PatternValidation.</p>
+     *
+     * @param pattern a {@link java.lang.String} object.
+     */
     public PatternValidation(String pattern)
     {
         this.pattern = Pattern.compile(pattern);
     }
 
     
+    /** {@inheritDoc} */
     public boolean check(String input)
     {
         return pattern.matcher(input).matches();

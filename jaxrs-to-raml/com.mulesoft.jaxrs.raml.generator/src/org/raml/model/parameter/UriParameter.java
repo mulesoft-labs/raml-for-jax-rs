@@ -17,13 +17,27 @@ package org.raml.model.parameter;
 
 import static org.raml.model.ParamType.STRING;
 
+/**
+ * <p>UriParameter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class UriParameter extends AbstractParam
 {
 
+    /**
+     * <p>Constructor for UriParameter.</p>
+     */
     public UriParameter()
     {
     }
 
+    /**
+     * <p>Constructor for UriParameter.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     */
     public UriParameter(String name)
     {
         super(name, STRING, true);

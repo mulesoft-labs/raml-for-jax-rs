@@ -21,23 +21,40 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 
+/**
+ * <p>FileResourceLoader class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class FileResourceLoader implements ResourceLoader
 {
 
     //protected final Logger logger = LoggerFactory.getLogger(getClass());
     private File parentPath;
 
+    /**
+     * <p>Constructor for FileResourceLoader.</p>
+     *
+     * @param path a {@link java.lang.String} object.
+     */
     public FileResourceLoader(String path)
     {
         this(new File(path));
     }
 
+    /**
+     * <p>Constructor for FileResourceLoader.</p>
+     *
+     * @param path a {@link java.io.File} object.
+     */
     public FileResourceLoader(File path)
     {
         this.parentPath = path;
     }
 
     
+    /** {@inheritDoc} */
     public InputStream fetchResource(String resourceName)
     {
         File includedFile = new File(parentPath, resourceName);

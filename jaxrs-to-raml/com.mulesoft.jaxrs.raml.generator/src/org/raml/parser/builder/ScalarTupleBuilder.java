@@ -34,6 +34,12 @@ import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
 
+/**
+ * <p>ScalarTupleBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ScalarTupleBuilder extends DefaultTupleBuilder<ScalarNode, ScalarNode>
 {
 
@@ -41,6 +47,13 @@ public class ScalarTupleBuilder extends DefaultTupleBuilder<ScalarNode, ScalarNo
     private Class<?> type;
     private String includeField;
 
+    /**
+     * <p>Constructor for ScalarTupleBuilder.</p>
+     *
+     * @param field a {@link java.lang.String} object.
+     * @param type a {@link java.lang.Class} object.
+     * @param includeField a {@link java.lang.String} object.
+     */
     public ScalarTupleBuilder(String field, Class<?> type,String includeField)
     {
         super(new DefaultScalarTupleHandler(field));
@@ -49,12 +62,24 @@ public class ScalarTupleBuilder extends DefaultTupleBuilder<ScalarNode, ScalarNo
     }
 
     
+    /**
+     * <p>getHandler.</p>
+     *
+     * @return a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     public TupleHandler getHandler() {
     	return super.getHandler();
     }
     
 
     
+    /**
+     * <p>buildValue.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param node a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @return a {@link java.lang.Object} object.
+     */
     public Object buildValue(Object parent, ScalarNode node)
     {
 
@@ -81,6 +106,12 @@ public class ScalarTupleBuilder extends DefaultTupleBuilder<ScalarNode, ScalarNo
     }
 
     
+    /**
+     * <p>buildKey.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param tuple a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     */
     public void buildKey(Object parent, ScalarNode tuple)
     {
         fieldName = tuple.getValue();

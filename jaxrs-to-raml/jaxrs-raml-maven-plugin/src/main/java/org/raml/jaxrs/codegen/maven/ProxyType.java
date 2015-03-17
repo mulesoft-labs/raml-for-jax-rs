@@ -5,8 +5,20 @@ import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>ProxyType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ProxyType implements ITypeModel {	
 	
+	/**
+	 * <p>Constructor for ProxyType.</p>
+	 *
+	 * @param registry a {@link org.raml.jaxrs.codegen.maven.TypeModelRegistry} object.
+	 * @param key a {@link java.lang.String} object.
+	 */
 	public ProxyType(TypeModelRegistry registry, String key) {
 		super();
 		this.registry = registry;
@@ -17,42 +29,72 @@ public class ProxyType implements ITypeModel {
 	
 	private final String key;
 
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return registry.getType(key).getName();
 	}
 
+	/**
+	 * <p>getDocumentation.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDocumentation() {
 		return registry.getType(key).getDocumentation();
 	}
 
+	/**
+	 * <p>getAnnotations.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} objects.
+	 */
 	public IAnnotationModel[] getAnnotations() {
 		return registry.getType(key).getAnnotations();
 	}
 
+	/** {@inheritDoc} */
 	public String getAnnotationValue(String annotation) {
 		return registry.getType(key).getAnnotationValue(annotation);
 	}
 
+	/** {@inheritDoc} */
 	public String[] getAnnotationValues(String annotation) {
 		return registry.getType(key).getAnnotationValues(annotation);
 	}
 
+	/** {@inheritDoc} */
 	public boolean hasAnnotation(String name) {
 		return registry.getType(key).hasAnnotation(name);
 	}
 
+	/** {@inheritDoc} */
 	public IAnnotationModel getAnnotation(String name) {
 		return registry.getType(key).getAnnotation(name);
 	}
 
+	/**
+	 * <p>getMethods.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} objects.
+	 */
 	public IMethodModel[] getMethods() {
 		return registry.getType(key).getMethods();
 	}
 
+	/**
+	 * <p>getFullyQualifiedName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getFullyQualifiedName() {
 		return registry.getType(key).getFullyQualifiedName();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -61,6 +103,7 @@ public class ProxyType implements ITypeModel {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -78,6 +121,7 @@ public class ProxyType implements ITypeModel {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IFieldModel[] getFields() {
 		return registry.getType(key).getFields();

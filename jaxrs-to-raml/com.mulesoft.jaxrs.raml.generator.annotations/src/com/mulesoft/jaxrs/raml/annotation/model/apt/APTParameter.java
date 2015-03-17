@@ -6,31 +6,62 @@ import javax.lang.model.type.TypeMirror;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 
+/**
+ * <p>APTParameter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class APTParameter extends APTModel implements IParameterModel{
 
 	private VariableElement element;
 
+	/**
+	 * <p>Constructor for APTParameter.</p>
+	 *
+	 * @param q a {@link javax.lang.model.element.VariableElement} object.
+	 */
 	public APTParameter(VariableElement q) {
 		this.element=q;
 	}
 
 	
+	/**
+	 * <p>getType.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getType() {
 		TypeMirror asType = element.asType();
 		return asType.toString();
 	}
 
 	
+	/**
+	 * <p>required.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean required() {
 		return false;
 	}
 
 	
+	/**
+	 * <p>element.</p>
+	 *
+	 * @return a {@link javax.lang.model.element.Element} object.
+	 */
 	public Element element() {
 		return element;
 	}
 
 	
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -39,6 +70,7 @@ public class APTParameter extends APTModel implements IParameterModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

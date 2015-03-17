@@ -31,6 +31,12 @@ import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>RamlDocumentValidator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RamlDocumentValidator extends YamlDocumentValidator
 {
 
@@ -38,16 +44,29 @@ public class RamlDocumentValidator extends YamlDocumentValidator
     private MediaTypeResolver mediaTypeResolver = new MediaTypeResolver();
     private ResourceLoader resourceLoader;
 
+    /**
+     * <p>Constructor for RamlDocumentValidator.</p>
+     */
     public RamlDocumentValidator()
     {
         super(Raml.class);
     }
 
+    /**
+     * <p>Constructor for RamlDocumentValidator.</p>
+     *
+     * @param nodeRuleFactory a {@link org.raml.parser.rule.NodeRuleFactory} object.
+     */
     public RamlDocumentValidator(NodeRuleFactory nodeRuleFactory)
     {
         super(Raml.class, nodeRuleFactory);
     }
 
+    /**
+     * <p>Getter for the field <code>templateResolver</code>.</p>
+     *
+     * @return a {@link org.raml.parser.visitor.TemplateResolver} object.
+     */
     public TemplateResolver getTemplateResolver()
     {
         if (templateResolver == null)
@@ -57,12 +76,18 @@ public class RamlDocumentValidator extends YamlDocumentValidator
         return templateResolver;
     }
 
+    /**
+     * <p>Getter for the field <code>mediaTypeResolver</code>.</p>
+     *
+     * @return a {@link org.raml.parser.visitor.MediaTypeResolver} object.
+     */
     public MediaTypeResolver getMediaTypeResolver()
     {
         return mediaTypeResolver;
     }
 
     
+    /** {@inheritDoc} */
     public void onMappingNodeStart(MappingNode mappingNode, TupleType tupleType)
     {
         super.onMappingNodeStart(mappingNode, tupleType);
@@ -138,6 +163,11 @@ public class RamlDocumentValidator extends YamlDocumentValidator
         }
     }
 
+    /**
+     * <p>Setter for the field <code>resourceLoader</code>.</p>
+     *
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     */
     public void setResourceLoader(ResourceLoader resourceLoader)
     {
         this.resourceLoader = resourceLoader;

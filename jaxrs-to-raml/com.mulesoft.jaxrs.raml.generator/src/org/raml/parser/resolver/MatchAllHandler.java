@@ -17,10 +17,17 @@ package org.raml.parser.resolver;
 
 import org.yaml.snakeyaml.nodes.NodeTuple;
 
+/**
+ * <p>MatchAllHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MatchAllHandler implements TupleHandler
 {
 
     
+    /** {@inheritDoc} */
     public boolean handles(NodeTuple tuple)
     {
         return true;

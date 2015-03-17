@@ -20,9 +20,18 @@ import java.util.LinkedHashMap;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>TypeModelRegistry class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TypeModelRegistry {
 	
 
+	/**
+	 * <p>Constructor for TypeModelRegistry.</p>
+	 */
 	public TypeModelRegistry(){};
 	
 	
@@ -32,6 +41,11 @@ public class TypeModelRegistry {
 	private final LinkedHashMap<String,ITypeModel> targetTypeMap = new LinkedHashMap<String, ITypeModel>();
 	
 
+	/**
+	 * <p>registerType.</p>
+	 *
+	 * @param type a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public void registerType(ITypeModel type)
 	{
 		if(type==null){
@@ -44,6 +58,11 @@ public class TypeModelRegistry {
 		typeMap.put(qualifiedName, type);
 	}
 	
+	/**
+	 * <p>registerTargetType.</p>
+	 *
+	 * @param type a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public void registerTargetType(ITypeModel type)
 	{
 		if(type==null){
@@ -58,19 +77,41 @@ public class TypeModelRegistry {
 	}
 	
 	
+	/**
+	 * <p>getType.</p>
+	 *
+	 * @param qualifiedName a {@link java.lang.String} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public ITypeModel getType(String qualifiedName){
 		return typeMap.get(qualifiedName);
 	}
 	
 	
+	/**
+	 * <p>getTypes.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<ITypeModel> getTypes(){
 		return typeMap.values();
 	}
 	
+	/**
+	 * <p>getTargetTypes.</p>
+	 *
+	 * @return a {@link java.util.Collection} object.
+	 */
 	public Collection<ITypeModel> getTargetTypes(){
 		return targetTypeMap.values();
 	}
 	
+	/**
+	 * <p>isTargetType.</p>
+	 *
+	 * @param qualifiedName a {@link java.lang.String} object.
+	 * @return a boolean.
+	 */
 	public boolean isTargetType(String qualifiedName){
 		return targetTypeMap.containsKey(qualifiedName);
 	}

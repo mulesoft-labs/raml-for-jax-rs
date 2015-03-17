@@ -3,8 +3,19 @@ package com.mulesoft.jaxrs.raml.jaxb;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * <p>ExampleGenerator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ExampleGenerator {
 
+	/**
+	 * <p>Constructor for ExampleGenerator.</p>
+	 *
+	 * @param writer a {@link com.mulesoft.jaxrs.raml.jaxb.IExampleWriter} object.
+	 */
 	public ExampleGenerator(IExampleWriter writer) {
 		super();
 		this.writer = writer;
@@ -12,6 +23,11 @@ public class ExampleGenerator {
 
 	protected IExampleWriter writer;
 	
+	/**
+	 * <p>generateXML.</p>
+	 *
+	 * @param type a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBType} object.
+	 */
 	public void generateXML(JAXBType type){
 		String xmlName = type.getXMLName();
 		generateType(type, xmlName);

@@ -1,7 +1,19 @@
 package com.mulesoft.jaxrs.raml.annotation.model;
 
+/**
+ * <p>PathCleanuper class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class PathCleanuper {
 
+	/**
+	 * <p>cleanupPath.</p>
+	 *
+	 * @param path a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String cleanupPath(String path){
 		StringBuilder bld=new StringBuilder();
 		boolean inParam=false;

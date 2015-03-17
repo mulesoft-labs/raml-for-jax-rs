@@ -22,6 +22,12 @@ import java.util.Map;
 import org.raml.parser.annotation.Mapping;
 import org.raml.parser.annotation.Scalar;
 
+/**
+ * <p>SecurityScheme class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SecurityScheme
 {
 
@@ -37,41 +43,81 @@ public class SecurityScheme
     @Mapping
     private Map<String, List<String>> settings = new HashMap<String, List<String>>();
 
+    /**
+     * <p>Getter for the field <code>description</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getDescription()
     {
         return description;
     }
 
+    /**
+     * <p>Setter for the field <code>description</code>.</p>
+     *
+     * @param description a {@link java.lang.String} object.
+     */
     public void setDescription(String description)
     {
         this.description = description;
     }
 
+    /**
+     * <p>Getter for the field <code>type</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getType()
     {
         return type;
     }
 
+    /**
+     * <p>Setter for the field <code>type</code>.</p>
+     *
+     * @param type a {@link java.lang.String} object.
+     */
     public void setType(String type)
     {
         this.type = type;
     }
 
+    /**
+     * <p>Getter for the field <code>describedBy</code>.</p>
+     *
+     * @return a {@link org.raml.model.SecuritySchemeDescriptor} object.
+     */
     public SecuritySchemeDescriptor getDescribedBy()
     {
         return describedBy;
     }
 
+    /**
+     * <p>Setter for the field <code>describedBy</code>.</p>
+     *
+     * @param describedBy a {@link org.raml.model.SecuritySchemeDescriptor} object.
+     */
     public void setDescribedBy(SecuritySchemeDescriptor describedBy)
     {
         this.describedBy = describedBy;
     }
 
+    /**
+     * <p>Getter for the field <code>settings</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, List<String>> getSettings()
     {
         return settings;
     }
 
+    /**
+     * <p>Setter for the field <code>settings</code>.</p>
+     *
+     * @param settings a {@link java.util.Map} object.
+     */
     public void setSettings(Map<String, List<String>> settings)
     {
         this.settings = settings;

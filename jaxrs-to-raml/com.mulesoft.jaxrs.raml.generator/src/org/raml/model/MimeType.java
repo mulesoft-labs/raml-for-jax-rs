@@ -27,6 +27,12 @@ import org.raml.parser.annotation.Key;
 import org.raml.parser.annotation.Mapping;
 import org.raml.parser.annotation.Scalar;
 
+/**
+ * <p>MimeType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MimeType
 {
 
@@ -46,64 +52,129 @@ public class MimeType
     
     private String schemaOrigin;
     
+	/**
+	 * <p>Getter for the field <code>schemaOrigin</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getSchemaOrigin() {
 		return schemaOrigin;
 	}
 
+	/**
+	 * <p>Setter for the field <code>schemaOrigin</code>.</p>
+	 *
+	 * @param schemaOrigin a {@link java.lang.String} object.
+	 */
 	public void setSchemaOrigin(String schemaOrigin) {
 		this.schemaOrigin = schemaOrigin;
 	}
 
+	/**
+	 * <p>Getter for the field <code>exampleOrigin</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getExampleOrigin() {
 		return exampleOrigin;
 	}
 
+	/**
+	 * <p>Setter for the field <code>exampleOrigin</code>.</p>
+	 *
+	 * @param exampleOrigin a {@link java.lang.String} object.
+	 */
 	public void setExampleOrigin(String exampleOrigin) {
 		this.exampleOrigin = exampleOrigin;
 	}
 
+    /**
+     * <p>Getter for the field <code>type</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getType()
     {
         return type;
     }
 
+    /**
+     * <p>Setter for the field <code>type</code>.</p>
+     *
+     * @param type a {@link java.lang.String} object.
+     */
     public void setType(String type)
     {
         this.type = type;
     }
 
+    /**
+     * <p>Getter for the field <code>schema</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getSchema()
     {
         return schema;
     }
 
+    /**
+     * <p>Setter for the field <code>schema</code>.</p>
+     *
+     * @param schema a {@link java.lang.String} object.
+     */
     public void setSchema(String schema)
     {
         this.schema = schema;
     }
 
+    /**
+     * <p>Getter for the field <code>example</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getExample()
     {
         return example;
     }
 
+    /**
+     * <p>Setter for the field <code>example</code>.</p>
+     *
+     * @param example a {@link java.lang.String} object.
+     */
     public void setExample(String example)
     {
     	this.example = example;
     }
 
+    /**
+     * <p>Getter for the field <code>formParameters</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, List<FormParameter>> getFormParameters()
     {
         //TODO throw exception if invalid type?
         return formParameters;
     }
 
+    /**
+     * <p>Setter for the field <code>formParameters</code>.</p>
+     *
+     * @param formParameters a {@link java.util.Map} object.
+     */
     public void setFormParameters(Map<String, List<FormParameter>> formParameters)
     {
         this.formParameters = formParameters;
     }
 
     
+    /**
+     * <p>toString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toString()
     {
         return "MimeType{" +
@@ -112,6 +183,11 @@ public class MimeType
     }
     
     
+    /**
+     * <p>getAllChildren.</p>
+     *
+     * @return a {@link java.util.Collection} object.
+     */
     public Collection<? extends Object> getAllChildren(){
     	if(this.formParameters==null||this.formParameters.isEmpty())
     		return null;
@@ -137,6 +213,11 @@ public class MimeType
     	return result;
     }
     
+    /**
+     * <p>setAllChildren.</p>
+     *
+     * @param z a {@link java.util.Collection} object.
+     */
     public void setAllChildren(Collection<Object>z){
     	Collection<? extends Object> allChildren = getAllChildren();
     	boolean retainAll = allChildren.removeAll(z);

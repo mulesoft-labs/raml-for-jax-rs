@@ -20,11 +20,31 @@ import org.raml.parser.visitor.NodeHandler;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>TagResolver interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface TagResolver
 {
 
+    /**
+     * <p>handles.</p>
+     *
+     * @param tag a {@link org.yaml.snakeyaml.nodes.Tag} object.
+     * @return a boolean.
+     */
     boolean handles(Tag tag);
 
+    /**
+     * <p>resolve.</p>
+     *
+     * @param valueNode a {@link org.yaml.snakeyaml.nodes.Node} object.
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     * @param nodeHandler a {@link org.raml.parser.visitor.NodeHandler} object.
+     * @return a {@link org.yaml.snakeyaml.nodes.Node} object.
+     */
     Node resolve(Node valueNode, ResourceLoader resourceLoader, NodeHandler nodeHandler);
 
 }

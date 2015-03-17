@@ -15,11 +15,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+/**
+ * <p>XMLWriter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class XMLWriter implements IExampleWriter{
 
 	Document document;
 	private Element currentElement;
 	
+	/**
+	 * <p>Constructor for XMLWriter.</p>
+	 */
 	public XMLWriter() {
 		try {
 			document=DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
@@ -28,6 +37,7 @@ public class XMLWriter implements IExampleWriter{
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		try{
@@ -46,6 +56,7 @@ public class XMLWriter implements IExampleWriter{
 		}
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void startEntity(String xmlName) {
 		Element newElement = document.createElement(xmlName);
@@ -53,6 +64,7 @@ public class XMLWriter implements IExampleWriter{
 	}
 	
 
+	/** {@inheritDoc} */
 	@Override
 	public void endEntity(String xmlName) {
 		Node parentNode = currentElement.getParentNode();
@@ -61,6 +73,7 @@ public class XMLWriter implements IExampleWriter{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void generateAttribute(String name, Class<?> type, boolean required) {
 		currentElement.setAttribute(name, getValueString(type));
@@ -77,6 +90,7 @@ public class XMLWriter implements IExampleWriter{
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public void generateElement(String name, Class<?> type, boolean required) {
 		Element newElement = document.createElement(name);
@@ -84,11 +98,13 @@ public class XMLWriter implements IExampleWriter{
 		currentElement.appendChild(newElement);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addValueSample(Class<?> type, boolean required) {
 		currentElement.setTextContent(getValueString(type));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void startEntityAndDeclareNamespaces(String xmlName,
 			HashMap<String, String> prefixes) {

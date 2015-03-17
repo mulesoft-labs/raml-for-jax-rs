@@ -37,9 +37,16 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>NodeVisitor class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class NodeVisitor
 {
 
+    /** Constant <code>LOOP_TAG</code> */
     public static final Tag LOOP_TAG = new Tag("!loop");
     private NodeHandler nodeHandler;
     private ResourceLoader resourceLoader;
@@ -47,6 +54,13 @@ public class NodeVisitor
     private Deque<String> loopDetector = new ArrayDeque<String>();
     private Deque<String> includeStack = new ArrayDeque<String>();
 
+    /**
+     * <p>Constructor for NodeVisitor.</p>
+     *
+     * @param nodeHandler a {@link org.raml.parser.visitor.NodeHandler} object.
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     * @param tagResolvers a {@link org.raml.parser.tagresolver.TagResolver} object.
+     */
     public NodeVisitor(NodeHandler nodeHandler, ResourceLoader resourceLoader, TagResolver... tagResolvers)
     {
         super();
@@ -206,6 +220,11 @@ public class NodeVisitor
         return null;
     }
 
+    /**
+     * <p>visitDocument.</p>
+     *
+     * @param node a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     */
     public void visitDocument(MappingNode node)
     {
         nodeHandler.onDocumentStart(node);

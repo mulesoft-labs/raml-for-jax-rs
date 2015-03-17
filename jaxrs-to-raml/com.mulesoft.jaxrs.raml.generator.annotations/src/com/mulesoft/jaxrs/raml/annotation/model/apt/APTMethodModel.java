@@ -15,15 +15,31 @@ import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>APTMethodModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class APTMethodModel extends APTModel implements IMethodModel {
 
 	private ExecutableElement element;
 
+	/**
+	 * <p>Constructor for APTMethodModel.</p>
+	 *
+	 * @param x a {@link javax.lang.model.element.ExecutableElement} object.
+	 */
 	public APTMethodModel(ExecutableElement x) {
 		this.element=x;
 	}
 
 	
+	/**
+	 * <p>getParameters.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IParameterModel} objects.
+	 */
 	public IParameterModel[] getParameters() {
 		List<? extends VariableElement> parameters = element.getParameters();
 		ArrayList<IParameterModel>result=new ArrayList<IParameterModel>();
@@ -34,6 +50,11 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	}
 
 	
+	/**
+	 * <p>getBasicDocInfo.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.IDocInfo} object.
+	 */
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
 			
@@ -55,11 +76,21 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	}
 
 	
+	/**
+	 * <p>element.</p>
+	 *
+	 * @return a {@link javax.lang.model.element.Element} object.
+	 */
 	public Element element() {
 		return element;
 	}
 
 	
+	/**
+	 * <p>getReturnedType.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public ITypeModel getReturnedType() {
 		TypeMirror returnType = element.getReturnType();
 		if (returnType != null && returnType instanceof DeclaredType) {
@@ -71,6 +102,11 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	}
 
 	
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -79,6 +115,7 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -96,35 +133,45 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	}
 	
 	
+	/**
+	 * <p>getBodyType.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public ITypeModel getBodyType() {		
 		return null;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getType() {
 		return null;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isStatic() {
 		return false;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPublic() {
 		return false;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getJAXBType() {
 		return null;
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public Class<?> getJavaType() {
 		return null;

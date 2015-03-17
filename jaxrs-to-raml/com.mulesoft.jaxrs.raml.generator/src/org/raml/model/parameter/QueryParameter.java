@@ -15,6 +15,12 @@
  */
 package org.raml.model.parameter;
 
+/**
+ * <p>QueryParameter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class QueryParameter extends AbstractParam
 {
 }

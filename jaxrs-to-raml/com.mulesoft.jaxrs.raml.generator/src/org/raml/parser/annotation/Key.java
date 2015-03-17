@@ -18,6 +18,12 @@ package org.raml.parser.annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * <p>Key class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface Key
 {

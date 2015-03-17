@@ -27,17 +27,22 @@ import org.yaml.snakeyaml.nodes.Tag;
 /**
  * This tag resolver validates that the classes referenced by
  * jackson and jaxb tagged nodes are present.
+ *
+ * @author kor
+ * @version $Id: $Id
  */
 public class PojoValidatorTagResolver implements TagResolver
 {
 
     
+    /** {@inheritDoc} */
     public boolean handles(Tag tag)
     {
         return JACKSON_TAG.equals(tag) || JAXB_TAG.equals(tag);
     }
 
     
+    /** {@inheritDoc} */
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         String className = ((ScalarNode) node).getValue();

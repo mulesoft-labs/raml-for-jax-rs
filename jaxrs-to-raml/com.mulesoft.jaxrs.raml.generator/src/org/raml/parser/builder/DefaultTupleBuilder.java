@@ -35,6 +35,12 @@ import org.raml.parser.utils.ReflectionUtils;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 
+/**
+ * <p>DefaultTupleBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class DefaultTupleBuilder<K extends Node, V extends Node> implements TupleBuilder<K, V>
 {
 
@@ -44,6 +50,11 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
 
     //protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * <p>Constructor for DefaultTupleBuilder.</p>
+     *
+     * @param tupleHandler a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     public DefaultTupleBuilder(TupleHandler tupleHandler)
     {
         builders = new HashMap<String, TupleBuilder<?, ?>>();
@@ -51,6 +62,7 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
     }
 
     
+    /** {@inheritDoc} */
     public NodeBuilder getBuilderForTuple(NodeTuple tuple)
     {
         if (builders == null || builders.isEmpty())
@@ -68,53 +80,91 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
     }
 
     
+    /**
+     * <p>buildValue.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param node a V object.
+     * @return a {@link java.lang.Object} object.
+     */
     public Object buildValue(Object parent, V node)
     {
         return parent;
     }
 
+    /** {@inheritDoc} */
     public void setHandler(TupleHandler handler)
     {
         this.handler = handler;
     }
 
     
+    /**
+     * <p>Getter for the field <code>handler</code>.</p>
+     *
+     * @return a {@link org.raml.parser.resolver.TupleHandler} object.
+     */
     public TupleHandler getHandler()
     {
         return handler;
     }
 
     
+    /**
+     * <p>buildKey.</p>
+     *
+     * @param parent a {@link java.lang.Object} object.
+     * @param tuple a K object.
+     */
     public void buildKey(Object parent, K tuple)
     {
 
     }
 
     
+    /** {@inheritDoc} */
     public void setParentNodeBuilder(NodeBuilder parentBuilder)
     {
         parent = parentBuilder;
     }
 
     
+    /** {@inheritDoc} */
     public void setNestedBuilders(Map<String, TupleBuilder<?, ?>> nestedBuilders)
     {
         builders = nestedBuilders;
     }
 
 
+    /**
+     * <p>addBuildersFor.</p>
+     *
+     * @param documentClass a {@link java.lang.Class} object.
+     */
     public void addBuildersFor(Class<?> documentClass)
     {
         new TupleBuilderFactory().addBuildersTo(documentClass, this);
     }
 
 
+    /**
+     * <p>Getter for the field <code>parent</code>.</p>
+     *
+     * @return a {@link org.raml.parser.builder.NodeBuilder} object.
+     */
     public NodeBuilder getParent()
     {
         return parent;
     }
 
     //TODO rethink location
+    /**
+     * <p>unalias.</p>
+     *
+     * @param pojo a {@link java.lang.Object} object.
+     * @param fieldName a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
     protected String unalias(Object pojo, String fieldName)
     {
         List<Field> declaredFields = ReflectionUtils.getInheritedFields(pojo.getClass());
@@ -133,6 +183,13 @@ public class DefaultTupleBuilder<K extends Node, V extends Node> implements Tupl
         return fieldName;
     }
 
+    /**
+     * <p>processPojoAnnotations.</p>
+     *
+     * @param pojo a {@link java.lang.Object} object.
+     * @param keyFieldName a {@link java.lang.Object} object.
+     * @param parent a {@link java.lang.Object} object.
+     */
     protected void processPojoAnnotations(Object pojo, Object keyFieldName, Object parent)
     {
         List<Field> declaredFields = ReflectionUtils.getInheritedFields(pojo.getClass());

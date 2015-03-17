@@ -31,18 +31,27 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
 
+/**
+ * <p>JaxbTagResolver class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JaxbTagResolver implements TagResolver
 {
 
+    /** Constant <code>JAXB_TAG</code> */
     public static final Tag JAXB_TAG = new Tag("!jaxb");
 
     
+    /** {@inheritDoc} */
     public boolean handles(Tag tag)
     {
         return JAXB_TAG.equals(tag);
     }
 
     
+    /** {@inheritDoc} */
     public Node resolve(Node node, ResourceLoader resourceLoader, NodeHandler nodeHandler)
     {
         String className = ((ScalarNode) node).getValue();

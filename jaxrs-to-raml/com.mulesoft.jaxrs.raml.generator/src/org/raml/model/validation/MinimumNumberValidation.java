@@ -15,16 +15,33 @@
  */
 package org.raml.model.validation;
 
+/**
+ * <p>MinimumNumberValidation class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MinimumNumberValidation implements Validation
 {
 
     private Double minimum;
 
+    /**
+     * <p>Constructor for MinimumNumberValidation.</p>
+     *
+     * @param minimum a {@link java.lang.String} object.
+     */
     public MinimumNumberValidation(String minimum)
     {
         this.minimum = parse(minimum);
     }
 
+    /**
+     * <p>parse.</p>
+     *
+     * @param value a {@link java.lang.String} object.
+     * @return a {@link java.lang.Double} object.
+     */
     public Double parse(String value)
     {
         try
@@ -38,6 +55,7 @@ public class MinimumNumberValidation implements Validation
     }
 
     
+    /** {@inheritDoc} */
     public boolean check(String input)
     {
         return minimum.compareTo(parse(input)) <= 0;

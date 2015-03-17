@@ -24,15 +24,28 @@ import org.apache.commons.lang.StringUtils;
 import org.raml.parser.utils.ConvertUtils;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>SimpleNullAllowedRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SimpleNullAllowedRule extends SimpleRule
 {
 
+    /**
+     * <p>Constructor for SimpleNullAllowedRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param fieldClass a {@link java.lang.Class} object.
+     */
     public SimpleNullAllowedRule(String fieldName, Class<?> fieldClass)
     {
         super(fieldName, fieldClass);
     }
 
     
+    /** {@inheritDoc} */
     public List<ValidationResult> doValidateValue(ScalarNode node)
     {
         String value = node.getValue();

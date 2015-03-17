@@ -22,6 +22,12 @@ import org.raml.model.parameter.Header;
 import org.raml.parser.annotation.Mapping;
 import org.raml.parser.annotation.Scalar;
 
+/**
+ * <p>Response class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class Response
 {
 
@@ -34,31 +40,61 @@ public class Response
     @Mapping
     private Map<String, Header> headers = new HashMap<String, Header>();
 
+    /**
+     * <p>Getter for the field <code>headers</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, Header> getHeaders()
     {
         return headers;
     }
 
+    /**
+     * <p>Setter for the field <code>headers</code>.</p>
+     *
+     * @param headers a {@link java.util.Map} object.
+     */
     public void setHeaders(Map<String, Header> headers)
     {
         this.headers = headers;
     }
 
+    /**
+     * <p>Getter for the field <code>description</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getDescription()
     {
         return description;
     }
 
+    /**
+     * <p>Setter for the field <code>description</code>.</p>
+     *
+     * @param description a {@link java.lang.String} object.
+     */
     public void setDescription(String description)
     {
         this.description = description;
     }
 
+    /**
+     * <p>Setter for the field <code>body</code>.</p>
+     *
+     * @param body a {@link java.util.Map} object.
+     */
     public void setBody(Map<String, MimeType> body)
     {
         this.body = body;
     }
 
+    /**
+     * <p>Getter for the field <code>body</code>.</p>
+     *
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, MimeType> getBody()
     {
         return body;

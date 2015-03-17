@@ -12,15 +12,31 @@ import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>APTType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class APTType extends APTModel implements ITypeModel{
 
 	private TypeElement element;
 
+	/**
+	 * <p>Constructor for APTType.</p>
+	 *
+	 * @param element a {@link javax.lang.model.element.TypeElement} object.
+	 */
 	public APTType(TypeElement element) {
 		this.element = element;
 	}
 	
 	
+	/**
+	 * <p>getMethods.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} objects.
+	 */
 	public IMethodModel[] getMethods() {
 		List<? extends Element> enclosedElements = element.getEnclosedElements();
 		ArrayList<IMethodModel>result=new ArrayList<IMethodModel>();
@@ -34,11 +50,21 @@ public class APTType extends APTModel implements ITypeModel{
 	}
 
 	
+	/**
+	 * <p>element.</p>
+	 *
+	 * @return a {@link javax.lang.model.element.Element} object.
+	 */
 	public Element element() {
 		return element;
 	}
 
 	
+	/**
+	 * <p>hashCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -47,6 +73,7 @@ public class APTType extends APTModel implements ITypeModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -64,11 +91,17 @@ public class APTType extends APTModel implements ITypeModel{
 	}
 
 	
+	/**
+	 * <p>getFullyQualifiedName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getFullyQualifiedName() {
 		return null; //Can't get it without utils
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public IFieldModel[] getFields() {
 		List<? extends Element> enclosedElements = element.getEnclosedElements();

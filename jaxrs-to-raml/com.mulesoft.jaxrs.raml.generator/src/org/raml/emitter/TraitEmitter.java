@@ -7,9 +7,16 @@ import org.raml.model.Action;
 import org.raml.model.Raml2;
 import org.raml.model.TraitModel;
 
+/**
+ * <p>TraitEmitter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TraitEmitter implements IRAMLFieldDumper{
 
 	
+	/** {@inheritDoc} */
 	public void dumpField(StringBuilder dump, int depth, Field declaredField,
 			Object pojo, RamlEmitterV2 emitter) {
 		if (pojo instanceof Raml2){

@@ -24,8 +24,21 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
+/**
+ * <p>JsonUtil class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JsonUtil {
 
+	/**
+	 * <p>convertToJSON.</p>
+	 *
+	 * @param xmlContent a {@link java.lang.String} object.
+	 * @param format a boolean.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String convertToJSON(String xmlContent, boolean format) {
 		Document document = null;
 		try {

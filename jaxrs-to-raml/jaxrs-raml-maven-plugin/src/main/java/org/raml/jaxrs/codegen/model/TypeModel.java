@@ -21,8 +21,17 @@ import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>TypeModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TypeModel extends BasicModel implements ITypeModel{
 
+	/**
+	 * <p>Constructor for TypeModel.</p>
+	 */
 	public TypeModel() {
 	}
 	
@@ -31,23 +40,44 @@ public class TypeModel extends BasicModel implements ITypeModel{
 	private ArrayList<IMethodModel> methods = new ArrayList<IMethodModel>();
 	private ArrayList<IFieldModel> fields = new ArrayList<IFieldModel>();
 	
+	/**
+	 * <p>Getter for the field <code>methods</code>.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} objects.
+	 */
 	public IMethodModel[] getMethods() {
 		return methods.toArray(new IMethodModel[methods.size()]);
 	}
 	
+	/**
+	 * <p>addMethod.</p>
+	 *
+	 * @param method a {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} object.
+	 */
 	public void addMethod(IMethodModel method){
 		methods.add(method);
 	}
 
 	
+	/**
+	 * <p>getFullyQualifiedName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getFullyQualifiedName() {
 		return qualifiedName;
 	}
 	
+	/**
+	 * <p>setFullyQualifiedName.</p>
+	 *
+	 * @param qualifiedName a {@link java.lang.String} object.
+	 */
 	public void setFullyQualifiedName(String qualifiedName) {
 		this.qualifiedName = qualifiedName;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -58,6 +88,7 @@ public class TypeModel extends BasicModel implements ITypeModel{
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -80,11 +111,17 @@ public class TypeModel extends BasicModel implements ITypeModel{
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public IFieldModel[] getFields() {
 		return fields.toArray(new IFieldModel[fields.size()]);
 	}
 
+	/**
+	 * <p>addField.</p>
+	 *
+	 * @param fieldModel a {@link com.mulesoft.jaxrs.raml.annotation.model.IFieldModel} object.
+	 */
 	public void addField(IFieldModel fieldModel) {
 		fields.add(fieldModel);
 	}

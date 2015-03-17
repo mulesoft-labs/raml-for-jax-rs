@@ -15,16 +15,33 @@
  */
 package org.raml.model.validation;
 
+/**
+ * <p>MaximumIntegerValidation class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MaximumIntegerValidation implements Validation
 {
 
     private Integer maximum;
 
+    /**
+     * <p>Constructor for MaximumIntegerValidation.</p>
+     *
+     * @param maximum a {@link java.lang.String} object.
+     */
     public MaximumIntegerValidation(String maximum)
     {
         this.maximum = parse(maximum);
     }
 
+    /**
+     * <p>parse.</p>
+     *
+     * @param value a {@link java.lang.String} object.
+     * @return a {@link java.lang.Integer} object.
+     */
     public Integer parse(String value)
     {
         try
@@ -38,6 +55,7 @@ public class MaximumIntegerValidation implements Validation
     }
 
     
+    /** {@inheritDoc} */
     public boolean check(String input)
     {
         return maximum.compareTo(parse(input)) >= 0;

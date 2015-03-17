@@ -5,16 +5,34 @@ import java.lang.annotation.Annotation;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 
+/**
+ * <p>ReflectionParameter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class ReflectionParameter implements IParameterModel{
 
 	private static final String VALUE = "value";
 	protected ReflectionType type;
+	/**
+	 * <p>Constructor for ReflectionParameter.</p>
+	 *
+	 * @param type a {@link com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType} object.
+	 * @param model an array of {@link com.mulesoft.jaxrs.raml.annotation.model.reflection.AnnotationModel} objects.
+	 */
 	public ReflectionParameter(ReflectionType type, AnnotationModel[] model) {
 		super();
 		this.type = type;
 		this.model = model;
 	}
 	
+	/**
+	 * <p>Constructor for ReflectionParameter.</p>
+	 *
+	 * @param cl a {@link java.lang.Class} object.
+	 * @param annotations an array of {@link java.lang.annotation.Annotation} objects.
+	 */
 	public ReflectionParameter(Class<?> cl, Annotation[] annotations) {
 		this.type=new ReflectionType(cl);
 		model=new AnnotationModel[annotations.length];
@@ -27,11 +45,17 @@ public class ReflectionParameter implements IParameterModel{
 	protected AnnotationModel[] model;
 
 	
+	/**
+	 * <p>getDocumentation.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDocumentation() {
 		return "";
 	}
 	
 	
+	/** {@inheritDoc} */
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -43,6 +67,7 @@ public class ReflectionParameter implements IParameterModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -54,6 +79,7 @@ public class ReflectionParameter implements IParameterModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
@@ -64,6 +90,7 @@ public class ReflectionParameter implements IParameterModel{
 		return false;
 	}
 	
+	/** {@inheritDoc} */
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
@@ -74,20 +101,40 @@ public class ReflectionParameter implements IParameterModel{
 		return null;
 	}
 	
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		String name = type.getName();
 		return name;
 	}
 	
+	/**
+	 * <p>Getter for the field <code>type</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getType() {
 		String name = type.getName();		
 		return name;
 	}
 	
+	/**
+	 * <p>required.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean required() {
 		return type.element.isPrimitive();
 	}
 	
+	/**
+	 * <p>getAnnotations.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} objects.
+	 */
 	public IAnnotationModel[] getAnnotations() {
 		return model;
 	}

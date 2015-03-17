@@ -90,10 +90,23 @@ class Context
     private JDefinedClass currentResourceInterface;
     private final File globalSchemaStore;
 
+    /**
+     * <p>ref.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link com.sun.codemodel.JType} object.
+     */
     public JType ref(String name){
     	return codeModel.ref(name);
     }
     
+    /**
+     * <p>Constructor for Context.</p>
+     *
+     * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+     * @param raml a {@link org.raml.model.Raml} object.
+     * @throws java.io.IOException if any.
+     */
     public Context(final Configuration configuration, final Raml raml) throws IOException
     {
         Validate.notNull(configuration, "configuration can't be null");
@@ -128,6 +141,12 @@ class Context
             new SchemaStore()), new SchemaGenerator());
     }
 
+    /**
+     * <p>generate.</p>
+     *
+     * @return a {@link java.util.Set} object.
+     * @throws java.io.IOException if any.
+     */
     public Set<String> generate() throws IOException
     {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -155,7 +174,11 @@ class Context
     }
 
     /**
+     * <p>getSchemaFile.</p>
+     *
      * @return a {schema file, schema name} tuple.
+     * @param schemaNameOrContent a {@link java.lang.String} object.
+     * @throws java.io.IOException if any.
      */
     public Entry<File, String> getSchemaFile(final String schemaNameOrContent) throws IOException
     {
@@ -176,16 +199,31 @@ class Context
         }
     }
 
+    /**
+     * <p>Getter for the field <code>configuration</code>.</p>
+     *
+     * @return a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+     */
     public Configuration getConfiguration()
     {
         return configuration;
     }
 
+    /**
+     * <p>Getter for the field <code>currentResourceInterface</code>.</p>
+     *
+     * @return a {@link com.sun.codemodel.JDefinedClass} object.
+     */
     public JDefinedClass getCurrentResourceInterface()
     {
         return currentResourceInterface;
     }
 
+    /**
+     * <p>Setter for the field <code>currentResourceInterface</code>.</p>
+     *
+     * @param currentResourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+     */
     public void setCurrentResourceInterface(final JDefinedClass currentResourceInterface)
     {
         this.currentResourceInterface = currentResourceInterface;
@@ -211,6 +249,11 @@ class Context
         return getSupportPackage().replace('.', '/') + "/ResponseWrapper.java";
     }
 
+    /**
+     * <p>getResponseWrapperType.</p>
+     *
+     * @return a {@link com.sun.codemodel.JClass} object.
+     */
     public JClass getResponseWrapperType()
     {
         shouldGenerateResponseWrapper = true;
@@ -218,6 +261,13 @@ class Context
         return codeModel.directClass(getSupportPackage() + ".ResponseWrapper");
     }
 
+    /**
+     * <p>createResourceInterface.</p>
+     *
+     * @param name a {@link java.lang.String} object.
+     * @return a {@link com.sun.codemodel.JDefinedClass} object.
+     * @throws java.lang.Exception if any.
+     */
     public JDefinedClass createResourceInterface(final String name) throws Exception
     {
         String actualName;
@@ -236,6 +286,14 @@ class Context
         return pkg._interface(actualName);
     }
 
+    /**
+     * <p>createResourceMethod.</p>
+     *
+     * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+     * @param methodName a {@link java.lang.String} object.
+     * @param returnType a {@link com.sun.codemodel.JType} object.
+     * @return a {@link com.sun.codemodel.JMethod} object.
+     */
     public JMethod createResourceMethod(final JDefinedClass resourceInterface,
                                         final String methodName,
                                         final JType returnType)
@@ -257,6 +315,15 @@ class Context
         return resourceInterface.method(JMod.NONE, returnType, actualMethodName);
     }
 
+    /**
+     * <p>createResourceEnum.</p>
+     *
+     * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+     * @param name a {@link java.lang.String} object.
+     * @param values a {@link java.util.List} object.
+     * @return a {@link com.sun.codemodel.JDefinedClass} object.
+     * @throws java.lang.Exception if any.
+     */
     public JDefinedClass createResourceEnum(final JDefinedClass resourceInterface,
                                             final String name,
                                             final List<String> values) throws Exception
@@ -276,11 +343,25 @@ class Context
 
         return _enum;
     }
+    /**
+     * <p>getGeneratorClass.</p>
+     *
+     * @param clazzFQN a {@link java.lang.String} object.
+     * @return a {@link com.sun.codemodel.JClass} object.
+     */
     public JClass getGeneratorClass(final String clazzFQN)
     {
           return codeModel.ref(clazzFQN);
     }
 
+    /**
+     * <p>addHttpMethodAnnotation.</p>
+     *
+     * @param httpMethod a {@link java.lang.String} object.
+     * @param annotatable a {@link com.sun.codemodel.JAnnotatable} object.
+     * @return a {@link org.raml.jaxrs.codegen.core.Context} object.
+     * @throws java.lang.Exception if any.
+     */
     @SuppressWarnings("unchecked")
     public Context addHttpMethodAnnotation(final String httpMethod, final JAnnotatable annotatable)
         throws Exception
@@ -308,11 +389,25 @@ class Context
         return this;
     }
 
+    /**
+     * <p>getGeneratorType.</p>
+     *
+     * @param clazz a {@link java.lang.Class} object.
+     * @return a {@link com.sun.codemodel.JType} object.
+     */
     public JType getGeneratorType(final Class<?> clazz)
     {
         return clazz.isPrimitive() ? JType.parse(codeModel, clazz.getSimpleName()) : codeModel.ref(clazz);
     }
 
+    /**
+     * <p>generateClassFromJsonSchema.</p>
+     *
+     * @param className a {@link java.lang.String} object.
+     * @param schemaUrl a {@link java.net.URL} object.
+     * @return a {@link com.sun.codemodel.JClass} object.
+     * @throws java.io.IOException if any.
+     */
     public JClass generateClassFromJsonSchema(final String className, final URL schemaUrl) throws IOException
     {
     	return schemaMapper.generate(codeModel, className, getModelPackage(), schemaUrl).boxify();
@@ -341,6 +436,12 @@ class Context
         return configuration.getBasePackageName() + ".support";
     }
 
+    /**
+     * <p>generateClassesFromXmlSchemas.</p>
+     *
+     * @param schemaFiles a {@link java.util.Map} object.
+     * @return a {@link java.util.Map} object.
+     */
     public Map<String, JClass> generateClassesFromXmlSchemas(Map<String, File> schemaFiles)
     {
         Map<String, JClass> result = new HashMap<String, JClass>();

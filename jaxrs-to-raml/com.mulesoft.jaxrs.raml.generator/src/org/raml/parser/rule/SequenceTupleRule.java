@@ -24,20 +24,42 @@ import org.raml.parser.utils.ReflectionUtils;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 
+/**
+ * <p>SequenceTupleRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class SequenceTupleRule extends DefaultTupleRule<ScalarNode, SequenceNode> implements SequenceRule
 {
 
     private Type itemType;
 
+    /**
+     * <p>Constructor for SequenceTupleRule.</p>
+     */
     public SequenceTupleRule()
     {
     }
 
+    /**
+     * <p>Constructor for SequenceTupleRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param itemType a {@link java.lang.reflect.Type} object.
+     */
     public SequenceTupleRule(String fieldName, Type itemType)
     {
         this(fieldName, itemType, null);
     }
 
+    /**
+     * <p>Constructor for SequenceTupleRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param itemType a {@link java.lang.reflect.Type} object.
+     * @param nodeRuleFactory a {@link org.raml.parser.rule.NodeRuleFactory} object.
+     */
     public SequenceTupleRule(String fieldName, Type itemType, NodeRuleFactory nodeRuleFactory)
     {
         super(fieldName, new DefaultScalarTupleHandler(fieldName), nodeRuleFactory);
@@ -46,6 +68,11 @@ public class SequenceTupleRule extends DefaultTupleRule<ScalarNode, SequenceNode
     }
 
     
+    /**
+     * <p>getItemRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.NodeRule} object.
+     */
     public NodeRule<?> getItemRule()
     {
         if (itemType instanceof Class<?>)
@@ -70,17 +97,28 @@ public class SequenceTupleRule extends DefaultTupleRule<ScalarNode, SequenceNode
         throw new IllegalArgumentException("Sequence item type not supported: " + itemType);
     }
 
+    /**
+     * <p>getScalarRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.DefaultTupleRule} object.
+     */
     protected DefaultTupleRule getScalarRule()
     {
         return new SimpleRule(getName(), (Class<?>) itemType);
     }
 
     
+    /** {@inheritDoc} */
     public void setValueType(Type valueType)
     {
         itemType = valueType;
     }
 
+    /**
+     * <p>Getter for the field <code>itemType</code>.</p>
+     *
+     * @return a {@link java.lang.reflect.Type} object.
+     */
     protected Type getItemType()
     {
         return itemType;

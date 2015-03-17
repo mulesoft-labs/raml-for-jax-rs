@@ -54,6 +54,12 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.resolver.Resolver;
 import org.yaml.snakeyaml.serializer.Serializer;
 
+/**
+ * <p>YamlDocumentBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class YamlDocumentBuilder<T> implements NodeHandler
 {
 
@@ -65,6 +71,13 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     private ResourceLoader resourceLoader;
     private TagResolver[] tagResolvers;
 
+    /**
+     * <p>Constructor for YamlDocumentBuilder.</p>
+     *
+     * @param documentClass a {@link java.lang.Class} object.
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     * @param tagResolvers a {@link org.raml.parser.tagresolver.TagResolver} object.
+     */
     public YamlDocumentBuilder(Class<T> documentClass, ResourceLoader resourceLoader, TagResolver... tagResolvers)
     {
         this.documentClass = documentClass;
@@ -72,6 +85,12 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         this.tagResolvers = tagResolvers;
     }
 
+    /**
+     * <p>build.</p>
+     *
+     * @param content a {@link java.io.Reader} object.
+     * @return a T object.
+     */
     public T build(Reader content)
     {
         Yaml yamlParser = new Yaml();
@@ -83,6 +102,12 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         return documentObject;
     }
     
+    /**
+     * <p>build.</p>
+     *
+     * @param content a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     * @return a T object.
+     */
     public T build(MappingNode content)
     {
         NodeVisitor nodeVisitor = new NodeVisitor(this, resourceLoader, tagResolvers);
@@ -93,50 +118,94 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         return documentObject;
     }
 
+    /**
+     * <p>Getter for the field <code>documentObject</code>.</p>
+     *
+     * @return a T object.
+     */
     protected T getDocumentObject()
     {
         return documentObject;
     }
 
+    /**
+     * <p>Getter for the field <code>builderContext</code>.</p>
+     *
+     * @return a {@link java.util.Stack} object.
+     */
     protected Stack<NodeBuilder<?>> getBuilderContext()
     {
         return builderContext;
     }
 
+    /**
+     * <p>Getter for the field <code>documentContext</code>.</p>
+     *
+     * @return a {@link java.util.Stack} object.
+     */
     protected Stack<Object> getDocumentContext()
     {
         return documentContext;
     }
 
+    /**
+     * <p>Getter for the field <code>resourceLoader</code>.</p>
+     *
+     * @return a {@link org.raml.parser.loader.ResourceLoader} object.
+     */
     protected ResourceLoader getResourceLoader()
     {
         return resourceLoader;
     }
 
+    /**
+     * <p>preBuildProcess.</p>
+     */
     protected void preBuildProcess()
     {
     }
 
+    /**
+     * <p>postBuildProcess.</p>
+     */
     protected void postBuildProcess()
     {
     }
 
+    /**
+     * <p>build.</p>
+     *
+     * @param content a {@link java.io.InputStream} object.
+     * @return a T object.
+     */
     public T build(InputStream content)
     {
         return build(new InputStreamReader(content));
     }
 
+    /**
+     * <p>build.</p>
+     *
+     * @param content a {@link java.lang.String} object.
+     * @return a T object.
+     */
     public T build(String content)
     {
         return build(new StringReader(content));
     }
 
+    /**
+     * <p>Getter for the field <code>rootNode</code>.</p>
+     *
+     * @return a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     */
     public MappingNode getRootNode()
     {
         return rootNode;
     }
 
     
+    /** {@inheritDoc} */
     public void onMappingNodeStart(MappingNode mappingNode, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -158,6 +227,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
     
+    /** {@inheritDoc} */
     public void onMappingNodeEnd(MappingNode mappingNode, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -168,6 +238,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
     
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     public void onSequenceStart(SequenceNode node, TupleType tupleType)
     {
@@ -183,6 +254,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
     
+    /** {@inheritDoc} */
     public void onSequenceEnd(SequenceNode node, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -194,6 +266,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
     
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     public void onScalar(ScalarNode node, TupleType tupleType)
     {
@@ -219,6 +292,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
 
 
     
+    /** {@inheritDoc} */
     public void onDocumentStart(MappingNode node)
     {
         try
@@ -242,6 +316,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
 
 
     
+    /** {@inheritDoc} */
     public void onDocumentEnd(MappingNode node)
     {
         if (documentObject != documentContext.pop())
@@ -251,6 +326,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
     
+    /** {@inheritDoc} */
     public void onTupleEnd(NodeTuple nodeTuple)
     {
         builderContext.pop();
@@ -258,6 +334,7 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
     
+    /** {@inheritDoc} */
     public void onTupleStart(NodeTuple nodeTuple)
     {
     	if (nodeTuple.getKeyNode() instanceof ScalarNode){
@@ -282,26 +359,31 @@ public class YamlDocumentBuilder<T> implements NodeHandler
     }
 
     
+    /** {@inheritDoc} */
     public void onSequenceElementStart(Node sequenceNode)
     {
     }
 
     
+    /** {@inheritDoc} */
     public void onSequenceElementEnd(Node sequenceNode)
     {
     }
 
     
+    /** {@inheritDoc} */
     public void onCustomTagStart(Tag tag, Node originalValueNode, Node node)
     {
     }
 
     
+    /** {@inheritDoc} */
     public void onCustomTagEnd(Tag tag, Node originalValueNode, Node node)
     {
     }
 
     
+    /** {@inheritDoc} */
     public void onCustomTagError(Tag tag, Node node, String message)
     {
         if (IncludeResolver.INCLUDE_TAG.equals(tag))
@@ -310,6 +392,12 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         }
     }
 
+    /**
+     * <p>dumpFromAst.</p>
+     *
+     * @param rootNode a {@link org.yaml.snakeyaml.nodes.Node} object.
+     * @return a {@link java.lang.String} object.
+     */
     public static String dumpFromAst(Node rootNode)
     {
         Writer writer = new StringWriter();
@@ -317,6 +405,12 @@ public class YamlDocumentBuilder<T> implements NodeHandler
         return writer.toString();
     }
 
+    /**
+     * <p>dumpFromAst.</p>
+     *
+     * @param rootNode a {@link org.yaml.snakeyaml.nodes.Node} object.
+     * @param output a {@link java.io.Writer} object.
+     */
     public static void dumpFromAst(Node rootNode, Writer output)
     {
         if (rootNode == null)

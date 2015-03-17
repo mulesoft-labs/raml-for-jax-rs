@@ -28,6 +28,12 @@ import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>MapTupleRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MapTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
 {
 
@@ -35,6 +41,12 @@ public class MapTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
     private String fieldName;
     private final Set<String> keys = new HashSet<String>();
 
+    /**
+     * <p>Constructor for MapTupleRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param valueType a {@link java.lang.Class} object.
+     */
     public MapTupleRule(String fieldName, Class valueType)
     {
         super(fieldName, new DefaultScalarTupleHandler(fieldName));
@@ -42,6 +54,12 @@ public class MapTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
 
     }
 
+    /**
+     * <p>Constructor for MapTupleRule.</p>
+     *
+     * @param valueType a {@link java.lang.Class} object.
+     * @param nodeRuleFactory a {@link org.raml.parser.rule.NodeRuleFactory} object.
+     */
     public MapTupleRule(Class<?> valueType, NodeRuleFactory nodeRuleFactory)
     {
         this(null, valueType);
@@ -50,6 +68,7 @@ public class MapTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
 
 
     
+    /** {@inheritDoc} */
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         TupleRule<?, ?> tupleRule;
@@ -66,34 +85,62 @@ public class MapTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
         return tupleRule;
     }
 
+    /**
+     * <p>getScalarRule.</p>
+     *
+     * @return a {@link org.raml.parser.rule.DefaultTupleRule} object.
+     */
     protected DefaultTupleRule getScalarRule()
     {
         return new SimpleRule(getFieldName(), getValueType());
     }
 
+    /**
+     * <p>Getter for the field <code>valueType</code>.</p>
+     *
+     * @return a {@link java.lang.Class} object.
+     */
     protected Class getValueType()
     {
         return valueType;
     }
 
+    /**
+     * <p>Getter for the field <code>fieldName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getFieldName()
     {
         return fieldName;
     }
 
     
+    /** {@inheritDoc} */
     public void setValueType(Type valueType)
     {
         this.valueType = (Class) valueType;
     }
 
     
+    /**
+     * <p>validateKey.</p>
+     *
+     * @param key a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         fieldName = key.getValue();
         return super.validateKey(key);
     }
 
+    /**
+     * <p>checkDuplicate.</p>
+     *
+     * @param key a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @param validationResults a {@link java.util.List} object.
+     */
     public void checkDuplicate(ScalarNode key, List<ValidationResult> validationResults)
     {
         if (keys.contains(key.getValue()))

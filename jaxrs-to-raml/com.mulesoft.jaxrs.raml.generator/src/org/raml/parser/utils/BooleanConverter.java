@@ -14,14 +14,16 @@
  * language governing permissions and limitations under the License.
  */
 /**
- * 
+ * <p>BooleanConverter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
  */
 
 package org.raml.parser.utils;
 
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.Converter;
-
 public class BooleanConverter implements Converter
 {
 
@@ -30,6 +32,7 @@ public class BooleanConverter implements Converter
      * @see org.apache.commons.beanutils.Converter#convert(java.lang.Class,
      * java.lang.Object)
      */
+    /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     
     public Object convert(Class type, Object value)

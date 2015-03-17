@@ -15,8 +15,20 @@
  */
 package org.raml.model.validation;
 
+/**
+ * <p>Validation interface.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public interface Validation
 {
 
+    /**
+     * <p>check.</p>
+     *
+     * @param input a {@link java.lang.String} object.
+     * @return a boolean.
+     */
     boolean check(String input);
 }

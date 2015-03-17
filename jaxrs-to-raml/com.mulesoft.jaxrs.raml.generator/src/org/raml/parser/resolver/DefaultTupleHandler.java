@@ -17,10 +17,17 @@ package org.raml.parser.resolver;
 
 import org.yaml.snakeyaml.nodes.NodeTuple;
 
+/**
+ * <p>DefaultTupleHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class DefaultTupleHandler implements  TupleHandler
 {
 
     
+    /** {@inheritDoc} */
     public boolean handles(NodeTuple tuple)
     {
         return false;

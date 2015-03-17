@@ -24,6 +24,12 @@ import org.yaml.snakeyaml.nodes.NodeId;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 
+/**
+ * <p>MapWithListValueTupleRule class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class MapWithListValueTupleRule extends DefaultTupleRule<ScalarNode, MappingNode>
 {
 
@@ -31,6 +37,13 @@ public class MapWithListValueTupleRule extends DefaultTupleRule<ScalarNode, Mapp
     private String fieldName;
 
 
+    /**
+     * <p>Constructor for MapWithListValueTupleRule.</p>
+     *
+     * @param fieldName a {@link java.lang.String} object.
+     * @param valueType a {@link java.lang.Class} object.
+     * @param nodeRuleFactory a {@link org.raml.parser.rule.NodeRuleFactory} object.
+     */
     public MapWithListValueTupleRule(String fieldName, Class<?> valueType, NodeRuleFactory nodeRuleFactory)
     {
         super(fieldName, new DefaultScalarTupleHandler(fieldName), nodeRuleFactory);
@@ -39,6 +52,7 @@ public class MapWithListValueTupleRule extends DefaultTupleRule<ScalarNode, Mapp
 
 
     
+    /** {@inheritDoc} */
     public TupleRule<?, ?> getRuleForTuple(NodeTuple nodeTuple)
     {
         if (nodeTuple.getValueNode().getNodeId() == NodeId.sequence)
@@ -57,6 +71,12 @@ public class MapWithListValueTupleRule extends DefaultTupleRule<ScalarNode, Mapp
     }
 
     
+    /**
+     * <p>validateKey.</p>
+     *
+     * @param key a {@link org.yaml.snakeyaml.nodes.ScalarNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validateKey(ScalarNode key)
     {
         fieldName = key.getValue();

@@ -36,9 +36,16 @@ import org.raml.parser.annotation.Scalar;
 import org.raml.parser.annotation.Sequence;
 import org.raml.parser.utils.ReflectionUtils;
 
+/**
+ * <p>RamlEmitter class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RamlEmitter
 {
 
+    /** Constant <code>VERSION="#%RAML 0.8\n"</code> */
     public static final String VERSION = "#%RAML 0.8\n";
     private static final String INDENTATION = "    ";
     private static final String YAML_SEQ = "- ";
@@ -47,6 +54,12 @@ public class RamlEmitter
     private static final String YAML_SEQ_SEP = ", ";
     private static final String YAML_MAP_SEP = ": ";
 
+    /**
+     * <p>dump.</p>
+     *
+     * @param raml a {@link org.raml.model.Raml} object.
+     * @return a {@link java.lang.String} object.
+     */
     public String dump(Raml raml)
     {
         StringBuilder dump = new StringBuilder(VERSION);

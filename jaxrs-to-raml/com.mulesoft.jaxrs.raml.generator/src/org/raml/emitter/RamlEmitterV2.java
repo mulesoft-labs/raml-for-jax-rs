@@ -42,8 +42,15 @@ import org.raml.parser.annotation.Scalar;
 import org.raml.parser.annotation.Sequence;
 import org.raml.parser.utils.ReflectionUtils;
 
+/**
+ * <p>RamlEmitterV2 class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RamlEmitterV2 {
 
+	/** Constant <code>VERSION="#%RAML 0.8\n"</code> */
 	public static final String VERSION = "#%RAML 0.8\n";
 	private static final String INDENTATION = "  ";
 	private static final String YAML_SEQ = "- ";
@@ -57,10 +64,19 @@ public class RamlEmitterV2 {
 	protected IRamlHierarchyTarget writer;
 	private boolean escape;
 	
+	/**
+	 * <p>Constructor for RamlEmitterV2.</p>
+	 */
 	public RamlEmitterV2(){
 		isSeparated=true;
 	}
 	
+	/**
+	 * <p>dump.</p>
+	 *
+	 * @param writer a {@link org.raml.emitter.IRamlHierarchyTarget} object.
+	 * @param r a {@link org.raml.model.Raml} object.
+	 */
 	public void dump(IRamlHierarchyTarget writer,Raml r){
 		isSeparated=true;
 		this.writer=writer;
@@ -68,6 +84,12 @@ public class RamlEmitterV2 {
 		writer.writeRoot(dump);
 	}
 
+	/**
+	 * <p>dump.</p>
+	 *
+	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String dump(Raml raml) {
 		StringBuilder dump = new StringBuilder(VERSION);
 		int depth = 0;
@@ -75,6 +97,13 @@ public class RamlEmitterV2 {
 		return dump.toString();
 	}
 
+	/**
+	 * <p>dumpPojo.</p>
+	 *
+	 * @param dump a {@link java.lang.StringBuilder} object.
+	 * @param depth a int.
+	 * @param pojo a {@link java.lang.Object} object.
+	 */
 	public void dumpPojo(StringBuilder dump, int depth, Object pojo) {
 		
 		final List<Field> declaredFields = ReflectionUtils
@@ -117,6 +146,14 @@ public class RamlEmitterV2 {
 		}
 	}
 
+	/**
+	 * <p>dumpSequenceField.</p>
+	 *
+	 * @param dump a {@link java.lang.StringBuilder} object.
+	 * @param depth a int.
+	 * @param field a {@link java.lang.reflect.Field} object.
+	 * @param pojo a {@link java.lang.Object} object.
+	 */
 	@SuppressWarnings("rawtypes")
 	public void dumpSequenceField(StringBuilder dump, int depth, Field field,
 			Object pojo) {
@@ -286,6 +323,16 @@ public class RamlEmitterV2 {
 		dump.append(YAML_SEQ_END).append("\n");
 	}
 
+	/**
+	 * <p>dumpMappingField.</p>
+	 *
+	 * @param dump a {@link java.lang.StringBuilder} object.
+	 * @param depth a int.
+	 * @param field a {@link java.lang.reflect.Field} object.
+	 * @param implicit a boolean.
+	 * @param pojo a {@link java.lang.Object} object.
+	 * @param inlineLists a boolean.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void dumpMappingField(StringBuilder dump, int depth, Field field,
 			boolean implicit, Object pojo, boolean inlineLists) {
@@ -329,6 +376,16 @@ public class RamlEmitterV2 {
 		dumpMap(dump, depth, valueType, value, isSettings, false);
 	}
 
+	/**
+	 * <p>dumpMap.</p>
+	 *
+	 * @param dump a {@link java.lang.StringBuilder} object.
+	 * @param depth a int.
+	 * @param valueType a {@link java.lang.reflect.Type} object.
+	 * @param value a {@link java.util.Map} object.
+	 * @param isSettings a boolean.
+	 * @param newLine a boolean.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void dumpMap(StringBuilder dump, int depth, Type valueType,
 			Map value, boolean isSettings,boolean newLine) {
@@ -377,6 +434,16 @@ public class RamlEmitterV2 {
 		}
 
 	}
+	/**
+	 * <p>dumpMapInSeq.</p>
+	 *
+	 * @param dump a {@link java.lang.StringBuilder} object.
+	 * @param depth a int.
+	 * @param valueType a {@link java.lang.reflect.Type} object.
+	 * @param value a {@link java.util.Map} object.
+	 * @param isSettings a boolean.
+	 * @param newLine a boolean.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void dumpMapInSeq(StringBuilder dump, int depth, Type valueType,
 			Map value, boolean isSettings,boolean newLine) {
@@ -651,14 +718,30 @@ public class RamlEmitterV2 {
 		return block.substring(0, block.length() - 1);
 	}
 
+	/**
+	 * <p>indent.</p>
+	 *
+	 * @param depth a int.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String indent(int depth) {
 		return StringUtils.repeat(INDENTATION, depth);
 	}
 
+	/**
+	 * <p>setSingle.</p>
+	 *
+	 * @param b a boolean.
+	 */
 	public void setSingle(boolean b) {
 		this.isSeparated=false;
 	}
 
+	/**
+	 * <p>setEscapeLiterals.</p>
+	 *
+	 * @param b a boolean.
+	 */
 	public void setEscapeLiterals(boolean b) {
 		this.escape=b;
 	}

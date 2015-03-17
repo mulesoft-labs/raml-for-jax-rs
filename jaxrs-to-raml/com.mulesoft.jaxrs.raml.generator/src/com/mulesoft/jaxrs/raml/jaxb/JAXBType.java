@@ -15,8 +15,20 @@ import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>JAXBType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class JAXBType extends JAXBModelElement {
 
+	/**
+	 * <p>Constructor for JAXBType.</p>
+	 *
+	 * @param model a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
+	 */
 	public JAXBType(ITypeModel model,JAXBRegistry r) {
 		super(model,r);
 		IMethodModel[] methods = model.getMethods();
@@ -102,10 +114,20 @@ public class JAXBType extends JAXBModelElement {
 
 	protected ArrayList<JAXBProperty> properties = new ArrayList<JAXBProperty>();
 
+	/**
+	 * <p>getXMLName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getXMLName() {
 		return elementName!=null?elementName:originalType.getName().toLowerCase();
 	}
 
+	/**
+	 * <p>gatherNamespaces.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, String> gatherNamespaces() {
 		int n=0;
 		HashMap<String, String>map=new HashMap<String, String>();

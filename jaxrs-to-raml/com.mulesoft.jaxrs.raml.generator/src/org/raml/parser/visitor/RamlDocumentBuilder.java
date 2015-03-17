@@ -35,22 +35,44 @@ import org.raml.parser.tagresolver.JaxbTagResolver;
 import org.raml.parser.tagresolver.TagResolver;
 import org.yaml.snakeyaml.nodes.MappingNode;
 
+/**
+ * <p>RamlDocumentBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
 {
 
     protected TemplateResolver templateResolver;
     private MediaTypeResolver mediaTypeResolver;
 
+    /**
+     * <p>Constructor for RamlDocumentBuilder.</p>
+     */
     public RamlDocumentBuilder()
     {
         this(new DefaultResourceLoader());
     }
 
+    /**
+     * <p>Constructor for RamlDocumentBuilder.</p>
+     *
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     * @param tagResolvers a {@link org.raml.parser.tagresolver.TagResolver} object.
+     */
     public RamlDocumentBuilder(ResourceLoader resourceLoader, TagResolver... tagResolvers)
     {
         super(Raml.class, resourceLoader, defaultResolver(tagResolvers));
     }
 
+    /**
+     * <p>Constructor for RamlDocumentBuilder.</p>
+     *
+     * @param class1 a {@link java.lang.Class} object.
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     * @param tagResolvers an array of {@link org.raml.parser.tagresolver.TagResolver} objects.
+     */
     public RamlDocumentBuilder(Class<? extends Raml> class1,
 			ResourceLoader resourceLoader, TagResolver[] tagResolvers) {
     	super((Class)class1,resourceLoader,tagResolvers);
@@ -67,6 +89,7 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
     }
 
     
+    /** {@inheritDoc} */
     public void onMappingNodeStart(MappingNode mappingNode, TupleType tupleType)
     {
         super.onMappingNodeStart(mappingNode, tupleType);
@@ -82,6 +105,7 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
     }
 
     
+    /** {@inheritDoc} */
     public void onMappingNodeEnd(MappingNode mappingNode, TupleType tupleType)
     {
         if (getDocumentContext().peek() instanceof Resource)
@@ -120,6 +144,11 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
         }
     }
 
+    /**
+     * <p>Getter for the field <code>templateResolver</code>.</p>
+     *
+     * @return a {@link org.raml.parser.visitor.TemplateResolver} object.
+     */
     public TemplateResolver getTemplateResolver()
     {
         if (templateResolver == null)
@@ -129,6 +158,11 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
         return templateResolver;
     }
 
+    /**
+     * <p>Getter for the field <code>mediaTypeResolver</code>.</p>
+     *
+     * @return a {@link org.raml.parser.visitor.MediaTypeResolver} object.
+     */
     public MediaTypeResolver getMediaTypeResolver()
     {
         if (mediaTypeResolver == null)
@@ -139,6 +173,9 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
     }
 
     
+    /**
+     * <p>preBuildProcess.</p>
+     */
     protected void preBuildProcess()
     {
         getTemplateResolver().init(getRootNode());
@@ -146,6 +183,9 @@ public class RamlDocumentBuilder extends YamlDocumentBuilder<Raml>
     }
 
     
+    /**
+     * <p>postBuildProcess.</p>
+     */
     protected void postBuildProcess()
     {
     }

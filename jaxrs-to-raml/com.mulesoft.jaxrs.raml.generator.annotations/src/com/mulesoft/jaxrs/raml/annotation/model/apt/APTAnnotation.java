@@ -9,21 +9,38 @@ import javax.lang.model.type.DeclaredType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 
+/**
+ * <p>APTAnnotation class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class APTAnnotation implements IAnnotationModel{
 
 	AnnotationMirror mirror;
 	
+	/**
+	 * <p>Constructor for APTAnnotation.</p>
+	 *
+	 * @param m a {@link javax.lang.model.element.AnnotationMirror} object.
+	 */
 	public APTAnnotation(AnnotationMirror m) {
 		this.mirror=m;
 	}
 
 	
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		DeclaredType annotationType = mirror.getAnnotationType();
 		return annotationType.asElement().getSimpleName().toString();
 	}
 
 	
+	/** {@inheritDoc} */
 	public String getValue(String pairName) {
 		Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
 		for (ExecutableElement q:elementValues.keySet()){
@@ -36,6 +53,7 @@ public class APTAnnotation implements IAnnotationModel{
 	}
 
 	
+	/** {@inheritDoc} */
 	public String[] getValues(String value) {
 		Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
 		for (ExecutableElement q:elementValues.keySet()){
@@ -52,6 +70,7 @@ public class APTAnnotation implements IAnnotationModel{
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public IAnnotationModel[] getSubAnnotations(String pairName) {
 		return new IAnnotationModel[0];

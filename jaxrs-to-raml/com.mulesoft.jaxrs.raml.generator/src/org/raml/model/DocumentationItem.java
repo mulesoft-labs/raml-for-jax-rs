@@ -17,6 +17,12 @@ package org.raml.model;
 
 import org.raml.parser.annotation.Scalar;
 
+/**
+ * <p>DocumentationItem class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class DocumentationItem
 {
     @Scalar(required = true)
@@ -27,30 +33,51 @@ public class DocumentationItem
     
     private String origin;
 
+    /**
+     * <p>Getter for the field <code>title</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getTitle()
     {
         return title;
     }
 
+    /**
+     * <p>Setter for the field <code>title</code>.</p>
+     *
+     * @param title a {@link java.lang.String} object.
+     */
     public void setTitle(String title)
     {
         this.title = title;
     }
 
+    /**
+     * <p>Getter for the field <code>content</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getContent()
     {
         return content;
     }
 
+    /**
+     * <p>Setter for the field <code>content</code>.</p>
+     *
+     * @param content a {@link java.lang.String} object.
+     */
     public void setContent(String content)
     {
         this.content = content;
     }
 
-    /**
-     * 
-     * @return name of the file where item is stored (null if in the same file)
-     */
+	/**
+	 * <p>Getter for the field <code>origin</code>.</p>
+	 *
+	 * @return name of the file where item is stored (null if in the same file)
+	 */
 	public String getOrigin() {
 		return origin;
 	}

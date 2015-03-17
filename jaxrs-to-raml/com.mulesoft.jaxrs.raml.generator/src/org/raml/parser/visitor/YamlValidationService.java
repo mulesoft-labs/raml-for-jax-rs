@@ -35,6 +35,12 @@ import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 
+/**
+ * <p>YamlValidationService class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class YamlValidationService
 {
 
@@ -45,6 +51,13 @@ public class YamlValidationService
     private ResourceLoader resourceLoader;
     private TagResolver[] tagResolvers;
 
+    /**
+     * <p>Constructor for YamlValidationService.</p>
+     *
+     * @param resourceLoader a {@link org.raml.parser.loader.ResourceLoader} object.
+     * @param yamlValidator a {@link org.raml.parser.visitor.YamlValidator} object.
+     * @param tagResolvers an array of {@link org.raml.parser.tagresolver.TagResolver} objects.
+     */
     protected YamlValidationService(ResourceLoader resourceLoader, YamlValidator yamlValidator, TagResolver[] tagResolvers)
     {
         this.resourceLoader = resourceLoader;
@@ -53,6 +66,12 @@ public class YamlValidationService
         this.tagResolvers = tagResolvers;
     }
 
+    /**
+     * <p>validate.</p>
+     *
+     * @param root a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validate(MappingNode root)
     {
         NodeVisitor nodeVisitor = new NodeVisitor(yamlValidator, resourceLoader, tagResolvers);
@@ -61,16 +80,34 @@ public class YamlValidationService
         return errorMessage;
     }
 
+    /**
+     * <p>validate.</p>
+     *
+     * @param content a {@link java.io.InputStream} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validate(InputStream content)
     {
         return validate(new InputStreamReader(content));
     }
 
+    /**
+     * <p>validate.</p>
+     *
+     * @param content a {@link java.lang.String} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validate(String content)
     {
         return validate(new StringReader(content));
     }
 
+    /**
+     * <p>validate.</p>
+     *
+     * @param content a {@link java.io.Reader} object.
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> validate(Reader content)
     {
         long startTime = currentTimeMillis();
@@ -108,6 +145,12 @@ public class YamlValidationService
         return errorMessage;
     }
 
+    /**
+     * <p>preValidation.</p>
+     *
+     * @param root a {@link org.yaml.snakeyaml.nodes.MappingNode} object.
+     * @return a {@link java.util.List} object.
+     */
     protected List<ValidationResult> preValidation(MappingNode root)
     {
         //template method

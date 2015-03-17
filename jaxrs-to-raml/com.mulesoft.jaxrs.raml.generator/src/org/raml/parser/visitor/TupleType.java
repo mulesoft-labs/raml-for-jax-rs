@@ -15,6 +15,12 @@
  */
 package org.raml.parser.visitor;
 
+/**
+ * <p>TupleType class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public enum TupleType
 {
     KEY, VALUE

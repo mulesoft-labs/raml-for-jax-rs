@@ -18,8 +18,15 @@ package org.raml.jaxrs.example.impl;
 import org.raml.jaxrs.example.model.Presentation;
 import org.raml.jaxrs.example.resource.Presentations;
 
+/**
+ * <p>PresentationResource class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class PresentationResource implements Presentations
 {
+    /** {@inheritDoc} */
     @Override
     public GetPresentationsResponse getPresentations(final String authorization,
                                                      final String title,
@@ -38,6 +45,7 @@ public class PresentationResource implements Presentations
         return GetPresentationsResponse.withJsonOK(presentations);
     }
 
+    /** {@inheritDoc} */
     @Override
     public PostPresentationsResponse postPresentations(final String authorization, final Presentation entity)
     {
@@ -51,6 +59,7 @@ public class PresentationResource implements Presentations
         return PostPresentationsResponse.withJsonCreated(entity);
     }
 
+    /** {@inheritDoc} */
     @Override
     public GetPresentationsByPresentationIdResponse getPresentationsByPresentationId(final String presentationId,
                                                                                      final String authorization)
@@ -64,6 +73,7 @@ public class PresentationResource implements Presentations
             .withTitle("Title of " + presentationId));
     }
 
+    /** {@inheritDoc} */
     @Override
     public PutPresentationsByPresentationIdResponse putPresentationsByPresentationId(final String presentationId,
                                                                                      final String authorization,
@@ -73,6 +83,7 @@ public class PresentationResource implements Presentations
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public PatchPresentationsByPresentationIdResponse patchPresentationsByPresentationId(final String presentationId,
                                                                                          final String authorization,
@@ -82,6 +93,7 @@ public class PresentationResource implements Presentations
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public DeletePresentationsByPresentationIdResponse deletePresentationsByPresentationId(final String presentationId, final String authorization)
     {

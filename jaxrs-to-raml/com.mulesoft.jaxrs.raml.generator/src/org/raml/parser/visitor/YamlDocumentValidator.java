@@ -44,6 +44,12 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>YamlDocumentValidator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class YamlDocumentValidator implements YamlValidator
 {
 
@@ -54,23 +60,40 @@ public class YamlDocumentValidator implements YamlValidator
     private NodeRuleFactory nodeRuleFactory;
 
 
+    /**
+     * <p>Constructor for YamlDocumentValidator.</p>
+     *
+     * @param documentClass a {@link java.lang.Class} object.
+     */
     protected YamlDocumentValidator(Class<?> documentClass)
     {
         this(documentClass, new NodeRuleFactory());
     }
 
+    /**
+     * <p>Constructor for YamlDocumentValidator.</p>
+     *
+     * @param documentClass a {@link java.lang.Class} object.
+     * @param nodeRuleFactory a {@link org.raml.parser.rule.NodeRuleFactory} object.
+     */
     protected YamlDocumentValidator(Class<?> documentClass, NodeRuleFactory nodeRuleFactory)
     {
         this.documentClass = documentClass;
         this.nodeRuleFactory = nodeRuleFactory;
     }
 
+    /**
+     * <p>Getter for the field <code>ruleContext</code>.</p>
+     *
+     * @return a {@link java.util.Stack} object.
+     */
     protected Stack<NodeRule<?>> getRuleContext()
     {
         return ruleContext;
     }
 
     
+    /** {@inheritDoc} */
     public void onMappingNodeStart(MappingNode node, TupleType tupleType)
     {
         if (tupleType == KEY)
@@ -80,11 +103,13 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onMappingNodeEnd(MappingNode node, TupleType tupleType)
     {
     }
 
     
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     public void onSequenceStart(SequenceNode node, TupleType tupleType)
     {
@@ -100,12 +125,14 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onSequenceEnd(SequenceNode node, TupleType tupleType)
     {
 
     }
 
     
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     public void onScalar(ScalarNode node, TupleType tupleType)
     {
@@ -138,12 +165,14 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onDocumentStart(MappingNode node)
     {
         ruleContext.push(buildDocumentRule());
     }
 
     
+    /** {@inheritDoc} */
     public void onDocumentEnd(MappingNode node)
     {
         NodeRule<?> pop = ruleContext.pop();
@@ -154,6 +183,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onTupleEnd(NodeTuple nodeTuple)
     {
         NodeRule<?> rule = ruleContext.pop();
@@ -169,6 +199,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onTupleStart(NodeTuple nodeTuple)
     {
 
@@ -186,6 +217,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onSequenceElementStart(Node sequenceNode)
     {
         NodeRule peek = ruleContext.peek();
@@ -200,6 +232,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onSequenceElementEnd(Node sequenceNode)
     {
         NodeRule<?> rule = ruleContext.pop();
@@ -208,6 +241,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onCustomTagStart(Tag tag, Node originalValueNode, Node node)
     {
         if (INCLUDE_TAG.equals(tag) && originalValueNode.getNodeId() == scalar)
@@ -221,6 +255,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onCustomTagEnd(Tag tag, Node originalValueNode, Node node)
     {
         if ((INCLUDE_TAG.equals(tag) && originalValueNode.getNodeId() == scalar) ||
@@ -231,6 +266,7 @@ public class YamlDocumentValidator implements YamlValidator
     }
 
     
+    /** {@inheritDoc} */
     public void onCustomTagError(Tag tag, Node node, String message)
     {
         addMessages(Arrays.asList(createErrorResult(message, node.getStartMark(), node.getEndMark())));
@@ -245,6 +281,11 @@ public class YamlDocumentValidator implements YamlValidator
 
 
     
+    /**
+     * <p>Getter for the field <code>messages</code>.</p>
+     *
+     * @return a {@link java.util.List} object.
+     */
     public List<ValidationResult> getMessages()
     {
         return messages;

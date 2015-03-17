@@ -15,9 +15,18 @@
  */
 package org.raml.parser.builder;
 
+/**
+ * <p>TraitBuilder class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TraitBuilder extends TemplateBuilder
 {
 
+    /**
+     * <p>Constructor for TraitBuilder.</p>
+     */
     public TraitBuilder()
     {
         super("traits");

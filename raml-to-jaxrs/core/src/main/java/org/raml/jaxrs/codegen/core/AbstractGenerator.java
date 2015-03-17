@@ -91,9 +91,17 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
 
+/**
+ * <p>Abstract AbstractGenerator class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class AbstractGenerator {
+	/** Constant <code>DEFAULT_ANNOTATION_PARAMETER="value"</code> */
 	protected static final String DEFAULT_ANNOTATION_PARAMETER = "value";
 
+	/** Constant <code>LOGGER</code> */
 	protected static final Logger LOGGER = LoggerFactory
 			.getLogger(Generator.class);
 
@@ -137,6 +145,14 @@ public abstract class AbstractGenerator {
 				"base package name can't be empty");
 	}
 
+	/**
+	 * <p>run.</p>
+	 *
+	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+	 * @return a {@link java.util.Set} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected Set<String> run(final Raml raml, final Configuration configuration)
 			throws Exception {
 		validate(configuration);
@@ -158,6 +174,13 @@ public abstract class AbstractGenerator {
 		return context.generate();
 	}
 
+	/**
+	 * <p>createResourceInterface.</p>
+	 *
+	 * @param resource a {@link org.raml.model.Resource} object.
+	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void createResourceInterface(final Resource resource,
 			final Raml raml) throws Exception {
 		final String resourceInterfaceName = Names
@@ -183,6 +206,14 @@ public abstract class AbstractGenerator {
 		}
 	}
 
+	/**
+	 * <p>addResourceMethods.</p>
+	 *
+	 * @param resource a {@link org.raml.model.Resource} object.
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterfacePath a {@link java.lang.String} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void addResourceMethods(final Resource resource,
 			final JDefinedClass resourceInterface,
 			final String resourceInterfacePath) throws Exception {
@@ -209,6 +240,12 @@ public abstract class AbstractGenerator {
 		}
 	}
 
+	/**
+	 * <p>getUniqueResponseMimeTypes.</p>
+	 *
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @return a {@link java.util.Collection} object.
+	 */
 	protected Collection<MimeType> getUniqueResponseMimeTypes(
 			final Action action) {
 		final Map<String, MimeType> responseMimeTypes = new HashMap<String, MimeType>();
@@ -226,6 +263,17 @@ public abstract class AbstractGenerator {
 		return responseMimeTypes.values();
 	}
 
+	/**
+	 * <p>addResourceMethod.</p>
+	 *
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterfacePath a {@link java.lang.String} object.
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param addBodyMimeTypeInMethodName a boolean.
+	 * @param uniqueResponseMimeTypes a {@link java.util.Collection} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected abstract void addResourceMethod(
 			final JDefinedClass resourceInterface,
 			final String resourceInterfacePath, final Action action,
@@ -234,6 +282,13 @@ public abstract class AbstractGenerator {
 			final Collection<MimeType> uniqueResponseMimeTypes)
 			throws Exception;
 
+	/**
+	 * <p>addParamAnnotation.</p>
+	 *
+	 * @param resourceInterfacePath a {@link java.lang.String} object.
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 */
 	protected void addParamAnnotation(final String resourceInterfacePath,
 			final Action action, final JMethod method) {
 		final String path = StringUtils.substringAfter(action.getResource()
@@ -264,6 +319,13 @@ public abstract class AbstractGenerator {
 		}
 	}
 
+	/**
+	 * <p>addParameterJavaDoc.</p>
+	 *
+	 * @param parameter a {@link org.raml.model.parameter.AbstractParam} object.
+	 * @param parameterName a {@link java.lang.String} object.
+	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
+	 */
 	protected void addParameterJavaDoc(final AbstractParam parameter,
 			final String parameterName, final JDocComment javadoc) {
 		javadoc.addParam(parameterName).add(
@@ -271,10 +333,22 @@ public abstract class AbstractGenerator {
 						+ getPrefixedExampleOrBlank(parameter.getExample()));
 	}
 
+	/**
+	 * <p>getPrefixedExampleOrBlank.</p>
+	 *
+	 * @param example a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected String getPrefixedExampleOrBlank(final String example) {
 		return isNotBlank(example) ? EXAMPLE_PREFIX + example : "";
 	}
 
+	/**
+	 * <p>appendParameterJavadocDescription.</p>
+	 *
+	 * @param param a {@link org.raml.model.parameter.AbstractParam} object.
+	 * @param sb a {@link java.lang.StringBuilder} object.
+	 */
 	protected void appendParameterJavadocDescription(final AbstractParam param,
 			final StringBuilder sb) {
 		if (isNotBlank(param.getDisplayName())) {
@@ -315,6 +389,14 @@ public abstract class AbstractGenerator {
 		return false;
 	}
 
+	/**
+	 * <p>addFormParameters.</p>
+	 *
+	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void addFormParameters(final MimeType bodyMimeType,
 			final JMethod method, final JDocComment javadoc) throws Exception {
 		if (hasAMultiTypeFormParameter(bodyMimeType)) {
@@ -333,6 +415,12 @@ public abstract class AbstractGenerator {
 		}
 	}
 
+	/**
+	 * <p>addConsumesAnnotation.</p>
+	 *
+	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 */
 	protected void addConsumesAnnotation(final MimeType bodyMimeType,
 			final JMethod method) {
 		if (bodyMimeType != null) {
@@ -341,6 +429,12 @@ public abstract class AbstractGenerator {
 		}
 	}
 
+	/**
+	 * <p>addProducesAnnotation.</p>
+	 *
+	 * @param uniqueResponseMimeTypes a {@link java.util.Collection} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 */
 	protected void addProducesAnnotation(
 			final Collection<MimeType> uniqueResponseMimeTypes,
 			final JMethod method) {
@@ -356,6 +450,14 @@ public abstract class AbstractGenerator {
 		}
 	}
 
+	/**
+	 * <p>addBodyParameters.</p>
+	 *
+	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void addBodyParameters(final MimeType bodyMimeType,
 			final JMethod method, final JDocComment javadoc) throws Exception {
 		if (bodyMimeType == null) {
@@ -372,6 +474,14 @@ public abstract class AbstractGenerator {
 		}
 	}
 
+	/**
+	 * <p>addPathParameters.</p>
+	 *
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void addPathParameters(final Action action, final JMethod method,
 			final JDocComment javadoc) throws Exception {
 		addAllResourcePathParameters(action.getResource(), method, javadoc);
@@ -395,6 +505,14 @@ public abstract class AbstractGenerator {
 
 	}
 
+	/**
+	 * <p>addHeaderParameters.</p>
+	 *
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void addHeaderParameters(final Action action, final JMethod method,
 			final JDocComment javadoc) throws Exception {
 		for (final Entry<String, Header> namedHeaderParameter : action
@@ -404,6 +522,13 @@ public abstract class AbstractGenerator {
 					javadoc);
 		}
 	}
+	/**
+	 * <p>addBaseJavaDoc.</p>
+	 *
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 * @return a {@link com.sun.codemodel.JDocComment} object.
+	 */
 	protected JDocComment addBaseJavaDoc(final Action action, final JMethod method)
     {
         final JDocComment javadoc = method.javadoc();
@@ -414,6 +539,14 @@ public abstract class AbstractGenerator {
         return javadoc;
     }
 
+	/**
+	 * <p>addQueryParameters.</p>
+	 *
+	 * @param action a {@link org.raml.model.Action} object.
+	 * @param method a {@link com.sun.codemodel.JMethod} object.
+	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	protected void addQueryParameters(final Action action, final JMethod method,
 			final JDocComment javadoc) throws Exception {
 		for (final Entry<String, QueryParameter> namedQueryParameter : action
@@ -522,6 +655,12 @@ public abstract class AbstractGenerator {
 				uniqueResponseMimeTypes);
 	}
 
+	/**
+	 * <p>toDetailedString.</p>
+	 *
+	 * @param item a {@link org.raml.parser.rule.ValidationResult} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	protected static String toDetailedString(ValidationResult item) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("\t");
@@ -544,6 +683,14 @@ public abstract class AbstractGenerator {
 		return stringBuilder.toString();
 	}
 
+	/**
+	 * <p>run.</p>
+	 *
+	 * @param ramlReader a {@link java.io.Reader} object.
+	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+	 * @return a {@link java.util.Set} object.
+	 * @throws java.lang.Exception if any.
+	 */
 	public Set<String> run(final Reader ramlReader,
 			final Configuration configuration) throws Exception {
 		if (isNotBlank(configuration.getAsyncResourceTrait())

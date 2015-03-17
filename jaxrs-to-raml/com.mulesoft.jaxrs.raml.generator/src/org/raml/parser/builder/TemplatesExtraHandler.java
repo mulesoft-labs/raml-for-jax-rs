@@ -13,16 +13,28 @@ import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.nodes.Tag;
 
+/**
+ * <p>TemplatesExtraHandler class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public class TemplatesExtraHandler implements ExtraHandler {
 
 	String field;
 	
+	/**
+	 * <p>Constructor for TemplatesExtraHandler.</p>
+	 *
+	 * @param field a {@link java.lang.String} object.
+	 */
 	public TemplatesExtraHandler(String field) {
 		super();
 		this.field = field;
 	}
 
 	
+	/** {@inheritDoc} */
 	public void handle(Object pojo, SequenceNode node) {
 		List<Node> value = node.getValue();
 		ArrayList<TemplateUse> str = new ArrayList<TemplateUse>();

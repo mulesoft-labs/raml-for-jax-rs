@@ -21,6 +21,12 @@ import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
+/**
+ * <p>Abstract BasicModel class.</p>
+ *
+ * @author kor
+ * @version $Id: $Id
+ */
 public abstract class BasicModel implements IBasicModel{
 
 	private static final String VALUE_METHOD_ID = "value"; //$NON-NLS-1$
@@ -36,49 +42,100 @@ public abstract class BasicModel implements IBasicModel{
 	private Class<?> actualClass;
 	private ITypeModel jaxbType;
 	
+	/**
+	 * <p>getJAXBType.</p>
+	 *
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public ITypeModel getJAXBType() {
 		return jaxbType;
 	}
 
+	/**
+	 * <p>getJavaType.</p>
+	 *
+	 * @return a {@link java.lang.Class} object.
+	 */
 	public Class<?> getJavaType() {
 		return actualClass;
 	}
 
 
+	/**
+	 * <p>isStatic.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isStatic() {
 		return publicM;
 	}
 
+	/**
+	 * <p>isPublic.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isPublic() {
 		return staticM;
 	}
 	
 	
+	/**
+	 * <p>getName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return simpleName;
 	}
 	
+	/**
+	 * <p>setName.</p>
+	 *
+	 * @param simpleName a {@link java.lang.String} object.
+	 */
 	public void setName(String simpleName) {
 		this.simpleName = simpleName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>documentation</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getDocumentation() {
 		return documentation;
 	}
 
+	/**
+	 * <p>Setter for the field <code>documentation</code>.</p>
+	 *
+	 * @param documentation a {@link java.lang.String} object.
+	 */
 	public void setDocumentation(String documentation) {
 		this.documentation = documentation;
 	}
 
+	/**
+	 * <p>Getter for the field <code>annotations</code>.</p>
+	 *
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} objects.
+	 */
 	public IAnnotationModel[] getAnnotations() {		
 		return annotations.values().toArray(new IAnnotationModel[annotations.size()]);
 	}
 	
+	/**
+	 * <p>addAnnotation.</p>
+	 *
+	 * @param annotation a {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} object.
+	 */
 	public void addAnnotation(IAnnotationModel annotation){
 		String name = annotation.getName();
 		annotations.put(name, annotation);
 	}
 
+	/** {@inheritDoc} */
 	public String getAnnotationValue(String annotation) {
 		
 		IAnnotationModel annotationModel = annotations.get(annotation);
@@ -89,6 +146,7 @@ public abstract class BasicModel implements IBasicModel{
 		return annotationModel.getValue(VALUE_METHOD_ID);		
 	}
 
+	/** {@inheritDoc} */
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel annotationModel = annotations.get(annotation);
 		if(annotationModel==null){
@@ -98,14 +156,17 @@ public abstract class BasicModel implements IBasicModel{
 		return annotationModel.getValues(VALUE_METHOD_ID);
 	}
 
+	/** {@inheritDoc} */
 	public boolean hasAnnotation(String annotationName) {
 		return annotations.containsKey(annotationName);
 	}
 	
+	/** {@inheritDoc} */
 	public IAnnotationModel getAnnotation(String name) {
 		return annotations.get(name);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -119,6 +180,7 @@ public abstract class BasicModel implements IBasicModel{
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -146,17 +208,37 @@ public abstract class BasicModel implements IBasicModel{
 		return true;
 	}
 
+	/**
+	 * <p>setStatic.</p>
+	 *
+	 * @param b a boolean.
+	 */
 	public void setStatic(boolean b) {
 		this.staticM=true;
 	}
+	/**
+	 * <p>setPublic.</p>
+	 *
+	 * @param b a boolean.
+	 */
 	public void setPublic(boolean b) {
 		this.publicM=true;
 	}
 
+	/**
+	 * <p>setJavaClass.</p>
+	 *
+	 * @param actualClass a {@link java.lang.Class} object.
+	 */
 	public void setJavaClass(Class<?> actualClass) {
 		this.actualClass=actualClass;
 	}
 
+	/**
+	 * <p>Setter for the field <code>jaxbType</code>.</p>
+	 *
+	 * @param processTypeReference a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
 	public void setJaxbType(ITypeModel processTypeReference) {
 		this.jaxbType=processTypeReference;
 	}

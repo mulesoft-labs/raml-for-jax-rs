@@ -67,6 +67,7 @@ public class Configuration
     private File outputDirectory;
     private JaxrsVersion jaxrsVersion = JaxrsVersion.JAXRS_1_1;
     private String basePackageName;
+    private String modelPackageName = "model";
     private boolean useJsr303Annotations = false;
     private AnnotationStyle jsonMapper = AnnotationStyle.JACKSON1;
     private File sourceDirectory;
@@ -75,7 +76,7 @@ public class Configuration
     private String asyncResourceTrait;
 	private boolean emptyResponseReturnVoid;
 	private boolean generateClientInterface;
-	
+
 	/**
 	 * <p>isGenerateClientInterface.</p>
 	 *
@@ -95,8 +96,8 @@ public class Configuration
 	}
 
 	private List<GeneratorExtension> extensions = new ArrayList<GeneratorExtension>();
-    
-    
+
+
 
 	/**
 	 * <p>Getter for the field <code>asyncResourceTrait</code>.</p>
@@ -107,7 +108,7 @@ public class Configuration
     {
          return asyncResourceTrait;
     }
-    
+
     /**
      * <p>Setter for the field <code>asyncResourceTrait</code>.</p>
      *
@@ -236,6 +237,26 @@ public class Configuration
     }
 
     /**
+     * <p>Getter for the field <code>modelPackageName</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
+    public String getModelPackageName()
+    {
+        return modelPackageName;
+    }
+
+    /**
+     * <p>Setter for the field <code>modelPackageName</code>.</p>
+     *
+     * @param modelPackageName a {@link java.lang.String} object.
+     */
+    public void setModelPackageName(final String modelPackageName)
+    {
+        this.modelPackageName = modelPackageName;
+    }
+
+    /**
      * <p>isUseJsr303Annotations.</p>
      *
      * @return a boolean.
@@ -274,7 +295,7 @@ public class Configuration
     {
         this.jsonMapper = jsonMapper;
     }
-    
+
     /**
      * <p>Getter for the field <code>methodThrowException</code>.</p>
      *
@@ -283,7 +304,7 @@ public class Configuration
     public Class getMethodThrowException() {
         return methodThrowException;
     }
-    
+
     /**
      * <p>Setter for the field <code>methodThrowException</code>.</p>
      *
@@ -310,7 +331,7 @@ public class Configuration
     public void setSourceDirectory(File sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
     }
-    
+
     /**
      * <p>Getter for the field <code>jsonMapperConfiguration</code>.</p>
      *
@@ -320,7 +341,7 @@ public class Configuration
     {
        return jsonMapperConfiguration;
     }
-    
+
     /**
      * <p>Setter for the field <code>jsonMapperConfiguration</code>.</p>
      *
@@ -339,7 +360,7 @@ public class Configuration
 	public boolean isEmptyResponseReturnVoid() {
 		return emptyResponseReturnVoid;
 	}
-	
+
 	/**
 	 * <p>Setter for the field <code>emptyResponseReturnVoid</code>.</p>
 	 *
@@ -348,7 +369,7 @@ public class Configuration
 	public void setEmptyResponseReturnVoid(boolean emptyResponseReturnVoid) {
 		this.emptyResponseReturnVoid = emptyResponseReturnVoid;
 	}
-	
+
 	/**
 	 * <p>Getter for the field <code>extensions</code>.</p>
 	 *
@@ -357,6 +378,6 @@ public class Configuration
 	public List<GeneratorExtension> getExtensions() {
 		return this.extensions;
 	}
-	
+
 
 }

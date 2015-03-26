@@ -59,10 +59,12 @@ The following annotations are not part of JAX-RS specification itself. However, 
 JAVA projects, and so, it was decided to add support for them.
 
 #####Swagger Annotations:
-If the project is using these swagger annotations, the tool is able to determine the possible response codes
-and generate the proper documentation.
-- ApiResponse.
-- ApiResponses.
+Following Swagger annotations are supported:
+- Api
+- ApiOperation
+- ApiParam
+- ApiResponse
+- ApiResponses
 
 #####Validation Annotations:
 These annotations are interpreted as RAML parameters constrains.

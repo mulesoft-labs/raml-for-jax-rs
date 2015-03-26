@@ -15,8 +15,7 @@ public class TestResource2 {
 	@PUT
 	@POST
 	@Path("/qqq")
-	
-	public String getUser2(@FormParam("name") String name) {
+	public String getUser2(String name) {
 		return null;
 	}
 }

@@ -42,7 +42,12 @@ public class AnnotationModel implements IAnnotationModel {
 			Method method = annotation.getClass().getMethod(pairName);
 			Object invoke = method.invoke(annotation);
 			if (invoke!=null){
-				return invoke.toString();
+				String value = invoke.toString();
+				Object defaultValue = annotation.annotationType().getMethod(pairName).getDefaultValue();
+				if(value.equals(defaultValue)){
+					return null;
+				}
+				return value;
 			}
 			return null;
 		} catch (NoSuchMethodException e) {

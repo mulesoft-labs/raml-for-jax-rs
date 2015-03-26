@@ -65,7 +65,7 @@ public class ReflectionType extends BasicReflectionMember<Class<?>> implements I
 	/** {@inheritDoc} */
 	@Override
 	public IFieldModel[] getFields() {
-		Field[] declaredFields= element.getFields();
+		Field[] declaredFields= element.getDeclaredFields();
 		IFieldModel[] fields=new IFieldModel[declaredFields.length];
 		int a=0;
 		for (Field m:declaredFields){

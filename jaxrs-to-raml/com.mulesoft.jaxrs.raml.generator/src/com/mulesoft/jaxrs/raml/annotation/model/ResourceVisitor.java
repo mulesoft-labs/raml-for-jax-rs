@@ -2,29 +2,24 @@ package com.mulesoft.jaxrs.raml.annotation.model;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
-
-
 
 import org.raml.emitter.IRamlHierarchyTarget;
 import org.raml.emitter.RamlEmitterV2;
 import org.raml.model.Action;
 import org.raml.model.ActionType;
+import org.raml.model.DocumentationItem;
 import org.raml.model.MimeType;
 import org.raml.model.ParamType;
 import org.raml.model.Protocol;
@@ -37,6 +32,7 @@ import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 import com.mulesoft.jaxrs.raml.jaxb.ExampleGenerator;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
@@ -54,7 +50,9 @@ import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 public abstract class ResourceVisitor {
 
 	private static final String DEFAULT_RESPONSE = "200";
-
+	
+	private static final String API_OPERATION = "ApiOperation";
+	
 	private static final String API_RESPONSE = "ApiResponse";
 
 	private static final String API_RESPONSES = "ApiResponses";
@@ -132,6 +130,8 @@ public abstract class ResourceVisitor {
 
 	private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
 
+	private static final String RESPONSE = "response";
+	
 	private static final String MESSAGE = "message";
 
 	protected RAMLModelHelper spec = new RAMLModelHelper();
@@ -167,9 +167,47 @@ public abstract class ResourceVisitor {
 	 */
 	public void visit(ITypeModel t) {
 		consumedTypes.add(t);
-		classConsumes = t.getAnnotationValues(CONSUMES);
-		classProduces = t.getAnnotationValues(PRODUCES);
-		String annotationValue = t.getAnnotationValue(PATH);
+		
+		IAnnotationModel apiAnn = t.getAnnotation("Api");
+		if(apiAnn!=null){			
+			
+			String baseUri = apiAnn.getValue("basePath");
+			if(baseUri!=null&&!baseUri.trim().isEmpty()){
+				spec.getCoreRaml().setBaseUri(baseUri);
+			}	
+			
+			String description = apiAnn.getValue("description");
+			if(description!=null&&!description.trim().isEmpty()){
+				DocumentationItem di = new DocumentationItem();
+				di.setContent(description);
+				di.setTitle("description");
+				spec.getCoreRaml().setDocumentation(new ArrayList<DocumentationItem>(Arrays.asList(di)));				
+			}
+			
+			String producesString = apiAnn.getValue(PRODUCES.toLowerCase());
+			if(producesString!=null&&!producesString.isEmpty()){
+				classProduces = producesString.split(",");
+				for(int i = 0 ; i < classProduces.length ; i++){
+					classProduces[i] = classProduces[i].trim();
+				}
+			}
+			
+			String consumesString = apiAnn.getValue(CONSUMES.toLowerCase());
+			if(consumesString!=null&&!consumesString.isEmpty()){
+				classConsumes = consumesString.split(",");
+				for(int i = 0 ; i < classConsumes.length ; i++){
+					classConsumes[i] = classConsumes[i].trim();
+				}
+			}
+		}
+		if(classConsumes==null||classConsumes.length==0){
+			classConsumes = t.getAnnotationValues(CONSUMES);
+		}
+		if(classProduces==null||classProduces.length==0){
+			classProduces = t.getAnnotationValues(PRODUCES);
+		}
+		
+		String annotationValue = t.getAnnotationValue(PATH);		
 		if (basePath != null) {
 			if (annotationValue == null) {
 				annotationValue = ""; //$NON-NLS-1$
@@ -265,11 +303,8 @@ public abstract class ResourceVisitor {
 		}
 		if (isWs) {
 			Resource res = new Resource();
-			IDocInfo documentation = m.getBasicDocInfo();
-			String text = documentation.getDocumentation();
-			if (!"".equals(text)) { //$NON-NLS-1$
-				res.setDescription(text);
-			}
+			IDocInfo documentation = getDocumentation(m);
+
 			String returnName = null;
 			String parameterName = null;
 
@@ -319,6 +354,58 @@ public abstract class ResourceVisitor {
 
 	
 
+	private IDocInfo getDocumentation(IMethodModel m) {
+		
+		final IDocInfo basicDocInfo = m.getBasicDocInfo();
+		
+		String docString = basicDocInfo.getDocumentation();
+		
+		if(docString != null&&!docString.trim().isEmpty()){
+			return basicDocInfo;
+		}
+		
+		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
+		if (apiOperation != null) {
+			StringBuilder bld = new StringBuilder();
+
+			String summary = apiOperation.getValue("value");
+			if (summary != null) {
+				bld.append(summary.trim());
+			}
+
+			String notes = apiOperation.getValue("notes");
+			if (notes != null) {
+				if (bld.length() != 0) {
+					bld.append("\r\n");
+				}
+				bld.append(notes);
+			}
+			docString = bld.toString();
+		}
+		
+		if(docString!=null&&!docString.isEmpty()){
+			final String finalDocumentation = docString;
+			return new IDocInfo() {
+				
+				@Override
+				public String getReturnInfo() {
+					return basicDocInfo.getReturnInfo();
+				}
+				
+				@Override
+				public String getDocumentation(String pName) {
+					return basicDocInfo.getDocumentation(pName);
+				}
+				
+				@Override
+				public String getDocumentation() {
+					return finalDocumentation;
+				}
+			};
+		}
+		return basicDocInfo;
+	}
+
 	/**
 	 * <p>createResourceVisitor.</p>
 	 *
@@ -326,88 +413,49 @@ public abstract class ResourceVisitor {
 	 */
 	protected abstract ResourceVisitor createResourceVisitor();
 
-	private void addMethod(ActionType action, Resource res, IMethodModel m,
+	private void addMethod(ActionType actionType, Resource res, IMethodModel m,
 			IDocInfo documentation, String returnName, String parameterName) {
-		Action value = new Action();
 		
-		value.setType(action);
-		res.getActions().put(action, value);
+		Action action = new Action();
+		String description = documentation.getDocumentation();
+		if (!"".equals(description)) { //$NON-NLS-1$
+			action.setDescription(description);
+		}
+		
+		ActionType adjustedActionType = adjustActionType(m,actionType);		
+		action.setType(adjustedActionType);		
+		res.getActions().put(adjustedActionType, action);
+		
+		processResponses(m,action,documentation,returnName);
+		
 		IParameterModel[] parameters = m.getParameters();
-		String[] responseCodes=new String[]{ResourceVisitor.DEFAULT_RESPONSE};
-		String[] responseDescriptions=new String[]{null};
-		if (config!=null)
-		{
-			responseCodes=new String[]{config.getResponseCode(action)};
-		}
-		IAnnotationModel annotation = m.getAnnotation(ResourceVisitor.API_RESPONSE);
-		if (annotation!=null)
-		{
-			responseCodes=new String[]{annotation.getValue(ResourceVisitor.CODE)};
-			responseDescriptions=new String[]{annotation.getValue(ResourceVisitor.MESSAGE)};
-		}
-		annotation = m.getAnnotation(ResourceVisitor.API_RESPONSES);
-		if (annotation!=null)
-		{
-			IAnnotationModel[] subAnnotations = annotation.getSubAnnotations("value");
-			if (subAnnotations==null){
-				subAnnotations=new IAnnotationModel[0];
-			}
-			responseCodes=new String[subAnnotations.length];
-			responseDescriptions=new String[subAnnotations.length];
-			int a=0;
-			for (IAnnotationModel mq:subAnnotations){
-				responseCodes[a++]=mq.getValue(ResourceVisitor.CODE);
-				responseDescriptions[a-1]=mq.getValue(ResourceVisitor.MESSAGE);
-			}
-		}
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(QUERY_PARAM)) {
-				String annotationValue = pm.getAnnotationValue(QUERY_PARAM);
-				String type = pm.getType();
+				IAnnotationModel paramAnnotation = pm.getAnnotation(QUERY_PARAM);
 				QueryParameter value2 = new QueryParameter();
-				configureParam(pm, value2);
-				proceedType(type, value2, pm);
-				String text = documentation.getDocumentation(pm
-						.getName());
-				if (!"".equals(text)) { //$NON-NLS-1$
-					value2.setDescription(text);
-				}
-				value.getQueryParameters().put(annotationValue, value2);
+				String paramName = configureParam(pm, value2, documentation,paramAnnotation);
+				action.getQueryParameters().put(paramName, value2);
 			}
 		}
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(HEADER_PARAM)) {
-				String annotationValue = pm.getAnnotationValue(HEADER_PARAM);
+				IAnnotationModel paramAnnotation = pm.getAnnotation(HEADER_PARAM);
 				Header value2 = new Header();
-				configureParam(pm, value2);
-				proceedType(pm.getType(), value2, pm);
-				String text = documentation.getDocumentation(pm
-						.getName());
-				if (!"".equals(text)) { //$NON-NLS-1$
-					value2.setDescription(text);
-				}
-				value.getHeaders().put(annotationValue, value2);
+				String paramName = configureParam(pm, value2, documentation,paramAnnotation);
+				action.getHeaders().put(paramName, value2);
 			}
 		}
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(PATH_PARAM)) {
-				String annotationValue = pm.getAnnotationValue(PATH_PARAM);
+				IAnnotationModel paramAnnotation = pm.getAnnotation(PATH_PARAM);
 				UriParameter value2 = new UriParameter();
-				configureParam(pm, value2);
-				String text = documentation.getDocumentation(pm
-						.getName());
-				if (!"".equals(text)) { //$NON-NLS-1$
-					value2.setDescription(text);
-				}
-				proceedType(pm.getType(), value2, pm);
-				res.getUriParameters().put(annotationValue, value2);
+				String paramName = configureParam(pm, value2, documentation,paramAnnotation);
+				res.getUriParameters().put(paramName, value2);
 			}
 		}
 
-		String[] consumesValue = m.getAnnotationValues(CONSUMES);
-		if (consumesValue == null) {
-			consumesValue = classConsumes;
-		}
+		boolean hasBody = m.getBodyType()!=null;
+		String[] consumesValue = extractMediaTypes(m, CONSUMES, classConsumes, hasBody,adjustedActionType);
 		if (consumesValue != null) {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
@@ -433,84 +481,218 @@ public abstract class ResourceVisitor {
 				if (s.contains(FORM)) {
 					for (IParameterModel pm : parameters) {
 						if (pm.hasAnnotation(FORM_PARAM)) {
-							String annotationValue = pm
-									.getAnnotationValue(FORM_PARAM);
+							IAnnotationModel paramAnnotation = pm.getAnnotation(FORM_PARAM);							
 							FormParameter vl = new FormParameter();
-							configureParam(pm,vl);
-							String text = documentation.getDocumentation(pm
-									.getName());
-							if (!"".equals(text)) { //$NON-NLS-1$
-								vl.setDescription(text);
-							}
-							proceedType(pm.getType(), vl, pm);
+							String paramName = configureParam(pm,vl,documentation,paramAnnotation);							
 							ArrayList<FormParameter> arrayList = new ArrayList<FormParameter>();
 							arrayList.add(vl);
 							if (bodyType.getFormParameters() == null) {
 								bodyType.setFormParameters(new HashMap<String, java.util.List<FormParameter>>());
 							}
-							bodyType.getFormParameters().put(annotationValue,
-									arrayList);
+							bodyType.getFormParameters().put(paramName,	arrayList);
 						}
 					}
 				}
-				value.getBody().put(s, bodyType);
+				action.getBody().put(s, bodyType);
 			}
 		}
-		String[] producesValue = m.getAnnotationValues(PRODUCES);
-		if (producesValue == null) {
-			producesValue = classProduces;
+	}
+	
+	
+	private void processResponses(IMethodModel m, Action action, IDocInfo documentation, String returnName) {
+		
+		HashMap<String, ResponseModel> responses = new HashMap<String, ResponseModel>();
+		String mainResponseCode = DEFAULT_RESPONSE;
+		if(config != null){
+			ActionType actionType = action.getType();
+			mainResponseCode = config.getResponseCode(actionType);
 		}
-		int a=0;
-		for (String responseCode:responseCodes){
-		if (producesValue != null) {
-			Response value2 = new Response();
-			String text = documentation.getReturnInfo();
-			String respDesc=responseDescriptions[a];
-			if (respDesc!=null&&respDesc.length()>0){
-				text=respDesc;
-			}
-			a++;
-			if (!"".equals(text)) { //$NON-NLS-1$
-				value2.setDescription(text);
-			}
-			for (String s : producesValue) {
-				s = sanitizeMediaType(s);
-				MimeType mimeType = new MimeType();
-				if (returnName != null) {
-					if (s.contains(XML)) {
-						mimeType.setSchema(returnName);
-						if (returnName!=null){
-							mimeType.setExample(EXAMPLES_PREFFIX + returnName + XML_FILE_EXT);
-							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
-								+ XML_FILE_EXT);
+		
+		ResponseModel mainResponse = new ResponseModel(mainResponseCode, null, returnName);
+		responses.put(mainResponseCode, mainResponse);
+		
+		IAnnotationModel apiResponse = m.getAnnotation(ResourceVisitor.API_RESPONSE);
+		if(apiResponse!=null){
+			String code = apiResponse.getValue(ResourceVisitor.CODE);
+			String message = apiResponse.getValue(ResourceVisitor.MESSAGE);
+			ResponseModel response = new ResponseModel(code, message, returnName);
+			responses.put(code, response);
+		}
+		
+		IAnnotationModel apiResponses = m.getAnnotation(ResourceVisitor.API_RESPONSES);
+		if (apiResponses!=null)
+		{
+			IAnnotationModel[] subAnnotations = apiResponses.getSubAnnotations("value");
+			if (subAnnotations!=null){				
+				for (IAnnotationModel subAnn:subAnnotations){
+					String code = subAnn.getValue(ResourceVisitor.CODE);
+					String message = subAnn.getValue(ResourceVisitor.MESSAGE);
+					
+					String adjustedReturnName = returnName;
+					String responseQualifiedName = subAnn.getValue(RESPONSE);					
+					if(responseQualifiedName!=null){
+						try {
+							Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
+							ReflectionType rt = new ReflectionType(responseClass); 
+							generateXMLSchema(rt);
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
 						}
+						adjustedReturnName = getSimpleName(responseQualifiedName).toLowerCase();
 					}
-					if (s.contains(JSON)) {
-						if (returnName!=null){
-							mimeType.setSchema(returnName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
-							mimeType.setExample(EXAMPLES_PREFFIX + returnName + JSON_FILE_EXT);
-							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnName
-								+ JSON_FILE_EXT);
-						}
+					ResponseModel response = responses.get(code);
+					if(response==null){
+						response = new ResponseModel(code, message, adjustedReturnName);
+						responses.put(code, response);
+					}
+					else{
+						response.setMessage(message);
+						response.setReturnTypeName(adjustedReturnName);
 					}
 				}
-				mimeType.setType(s);
-				value2.getBody().put(s, mimeType);
+			}
+		}
 
+		boolean returnsValue = !m.getReturnedType().getName().toLowerCase().equals("void");
+		String[] producesValues = extractMediaTypes(m, PRODUCES, classProduces, returnsValue, null);
+		if(producesValues!=null){
+			for (ResponseModel responseModel : responses.values()){
+				responseModel.setProduces(producesValues);
 			}
-			value.getResponses().put(responseCode, value2); //$NON-NLS-1$
-		} else {
-			Response value2 = new Response();
-			String text = documentation.getReturnInfo();
-			if (!"".equals(text)) { //$NON-NLS-1$
-				value2.setDescription(text);
-			}
-			value.getResponses().put(responseCode, value2); //$NON-NLS-1$
 		}
+		
+		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
+		if(apiOperation!=null){
+			String responseQualifiedName = apiOperation.getValue(RESPONSE);
+			if(responseQualifiedName!=null){
+				try {
+					Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
+					ReflectionType rt = new ReflectionType(responseClass); 
+					generateXMLSchema(rt);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}	
+				String adjustedReturnType = getSimpleName(responseQualifiedName).toLowerCase();
+				mainResponse.setReturnTypeName(adjustedReturnType);
+			}
+		}
+		
+		
+		for(ResponseModel rm : responses.values()){
+			
+			Response response = new Response();
+			
+			String description = rm.getMessage();
+			if(description==null||description.trim().isEmpty()){
+				description = documentation.getReturnInfo();
+			}
+			if(description!=null&&!description.trim().isEmpty()){
+				response.setDescription(description);
+			}
+			
+			String[] produces = rm.getProduces();
+			if(produces!=null){
+				
+				String returnTypeName = rm.getReturnTypeName();
+				for (String mediaType : producesValues) {
+					mediaType = sanitizeMediaType(mediaType);
+					MimeType mimeType = new MimeType();
+					if (returnTypeName != null) {
+						if (mediaType.contains(XML)) {
+							mimeType.setSchema(returnTypeName);
+							mimeType.setExample(EXAMPLES_PREFFIX + returnTypeName + XML_FILE_EXT);
+							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnTypeName	+ XML_FILE_EXT);
+						}
+						if (mediaType.contains(JSON)) {
+							mimeType.setSchema(returnTypeName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
+							mimeType.setExample(EXAMPLES_PREFFIX + returnTypeName + JSON_FILE_EXT);
+							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnTypeName	+ JSON_FILE_EXT);
+						}
+					}
+					mimeType.setType(mediaType);
+					response.getBody().put(mediaType, mimeType);
+				}
+			}
+			
+			String code = rm.getCode();
+			action.getResponses().put(code, response);
 		}
 	}
 
-	private void configureParam(IParameterModel model, AbstractParam param) {
+	
+	private String[] extractMediaTypes(IMethodModel m, String annotationName, String[] defaultValues, boolean useDefault, ActionType at) {
+		
+		useDefault = at != ActionType.GET;
+		
+		IAnnotationModel apiOperation1 = m.getAnnotation(API_OPERATION);		
+		String[] values = null;
+		
+		if(apiOperation1!=null){
+			String value = apiOperation1.getValue(annotationName.toLowerCase());
+			if(value!=null){
+				values = value.split(",");
+				for(int i = 0 ; i < values.length ;i++){
+					values[i] = values[i].trim();
+				}
+			}
+		}
+		if(values==null){	
+			values = m.getAnnotationValues(annotationName);
+		}
+		if(values!=null){
+			return values;
+		}
+		if(!useDefault){
+			return null;
+		}
+		if (values == null) {
+			values = defaultValues;
+		}
+		return values;
+	}
+
+	private String getSimpleName(String qName) {
+		
+		int ind = qName.lastIndexOf('.');
+		String simpleName = qName.substring(ind+1);
+		return simpleName;
+	}
+
+	private ActionType adjustActionType(IMethodModel m, ActionType actionType) {
+		
+		IAnnotationModel a = m.getAnnotation(API_OPERATION);
+		if(a==null){
+			return actionType;
+		}
+		
+		String atString = a.getValue("httpMethod");
+		if(atString==null||atString.trim().isEmpty()){
+			return actionType;
+		}
+		
+		ActionType adjustedActionType = null;
+		try{
+			adjustedActionType = Enum.valueOf(ActionType.class, atString);
+		}
+		catch(Exception e){
+			return actionType;
+		}		
+		return adjustedActionType;
+	}
+
+
+	private String configureParam(IParameterModel model, AbstractParam param, IDocInfo documentation, IAnnotationModel paramAnnotation) {
+		
+		String paramName = paramAnnotation.getValue("value");
+		
+		String type = model.getType();
+		proceedType(type, param, model);
+		String text = documentation.getDocumentation(model
+				.getName());
+		if (!"".equals(text)) { //$NON-NLS-1$
+			param.setDescription(text);
+		}
+		
 		if (model.hasAnnotation("NotNull")) { //$NON-NLS-1$
 			param.setRequired(true);
 		}
@@ -535,8 +717,50 @@ public abstract class ResourceVisitor {
 			String max = model.getAnnotationValue("DecimalMax"); //$NON-NLS-1$
 			param.setMaximum(BigDecimal.valueOf(Double.parseDouble(max)));
 		}
-
-
+		if(model.hasAnnotation("ApiParam")){
+			IAnnotationModel ann = model.getAnnotation("ApiParam");
+			String allowableValues = ann.getValue("allowableValues");
+			if(allowableValues!=null&&!allowableValues.trim().isEmpty()){
+				int start = 0;
+				int end = allowableValues.length();
+				if(allowableValues.startsWith("[")){
+					start++;
+				}
+				if(allowableValues.endsWith("]")){
+					end--;
+				}
+				allowableValues = allowableValues.substring(start, end);
+				String[] split = allowableValues.split(",");
+				ArrayList<String> list = new ArrayList<String>();
+				for(String s : split){
+					list.add(s.trim());
+				}
+				param.setEnumeration(list);
+			}
+			String allowMultiple = ann.getValue("allowMultiple");
+			if(allowMultiple!=null){
+				boolean boolValue = Boolean.parseBoolean(allowMultiple);
+				param.setRepeat(boolValue);
+			}
+			String defaultValue = ann.getValue("defaultValue");
+			if(defaultValue!=null&&!defaultValue.trim().isEmpty()){
+				param.setDefaultValue(defaultValue.trim());
+			}			
+			String required = ann.getValue("required");
+			if(required!=null&&!required.trim().isEmpty()){
+				boolean boolValue = Boolean.parseBoolean(required);
+				param.setRequired(boolValue);
+			}
+			String description = ann.getValue("value");
+			if(description!=null&&!description.trim().isEmpty()){
+				param.setDescription(description);
+			}
+			String overridenName = ann.getValue("name");
+			if(overridenName!=null&&!overridenName.trim().isEmpty()){
+				paramName = overridenName;
+			}
+		}
+		return paramName;
 	}
 
 	private String sanitizeMediaType(String s) {
@@ -790,5 +1014,55 @@ public abstract class ResourceVisitor {
 		}
 		spec.doSort=preferencesConfig.isSorted();
 		spec.extractCommonParts=preferencesConfig.doFullTree();
+	}
+	
+	private static class ResponseModel{
+		
+		public ResponseModel(String code, String message, String returnTypeName) {
+			super();
+			this.code = code;
+			this.message = message;
+			this.returnTypeName = returnTypeName;
+		}
+
+		private String code;
+		
+		private String message;
+		
+		private String returnTypeName;
+		
+		private String produces[];
+
+		public String getCode() {
+			return code;
+		}
+
+		public void setCode(String code) {
+			this.code = code;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
+		}
+
+		public String getReturnTypeName() {
+			return returnTypeName;
+		}
+
+		public void setReturnTypeName(String returnTypeName) {
+			this.returnTypeName = returnTypeName;
+		}
+
+		public String[] getProduces() {
+			return produces;
+		}
+
+		public void setProduces(String[] produces) {
+			this.produces = produces;
+		}
 	}
 }

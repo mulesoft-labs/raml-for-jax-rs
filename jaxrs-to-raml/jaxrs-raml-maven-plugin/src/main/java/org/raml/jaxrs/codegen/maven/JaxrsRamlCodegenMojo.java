@@ -273,4 +273,76 @@ l0:			for(CtPackage pkg : allRoots){
 	private boolean isEmptyString(String str){
 		return str==null||str.trim().length()==0;
 	}
+
+	public File getSourceDirectory() {
+		return sourceDirectory;
+	}
+
+	public void setSourceDirectory(File sourceDirectory) {
+		this.sourceDirectory = sourceDirectory;
+	}
+
+	public File[] getSourcePaths() {
+		return sourcePaths;
+	}
+
+	public void setSourcePaths(File[] sourcePaths) {
+		this.sourcePaths = sourcePaths;
+	}
+
+	public File getOutputFile() {
+		return outputFile;
+	}
+
+	public void setOutputFile(File outputFile) {
+		this.outputFile = outputFile;
+	}
+
+	public File getOutputDirectory() {
+		return outputDirectory;
+	}
+
+	public void setOutputDirectory(File outputDirectory) {
+		this.outputDirectory = outputDirectory;
+	}
+
+	public boolean isRemoveOldOutput() {
+		return removeOldOutput;
+	}
+
+	public void setRemoveOldOutput(boolean removeOldOutput) {
+		this.removeOldOutput = removeOldOutput;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	public void setBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public MavenProject getProject() {
+		return project;
+	}
+
+	public void setProject(MavenProject project) {
+		this.project = project;
+	}
 }

@@ -21,7 +21,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,6 +71,10 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  */
 public class SpoonProcessor{
 	
+	private static final String API_OPERATION = "ApiOperation";
+
+	private static final String SWAGGER_API = "Api";
+
 	private static final String JAVAX_XML_TYPE = "XmlType";
 
 	private static final String JAVAX_CONSUMES = "Consumes";
@@ -100,13 +106,31 @@ public class SpoonProcessor{
 		}
 
 		for(ITypeModel type : registry.getTypes()){
+			
+			boolean hasGlobalConsumes = hasGlobalConsumes(type);			
 			for(IMethodModel method : type.getMethods()){
-				adjustReturnedAndBodyType(method);
+				adjustReturnedAndBodyType(method,hasGlobalConsumes);
 			}
 		}
 	}
 
-	private void adjustReturnedAndBodyType(IMethodModel method_) {
+	private boolean hasGlobalConsumes(ITypeModel type) {
+		
+		if(type.hasAnnotation(JAVAX_CONSUMES)){
+			return true;
+		}
+		IAnnotationModel apiAnn = type.getAnnotation(SWAGGER_API);
+		if(apiAnn==null){
+			return false;
+		}
+		String consumes = apiAnn.getValue(JAVAX_CONSUMES.toLowerCase());
+		if(consumes!=null){
+			return true;
+		}
+		return false;
+	}
+
+	private void adjustReturnedAndBodyType(IMethodModel method_, boolean hasGlobalConsumes) {
 		
 		if(!(method_ instanceof MethodModel)){
 			return;
@@ -121,8 +145,21 @@ public class SpoonProcessor{
 			}
 		}
 		
+		boolean hasConsumes = hasGlobalConsumes;
+		
+		IAnnotationModel apiOperation = method.getAnnotation(API_OPERATION);
+		if(apiOperation!=null){
+			IAnnotationModel[] subAnn = apiOperation.getSubAnnotations(JAVAX_CONSUMES.toLowerCase());
+			if(subAnn!=null){
+				hasConsumes = true;
+			}
+		}		
+		
 		IAnnotationModel consumes = method.getAnnotation(JAVAX_CONSUMES);
-		if(consumes==null){
+		if(consumes!=null){
+			hasConsumes = true;
+		}
+		if(!hasConsumes){
 			return;
 		}
 		
@@ -130,24 +167,57 @@ public class SpoonProcessor{
 		for(IParameterModel param_ : parameters){
 			
 			String paramType = param_.getType();
-			if(paramType.startsWith("java.")){
+//			if(paramType.startsWith("java.")){
+//				continue;
+//			}
+			if(isPrimitive(paramType)){
 				continue;
 			}
-
+			if(param_.hasAnnotation("QueryParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("HeaderParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("PathParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("FormParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("Context")){
+				continue;
+			}
+			
 			ITypeModel type = registry.getType(paramType);
 			if(type==null){
 				continue;
 			}
-			IAnnotationModel typeAnnotation = type.getAnnotation(JAVAX_XML_TYPE);
-			if(typeAnnotation==null){
-				continue;
-			}
+//			IAnnotationModel typeAnnotation = type.getAnnotation(JAVAX_XML_TYPE);
+//			if(typeAnnotation==null){
+//				continue;
+//			}
 			method.setBodyType(type);
 			if(registry.isTargetType(paramType)){
 				break;
 			}
 		}
 		
+	}
+	
+	private static HashSet<String> primitives = new HashSet<String>(Arrays.asList(
+			"byte", "java.lang.Byte",
+			"short", "java.lang.Short",
+			"int", "java.lang.Integer",
+			"long", "java.lang.Long",
+			"float", "java.lang.Float",
+			"double", "java.lang.Double",
+			"character", "java.lang.Character",
+			"boolean", "java.lang.Boolean"
+		));
+
+	private boolean isPrimitive(String qName) {		
+		return primitives.contains(qName);
 	}
 
 	private void processPackage(CtPackage package_) {
@@ -175,9 +245,13 @@ public class SpoonProcessor{
 
 	private ITypeModel processType(CtSimpleType<?> classElement)
 	{
-		TypeModel type = new TypeModel();
+		
 		String qualifiedName = classElement.getQualifiedName();
-		type.setFullyQualifiedName(qualifiedName);
+		TypeModel type = (TypeModel) registry.getType(qualifiedName);
+		if(type==null){
+			type = new TypeModel();
+			type.setFullyQualifiedName(qualifiedName);
+		}
 		registry.registerType(type);
 		
 		fillBasic(type,classElement);		
@@ -395,6 +469,7 @@ public class SpoonProcessor{
 		parameterModel.setRequired(paramType.isPrimitive());
 		
 		fillBasic(parameterModel, paramElement);
+		processTypeReference(paramType);
 		
 		return parameterModel;
 	}
@@ -470,6 +545,10 @@ public class SpoonProcessor{
 
 	private void fillJAXBType(BasicModel fm, CtTypeReference<?> type) {
 		
+		if(type==null){
+			return;
+		}
+		
 		Class<?> actualClass = type.getActualClass();
 		fm.setJavaClass(actualClass);
 		if (actualClass!=null&&Collection.class.isAssignableFrom(actualClass)){
@@ -487,7 +566,7 @@ public class SpoonProcessor{
 		
 		MethodModel methodModel = new MethodModel();
 		fillReference(methodModel,methodElement);
-		List<CtTypeReference<?>> parameters = methodElement.getParameterTypes();
+		List<CtTypeReference<?>> parameters = methodElement.getParameters();
 		for(CtTypeReference<?> p : parameters){
 			IParameterModel parameterModel = processParameterReference(p);
 			methodModel.addParameter(parameterModel);
@@ -517,10 +596,18 @@ public class SpoonProcessor{
 		
 		model.setName(simpleName);
 		
-		List<Annotation> annotations = ref.getAnnotations();
-		for(Annotation a : annotations){
-			IAnnotationModel annotationModel = processJavaLangAnnotation(a);
-			model.addAnnotation(annotationModel);
+		List<Annotation> annotations = null;
+		try{
+			annotations = ref.getAnnotations();
+		}
+		catch(Exception e){
+		}
+		
+		if(annotations!=null){
+			for(Annotation a : annotations){
+				IAnnotationModel annotationModel = processJavaLangAnnotation(a);
+				model.addAnnotation(annotationModel);
+			}
 		}
 	}
 

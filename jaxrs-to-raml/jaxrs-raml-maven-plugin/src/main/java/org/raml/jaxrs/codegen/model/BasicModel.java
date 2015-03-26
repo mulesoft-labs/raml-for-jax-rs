@@ -67,7 +67,7 @@ public abstract class BasicModel implements IBasicModel{
 	 * @return a boolean.
 	 */
 	public boolean isStatic() {
-		return publicM;
+		return staticM;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public abstract class BasicModel implements IBasicModel{
 	 * @return a boolean.
 	 */
 	public boolean isPublic() {
-		return staticM;
+		return publicM;
 	}
 	
 	

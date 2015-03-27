@@ -3,15 +3,7 @@
   <groupId>org.raml</groupId>
   <artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
 <version>1.3.4-SNAPSHOT</version>
-  <repositories>
-      <repository>
-    	<id>jlibs-repository</id>
-    		<name>JLibs Repository</name>
-    		<url>http://dl.dropbox.com/u/326301/repository</url>
-    		<layout>default</layout>
-		</repository>      
-  </repositories>
- <distributionManagement>
+   <distributionManagement>
        <repository>
             <id>mulesoft-releases</id>
             <name>Mule Release Repository</name>                                               
@@ -86,12 +78,7 @@
   		 <groupId>xerces</groupId>
    		 <artifactId>xercesImpl</artifactId>
    		 <version>2.11.0</version>
-  		</dependency>
-  		<dependency>
-    <groupId>jlibs</groupId>
-    <artifactId>jlibs-xml</artifactId>
-    <version>1.0</version>
-</dependency> 
+  		</dependency> 
 
 	
        <dependency>

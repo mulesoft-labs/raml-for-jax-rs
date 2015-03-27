@@ -16,7 +16,8 @@
 package org.raml.jaxrs.example.impl;
 
 import org.raml.jaxrs.example.model.Presentation;
-import org.raml.jaxrs.example.resource.Presentations;
+import org.raml.jaxrs.example.model.Presentations;
+import org.raml.jaxrs.example.resource.PresentationsResource;
 
 /**
  * <p>PresentationResource class.</p>
@@ -24,7 +25,7 @@ import org.raml.jaxrs.example.resource.Presentations;
  * @author kor
  * @version $Id: $Id
  */
-public class PresentationResource implements Presentations
+public class PresentationResourceImpl implements PresentationsResource
 {
     /** {@inheritDoc} */
     @Override
@@ -38,7 +39,7 @@ public class PresentationResource implements Presentations
             return GetPresentationsResponse.withUnauthorized();
         }
 
-        final org.raml.jaxrs.example.model.Presentations presentations = new org.raml.jaxrs.example.model.Presentations().withSize(1);
+        final Presentations presentations = new Presentations().withSize(1);
 
         presentations.getPresentations().add(new Presentation().withId("fake-id").withTitle(title));
 

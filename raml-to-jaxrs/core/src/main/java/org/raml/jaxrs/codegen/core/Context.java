@@ -99,7 +99,7 @@ class Context
     public JType ref(String name){
     	return codeModel.ref(name);
     }
-    
+
     /**
      * <p>Constructor for Context.</p>
      *
@@ -428,7 +428,9 @@ class Context
 
     private String getModelPackage()
     {
-        return configuration.getBasePackageName() + ".model";
+        return configuration.getBasePackageName()
+            .concat(".")
+            .concat(configuration.getModelPackageName());
     }
 
     private String getSupportPackage()

@@ -89,13 +89,13 @@ This Agreement is governed by the laws of the State of New York and the intellec
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime" />
       <import plugin="raml-jaxrs-eclipse-plugin" />
-      <import plugin="com.mulesoft.jaxrs.raml.generator"/>
+      <import plugin="com.mulesoft.jaxrs.raml.generator.plugin"/>
       <import plugin="com.mulesoft.jaxrs.raml.generator.eclipse"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.commons.io"/>
    </requires>
    <plugin
-         id="com.mulesoft.jaxrs.raml.generator"
+         id="com.mulesoft.jaxrs.raml.generator.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"

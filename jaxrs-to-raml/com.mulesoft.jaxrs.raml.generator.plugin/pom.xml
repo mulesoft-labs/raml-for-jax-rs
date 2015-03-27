@@ -26,6 +26,6 @@
       <maven.install.skip>true</maven.install.skip>
       <maven.deploy.skip>true</maven.deploy.skip>
    </properties>
-  <artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>
+  <artifactId>com.mulesoft.jaxrs.raml.generator.plugin</artifactId>
   <packaging>eclipse-plugin</packaging>
 </project>

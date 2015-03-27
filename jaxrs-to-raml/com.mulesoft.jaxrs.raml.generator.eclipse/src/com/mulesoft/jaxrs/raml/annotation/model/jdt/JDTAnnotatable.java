@@ -25,6 +25,7 @@ import org.eclipse.jdt.internal.core.SourceType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.generator.popup.actions.GenerationException;
 
 public abstract class JDTAnnotatable implements IBasicModel {
@@ -164,7 +165,7 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		return null;
 	}
 
-	protected JDTType doGetType(IMember iMethod, String returnType)
+	protected ITypeModel doGetType(IMember iMethod, String returnType)
 			throws JavaModelException {
 		if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
 			IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);
@@ -178,8 +179,11 @@ public abstract class JDTAnnotatable implements IBasicModel {
 			if (resolveType.length == 1) {
 				IType findType = ownerType.getJavaProject().findType(
 						resolveType[0][0] + '.' + resolveType[0][1]);
-				if (findType != null && findType instanceof SourceType) {
-					return new JDTType(findType);
+				if (findType != null ) {
+					if(findType instanceof SourceType){
+						return new JDTType(findType);
+					}
+					return new com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType(String.class);
 				}
 			}
 		}

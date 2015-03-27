@@ -6,13 +6,12 @@ Bundle-Version: 1.3.4.qualifier
 Bundle-Vendor: MULESOFT
 Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui,
- com.mulesoft.jaxrs.raml.generator,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui,
  org.eclipse.ui.ide,
- com.mulesoft.jaxrs.raml.generator
+ com.mulesoft.jaxrs.raml.generator.plugin
 Bundle-ClassPath: lib/jettison-1.3.3.jar,
  .
 Bundle-ActivationPolicy: lazy

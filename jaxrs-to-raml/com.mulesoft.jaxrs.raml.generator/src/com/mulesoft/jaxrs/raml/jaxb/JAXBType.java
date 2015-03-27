@@ -35,7 +35,7 @@ public class JAXBType extends JAXBModelElement {
 		String value = value(XmlAccessorType.class, "value");
 		XmlAccessType type = XmlAccessType.PUBLIC_MEMBER;
 		if (value != null) {
-			type = extractType(type);
+			type = extractType(value);
 		}
 		for (IMethodModel m : methods) {
 			boolean needToConsume = needToConsume(type, m);
@@ -87,8 +87,18 @@ public class JAXBType extends JAXBModelElement {
 		return needToConsume;
 	}
 
-	private XmlAccessType extractType(XmlAccessType type) {
-		return null;
+	private XmlAccessType extractType(String value) {
+		try{
+		int ind=value.lastIndexOf('.');
+		if(ind!=-1){
+			return XmlAccessType.valueOf(value.substring(ind+1));
+		}
+		
+		return XmlAccessType.valueOf(value);
+		}catch(Exception e){
+			e.printStackTrace();
+			return XmlAccessType.NONE;
+		}
 	}
 
 	private JAXBProperty createProperty(String string, IBasicModel m) {

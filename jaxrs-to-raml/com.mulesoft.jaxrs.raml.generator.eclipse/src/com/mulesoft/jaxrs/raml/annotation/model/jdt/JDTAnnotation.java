@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -35,16 +36,17 @@ public class JDTAnnotation implements IAnnotationModel {
 				if (pair.getMemberName().equals(pairName)){
 					int valueKind = pair.getValueKind();
 					String string = pair.getValue().toString();
-					if (valueKind==IMemberValuePair.K_SIMPLE_NAME){
+					if (valueKind==IMemberValuePair.K_CLASS){
 						IType ancestor = (IType) annotation.getAncestor(IJavaElement.TYPE);
-						
+						String[][] resolveType = ancestor.resolveType(string);
+						if( resolveType.length>0){
+							String[] vl=resolveType[0];
+							return vl[0]+"."+vl[1];
+						}
 						//TODO resolve value;
 						
 					}
-					if (valueKind==IMemberValuePair.K_QUALIFIED_NAME){
-						//resolve value;		
-						System.out.println(pair);
-					}					
+										
 					return string;
 				}
 			}

@@ -34,6 +34,7 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 			throw new IllegalStateException(e);			
 		}
 	}
+	
 
 	@Override
 	protected void generateXMLSchema(ITypeModel t) {

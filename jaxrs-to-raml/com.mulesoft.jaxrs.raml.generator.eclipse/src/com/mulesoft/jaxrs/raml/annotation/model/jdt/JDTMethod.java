@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.ILocalVariable;
@@ -19,6 +21,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.generator.eclipse.JAXRSTORamlPlagin;
 import com.mulesoft.jaxrs.raml.generator.popup.actions.GenerationException;
 
 @SuppressWarnings("restriction")
@@ -143,7 +146,8 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		IMethod iMethod = (IMethod) tm;
 		try {
 			String returnType = iMethod.getReturnType();
-			return doGetType(iMethod, returnType);
+			ITypeModel doGetType = doGetType(iMethod, returnType);
+			return doGetType;
 
 		} catch (Exception e) {
 			if (e instanceof GenerationException) {

@@ -88,6 +88,19 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	private String basePackageName;
 
 	/**
+	 * Model package name used for generated Java classes.
+	 * Models will be placed in the package:
+	 *
+	 *   basePackageName + "." + modelPackageName
+	 *
+	 * The default location is set to:
+	 *
+	 *   basePackageName + ".model"
+	 */
+	@Parameter(property = "modelPackageName", defaultValue = "model")
+	private String modelPackageName;
+
+	/**
 	 * Should JSR-303 annotations be used?
 	 */
 	@Parameter(property = "useJsr303Annotations", defaultValue = "false")
@@ -172,6 +185,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 
 		try {
 			configuration.setBasePackageName(basePackageName);
+			configuration.setModelPackageName(modelPackageName);
 			configuration.setJaxrsVersion(JaxrsVersion.fromAlias(jaxrsVersion));
 			configuration.setOutputDirectory(outputDirectory);
 			configuration.setUseJsr303Annotations(useJsr303Annotations);

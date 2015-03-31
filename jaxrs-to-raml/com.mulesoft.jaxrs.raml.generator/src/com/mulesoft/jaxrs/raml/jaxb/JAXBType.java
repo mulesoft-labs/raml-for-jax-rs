@@ -52,6 +52,10 @@ public class JAXBType extends JAXBModelElement {
 		}
 		for (IFieldModel f : model.getFields()) {
 			if (!f.isStatic()) {
+				boolean needToConsume = needToConsume(type, f);
+				if (!needToConsume) {
+					continue;
+				}
 				properties.add(createProperty(f.getName(), f));
 			}
 		}

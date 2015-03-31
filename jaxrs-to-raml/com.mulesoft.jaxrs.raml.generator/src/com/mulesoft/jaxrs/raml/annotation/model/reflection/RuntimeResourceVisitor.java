@@ -83,8 +83,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 		JSONObject c;
 		try {
 			c = new JSONObject(jsonText);
-			JSONObject v=(JSONObject)c.get((String) c.keys().next());
-			jsonText=v.toString();
+			jsonText=c.get((String) c.keys().next()).toString();
 		} catch (JSONException e) {
 			//should never happen
 			throw new IllegalStateException(e);

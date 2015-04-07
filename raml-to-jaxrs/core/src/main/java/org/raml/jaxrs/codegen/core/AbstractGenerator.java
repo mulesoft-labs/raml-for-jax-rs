@@ -617,7 +617,7 @@ public abstract class AbstractGenerator {
 					argumentVariable);
 		}
 
-		final BigDecimal maximum = parameter.getMinimum();
+		final BigDecimal maximum = parameter.getMaximum();
 		if (maximum != null) {
 			addMinMaxConstraint(parameter, "maximum", Max.class, maximum,
 					argumentVariable);

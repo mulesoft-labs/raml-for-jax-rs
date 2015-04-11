@@ -585,7 +585,9 @@ public abstract class AbstractGenerator {
 	private void addParameter(final String name, final AbstractParam parameter,
 			final Class<? extends Annotation> annotationClass,
 			final JMethod method, final JDocComment javadoc) throws Exception {
-
+		if (this.context.getConfiguration().getIgnoredParameterNames().contains(name)){
+			return;
+		}
 		for (GeneratorExtension e : extensions) {
 			if (!e.AddParameterFilter(name, parameter, annotationClass, method)) {
 				return;

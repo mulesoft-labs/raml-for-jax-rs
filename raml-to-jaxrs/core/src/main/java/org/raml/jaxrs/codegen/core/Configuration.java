@@ -77,6 +77,16 @@ public class Configuration
 	private boolean emptyResponseReturnVoid;
 	private boolean generateClientInterface;
 
+    public ArrayList<String> getIgnoredParameterNames() {
+        return ignoredParameterNames;
+    }
+
+    public void setIgnoredParameterNames(ArrayList<String> ignoredParameterNames) {
+        this.ignoredParameterNames = ignoredParameterNames;
+    }
+
+    private ArrayList<String>ignoredParameterNames=new ArrayList<String>();
+
     public boolean isUseTitlePropertyWhenPossible() {
         return useTitlePropertyWhenPossible;
     }

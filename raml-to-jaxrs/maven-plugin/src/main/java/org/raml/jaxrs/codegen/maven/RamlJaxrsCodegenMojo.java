@@ -158,6 +158,12 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	private String[] extensions;
 
 	/**
+	 * The names of parameters to ignore
+	 */
+	@Parameter(property = "ignoredParameters")
+	private String[] ignoredParameters;
+
+	/**
 	 * {@inheritDoc}
 	 *
 	 * Throw exception on Resource Method
@@ -204,6 +210,11 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 			configuration.setSourceDirectory(sourceDirectory);
 			configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
 			configuration.setEmptyResponseReturnVoid(mapToVoid);
+			if(ignoredParameters!=null){
+				for (String s:ignoredParameters){
+					configuration.getIgnoredParameterNames().add(s);
+				}
+			}
 			if (extensions != null) {
 				for (String className : extensions) {
 					Class c = Class.forName(className);

@@ -25,6 +25,7 @@ import static org.raml.jaxrs.codegen.core.Names.GENERIC_PAYLOAD_ARGUMENT_NAME;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
@@ -110,7 +111,7 @@ public abstract class AbstractGenerator {
 	protected List<GeneratorExtension> extensions;
 
 	private ResourceLoader[] prepareResourceLoaders(
-			final Configuration configuration) {
+			final Configuration configuration,final String location) {
 		File sourceDirectory = configuration.getSourceDirectory();
 		ArrayList<ResourceLoader> loaderList = new ArrayList<ResourceLoader>(
 				Arrays.asList(new UrlResourceLoader(),
@@ -118,6 +119,19 @@ public abstract class AbstractGenerator {
 		if (sourceDirectory != null) {
 			String sourceDirAbsPath = sourceDirectory.getAbsolutePath();
 			loaderList.add(new FileResourceLoader(sourceDirAbsPath));
+
+		}
+		if (location!=null&&location.length()>0){
+			String sourceDirAbsPath = sourceDirectory.getAbsolutePath();
+			String fl=new File(location).getParent();
+			if (sourceDirAbsPath.endsWith(fl)){
+				sourceDirAbsPath=sourceDirAbsPath.substring(0,sourceDirAbsPath.length()-fl.length());
+				loaderList.add(new FileResourceLoader(sourceDirAbsPath));
+			}
+			else{
+				loaderList.add(new FileResourceLoader(location));
+			}
+
 		}
 		ResourceLoader[] loaderArray = loaderList
 				.toArray(new ResourceLoader[loaderList.size()]);
@@ -144,7 +158,18 @@ public abstract class AbstractGenerator {
 		Validate.notEmpty(configuration.getBasePackageName(),
 				"base package name can't be empty");
 	}
-
+	/**
+	 * <p>run.</p>
+	 *
+	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
+	 * @return a {@link java.util.Set} object.
+	 * @throws java.lang.Exception if any.
+	 */
+	public Set<String> run(final Reader raml, final Configuration configuration)throws Exception{
+		System.out.println("relative includes are not supported in this mode!");
+		return run(raml,configuration,"");
+	}
 	/**
 	 * <p>run.</p>
 	 *
@@ -692,22 +717,22 @@ public abstract class AbstractGenerator {
 	 * @throws java.lang.Exception if any.
 	 */
 	public Set<String> run(final Reader ramlReader,
-			final Configuration configuration) throws Exception {
+			final Configuration configuration,String readerLocation) throws Exception {
 		if (isNotBlank(configuration.getAsyncResourceTrait())
 				&& configuration.getJaxrsVersion() == JaxrsVersion.JAXRS_1_1) {
 			throw new IllegalArgumentException(
 					"Asynchronous resources are not supported in JAX-RS 1.1");
 		}
 		final String ramlBuffer = IOUtils.toString(ramlReader);
-
-		ResourceLoader[] loaderArray = prepareResourceLoaders(configuration);
+		String folder=new File(readerLocation).getParent();
+		ResourceLoader[] loaderArray = prepareResourceLoaders(configuration,folder);
 
 		final List<ValidationResult> results = RamlValidationService
 				.createDefault(new CompositeResourceLoader(loaderArray))
-				.validate(ramlBuffer, "");
+				.validate(ramlBuffer, readerLocation);
 		if (ValidationResult.areValid(results)) {
 			return run(new RamlDocumentBuilder(new CompositeResourceLoader(
-					loaderArray)).build(ramlBuffer, ""), configuration);
+					loaderArray)).build(ramlBuffer,readerLocation), configuration);
 		} else {
 			final List<String> validationErrors = Lists.transform(results,
 					new Function<ValidationResult, String>() {

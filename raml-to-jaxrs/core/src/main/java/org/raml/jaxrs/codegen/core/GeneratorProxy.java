@@ -32,12 +32,12 @@ public class GeneratorProxy {
 	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
 	 * @throws java.lang.Exception if any.
 	 */
-	public void run(InputStreamReader ramlReader, Configuration configuration) throws Exception {
+	public void run(InputStreamReader ramlReader, Configuration configuration,String location) throws Exception {
 		if (configuration.isGenerateClientInterface()){
-			new ClientGenerator().run(ramlReader, configuration);
+			new ClientGenerator().run(ramlReader, configuration,location);
 		}
 		else{
-			new Generator().run(ramlReader, configuration);
+			new Generator().run(ramlReader, configuration,location);
 		}
 	}
 

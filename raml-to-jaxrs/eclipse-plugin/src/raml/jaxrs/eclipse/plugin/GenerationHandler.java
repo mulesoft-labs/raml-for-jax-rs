@@ -77,7 +77,7 @@ public class GenerationHandler extends AbstractHandler{
 		try {
 			File ramlOSFile = uiConfig.getRamlFile().getLocation().toFile();
 			InputStreamReader ramlReader = new InputStreamReader( new FileInputStream(ramlOSFile) );
-			new GeneratorProxy().run(ramlReader, configuration);		
+			new GeneratorProxy().run(ramlReader, configuration,ramlOSFile.getAbsolutePath());
 			uiConfig.getDstFolder().refreshLocal( IResource.DEPTH_ONE, new NullProgressMonitor() );
 			
 		} catch (Exception e) {

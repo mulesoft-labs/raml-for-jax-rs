@@ -86,6 +86,8 @@ public class GeneratorTestCase {
 	public void runWithExtension() throws Exception {
 		run(JAXRS_1_1, false, true);
 	}
+
+
 	
 	
 	/**
@@ -142,8 +144,8 @@ public class GeneratorTestCase {
 				new InputStreamReader(getClass().getResourceAsStream("/org/raml/schema/valid-xml-global.yaml")),
 				configuration));
 		generatedSources.addAll(new Generator()
-				.run(new InputStreamReader(getClass().getResourceAsStream("/org/raml/schema/valid-xml.yaml")),
-						configuration));
+				.run(new InputStreamReader(getClass().getResourceAsStream("/org/raml/schema/valid-xml2.yaml")),
+						configuration,dirPath+"/schema/valid-xml2.yaml"));
 
 		// test compile the classes
 		final JavaCompiler compiler = new JavaCompilerFactory().createCompiler("eclipse");

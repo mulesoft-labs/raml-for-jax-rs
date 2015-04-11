@@ -76,7 +76,7 @@ public class Launcher {
 		for (final File ramlFile : ramlFiles)
         {
             try {
-				generator.run(new FileReader(ramlFile), configuration);
+				generator.run(new FileReader(ramlFile), configuration,ramlFile.getAbsolutePath());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (Exception e) {

@@ -34,7 +34,7 @@ import com.sun.codemodel.JMethod;
  * @author pbober
  * @version $Id: $Id
  */
-public abstract class AbstractGeneratorExtension implements GeneratorExtension {
+public abstract class AbstractGeneratorExtension implements NestedSchemaNameComputer {
 
 	private Raml raml;
 	
@@ -43,6 +43,11 @@ public abstract class AbstractGeneratorExtension implements GeneratorExtension {
 			 Collection<MimeType> uniqueResponseMimeTypes) {
 
 		
+	}
+
+	/** {@inheritDoc} */
+	public String computeNestedSchemaName(MimeType mime) {
+		return null;
 	}
 
 	/** {@inheritDoc} */

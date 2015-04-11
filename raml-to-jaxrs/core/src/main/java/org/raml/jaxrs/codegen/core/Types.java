@@ -227,7 +227,7 @@ public class Types
             final Entry<File, String> schemaNameAndFile = context.getSchemaFile(schemaNameOrContent);
             if (isBlank(schemaNameAndFile.getValue()))
             {
-                schemaNameAndFile.setValue(buildNestedSchemaName(mimeType));
+                schemaNameAndFile.setValue(buildNestedSchemaName(mimeType,context.getConfiguration()));
             }
 
             final String className = buildJavaFriendlyName(schemaNameAndFile.getValue());

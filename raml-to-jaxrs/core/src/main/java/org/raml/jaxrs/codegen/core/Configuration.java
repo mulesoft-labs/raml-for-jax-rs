@@ -77,6 +77,15 @@ public class Configuration
 	private boolean emptyResponseReturnVoid;
 	private boolean generateClientInterface;
 
+    public boolean isUseTitlePropertyWhenPossible() {
+        return useTitlePropertyWhenPossible;
+    }
+
+    public void setUseTitlePropertyWhenPossible(boolean useTitlePropertyWhenPossible) {
+        this.useTitlePropertyWhenPossible = useTitlePropertyWhenPossible;
+    }
+
+    private boolean useTitlePropertyWhenPossible;
 	/**
 	 * <p>isGenerateClientInterface.</p>
 	 *

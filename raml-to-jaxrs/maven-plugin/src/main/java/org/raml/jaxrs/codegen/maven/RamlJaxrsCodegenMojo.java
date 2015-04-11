@@ -125,6 +125,14 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	@Parameter(property = "removeOldOutput", defaultValue = "false")
 	private boolean removeOldOutput;
 
+
+	/**
+	 * If set to true generator will try to use title property of JSON schemas
+	 * as a name for Java class
+	 *
+	 */
+	@Parameter(property = "useTitlePropertyForSchemaNames", defaultValue = "false")
+	private boolean useTitlePropertyForSchemaNames=false;
 	/**
 	 * The JSON object mapper to generate annotations to: either "jackson1",
 	 * "jackson2" or "gson" or "none"
@@ -184,6 +192,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 		final Configuration configuration = new Configuration();
 
 		try {
+			configuration.setUseTitlePropertyWhenPossible(useTitlePropertyForSchemaNames);
 			configuration.setBasePackageName(basePackageName);
 			configuration.setModelPackageName(modelPackageName);
 			configuration.setJaxrsVersion(JaxrsVersion.fromAlias(jaxrsVersion));

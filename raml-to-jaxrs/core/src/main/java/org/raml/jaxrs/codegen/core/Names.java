@@ -24,8 +24,15 @@ import static org.apache.commons.lang.WordUtils.capitalize;
 import static org.apache.commons.lang.math.NumberUtils.isDigits;
 import static org.raml.jaxrs.codegen.core.Constants.DEFAULT_LOCALE;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.EnglishReasonPhraseCatalog;
+import org.codehaus.jackson.map.util.JSONPObject;
+import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
+import org.raml.jaxrs.codegen.core.ext.NestedSchemaNameComputer;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Resource;
@@ -54,7 +61,7 @@ public class Names
     public static String buildResourceInterfaceName(final Resource resource)
     {
         final String resourceInterfaceName = buildJavaFriendlyName(defaultIfBlank(resource.getDisplayName(),
-            resource.getRelativeUri()));
+                resource.getRelativeUri()));
 
         return isBlank(resourceInterfaceName) ? "Root" : resourceInterfaceName.concat("Resource");
     }
@@ -130,8 +137,29 @@ public class Names
      * @param mimeType a {@link org.raml.model.MimeType} object.
      * @return a {@link java.lang.String} object.
      */
-    public static String buildNestedSchemaName(final MimeType mimeType)
+    public static String buildNestedSchemaName(final MimeType mimeType,Configuration config)
     {
+        for (GeneratorExtension e:config.getExtensions()){
+            if (e instanceof NestedSchemaNameComputer){
+                NestedSchemaNameComputer nc=(NestedSchemaNameComputer)e;
+                String computed=nc.computeNestedSchemaName(mimeType);
+                if(computed!=null){
+                    return computed;
+                }
+            }
+        }
+        if (!isBlank(mimeType.getSchema())){
+            try{
+                JsonObject p=(JsonObject)new JsonParser().parse(mimeType.getSchema());
+                JsonElement title = p.get("title");
+                if(title != null && title.getAsString()!=null){
+                    return title.getAsString();
+                }
+            }catch (Exception e){
+                //incorrect value
+                return null;
+            }
+        }
         // TODO improve naming strategy for nested schemas
         return getShortMimeType(mimeType)
                + (isBlank(mimeType.getSchema()) ? mimeType.hashCode() : mimeType.getSchema().hashCode());

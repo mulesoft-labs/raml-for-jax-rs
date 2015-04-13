@@ -198,9 +198,10 @@ public class RamlEmitterV2 {
 					if (origin==null){
 						origin="docs/"+it.getTitle().toLowerCase()+".md";
 					}						
-					dump.append(indent(depth + 2)).append("content: !include ").append(origin).append("\n");
+					//dump.append(indent(depth + 2)).append("content: !include ").append(origin).append("\n");
 					if (writer!=null){
-						writer.write(origin, it.getContent());
+						//writer.write(origin, it.getContent());
+						dump.append(indent(depth + 2)).append("content: ").append(sanitizeScalarValue(depth+2, it.getContent(), false)).append("\n");
 					}
 					}
 					else{

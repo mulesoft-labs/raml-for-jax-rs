@@ -24,6 +24,8 @@ import static org.raml.jaxrs.codegen.core.Names.EXAMPLE_PREFIX;
 import static org.raml.jaxrs.codegen.core.Names.GENERIC_PAYLOAD_ARGUMENT_NAME;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -127,6 +129,28 @@ public abstract class AbstractGenerator {
 			if (sourceDirAbsPath.endsWith(fl)){
 				sourceDirAbsPath=sourceDirAbsPath.substring(0,sourceDirAbsPath.length()-fl.length());
 				loaderList.add(new FileResourceLoader(sourceDirAbsPath));
+				loaderList.add(new FileResourceLoader(sourceDirectory){
+					 	
+					 	@Override
+					    public InputStream fetchResource(String resourceName)
+					    {						
+					        File includedFile = new File(resourceName);
+					        FileInputStream inputStream = null;
+					        if (logger.isDebugEnabled())
+					        {
+					            logger.debug(String.format("Looking for resource: %s on directory: %s...", resourceName));
+					        }
+					        try
+					        {
+					            return new FileInputStream(includedFile);
+					        }
+					        catch (FileNotFoundException e)
+					        {
+					            //ignore
+					        }
+					        return inputStream;
+					    }
+				});
 			}
 			else{
 				loaderList.add(new FileResourceLoader(location));

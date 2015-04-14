@@ -37,6 +37,11 @@ import org.raml.jaxrs.codegen.model.MethodModel;
 import org.raml.jaxrs.codegen.model.ParameterModel;
 import org.raml.jaxrs.codegen.model.TypeModel;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import spoon.reflect.code.CtCodeElement;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
@@ -44,10 +49,10 @@ import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtNamedElement;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtParameter;
-import spoon.reflect.declaration.CtSimpleType;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.eval.PartialEvaluator;
@@ -56,12 +61,6 @@ import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtFieldReference;
 import spoon.reflect.reference.CtReference;
 import spoon.reflect.reference.CtTypeReference;
-
-import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 /**
  * <p>SpoonProcessor class.</p>
@@ -227,7 +226,7 @@ public class SpoonProcessor{
 				processPackage(subPackage);
 			}
 		}
-		for( CtSimpleType<?> type : package_.getTypes()){
+		for( CtType<?> type : package_.getTypes()){
 			process(type);
 		}
 	}
@@ -235,15 +234,15 @@ public class SpoonProcessor{
 	/**
 	 * <p>process.</p>
 	 *
-	 * @param classElement a {@link spoon.reflect.declaration.CtSimpleType} object.
+	 * @param classElement a {@link spoon.reflect.declaration.CtType} object.
 	 */
-	public void process(CtSimpleType<?> classElement) {
+	public void process(CtType<?> classElement) {
 		
 		ITypeModel type = processType(classElement);
 		registry.registerTargetType(type);
 	}
 
-	private ITypeModel processType(CtSimpleType<?> classElement)
+	private ITypeModel processType(CtType<?> classElement)
 	{
 		
 		String qualifiedName = classElement.getQualifiedName();
@@ -481,15 +480,19 @@ public class SpoonProcessor{
 		
 		model.setName(simpleName);
 		model.setDocumentation(docComment);
-		Set<ModifierKind> modifiers = namedElement.getModifiers();
-		for ( ModifierKind mod:modifiers){
-			if (mod==ModifierKind.STATIC){
-				model.setStatic(true);
+		if (namedElement instanceof CtModifiable) {
+			CtModifiable ctModifiable = (CtModifiable) namedElement;
+			Set<ModifierKind> modifiers = ctModifiable.getModifiers();
+			for (ModifierKind mod : modifiers) {
+				if (mod == ModifierKind.STATIC) {
+					model.setStatic(true);
+				}
+				if (mod == ModifierKind.PUBLIC) {
+					model.setPublic(true);
+				}
 			}
-			if (mod==ModifierKind.PUBLIC){
-				model.setPublic(true);
-			}	
 		}
+
 		List<CtAnnotation<? extends Annotation>> annotations = namedElement.getAnnotations();
 		for(CtAnnotation<? extends Annotation> a : annotations ){
 			IAnnotationModel annotationModel = processAnnotation(a);

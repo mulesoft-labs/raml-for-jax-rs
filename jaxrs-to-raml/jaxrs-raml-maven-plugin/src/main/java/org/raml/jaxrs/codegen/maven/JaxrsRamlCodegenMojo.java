@@ -43,7 +43,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisito
 
 import spoon.Launcher;
 import spoon.reflect.declaration.CtPackage;
-import spoon.reflect.declaration.CtSimpleType;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.factory.PackageFactory;
 
@@ -165,7 +165,7 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 		if(outputFile.isDirectory()){
 			String defaultFileName = DEFAULT_RAML_FILENAME;
 l0:			for(CtPackage pkg : allRoots){
-				for(CtSimpleType<?> type : pkg.getTypes()){
+				for(CtType<?> type : pkg.getTypes()){
 					defaultFileName = type.getSimpleName() + RAML_EXTENSION;
 					break l0;
 				}				

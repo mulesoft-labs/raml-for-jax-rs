@@ -75,11 +75,11 @@
 			<artifactId>maven-plugin-tools-annotations</artifactId>
 			<version>${org.apache.maven.plugin-tools.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>fr.inria.gforge.spoon</groupId>
-			<artifactId>spoon-core</artifactId>
-			<version>3.1</version>
-		</dependency>
+        <dependency>
+            <groupId>fr.inria.gforge.spoon</groupId>
+            <artifactId>spoon-core</artifactId>
+            <version>4.0.0</version>
+        </dependency>
 		<dependency>
 			<groupId>org.raml</groupId>
 			<artifactId>com.mulesoft.jaxrs.raml.generator</artifactId>

@@ -17,6 +17,7 @@ package org.raml.jaxrs.codegen.maven;
 
 import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_RUNTIME;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -251,9 +252,19 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 			final Generator generator = new Generator();
 
 			for (final File ramlFile : getRamlFiles()) {
-				getLog().info("Generating Java classes from: " + ramlFile);
 				currentSourcePath = ramlFile;
-				generator.run(new FileReader(ramlFile), configuration,ramlFile.getAbsolutePath());
+				//lets test if it is root raml
+				BufferedReader reader=new BufferedReader(new FileReader(ramlFile));
+				String line=reader.readLine();
+				reader.close();
+				if(line.startsWith("#%RAML")) {
+					getLog().info("Generating Java classes from: " + ramlFile);
+					generator.run(new FileReader(ramlFile), configuration, ramlFile.getAbsolutePath());
+				}
+				else{
+					getLog().info(ramlFile+" does not seem to be RAML root file -skipped(first line should start from #%RAML ${raml version number}");
+
+				}
 			}
 		} catch (final Exception e) {
 			throw new MojoExecutionException("Error generating Java classes from: " + currentSourcePath, e);

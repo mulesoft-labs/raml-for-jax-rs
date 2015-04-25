@@ -140,7 +140,7 @@ You must include the plug-in in your project's pom.xml. For example, add the fol
 			<goals>
 				<goal>generate-raml</goal>
 			</goals>
-			<phase>generate-sources</phase>
+			<phase>process-classes</phase>
 		</execution>
 	</executions>
 </plugin>

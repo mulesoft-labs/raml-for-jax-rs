@@ -121,8 +121,9 @@ public abstract class AbstractGenerator {
 		if (sourceDirectory != null) {
 			String sourceDirAbsPath = sourceDirectory.getAbsolutePath();
 			loaderList.add(new FileResourceLoader(sourceDirAbsPath));
-
 		}
+		//Supporting all  options that occured in real life at the moment
+		//TODO make loading more consistent (we should drop some options)
 		if (location!=null&&location.length()>0){
 			String sourceDirAbsPath = sourceDirectory.getAbsolutePath();
 			String fl=new File(location).getParent();
@@ -154,8 +155,8 @@ public abstract class AbstractGenerator {
 			}
 			else{
 				loaderList.add(new FileResourceLoader(location));
+				loaderList.add(new FileResourceLoader(""));
 			}
-
 		}
 		ResourceLoader[] loaderArray = loaderList
 				.toArray(new ResourceLoader[loaderList.size()]);

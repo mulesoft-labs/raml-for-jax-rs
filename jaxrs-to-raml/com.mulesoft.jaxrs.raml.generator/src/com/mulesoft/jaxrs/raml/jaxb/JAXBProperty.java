@@ -54,7 +54,7 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String name() {
-		return elementName!=null?elementName:propertyName.toLowerCase();
+		return elementName!=null?elementName:propertyName;
 	}
 
 	/**

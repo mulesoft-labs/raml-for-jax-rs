@@ -44,11 +44,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.jsonschema2pojo.AnnotatorFactory;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.*;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.model.Raml;
 import org.slf4j.Logger;
@@ -133,12 +129,28 @@ class Context
             final File schemaFile = new File(globalSchemaStore, nameAndSchema.getKey());
             FileUtils.writeStringToFile(schemaFile, nameAndSchema.getValue());
         }
-
         // configure the JSON -> POJO generator
         final GenerationConfig jsonSchemaGenerationConfig = configuration.createJsonSchemaGenerationConfig();
-        schemaMapper = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig,
-            new AnnotatorFactory().getAnnotator(configuration.getJsonMapper()),
-            new SchemaStore()), new SchemaGenerator());
+        schemaMapper = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(jsonSchemaGenerationConfig),
+                new SchemaStore()), new SchemaGenerator());
+
+    }
+
+
+
+
+    /**
+     *
+     * @param config
+     * @return
+     */
+    private static Annotator getAnnotator(GenerationConfig config) {
+        Annotator coreAnnotator = new AnnotatorFactory().getAnnotator(config.getAnnotationStyle());
+        if(config.getCustomAnnotator() != null){
+            Annotator customAnnotator = new AnnotatorFactory().getAnnotator(config.getCustomAnnotator());
+            return new CompositeAnnotator(coreAnnotator, customAnnotator);
+        }
+        return coreAnnotator;
     }
 
     /**

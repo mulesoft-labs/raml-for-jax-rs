@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.NoopAnnotator;
 import org.raml.jaxrs.codegen.core.ext.AbstractGeneratorExtension;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 
@@ -76,6 +77,7 @@ public class Configuration
     private String asyncResourceTrait;
 	private boolean emptyResponseReturnVoid;
 	private boolean generateClientInterface;
+    private Class customAnnotator= NoopAnnotator.class;
 
     public ArrayList<String> getIgnoredParameterNames() {
         return ignoredParameterNames;
@@ -169,6 +171,10 @@ public class Configuration
             {
                 return getConfiguredValue("includeHashcodeAndEquals", false);
             }
+            @Override
+            public Class getCustomAnnotator() {
+                return customAnnotator;
+            }
 
             @Override
             public boolean isIncludeToString()
@@ -193,6 +199,15 @@ public class Configuration
                 return val!=null?Boolean.parseBoolean(val): def;
             }
         };
+    }
+
+
+    public Class getCustomAnnotator() {
+        return customAnnotator;
+    }
+
+    public void setCustomAnnotator(Class customAnnotator) {
+        this.customAnnotator = customAnnotator;
     }
 
     /**

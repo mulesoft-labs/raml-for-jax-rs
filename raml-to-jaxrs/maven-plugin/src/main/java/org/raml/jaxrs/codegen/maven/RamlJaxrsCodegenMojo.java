@@ -34,6 +34,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.codegen.core.Configuration;
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
@@ -164,6 +166,8 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	@Parameter(property = "ignoredParameters")
 	private String[] ignoredParameters;
 
+	@Parameter(property ="customAnnotator",defaultValue = "")
+	private String customAnnotator;
 	/**
 	 * {@inheritDoc}
 	 *
@@ -216,6 +220,10 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 					configuration.getIgnoredParameterNames().add(s);
 				}
 			}
+			if(this.customAnnotator!=null&& StringUtils.isNotEmpty(customAnnotator)){
+				configuration.setCustomAnnotator((Class)Class.forName(customAnnotator));
+			}
+
 			if (extensions != null) {
 				for (String className : extensions) {
 					Class c = Class.forName(className);

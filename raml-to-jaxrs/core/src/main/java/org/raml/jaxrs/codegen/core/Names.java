@@ -109,8 +109,8 @@ public class Names
     public static String buildResourceMethodName(final Action action, final MimeType bodyMimeType)
     {
         final String methodBaseName = buildJavaFriendlyName(action.getResource()
-            .getUri()
-            .replace("{", " By "));
+                .getUri()
+                .replace("{", " By "));
 
         return action.getType().toString().toLowerCase() + buildMimeTypeInfix(bodyMimeType) + methodBaseName;
     }
@@ -197,6 +197,45 @@ public class Names
 		}
 
     }
+
+    /**
+     * get enum field name from value
+     * @param value
+     * @return  a {@link java.lang.String} object.
+     */
+    public static boolean canBenumConstantName(final String value){
+        boolean res=value.length()>0;
+        for (int i=0;i<value.length();i++){
+            char c=value.charAt(i);
+            if (i==0){
+                res&=Character.isJavaIdentifierStart(c);
+            }
+            else {
+                res&=Character.isJavaIdentifierPart(c);
+            }
+            if (!res){
+                break;
+            }
+        }
+        return res;
+    }
+
+    /**
+     *
+     * @param values
+     * @return true if this list of strings can be used as names for enum
+     */
+    public static boolean isValidEnumValues(java.util.List<String>values){
+        boolean res=values.size()>0;
+        for (String v:values){
+            res&=canBenumConstantName(v);
+            if (!res){
+                break;
+            }
+        }
+        return res;
+    }
+
 
     private Names()
     {

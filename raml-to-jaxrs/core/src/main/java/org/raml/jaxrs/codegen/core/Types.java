@@ -93,7 +93,7 @@ public class Types
      */
     public JType buildParameterType(final AbstractParam parameter, final String name) throws Exception
     {
-        if ((parameter.getEnumeration() != null) && (!parameter.getEnumeration().isEmpty()))
+        if ((parameter.getEnumeration() != null) && (!parameter.getEnumeration().isEmpty())&&Names.isValidEnumValues(parameter.getEnumeration()))
         {
             return context.createResourceEnum(context.getCurrentResourceInterface(), capitalize(name),
                 parameter.getEnumeration());

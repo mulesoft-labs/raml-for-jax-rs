@@ -75,6 +75,8 @@ You must include the plug-in in your project's pom.xml. For example:
 			<param>com.abc.AuthorizationAnnotationExtension</param>
 		    <param>com.abc.ParameterFilterExtension</param>
 		</extensions>
+		Custom annotator for json schema to pojo convertor
+		<customAnnotator>com.abc.MyCustomAnnotator</customAnnotator>
         -->
     </configuration>
     <executions>

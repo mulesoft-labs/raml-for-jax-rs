@@ -11,6 +11,7 @@
     <artifactId>raml-jaxrs-codegen-core</artifactId>
     <packaging>jar</packaging>
     <name>RAML JAX-RS Codegen Core</name>
+    <version>1.3.5-SNAPSHOT</version>
 
     <properties>
         <licensePath>../LICENSE_HEADER.txt</licensePath>
@@ -95,7 +96,7 @@
         <dependency>
             <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
-            <version>0.4.10</version>
+            <version>0.4.11</version>
             <exclusions>
             	<exclusion>
             		<artifactId>jackson-databind</artifactId>

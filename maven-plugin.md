@@ -6,6 +6,14 @@
 
 This Maven plug-in generates JAX-RS annotated interfaces and supporting classes based on one or multiple RAML files.
 
+### Maven artifacts
+Maven artifacts are available at:
+
+ - https://repository-master.mulesoft.org/releases/ - release repository
+ - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
+
+as well as at Maven Central (http://search.maven.org/#search%7Cga%7C1%7Corg.raml)
+
 ###Installation
 
 In order to use this plug-in, it needs to be installed in the Maven Repositories. In order to do that:

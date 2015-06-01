@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 
 /**
  * <p>ReflectionField class.</p>
@@ -52,6 +53,10 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getJAXBType() {
+		ITypeModel type = getType();
+		if(ResourceVisitor.isJAXBType(type)){
+			return type;
+		}
 		return null;
 	}
 

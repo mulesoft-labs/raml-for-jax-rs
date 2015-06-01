@@ -129,10 +129,26 @@ public abstract class ResourceVisitor {
 	private static final String FORM_PARAM = "FormParam"; //$NON-NLS-1$
 
 	private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
+	
+	private static final String XML_TYPE = "XmlType"; //$NON-NLS-1$
+	
+	private static final String XML_ACCESSOR_TYPE = "XmlAccessorType"; //$NON-NLS-1$
+	
+	private static final String XML_ACCESSOR_ORDER = "XmlAccessorOrder"; //$NON-NLS-1$
 
 	private static final String RESPONSE = "response";
 	
 	private static final String MESSAGE = "message";
+	
+	public static boolean isJAXBType(ITypeModel type){
+		
+		for(String aName: new String[]{XML_ROOT_ELEMENT, XML_TYPE, XML_ACCESSOR_TYPE, XML_ACCESSOR_ORDER}){
+			if(type.getAnnotation(aName)!=null){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	protected RAMLModelHelper spec = new RAMLModelHelper();
 

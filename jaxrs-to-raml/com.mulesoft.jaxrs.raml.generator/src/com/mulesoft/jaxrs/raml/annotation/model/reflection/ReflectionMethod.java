@@ -3,6 +3,8 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -125,6 +127,26 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getJAXBType() {
+		Class<?> type = null;
+		if(Utils.isCollection(element.getReturnType())){
+			Type gType = element.getGenericReturnType();
+			if(gType instanceof ParameterizedType){
+				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+				if(args!=null&&args.length!=0){
+					type = (Class<?>) args[0];					
+				}
+			}
+		}
+		else{
+			type = element.getReturnType();
+		}
+		if(type==null){
+			return null;
+		}
+		ITypeModel model = new ReflectionType(type);
+		if(Utils.isJAXBType(model)){
+			return model;
+		}
 		return null;
 	}
 

@@ -32,8 +32,8 @@ public class MavenResourceVisitor extends RuntimeResourceVisitor {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void generateXMLSchema(ITypeModel t) {
-		super.generateXMLSchema(t);
+	protected void generateXMLSchema(ITypeModel t, String collectionTag) {
+		super.generateXMLSchema(t,collectionTag);
 	}
 
 	/**

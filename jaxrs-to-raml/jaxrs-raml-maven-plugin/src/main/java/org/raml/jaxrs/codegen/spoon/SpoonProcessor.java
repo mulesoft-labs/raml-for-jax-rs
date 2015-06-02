@@ -448,6 +448,7 @@ public class SpoonProcessor{
 		CtTypeReference<?> returnedType = m.getType();
 		ITypeModel returnedTypeModel = processTypeReference(returnedType);
 		methodModel.setReturnedType(returnedTypeModel);
+		fillJAXBType(methodModel,returnedType);
 		
 		List<CtParameter<?>> parameters = m.getParameters();
 		for(CtParameter<?> p : parameters){

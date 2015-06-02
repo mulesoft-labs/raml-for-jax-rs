@@ -37,8 +37,8 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 	
 
 	@Override
-	protected void generateXMLSchema(ITypeModel t) {
-		super.generateXMLSchema(t);
+	protected void generateXMLSchema(ITypeModel t, String collectionTag) {
+		super.generateXMLSchema(t,collectionTag);
 		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
 		if (generateXMLExampleJAXB!=null){
 			

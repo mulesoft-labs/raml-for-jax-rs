@@ -139,16 +139,6 @@ public abstract class ResourceVisitor {
 	private static final String RESPONSE = "response";
 	
 	private static final String MESSAGE = "message";
-	
-	public static boolean isJAXBType(ITypeModel type){
-		
-		for(String aName: new String[]{XML_ROOT_ELEMENT, XML_TYPE, XML_ACCESSOR_TYPE, XML_ACCESSOR_ORDER}){
-			if(type.getAnnotation(aName)!=null){
-				return true;
-			}
-		}
-		return false;
-	}
 
 	protected RAMLModelHelper spec = new RAMLModelHelper();
 
@@ -247,7 +237,7 @@ public abstract class ResourceVisitor {
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
 	 */
-	protected void generateXMLSchema(ITypeModel t){
+	protected void generateXMLSchema(ITypeModel t, String collectionTag){
 			
 	}
 	
@@ -328,7 +318,7 @@ public abstract class ResourceVisitor {
 
 			if (returnedType != null) {
 				if (returnedType.hasAnnotation(XML_ROOT_ELEMENT)) {
-					generateXMLSchema(returnedType);
+					generateXMLSchema(returnedType,null);
 					returnName = returnedType.getName().toLowerCase();
 				}
 				if (hasPath) {
@@ -345,7 +335,7 @@ public abstract class ResourceVisitor {
 			ITypeModel bodyType = m.getBodyType();
 			if (bodyType != null) {
 				if (bodyType.hasAnnotation(XML_ROOT_ELEMENT)) {
-					generateXMLSchema(bodyType);
+					generateXMLSchema(bodyType,null);
 					parameterName = bodyType.getName().toLowerCase();
 				}
 			}
@@ -550,7 +540,7 @@ public abstract class ResourceVisitor {
 						try {
 							Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 							ReflectionType rt = new ReflectionType(responseClass); 
-							generateXMLSchema(rt);
+							generateXMLSchema(rt,null);
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
 						}
@@ -579,12 +569,13 @@ public abstract class ResourceVisitor {
 		
 		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
 		if(apiOperation!=null){
+			String responseContainer = apiOperation.getValue("responseContainer");
 			String responseQualifiedName = apiOperation.getValue(RESPONSE);
 			if(responseQualifiedName!=null){
 				try {
 					Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 					ReflectionType rt = new ReflectionType(responseClass); 
-					generateXMLSchema(rt);
+					generateXMLSchema(rt,responseContainer);
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}	

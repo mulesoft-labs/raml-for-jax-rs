@@ -47,8 +47,9 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	 * <p>afterSchemaGen.</p>
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @param collectionTag 
 	 */
-	protected void afterSchemaGen(ITypeModel t) {
+	protected void afterSchemaGen(ITypeModel t, String collectionTag) {
 		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
 		if (generateXMLExampleJAXB!=null){
 				File file =outputFile;
@@ -93,7 +94,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	}
 	
 	/** {@inheritDoc} */
-	protected void generateXMLSchema(ITypeModel t) {
+	protected void generateXMLSchema(ITypeModel t, String collectionTag) {
 		if (t instanceof ReflectionType) {
 			Class<?> element = ((ReflectionType) t).getElement();
 			generateXSDForClass(element);
@@ -106,7 +107,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 				e.printStackTrace();
 			}
 		}
-		afterSchemaGen(t);
+		afterSchemaGen(t,collectionTag);
 	}
 
 

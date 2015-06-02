@@ -2,6 +2,9 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
@@ -53,9 +56,26 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 	/** {@inheritDoc} */
 	@Override
 	public ITypeModel getJAXBType() {
-		ITypeModel type = getType();
-		if(ResourceVisitor.isJAXBType(type)){
-			return type;
+		
+		Class<?> type = null;
+		if(Utils.isCollection(element.getType())){
+			Type gType = element.getGenericType();
+			if(gType instanceof ParameterizedType){
+				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+				if(args!=null&&args.length!=0){
+					type = (Class<?>) args[0];					
+				}
+			}
+		}
+		else{
+			type = element.getType();
+		}
+		if(type==null){
+			return null;
+		}
+		ITypeModel model = new ReflectionType(type);
+		if(Utils.isJAXBType(model)){
+			return model;
 		}
 		return null;
 	}

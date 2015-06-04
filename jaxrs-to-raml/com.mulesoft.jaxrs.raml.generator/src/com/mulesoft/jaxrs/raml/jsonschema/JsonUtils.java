@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -64,8 +65,17 @@ public class JsonUtils {
 	 * @throws org.codehaus.jettison.json.JSONException if any.
 	 * @throws java.io.IOException if any.
 	 */
-	static public String transformObjectToString(JSONObject object)
-			throws JSONException, IOException
+	static public String transformObjectToString(JSONObject object)	throws JSONException, IOException
+	{
+		StringWriter sw = new StringWriter() ;
+		object.write(sw) ;
+		StringWriter sw1 = new StringWriter() ;
+		StringEscapeUtils.unescapeJavaScript( sw1, sw.toString() );
+		String result = sw1.toString() ;
+		return result;
+	}
+	
+	static public String transformObjectToString(JSONArray object)	throws JSONException, IOException
 	{
 		StringWriter sw = new StringWriter() ;
 		object.write(sw) ;

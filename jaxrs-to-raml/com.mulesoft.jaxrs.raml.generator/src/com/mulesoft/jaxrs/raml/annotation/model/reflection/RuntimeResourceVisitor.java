@@ -5,11 +5,18 @@ import java.io.File;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.raml.schema.model.ISchemaType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
+import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
+import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
+import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonModelSerializer;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaModelSerializer;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
@@ -50,36 +57,71 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	 * @param collectionTag 
 	 */
 	protected void afterSchemaGen(ITypeModel t, String collectionTag) {
-		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
-		if (generateXMLExampleJAXB!=null){
-				File file =outputFile;
-				File parentDir = file.getParentFile();
-				File examplesDir=new File(parentDir,"examples"); //$NON-NLS-1$
-				File schemaFile=new File(parentDir,"schemas"); //$NON-NLS-1$
-				if (!examplesDir.exists()){
-					examplesDir.mkdir();
-				}
-				//String dummyXml = generator.generateDummyXmlFor(schemaFile.toURL().toExternalForm());
-				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
-				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB);
-				writeString(jsonText, new File(examplesDir,t.getName().toLowerCase()+".json"));
-				String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
-				generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
-				if(generatedSchema != null){
-					String schemaName = t.getName().toLowerCase()+"-jsonschema";
-					spec.getCoreRaml().addGlobalSchema(schemaName, generatedSchema, true, false);
-					writeString(generatedSchema, new File(schemaFile,schemaName+".json"));
-				}
+
+		JAXBRegistry rs = new JAXBRegistry();
+		JAXBType jaxbModel = rs.getJAXBModel(t);
+		if(jaxbModel==null){
+			return;
 		}
+		ISchemaType schemaModel = null;
+		try{
+			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		if(schemaModel==null){
+			return;
+		}
+
+		File file = outputFile;
+		File parentDir = file.getParentFile();
+		File examplesDir = new File(parentDir, "examples"); //$NON-NLS-1$
+		if (!examplesDir.exists()) {
+			examplesDir.mkdir();
+		}
+		File schemesDir = new File(parentDir, "schemas"); //$NON-NLS-1$
+		if (!schemesDir.exists()) {
+			schemesDir.mkdir();
+		}
+		
+		try{
+			String xmlExample = new XMLModelSerializer().serialize(schemaModel);
+			writeString(xmlExample, new File(examplesDir, t.getName() + ".xml"));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		try{
+			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
+			writeString(jsonExample, new File(examplesDir, t.getName().toLowerCase() + ".json"));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
+		try{
+			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
+			String schemaName = t.getName().toLowerCase() + "-jsonschema";
+			spec.getCoreRaml().addGlobalSchema(schemaName, jsonSchema, true, false);
+			writeString(jsonSchema, new File(schemesDir, schemaName + ".json"));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
 	 * <p>getProperJSONExampleFromXML.</p>
 	 *
 	 * @param generateXMLExampleJAXB a {@link java.lang.String} object.
+	 * @param t 
 	 * @return a {@link java.lang.String} object.
 	 */
-	protected String getProperJSONExampleFromXML(String generateXMLExampleJAXB) {
+	protected String getProperJSONExampleFromXML(String generateXMLExampleJAXB, ITypeModel t) {		
+		
 		String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
 		JSONObject c;
 		try {

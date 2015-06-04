@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
@@ -31,11 +32,14 @@ import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
+import org.raml.schema.model.ISchemaType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 import com.mulesoft.jaxrs.raml.jaxb.ExampleGenerator;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
+import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
+import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jaxb.XMLWriter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
@@ -251,10 +255,12 @@ public abstract class ResourceVisitor {
 		JAXBRegistry rs=new JAXBRegistry();
 		JAXBType jaxbModel = rs.getJAXBModel(t);
 		if (jaxbModel!=null){
-			XMLWriter writer = new XMLWriter();
-			ExampleGenerator gen=new ExampleGenerator(writer);
-			gen.generateXML(jaxbModel);
-			return writer.toString();
+//			XMLWriter writer = new XMLWriter();
+//			ExampleGenerator gen=new ExampleGenerator(writer);
+//			gen.generateXML(jaxbModel);
+//			return writer.toString();
+			ISchemaType model = new SchemaModelBuilder().buildSchemaModel(jaxbModel);
+			return new XMLModelSerializer().serialize(model);
 		}
 		return null;
 	}
@@ -857,7 +863,7 @@ public abstract class ResourceVisitor {
 	 *
 	 * @param element a {@link java.lang.Class} object.
 	 */
-	protected void generateXSDForClass(Class<?> element) {
+	protected String generateXSDForClass(Class<?> element) {
 		try {
 			String name = element.getSimpleName().toLowerCase();
 			String fileName = name + ".xsd"; //$NON-NLS-1$
@@ -869,11 +875,13 @@ public abstract class ResourceVisitor {
 			String content = FileUtil.fileToString(file);
 			generateExamle(file, content);
 			spec.getCoreRaml().addGlobalSchema(name, content, false, false);
+			return content;
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	/**

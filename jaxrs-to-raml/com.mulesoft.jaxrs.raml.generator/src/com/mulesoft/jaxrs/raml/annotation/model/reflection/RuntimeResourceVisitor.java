@@ -5,11 +5,17 @@ import java.io.File;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.raml.schema.model.ISchemaType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
+import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
+import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
+import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonModelSerializer;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
@@ -50,6 +56,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	 * @param collectionTag 
 	 */
 	protected void afterSchemaGen(ITypeModel t, String collectionTag) {
+		
 		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
 		if (generateXMLExampleJAXB!=null){
 				File file =outputFile;
@@ -61,7 +68,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 				}
 				//String dummyXml = generator.generateDummyXmlFor(schemaFile.toURL().toExternalForm());
 				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
-				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB);
+				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB,t);
 				writeString(jsonText, new File(examplesDir,t.getName().toLowerCase()+".json"));
 				String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
 				generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
@@ -77,20 +84,28 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	 * <p>getProperJSONExampleFromXML.</p>
 	 *
 	 * @param generateXMLExampleJAXB a {@link java.lang.String} object.
+	 * @param t 
 	 * @return a {@link java.lang.String} object.
 	 */
-	protected String getProperJSONExampleFromXML(String generateXMLExampleJAXB) {
-		String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
-		JSONObject c;
-		try {
-			c = new JSONObject(jsonText);
-			jsonText=c.get((String) c.keys().next()).toString();
-		} catch (JSONException e) {
-			//should never happen
-			throw new IllegalStateException(e);
+	protected String getProperJSONExampleFromXML(String generateXMLExampleJAXB, ITypeModel t) {		
+		
+		JAXBRegistry rs=new JAXBRegistry();
+		JAXBType jaxbModel = rs.getJAXBModel(t);
+		if (jaxbModel!=null){
+			return new JsonModelSerializer().serialize(new SchemaModelBuilder().buildSchemaModel(jaxbModel));
 		}
-		jsonText = JsonFormatter.format(jsonText);
-		return jsonText;
+		return null;
+//		String jsonText = JsonUtil.convertToJSON(generateXMLExampleJAXB, true);
+//		JSONObject c;
+//		try {
+//			c = new JSONObject(jsonText);
+//			jsonText=c.get((String) c.keys().next()).toString();
+//		} catch (JSONException e) {
+//			//should never happen
+//			throw new IllegalStateException(e);
+//		}
+//		jsonText = JsonFormatter.format(jsonText);
+//		return jsonText;
 	}
 	
 	/** {@inheritDoc} */

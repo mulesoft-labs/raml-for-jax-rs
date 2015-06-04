@@ -83,8 +83,11 @@ public class XMLWriter implements IExampleWriter{
 		if (type==byte[].class){
 			return "some base64 encoded binary";
 		}
+		if(type==boolean.class||type==Boolean.class){
+			return "true";
+		}
 		if (type!=null){
-				return "some "+type.getSimpleName().toLowerCase()+" value";
+			return "some "+type.getSimpleName().toLowerCase()+" value";
 		}
 		return "some value";
 	}

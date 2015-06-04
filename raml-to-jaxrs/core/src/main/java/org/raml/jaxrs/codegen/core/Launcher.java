@@ -120,6 +120,9 @@ public class Launcher {
 		boolean useJsr303Annotations = false;
 		boolean mapToVoid = false;
 		String jsonMapper = "jackson1";
+		String modelPackageName = "model";
+		String restIFPackageName = "resource";
+		String interfaceNameSuffix = "Resource";
 		
 		
 		for( Map.Entry<String,String> entry : argMap.entrySet() ){
@@ -148,6 +151,15 @@ public class Launcher {
 			else if(argName.equals("jsonMapper")){
 				jsonMapper = argValue;
 			}
+			else if(argName.equals("modelPackageName")){
+				modelPackageName = argValue;
+			}
+			else if(argName.equals("restIFPackageName")){
+				restIFPackageName = argValue;
+			}
+			else if(argName.equals("interfaceNameSuffix")){
+				interfaceNameSuffix = argValue;
+			}
 		}
 		if(basePackageName==null){
 			throw new RuntimeException("Base package must be specified.");
@@ -162,6 +174,9 @@ public class Launcher {
         configuration.setUseJsr303Annotations(useJsr303Annotations);
         configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
         configuration.setSourceDirectory(sourceDirectory);
+        configuration.setModelPackageName(modelPackageName);
+        configuration.setRestIFPackageName(restIFPackageName);
+        configuration.setInterfaceNameSuffix(interfaceNameSuffix);
         
         return configuration;
 	}

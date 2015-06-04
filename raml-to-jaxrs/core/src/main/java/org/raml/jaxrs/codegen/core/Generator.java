@@ -93,9 +93,9 @@ public class Generator extends AbstractGenerator
     
 
     /** {@inheritDoc} */
-    protected void createResourceInterface(final Resource resource, final Raml raml) throws Exception
+    protected void createResourceInterface(final Resource resource, final Raml raml,Configuration config) throws Exception
     {
-        final String resourceInterfaceName = Names.buildResourceInterfaceName(resource);
+        final String resourceInterfaceName = Names.buildResourceInterfaceName(resource,config);
         final JDefinedClass resourceInterface = context.createResourceInterface(resourceInterfaceName);
         context.setCurrentResourceInterface(resourceInterface);
 

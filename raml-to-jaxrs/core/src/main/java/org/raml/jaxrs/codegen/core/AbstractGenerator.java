@@ -218,7 +218,7 @@ public abstract class AbstractGenerator {
 		types.generateClassesFromXmlSchemas(resources);
 
 		for (final Resource resource : resources) {
-			createResourceInterface(resource, raml);
+			createResourceInterface(resource, raml,configuration);
 		}
 
 		return context.generate();
@@ -232,9 +232,9 @@ public abstract class AbstractGenerator {
 	 * @throws java.lang.Exception if any.
 	 */
 	protected void createResourceInterface(final Resource resource,
-			final Raml raml) throws Exception {
+			final Raml raml,Configuration config) throws Exception {
 		final String resourceInterfaceName = Names
-				.buildResourceInterfaceName(resource);
+				.buildResourceInterfaceName(resource,config);
 		final JDefinedClass resourceInterface = context
 				.createResourceInterface(resourceInterfaceName);
 		context.setCurrentResourceInterface(resourceInterface);

@@ -78,6 +78,8 @@ public class Configuration
 	private boolean emptyResponseReturnVoid;
 	private boolean generateClientInterface;
     private Class customAnnotator= NoopAnnotator.class;
+    private String restIFPackageName = "resource" ;
+    private String interfaceNameSuffix = "Resource" ;
 
     public ArrayList<String> getIgnoredParameterNames() {
         return ignoredParameterNames;
@@ -411,6 +413,22 @@ public class Configuration
 	 */
 	public List<GeneratorExtension> getExtensions() {
 		return this.extensions;
+	}
+
+	public String getRestIFPackageName() {
+		return restIFPackageName;
+	}
+
+	public void setRestIFPackageName(String restIFPackageName) {
+		this.restIFPackageName = restIFPackageName;
+	}
+
+	public String getInterfaceNameSuffix() {
+		return interfaceNameSuffix;
+	}
+
+	public void setInterfaceNameSuffix(String interfaceNameSuffix) {
+		this.interfaceNameSuffix = interfaceNameSuffix;
 	}
 
 

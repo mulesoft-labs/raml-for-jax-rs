@@ -866,9 +866,11 @@ public abstract class ResourceVisitor {
 					fileName);
 			jaxbContext.generateSchema(sor);
 			File file = sor.getFile();
-			String content = FileUtil.fileToString(file);
-			generateExamle(file, content);
-			spec.getCoreRaml().addGlobalSchema(name, content, false, false);
+			if(file!=null){
+				String content = FileUtil.fileToString(file);
+				generateExamle(file, content);
+				spec.getCoreRaml().addGlobalSchema(name, content, false, false);
+			}
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

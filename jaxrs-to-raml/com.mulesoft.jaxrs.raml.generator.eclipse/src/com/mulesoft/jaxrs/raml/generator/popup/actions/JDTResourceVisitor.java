@@ -49,7 +49,7 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 					examplesDir.mkdir();
 				}
 				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
-				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB);
+				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB,t);
 				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
 				
 		}

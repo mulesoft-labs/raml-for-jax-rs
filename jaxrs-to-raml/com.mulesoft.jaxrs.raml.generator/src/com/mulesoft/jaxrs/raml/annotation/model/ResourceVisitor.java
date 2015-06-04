@@ -255,12 +255,10 @@ public abstract class ResourceVisitor {
 		JAXBRegistry rs=new JAXBRegistry();
 		JAXBType jaxbModel = rs.getJAXBModel(t);
 		if (jaxbModel!=null){
-//			XMLWriter writer = new XMLWriter();
-//			ExampleGenerator gen=new ExampleGenerator(writer);
-//			gen.generateXML(jaxbModel);
-//			return writer.toString();
-			ISchemaType model = new SchemaModelBuilder().buildSchemaModel(jaxbModel);
-			return new XMLModelSerializer().serialize(model);
+			XMLWriter writer = new XMLWriter();
+			ExampleGenerator gen=new ExampleGenerator(writer);
+			gen.generateXML(jaxbModel);
+			return writer.toString();
 		}
 		return null;
 	}

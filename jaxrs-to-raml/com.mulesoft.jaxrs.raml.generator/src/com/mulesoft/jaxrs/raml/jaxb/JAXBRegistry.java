@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.jaxb;
 import java.util.HashMap;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.Utils;
 
 /**
  * <p>JAXBRegistry class.</p>
@@ -20,8 +21,11 @@ public class JAXBRegistry {
 	 * @param tp a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
 	 * @return a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBType} object.
 	 */
-	public JAXBType getJAXBModel(ITypeModel tp){
+	public JAXBType getJAXBModel(ITypeModel tp){		
 		if (tp==null){
+			return null;
+		}
+		if(!Utils.isJAXBType(tp)){
 			return null;
 		}
 		if (types.containsKey(tp)){

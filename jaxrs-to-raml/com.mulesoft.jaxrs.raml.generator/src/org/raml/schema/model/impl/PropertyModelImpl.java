@@ -5,14 +5,17 @@ import org.raml.schema.model.ISchemaType;
 
 public class PropertyModelImpl implements ISchemaProperty {
 	
-	public PropertyModelImpl(String name, ISchemaType type, boolean required, boolean isAttribute, boolean isCollection) {
+	public PropertyModelImpl(String name, ISchemaType type, boolean required, boolean isAttribute, boolean isCollection, String namespace) {
 		super();
 		this.name = name;
 		this.type = type;
 		this.required = required;
 		this.isAttribute = isAttribute;
 		this.isCollection = isCollection;
+		this.namespace = namespace;
 	}
+	
+	private String namespace;
 	
 	private ISchemaType type;
 
@@ -47,5 +50,9 @@ public class PropertyModelImpl implements ISchemaProperty {
 	@Override
 	public boolean isCollection() {
 		return this.isCollection;
+	}
+
+	public String getNamespace() {
+		return namespace;
 	}
 }

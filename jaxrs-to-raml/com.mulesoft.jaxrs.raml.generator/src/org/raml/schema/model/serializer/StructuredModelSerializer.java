@@ -29,7 +29,7 @@ public abstract class StructuredModelSerializer implements IModelSerializer {
 			if(childNode!=null){
 				process(childType, childNode);
 			}
-			node.processProperty(prop,childNode);
+			node.processProperty(type,prop,childNode);
 		}
 	}
 

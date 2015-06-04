@@ -67,7 +67,7 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 
 
 		@Override
-		public void processProperty(ISchemaProperty prop, ISerializationNode childNode) {
+		public void processProperty(ISchemaType type, ISchemaProperty prop, ISerializationNode childNode) {
 			
 			try {
 				JSONObject childObject = ((Node)childNode).object;
@@ -90,7 +90,7 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 						properties = new JSONObject();
 						this.object.put("properties", properties);
 					}
-					String propName = prop.getName();
+					String propName = type.getQualifiedPropertyName(prop);
 					if(prop.isAttribute()){
 						propName = "@" + propName;
 					}

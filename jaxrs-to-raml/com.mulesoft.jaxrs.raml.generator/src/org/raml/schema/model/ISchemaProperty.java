@@ -11,4 +11,6 @@ public interface ISchemaProperty {
 	boolean isRequired();
 	
 	boolean isCollection();
+	
+	String getNamespace();
 }

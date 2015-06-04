@@ -1,6 +1,7 @@
 package org.raml.schema.model;
 
 import java.util.List;
+import java.util.Map;
 
 public enum SimpleType implements ISchemaType {
 	
@@ -38,5 +39,15 @@ public enum SimpleType implements ISchemaType {
 	@Override
 	public String getName() {
 		return this.name;
+	}
+
+	@Override
+	public Map<String, String> getNamespaces() {
+		return null;
+	}
+
+	@Override
+	public String getQualifiedPropertyName(ISchemaProperty prop) {
+		return prop.getName();
 	}
 }

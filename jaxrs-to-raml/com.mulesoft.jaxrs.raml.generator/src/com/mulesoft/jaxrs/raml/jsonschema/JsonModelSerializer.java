@@ -42,7 +42,7 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 		private JSONArray array;
 
 		@Override
-		public void processProperty(ISchemaProperty prop, ISerializationNode childNode) {
+		public void processProperty(ISchemaType type,ISchemaProperty prop, ISerializationNode childNode) {
 			
 			if(this.array!=null){
 				int l = this.array.length();
@@ -50,34 +50,34 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 					JSONObject item;
 					try {
 						item = (JSONObject) this.array.get(i);
-						appendProperty(item,prop,childNode);
+						appendProperty(item,type,prop,childNode);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
 				}
 			}
 			else{
-				appendProperty(this.object, prop, childNode);
+				appendProperty(this.object,type,prop, childNode);
 			}
 		}
 
-		private void appendProperty(JSONObject item, ISchemaProperty prop,ISerializationNode childNode)
+		private void appendProperty(JSONObject item, ISchemaType type, ISchemaProperty prop,ISerializationNode childNode)
 		{
 			Node n = (Node) childNode;
-			ISchemaType type = prop.getType();
-			String propName = prop.getName();
+			ISchemaType propType = prop.getType();
+			String propName = type.getQualifiedPropertyName(prop);
 			try {				
 				if(prop.isCollection()){
 					item.put(propName, n.array);					
 				}
-				else if(type.isComplex()){
+				else if(propType.isComplex()){
 					item.put(propName, n.object);
 				}
 				else{
 					if(prop.isAttribute()){
 						propName = "@" + propName;
 					}
-					item.put(propName, DefaultValueFactory.getDefaultValue(type));
+					item.put(propName, DefaultValueFactory.getDefaultValue(propType));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

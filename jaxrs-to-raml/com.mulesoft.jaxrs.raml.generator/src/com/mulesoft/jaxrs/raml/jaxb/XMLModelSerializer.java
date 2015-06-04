@@ -23,7 +23,7 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 	@Override
 	protected ISerializationNode createNode(ISchemaType type, ISchemaProperty prop, ISerializationNode parent) {
 		
-		String name = prop != null ? prop.getName() : type.getName();
+		String name = prop != null ? type.getQualifiedPropertyName(prop) : type.getName();
 		return new Node(name,parent);
 	}
 	
@@ -51,17 +51,17 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 		private Element element;
 
 		@Override
-		public void processProperty(ISchemaProperty prop, ISerializationNode childNode) {
+		public void processProperty(ISchemaType type, ISchemaProperty prop, ISerializationNode childNode) {
 			
-			ISchemaType type = prop.getType();
+			ISchemaType propType = prop.getType();
 			if(prop.isAttribute()){			
-				this.element.setAttribute(prop.getName(), DefaultValueFactory.getDefaultValue(type).toString());
+				this.element.setAttribute(type.getQualifiedPropertyName(prop), DefaultValueFactory.getDefaultValue(propType).toString());
 				return;
 			}
 			else{
 				Element childElement = ((Node)childNode).element;
-				if(type.isSimple()){
-					childElement.setTextContent(DefaultValueFactory.getDefaultValue(type).toString());
+				if(propType.isSimple()){
+					childElement.setTextContent(DefaultValueFactory.getDefaultValue(propType).toString());
 				}			
 				this.element.appendChild(childElement);
 				if(prop.isCollection()){

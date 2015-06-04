@@ -32,7 +32,8 @@ public class SchemaModelBuilder {
 		if(existing!=null){
 			return existing;
 		}
-		TypeModelImpl typeModel = new TypeModelImpl(xmlName);
+		HashMap<String,String>namespaces = jaxbType.gatherNamespaces();
+		TypeModelImpl typeModel = new TypeModelImpl(xmlName,namespaces);
 		this.jaxbTypeMap.put(xmlName, typeModel);
 		HashMap<String,String>prefixes=jaxbType.gatherNamespaces();
 	
@@ -47,28 +48,23 @@ public class SchemaModelBuilder {
 		if (name==null||name.length()==0){
 			return;
 		}
-		if (p.namespace!=null){
-			String string = prefixes.get(p.namespace);
-			if (string!=null){
-				name=string+":"+name;
-			}
-		}
 		PropertyModelImpl prop = null;
+		String namespace = p.namespace;
 		if (p instanceof JAXBAttributeProperty){			
-			prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, true, p.isCollection());
+			prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, true, p.isCollection(),namespace);
 		}
 		else if (p instanceof JAXBValueProperty){
-			prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, false, p.isCollection());
+			prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, false, p.isCollection(),namespace);
 		}
 		else if (p instanceof JAXBElementProperty){
 			JAXBElementProperty el=(JAXBElementProperty) p;
 			JAXBType jaxbType = el.getJAXBType();
 			if (jaxbType!=null){
 				TypeModelImpl propertyType = generateType(jaxbType);
-				prop = new PropertyModelImpl(name, propertyType, p.required, false, p.isCollection());
+				prop = new PropertyModelImpl(name, propertyType, p.required, false, p.isCollection(),namespace);
 			}
 			else{
-				prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, false, p.isCollection());
+				prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, false, p.isCollection(),namespace);
 			}
 		}		
 		if(prop!=null){
@@ -98,7 +94,7 @@ public class SchemaModelBuilder {
 		name = qName;
 		TypeModelImpl type = this.javaTypeMap.get(name);
 		if(type==null){
-			type = new TypeModelImpl(name,false);
+			type = new TypeModelImpl(name,null,false);
 			this.javaTypeMap.put(name, type);
 		}
 		return type;

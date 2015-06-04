@@ -2,6 +2,7 @@ package com.mulesoft.jaxrs.raml.jsonschema;
 
 import java.util.HashMap;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -104,7 +105,7 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 		public String getStringValue() {
 
 			if (this.object != null) {
-				return JsonFormatter.format(this.object.toString());
+				return JsonFormatter.format(StringEscapeUtils.unescapeJavaScript(this.object.toString()));
 			} else {
 				return null;
 			}

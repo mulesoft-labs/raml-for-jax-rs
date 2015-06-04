@@ -1,5 +1,6 @@
 package com.mulesoft.jaxrs.raml.jsonschema;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -87,9 +88,9 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 		public String getStringValue() {
 
 			if (this.object != null) {
-				return JsonFormatter.format(this.object.toString());
+				return JsonFormatter.format(StringEscapeUtils.unescapeJavaScript(this.object.toString()));
 			} else if (this.array != null) {
-				return JsonFormatter.format(this.array.toString());
+				return JsonFormatter.format(StringEscapeUtils.unescapeJavaScript(this.array.toString()));
 			} else {
 				return null;
 			}

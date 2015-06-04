@@ -355,17 +355,19 @@ public abstract class AbstractGenerator {
 		method.param(argumentType, GENERIC_PAYLOAD_ARGUMENT_NAME);
 
 		// build a javadoc text out of all the params
-		for (final Entry<String, List<FormParameter>> namedFormParameters : bodyMimeType
-				.getFormParameters().entrySet()) {
-			final StringBuilder sb = new StringBuilder();
-			sb.append(namedFormParameters.getKey()).append(": ");
-
-			for (final FormParameter formParameter : namedFormParameters
-					.getValue()) {
-				appendParameterJavadocDescription(formParameter, sb);
+		Map<String, List<FormParameter>> formParameters = bodyMimeType.getFormParameters();
+		if(formParameters!=null){
+			for (final Entry<String, List<FormParameter>> namedFormParameters : formParameters.entrySet()) {
+				final StringBuilder sb = new StringBuilder();
+				sb.append(namedFormParameters.getKey()).append(": ");
+	
+				for (final FormParameter formParameter : namedFormParameters
+						.getValue()) {
+					appendParameterJavadocDescription(formParameter, sb);
+				}
+	
+				javadoc.addParam(GENERIC_PAYLOAD_ARGUMENT_NAME).add(sb.toString());
 			}
-
-			javadoc.addParam(GENERIC_PAYLOAD_ARGUMENT_NAME).add(sb.toString());
 		}
 	}
 

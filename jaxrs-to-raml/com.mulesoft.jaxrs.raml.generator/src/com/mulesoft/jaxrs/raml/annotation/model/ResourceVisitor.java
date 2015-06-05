@@ -42,6 +42,8 @@ import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
 import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jaxb.XMLWriter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonModelSerializer;
+import com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaModelSerializer;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
@@ -942,13 +944,17 @@ public abstract class ResourceVisitor {
 	/**
 	 * <p>writeString.</p>
 	 *
-	 * @param generateDummyXmlFor a {@link java.lang.String} object.
+	 * @param str a {@link java.lang.String} object.
 	 * @param toSave a {@link java.io.File} object.
 	 */
-	protected void writeString(String generateDummyXmlFor, File toSave) {
+	protected void writeString(String str, File toSave) {
+		if(str==null){
+			return;
+		}
 		try {
+			toSave.getParentFile().mkdirs();
 			FileOutputStream fileOutputStream = new FileOutputStream(toSave);
-			fileOutputStream.write(generateDummyXmlFor.getBytes("UTF-8")); //$NON-NLS-1$
+			fileOutputStream.write(str.getBytes("UTF-8")); //$NON-NLS-1$
 			fileOutputStream.close();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
@@ -1029,6 +1035,64 @@ public abstract class ResourceVisitor {
 		}
 		spec.doSort=preferencesConfig.isSorted();
 		spec.extractCommonParts=preferencesConfig.doFullTree();
+	}
+	
+	/**
+	 * <p>afterSchemaGen.</p>
+	 *
+	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @param collectionTag 
+	 */
+	protected void afterSchemaGen(ITypeModel t, String collectionTag) {
+
+		JAXBRegistry rs = new JAXBRegistry();
+		JAXBType jaxbModel = rs.getJAXBModel(t);
+		
+		if(jaxbModel==null){
+			return;
+		}
+		ISchemaType schemaModel = null;
+		try{
+			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		if(schemaModel==null){
+			return;
+		}
+
+		File file = outputFile;
+		File parentDir = file.getParentFile();
+		File examplesDir = new File(parentDir, "examples"); //$NON-NLS-1$
+		File schemesDir = new File(parentDir, "schemas"); //$NON-NLS-1$
+
+		try{
+			String xmlExample = new XMLModelSerializer().serialize(schemaModel);
+			writeString(xmlExample, new File(examplesDir, t.getName().toLowerCase() + ".xml"));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		try{
+			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
+			writeString(jsonExample, new File(examplesDir, t.getName().toLowerCase() + ".json"));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
+		try{
+			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
+			String schemaName = t.getName().toLowerCase() + "-jsonschema";
+			spec.getCoreRaml().addGlobalSchema(schemaName, jsonSchema, true, false);
+			writeString(jsonSchema, new File(schemesDir, schemaName + ".json"));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
 	}
 	
 	private static class ResponseModel{

@@ -50,68 +50,6 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 		super(outputFile, classLoader);
 		setPreferences(preferencesConfig);
 	}
-	/**
-	 * <p>afterSchemaGen.</p>
-	 *
-	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
-	 * @param collectionTag 
-	 */
-	protected void afterSchemaGen(ITypeModel t, String collectionTag) {
-
-		JAXBRegistry rs = new JAXBRegistry();
-		JAXBType jaxbModel = rs.getJAXBModel(t);
-		if(jaxbModel==null){
-			return;
-		}
-		ISchemaType schemaModel = null;
-		try{
-			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		if(schemaModel==null){
-			return;
-		}
-
-		File file = outputFile;
-		File parentDir = file.getParentFile();
-		File examplesDir = new File(parentDir, "examples"); //$NON-NLS-1$
-		if (!examplesDir.exists()) {
-			examplesDir.mkdir();
-		}
-		File schemesDir = new File(parentDir, "schemas"); //$NON-NLS-1$
-		if (!schemesDir.exists()) {
-			schemesDir.mkdir();
-		}
-		
-		try{
-			String xmlExample = new XMLModelSerializer().serialize(schemaModel);
-			writeString(xmlExample, new File(examplesDir, t.getName() + ".xml"));
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		try{
-			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
-			writeString(jsonExample, new File(examplesDir, t.getName().toLowerCase() + ".json"));
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-
-		try{
-			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
-			String schemaName = t.getName().toLowerCase() + "-jsonschema";
-			spec.getCoreRaml().addGlobalSchema(schemaName, jsonSchema, true, false);
-			writeString(jsonSchema, new File(schemesDir, schemaName + ".json"));
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-
-	}
 
 	/**
 	 * <p>getProperJSONExampleFromXML.</p>

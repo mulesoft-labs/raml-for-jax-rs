@@ -12,6 +12,9 @@ public abstract class StructuredModelSerializer implements IModelSerializer {
 	@Override
 	public String serialize(ISchemaType type) {
 		
+		if(type.isSimple()){
+			return null;
+		}		
 		ISerializationNode node = createNode(type,null,null);
 		process(type,node);		
 		return node.getStringValue();

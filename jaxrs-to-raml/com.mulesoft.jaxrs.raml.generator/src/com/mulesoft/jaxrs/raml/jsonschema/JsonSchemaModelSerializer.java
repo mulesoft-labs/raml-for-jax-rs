@@ -69,9 +69,15 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 		@Override
 		public void processProperty(ISchemaType type, ISchemaProperty prop, ISerializationNode childNode) {
 			
+			String propName = type.getQualifiedPropertyName(prop);
+			if(prop.isAttribute()){
+				propName = "@" + propName;
+			}
+			
 			try {
 				JSONObject childObject = ((Node)childNode).object;
 				if (this.isArray) {
+					JSONObject item = null;
 					JSONArray items = null;
 					try{
 						items = this.object.getJSONArray("items");
@@ -80,7 +86,14 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 						items = new JSONArray();
 						this.object.put("items", items);
 					}
-					items.put(childObject);
+					try{
+						item = items.getJSONObject(0);
+					}
+					catch(JSONException ex){
+						item = new JSONObject();
+						items.put(item);
+					}
+					item.put(propName,childObject);
 				} else {
 					JSONObject properties = null;
 					try{
@@ -89,10 +102,6 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 					catch(JSONException ex){
 						properties = new JSONObject();
 						this.object.put("properties", properties);
-					}
-					String propName = type.getQualifiedPropertyName(prop);
-					if(prop.isAttribute()){
-						propName = "@" + propName;
 					}
 					properties.put(propName, childObject);
 				}

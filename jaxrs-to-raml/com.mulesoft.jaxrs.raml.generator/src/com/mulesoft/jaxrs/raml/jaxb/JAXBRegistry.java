@@ -25,9 +25,9 @@ public class JAXBRegistry {
 		if (tp==null){
 			return null;
 		}
-		if(!Utils.isJAXBType(tp)){
-			return null;
-		}
+//		if(!Utils.isJAXBType(tp)){
+//			return null;
+//		}
 		if (types.containsKey(tp)){
 			return types.get(tp);
 		}

@@ -32,7 +32,7 @@ public class APTResourceVisitor extends ResourceVisitor {
 	
 	
 	/** {@inheritDoc} */
-	protected void generateXMLSchema(ITypeModel t) {
+	protected void generateXMLSchema(ITypeModel t,String collectionTag) {
 		APTType type = (APTType) t;
 		TypeElement element = (TypeElement) type.element();
 		//try just loading this class
@@ -40,6 +40,7 @@ public class APTResourceVisitor extends ResourceVisitor {
 		try {
 			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());
 			generateXSDForClass(clazz);
+			afterSchemaGen(type, collectionTag);
 			return;
 		} catch (ClassNotFoundException e1) {
 			// Ignore; try some of further approaches
@@ -48,6 +49,7 @@ public class APTResourceVisitor extends ResourceVisitor {
 			try {
 				clazz = classLoader.loadClass(processingEnv.getElementUtils().getBinaryName(element).toString());
 				generateXSDForClass(clazz);
+				afterSchemaGen(type, collectionTag);
 			} catch (ClassNotFoundException e) {
 				//TODO log it
 			}

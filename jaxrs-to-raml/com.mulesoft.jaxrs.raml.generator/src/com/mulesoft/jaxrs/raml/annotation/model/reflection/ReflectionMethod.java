@@ -144,10 +144,10 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 			return null;
 		}
 		ITypeModel model = new ReflectionType(type);
-		if(Utils.isJAXBType(model)){
-			return model;
-		}
-		return null;
+//		if(!Utils.isJAXBType(model)){
+//			return null;
+//		}
+		return model;
 	}
 
 

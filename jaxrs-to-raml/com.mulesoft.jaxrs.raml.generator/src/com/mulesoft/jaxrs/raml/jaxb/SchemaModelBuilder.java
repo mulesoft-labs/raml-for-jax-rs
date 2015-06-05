@@ -8,6 +8,8 @@ import org.raml.schema.model.SimpleType;
 import org.raml.schema.model.impl.PropertyModelImpl;
 import org.raml.schema.model.impl.TypeModelImpl;
 
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+
 public class SchemaModelBuilder {
 	
 	public SchemaModelBuilder() {
@@ -19,13 +21,19 @@ public class SchemaModelBuilder {
 	private HashMap<String,TypeModelImpl> jaxbTypeMap = new HashMap<String, TypeModelImpl>();
 
 	public ISchemaType buildSchemaModel(JAXBType jaxbType){
-		TypeModelImpl typeModel = generateType(jaxbType);
+		ISchemaType typeModel = generateType(jaxbType);
 		return typeModel;
 	}
 
 	HashSet<JAXBType>onStack=new HashSet<JAXBType>();
 	
-	private TypeModelImpl generateType(JAXBType jaxbType) {
+	private ISchemaType generateType(JAXBType jaxbType) {
+		
+		String qualifiedName = ((ITypeModel)jaxbType.originalType).getFullyQualifiedName();
+		ISchemaType primitive = getPrimitiveType(qualifiedName);
+		if(primitive!=null){
+			return primitive;
+		}
 		
 		String xmlName = jaxbType.getXMLName();
 		TypeModelImpl existing = this.jaxbTypeMap.get(xmlName);
@@ -60,7 +68,7 @@ public class SchemaModelBuilder {
 			JAXBElementProperty el=(JAXBElementProperty) p;
 			JAXBType jaxbType = el.getJAXBType();
 			if (jaxbType!=null){
-				TypeModelImpl propertyType = generateType(jaxbType);
+				ISchemaType propertyType = generateType(jaxbType);
 				prop = new PropertyModelImpl(name, propertyType, p.required, false, p.isCollection(),namespace);
 			}
 			else{
@@ -74,29 +82,36 @@ public class SchemaModelBuilder {
 
 	private ISchemaType getType(Class<?> clazz) {
 		
-		String qName = clazz.getCanonicalName();
-		String name = "";
-		if(clazz.isPrimitive()){
-			name = clazz.getName().toUpperCase();
-			if(name.equals("CHAR")){
-				name = "CHARACTER";				
-			}			
+		ISchemaType primitive = getPrimitiveType(clazz.getCanonicalName());
+		if(primitive!=null){
+			return primitive;
 		}
-		if(qName.startsWith("java.lang.")){
-			name = qName.substring("java.lang.".length()).toUpperCase();
-		}
-		try{
-			ISchemaType type = SimpleType.valueOf(name);
-			return type;
-		}
-		catch(Exception e){}
 		
-		name = qName;
+		String name = clazz.getCanonicalName();;
 		TypeModelImpl type = this.javaTypeMap.get(name);
 		if(type==null){
 			type = new TypeModelImpl(name,null,false);
 			this.javaTypeMap.put(name, type);
 		}
 		return type;
+	}
+	
+	ISchemaType getPrimitiveType(String qualifiedName){
+		
+		String name = qualifiedName;
+		if(qualifiedName.startsWith("java.lang.")){
+			name = qualifiedName.substring("java.lang.".length());
+		}
+		name = name.toUpperCase();
+		if(name.equals("CHAR")){
+			name = "CHARACTER";				
+		}
+		
+		try{
+			ISchemaType type = SimpleType.valueOf(name);
+			return type;
+		}
+		catch(Exception e){}
+		return null;
 	}
 }

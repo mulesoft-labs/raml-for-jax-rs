@@ -37,8 +37,8 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 	
 
 	@Override
-	protected void generateXMLSchema(ITypeModel t, String collectionTag) {
-		super.generateXMLSchema(t,collectionTag);
+	protected boolean generateXMLSchema(ITypeModel t, String collectionTag) {
+		boolean result = super.generateXMLSchema(t,collectionTag);
 		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
 		if (generateXMLExampleJAXB!=null){
 			
@@ -53,6 +53,7 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
 				
 		}
+		return result;
 	}
 	
 	protected ResourceVisitor createResourceVisitor() {

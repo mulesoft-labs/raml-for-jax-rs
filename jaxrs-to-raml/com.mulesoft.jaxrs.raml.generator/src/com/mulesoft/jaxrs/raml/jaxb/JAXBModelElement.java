@@ -16,8 +16,8 @@ import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
  */
 public class JAXBModelElement {
 
-	private static final String NAMESPACE = "namespace";
-	private static final String NAME = "name";
+	protected static final String NAMESPACE = "namespace";
+	protected static final String NAME = "name";
 	protected IBasicModel originalType;
 	protected String namespace;
 	protected String typeName;

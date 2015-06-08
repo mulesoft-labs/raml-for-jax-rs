@@ -40,8 +40,8 @@ public class SchemaModelBuilder {
 		if(existing!=null){
 			return existing;
 		}
-		HashMap<String,String>namespaces = jaxbType.gatherNamespaces();
-		TypeModelImpl typeModel = new TypeModelImpl(xmlName,namespaces);
+		HashMap<String,String> namespaces = jaxbType.gatherNamespaces();
+		TypeModelImpl typeModel = new TypeModelImpl(xmlName,jaxbType.getClassName(),namespaces);
 		this.jaxbTypeMap.put(xmlName, typeModel);
 		HashMap<String,String>prefixes=jaxbType.gatherNamespaces();
 	
@@ -90,7 +90,7 @@ public class SchemaModelBuilder {
 		String name = clazz.getCanonicalName();;
 		TypeModelImpl type = this.javaTypeMap.get(name);
 		if(type==null){
-			type = new TypeModelImpl(name,null,false);
+			type = new TypeModelImpl(name,clazz.getCanonicalName(),null,false);
 			this.javaTypeMap.put(name, type);
 		}
 		return type;

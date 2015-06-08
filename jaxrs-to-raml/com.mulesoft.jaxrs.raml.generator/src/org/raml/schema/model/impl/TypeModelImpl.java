@@ -9,20 +9,24 @@ import org.raml.schema.model.ISchemaType;
 
 public class TypeModelImpl implements ISchemaType{
 	
-	public TypeModelImpl(String name, Map<String,String> namespaces) {
+	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces) {
 		super();
 		this.name = name;
 		this.namespaces = namespaces;
+		this.classQualifiedName = classQualifiedName;
 	}
 	
-	public TypeModelImpl(String name, Map<String,String> namespaces, boolean isSimple) {
+	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces, boolean isSimple) {
 		super();
 		this.name = name;
 		this.isSimple = isSimple;
 		this.namespaces = namespaces;
+		this.classQualifiedName = classQualifiedName;
 	}
 	
 	private String name;
+	
+	private String classQualifiedName;
 	
 	private Map<String,String> namespaces;
 	
@@ -72,6 +76,19 @@ public class TypeModelImpl implements ISchemaType{
 			}
 		}
 		return prop.getName();
+	}
+
+	public String getClassName() {
+		int ind = classQualifiedName.lastIndexOf(".");
+		if(ind<0){
+			return classQualifiedName;
+		}
+		return classQualifiedName.substring(ind+1);
+	}
+
+	@Override
+	public String getClassQualifiedName() {
+		return classQualifiedName;
 	}
 
 }

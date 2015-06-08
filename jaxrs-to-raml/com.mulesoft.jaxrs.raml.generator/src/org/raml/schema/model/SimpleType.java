@@ -50,4 +50,14 @@ public enum SimpleType implements ISchemaType {
 	public String getQualifiedPropertyName(ISchemaProperty prop) {
 		return prop.getName();
 	}
+
+	@Override
+	public String getClassName() {
+		return this.name;
+	}
+
+	@Override
+	public String getClassQualifiedName() {
+		return this.name;
+	}
 }

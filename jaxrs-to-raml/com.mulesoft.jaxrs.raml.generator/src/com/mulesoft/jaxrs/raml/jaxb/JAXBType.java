@@ -34,6 +34,7 @@ public class JAXBType extends JAXBModelElement {
 		IMethodModel[] methods = model.getMethods();
 		String value = value(XmlAccessorType.class, "value");
 		XmlAccessType type = XmlAccessType.FIELD;
+		this.className = model.getFullyQualifiedName();
 		if (value != null) {
 			type = extractType(value);
 		}
@@ -125,6 +126,12 @@ public class JAXBType extends JAXBModelElement {
 	}
 
 	protected JAXBType superClass;
+	
+	protected String className;
+
+	public String getClassName() {
+		return className;
+	}
 
 	protected ArrayList<JAXBProperty> properties = new ArrayList<JAXBProperty>();
 

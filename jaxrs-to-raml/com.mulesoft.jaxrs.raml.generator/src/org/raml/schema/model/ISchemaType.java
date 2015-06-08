@@ -16,4 +16,8 @@ public interface ISchemaType {
 	List<ISchemaProperty> getProperties();
 	
 	String getQualifiedPropertyName(ISchemaProperty prop);
+	
+	String getClassName();
+	
+	String getClassQualifiedName();
 }

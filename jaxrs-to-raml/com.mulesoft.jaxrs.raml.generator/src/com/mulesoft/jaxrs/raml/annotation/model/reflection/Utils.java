@@ -12,16 +12,6 @@ private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
 	
 	private static final String XML_ACCESSOR_ORDER = "XmlAccessorOrder"; //$NON-NLS-1$
 	
-	public static boolean isJAXBType(ITypeModel type){
-		
-		for(String aName: new String[]{XML_ROOT_ELEMENT, XML_TYPE, XML_ACCESSOR_TYPE, XML_ACCESSOR_ORDER}){
-			if(type.getAnnotation(aName)!=null){
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public static boolean isCollection(Class<?> clazz){
 		
 		if(clazz.getCanonicalName().equals("java.util.Collection")){

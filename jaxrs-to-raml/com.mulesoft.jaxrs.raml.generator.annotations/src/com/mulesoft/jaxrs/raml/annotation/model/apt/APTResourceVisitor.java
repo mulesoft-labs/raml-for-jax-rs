@@ -32,28 +32,31 @@ public class APTResourceVisitor extends ResourceVisitor {
 	
 	
 	/** {@inheritDoc} */
-	protected void generateXMLSchema(ITypeModel t,String collectionTag) {
+	protected boolean generateXMLSchema(ITypeModel t,String collectionTag) {
 		APTType type = (APTType) t;
 		TypeElement element = (TypeElement) type.element();
 		//try just loading this class
 		Class<?> clazz;
+		String xsdSchema = null;
 		try {
 			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());
-			generateXSDForClass(clazz);
-			afterSchemaGen(type, collectionTag);
-			return;
+			xsdSchema = generateXSDForClass(clazz);
 		} catch (ClassNotFoundException e1) {
 			// Ignore; try some of further approaches
 		}
 		if (classLoader != null) {
 			try {
 				clazz = classLoader.loadClass(processingEnv.getElementUtils().getBinaryName(element).toString());
-				generateXSDForClass(clazz);
-				afterSchemaGen(type, collectionTag);
+				xsdSchema = generateXSDForClass(clazz);
 			} catch (ClassNotFoundException e) {
 				//TODO log it
 			}
-		} 
+		}
+		if(xsdSchema==null){
+			return false;
+		}
+		afterSchemaGen(type, collectionTag);
+		return true;
 	}
 
 	/** {@inheritDoc} */

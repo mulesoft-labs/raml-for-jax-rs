@@ -242,9 +242,11 @@ public abstract class ResourceVisitor {
 	 * <p>generateXMLSchema.</p>
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * 
+	 * @return if schema is correctly generated and can be used inside RAML
 	 */
-	protected void generateXMLSchema(ITypeModel t, String collectionTag){
-			
+	protected boolean generateXMLSchema(ITypeModel t, String collectionTag){
+		return false;
 	}
 	
 	/**
@@ -322,9 +324,10 @@ public abstract class ResourceVisitor {
 
 			ITypeModel returnedType = m.getReturnedType();
 
+			boolean gotBodySchemesAndExamples = false;
 			if (returnedType != null) {
 				if (returnedType.hasAnnotation(XML_ROOT_ELEMENT)) {
-					generateXMLSchema(returnedType,null);
+					gotBodySchemesAndExamples |= generateXMLSchema(returnedType,null);
 					returnName = returnedType.getName().toLowerCase();
 				}
 				if (hasPath) {
@@ -341,7 +344,7 @@ public abstract class ResourceVisitor {
 			ITypeModel bodyType = m.getBodyType();
 			if (bodyType != null) {
 				if (bodyType.hasAnnotation(XML_ROOT_ELEMENT)) {
-					generateXMLSchema(bodyType,null);
+					gotBodySchemesAndExamples |= generateXMLSchema(bodyType,null);
 					parameterName = bodyType.getName().toLowerCase();
 				}
 			}
@@ -355,7 +358,7 @@ public abstract class ResourceVisitor {
 				boolean hasAnnotation = m.hasAnnotation(q.name());
 				if (hasAnnotation) {
 					addMethod(q, res, m, documentation, returnName,
-							parameterName);
+							parameterName,gotBodySchemesAndExamples);
 				}
 			}
 			spec.addResource(res);
@@ -426,7 +429,7 @@ public abstract class ResourceVisitor {
 	protected abstract ResourceVisitor createResourceVisitor();
 
 	private void addMethod(ActionType actionType, Resource res, IMethodModel m,
-			IDocInfo documentation, String returnName, String parameterName) {
+			IDocInfo documentation, String returnName, String parameterName, boolean gotBodySchemesAndExamples) {
 		
 		Action action = new Action();
 		String description = documentation.getDocumentation();
@@ -474,14 +477,14 @@ public abstract class ResourceVisitor {
 				MimeType bodyType = new MimeType();
 				if (s.contains(XML)) {
 					bodyType.setSchema(parameterName);
-					if (parameterName!=null){
+					if (parameterName!=null&&gotBodySchemesAndExamples){
 						bodyType.setExample(EXAMPLES_PREFFIX + parameterName + XML_FILE_EXT);
 						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + parameterName
 								+ XML_FILE_EXT);
 					}
 				}
 				if (s.contains(JSON)) {
-					if (parameterName!=null){
+					if (parameterName!=null&&gotBodySchemesAndExamples){
 						bodyType.setSchema(parameterName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
 						bodyType.setExample(EXAMPLES_PREFFIX + parameterName + JSON_FILE_EXT);
 						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + parameterName
@@ -531,6 +534,7 @@ public abstract class ResourceVisitor {
 			responses.put(code, response);
 		}
 		
+		boolean gotResponseSchemesAndExamples = false;
 		IAnnotationModel apiResponses = m.getAnnotation(ResourceVisitor.API_RESPONSES);
 		if (apiResponses!=null)
 		{
@@ -546,7 +550,7 @@ public abstract class ResourceVisitor {
 						try {
 							Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 							ReflectionType rt = new ReflectionType(responseClass); 
-							generateXMLSchema(rt,null);
+							gotResponseSchemesAndExamples |= generateXMLSchema(rt,null);
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
 						}
@@ -581,7 +585,7 @@ public abstract class ResourceVisitor {
 				try {
 					Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 					ReflectionType rt = new ReflectionType(responseClass); 
-					generateXMLSchema(rt,responseContainer);
+					gotResponseSchemesAndExamples |= generateXMLSchema(rt,responseContainer);
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}	
@@ -611,12 +615,12 @@ public abstract class ResourceVisitor {
 					mediaType = sanitizeMediaType(mediaType);
 					MimeType mimeType = new MimeType();
 					if (returnTypeName != null) {
-						if (mediaType.contains(XML)) {
+						if (mediaType.contains(XML)&&gotResponseSchemesAndExamples) {
 							mimeType.setSchema(returnTypeName);
 							mimeType.setExample(EXAMPLES_PREFFIX + returnTypeName + XML_FILE_EXT);
 							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnTypeName	+ XML_FILE_EXT);
 						}
-						if (mediaType.contains(JSON)) {
+						if (mediaType.contains(JSON)&&gotResponseSchemesAndExamples) {
 							mimeType.setSchema(returnTypeName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
 							mimeType.setExample(EXAMPLES_PREFFIX + returnTypeName + JSON_FILE_EXT);
 							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnTypeName	+ JSON_FILE_EXT);

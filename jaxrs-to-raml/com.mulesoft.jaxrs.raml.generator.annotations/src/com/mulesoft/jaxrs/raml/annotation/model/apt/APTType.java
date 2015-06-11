@@ -18,7 +18,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class APTType extends APTGenericElement<TypeElement> implements ITypeModel{
+public class APTType extends APTGenericElement implements ITypeModel{
 
 	/**
 	 * <p>Constructor for APTType.</p>
@@ -27,7 +27,10 @@ public class APTType extends APTGenericElement<TypeElement> implements ITypeMode
 	 */
 	public APTType(TypeElement element) {
 		super(element);
+		this.element = element;
 	}
+	
+	TypeElement element;
 	
 	
 	/**

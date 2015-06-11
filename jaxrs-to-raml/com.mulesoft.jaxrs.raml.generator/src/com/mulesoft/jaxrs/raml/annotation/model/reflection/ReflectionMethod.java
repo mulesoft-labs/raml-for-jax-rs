@@ -158,8 +158,11 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 	public boolean hasGenericReturnType() {
 
 		Type gType = this.element.getGenericReturnType();
-		String typeName = this.element.getReturnType().getTypeName();
-		String gTypeName = gType.getTypeName();
+		String typeName = this.element.getReturnType().getName();
+		String gTypeName = gType.toString();
+		if(gTypeName.startsWith("class ")){
+			gTypeName = gTypeName.substring("class ".length());
+		}
 		
 		if(!gTypeName.startsWith(typeName)){
 			return true;

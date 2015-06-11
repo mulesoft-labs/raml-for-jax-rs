@@ -94,8 +94,11 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 
 	public boolean isGeneric() {
 		Type gType = element.getGenericType();
-		String typeName = this.element.getType().getTypeName();
-		String gTypeName = gType.getTypeName();
+		String typeName = this.element.getType().getName();
+		String gTypeName = gType.toString();
+		if(gTypeName.startsWith("class ")){
+			gTypeName = gTypeName.substring("class ".length());
+		}
 		
 		if(!gTypeName.startsWith(typeName)){
 			return true;

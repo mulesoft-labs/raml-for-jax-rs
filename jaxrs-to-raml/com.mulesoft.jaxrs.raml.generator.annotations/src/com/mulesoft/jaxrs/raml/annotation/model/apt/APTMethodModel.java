@@ -21,7 +21,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class APTMethodModel extends APTGenericElement<ExecutableElement> implements IMethodModel {
+public class APTMethodModel extends APTGenericElement implements IMethodModel {
 
 	/**
 	 * <p>Constructor for APTMethodModel.</p>
@@ -30,9 +30,12 @@ public class APTMethodModel extends APTGenericElement<ExecutableElement> impleme
 	 */
 	public APTMethodModel(ExecutableElement x) {
 		super(x);
+		this.element = x;
 	}
 	
 	private boolean isGeneric;
+	
+	private ExecutableElement element;
 
 	
 	/**

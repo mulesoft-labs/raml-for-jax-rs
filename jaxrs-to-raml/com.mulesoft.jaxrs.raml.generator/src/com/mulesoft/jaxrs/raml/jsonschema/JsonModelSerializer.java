@@ -15,12 +15,12 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 	@Override
 	protected ISerializationNode createNode(ISchemaType type, ISchemaProperty prop, ISerializationNode parent) {
 		boolean isArray = prop != null ? prop.isCollection() : false;
-		return new Node(type,isArray);
+		return new Node(type,prop,isArray);
 	}
 	
 	private static class Node implements ISerializationNode {
 
-		public Node(ISchemaType type, boolean isArray) {
+		public Node(ISchemaType type, ISchemaProperty prop, boolean isArray) {
 			if(isArray){
 				this.array = new JSONArray();
 				if(type.isComplex()){
@@ -28,8 +28,11 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 					array.put(new JSONObject());
 				}
 				else{
-					array.put(DefaultValueFactory.getDefaultValue(type));
-					array.put(DefaultValueFactory.getDefaultValue(type));
+					Object defaultValue = prop!=null
+							? DefaultValueFactory.getDefaultValue(prop)
+							: DefaultValueFactory.getDefaultValue(type);
+					array.put(defaultValue);
+					array.put(defaultValue);
 				}
 			}
 			else if(type.isComplex()){
@@ -77,7 +80,7 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 					if(prop.isAttribute()){
 						propName = "@" + propName;
 					}
-					item.put(propName, DefaultValueFactory.getDefaultValue(propType));
+					item.put(propName, DefaultValueFactory.getDefaultValue(prop));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

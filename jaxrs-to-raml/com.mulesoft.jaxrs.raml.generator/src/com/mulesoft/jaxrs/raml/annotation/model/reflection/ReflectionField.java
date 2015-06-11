@@ -63,7 +63,16 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 			if(gType instanceof ParameterizedType){
 				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
 				if(args!=null&&args.length!=0){
-					type = (Class<?>) args[0];					
+					if(args[0] instanceof Class){
+						type = (Class<?>) args[0];
+					}
+					else if(args[0] instanceof ParameterizedType){
+						Type rawType = ((ParameterizedType)args[0]).getRawType();
+						if(rawType instanceof Class){
+							type = (Class<?>) rawType;
+						}
+					}
+					
 				}
 			}
 		}
@@ -81,5 +90,26 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 	@Override
 	public Class<?> getJavaType() {
 		return element.getType();
+	}
+
+	public boolean isGeneric() {
+		Type gType = element.getGenericType();
+		String typeName = this.element.getType().getTypeName();
+		String gTypeName = gType.getTypeName();
+		
+		if(!gTypeName.startsWith(typeName)){
+			return true;
+		}		
+		if(gType instanceof ParameterizedType){
+			Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+			if(args!=null&&args.length!=0){
+				for(Type arg : args){
+					if(arg instanceof TypeVariable){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

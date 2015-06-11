@@ -28,7 +28,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class MethodModel extends BasicModel implements IMethodModel {
+public class MethodModel extends GenericElementModel implements IMethodModel {
 
 	/**
 	 * <p>Constructor for MethodModel.</p>
@@ -42,7 +42,10 @@ public class MethodModel extends BasicModel implements IMethodModel {
 	
 	
 	private ITypeModel bodyType;
-
+	
+	protected boolean hasGenericReturnType;
+	
+	protected boolean hasGenericBodyType;
 	
 	/**
 	 * <p>Getter for the field <code>parameters</code>.</p>
@@ -168,6 +171,22 @@ public class MethodModel extends BasicModel implements IMethodModel {
 	@Override
 	public ITypeModel getType() {
 		throw new UnsupportedOperationException();
+	}
+
+	public boolean hasGenericReturnType() {
+		return hasGenericReturnType;
+	}
+
+	public void setHasGenericReturnType(boolean isGeneric) {
+		this.hasGenericReturnType = isGeneric;
+	}
+	
+	public boolean hasGenericBodyType() {
+		return hasGenericReturnType;
+	}
+
+	public void setHasGenericBodyType(boolean isGeneric) {
+		this.hasGenericReturnType = isGeneric;
 	}
 	
 }

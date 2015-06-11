@@ -55,13 +55,13 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 			
 			ISchemaType propType = prop.getType();
 			if(prop.isAttribute()){			
-				this.element.setAttribute(type.getQualifiedPropertyName(prop), DefaultValueFactory.getDefaultValue(propType).toString());
+				this.element.setAttribute(type.getQualifiedPropertyName(prop), DefaultValueFactory.getDefaultValue(prop).toString());
 				return;
 			}
 			else{
 				Element childElement = ((Node)childNode).element;
-				if(propType.isSimple()){
-					childElement.setTextContent(DefaultValueFactory.getDefaultValue(propType).toString());
+				if(propType.isSimple()||prop.isGeneric()){
+					childElement.setTextContent(DefaultValueFactory.getDefaultValue(prop).toString());
 				}			
 				this.element.appendChild(childElement);
 				if(prop.isCollection()){

@@ -29,6 +29,15 @@ public class DefaultValueFactory {
 		defaultvalueMap.put(SimpleType.STRING,    DefaultValueFactory.DEFAULT_STRING_VALUE);
 	}
 	
+	public static Object getDefaultValue(ISchemaProperty prop){
+		
+		if(prop.isGeneric()){
+			return "Some " + prop.getName() + " value";
+		}
+		ISchemaType type = prop.getType();
+		return getDefaultValue(type);
+	}
+
 	public static Object getDefaultValue(ISchemaType type){
 		
 		if(type.isSimple()){			

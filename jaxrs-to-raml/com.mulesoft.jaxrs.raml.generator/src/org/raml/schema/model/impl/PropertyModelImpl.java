@@ -27,6 +27,8 @@ public class PropertyModelImpl implements ISchemaProperty {
 	
 	private boolean isCollection;
 	
+	private boolean isGeneric;
+	
 	@Override
 	public String getName() {
 		return this.name;
@@ -54,5 +56,13 @@ public class PropertyModelImpl implements ISchemaProperty {
 
 	public String getNamespace() {
 		return namespace;
+	}
+
+	public boolean isGeneric() {
+		return isGeneric;
+	}
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 }

@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -17,7 +18,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class ReflectionMethod extends BasicReflectionMember<Method> implements IMethodModel {
+public class ReflectionMethod extends ReflectionGenericElement<Method> implements IMethodModel {
 
 	/**
 	 * <p>Constructor for ReflectionMethod.</p>
@@ -152,5 +153,27 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 	@Override
 	public Class<?> getJavaType() {
 		return element.getReturnType();
+	}
+
+	public boolean hasGenericReturnType() {
+
+		Type gType = this.element.getGenericReturnType();
+		String typeName = this.element.getReturnType().getTypeName();
+		String gTypeName = gType.getTypeName();
+		
+		if(!gTypeName.startsWith(typeName)){
+			return true;
+		}		
+		if(gType instanceof ParameterizedType){
+			Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+			if(args!=null&&args.length!=0){
+				for(Type arg : args){
+					if(arg instanceof TypeVariable){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

@@ -33,21 +33,26 @@ import org.raml.jaxrs.codegen.maven.TypeModelRegistry;
 import org.raml.jaxrs.codegen.model.AnnotationModel;
 import org.raml.jaxrs.codegen.model.BasicModel;
 import org.raml.jaxrs.codegen.model.FieldModel;
+import org.raml.jaxrs.codegen.model.GenericElementModel;
 import org.raml.jaxrs.codegen.model.MethodModel;
 import org.raml.jaxrs.codegen.model.ParameterModel;
 import org.raml.jaxrs.codegen.model.TypeModel;
+import org.raml.jaxrs.codegen.model.TypeParameterModel;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
+
 import spoon.reflect.code.CtCodeElement;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtNewArray;
 import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
+import spoon.reflect.declaration.CtGenericElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtModifiable;
 import spoon.reflect.declaration.CtNamedElement;
@@ -253,23 +258,38 @@ public class SpoonProcessor{
 		}
 		registry.registerType(type);
 		
-		fillBasic(type,classElement);		
+		fillBasic(type,classElement);
+		
+		fillTypeParameters(type,classElement);
 		
 		if(classElement instanceof CtType){
 			Set<CtMethod<?>> methods = ((CtType<?>)classElement).getMethods();
 			for(CtMethod<?> m : methods){
-				IMethodModel methodModel = processMethod(m);
+				IMethodModel methodModel = processMethod(m,type);
 				type.addMethod(methodModel);
 			}
 			Collection<CtField<?>> fields = ((CtType<?>)classElement).getFields();
 			for(CtField<?> m : fields){
-				IFieldModel methodModel = processField(m);
+				IFieldModel methodModel = processField(m,type);
 				type.addField(methodModel);
 			}
 		}
 		return type;
 	}
 
+
+	private void fillTypeParameters(GenericElementModel model, CtGenericElement element) {
+		List<CtTypeReference<?>> ftp = element.getFormalTypeParameters();
+		if(ftp==null||ftp.isEmpty()){
+			return;
+		}
+		for(CtTypeReference<?> param : ftp){
+			String name = param.getSimpleName();
+			TypeParameterModel paramModel = new TypeParameterModel();
+			paramModel.setName(name);
+			model.getTypeParameters().add(paramModel);
+		}
+	}
 
 	private IAnnotationModel processAnnotation(CtAnnotation<? extends Annotation> annotation) {
 		
@@ -441,10 +461,11 @@ public class SpoonProcessor{
 	}
 
 	
-	private IMethodModel processMethod(CtMethod<?> m) {
+	private IMethodModel processMethod(CtMethod<?> m, TypeModel ownerType) {
 		
 		MethodModel methodModel = new MethodModel();
 		fillBasic(methodModel, m);
+		fillTypeParameters(methodModel,m);
 		CtTypeReference<?> returnedType = m.getType();
 		ITypeModel returnedTypeModel = processTypeReference(returnedType);
 		methodModel.setReturnedType(returnedTypeModel);
@@ -454,6 +475,20 @@ public class SpoonProcessor{
 		for(CtParameter<?> p : parameters){
 			IParameterModel parameterModel = processParameter(p);
 			methodModel.addParameter(parameterModel);
+		}
+		String returnedTypeSimpleName = returnedType.getSimpleName();
+		String returnedTypeQualifiedname = returnedType.getQualifiedName();
+		if(returnedTypeSimpleName.equalsIgnoreCase(returnedTypeQualifiedname)){
+			for(ITypeParameter tp : ownerType.getTypeParameters()){
+				if(returnedType.getSimpleName().equals(tp.getName())){
+					methodModel.setHasGenericReturnType(true);
+				}
+			}
+			for(ITypeParameter tp : methodModel.getTypeParameters()){
+				if(returnedType.getSimpleName().equals(tp.getName())){
+					methodModel.setHasGenericReturnType(true);
+				}
+			}
 		}
 		return methodModel;
 	}
@@ -469,6 +504,7 @@ public class SpoonProcessor{
 		parameterModel.setRequired(paramType.isPrimitive());
 		
 		fillBasic(parameterModel, paramElement);
+		fillJAXBType(parameterModel,paramType);
 		processTypeReference(paramType);
 		
 		return parameterModel;
@@ -539,11 +575,21 @@ public class SpoonProcessor{
 		fillReference(fm, m);
 		return fm;
 	}
-	private IFieldModel processField(CtField<?> m) {
+	private IFieldModel processField(CtField<?> m, TypeModel ownerType) {
 		FieldModel fm=new FieldModel();
 		fillBasic(fm, m);
 		CtTypeReference<?> type = m.getType();
 		fillJAXBType(fm,type);
+		
+		String typeSimpleName = type.getSimpleName();
+		String typeQualifiedname = type.getQualifiedName();
+		if(typeSimpleName.equalsIgnoreCase(typeQualifiedname)){
+			for(ITypeParameter tp : ownerType.getTypeParameters()){			
+				if(typeSimpleName.equals(tp.getName())){
+					fm.setGeneric(true);
+				}
+			}
+		}
 		return fm;
 	}
 

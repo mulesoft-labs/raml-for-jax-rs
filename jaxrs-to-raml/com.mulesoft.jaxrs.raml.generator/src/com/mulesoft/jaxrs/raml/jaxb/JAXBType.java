@@ -69,10 +69,10 @@ public class JAXBType extends JAXBModelElement {
 			if (type == XmlAccessType.PUBLIC_MEMBER && m.isPublic()) {
 				needToConsume = true;
 			}
-			if (type == XmlAccessType.PROPERTY==m instanceof IMethodModel) {
+			if (type == XmlAccessType.PROPERTY && m instanceof IMethodModel) {
 				needToConsume = true;
 			}
-			if (type == XmlAccessType.FIELD==m instanceof IFieldModel) {
+			if (type == XmlAccessType.FIELD && m instanceof IFieldModel) {
 				needToConsume = true;
 			}			
 			if (m.hasAnnotation(XmlTransient.class.getSimpleName())) {

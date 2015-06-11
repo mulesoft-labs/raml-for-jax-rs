@@ -74,6 +74,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	protected boolean generateXMLSchema(ITypeModel t, String collectionTag) {
 		String xsdSchema = null;
 		if (t instanceof ReflectionType) {

@@ -14,6 +14,8 @@ public class JDTField extends JDTAnnotatable implements IFieldModel{
 	public JDTField(IAnnotatable tm) {
 		super(tm);
 	}
+	
+	private boolean isGeneric;
 
 	@Override
 	public String getName() {
@@ -65,6 +67,14 @@ public class JDTField extends JDTAnnotatable implements IFieldModel{
 		} catch (JavaModelException e) {
 			return null;
 		}
+	}
+
+	public boolean isGeneric() {
+		return isGeneric;
+	}
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 
 }

@@ -25,7 +25,7 @@ import com.mulesoft.jaxrs.raml.generator.eclipse.JAXRSTORamlPlagin;
 import com.mulesoft.jaxrs.raml.generator.popup.actions.GenerationException;
 
 @SuppressWarnings("restriction")
-public class JDTMethod extends JDTAnnotatable implements IMethodModel {
+public class JDTMethod extends JDTGenericElement implements IMethodModel {
 
 	private static final String PARAM = "@param"; //$NON-NLS-1$
 	private static final String RETURN = "@return"; //$NON-NLS-1$
@@ -33,6 +33,8 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 	public JDTMethod(IMethod tm) {
 		super(tm);
 	}
+	
+	private boolean isGeneric;
 
 	public String getName() {
 		return ((IMethod) tm).getElementName();
@@ -230,6 +232,14 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		} catch (JavaModelException e) {
 			return null;
 		}
+	}
+
+	public boolean hasGenericReturnType() {
+		return isGeneric;
+	}
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 
 	

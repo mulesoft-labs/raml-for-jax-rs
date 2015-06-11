@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
+import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 
 /**
  * <p>Abstract JAXBProperty class.</p>
@@ -78,5 +80,17 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	public boolean isCollection() {
 		boolean b = isCollection||asJavaType()!=null&&Collection.class.isAssignableFrom(asJavaType());
 		return b;
+	}
+	
+	public boolean isGeneric(){
+		if(this.originalType instanceof IFieldModel){
+			return ((IFieldModel)this.originalType).isGeneric();
+		}
+		else if(this.originalType instanceof IMethodModel){
+			return ((IMethodModel)this.originalType).hasGenericReturnType();
+		}
+		else{
+			return false;
+		}
 	}
 }

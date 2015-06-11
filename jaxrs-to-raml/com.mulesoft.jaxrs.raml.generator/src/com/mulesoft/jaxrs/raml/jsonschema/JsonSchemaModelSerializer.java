@@ -37,6 +37,7 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 		
 		public Node(ISchemaType type, ISchemaProperty prop) {
 			this.object = new JSONObject();
+			this.isGeneric = prop!=null && prop.isGeneric(); 
 			try {
 				if (prop != null) {
 					if(prop.isCollection()){
@@ -44,14 +45,14 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 						this.isArray = true;
 					}
 					else{
-						String typeString = detectType(type);
+						String typeString = detectType(type,prop);
 						setType(typeString);
 					}
 					object.put("required",prop.isRequired());
 					
 				} else {
 					object.put("$schema","http://json-schema.org/draft-03/schema");					
-					String typeString = detectType(type);
+					String typeString = detectType(type,prop);
 					setType(typeString);
 					object.put("required",true);					
 				}
@@ -64,10 +65,16 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 		private JSONObject object;
 		
 		private boolean isArray=false;
+		
+		private boolean isGeneric = false;
 
 
 		@Override
 		public void processProperty(ISchemaType type, ISchemaProperty prop, ISerializationNode childNode) {
+			
+			if(this.isGeneric){
+				return;
+			}
 			
 			String propName = type.getQualifiedPropertyName(prop);
 			if(prop.isAttribute()){
@@ -120,7 +127,11 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 			}
 		}
 		
-		private String detectType(ISchemaType type) {
+		private String detectType(ISchemaType type, ISchemaProperty prop) {
+			
+			if(prop!=null&&prop.isGeneric()){
+				return "object";
+			}
 			
 			if(type instanceof SimpleType){
 				return typeMap.get((SimpleType)type);

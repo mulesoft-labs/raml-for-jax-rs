@@ -66,7 +66,7 @@ public class SchemaModelBuilder {
 		}
 		else if (p instanceof JAXBElementProperty){
 			JAXBElementProperty el=(JAXBElementProperty) p;
-			JAXBType jaxbType = el.getJAXBType();
+			JAXBType jaxbType = p.isGeneric() ? null : el.getJAXBType();
 			if (jaxbType!=null){
 				ISchemaType propertyType = generateType(jaxbType);
 				prop = new PropertyModelImpl(name, propertyType, p.required, false, p.isCollection(),namespace);
@@ -76,6 +76,7 @@ public class SchemaModelBuilder {
 			}
 		}		
 		if(prop!=null){
+			prop.setGeneric(p.isGeneric());
 			typeModel.addProperty(prop);
 		}
 	}

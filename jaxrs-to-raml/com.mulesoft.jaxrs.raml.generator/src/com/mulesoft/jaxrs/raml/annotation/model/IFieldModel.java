@@ -28,4 +28,10 @@ public interface IFieldModel extends IBasicModel,IMember{
 	 * @return a boolean.
 	 */
 	boolean isPublic();
+	/**
+	 * <p>isPublic.</p>
+	 *
+	 * @return a boolean.
+	 */
+	boolean isGeneric();
 }

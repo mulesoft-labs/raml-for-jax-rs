@@ -39,20 +39,20 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 	@Override
 	protected boolean generateXMLSchema(ITypeModel t, String collectionTag) {
 		boolean result = super.generateXMLSchema(t,collectionTag);
-		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
-		if (generateXMLExampleJAXB!=null){
-			
-				File file =outputFile;
-				File parentDir = file.getParentFile();
-				File examplesDir=new File(parentDir,"examples"); //$NON-NLS-1$
-				if (!examplesDir.exists()){
-					examplesDir.mkdir();
-				}
-				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
-				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB,t);
-				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
-				
-		}
+//		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
+//		if (generateXMLExampleJAXB!=null){
+//			
+//				File file =outputFile;
+//				File parentDir = file.getParentFile();
+//				File examplesDir=new File(parentDir,"examples"); //$NON-NLS-1$
+//				if (!examplesDir.exists()){
+//					examplesDir.mkdir();
+//				}
+//				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
+//				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB,t);
+//				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
+//				
+//		}
 		return result;
 	}
 	

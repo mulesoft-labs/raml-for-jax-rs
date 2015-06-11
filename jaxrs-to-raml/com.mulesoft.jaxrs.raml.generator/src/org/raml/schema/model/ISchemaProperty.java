@@ -13,4 +13,6 @@ public interface ISchemaProperty {
 	boolean isCollection();
 	
 	String getNamespace();
+	
+	boolean isGeneric();
 }

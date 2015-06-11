@@ -32,6 +32,7 @@ public class APTResourceVisitor extends ResourceVisitor {
 	
 	
 	/** {@inheritDoc} */
+	@Override
 	protected boolean generateXMLSchema(ITypeModel t,String collectionTag) {
 		APTType type = (APTType) t;
 		TypeElement element = (TypeElement) type.element();

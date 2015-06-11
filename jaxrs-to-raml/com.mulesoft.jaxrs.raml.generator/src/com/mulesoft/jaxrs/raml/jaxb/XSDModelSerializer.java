@@ -54,18 +54,21 @@ public class XSDModelSerializer implements IModelSerializer {
 
 	private void appendElement(ISchemaType type, Element parent, ISchemaProperty prop)
 	{
+		String typeName = type.getClassName().toLowerCase();
 		if(prop==null){
 			Element child = parent.getOwnerDocument().createElement("xs:element");
 			parent.appendChild(child);
 			child.setAttribute("name", type.getName());
-			child.setAttribute("type", type.getClassName().toLowerCase());
+			child.setAttribute("type", typeName);
 		}
 		else{
+			if(prop.isGeneric()){
+				typeName = "xs:anyType";
+			}
 			if(prop.isAttribute()){
 				Element child = parent.getOwnerDocument().createElement("xs:attribute");
 				parent.appendChild(child);
 				String name = type.getQualifiedPropertyName(prop);
-				String typeName = type.getClassName().toLowerCase();
 				child.setAttribute("name", name);
 				child.setAttribute("type", typeName);
 				if(prop.isRequired()){
@@ -76,7 +79,6 @@ public class XSDModelSerializer implements IModelSerializer {
 				Element child = parent.getOwnerDocument().createElement("xs:element");
 				parent.appendChild(child);
 				String name = type.getQualifiedPropertyName(prop);
-				String typeName = type.getClassName().toLowerCase();
 				child.setAttribute("name", name);
 				child.setAttribute("type", typeName);
 				if(!prop.isRequired()){

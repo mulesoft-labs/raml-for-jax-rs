@@ -76,23 +76,23 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	/** {@inheritDoc} */
 	@Override
 	protected boolean generateXMLSchema(ITypeModel t, String collectionTag) {
-		String xsdSchema = null;
+		Class<?> element = null;
 		if (t instanceof ReflectionType) {
-			Class<?> element = ((ReflectionType) t).getElement();
-			xsdSchema = generateXSDForClass(element);
+			element = ((ReflectionType) t).getElement();
+			
 		}
 		else if (t.getFullyQualifiedName() != null && classLoader != null) {
 			try {
-				Class<?> element = classLoader.loadClass(t.getFullyQualifiedName());
-				xsdSchema = generateXSDForClass(element);
+				element = classLoader.loadClass(t.getFullyQualifiedName());				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
-		if(xsdSchema==null){
+		if(element==null){
 			return false;
 		}
-		afterSchemaGen(t,collectionTag);
+		String xsdSchema = generateXSDForClass(element);
+		afterSchemaGen(t,collectionTag,xsdSchema!=null);
 		return true;
 	}
 

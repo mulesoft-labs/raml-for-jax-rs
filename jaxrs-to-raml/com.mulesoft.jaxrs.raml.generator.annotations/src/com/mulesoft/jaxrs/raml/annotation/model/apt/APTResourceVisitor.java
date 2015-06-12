@@ -37,26 +37,24 @@ public class APTResourceVisitor extends ResourceVisitor {
 		APTType type = (APTType) t;
 		TypeElement element = (TypeElement) type.element();
 		//try just loading this class
-		Class<?> clazz;
-		String xsdSchema = null;
+		Class<?> clazz=null;
 		try {
-			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());
-			xsdSchema = generateXSDForClass(clazz);
+			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());			
 		} catch (ClassNotFoundException e1) {
 			// Ignore; try some of further approaches
 		}
 		if (classLoader != null) {
 			try {
 				clazz = classLoader.loadClass(processingEnv.getElementUtils().getBinaryName(element).toString());
-				xsdSchema = generateXSDForClass(clazz);
 			} catch (ClassNotFoundException e) {
 				//TODO log it
 			}
 		}
-		if(xsdSchema==null){
+		if(clazz==null){
 			return false;
 		}
-		afterSchemaGen(type, collectionTag);
+		String xsdSchema = generateXSDForClass(clazz);
+		afterSchemaGen(type, collectionTag, xsdSchema!=null);
 		return true;
 	}
 

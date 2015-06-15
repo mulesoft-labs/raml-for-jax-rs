@@ -1,5 +1,7 @@
 package org.raml.schema.model;
 
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+
 public interface ISchemaProperty {
 	
 	String getName();
@@ -10,7 +12,7 @@ public interface ISchemaProperty {
 	
 	boolean isRequired();
 	
-	boolean isCollection();
+	StructureType getStructureType();
 	
 	String getNamespace();
 	

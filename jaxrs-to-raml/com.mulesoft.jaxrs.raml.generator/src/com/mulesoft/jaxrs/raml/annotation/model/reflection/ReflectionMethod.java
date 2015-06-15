@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.List;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -127,25 +128,8 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 
 	/** {@inheritDoc} */
 	@Override
-	public ITypeModel getJAXBType() {
-		Class<?> type = null;
-		if(Utils.isCollection(element.getReturnType())){
-			Type gType = element.getGenericReturnType();
-			if(gType instanceof ParameterizedType){
-				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
-				if(args!=null&&args.length!=0){
-					type = (Class<?>) args[0];					
-				}
-			}
-		}
-		else{
-			type = element.getReturnType();
-		}
-		if(type==null){
-			return null;
-		}
-		ITypeModel model = new ReflectionType(type);
-		return model;
+	public List<ITypeModel> getJAXBTypes() {
+		return Utils.getJAXBTypes(this.element);
 	}
 
 

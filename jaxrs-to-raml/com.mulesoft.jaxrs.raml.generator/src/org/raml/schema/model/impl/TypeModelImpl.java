@@ -7,21 +7,25 @@ import java.util.Map;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+
 public class TypeModelImpl implements ISchemaType{
 	
-	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces) {
+	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces,StructureType parentStructureType) {
 		super();
 		this.name = name;
 		this.namespaces = namespaces;
 		this.classQualifiedName = classQualifiedName;
+		this.parentStructureType = parentStructureType;
 	}
 	
-	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces, boolean isSimple) {
+	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces, boolean isSimple,StructureType parentStructureType) {
 		super();
 		this.name = name;
 		this.isSimple = isSimple;
 		this.namespaces = namespaces;
 		this.classQualifiedName = classQualifiedName;
+		this.parentStructureType = parentStructureType;
 	}
 	
 	private String name;
@@ -33,6 +37,8 @@ public class TypeModelImpl implements ISchemaType{
 	private boolean isSimple = false;
 
 	private List<ISchemaProperty> properties;
+	
+	private StructureType parentStructureType;
 
 	@Override
 	public String getName() {
@@ -89,6 +95,11 @@ public class TypeModelImpl implements ISchemaType{
 	@Override
 	public String getClassQualifiedName() {
 		return classQualifiedName;
+	}
+
+	@Override
+	public StructureType getParentStructureType() {
+		return this.parentStructureType;
 	}
 
 }

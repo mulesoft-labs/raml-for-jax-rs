@@ -1,5 +1,8 @@
 package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IAnnotatable;
 import org.eclipse.jdt.core.IField;
@@ -50,9 +53,12 @@ public class JDTField extends JDTAnnotatable implements IFieldModel{
 	}
 
 	@Override
-	public ITypeModel getJAXBType() {
+	public List<ITypeModel> getJAXBTypes() {
 		try {
-			return doGetJAXBType(((IField)tm), ((IField)tm).getTypeSignature());
+			ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+			JDTType type = doGetJAXBType(((IField)tm), ((IField)tm).getTypeSignature());
+			list.add(type);
+			return list;
 		} catch (JavaModelException e) {
 			return null;
 		}

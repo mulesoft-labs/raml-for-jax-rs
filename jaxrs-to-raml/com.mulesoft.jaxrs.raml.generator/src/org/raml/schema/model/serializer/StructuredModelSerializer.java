@@ -2,6 +2,7 @@ package org.raml.schema.model.serializer;
 
 import java.util.List;
 
+import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 
@@ -20,14 +21,14 @@ public abstract class StructuredModelSerializer implements IModelSerializer {
 		return node.getStringValue();
 	}
 
-	private void process(ISchemaType type, ISerializationNode node) {
+	public void process(ISchemaType type, ISerializationNode node) {
 		
 		List<ISchemaProperty> properties = type.getProperties();
 		if(properties==null){
 			return;
 		}
 		for(ISchemaProperty prop: properties){
-			ISchemaType childType = prop.getType();
+			ISchemaType childType = prop instanceof IMapSchemaProperty ? ((IMapSchemaProperty)prop).getValueType() : prop.getType();
 			ISerializationNode childNode = createNode(childType,prop,node);
 			if(childNode!=null){
 				process(childType, childNode);

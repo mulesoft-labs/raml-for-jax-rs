@@ -1,27 +1,34 @@
 package com.mulesoft.jaxrs.raml.jsonschema;
 
+import java.util.Iterator;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.raml.schema.model.DefaultValueFactory;
+import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
+import org.raml.schema.model.SimpleType;
 import org.raml.schema.model.serializer.ISerializationNode;
 import org.raml.schema.model.serializer.StructuredModelSerializer;
+
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
 
 public class JsonModelSerializer extends StructuredModelSerializer {
 
 	@Override
-	protected ISerializationNode createNode(ISchemaType type, ISchemaProperty prop, ISerializationNode parent) {
-		boolean isArray = prop != null ? prop.isCollection() : false;
-		return new Node(type,prop,isArray);
+	protected ISerializationNode createNode(ISchemaType type, ISchemaProperty prop, ISerializationNode parent) {		
+		return new Node(type,prop);
 	}
 	
 	private static class Node implements ISerializationNode {
 
-		public Node(ISchemaType type, ISchemaProperty prop, boolean isArray) {
-			if(isArray){
+		public Node(ISchemaType type, ISchemaProperty prop) {
+			
+			this.structureType = prop!=null ? prop.getStructureType() : type.getParentStructureType();
+			if(structureType==StructureType.COLLECTION){
 				this.array = new JSONArray();
 				if(type.isComplex()){
 					array.put(new JSONObject());
@@ -35,19 +42,54 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 					array.put(defaultValue);
 				}
 			}
+			else if(structureType==StructureType.MAP){
+				this.object = new JSONObject();
+				
+				ISchemaType keyType = SimpleType.STRING;
+				ISchemaType valueType = type;
+				if(prop!=null && prop instanceof IMapSchemaProperty){
+					keyType = ((IMapSchemaProperty)prop).getKeyType();
+					valueType = ((IMapSchemaProperty)prop).getValueType();
+					if(keyType != SimpleType.STRING){
+						StringBuilder bld = new StringBuilder("Invalid map key type. Only String is available as key type.");
+						if(type!=null){
+							bld.append(" Type: " + type.getClassQualifiedName());
+						}
+						if(prop!=null){
+							bld.append(" Property: " + prop.getName());
+						}
+						throw new IllegalArgumentException(bld.toString());
+					}
+				}
+				String key = DefaultValueFactory.getDefaultValue(keyType).toString();
+				try {
+					if (valueType.isComplex()) {
+						this.object.put(key + "_1", new JSONObject());
+						this.object.put(key + "_2", new JSONObject());
+					} else {
+						Object defaultValue = DefaultValueFactory.getDefaultValue(valueType);
+						this.object.put(key + "_1", defaultValue);
+						this.object.put(key + "_2", defaultValue);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
 			else if(type.isComplex()){
 				this.object = new JSONObject();
 			}
 		}
 
 		private JSONObject object;
-		
+	
 		private JSONArray array;
+		
+		private StructureType structureType;
 
 		@Override
 		public void processProperty(ISchemaType type,ISchemaProperty prop, ISerializationNode childNode) {
 			
-			if(this.array!=null){
+			if(this.structureType == StructureType.COLLECTION){
 				int l = this.array.length();
 				for(int i = 0 ; i < l ; i++){
 					JSONObject item;
@@ -57,6 +99,17 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
+				}
+			}
+			else if(this.structureType==StructureType.MAP){
+				try {
+					for (Iterator<?> iter = this.object.keys(); iter.hasNext();) {
+						String key = iter.next().toString();
+						JSONObject value = this.object.getJSONObject(key);
+						appendProperty(value, type, prop, childNode);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
 			}
 			else{
@@ -70,10 +123,10 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 			ISchemaType propType = prop.getType();
 			String propName = type.getQualifiedPropertyName(prop);
 			try {				
-				if(prop.isCollection()){
+				if(prop.getStructureType()==StructureType.COLLECTION){
 					item.put(propName, n.array);					
 				}
-				else if(propType.isComplex()){
+				else if(propType==null||propType.isComplex()){
 					item.put(propName, n.object);
 				}
 				else{

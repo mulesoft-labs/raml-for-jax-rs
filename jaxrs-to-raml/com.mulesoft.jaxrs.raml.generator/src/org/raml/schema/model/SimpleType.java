@@ -3,6 +3,8 @@ package org.raml.schema.model;
 import java.util.List;
 import java.util.Map;
 
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+
 public enum SimpleType implements ISchemaType {
 	
 	INTEGER  ("Integer"),
@@ -59,5 +61,10 @@ public enum SimpleType implements ISchemaType {
 	@Override
 	public String getClassQualifiedName() {
 		return this.name;
+	}
+
+	@Override
+	public StructureType getParentStructureType() {
+		return StructureType.COMMON;
 	}
 }

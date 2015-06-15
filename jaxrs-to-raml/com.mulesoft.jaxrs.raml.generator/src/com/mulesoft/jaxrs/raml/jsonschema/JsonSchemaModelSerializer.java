@@ -6,11 +6,14 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 import org.raml.schema.model.SimpleType;
 import org.raml.schema.model.serializer.ISerializationNode;
 import org.raml.schema.model.serializer.StructuredModelSerializer;
+
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
 
 public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 	
@@ -35,28 +38,55 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 	
 	private static class Node implements ISerializationNode {
 		
+		private static final String ITEMS = "items";
+
+		private static final String PROPERTIES = "properties";
+
+		private static final String PATTERN_PROPERTIES = "patternProperties";
+
+		private static final String DEFAULT_REGEXP = "[a-zA-Z0-9]+";
+
+
 		public Node(ISchemaType type, ISchemaProperty prop) {
-			this.object = new JSONObject();
-			this.isGeneric = prop!=null && prop.isGeneric(); 
-			try {
-				if (prop != null) {
-					if(prop.isCollection()){
+			this.object = new JSONObject();						
+			try {				
+				if(prop==null) {
+					this.isRootArray = type.getParentStructureType() == StructureType.COLLECTION;
+					this.isRootMap = type.getParentStructureType() == StructureType.MAP;
+					object.put("$schema","http://json-schema.org/draft-03/schema");
+					if(this.isRootArray){
 						setType("array");
-						this.isArray = true;
 					}
 					else{
-						String typeString = detectType(type,prop);
-						setType(typeString);
+						setType("object");				
 					}
-					object.put("required",prop.isRequired());
-					
-				} else {
-					object.put("$schema","http://json-schema.org/draft-03/schema");					
-					String typeString = detectType(type,prop);
-					setType(typeString);
 					object.put("required",true);					
 				}
-			} catch (Exception e) {
+				else{
+					this.isGeneric = prop.isGeneric();
+					object.put("required",prop.isRequired());					
+					StructureType st = prop.getStructureType();
+					String typeString = null;
+					if(st==StructureType.MAP){
+						ISchemaType keyType = ((IMapSchemaProperty)prop).getKeyType();
+						if(keyType != SimpleType.STRING){
+							StringBuilder bld = new StringBuilder("Invalid map key type. Only String is available as key type.");
+							if(type!=null){
+								bld.append(" Type: " + type.getClassQualifiedName());
+							}
+							if(prop!=null){
+								bld.append(" Property: " + prop.getName());
+							}
+							throw new IllegalArgumentException(bld.toString());
+						}
+						typeString = detectType(((IMapSchemaProperty)prop).getValueType(),null);
+					}
+					else{
+						typeString = detectType(type,prop);
+					}
+					setType(typeString);
+				}
+			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
@@ -64,7 +94,9 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 
 		private JSONObject object;
 		
-		private boolean isArray=false;
+		private boolean isRootArray=false;
+		
+		private boolean isRootMap=false;
 		
 		private boolean isGeneric = false;
 
@@ -83,15 +115,18 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 			
 			try {
 				JSONObject childObject = ((Node)childNode).object;
-				if (this.isArray) {
+				
+				StructureType st = prop.getStructureType();				
+				JSONObject actualObject = null;
+				if (this.isRootArray) {
 					JSONObject item = null;
 					JSONArray items = null;
 					try{
-						items = this.object.getJSONArray("items");
+						items = this.object.getJSONArray(ITEMS);
 					}
 					catch(JSONException ex){
 						items = new JSONArray();
-						this.object.put("items", items);
+						this.object.put(ITEMS, items);
 					}
 					try{
 						item = items.getJSONObject(0);
@@ -100,19 +135,89 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 						item = new JSONObject();
 						items.put(item);
 					}
-					item.put(propName,childObject);
-				} else {
-					JSONObject properties = null;
+					actualObject = item;
+				}
+				else if(this.isRootMap){
+					JSONObject patternProperties = null;
 					try{
-						 properties = this.object.getJSONObject("properties");
+						 patternProperties = this.object.getJSONObject(PATTERN_PROPERTIES);
 					}
 					catch(JSONException ex){
-						properties = new JSONObject();
-						this.object.put("properties", properties);
+						patternProperties = new JSONObject();
+						this.object.put(PATTERN_PROPERTIES, patternProperties);
 					}
+					JSONObject property = null;
+					try{
+						 property = patternProperties.getJSONObject(DEFAULT_REGEXP);
+					}
+					catch(JSONException ex){
+						property = new JSONObject();
+						property.put("type","object");
+						property.put("required",false);
+						patternProperties.put(DEFAULT_REGEXP, property);
+					}
+					actualObject = property;					
+				}
+				else {					
+					actualObject = this.object;					
+				}
+				
+				actualObject.put("type","object");
+				
+				JSONObject properties = null;
+				try{
+					 properties = actualObject.getJSONObject(PROPERTIES);
+				}
+				catch(JSONException ex){
+					properties = new JSONObject();
+					actualObject.put(PROPERTIES, properties);
+				}
+				if(st==StructureType.COLLECTION){
+					JSONObject propObject;
+					try{
+						propObject = properties.getJSONObject(propName);
+					}
+					catch(JSONException e){
+						propObject = new JSONObject();						
+						propObject.put("type","array");
+						propObject.put("required",false);
+						properties.put(propName, propObject);
+					}
+					JSONArray items = null;
+					try{
+						items = propObject.getJSONArray(ITEMS);
+					}
+					catch(JSONException ex){
+						items = new JSONArray();
+						propObject.put(ITEMS, items);
+					}
+					items.put(childObject);
+				}
+				else if(st==StructureType.MAP){
+					JSONObject propObject;
+					try{
+						propObject = properties.getJSONObject(propName);
+					}
+					catch(JSONException e){
+						propObject = new JSONObject();						
+						propObject.put("type","object");
+						propObject.put("required",false);
+						properties.put(propName, propObject);
+					}					
+					JSONObject patternProperties = null;
+					try{
+						 patternProperties = propObject.getJSONObject(PATTERN_PROPERTIES);
+					}
+					catch(JSONException ex){
+						patternProperties = new JSONObject();
+						propObject.put(PATTERN_PROPERTIES, patternProperties);
+					}
+					patternProperties.put(DEFAULT_REGEXP, childObject);							
+				} else {
 					properties.put(propName, childObject);
 				}
-			} catch (Exception e) {
+				
+			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}

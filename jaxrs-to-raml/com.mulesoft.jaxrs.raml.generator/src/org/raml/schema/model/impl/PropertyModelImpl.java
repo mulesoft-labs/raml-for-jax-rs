@@ -3,15 +3,17 @@ package org.raml.schema.model.impl;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+
 public class PropertyModelImpl implements ISchemaProperty {
 	
-	public PropertyModelImpl(String name, ISchemaType type, boolean required, boolean isAttribute, boolean isCollection, String namespace) {
+	public PropertyModelImpl(String name, ISchemaType type, boolean required, boolean isAttribute, StructureType structureType, String namespace) {
 		super();
 		this.name = name;
 		this.type = type;
 		this.required = required;
 		this.isAttribute = isAttribute;
-		this.isCollection = isCollection;
+		this.structureType = structureType;
 		this.namespace = namespace;
 	}
 	
@@ -25,7 +27,7 @@ public class PropertyModelImpl implements ISchemaProperty {
 	
 	private boolean isAttribute;
 	
-	private boolean isCollection;
+	private StructureType structureType;
 	
 	private boolean isGeneric;
 	
@@ -48,10 +50,9 @@ public class PropertyModelImpl implements ISchemaProperty {
 	public boolean isAttribute() {
 		return this.isAttribute;
 	}
-
-	@Override
-	public boolean isCollection() {
-		return this.isCollection;
+	
+	public StructureType getStructureType() {
+		return structureType;
 	}
 
 	public String getNamespace() {

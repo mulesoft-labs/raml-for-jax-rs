@@ -3,7 +3,9 @@ package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -216,9 +218,12 @@ public class JDTMethod extends JDTGenericElement implements IMethodModel {
 	}
 
 	@Override
-	public ITypeModel getJAXBType() {
+	public List<ITypeModel> getJAXBTypes() {
 		try {
-			return doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
+			ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+			JDTType type = doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
+			list.add(type);
+			return list;
 		} catch (JavaModelException e) {
 			return null;
 		}

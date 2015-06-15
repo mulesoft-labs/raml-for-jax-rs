@@ -1,10 +1,14 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
+import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 import org.raml.schema.model.SimpleType;
+import org.raml.schema.model.impl.MapPropertyImpl;
 import org.raml.schema.model.impl.PropertyModelImpl;
 import org.raml.schema.model.impl.TypeModelImpl;
 
@@ -20,14 +24,14 @@ public class SchemaModelBuilder {
 	
 	private HashMap<String,TypeModelImpl> jaxbTypeMap = new HashMap<String, TypeModelImpl>();
 
-	public ISchemaType buildSchemaModel(JAXBType jaxbType){
-		ISchemaType typeModel = generateType(jaxbType);
+	public ISchemaType buildSchemaModel(JAXBType jaxbType, StructureType st){
+		ISchemaType typeModel = generateType(jaxbType,st);
 		return typeModel;
 	}
 
 	HashSet<JAXBType>onStack=new HashSet<JAXBType>();
 	
-	private ISchemaType generateType(JAXBType jaxbType) {
+	private ISchemaType generateType(JAXBType jaxbType, StructureType structureType) {
 		
 		String qualifiedName = ((ITypeModel)jaxbType.originalType).getFullyQualifiedName();
 		ISchemaType primitive = getPrimitiveType(qualifiedName);
@@ -41,7 +45,7 @@ public class SchemaModelBuilder {
 			return existing;
 		}
 		HashMap<String,String> namespaces = jaxbType.gatherNamespaces();
-		TypeModelImpl typeModel = new TypeModelImpl(xmlName,jaxbType.getClassName(),namespaces);
+		TypeModelImpl typeModel = new TypeModelImpl(xmlName,jaxbType.getClassName(),namespaces,structureType);
 		this.jaxbTypeMap.put(xmlName, typeModel);
 		HashMap<String,String>prefixes=jaxbType.gatherNamespaces();
 	
@@ -58,21 +62,31 @@ public class SchemaModelBuilder {
 		}
 		PropertyModelImpl prop = null;
 		String namespace = p.namespace;
+		StructureType st = p.getStructureType();
 		if (p instanceof JAXBAttributeProperty){			
-			prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, true, p.isCollection(),namespace);
+			prop = new PropertyModelImpl(name, getType(p), p.required, true, st,namespace);
 		}
 		else if (p instanceof JAXBValueProperty){
-			prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, false, p.isCollection(),namespace);
+			prop = new PropertyModelImpl(name, getType(p), p.required, false, st,namespace);
 		}
 		else if (p instanceof JAXBElementProperty){
 			JAXBElementProperty el=(JAXBElementProperty) p;
-			JAXBType jaxbType = p.isGeneric() ? null : el.getJAXBType();
-			if (jaxbType!=null){
-				ISchemaType propertyType = generateType(jaxbType);
-				prop = new PropertyModelImpl(name, propertyType, p.required, false, p.isCollection(),namespace);
+			List<JAXBType> jaxbTypes = p.isGeneric() ? null : el.getJAXBTypes();
+			if (jaxbTypes!=null&&!jaxbTypes.isEmpty()){
+				if(st==StructureType.MAP){
+					ArrayList<ISchemaType> list = new ArrayList<ISchemaType>();
+					for(JAXBType t : jaxbTypes){
+						list.add(generateType(t, StructureType.COMMON));
+					}
+					prop = new MapPropertyImpl(name, list, p.required, false, StructureType.MAP, namespace);
+				}
+				else{
+					ISchemaType propertyType = generateType(jaxbTypes.get(0),st);
+					prop = new PropertyModelImpl(name, propertyType, p.required, false, st,namespace);
+				}
 			}
 			else{
-				prop = new PropertyModelImpl(name, getType(p.asJavaType()), p.required, false, p.isCollection(),namespace);
+				prop = new PropertyModelImpl(name, getType(p), p.required, false, st,namespace);
 			}
 		}		
 		if(prop!=null){
@@ -81,8 +95,8 @@ public class SchemaModelBuilder {
 		}
 	}
 
-	private ISchemaType getType(Class<?> clazz) {
-		
+	private ISchemaType getType(JAXBProperty p) {
+		Class<?> clazz = p.asJavaType();
 		ISchemaType primitive = getPrimitiveType(clazz.getCanonicalName());
 		if(primitive!=null){
 			return primitive;
@@ -91,7 +105,7 @@ public class SchemaModelBuilder {
 		String name = clazz.getCanonicalName();;
 		TypeModelImpl type = this.javaTypeMap.get(name);
 		if(type==null){
-			type = new TypeModelImpl(name,clazz.getCanonicalName(),null,false);
+			type = new TypeModelImpl(name,clazz.getCanonicalName(),null,false,p.getStructureType());
 			this.javaTypeMap.put(name, type);
 		}
 		return type;

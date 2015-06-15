@@ -84,7 +84,7 @@ public class XSDModelSerializer implements IModelSerializer {
 				if(!prop.isRequired()){
 					child.setAttribute("minOccurs", "0");
 				}
-				if(prop.isCollection()){
+				if(prop.getStructureType()==StructureType.COLLECTION){
 					child.setAttribute("nillable", "true");
 					child.setAttribute("maxOccurs", "unbounded");
 				}

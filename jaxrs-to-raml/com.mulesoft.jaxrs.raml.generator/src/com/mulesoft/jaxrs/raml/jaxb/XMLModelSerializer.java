@@ -11,6 +11,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.raml.schema.model.DefaultValueFactory;
+import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 import org.raml.schema.model.serializer.ISerializationNode;
@@ -22,12 +23,23 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 
 	@Override
 	protected ISerializationNode createNode(ISchemaType type, ISchemaProperty prop, ISerializationNode parent) {
+		StructureType st = prop!=null?prop.getStructureType():type.getParentStructureType();
+		if(st!=StructureType.COMMON && parent==null){
+			throw new UnsupportedOperationException("Root structure not supported by the serializer.");
+		}
 		
-		String name = prop != null ? type.getQualifiedPropertyName(prop) : type.getName();
+		if(st==StructureType.MAP){
+			return null;
+		}
+		String name = getPropertyName(type, prop);
 		return new Node(name,parent);
 	}
+
+	private static String getPropertyName(ISchemaType type, ISchemaProperty prop) {
+		return prop != null ? type.getQualifiedPropertyName(prop) : type.getName();
+	}
 	
-	private static class Node implements ISerializationNode {
+	private class Node implements ISerializationNode {
 
 		public Node(String name, ISerializationNode parent) {
 			if (parent != null) {
@@ -44,8 +56,14 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 			if(parent==null){
 				this.document.appendChild(this.element);
 			}
-		}
+		}		
 
+		private Node(String name, Document document) {
+			super();
+			this.document = document;
+			this.element = document.createElement(name);
+		}
+		
 		private Document document;
 
 		private Element element;
@@ -58,14 +76,54 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 				this.element.setAttribute(type.getQualifiedPropertyName(prop), DefaultValueFactory.getDefaultValue(prop).toString());
 				return;
 			}
-			else{
-				Element childElement = ((Node)childNode).element;
-				if(propType.isSimple()||prop.isGeneric()){
-					childElement.setTextContent(DefaultValueFactory.getDefaultValue(prop).toString());
-				}			
-				this.element.appendChild(childElement);
-				if(prop.isCollection()){
-					this.element.appendChild(childElement.cloneNode(true));
+			else{				
+				if(prop.getStructureType()==StructureType.MAP){
+					
+					IMapSchemaProperty msp = (IMapSchemaProperty) prop;
+					ISchemaType keyType = msp.getKeyType();
+					ISchemaType valueType = msp.getValueType();
+					
+					String name = getPropertyName(type,prop);
+					Element mapElement = document.createElement(name);
+					if(this.element!=null){
+						this.element.appendChild(mapElement);
+					}
+					else{
+						this.document.appendChild(mapElement);
+					}
+					
+					Element entryElement = this.document.createElement("entry");
+					mapElement.appendChild(entryElement);
+					if(keyType!=null&&keyType.isSimple()){
+						Element keyElement = this.document.createElement("key");
+						keyElement.setTextContent(DefaultValueFactory.getDefaultValue(keyType).toString());
+						entryElement.appendChild(keyElement);
+					}
+					else{
+						Node keyNode = new Node("key", this.document);
+						XMLModelSerializer.this.process(keyType, keyNode);
+						entryElement.appendChild(keyNode.element);
+					}
+					if(valueType!=null&&valueType.isSimple()){
+						Element valueElement = this.document.createElement("value");
+						valueElement.setTextContent(DefaultValueFactory.getDefaultValue(valueType).toString());
+						entryElement.appendChild(valueElement);
+					}
+					else{
+						Node valueNode = new Node("value", this.document);
+						XMLModelSerializer.this.process(valueType, valueNode);
+						entryElement.appendChild(valueNode.element);
+					}
+				}
+				else{
+					Element childElement = ((Node)childNode).element;
+					if(propType!=null&&propType.isSimple()||prop.isGeneric()){						
+						childElement.setTextContent(DefaultValueFactory.getDefaultValue(prop).toString());
+					}
+					this.element.appendChild(childElement);
+					if(prop.getStructureType()==StructureType.COLLECTION){
+						this.element.appendChild(childElement.cloneNode(true));
+					}
 				}
 			}		
 		}

@@ -13,6 +13,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
 import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
 import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonModelSerializer;
@@ -75,7 +76,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	
 	/** {@inheritDoc} */
 	@Override
-	protected boolean generateXMLSchema(ITypeModel t, String collectionTag) {
+	protected boolean generateXMLSchema(ITypeModel t, StructureType st) {
 		Class<?> element = null;
 		if (t instanceof ReflectionType) {
 			element = ((ReflectionType) t).getElement();
@@ -91,8 +92,10 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 		if(element==null){
 			return false;
 		}
-		String xsdSchema = generateXSDForClass(element);
-		afterSchemaGen(t,collectionTag,xsdSchema!=null);
+		if(st == StructureType.COMMON){
+			generateXSDForClass(element);
+		}
+		afterSchemaGen(t,st);
 		return true;
 	}
 

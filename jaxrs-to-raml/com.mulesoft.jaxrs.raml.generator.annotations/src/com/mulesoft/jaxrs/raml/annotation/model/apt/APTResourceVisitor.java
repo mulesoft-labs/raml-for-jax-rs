@@ -8,6 +8,7 @@ import javax.lang.model.element.TypeElement;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
 
 /**
  * <p>APTResourceVisitor class.</p>
@@ -33,7 +34,7 @@ public class APTResourceVisitor extends ResourceVisitor {
 	
 	/** {@inheritDoc} */
 	@Override
-	protected boolean generateXMLSchema(ITypeModel t,String collectionTag) {
+	protected boolean generateXMLSchema(ITypeModel t,StructureType st) {
 		APTType type = (APTType) t;
 		TypeElement element = (TypeElement) type.element();
 		//try just loading this class
@@ -53,8 +54,10 @@ public class APTResourceVisitor extends ResourceVisitor {
 		if(clazz==null){
 			return false;
 		}
-		String xsdSchema = generateXSDForClass(clazz);
-		afterSchemaGen(type, collectionTag, xsdSchema!=null);
+		if(st == StructureType.COMMON){
+			generateXSDForClass(clazz);
+		}
+		afterSchemaGen(type, st);
 		return true;
 	}
 

@@ -1,5 +1,14 @@
 package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class Utils {
@@ -28,6 +37,64 @@ private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
 			cl = cl.getSuperclass();			
 		}		
 		return false;		
+	}
+	
+	public static List<ITypeModel> getJAXBTypes(Object obj){
+		Class<?> type = null;
+		Type gType = null;
+		if(obj instanceof Field){
+			type = ((Field)obj).getType();
+			gType = ((Field)obj).getGenericType();
+		}
+		else if(obj instanceof Method){
+			type = ((Method)obj).getReturnType();
+			gType = ((Method)obj).getGenericReturnType();
+		}
+		if(type==null){
+			return null;
+		}
+		ArrayList<ITypeModel> list = new ArrayList<ITypeModel>(); 
+		if(Collection.class.isAssignableFrom(type)){
+			if(gType instanceof ParameterizedType){
+				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+				if(args!=null&&args.length!=0){
+					if(args[0] instanceof Class){
+						list.add(new ReflectionType((Class<?>) args[0]));
+					}
+					else if(args[0] instanceof ParameterizedType){
+						Type rawType = ((ParameterizedType)args[0]).getRawType();
+						if(rawType instanceof Class){
+							list.add(new ReflectionType((Class<?>) rawType));
+						}
+					}
+					
+				}
+			}
+		}
+		else if(Map.class.isAssignableFrom(type)){
+			if(gType instanceof ParameterizedType){
+				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+				if(args!=null&&args.length>=2){
+					for(int i = 0 ; i < 2 ; i++ ){
+						Type t  = args[i];
+						if(t instanceof Class){
+							list.add(new ReflectionType((Class<?>) t));
+						}
+						else if(args[0] instanceof ParameterizedType){
+							Type rawType = ((ParameterizedType)t).getRawType();
+							if(rawType instanceof Class){
+								list.add(new ReflectionType((Class<?>) rawType));
+							}
+						}
+					}
+					
+				}
+			}
+		}
+		else{
+			list.add(new ReflectionType(type));
+		}
+		return list;
 	}
 
 }

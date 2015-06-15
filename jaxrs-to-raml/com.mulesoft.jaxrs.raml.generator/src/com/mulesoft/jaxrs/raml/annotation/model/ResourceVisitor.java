@@ -39,6 +39,7 @@ import com.mulesoft.jaxrs.raml.jaxb.ExampleGenerator;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
 import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
+import com.mulesoft.jaxrs.raml.jaxb.StructureType;
 import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jaxb.XMLWriter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
@@ -244,7 +245,7 @@ public abstract class ResourceVisitor {
 	 * 
 	 * @return if schema is correctly generated and can be used inside RAML
 	 */
-	protected boolean generateXMLSchema(ITypeModel t, String collectionTag){
+	protected boolean generateXMLSchema(ITypeModel t, StructureType st){
 		return false;
 	}
 	
@@ -585,12 +586,23 @@ public abstract class ResourceVisitor {
 		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
 		if(apiOperation!=null){
 			String responseContainer = apiOperation.getValue("responseContainer");
+			StructureType st = StructureType.COMMON;
+			if(responseContainer!=null){
+				responseContainer = responseContainer.toLowerCase();
+				if(responseContainer.equals("set")||responseContainer.equals("list")){
+					st = StructureType.COLLECTION;
+				}
+				else if(responseContainer.equals("map")){
+					st = StructureType.MAP;
+				}
+			}
+			
 			String responseQualifiedName = apiOperation.getValue(RESPONSE);
 			if(responseQualifiedName!=null){
 				try {
 					Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 					ReflectionType rt = new ReflectionType(responseClass); 
-					generateXMLSchema(rt,responseContainer);
+					generateXMLSchema(rt,st);
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}	
@@ -1084,10 +1096,10 @@ public abstract class ResourceVisitor {
 	 * <p>afterSchemaGen.</p>
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
-	 * @param collectionTag 
+	 * @param st 
 	 * @param gotXSD 
 	 */
-	protected void afterSchemaGen(ITypeModel t, String collectionTag, boolean gotXSD) {
+	protected void afterSchemaGen(ITypeModel t, StructureType st) {
 
 		JAXBRegistry rs = new JAXBRegistry();
 		JAXBType jaxbModel = rs.getJAXBModel(t);
@@ -1097,7 +1109,7 @@ public abstract class ResourceVisitor {
 		}
 		ISchemaType schemaModel = null;
 		try{
-			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel);
+			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel,st);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -1106,10 +1118,8 @@ public abstract class ResourceVisitor {
 			return;
 		}
 
-		File file = outputFile;
-		File parentDir = file.getParentFile();
 		try{
-			if(gotXSD){
+			if(st == StructureType.COMMON){
 				String xmlExample = new XMLModelSerializer().serialize(schemaModel);
 				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML));
 			}

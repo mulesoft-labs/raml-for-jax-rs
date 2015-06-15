@@ -169,7 +169,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 
 	/** {@inheritDoc} */
 	@Override
-	public ITypeModel getJAXBType() {
+	public List<ITypeModel> getJAXBTypes() {
 		return null;
 	}
 

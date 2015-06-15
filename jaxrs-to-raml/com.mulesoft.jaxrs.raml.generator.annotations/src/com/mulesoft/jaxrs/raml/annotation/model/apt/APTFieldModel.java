@@ -1,5 +1,7 @@
 package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
+import java.util.List;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -106,7 +108,7 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	}
 	/** {@inheritDoc} */
 	@Override
-	public ITypeModel getJAXBType() {
+	public List<ITypeModel> getJAXBTypes() {
 		return null;
 	}
 	/** {@inheritDoc} */

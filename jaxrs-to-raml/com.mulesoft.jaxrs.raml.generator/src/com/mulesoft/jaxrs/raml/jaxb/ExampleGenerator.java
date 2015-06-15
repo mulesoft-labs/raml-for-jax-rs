@@ -2,6 +2,7 @@ package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * <p>ExampleGenerator class.</p>
@@ -65,17 +66,21 @@ public class ExampleGenerator {
 			writer.generateAttribute(name, ap.asJavaType(), ap.required);
 		}
 		if (p instanceof JAXBElementProperty){
-			JAXBElementProperty el=(JAXBElementProperty) p;
-			JAXBType jaxbType = el.getJAXBType();
+			JAXBElementProperty el=(JAXBElementProperty)p;
+			JAXBType jaxbType = null;
+			List<JAXBType> jaxbTypes = el.getJAXBTypes();
+			if(jaxbTypes!=null&&!jaxbTypes.isEmpty()){
+				jaxbType = jaxbTypes.get(0);
+			}
 			if (jaxbType!=null){
 				generateType(jaxbType,name);
-				if(p.isCollection()){
+				if(p.getStructureType()==StructureType.COLLECTION){
 					generateType(jaxbType,name);
 				}
 			}
 			else{
 				writer.generateElement(name, el.asJavaType(), el.required);
-				if(p.isCollection()){
+				if(p.getStructureType()==StructureType.COLLECTION){
 					writer.generateElement(name, el.asJavaType(), el.required);					
 				}
 			}

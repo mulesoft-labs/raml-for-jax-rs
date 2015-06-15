@@ -249,7 +249,6 @@ public class SpoonProcessor{
 
 	private ITypeModel processType(CtType<?> classElement)
 	{
-		
 		String qualifiedName = classElement.getQualifiedName();
 		TypeModel type = (TypeModel) registry.getType(qualifiedName);
 		if(type==null){

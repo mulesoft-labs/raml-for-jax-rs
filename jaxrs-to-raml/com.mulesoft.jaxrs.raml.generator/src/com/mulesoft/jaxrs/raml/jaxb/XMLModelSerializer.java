@@ -19,6 +19,8 @@ import org.raml.schema.model.serializer.StructuredModelSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
+
 public class XMLModelSerializer extends StructuredModelSerializer {
 
 	@Override

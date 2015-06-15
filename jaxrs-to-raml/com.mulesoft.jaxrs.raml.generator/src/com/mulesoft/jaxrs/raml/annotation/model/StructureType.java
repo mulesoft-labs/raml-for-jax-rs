@@ -1,4 +1,4 @@
-package com.mulesoft.jaxrs.raml.jaxb;
+package com.mulesoft.jaxrs.raml.annotation.model;
 
 public enum StructureType {
 	

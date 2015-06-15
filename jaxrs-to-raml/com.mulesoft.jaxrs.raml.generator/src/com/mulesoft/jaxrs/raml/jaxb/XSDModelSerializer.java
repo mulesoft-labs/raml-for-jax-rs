@@ -17,6 +17,8 @@ import org.raml.schema.model.serializer.IModelSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
+
 public class XSDModelSerializer implements IModelSerializer {
 
 	@Override

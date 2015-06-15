@@ -7,7 +7,7 @@ import java.util.Map;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public class TypeModelImpl implements ISchemaType{
 	

@@ -5,7 +5,7 @@ import java.util.List;
 import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaType;
 
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public class MapPropertyImpl extends PropertyModelImpl implements IMapSchemaProperty {
 

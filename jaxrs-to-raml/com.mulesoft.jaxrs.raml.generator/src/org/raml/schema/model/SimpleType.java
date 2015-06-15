@@ -3,7 +3,7 @@ package org.raml.schema.model;
 import java.util.List;
 import java.util.Map;
 
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public enum SimpleType implements ISchemaType {
 	

@@ -9,7 +9,7 @@ import org.codehaus.jettison.json.JSONObject;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtils;

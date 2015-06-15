@@ -1,6 +1,6 @@
 package org.raml.schema.model;
 
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public interface ISchemaProperty {
 	

@@ -39,7 +39,6 @@ import com.mulesoft.jaxrs.raml.jaxb.ExampleGenerator;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
 import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
 import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jaxb.XMLWriter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;

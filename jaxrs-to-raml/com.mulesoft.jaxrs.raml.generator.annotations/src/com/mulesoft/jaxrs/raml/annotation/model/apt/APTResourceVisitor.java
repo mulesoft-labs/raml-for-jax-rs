@@ -8,7 +8,7 @@ import javax.lang.model.element.TypeElement;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 /**
  * <p>APTResourceVisitor class.</p>

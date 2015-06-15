@@ -13,7 +13,7 @@ import org.raml.schema.model.SimpleType;
 import org.raml.schema.model.serializer.ISerializationNode;
 import org.raml.schema.model.serializer.StructuredModelSerializer;
 
-import com.mulesoft.jaxrs.raml.jaxb.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 	

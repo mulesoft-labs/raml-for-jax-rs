@@ -13,6 +13,7 @@ import org.raml.schema.model.impl.PropertyModelImpl;
 import org.raml.schema.model.impl.TypeModelImpl;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public class SchemaModelBuilder {
 	

@@ -8,6 +8,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 /**
  * <p>Abstract JAXBProperty class.</p>

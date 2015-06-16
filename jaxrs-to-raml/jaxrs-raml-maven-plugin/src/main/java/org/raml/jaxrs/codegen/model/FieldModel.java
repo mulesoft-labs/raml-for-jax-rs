@@ -16,5 +16,15 @@ public class FieldModel extends BasicModel implements IFieldModel{
 	public ITypeModel getType() {
 		throw new UnsupportedOperationException();
 	}
+	
+	protected boolean isGeneric;
+
+	public boolean isGeneric() {
+		return isGeneric;
+	}
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
+	}
 
 }

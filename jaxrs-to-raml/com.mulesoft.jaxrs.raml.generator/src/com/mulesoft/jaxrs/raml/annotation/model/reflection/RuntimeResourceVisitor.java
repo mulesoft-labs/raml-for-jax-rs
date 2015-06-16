@@ -10,6 +10,7 @@ import org.raml.schema.model.ISchemaType;
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
 import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
@@ -74,20 +75,28 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	}
 	
 	/** {@inheritDoc} */
-	protected void generateXMLSchema(ITypeModel t, String collectionTag) {
+	@Override
+	protected boolean generateXMLSchema(ITypeModel t, StructureType st) {
+		Class<?> element = null;
 		if (t instanceof ReflectionType) {
-			Class<?> element = ((ReflectionType) t).getElement();
-			generateXSDForClass(element);
+			element = ((ReflectionType) t).getElement();
+			
 		}
 		else if (t.getFullyQualifiedName() != null && classLoader != null) {
 			try {
-				Class<?> element = classLoader.loadClass(t.getFullyQualifiedName());
-				generateXSDForClass(element);
+				element = classLoader.loadClass(t.getFullyQualifiedName());				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
-		afterSchemaGen(t,collectionTag);
+		if(element==null){
+			return false;
+		}
+		if(st == StructureType.COMMON){
+			generateXSDForClass(element);
+		}
+		afterSchemaGen(t,st);
+		return true;
 	}
 
 

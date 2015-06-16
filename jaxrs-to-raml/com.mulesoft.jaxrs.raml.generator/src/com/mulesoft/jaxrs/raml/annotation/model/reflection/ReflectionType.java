@@ -2,10 +2,12 @@ package com.mulesoft.jaxrs.raml.annotation.model.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
 
 /**
  * <p>ReflectionType class.</p>
@@ -13,7 +15,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class ReflectionType extends BasicReflectionMember<Class<?>> implements ITypeModel{
+public class ReflectionType extends ReflectionGenericElement<Class<?>> implements ITypeModel{
 
 	/**
 	 * <p>Constructor for ReflectionType.</p>

@@ -41,6 +41,7 @@
 </profiles>
   <build>
     <plugins>
+    <!-- 
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
@@ -82,13 +83,16 @@
           </environments>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
+  <!-- 
   <properties>
     <tycho.version>0.21.0</tycho.version>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
   </properties>
+  
   <repositories>
     <repository>
       <id>kepler</id>
@@ -96,6 +100,7 @@
       <layout>p2</layout>
     </repository>
   </repositories>
+  -->
   <name>JAXRS to RAML transformers</name>
   <description>JAXRS to RAML transformers</description>
     <scm>

@@ -1,5 +1,7 @@
 package com.mulesoft.jaxrs.raml.annotation.model;
 
+import java.util.List;
+
 /**
  * <p>IMember interface.</p>
  *
@@ -33,7 +35,7 @@ public interface IMember extends IBasicModel{
 	 *
 	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
 	 */
-	ITypeModel getJAXBType();
+	List<ITypeModel> getJAXBTypes();
 	/**
 	 * <p>getJavaType.</p>
 	 *

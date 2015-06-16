@@ -1,5 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
@@ -43,8 +45,8 @@ public class JAXBElementProperty extends JAXBProperty{
 	 *
 	 * @return a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBType} object.
 	 */
-	public JAXBType getJAXBType() {
-		return registry.getJAXBModel(((IMember)originalType).getJAXBType());		
+	public List<JAXBType> getJAXBTypes() {
+		return registry.getJAXBModels(((IMember)originalType).getJAXBTypes());		
 	}
 
 	/** {@inheritDoc} */

@@ -7,7 +7,7 @@ package com.mulesoft.jaxrs.raml.annotation.model;
  * @author kor
  * @version $Id: $Id
  */
-public interface ITypeModel extends IBasicModel{
+public interface ITypeModel extends IBasicModel, IGenericElement{
 
 	
 	/**

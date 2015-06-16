@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.List;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -17,7 +19,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class ReflectionMethod extends BasicReflectionMember<Method> implements IMethodModel {
+public class ReflectionMethod extends ReflectionGenericElement<Method> implements IMethodModel {
 
 	/**
 	 * <p>Constructor for ReflectionMethod.</p>
@@ -126,28 +128,8 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 
 	/** {@inheritDoc} */
 	@Override
-	public ITypeModel getJAXBType() {
-		Class<?> type = null;
-		if(Utils.isCollection(element.getReturnType())){
-			Type gType = element.getGenericReturnType();
-			if(gType instanceof ParameterizedType){
-				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
-				if(args!=null&&args.length!=0){
-					type = (Class<?>) args[0];					
-				}
-			}
-		}
-		else{
-			type = element.getReturnType();
-		}
-		if(type==null){
-			return null;
-		}
-		ITypeModel model = new ReflectionType(type);
-//		if(!Utils.isJAXBType(model)){
-//			return null;
-//		}
-		return model;
+	public List<ITypeModel> getJAXBTypes() {
+		return Utils.getJAXBTypes(this.element);
 	}
 
 
@@ -155,5 +137,30 @@ public class ReflectionMethod extends BasicReflectionMember<Method> implements I
 	@Override
 	public Class<?> getJavaType() {
 		return element.getReturnType();
+	}
+
+	public boolean hasGenericReturnType() {
+
+		Type gType = this.element.getGenericReturnType();
+		String typeName = this.element.getReturnType().getName();
+		String gTypeName = gType.toString();
+		if(gTypeName.startsWith("class ")){
+			gTypeName = gTypeName.substring("class ".length());
+		}
+		
+		if(!gTypeName.startsWith(typeName)){
+			return true;
+		}		
+		if(gType instanceof ParameterizedType){
+			Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+			if(args!=null&&args.length!=0){
+				for(Type arg : args){
+					if(arg instanceof TypeVariable){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

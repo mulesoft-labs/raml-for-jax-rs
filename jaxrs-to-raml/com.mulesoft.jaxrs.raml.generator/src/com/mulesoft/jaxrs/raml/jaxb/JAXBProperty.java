@@ -1,10 +1,14 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
+import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 /**
  * <p>Abstract JAXBProperty class.</p>
@@ -70,13 +74,27 @@ public abstract class JAXBProperty extends JAXBModelElement{
 		return null;
 	}
 
-	/**
-	 * <p>isCollection.</p>
-	 *
-	 * @return a boolean.
-	 */
-	public boolean isCollection() {
-		boolean b = isCollection||asJavaType()!=null&&Collection.class.isAssignableFrom(asJavaType());
-		return b;
+	public StructureType getStructureType() {
+		if(isCollection||asJavaType()!=null&&Collection.class.isAssignableFrom(asJavaType())){
+			return StructureType.COLLECTION;
+		}
+		else if(asJavaType()!=null&&Map.class.isAssignableFrom(asJavaType())){
+			return StructureType.MAP;
+		}
+		else{
+			return StructureType.COMMON;
+		}
+	}
+	
+	public boolean isGeneric(){
+		if(this.originalType instanceof IFieldModel){
+			return ((IFieldModel)this.originalType).isGeneric();
+		}
+		else if(this.originalType instanceof IMethodModel){
+			return ((IMethodModel)this.originalType).hasGenericReturnType();
+		}
+		else{
+			return false;
+		}
 	}
 }

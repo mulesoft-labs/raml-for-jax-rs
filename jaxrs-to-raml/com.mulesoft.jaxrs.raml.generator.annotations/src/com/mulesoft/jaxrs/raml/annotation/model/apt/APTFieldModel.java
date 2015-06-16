@@ -1,5 +1,7 @@
 package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
+import java.util.List;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -18,6 +20,8 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 public class APTFieldModel extends APTModel implements IFieldModel{
 
 	private VariableElement element;
+	
+	private boolean isGeneric;
 
 	/**
 	 * <p>Constructor for APTFieldModel.</p>
@@ -104,13 +108,19 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	}
 	/** {@inheritDoc} */
 	@Override
-	public ITypeModel getJAXBType() {
+	public List<ITypeModel> getJAXBTypes() {
 		return null;
 	}
 	/** {@inheritDoc} */
 	@Override
 	public Class<?> getJavaType() {
 		return null;
+	}
+	public boolean isGeneric() {
+		return isGeneric;
+	}
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 
 }

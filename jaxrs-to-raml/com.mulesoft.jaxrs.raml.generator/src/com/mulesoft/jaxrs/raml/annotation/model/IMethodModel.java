@@ -7,14 +7,14 @@ package com.mulesoft.jaxrs.raml.annotation.model;
  * @author kor
  * @version $Id: $Id
  */
-public interface IMethodModel extends IBasicModel,IMember {
+public interface IMethodModel extends IBasicModel,IMember, IGenericElement {
 	
 	/**
 	 * <p>getParameters.</p>
 	 *
 	 * @return information about parameters
 	 */
-	public abstract IParameterModel[] getParameters();
+	IParameterModel[] getParameters();
 	
 	/**
 	 * <p>getBasicDocInfo.</p>
@@ -42,11 +42,17 @@ public interface IMethodModel extends IBasicModel,IMember {
 	 *
 	 * @return a boolean.
 	 */
-	public abstract boolean isStatic();
+	boolean isStatic();
 	/**
 	 * <p>isPublic.</p>
 	 *
 	 * @return a boolean.
 	 */
-	public abstract boolean isPublic();	
+	boolean isPublic();
+	/**
+	 * <p>isPublic.</p>
+	 *
+	 * @return a boolean.
+	 */
+	boolean hasGenericReturnType();
 }

@@ -21,9 +21,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class APTMethodModel extends APTModel implements IMethodModel {
-
-	private ExecutableElement element;
+public class APTMethodModel extends APTGenericElement implements IMethodModel {
 
 	/**
 	 * <p>Constructor for APTMethodModel.</p>
@@ -31,8 +29,13 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	 * @param x a {@link javax.lang.model.element.ExecutableElement} object.
 	 */
 	public APTMethodModel(ExecutableElement x) {
-		this.element=x;
+		super(x);
+		this.element = x;
 	}
+	
+	private boolean isGeneric;
+	
+	private ExecutableElement element;
 
 	
 	/**
@@ -166,7 +169,7 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 
 	/** {@inheritDoc} */
 	@Override
-	public ITypeModel getJAXBType() {
+	public List<ITypeModel> getJAXBTypes() {
 		return null;
 	}
 
@@ -175,6 +178,16 @@ public class APTMethodModel extends APTModel implements IMethodModel {
 	@Override
 	public Class<?> getJavaType() {
 		return null;
+	}
+
+
+	public boolean hasGenericReturnType() {
+		return isGeneric;
+	}
+
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 
 }

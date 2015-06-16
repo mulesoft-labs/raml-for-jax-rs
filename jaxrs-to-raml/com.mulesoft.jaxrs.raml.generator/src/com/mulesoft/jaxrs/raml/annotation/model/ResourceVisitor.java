@@ -72,14 +72,13 @@ public abstract class ResourceVisitor {
 
 	private static final String JSON_FILE_EXT = ".json"; //$NON-NLS-1$
 	
+	private static final String XSD_FILE_EXT = ".xsd";
+	
 	/** Constant <code>SCHEMAS_FOLDER="schemas"</code> */
 	protected static final String SCHEMAS_FOLDER = "schemas"; //$NON-NLS-1$
 
 	/** Constant <code>EXAMPLES_FOLDER="examples"</code> */
 	protected static final String EXAMPLES_FOLDER = "examples"; //$NON-NLS-1$
-	
-	/** Constant <code>EXAMPLES_PREFFIX="EXAMPLES_FOLDER + /"</code> */
-	protected static final String EXAMPLES_PREFFIX = EXAMPLES_FOLDER + "/"; //$NON-NLS-1$
 
 	private static final String JSON = "json"; //$NON-NLS-1$
 
@@ -89,22 +88,18 @@ public abstract class ResourceVisitor {
 
 	public class CustomSchemaOutputResolver extends SchemaOutputResolver {
 
-		private final String fileName;
+		private final String name;
 		private File file;
 
-		public CustomSchemaOutputResolver(String fileName) {
-			this.fileName = fileName;
+		public CustomSchemaOutputResolver(String name) {
+			this.name = name;
 		}
 
 		public Result createOutput(String namespaceURI, String suggestedFileName)
 				throws IOException {
-			if (outputFile != null) {
-				File dir = new File(outputFile.getParent(), SCHEMAS_FOLDER); //$NON-NLS-1$
-				dir.mkdirs();
-				file = new File(dir, fileName);
-			} else {
-				file = new File(fileName);
-			}
+			
+			this.file = constructFileLocation(name,SCHEMA,XML);
+			file.getParentFile().mkdirs();
 			StreamResult result = new StreamResult(file);
 			result.setSystemId(file.toURI().toURL().toString());
 			return result;
@@ -145,6 +140,10 @@ public abstract class ResourceVisitor {
 	private static final String RESPONSE = "response";
 	
 	private static final String MESSAGE = "message";
+
+	private static final String EXAMPLE = "example";
+
+	private static final String SCHEMA = "schema";
 
 	protected RAMLModelHelper spec = new RAMLModelHelper();
 
@@ -242,9 +241,11 @@ public abstract class ResourceVisitor {
 	 * <p>generateXMLSchema.</p>
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * 
+	 * @return if schema is correctly generated and can be used inside RAML
 	 */
-	protected void generateXMLSchema(ITypeModel t, String collectionTag){
-			
+	protected boolean generateXMLSchema(ITypeModel t, StructureType st){
+		return false;
 	}
 	
 	/**
@@ -325,7 +326,7 @@ public abstract class ResourceVisitor {
 			if (returnedType != null) {
 				if (returnedType.hasAnnotation(XML_ROOT_ELEMENT)) {
 					generateXMLSchema(returnedType,null);
-					returnName = returnedType.getName().toLowerCase();
+					returnName = firstLetterToLowerCase(returnedType.getName());
 				}
 				if (hasPath) {
 					if (consumedTypes.add(returnedType)) {
@@ -342,7 +343,7 @@ public abstract class ResourceVisitor {
 			if (bodyType != null) {
 				if (bodyType.hasAnnotation(XML_ROOT_ELEMENT)) {
 					generateXMLSchema(bodyType,null);
-					parameterName = bodyType.getName().toLowerCase();
+					parameterName = bodyType.getName();
 				}
 			}
 			if (path.endsWith("/")) { //$NON-NLS-1$
@@ -472,23 +473,7 @@ public abstract class ResourceVisitor {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
 				MimeType bodyType = new MimeType();
-				if (s.contains(XML)) {
-					bodyType.setSchema(parameterName);
-					if (parameterName!=null){
-						bodyType.setExample(EXAMPLES_PREFFIX + parameterName + XML_FILE_EXT);
-						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + parameterName
-								+ XML_FILE_EXT);
-					}
-				}
-				if (s.contains(JSON)) {
-					if (parameterName!=null){
-						bodyType.setSchema(parameterName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
-						bodyType.setExample(EXAMPLES_PREFFIX + parameterName + JSON_FILE_EXT);
-						bodyType.setExampleOrigin(EXAMPLES_PREFFIX + parameterName
-							+ JSON_FILE_EXT);
-					}
-
-				}
+				tryAppendSchemesAndExamples(bodyType, s, parameterName);
 				bodyType.setType(s);
 				if (s.contains(FORM)) {
 					for (IParameterModel pm : parameters) {
@@ -506,6 +491,30 @@ public abstract class ResourceVisitor {
 					}
 				}
 				action.getBody().put(s, bodyType);
+			}
+		}
+	}
+
+	private void tryAppendSchemesAndExamples(MimeType bodyType, String mediaType, String typeName) {
+		
+		ArrayList<String> mediaTypes = new ArrayList<String>();
+		if (mediaType.contains(XML)) {
+			mediaTypes.add(XML);
+		}
+		if(mediaType.contains(JSON)){
+			mediaTypes.add(JSON);
+		}
+		
+		for(String mt:mediaTypes){
+			File schemafile = constructFileLocation(typeName, SCHEMA, mt);
+			if(schemafile.exists()){
+				bodyType.setSchema(typeName + (mt == XML ? "-xml" : ""));
+			}
+			File examplefile = constructFileLocation(typeName, EXAMPLE, mt);
+			if(examplefile.exists()){
+				String relativePath = constructRelativeFilePath(typeName, EXAMPLE, mt);
+				bodyType.setExample(relativePath);
+				bodyType.setExampleOrigin(relativePath);
 			}
 		}
 	}
@@ -550,7 +559,7 @@ public abstract class ResourceVisitor {
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
 						}
-						adjustedReturnName = getSimpleName(responseQualifiedName).toLowerCase();
+						adjustedReturnName = firstLetterToLowerCase(getSimpleName(responseQualifiedName));
 					}
 					ResponseModel response = responses.get(code);
 					if(response==null){
@@ -576,16 +585,27 @@ public abstract class ResourceVisitor {
 		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
 		if(apiOperation!=null){
 			String responseContainer = apiOperation.getValue("responseContainer");
+			StructureType st = StructureType.COMMON;
+			if(responseContainer!=null){
+				responseContainer = responseContainer.toLowerCase();
+				if(responseContainer.equals("set")||responseContainer.equals("list")){
+					st = StructureType.COLLECTION;
+				}
+				else if(responseContainer.equals("map")){
+					st = StructureType.MAP;
+				}
+			}
+			
 			String responseQualifiedName = apiOperation.getValue(RESPONSE);
 			if(responseQualifiedName!=null){
 				try {
 					Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 					ReflectionType rt = new ReflectionType(responseClass); 
-					generateXMLSchema(rt,responseContainer);
+					generateXMLSchema(rt,st);
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}	
-				String adjustedReturnType = getSimpleName(responseQualifiedName).toLowerCase();
+				String adjustedReturnType = firstLetterToLowerCase(getSimpleName(responseQualifiedName));
 				mainResponse.setReturnTypeName(adjustedReturnType);
 			}
 		}
@@ -610,18 +630,7 @@ public abstract class ResourceVisitor {
 				for (String mediaType : producesValues) {
 					mediaType = sanitizeMediaType(mediaType);
 					MimeType mimeType = new MimeType();
-					if (returnTypeName != null) {
-						if (mediaType.contains(XML)) {
-							mimeType.setSchema(returnTypeName);
-							mimeType.setExample(EXAMPLES_PREFFIX + returnTypeName + XML_FILE_EXT);
-							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnTypeName	+ XML_FILE_EXT);
-						}
-						if (mediaType.contains(JSON)) {
-							mimeType.setSchema(returnTypeName + ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
-							mimeType.setExample(EXAMPLES_PREFFIX + returnTypeName + JSON_FILE_EXT);
-							mimeType.setExampleOrigin(EXAMPLES_PREFFIX + returnTypeName	+ JSON_FILE_EXT);
-						}
-					}
+					tryAppendSchemesAndExamples(mimeType, mediaType, returnTypeName);
 					mimeType.setType(mediaType);
 					response.getBody().put(mediaType, mimeType);
 				}
@@ -865,17 +874,15 @@ public abstract class ResourceVisitor {
 	 */
 	protected String generateXSDForClass(Class<?> element) {
 		try {
-			String name = element.getSimpleName().toLowerCase();
-			String fileName = name + ".xsd"; //$NON-NLS-1$
+			String name = firstLetterToLowerCase(element.getSimpleName());
 			JAXBContext jaxbContext = JAXBContext.newInstance(element);
-			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(
-					fileName);
+			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(name);
 			jaxbContext.generateSchema(sor);
 			File file = sor.getFile();
 			if(file!=null){
 				String content = FileUtil.fileToString(file);
 				generateExamle(file, content);
-				spec.getCoreRaml().addGlobalSchema(name, content, false, false);
+				spec.getCoreRaml().addGlobalSchema(name + "-xml", content, false, true);
 				return content;
 			}
 		} catch (JAXBException e) {
@@ -885,6 +892,52 @@ public abstract class ResourceVisitor {
 		}
 		return null;
 	}
+	
+	protected File constructFileLocation(String name,String fileType, String mediaType){
+		
+		if(this.outputFile == null){
+			return new File(constructFileName(name, fileType, mediaType));
+		}
+		else{
+			return new File(this.outputFile.getParent(),constructRelativeFilePath(name, fileType, mediaType));
+		}
+	}
+	
+	protected String constructRelativeFilePath(String name,String fileType, String mediaType){
+		
+		String result = null;
+		if(fileType.equals(EXAMPLE)){
+			result = EXAMPLES_FOLDER + "/" + constructFileName(name, fileType, mediaType);
+		}
+		else if(fileType.equals(SCHEMA)){
+			result = SCHEMAS_FOLDER + "/" + constructFileName(name, fileType, mediaType);
+		}
+		return result;
+	}
+	
+	protected String constructFileName(String name,String fileType, String mediaType){
+		
+		String name1 = firstLetterToLowerCase(name);
+		String result = null;
+		if(fileType.equals(EXAMPLE)){
+			if(mediaType.equals(XML)){				
+				result = name1 + "-" + EXAMPLE + XML_FILE_EXT;
+			}
+			else if(mediaType.equals(JSON)){
+				result = name1 + "-" + EXAMPLE + JSON_FILE_EXT;
+			}
+		}
+		else if(fileType.equals(SCHEMA)){
+			if(mediaType.equals(XML)){
+				result = name1 + "-xml-" + SCHEMA + XSD_FILE_EXT;
+			}
+			else if(mediaType.equals(JSON)){
+				result = name1 + "-" + SCHEMA + JSON_FILE_EXT;
+			}
+		}
+		return result;
+	}
+	
 
 	/**
 	 * <p>clear.</p>
@@ -948,9 +1001,10 @@ public abstract class ResourceVisitor {
 	 * @param toSave a {@link java.io.File} object.
 	 */
 	protected void writeString(String str, File toSave) {
-		if(str==null){
+		if(str==null||toSave==null){
 			return;
 		}
+		toSave.getParentFile().mkdirs();
 		try {
 			toSave.getParentFile().mkdirs();
 			FileOutputStream fileOutputStream = new FileOutputStream(toSave);
@@ -1041,9 +1095,10 @@ public abstract class ResourceVisitor {
 	 * <p>afterSchemaGen.</p>
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
-	 * @param collectionTag 
+	 * @param st 
+	 * @param gotXSD 
 	 */
-	protected void afterSchemaGen(ITypeModel t, String collectionTag) {
+	protected void afterSchemaGen(ITypeModel t, StructureType st) {
 
 		JAXBRegistry rs = new JAXBRegistry();
 		JAXBType jaxbModel = rs.getJAXBModel(t);
@@ -1053,7 +1108,7 @@ public abstract class ResourceVisitor {
 		}
 		ISchemaType schemaModel = null;
 		try{
-			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel);
+			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel,st);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -1062,14 +1117,11 @@ public abstract class ResourceVisitor {
 			return;
 		}
 
-		File file = outputFile;
-		File parentDir = file.getParentFile();
-		File examplesDir = new File(parentDir, "examples"); //$NON-NLS-1$
-		File schemesDir = new File(parentDir, "schemas"); //$NON-NLS-1$
-
 		try{
-			String xmlExample = new XMLModelSerializer().serialize(schemaModel);
-			writeString(xmlExample, new File(examplesDir, t.getName().toLowerCase() + ".xml"));
+			if(st == StructureType.COMMON){
+				String xmlExample = new XMLModelSerializer().serialize(schemaModel);
+				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML));
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -1077,7 +1129,7 @@ public abstract class ResourceVisitor {
 		
 		try{
 			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
-			writeString(jsonExample, new File(examplesDir, t.getName().toLowerCase() + ".json"));
+			writeString(jsonExample, constructFileLocation(t.getName(), EXAMPLE, JSON));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -1085,14 +1137,20 @@ public abstract class ResourceVisitor {
 
 		try{
 			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
-			String schemaName = t.getName().toLowerCase() + "-jsonschema";
-			spec.getCoreRaml().addGlobalSchema(schemaName, jsonSchema, true, false);
-			writeString(jsonSchema, new File(schemesDir, schemaName + ".json"));
+			spec.getCoreRaml().addGlobalSchema(firstLetterToLowerCase(t.getName()), jsonSchema, true, true);
+			writeString(jsonSchema, constructFileLocation(t.getName(), SCHEMA, JSON));
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
 
+	}
+
+	private String firstLetterToLowerCase(String str) {
+		if(str==null){
+			return null;
+		}
+		return str.substring(0, 1).toLowerCase() + str.substring(1);
 	}
 	
 	private static class ResponseModel{

@@ -3,7 +3,9 @@ package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,7 +27,7 @@ import com.mulesoft.jaxrs.raml.generator.eclipse.JAXRSTORamlPlagin;
 import com.mulesoft.jaxrs.raml.generator.popup.actions.GenerationException;
 
 @SuppressWarnings("restriction")
-public class JDTMethod extends JDTAnnotatable implements IMethodModel {
+public class JDTMethod extends JDTGenericElement implements IMethodModel {
 
 	private static final String PARAM = "@param"; //$NON-NLS-1$
 	private static final String RETURN = "@return"; //$NON-NLS-1$
@@ -33,6 +35,8 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 	public JDTMethod(IMethod tm) {
 		super(tm);
 	}
+	
+	private boolean isGeneric;
 
 	public String getName() {
 		return ((IMethod) tm).getElementName();
@@ -214,9 +218,12 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 	}
 
 	@Override
-	public ITypeModel getJAXBType() {
+	public List<ITypeModel> getJAXBTypes() {
 		try {
-			return doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
+			ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+			JDTType type = doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
+			list.add(type);
+			return list;
 		} catch (JavaModelException e) {
 			return null;
 		}
@@ -230,6 +237,14 @@ public class JDTMethod extends JDTAnnotatable implements IMethodModel {
 		} catch (JavaModelException e) {
 			return null;
 		}
+	}
+
+	public boolean hasGenericReturnType() {
+		return isGeneric;
+	}
+
+	public void setGeneric(boolean isGeneric) {
+		this.isGeneric = isGeneric;
 	}
 
 	

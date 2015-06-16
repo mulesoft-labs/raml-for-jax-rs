@@ -3,6 +3,8 @@ package org.raml.schema.model;
 import java.util.List;
 import java.util.Map;
 
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
+
 public interface ISchemaType {
 	
 	Map<String,String> getNamespaces();
@@ -20,4 +22,6 @@ public interface ISchemaType {
 	String getClassName();
 	
 	String getClassQualifiedName();
+	
+	StructureType getParentStructureType();
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
 
 /**
@@ -32,8 +33,8 @@ public class MavenResourceVisitor extends RuntimeResourceVisitor {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void generateXMLSchema(ITypeModel t, String collectionTag) {
-		super.generateXMLSchema(t,collectionTag);
+	protected boolean generateXMLSchema(ITypeModel t, StructureType st) {
+		return super.generateXMLSchema(t,st);
 	}
 
 	/**

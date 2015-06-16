@@ -27,7 +27,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
  * @author kor
  * @version $Id: $Id
  */
-public class TypeModel extends BasicModel implements ITypeModel{
+public class TypeModel extends GenericElementModel implements ITypeModel{
 
 	/**
 	 * <p>Constructor for TypeModel.</p>

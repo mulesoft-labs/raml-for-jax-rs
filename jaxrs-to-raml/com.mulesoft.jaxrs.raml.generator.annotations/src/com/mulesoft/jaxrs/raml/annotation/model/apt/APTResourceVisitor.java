@@ -8,6 +8,7 @@ import javax.lang.model.element.TypeElement;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 /**
  * <p>APTResourceVisitor class.</p>
@@ -32,28 +33,32 @@ public class APTResourceVisitor extends ResourceVisitor {
 	
 	
 	/** {@inheritDoc} */
-	protected void generateXMLSchema(ITypeModel t,String collectionTag) {
+	@Override
+	protected boolean generateXMLSchema(ITypeModel t,StructureType st) {
 		APTType type = (APTType) t;
 		TypeElement element = (TypeElement) type.element();
 		//try just loading this class
-		Class<?> clazz;
+		Class<?> clazz=null;
 		try {
-			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());
-			generateXSDForClass(clazz);
-			afterSchemaGen(type, collectionTag);
-			return;
+			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());			
 		} catch (ClassNotFoundException e1) {
 			// Ignore; try some of further approaches
 		}
 		if (classLoader != null) {
 			try {
 				clazz = classLoader.loadClass(processingEnv.getElementUtils().getBinaryName(element).toString());
-				generateXSDForClass(clazz);
-				afterSchemaGen(type, collectionTag);
 			} catch (ClassNotFoundException e) {
 				//TODO log it
 			}
-		} 
+		}
+		if(clazz==null){
+			return false;
+		}
+		if(st == StructureType.COMMON){
+			generateXSDForClass(clazz);
+		}
+		afterSchemaGen(type, st);
+		return true;
 	}
 
 	/** {@inheritDoc} */

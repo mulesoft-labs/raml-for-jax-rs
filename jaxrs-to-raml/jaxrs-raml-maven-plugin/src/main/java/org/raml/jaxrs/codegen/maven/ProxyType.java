@@ -1,9 +1,12 @@
 package org.raml.jaxrs.codegen.maven;
 
+import java.util.List;
+
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
 
 /**
  * <p>ProxyType class.</p>
@@ -125,6 +128,11 @@ public class ProxyType implements ITypeModel {
 	@Override
 	public IFieldModel[] getFields() {
 		return registry.getType(key).getFields();
+	}
+
+	@Override
+	public List<ITypeParameter> getTypeParameters() {
+		return registry.getType(key).getTypeParameters();
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.Utils;
@@ -25,9 +28,6 @@ public class JAXBRegistry {
 		if (tp==null){
 			return null;
 		}
-//		if(!Utils.isJAXBType(tp)){
-//			return null;
-//		}
 		if (types.containsKey(tp)){
 			return types.get(tp);
 		}
@@ -35,5 +35,17 @@ public class JAXBRegistry {
 		types.put(tp, type);
 		
 		return type;		
+	}
+	
+	public List<JAXBType> getJAXBModels(Collection<ITypeModel> list){		
+		if (list==null){
+			return null;
+		}
+		ArrayList<JAXBType> result = new ArrayList<JAXBType>();
+		for(ITypeModel tp: list){
+			JAXBType jaxbModel = getJAXBModel(tp);
+			result.add(jaxbModel);
+		}
+		return result;		
 	}
 }

@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.List;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
@@ -55,34 +56,37 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 
 	/** {@inheritDoc} */
 	@Override
-	public ITypeModel getJAXBType() {
-		
-		Class<?> type = null;
-		if(Utils.isCollection(element.getType())){
-			Type gType = element.getGenericType();
-			if(gType instanceof ParameterizedType){
-				Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
-				if(args!=null&&args.length!=0){
-					type = (Class<?>) args[0];					
-				}
-			}
-		}
-		else{
-			type = element.getType();
-		}
-		if(type==null){
-			return null;
-		}
-		ITypeModel model = new ReflectionType(type);
-//		if(!Utils.isJAXBType(model)){
-//			return null;
-//		}
-		return model;
+	public List<ITypeModel> getJAXBTypes() {		
+		return Utils.getJAXBTypes(this.element);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Class<?> getJavaType() {
 		return element.getType();
+	}
+
+	public boolean isGeneric() {
+		Type gType = element.getGenericType();
+		String typeName = this.element.getType().getName();
+		String gTypeName = gType.toString();
+		if(gTypeName.startsWith("class ")){
+			gTypeName = gTypeName.substring("class ".length());
+		}
+		
+		if(!gTypeName.startsWith(typeName)){
+			return true;
+		}		
+		if(gType instanceof ParameterizedType){
+			Type[] args = ((ParameterizedType)gType).getActualTypeArguments();
+			if(args!=null&&args.length!=0){
+				for(Type arg : args){
+					if(arg instanceof TypeVariable){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

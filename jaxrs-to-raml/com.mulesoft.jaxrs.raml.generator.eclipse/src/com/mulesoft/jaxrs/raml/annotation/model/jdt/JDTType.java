@@ -10,7 +10,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
-public class JDTType extends JDTAnnotatable implements ITypeModel {
+public class JDTType extends JDTGenericElement implements ITypeModel {
 
 	public JDTType(IType tm) {
 		super(tm);

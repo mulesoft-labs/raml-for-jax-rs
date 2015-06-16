@@ -15,7 +15,9 @@
  */
 package org.raml.jaxrs.codegen.model;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
@@ -47,8 +49,10 @@ public abstract class BasicModel implements IBasicModel{
 	 *
 	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
 	 */
-	public ITypeModel getJAXBType() {
-		return jaxbType;
+	public List<ITypeModel> getJAXBTypes() {
+		ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+		list.add(this.jaxbType);
+		return list;
 	}
 
 	/**

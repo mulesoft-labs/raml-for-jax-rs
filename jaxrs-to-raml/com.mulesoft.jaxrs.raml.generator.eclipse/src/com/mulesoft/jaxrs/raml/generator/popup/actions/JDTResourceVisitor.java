@@ -9,6 +9,7 @@ import org.codehaus.jettison.json.JSONObject;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtils;
@@ -37,22 +38,23 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 	
 
 	@Override
-	protected void generateXMLSchema(ITypeModel t, String collectionTag) {
-		super.generateXMLSchema(t,collectionTag);
-		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
-		if (generateXMLExampleJAXB!=null){
-			
-				File file =outputFile;
-				File parentDir = file.getParentFile();
-				File examplesDir=new File(parentDir,"examples"); //$NON-NLS-1$
-				if (!examplesDir.exists()){
-					examplesDir.mkdir();
-				}
-				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
-				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB,t);
-				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
-				
-		}
+	protected boolean generateXMLSchema(ITypeModel t, StructureType st) {
+		boolean result = super.generateXMLSchema(t,st);
+//		String generateXMLExampleJAXB = generateXMLExampleJAXB(t);
+//		if (generateXMLExampleJAXB!=null){
+//			
+//				File file =outputFile;
+//				File parentDir = file.getParentFile();
+//				File examplesDir=new File(parentDir,"examples"); //$NON-NLS-1$
+//				if (!examplesDir.exists()){
+//					examplesDir.mkdir();
+//				}
+//				writeString(generateXMLExampleJAXB, new File(examplesDir,t.getName()+".xml"));
+//				String jsonText = getProperJSONExampleFromXML(generateXMLExampleJAXB,t);
+//				writeString(jsonText, new File(examplesDir,t.getName()+".json"));
+//				
+//		}
+		return result;
 	}
 	
 	protected ResourceVisitor createResourceVisitor() {

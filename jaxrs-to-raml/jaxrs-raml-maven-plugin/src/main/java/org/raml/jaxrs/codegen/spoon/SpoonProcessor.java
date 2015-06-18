@@ -354,10 +354,10 @@ public class SpoonProcessor{
 						Field field = (Field) member;
 
 						int mod = field.getModifiers();
-						if (Modifier.isStatic(mod) && Modifier.isFinal(mod) &&
-								field.getType().equals(String.class)) {
+						if (Modifier.isStatic(mod) && Modifier.isFinal(mod)) {
+							field.setAccessible(true);
 							try {
-								value = field.get(null);
+								value = field.get(null).toString();
 							} catch (Throwable t) {		
 								value=member.getName();
 								//NOOP tolerate any exception/error, and fall back to using name of field below
@@ -597,18 +597,17 @@ public class SpoonProcessor{
 		if(type==null){
 			return;
 		}
-		
+		CtTypeReference<?> actualType = type;
 		Class<?> actualClass = type.getActualClass();
 		fm.setJavaClass(actualClass);
 		if (actualClass!=null&&Collection.class.isAssignableFrom(actualClass)){
 			List<CtTypeReference<?>> actualTypeArguments = type.getActualTypeArguments();
 			if (actualTypeArguments.size()==1){
-				CtTypeReference<?> ctTypeReference = actualTypeArguments.get(0);
-				ITypeModel processTypeReference = processTypeReference(ctTypeReference);
-				fm.setJaxbType(processTypeReference);
+				actualType = actualTypeArguments.get(0);				
 			}
-			
 		}
+		ITypeModel processTypeReference = processTypeReference(actualType);
+		fm.setJaxbType(processTypeReference);
 	}
 
 	private IMethodModel processMethodReference(CtExecutableReference<?> methodElement) {

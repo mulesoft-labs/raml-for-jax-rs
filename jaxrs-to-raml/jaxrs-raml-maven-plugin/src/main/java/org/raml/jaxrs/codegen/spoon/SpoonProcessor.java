@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -615,6 +616,17 @@ public class SpoonProcessor{
 		MethodModel methodModel = new MethodModel();
 		fillReference(methodModel,methodElement);
 		List<CtTypeReference<?>> parameters = methodElement.getParameters();
+		Method actualMethod = methodElement.getActualMethod();
+		if(actualMethod!=null){
+		String canonicalName = actualMethod.getReturnType().getCanonicalName();
+		ITypeModel existingType = registry.getType(canonicalName);
+			if(existingType!=null){
+				methodModel.setReturnedType(existingType);
+			}
+			if(existingType != null){
+				methodModel.setReturnedType(new ProxyType(registry, canonicalName));
+			}
+		}
 		for(CtTypeReference<?> p : parameters){
 			IParameterModel parameterModel = processParameterReference(p);
 			methodModel.addParameter(parameterModel);

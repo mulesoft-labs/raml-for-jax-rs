@@ -574,14 +574,17 @@ public abstract class ResourceVisitor {
 			}
 		}
 
-		boolean returnsValue = !m.getReturnedType().getName().toLowerCase().equals("void");
-		String[] producesValues = extractMediaTypes(m, PRODUCES, classProduces, returnsValue, null);
-		if(producesValues!=null){
-			for (ResponseModel responseModel : responses.values()){
-				responseModel.setProduces(producesValues);
+		String[] producesValues = new String[0];
+		ITypeModel returnType = m.getReturnedType();
+		if(returnType!=null){
+			boolean returnsValue = !returnType.getName().toLowerCase().equals("void");
+			producesValues = extractMediaTypes(m, PRODUCES, classProduces, returnsValue, null);
+			if(producesValues!=null){
+				for (ResponseModel responseModel : responses.values()){
+					responseModel.setProduces(producesValues);
+				}
 			}
 		}
-		
 		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
 		if(apiOperation!=null){
 			String responseContainer = apiOperation.getValue("responseContainer");

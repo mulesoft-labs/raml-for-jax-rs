@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.mail.internet.MimeMultipart;
+import javax.management.RuntimeErrorException;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -140,7 +141,7 @@ public class Generator extends AbstractGenerator
 			}
 		}
 		if(methodName==null){
-			Names.buildResourceMethodName(action,actualBodyMimeType);
+			methodName = Names.buildResourceMethodName(action,actualBodyMimeType);
 		}
 		
         Configuration configuration = context.getConfiguration();

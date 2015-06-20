@@ -20,8 +20,10 @@ import java.util.Collection;
 import javax.ws.rs.core.Response;
 
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
+import org.raml.jaxrs.codegen.core.ext.MethodNameBuilderExtension;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
+import org.raml.model.Resource;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
@@ -38,13 +40,27 @@ public class ClientGenerator extends AbstractGenerator {
 
 	/** {@inheritDoc} */
 	protected void addResourceMethod(final JDefinedClass resourceInterface,
-			final String resourceInterfacePath, final Action action,
+			final Resource resource,
+			final String resourceInterfacePath,
+			final Action action,
 			final MimeType bodyMimeType,
 			final boolean addBodyMimeTypeInMethodName,
 			final Collection<MimeType> uniqueResponseMimeTypes)
 			throws Exception {
-		final String methodName = Names.buildResourceMethodName(action,
-				addBodyMimeTypeInMethodName ? bodyMimeType : null);
+		MimeType actualBodyMimeType = addBodyMimeTypeInMethodName ? bodyMimeType : null;
+		String methodName = null;
+		if(this.extensions!=null){
+			for(GeneratorExtension ext : this.extensions){
+				if(ext instanceof MethodNameBuilderExtension){
+					methodName = ((MethodNameBuilderExtension)ext)
+							.buildResourceMethodName(action, actualBodyMimeType,resource);
+					break;
+				}
+			}
+		}
+		if(methodName==null){
+			Names.buildResourceMethodName(action,actualBodyMimeType);
+		}
 		final JType resourceMethodReturnType = getResourceMethodReturnType(
 				methodName, action, uniqueResponseMimeTypes.isEmpty(),
 				false, resourceInterface);

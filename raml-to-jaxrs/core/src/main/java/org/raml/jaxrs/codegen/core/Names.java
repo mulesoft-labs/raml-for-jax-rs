@@ -165,7 +165,7 @@ public class Names
                + (isBlank(mimeType.getSchema()) ? mimeType.hashCode() : mimeType.getSchema().hashCode());
     }
 
-    private static String buildMimeTypeInfix(final MimeType bodyMimeType)
+    public static String buildMimeTypeInfix(final MimeType bodyMimeType)
     {
         return bodyMimeType != null ? buildJavaFriendlyName(getShortMimeType(bodyMimeType)) : "";
     }

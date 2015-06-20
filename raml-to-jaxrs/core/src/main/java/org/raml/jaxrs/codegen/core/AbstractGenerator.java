@@ -269,16 +269,16 @@ public abstract class AbstractGenerator {
 			final String resourceInterfacePath) throws Exception {
 		for (final Action action : resource.getActions().values()) {
 			if (!action.hasBody()) {
-				addResourceMethods(resourceInterface, resourceInterfacePath,
+				addResourceMethods(resourceInterface, resource, resourceInterfacePath,
 						action, null, false);
 			} else if (action.getBody().size() == 1) {
 				final MimeType bodyMimeType = action.getBody().values()
 						.iterator().next();
-				addResourceMethods(resourceInterface, resourceInterfacePath,
+				addResourceMethods(resourceInterface, resource, resourceInterfacePath,
 						action, bodyMimeType, false);
 			} else {
 				for (final MimeType bodyMimeType : action.getBody().values()) {
-					addResourceMethods(resourceInterface,
+					addResourceMethods(resourceInterface, resource,
 							resourceInterfacePath, action, bodyMimeType, true);
 				}
 			}
@@ -326,6 +326,7 @@ public abstract class AbstractGenerator {
 	 */
 	protected abstract void addResourceMethod(
 			final JDefinedClass resourceInterface,
+			final Resource resource,
 			final String resourceInterfacePath, final Action action,
 			final MimeType bodyMimeType,
 			final boolean addBodyMimeTypeInMethodName,
@@ -699,12 +700,14 @@ public abstract class AbstractGenerator {
 	}
 
 	private void addResourceMethods(final JDefinedClass resourceInterface,
-			final String resourceInterfacePath, final Action action,
+			final Resource resource,
+			final String resourceInterfacePath,
+			final Action action,
 			final MimeType bodyMimeType,
 			final boolean addBodyMimeTypeInMethodName) throws Exception {
 		final Collection<MimeType> uniqueResponseMimeTypes = getUniqueResponseMimeTypes(action);
 
-		addResourceMethod(resourceInterface, resourceInterfacePath, action,
+		addResourceMethod(resourceInterface, resource, resourceInterfacePath, action,
 				bodyMimeType, addBodyMimeTypeInMethodName,
 				uniqueResponseMimeTypes);
 	}

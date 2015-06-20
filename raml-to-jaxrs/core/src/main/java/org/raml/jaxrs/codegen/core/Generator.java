@@ -58,6 +58,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
+import org.raml.jaxrs.codegen.core.ext.MethodNameBuilderExtension;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Raml;
@@ -120,15 +121,28 @@ public class Generator extends AbstractGenerator
 
     /** {@inheritDoc} */
     protected void addResourceMethod(final JDefinedClass resourceInterface,
+    							   final Resource resource,
                                    final String resourceInterfacePath,
                                    final Action action,
                                    final MimeType bodyMimeType,
                                    final boolean addBodyMimeTypeInMethodName,
                                    final Collection<MimeType> uniqueResponseMimeTypes) throws Exception
     {
-        final String methodName = Names.buildResourceMethodName(action,
-            addBodyMimeTypeInMethodName ? bodyMimeType : null);
-
+    	MimeType actualBodyMimeType = addBodyMimeTypeInMethodName ? bodyMimeType : null;
+		String methodName = null;
+		if(this.extensions!=null){
+			for(GeneratorExtension ext : this.extensions){
+				if(ext instanceof MethodNameBuilderExtension){
+					methodName = ((MethodNameBuilderExtension)ext)
+							.buildResourceMethodName(action, actualBodyMimeType,resource);
+					break;
+				}
+			}
+		}
+		if(methodName==null){
+			Names.buildResourceMethodName(action,actualBodyMimeType);
+		}
+		
         Configuration configuration = context.getConfiguration();
         String asyncResourceTrait = configuration.getAsyncResourceTrait();
         boolean asyncMethod = isNotBlank(asyncResourceTrait) && action.getIs().contains(asyncResourceTrait);

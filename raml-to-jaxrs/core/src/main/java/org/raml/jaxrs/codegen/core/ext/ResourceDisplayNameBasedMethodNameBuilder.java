@@ -57,11 +57,30 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 		if(displayName==null||displayName.trim().isEmpty()){
 			return null;
 		}
-		displayName = displayName.trim();
-		displayName = displayName.substring(0,1).toUpperCase() + displayName.substring(1);
+		StringBuilder bld = new StringBuilder();
+		for(String s : displayName.split("\\s")){
+			if(s.isEmpty()){
+				continue;
+			}
+			char ch0 = s.charAt(0);
+			if(bld.length()==0){							
+				bld.append(Character.isJavaIdentifierStart(ch0)?Character.toUpperCase(ch0):'_');
+			}
+			else{
+				bld.append(Character.isJavaIdentifierPart(ch0)?Character.toUpperCase(ch0):'_');
+			}
+			for(int i = 1 ; i < s.length() ; i++){
+				char ch = s.charAt(i);
+				bld.append(Character.isJavaIdentifierPart(ch)?ch:'_');
+			}
+		}
 		String type = action.getType().toString().toLowerCase();
 		
-		String result = type + displayName + Names.buildMimeTypeInfix(bodyMimeType);
+		String mti = Names.buildMimeTypeInfix(bodyMimeType);
+		if(mti!=null&&!mti.isEmpty()){
+			mti = mti.substring(0,1).toUpperCase() + mti.substring(1).toLowerCase();
+		}
+		String result = type + bld.toString() + mti;
 		return result;
 	}
 

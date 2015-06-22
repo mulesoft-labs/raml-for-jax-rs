@@ -31,24 +31,19 @@ import com.sun.codemodel.JMethod;
 public class ResourceDisplayNameBasedMethodNameBuilder implements
 		MethodNameBuilderExtension {
 
-	@Override
 	public void onCreateResourceInterface(JDefinedClass resourceInterface,
 			Resource resource) {}
 
-	@Override
 	public void onAddResourceMethod(JMethod method, Action action,
 			MimeType bodyMimeType, Collection<MimeType> uniqueResponseMimeTypes) {}
 
-	@Override
 	public boolean AddParameterFilter(String name, AbstractParam parameter,
 			Class<? extends Annotation> annotationClass, JMethod method) {
 		return false;
 	}
 
-	@Override
 	public void setRaml(Raml raml) {}
 
-	@Override
 	public String buildResourceMethodName(Action action, MimeType bodyMimeType,Resource resource) {
 		if(action==null||resource==null){
 			return null;
@@ -83,5 +78,4 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 		String result = type + bld.toString() + mti;
 		return result;
 	}
-
 }

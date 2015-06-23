@@ -65,6 +65,12 @@ class RamlExtension {
 	 * @see org.raml.jaxrs.codegen.core.Configuration#getJsonMapper()
 	 */
 	String jsonMapper = AnnotationStyle.JACKSON1.name()
+	
+	/**
+	 * Configuration parameters for JSON mapper
+	 * @see org.raml.jaxrs.codegen.core.Configuration#getJsonMapperConfiguration()
+	 */	
+	Map<String, String> jsonMapperConfiguration
 
 	/**
 	 * The output directory that will be the target of the generated source.  The default is
@@ -91,6 +97,28 @@ class RamlExtension {
 	 * @see org.raml.jaxrs.codegen.core.Configuration#isUseJsr303Annotations()
 	 */
 	boolean useJsr303Annotations = false
+	
+	/**
+	 * Name of package containing model classes
+	 * @see org.raml.jaxrs.codegen.core.Configuration#isUseJsr303Annotations()
+	 */
+	String modelPackageName = "model";
+	
+    Class methodThrowException = Exception.class;
+    
+    String asyncResourceTrait;
+    
+	boolean emptyResponseReturnVoid;
+	
+	boolean generateClientInterface;
+	
+    Class customAnnotator = NoopAnnotator.class;
+    
+    ArrayList<String>ignoredParameterNames=new ArrayList<String>();
+    
+    boolean useTitlePropertyWhenPossible;
+    
+	List<GeneratorExtension> extensions = new ArrayList<GeneratorExtension>();
 
 	/**
 	 * Constructs a new configuration extension for the RAML properties.

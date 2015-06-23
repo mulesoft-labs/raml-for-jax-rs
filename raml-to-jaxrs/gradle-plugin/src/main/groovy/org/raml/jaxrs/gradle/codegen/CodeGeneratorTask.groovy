@@ -69,6 +69,56 @@ class CodeGeneratorTask extends DefaultTask {
 	boolean useJsr303Annotations() {
 		configuration.useJsr303Annotations
 	}
+	
+	@Input
+	Map<String, String> getJSonMapperConfiguration(){
+		configuration.jsonMapperConfiguration
+	}
+	
+	@Input
+	String getModelPackageName(){
+		configuration.modelPackageName
+	}
+	
+	@Input
+    Class getMethodThrowException(){
+    	configuration.methodThrowException
+    }
+    
+    @Input
+    String getAsyncResourceTrait(){
+    	configuration.asyncResourceTrait
+    }
+    
+    @Input
+	boolean isEmptyResponseReturnVoid(){
+		configuration.emptyResponseReturnVoid
+    }
+	
+	@Input
+	boolean isGenerateClientInterface(){
+		configuration.generateClientInterface
+    }
+	
+	@Input
+    Class getCustomAnnotator(){
+    	configuration.customAnnotator
+    }
+    
+    @Input
+    ArrayList<String> getIgnoredParameterNames(){
+    	configuration.ignoredParameterNames
+    }
+    
+    @Input
+    boolean isUseTitlePropertyWhenPossible(){
+    	configuration.useTitlePropertyWhenPossible
+    }
+    
+    @Input
+	List<GeneratorExtension> getExtensions(){
+		configuration.extensions
+	}
 
 	@TaskAction
 	void generate() {
@@ -78,6 +128,17 @@ class CodeGeneratorTask extends DefaultTask {
 		ramlConfiguration.setJsonMapper(getJsonMapper())
 		ramlConfiguration.setOutputDirectory(getOutputDirectory())
 		ramlConfiguration.setUseJsr303Annotations(useJsr303Annotations())
+		ramlConfiguration.setJsonMapperConfiguration(getJsonMapperConfiguration())
+
+		ramlConfiguration.setModelPackageName(getModelPackageName())
+	    ramlConfiguration.setMethodThrowException(getMethodThrowException())
+	    ramlConfiguration.setAsyncResourceTrait(getAsyncResourceTrait())
+		ramlConfiguration.setEmptyResponseReturnVoid(isEmptyResponseReturnVoid())
+		ramlConfiguration.setGenerateClientInterface(isGenerateClientInterface())
+	    ramlConfiguration.setCustomAnnotator(getCustomAnnotator())
+	    ramlConfiguration.setIgnoredParameterNames(getIgnoredParameterNames())
+	    ramlConfiguration.setUseTitlePropertyWhenPossible(isUseTitlePropertyWhenPossible())
+		ramlConfiguration.setExtensions(getExtensions())		
 
 		getRamlFiles().each { configurationFile ->
 			generator.run(new FileReader(configurationFile), ramlConfiguration)

@@ -117,7 +117,7 @@ class CodeGeneratorTask extends DefaultTask {
     }
     
     @Input
-	List<GeneratorExtension> getExtensions(){
+	List<GeneratorExtension> getGeneratorExtensions(){
 		configuration.extensions
 	}
 
@@ -139,7 +139,7 @@ class CodeGeneratorTask extends DefaultTask {
 	    ramlConfiguration.setCustomAnnotator(getCustomAnnotator())
 	    ramlConfiguration.setIgnoredParameterNames(getIgnoredParameterNames())
 	    ramlConfiguration.setUseTitlePropertyWhenPossible(isUseTitlePropertyWhenPossible())
-		ramlConfiguration.setExtensions(getExtensions())		
+		ramlConfiguration.setExtensions(getGeneratorExtensions())		
 
 		getRamlFiles().each { configurationFile ->
 			generator.run(new FileReader(configurationFile), ramlConfiguration)

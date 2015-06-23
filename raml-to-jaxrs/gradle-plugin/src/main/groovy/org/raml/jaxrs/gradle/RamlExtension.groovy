@@ -21,6 +21,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.jsonschema2pojo.AnnotationStyle
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
+import org.raml.jaxrs.codegen.core.ext.GeneratorExtension
 
 /**
  * Custom Gradle configuration extension that is populated by the {@code raml}

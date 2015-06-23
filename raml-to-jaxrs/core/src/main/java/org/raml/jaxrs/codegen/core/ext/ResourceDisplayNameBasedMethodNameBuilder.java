@@ -80,6 +80,5 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 		return result;
 	}
 
-	@Override
 	public void setCodeModel(JCodeModel codeModel) {}
 }

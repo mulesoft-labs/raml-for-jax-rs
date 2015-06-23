@@ -25,6 +25,7 @@ import org.raml.jaxrs.codegen.core.Configuration
 import org.raml.jaxrs.codegen.core.Generator
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
 import org.raml.jaxrs.gradle.RamlExtension
+import org.raml.jaxrs.codegen.core.ext.GeneratorExtension
 
 /**
  * Custom Gradle task that handles the generation of Java code from RAML

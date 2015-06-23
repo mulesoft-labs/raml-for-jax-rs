@@ -24,6 +24,7 @@ import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.parameter.AbstractParam;
 
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
@@ -37,6 +38,8 @@ import com.sun.codemodel.JMethod;
 public abstract class AbstractGeneratorExtension implements NestedSchemaNameComputer {
 
 	private Raml raml;
+	
+	private JCodeModel codeModel;
 	
 	/** {@inheritDoc} */
 	public void onAddResourceMethod(JMethod method,  Action action,  MimeType bodyMimeType,
@@ -76,5 +79,19 @@ public abstract class AbstractGeneratorExtension implements NestedSchemaNameComp
 	 */
 	protected  Raml getRaml() {
 		return raml;
+	}
+
+	/** {@inheritDoc} */
+	public void setCodeModel(JCodeModel codeModel) {
+		this.codeModel = codeModel;
+	}
+
+	/**
+	 * <p>Getter for the field <code>codeModel</code>.</p>
+	 *
+	 * @return a {@link com.sun.codemodel.JCodeModel} object.
+	 */
+	public JCodeModel getCodeModel() {
+		return codeModel;
 	}
 }

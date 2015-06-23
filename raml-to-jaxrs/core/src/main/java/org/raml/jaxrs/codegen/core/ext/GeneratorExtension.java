@@ -24,6 +24,7 @@ import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.parameter.AbstractParam;
 
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
@@ -78,4 +79,11 @@ public interface GeneratorExtension {
 	 * @param raml a {@link org.raml.model.Raml} object.
 	 */
 	void setRaml(Raml raml);
+	
+	/**
+	 * Sets JCodeModel instance used through the generation process
+	 * 
+	 * @param codeModel a {@link com.sun.codemodel.JCodeModel} object.
+	 */
+	void setCodeModel(JCodeModel codeModel);
 }

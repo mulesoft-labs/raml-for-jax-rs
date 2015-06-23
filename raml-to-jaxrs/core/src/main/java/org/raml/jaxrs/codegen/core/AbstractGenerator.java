@@ -212,6 +212,7 @@ public abstract class AbstractGenerator {
 
 		for (GeneratorExtension e : extensions) {
 			e.setRaml(raml);
+			e.setCodeModel(context.getCodeModel());
 		}
 
 		Collection<Resource> resources = raml.getResources().values();

@@ -25,6 +25,7 @@ import org.raml.model.Raml;
 import org.raml.model.Resource;
 import org.raml.model.parameter.AbstractParam;
 
+import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
@@ -78,4 +79,7 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 		String result = type + bld.toString() + mti;
 		return result;
 	}
+
+	@Override
+	public void setCodeModel(JCodeModel codeModel) {}
 }

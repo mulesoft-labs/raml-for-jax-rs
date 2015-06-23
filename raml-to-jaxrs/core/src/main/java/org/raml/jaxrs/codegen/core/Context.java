@@ -541,4 +541,8 @@ class Context
         }
         return classList;
     }
+
+	public JCodeModel getCodeModel() {
+		return codeModel;
+	}
 }

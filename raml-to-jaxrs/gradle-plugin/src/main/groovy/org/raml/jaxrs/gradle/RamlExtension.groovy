@@ -22,6 +22,7 @@ import org.gradle.api.file.FileCollection
 import org.jsonschema2pojo.AnnotationStyle
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension
+import org.jsonschema2pojo.NoopAnnotator
 
 /**
  * Custom Gradle configuration extension that is populated by the {@code raml}
@@ -119,7 +120,7 @@ class RamlExtension {
     
     boolean useTitlePropertyWhenPossible;
     
-	List<GeneratorExtension> extensions = new ArrayList<GeneratorExtension>();
+	List<String> extensions = new ArrayList<String>();
 
 	/**
 	 * Constructs a new configuration extension for the RAML properties.

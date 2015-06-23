@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.gradle.codegen
 
+import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
@@ -72,7 +73,7 @@ class CodeGeneratorTask extends DefaultTask {
 	}
 	
 	@Input
-	Map<String, String> getJSonMapperConfiguration(){
+	Map<String, String> getJsonMapperConfiguration(){
 		configuration.jsonMapperConfiguration
 	}
 	
@@ -117,7 +118,7 @@ class CodeGeneratorTask extends DefaultTask {
     }
     
     @Input
-	List<GeneratorExtension> getGeneratorExtensions(){
+	List<String> getGeneratorExtensions(){
 		configuration.extensions
 	}
 
@@ -139,7 +140,26 @@ class CodeGeneratorTask extends DefaultTask {
 	    ramlConfiguration.setCustomAnnotator(getCustomAnnotator())
 	    ramlConfiguration.setIgnoredParameterNames(getIgnoredParameterNames())
 	    ramlConfiguration.setUseTitlePropertyWhenPossible(isUseTitlePropertyWhenPossible())
-		ramlConfiguration.setExtensions(getGeneratorExtensions())		
+		
+		if (getGeneratorExtensions() != null) {
+			for (String className : getGeneratorExtensions()) {
+				Class c = Class.forName(className);
+				if (c == null) {
+					throw new TaskExecutionException("generatorExtensionClass " + className
+							+ " cannot be loaded."
+							+ "Have you installed the correct dependency in the plugin configuration?");
+				}
+				if (!((c.newInstance()) instanceof GeneratorExtension)) {
+					throw new TaskExecutionException("generatorExtensionClass " + className
+							+ " does not implement" + GeneratorExtension.class.getPackage() + "."
+							+ GeneratorExtension.class.getName());
+
+				}
+				ramlConfiguration.getExtensions().add((GeneratorExtension) c.newInstance());
+
+
+			}
+		}
 
 		getRamlFiles().each { configurationFile ->
 			generator.run(new FileReader(configurationFile), ramlConfiguration)

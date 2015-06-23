@@ -75,7 +75,7 @@
                     </mapping>
                     <strictCheck>true</strictCheck>
                     <properties>
-                        <license.year>2013-2015</license.year>
+                        <licenseYear>2013-2015</licenseYear>
                     </properties>
                 </configuration>
                 <executions>

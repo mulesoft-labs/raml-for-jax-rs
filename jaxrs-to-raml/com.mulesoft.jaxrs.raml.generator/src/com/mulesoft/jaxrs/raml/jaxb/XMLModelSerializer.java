@@ -26,7 +26,7 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 	@Override
 	protected ISerializationNode createNode(ISchemaType type, ISchemaProperty prop, ISerializationNode parent) {
 		StructureType st = prop!=null?prop.getStructureType():type.getParentStructureType();
-		if(st!=StructureType.COMMON && parent==null){
+		if(st!=null&&st!=StructureType.COMMON && parent==null){
 			throw new UnsupportedOperationException("Root structure not supported by the serializer.");
 		}
 		

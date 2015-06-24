@@ -54,7 +54,7 @@ public class APTResourceVisitor extends ResourceVisitor {
 		if(clazz==null){
 			return false;
 		}
-		if(st == StructureType.COMMON){
+		if(st == null || st == StructureType.COMMON){
 			generateXSDForClass(clazz);
 		}
 		afterSchemaGen(type, st);

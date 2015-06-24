@@ -1121,7 +1121,7 @@ public abstract class ResourceVisitor {
 		}
 
 		try{
-			if(st == StructureType.COMMON){
+			if(st == null || st == StructureType.COMMON){
 				String xmlExample = new XMLModelSerializer().serialize(schemaModel);
 				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML));
 			}

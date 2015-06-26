@@ -68,7 +68,13 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 					StructureType st = prop.getStructureType();
 					String typeString = null;
 					if(st==StructureType.MAP){
-						ISchemaType keyType = ((IMapSchemaProperty)prop).getKeyType();
+						ISchemaType keyType = SimpleType.STRING;
+						typeString = "object";
+						if(prop instanceof IMapSchemaProperty){
+							IMapSchemaProperty msp = (IMapSchemaProperty) prop;
+							keyType = msp.getKeyType();
+							typeString = detectType(msp.getValueType(),null);
+						}
 						if(keyType != SimpleType.STRING){
 							StringBuilder bld = new StringBuilder("Invalid map key type. Only String is available as key type.");
 							if(type!=null){
@@ -79,7 +85,6 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 							}
 							throw new IllegalArgumentException(bld.toString());
 						}
-						typeString = detectType(((IMapSchemaProperty)prop).getValueType(),null);
 					}
 					else{
 						typeString = detectType(type,prop);

@@ -4,9 +4,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 /**
  * <p>JAXBElementProperty class.</p>
@@ -23,7 +21,7 @@ public class JAXBElementProperty extends JAXBProperty{
 	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
 	 * @param name a {@link java.lang.String} object.
 	 */
-	public JAXBElementProperty(IBasicModel model,JAXBRegistry r, String name) {
+	public JAXBElementProperty(IMember model,JAXBRegistry r, String name) {
 		super(model,r,name);			
 	}
 

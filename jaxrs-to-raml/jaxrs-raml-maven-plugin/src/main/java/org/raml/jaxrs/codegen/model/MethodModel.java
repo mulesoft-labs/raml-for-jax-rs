@@ -138,7 +138,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 		int result = super.hashCode();
 		if(parameters != null && !parameters.isEmpty()){
 			for(IParameterModel param : parameters){
-				result = prime * result + param.getType().hashCode();
+				result = prime * result + param.getParameterType().hashCode();
 				result = prime * result + param.getName().hashCode();
 			}
 		}
@@ -187,12 +187,6 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	 */
 	public void setBodyType(ITypeModel bodyType) {
 		this.bodyType = bodyType;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public ITypeModel getType() {
-		throw new UnsupportedOperationException();
 	}
 
 	public boolean hasGenericReturnType() {

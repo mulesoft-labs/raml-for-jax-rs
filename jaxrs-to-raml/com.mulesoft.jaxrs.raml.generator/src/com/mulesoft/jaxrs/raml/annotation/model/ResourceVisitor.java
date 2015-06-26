@@ -710,7 +710,7 @@ public abstract class ResourceVisitor {
 		
 		String paramName = paramAnnotation.getValue("value");
 		
-		String type = model.getType();
+		String type = model.getParameterType();
 		proceedType(type, param, model);
 		String text = documentation.getDocumentation(model
 				.getName());

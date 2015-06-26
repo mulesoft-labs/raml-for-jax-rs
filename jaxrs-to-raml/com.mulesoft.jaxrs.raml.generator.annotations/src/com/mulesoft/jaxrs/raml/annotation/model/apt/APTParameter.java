@@ -31,7 +31,7 @@ public class APTParameter extends APTModel implements IParameterModel{
 	 *
 	 * @return a {@link java.lang.String} object.
 	 */
-	public String getType() {
+	public String getParameterType() {
 		TypeMirror asType = element.asType();
 		return asType.toString();
 	}

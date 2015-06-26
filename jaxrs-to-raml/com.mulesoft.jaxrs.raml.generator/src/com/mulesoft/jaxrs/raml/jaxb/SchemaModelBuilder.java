@@ -97,17 +97,18 @@ public class SchemaModelBuilder {
 	}
 
 	private ISchemaType getType(JAXBProperty p) {
-		Class<?> clazz = p.asJavaType();
-		ISchemaType primitive = getPrimitiveType(clazz.getCanonicalName());
+
+		String canonicalName = p.getType().getClassName();
+		
+		ISchemaType primitive = getPrimitiveType(canonicalName);
 		if(primitive!=null){
 			return primitive;
 		}
 		
-		String name = clazz.getCanonicalName();;
-		TypeModelImpl type = this.javaTypeMap.get(name);
+		TypeModelImpl type = this.javaTypeMap.get(canonicalName);
 		if(type==null){
-			type = new TypeModelImpl(name,clazz.getCanonicalName(),null,false,p.getStructureType());
-			this.javaTypeMap.put(name, type);
+			type = new TypeModelImpl(canonicalName,canonicalName,null,false,p.getStructureType());
+			this.javaTypeMap.put(canonicalName, type);
 		}
 		return type;
 	}
@@ -121,6 +122,9 @@ public class SchemaModelBuilder {
 		name = name.toUpperCase();
 		if(name.equals("CHAR")){
 			name = "CHARACTER";				
+		}
+		if(name.equals("INT")){
+			name = "INTEGER";				
 		}
 		
 		try{

@@ -122,5 +122,15 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	public void setGeneric(boolean isGeneric) {
 		this.isGeneric = isGeneric;
 	}
+	@Override
+	public boolean isCollection() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean isMap() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

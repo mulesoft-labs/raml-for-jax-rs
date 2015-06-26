@@ -28,7 +28,7 @@ public class JDTParameter extends JDTAnnotatable implements IParameterModel{
 	}
 
 	
-	public String getType() {
+	public String getParameterType() {
 		return ((ILocalVariable) tm).getTypeSignature();
 	}
 

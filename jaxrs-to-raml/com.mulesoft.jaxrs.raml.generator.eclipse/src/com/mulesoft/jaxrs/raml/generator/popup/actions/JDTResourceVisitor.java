@@ -22,7 +22,7 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 	}
 
 	protected void generateExamle(File schemaFile, String content) {
-		DummyXMLGenerator generator=new DummyXMLGenerator();
+		/*DummyXMLGenerator generator=new DummyXMLGenerator();
 		try {
 			File parentDir = schemaFile.getParentFile().getParentFile();
 			File examplesDir=new File(parentDir,"examples"); //$NON-NLS-1$
@@ -34,6 +34,7 @@ public class JDTResourceVisitor extends RuntimeResourceVisitor {
 		} catch (MalformedURLException e) {
 			throw new IllegalStateException(e);			
 		}
+		*/
 	}
 	
 

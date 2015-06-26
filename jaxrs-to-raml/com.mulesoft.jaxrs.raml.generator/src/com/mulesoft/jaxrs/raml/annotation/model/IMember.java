@@ -42,4 +42,16 @@ public interface IMember extends IBasicModel{
 	 * @return a {@link java.lang.Class} object.
 	 */
 	public abstract Class<?> getJavaType();
+	
+	
+	/**
+	 * @return whether the model type is collection
+	 */
+	boolean isCollection();
+	
+	
+	/**
+	 * @return whether the model type is map
+	 */
+	boolean isMap();
 }

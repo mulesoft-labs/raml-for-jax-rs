@@ -21,11 +21,11 @@ import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
-import org.eclipse.jdt.internal.core.SourceType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 import com.mulesoft.jaxrs.raml.generator.popup.actions.GenerationException;
 
 public abstract class JDTAnnotatable implements IBasicModel {
@@ -167,6 +167,12 @@ public abstract class JDTAnnotatable implements IBasicModel {
 
 	protected ITypeModel doGetType(IMember iMethod, String returnType)
 			throws JavaModelException {
+		
+		Class<?> basicType = getBasicJavaType(returnType);
+		if(basicType!=null){
+			return new ReflectionType(basicType);
+		}
+		
 		if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
 			IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);
 			String typeName = returnType.substring(1, returnType.length() - 1);
@@ -180,46 +186,115 @@ public abstract class JDTAnnotatable implements IBasicModel {
 				IType findType = ownerType.getJavaProject().findType(
 						resolveType[0][0] + '.' + resolveType[0][1]);
 				if (findType != null ) {
-					if(findType instanceof SourceType){
-						return new JDTType(findType);
-					}
-					return new com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType(String.class);
+					return new JDTType(findType);
 				}
 			}
 		}
 		return null;
 	}
 
-	protected JDTType doGetJAXBType(IMember iMethod, String returnType)
+	protected List<ITypeModel> doGetJAXBType(IMember iMethod, String returnType)
 			throws JavaModelException {
+		
 		returnType = Signature.getElementType(returnType);
-		if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
-			IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);
-			String typeName = returnType.substring(1, returnType.length() - 1);
-
-			String removeCapture = Signature.getTypeErasure(typeName);
-			if (isCollection(removeCapture)) {
-				String[] typeArguments = Signature.getTypeArguments(returnType);
-				if (typeArguments.length > 0) {
-					removeCapture = typeArguments[0];
-					removeCapture = removeCapture.substring(1,
-							removeCapture.length() - 1);
-				}
-			}
-			String[][] resolveType = ownerType.resolveType(removeCapture);
-			if (resolveType == null) {
-				throw new GenerationException(
-						"Type " + typeName + " cannot be resolved", "Type " + typeName + " cannot be resolved, maybe because of the compilation errors"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			}
-			if (resolveType.length == 1) {
-				IType findType = ownerType.getJavaProject().findType(
-						resolveType[0][0] + '.' + resolveType[0][1]);
-				if (findType != null && findType instanceof SourceType) {
-					return new JDTType(findType);
-				}
+		if (!returnType.startsWith("Q") || !returnType.endsWith(";")){
+			return null;
+		}
+		
+		ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+		IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);		
+		IType type = resolveType(ownerType, returnType);
+		if (isCollection(type)) {
+			String[] typeArguments = Signature.getTypeArguments(returnType);
+			if (typeArguments.length > 0) {
+				String paramTypeName = typeArguments[0];
+				IType paramType = resolveType(ownerType, paramTypeName);
+				list.add(new JDTType(paramType));
 			}
 		}
-		return null;
+		else if (isMap(type)) {
+			String[] typeArguments = Signature.getTypeArguments(returnType);
+			if (typeArguments.length > 0) {
+				String keyTypeName = typeArguments[0];
+				IType keyType = resolveType(ownerType, keyTypeName);
+				list.add(new JDTType(keyType));
+			}
+			if (typeArguments.length > 1) {
+				String valueTypeName = typeArguments[1];
+				IType valueType = resolveType(ownerType, valueTypeName);
+				list.add(new JDTType(valueType));
+			}
+		}
+		else{
+			list.add(new JDTType(type));
+		}
+		return list;
+	}
+
+	private IType resolveType(IType ownerType, String typeName)
+			throws JavaModelException {
+		
+		String tn;
+		if(typeName.startsWith("Q")&&typeName.endsWith(";")){			
+			tn = Signature.getTypeErasure(typeName);
+			tn = typeName.substring(1, typeName.length() - 1);
+		}
+		else{
+			tn = typeName;
+		}
+		String[][] resolveType = ownerType.resolveType(tn);
+		if (resolveType == null) {
+			throw new GenerationException(
+					"Type " + typeName + " cannot be resolved", "Type " + typeName + " cannot be resolved, maybe because of the compilation errors"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		}
+		IType findType = null;
+		if (resolveType.length == 1) {
+			findType = ownerType.getJavaProject().findType(
+					resolveType[0][0] + '.' + resolveType[0][1]);				
+		}
+		return findType;
+	}
+	
+	private boolean implementsInterface(IType type, String interfaceName){
+		
+		if(type.getFullyQualifiedName().equals(interfaceName)){
+			return true;
+		}
+		
+		String[] superInterfaceNames = new String[0];
+		try {
+			superInterfaceNames = type.getSuperInterfaceNames();
+		} catch (JavaModelException e) {}
+		
+		for(String iName: superInterfaceNames){
+			if(iName.equals(interfaceName)){
+				return true;
+			}
+		}
+		
+		try{
+			String superclassName = type.getSuperclassName();	
+			if(superclassName!=null){
+				IType supertype = resolveType(type, superclassName);
+				if(implementsInterface(supertype, interfaceName)){
+					return true;
+				}
+			}
+		} catch (JavaModelException e) {}
+		
+		for(String iName: superInterfaceNames){
+			IType interfaceType = null;
+			try{
+				interfaceType = resolveType(type, iName);
+			} catch (JavaModelException e) {}
+			if(interfaceType==null){
+				continue;
+			}
+			if(implementsInterface(interfaceType, interfaceName)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	static HashSet<String> collectionTypes = new HashSet<String>();
@@ -242,7 +317,38 @@ public abstract class JDTAnnotatable implements IBasicModel {
 
 	private static void addType(Class<?> class1) {
 		collectionTypes.add(class1.getSimpleName());
-
+	}
+	
+	private boolean isMap(IType type) {
+		return implementsInterface(type, "java.util.Map");
+	}
+	
+	private boolean isCollection(IType type) {
+		return implementsInterface(type, "java.util.Collection");
+	}
+	
+	protected boolean isCollection(IMember iMethod, String returnType)
+			throws JavaModelException {
+		
+		returnType = Signature.getElementType(returnType);
+		if (!returnType.startsWith("Q") || !returnType.endsWith(";")){
+			return false;
+		}
+		IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);		
+		IType type = resolveType(ownerType, returnType);
+		return isCollection(type);
+	}
+	
+	protected boolean isMap(IMember iMethod, String returnType)
+			throws JavaModelException {
+		
+		returnType = Signature.getElementType(returnType);
+		if (!returnType.startsWith("Q") || !returnType.endsWith(";")){
+			return false;
+		}
+		IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);		
+		IType type = resolveType(ownerType, returnType);
+		return isMap(type);
 	}
 
 	public boolean equals(Object obj) {

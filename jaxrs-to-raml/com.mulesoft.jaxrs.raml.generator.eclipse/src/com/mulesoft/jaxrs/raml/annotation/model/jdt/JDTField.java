@@ -55,9 +55,7 @@ public class JDTField extends JDTAnnotatable implements IFieldModel{
 	@Override
 	public List<ITypeModel> getJAXBTypes() {
 		try {
-			ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
-			JDTType type = doGetJAXBType(((IField)tm), ((IField)tm).getTypeSignature());
-			list.add(type);
+			List<ITypeModel> list = doGetJAXBType(((IField)tm), ((IField)tm).getTypeSignature());
 			return list;
 		} catch (JavaModelException e) {
 			return null;
@@ -81,6 +79,24 @@ public class JDTField extends JDTAnnotatable implements IFieldModel{
 
 	public void setGeneric(boolean isGeneric) {
 		this.isGeneric = isGeneric;
+	}
+
+	@Override
+	public boolean isCollection() {
+		try {
+			return isCollection((IField)tm, ((IField)tm).getTypeSignature());
+		} catch (JavaModelException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isMap() {
+		try {
+			return isMap((IField)tm, ((IField)tm).getTypeSignature());
+		} catch (JavaModelException e) {
+			return false;
+		}
 	}
 
 }

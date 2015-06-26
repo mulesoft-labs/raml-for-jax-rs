@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.Utils;
 
 /**
  * <p>JAXBRegistry class.</p>

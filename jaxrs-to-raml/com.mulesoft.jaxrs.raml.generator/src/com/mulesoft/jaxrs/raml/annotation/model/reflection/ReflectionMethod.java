@@ -6,7 +6,9 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -162,5 +164,15 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public boolean isCollection() {
+		return Collection.class.isAssignableFrom(this.element.getReturnType());
+	}
+
+	@Override
+	public boolean isMap() {
+		return Map.class.isAssignableFrom(this.element.getReturnType());
 	}
 }

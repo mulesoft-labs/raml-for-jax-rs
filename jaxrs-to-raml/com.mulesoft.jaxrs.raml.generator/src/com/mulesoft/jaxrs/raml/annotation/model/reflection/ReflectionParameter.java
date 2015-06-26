@@ -116,7 +116,7 @@ public class ReflectionParameter implements IParameterModel{
 	 *
 	 * @return a {@link java.lang.String} object.
 	 */
-	public String getType() {
+	public String getParameterType() {
 		String name = type.getName();		
 		return name;
 	}

@@ -171,7 +171,7 @@ public class SpoonProcessor{
 		IParameterModel[] parameters = method.getParameters();
 		for(IParameterModel param_ : parameters){
 			
-			String paramType = param_.getType();
+			String paramType = param_.getParameterType();
 //			if(paramType.startsWith("java.")){
 //				continue;
 //			}
@@ -598,17 +598,30 @@ public class SpoonProcessor{
 		if(type==null){
 			return;
 		}
-		CtTypeReference<?> actualType = type;
+		List<CtTypeReference<?>> actualTypes = new ArrayList<CtTypeReference<?>>();
 		Class<?> actualClass = type.getActualClass();
 		fm.setJavaClass(actualClass);
 		if (actualClass!=null&&Collection.class.isAssignableFrom(actualClass)){
-			List<CtTypeReference<?>> actualTypeArguments = type.getActualTypeArguments();
-			if (actualTypeArguments.size()==1){
-				actualType = actualTypeArguments.get(0);				
+			fm.setCollection(true);
+			List<CtTypeReference<?>> actualTypeArguments = type.getActualTypeArguments();			
+			if (actualTypeArguments.size()>0){
+				actualTypes.add(actualTypeArguments.get(0));
 			}
 		}
-		ITypeModel processTypeReference = processTypeReference(actualType);
-		fm.setJaxbType(processTypeReference);
+		else if (actualClass!=null&&Map.class.isAssignableFrom(actualClass)){
+			fm.setMap(true);
+			List<CtTypeReference<?>> actualTypeArguments = type.getActualTypeArguments();
+			if (actualTypeArguments.size()==2){
+				actualTypes = actualTypeArguments;				
+			}
+		}
+		else{
+			actualTypes.add(type);
+		}
+		for(CtTypeReference<?> t : actualTypes){
+			ITypeModel processTypeReference = processTypeReference(t);
+			fm.addJaxbType(processTypeReference);
+		}
 	}
 
 	private IMethodModel processMethodReference(CtExecutableReference<?> methodElement) {

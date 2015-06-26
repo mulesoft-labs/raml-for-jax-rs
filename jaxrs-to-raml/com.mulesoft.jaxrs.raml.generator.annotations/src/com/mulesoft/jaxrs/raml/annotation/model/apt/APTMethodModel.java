@@ -190,4 +190,18 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 		this.isGeneric = isGeneric;
 	}
 
+
+	@Override
+	public boolean isCollection() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean isMap() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

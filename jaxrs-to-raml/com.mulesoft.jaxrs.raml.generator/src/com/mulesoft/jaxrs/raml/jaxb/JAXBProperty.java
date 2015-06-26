@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 /**
@@ -21,6 +21,7 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	String propertyName;
 	boolean required;
 	private boolean isCollection;
+	private boolean isMap;
 	
 	/**
 	 * <p>Constructor for JAXBProperty.</p>
@@ -29,9 +30,11 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
 	 * @param name a {@link java.lang.String} object.
 	 */
-	public JAXBProperty(IBasicModel model,JAXBRegistry r, String name) {
+	public JAXBProperty(IMember model,JAXBRegistry r, String name) {
 		super(model,r);
 		this.propertyName=name;
+		this.isCollection = model.isCollection();
+		this.isMap = model.isMap();
 		IAnnotationModel annotation = model.getAnnotation(getPropertyAnnotation());
 		if (annotation!=null){
 			String value = annotation.getValue("required");
@@ -49,7 +52,17 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	protected abstract String getPropertyAnnotation();
 
 	JAXBType getType(){
-		return null;		
+		if(this.originalType instanceof IFieldModel){
+			ITypeModel type = ((IFieldModel)this.originalType).getType();
+			return registry.getJAXBModel(type);
+		}
+		else if(this.originalType instanceof IMethodModel){
+			ITypeModel type = ((IMethodModel)this.originalType).getReturnedType();
+			return registry.getJAXBModel(type);
+		}
+		else{
+			return null;
+		}
 	}
 
 	/**
@@ -78,7 +91,7 @@ public abstract class JAXBProperty extends JAXBModelElement{
 		if(isCollection||asJavaType()!=null&&Collection.class.isAssignableFrom(asJavaType())){
 			return StructureType.COLLECTION;
 		}
-		else if(asJavaType()!=null&&Map.class.isAssignableFrom(asJavaType())){
+		else if(isMap||asJavaType()!=null&&Map.class.isAssignableFrom(asJavaType())){
 			return StructureType.MAP;
 		}
 		else{

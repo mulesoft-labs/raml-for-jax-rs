@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -37,6 +36,9 @@ public class JAXBType extends JAXBModelElement {
 		this.className = model.getFullyQualifiedName();
 		if (value != null) {
 			type = extractType(value);
+		}
+		if(this.className.equals("java.lang.Object")){
+			return;
 		}
 		for (IMethodModel m : methods) {
 			boolean needToConsume = needToConsume(type, m);
@@ -106,7 +108,7 @@ public class JAXBType extends JAXBModelElement {
 		}
 	}
 
-	private JAXBProperty createProperty(String string, IBasicModel m) {
+	private JAXBProperty createProperty(String string, IMember m) {
 		boolean isElement = m.hasAnnotation(XmlElement.class.getSimpleName());
 		boolean isAttribute = m.hasAnnotation(XmlAttribute.class
 				.getSimpleName());

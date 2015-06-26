@@ -2,7 +2,7 @@ package com.mulesoft.jaxrs.raml.jaxb;
 
 import javax.xml.bind.annotation.XmlValue;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 
 /**
  * <p>JAXBValueProperty class.</p>
@@ -19,7 +19,7 @@ public class JAXBValueProperty extends JAXBProperty{
 	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
 	 * @param name a {@link java.lang.String} object.
 	 */
-	public JAXBValueProperty(IBasicModel model,JAXBRegistry r,String name) {
+	public JAXBValueProperty(IMember model,JAXBRegistry r,String name) {
 		super(model,r,name);
 	}
 

@@ -10,11 +10,11 @@ package com.mulesoft.jaxrs.raml.annotation.model;
 public interface IParameterModel extends IBasicModel{
 
 	/**
-	 * <p>getType.</p>
+	 * <p>getParameterType.</p>
 	 *
 	 * @return type name
 	 */
-	String getType();
+	String getParameterType();
 	
 	/**
 	 * <p>required.</p>

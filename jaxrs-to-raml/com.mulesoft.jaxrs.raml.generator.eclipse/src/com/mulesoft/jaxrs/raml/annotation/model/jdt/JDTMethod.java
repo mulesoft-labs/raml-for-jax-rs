@@ -220,9 +220,7 @@ public class JDTMethod extends JDTGenericElement implements IMethodModel {
 	@Override
 	public List<ITypeModel> getJAXBTypes() {
 		try {
-			ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
-			JDTType type = doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
-			list.add(type);
+			List<ITypeModel> list = doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
 			return list;
 		} catch (JavaModelException e) {
 			return null;
@@ -245,6 +243,24 @@ public class JDTMethod extends JDTGenericElement implements IMethodModel {
 
 	public void setGeneric(boolean isGeneric) {
 		this.isGeneric = isGeneric;
+	}
+	
+	@Override
+	public boolean isCollection() {
+		try {
+			return isCollection(((IMember)tm), ((IMethod)tm).getReturnType());
+		} catch (JavaModelException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isMap() {
+		try {
+			return isMap(((IMember)tm), ((IMethod)tm).getReturnType());
+		} catch (JavaModelException e) {
+			return false;
+		}
 	}
 
 	

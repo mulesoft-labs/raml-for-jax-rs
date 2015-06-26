@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.codegen.model;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -37,8 +37,8 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	
 	private String qualifiedName;
 	
-	private ArrayList<IMethodModel> methods = new ArrayList<IMethodModel>();
-	private ArrayList<IFieldModel> fields = new ArrayList<IFieldModel>();
+	private LinkedHashMap<String,IMethodModel> methods = new LinkedHashMap<String,IMethodModel>();
+	private LinkedHashMap<String,IFieldModel> fields = new LinkedHashMap<String,IFieldModel>();
 	
 	/**
 	 * <p>Getter for the field <code>methods</code>.</p>
@@ -46,7 +46,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} objects.
 	 */
 	public IMethodModel[] getMethods() {
-		return methods.toArray(new IMethodModel[methods.size()]);
+		return methods.values().toArray(new IMethodModel[methods.size()]);
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	 * @param method a {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} object.
 	 */
 	public void addMethod(IMethodModel method){
-		methods.add(method);
+		methods.put(method.getName(),method);
 	}
 
 	
@@ -114,7 +114,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/** {@inheritDoc} */
 	@Override
 	public IFieldModel[] getFields() {
-		return fields.toArray(new IFieldModel[fields.size()]);
+		return fields.values().toArray(new IFieldModel[fields.size()]);
 	}
 
 	/**
@@ -123,6 +123,6 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	 * @param fieldModel a {@link com.mulesoft.jaxrs.raml.annotation.model.IFieldModel} object.
 	 */
 	public void addField(IFieldModel fieldModel) {
-		fields.add(fieldModel);
+		fields.put(fieldModel.getName(),fieldModel);
 	}
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 
 /**
  * <p>Abstract BasicModel class.</p>
@@ -42,7 +43,9 @@ public abstract class BasicModel implements IBasicModel{
 	private boolean  publicM;
 	private boolean  staticM;
 	private Class<?> actualClass;
-	private ITypeModel jaxbType;
+	private List<ITypeModel> jaxbTypes;
+	private boolean isCollection;
+	private boolean isMap;
 	
 	/**
 	 * <p>getJAXBType.</p>
@@ -50,9 +53,7 @@ public abstract class BasicModel implements IBasicModel{
 	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
 	 */
 	public List<ITypeModel> getJAXBTypes() {
-		ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
-		list.add(this.jaxbType);
-		return list;
+		return this.jaxbTypes;
 	}
 
 	/**
@@ -62,6 +63,10 @@ public abstract class BasicModel implements IBasicModel{
 	 */
 	public Class<?> getJavaType() {
 		return actualClass;
+	}
+	
+	public ITypeModel getType() {
+		return new ReflectionType(actualClass);
 	}
 
 
@@ -243,7 +248,26 @@ public abstract class BasicModel implements IBasicModel{
 	 *
 	 * @param processTypeReference a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
 	 */
-	public void setJaxbType(ITypeModel processTypeReference) {
-		this.jaxbType=processTypeReference;
+	public void addJaxbType(ITypeModel processTypeReference) {
+		if(this.jaxbTypes==null){
+			this.jaxbTypes = new ArrayList<ITypeModel>();
+		}
+		this.jaxbTypes.add(processTypeReference);
+	}
+
+	public boolean isCollection() {
+		return isCollection;
+	}
+
+	public void setCollection(boolean isCollection) {
+		this.isCollection = isCollection;
+	}
+
+	public boolean isMap() {
+		return isMap;
+	}
+
+	public void setMap(boolean isMap) {
+		this.isMap = isMap;
 	}
 }

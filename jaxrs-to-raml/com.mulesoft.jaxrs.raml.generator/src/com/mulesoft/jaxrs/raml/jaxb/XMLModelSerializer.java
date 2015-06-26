@@ -14,6 +14,8 @@ import org.raml.schema.model.DefaultValueFactory;
 import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
+import org.raml.schema.model.SimpleType;
+import org.raml.schema.model.impl.TypeModelImpl;
 import org.raml.schema.model.serializer.ISerializationNode;
 import org.raml.schema.model.serializer.StructuredModelSerializer;
 import org.w3c.dom.Document;
@@ -81,9 +83,13 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 			else{				
 				if(prop.getStructureType()==StructureType.MAP){
 					
-					IMapSchemaProperty msp = (IMapSchemaProperty) prop;
-					ISchemaType keyType = msp.getKeyType();
-					ISchemaType valueType = msp.getValueType();
+					ISchemaType keyType = SimpleType.STRING;
+					ISchemaType valueType = new TypeModelImpl("Object", "java.lang.Object", null, StructureType.COMMON);
+					if(prop instanceof IMapSchemaProperty){
+						IMapSchemaProperty msp = (IMapSchemaProperty) prop;
+						keyType = msp.getKeyType();
+						valueType = msp.getValueType();
+					}
 					
 					String name = getPropertyName(type,prop);
 					Element mapElement = document.createElement(name);

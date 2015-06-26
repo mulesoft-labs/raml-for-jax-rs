@@ -5,11 +5,12 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 
 /**
  * <p>ReflectionField class.</p>
@@ -88,5 +89,15 @@ public class ReflectionField extends BasicReflectionMember<Field> implements
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isCollection() {
+		return Collection.class.isAssignableFrom(this.element.getType());
+	}
+
+	@Override
+	public boolean isMap() {
+		return Map.class.isAssignableFrom(this.element.getType());
 	}
 }

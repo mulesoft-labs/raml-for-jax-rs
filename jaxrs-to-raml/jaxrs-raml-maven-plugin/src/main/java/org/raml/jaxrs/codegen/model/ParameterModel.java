@@ -104,7 +104,7 @@ public class ParameterModel extends BasicModel implements IParameterModel{
 
 	/** {@inheritDoc} */
 	@Override
-	public String getType() {
+	public String getParameterType() {
 		return type;
 	}
 

@@ -11,6 +11,7 @@ import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 import org.raml.schema.model.SimpleType;
+import org.raml.schema.model.impl.TypeModelImpl;
 import org.raml.schema.model.serializer.ISerializationNode;
 import org.raml.schema.model.serializer.StructuredModelSerializer;
 
@@ -46,7 +47,7 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 				this.object = new JSONObject();
 				
 				ISchemaType keyType = SimpleType.STRING;
-				ISchemaType valueType = type;
+				ISchemaType valueType = new TypeModelImpl("Object", "java.lang.Object", null, StructureType.COMMON);
 				if(prop!=null && prop instanceof IMapSchemaProperty){
 					keyType = ((IMapSchemaProperty)prop).getKeyType();
 					valueType = ((IMapSchemaProperty)prop).getValueType();

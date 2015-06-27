@@ -62,6 +62,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
+import org.raml.jaxrs.codegen.core.ext.InterfaceNameBuilderExtension;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Raml;
@@ -234,8 +235,18 @@ public abstract class AbstractGenerator {
 	 */
 	protected void createResourceInterface(final Resource resource,
 			final Raml raml) throws Exception {
-		final String resourceInterfaceName = Names
-				.buildResourceInterfaceName(resource);
+		
+		String resourceInterfaceName = null;
+    	for (GeneratorExtension e : extensions) {
+    		if(e instanceof InterfaceNameBuilderExtension){
+    			InterfaceNameBuilderExtension inbe = (InterfaceNameBuilderExtension) e;
+    			resourceInterfaceName = inbe.buildResourceInterfaceName(resource);
+    		}
+        }
+    	if(resourceInterfaceName==null){
+    		resourceInterfaceName = Names.buildResourceInterfaceName(resource);
+    	}
+		
 		final JDefinedClass resourceInterface = context
 				.createResourceInterface(resourceInterfaceName);
 		context.setCurrentResourceInterface(resourceInterface);

@@ -20,6 +20,13 @@ import org.raml.model.MimeType;
 import org.raml.model.Resource;
 
 public interface MethodNameBuilderExtension extends GeneratorExtension {
-
+	
+	/**
+	 * Compose name of JAX RS method
+	 * @param action RAML method
+	 * @param bodyMimeType mime type used
+	 * @param resource action owner resource
+	 * @return JAX RS method name
+	 */
 	String buildResourceMethodName(final Action action, final MimeType bodyMimeType, Resource resource);
 }

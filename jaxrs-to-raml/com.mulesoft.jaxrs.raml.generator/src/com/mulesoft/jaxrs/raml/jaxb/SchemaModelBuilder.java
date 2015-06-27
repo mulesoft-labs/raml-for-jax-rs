@@ -98,7 +98,8 @@ public class SchemaModelBuilder {
 
 	private ISchemaType getType(JAXBProperty p) {
 
-		String canonicalName = p.getType().getClassName();
+		JAXBType propertyType = p.getType();
+		String canonicalName = propertyType!=null ? propertyType.getClassName() : "java.lang.Object";
 		
 		ISchemaType primitive = getPrimitiveType(canonicalName);
 		if(primitive!=null){

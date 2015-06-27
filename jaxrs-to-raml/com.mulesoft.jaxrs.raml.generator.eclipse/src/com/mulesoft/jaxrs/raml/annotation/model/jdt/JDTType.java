@@ -16,6 +16,7 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 		super(tm);
 	}
 
+	protected IType type;
 	
 	public String getName() {
 		return ((IType) tm).getElementName();
@@ -65,5 +66,10 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 		} catch (JavaModelException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+
+	public IType getElement() {
+		return type;
 	}
 }

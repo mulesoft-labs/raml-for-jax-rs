@@ -55,7 +55,7 @@ public class JDTField extends JDTAnnotatable implements IFieldModel{
 	@Override
 	public List<ITypeModel> getJAXBTypes() {
 		try {
-			List<ITypeModel> list = doGetJAXBType(((IField)tm), ((IField)tm).getTypeSignature());
+			List<ITypeModel> list = doGetJAXBTypes(((IField)tm), ((IField)tm).getTypeSignature());
 			return list;
 		} catch (JavaModelException e) {
 			return null;

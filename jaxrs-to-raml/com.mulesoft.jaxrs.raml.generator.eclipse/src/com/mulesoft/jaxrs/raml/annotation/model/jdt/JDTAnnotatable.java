@@ -193,55 +193,95 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		return null;
 	}
 
-	protected List<ITypeModel> doGetJAXBType(IMember iMethod, String returnType)
+	protected List<ITypeModel> doGetJAXBTypes(IMember iMember, String typeSignature)
 			throws JavaModelException {
 		
-		returnType = Signature.getElementType(returnType);
-		if (!returnType.startsWith("Q") || !returnType.endsWith(";")){
-			return null;
-		}
-		
+		String returnType = Signature.getElementType(typeSignature);
 		ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
-		IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);		
-		IType type = resolveType(ownerType, returnType);
-		if (isCollection(type)) {
-			String[] typeArguments = Signature.getTypeArguments(returnType);
-			if (typeArguments.length > 0) {
-				String paramTypeName = typeArguments[0];
-				IType paramType = resolveType(ownerType, paramTypeName);
-				list.add(new JDTType(paramType));
-			}
-		}
-		else if (isMap(type)) {
-			String[] typeArguments = Signature.getTypeArguments(returnType);
-			if (typeArguments.length > 0) {
-				String keyTypeName = typeArguments[0];
-				IType keyType = resolveType(ownerType, keyTypeName);
-				list.add(new JDTType(keyType));
-			}
-			if (typeArguments.length > 1) {
-				String valueTypeName = typeArguments[1];
-				IType valueType = resolveType(ownerType, valueTypeName);
-				list.add(new JDTType(valueType));
-			}
+		Class<?> basicJavaType = getBasicJavaType(returnType);
+		if(basicJavaType!=null){
+			list.add(new ReflectionType(basicJavaType));
 		}
 		else{
-			list.add(new JDTType(type));
+			IType ownerType = (IType) iMember.getAncestor(IJavaElement.TYPE);
+			if (isCollection(iMember,typeSignature)) {
+				String[] typeArguments = Signature.getTypeArguments(typeSignature);
+				if (typeArguments.length > 0) {
+					String paramTypeName = typeArguments[0];
+					ITypeModel paramType = getJAXBType(paramTypeName, ownerType);
+					if(paramType!=null){
+						list.add(paramType);
+					}
+				}
+			}
+			else if (isMap(iMember,typeSignature)) {
+				String[] typeArguments = Signature.getTypeArguments(typeSignature);
+				if (typeArguments.length > 0) {
+					String keyTypeName = typeArguments[0];
+					ITypeModel keyType = getJAXBType(keyTypeName, ownerType);
+					if(keyType!=null){
+						list.add(keyType);
+					}
+				}
+				if (typeArguments.length > 1) {
+					String valueTypeName = typeArguments[1];
+					ITypeModel valueType = getJAXBType(valueTypeName, ownerType);
+					if(valueType!=null){
+						list.add(valueType);
+					}
+				}
+			}
+			else{
+				ITypeModel type = getJAXBType(returnType, ownerType);
+				if(type!=null){
+					list.add(type);
+				}
+			}
 		}
 		return list;
+	}
+
+	private ITypeModel getJAXBType(String typeName, IType ownerType)
+			throws JavaModelException {
+		
+		Class<?> basicJavaType = getBasicJavaType(typeName);
+		if(basicJavaType!=null){
+			return new ReflectionType(getClass());
+		}
+		
+		IType resolveType = resolveType(ownerType, typeName);
+		if(resolveType==null){
+			return null;
+		}
+		return new JDTType(resolveType);
 	}
 
 	private IType resolveType(IType ownerType, String typeName)
 			throws JavaModelException {
 		
+		if(typeName.startsWith("T")&&typeName.endsWith(";")){
+			return null;
+		}
+		
+		if(!typeName.endsWith(";")){			
+			IType type = ownerType.getJavaProject().findType(typeName);
+			return type;
+		}
+		
+		if(typeName.startsWith("L")&&typeName.endsWith(";")){			
+			typeName = typeName.substring(1, typeName.length()-1);
+			IType type = ownerType.getJavaProject().findType(typeName);
+			return type;
+		}
+		
 		String tn;
 		if(typeName.startsWith("Q")&&typeName.endsWith(";")){			
 			tn = Signature.getTypeErasure(typeName);
-			tn = typeName.substring(1, typeName.length() - 1);
 		}
 		else{
 			tn = typeName;
 		}
+		tn = tn.substring(1, tn.length() - 1);
 		String[][] resolveType = ownerType.resolveType(tn);
 		if (resolveType == null) {
 			throw new GenerationException(
@@ -275,9 +315,12 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		try{
 			String superclassName = type.getSuperclassName();	
 			if(superclassName!=null){
-				IType supertype = resolveType(type, superclassName);
-				if(implementsInterface(supertype, interfaceName)){
-					return true;
+				Class<?> basicJavaType = getBasicJavaType(superclassName);
+				if(basicJavaType==null){
+					IType supertype = resolveType(type, superclassName);
+					if(implementsInterface(supertype, interfaceName)){
+						return true;
+					}
 				}
 			}
 		} catch (JavaModelException e) {}
@@ -327,27 +370,39 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		return implementsInterface(type, "java.util.Collection");
 	}
 	
-	protected boolean isCollection(IMember iMethod, String returnType)
+	protected boolean isCollection(IMember iMemeber, String typeSignature)
 			throws JavaModelException {
 		
-		returnType = Signature.getElementType(returnType);
-		if (!returnType.startsWith("Q") || !returnType.endsWith(";")){
+		if(typeSignature.startsWith("[")){
+			return true;
+		}
+		
+		typeSignature = Signature.getElementType(typeSignature);
+		Class<?> basicJavaType = getBasicJavaType(typeSignature);
+		if(basicJavaType!=null){
 			return false;
 		}
-		IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);		
-		IType type = resolveType(ownerType, returnType);
+		IType ownerType = (IType) iMemeber.getAncestor(IJavaElement.TYPE);		
+		IType type = resolveType(ownerType, typeSignature);
+		if(type==null){
+			return false;
+		}
 		return isCollection(type);
 	}
 	
-	protected boolean isMap(IMember iMethod, String returnType)
+	protected boolean isMap(IMember iMember, String typeSignature)
 			throws JavaModelException {
 		
-		returnType = Signature.getElementType(returnType);
-		if (!returnType.startsWith("Q") || !returnType.endsWith(";")){
+		typeSignature = Signature.getElementType(typeSignature);
+		Class<?> basicJavaType = getBasicJavaType(typeSignature);
+		if(basicJavaType!=null){
 			return false;
 		}
-		IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);		
-		IType type = resolveType(ownerType, returnType);
+		IType ownerType = (IType) iMember.getAncestor(IJavaElement.TYPE);		
+		IType type = resolveType(ownerType, typeSignature);
+		if(type==null){
+			return false;
+		}
 		return isMap(type);
 	}
 

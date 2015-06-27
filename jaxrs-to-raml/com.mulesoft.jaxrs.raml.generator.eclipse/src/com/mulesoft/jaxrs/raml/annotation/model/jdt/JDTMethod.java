@@ -220,7 +220,7 @@ public class JDTMethod extends JDTGenericElement implements IMethodModel {
 	@Override
 	public List<ITypeModel> getJAXBTypes() {
 		try {
-			List<ITypeModel> list = doGetJAXBType(((IMember)tm), ((IMethod)tm).getReturnType());
+			List<ITypeModel> list = doGetJAXBTypes(((IMember)tm), ((IMethod)tm).getReturnType());
 			return list;
 		} catch (JavaModelException e) {
 			return null;

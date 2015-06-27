@@ -546,7 +546,12 @@ public class SpoonProcessor{
 			return new ProxyType(registry, qualifiedName);
 		}
 		
-		CtClass<Object> ctType = factory.Class().get(qualifiedName);
+		CtClass<Object> ctClass = factory.Class().get(qualifiedName);
+		if(ctClass!=null){
+			return processType(ctClass);
+		}
+		
+		CtType<Object> ctType = factory.Type().get(qualifiedName);
 		if(ctType!=null){
 			return processType(ctType);
 		}
@@ -573,6 +578,10 @@ public class SpoonProcessor{
 	private IFieldModel processFieldReference(CtFieldReference<?> m) {
 		FieldModel fm=new FieldModel();
 		fillReference(fm, m);
+		Member actualField = m.getActualField();
+		if(actualField!=null){
+			adjustModifiers(fm, actualField);
+		}
 		return fm;
 	}
 	private IFieldModel processField(CtField<?> m, TypeModel ownerType) {
@@ -631,20 +640,31 @@ public class SpoonProcessor{
 		List<CtTypeReference<?>> parameters = methodElement.getParameters();
 		Method actualMethod = methodElement.getActualMethod();
 		if(actualMethod!=null){
-		String canonicalName = actualMethod.getReturnType().getCanonicalName();
-		ITypeModel existingType = registry.getType(canonicalName);
+			String canonicalName = actualMethod.getReturnType().getCanonicalName();
+			ITypeModel existingType = registry.getType(canonicalName);
 			if(existingType!=null){
 				methodModel.setReturnedType(existingType);
 			}
 			if(existingType != null){
 				methodModel.setReturnedType(new ProxyType(registry, canonicalName));
 			}
+			adjustModifiers(methodModel, actualMethod);
 		}
 		for(CtTypeReference<?> p : parameters){
 			IParameterModel parameterModel = processParameterReference(p);
 			methodModel.addParameter(parameterModel);
 		}
 		return methodModel;
+	}
+
+	private void adjustModifiers(BasicModel model, Member member) {
+		int modifiers = member.getModifiers();
+		if(Modifier.isPublic(modifiers)){
+			model.setPublic(true);
+		}
+		if(Modifier.isStatic(modifiers)){
+			model.setStatic(true);
+		}
 	}
 
 	private IParameterModel processParameterReference(CtTypeReference<?> paramTypeReference) {

@@ -103,6 +103,9 @@ public class Generator extends AbstractGenerator
     		if(e instanceof InterfaceNameBuilderExtension){
     			InterfaceNameBuilderExtension inbe = (InterfaceNameBuilderExtension) e;
     			resourceInterfaceName = inbe.buildResourceInterfaceName(resource);
+    			if(resourceInterfaceName!=null){
+    				break;
+    			}
     		}
         }
     	if(resourceInterfaceName==null){

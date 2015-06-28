@@ -2,6 +2,8 @@ package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -154,18 +156,26 @@ public class JAXBType extends JAXBModelElement {
 	public HashMap<String, String> gatherNamespaces() {
 		int n=0;
 		HashMap<String, String>map=new HashMap<String, String>();
-		fillNamespaceMap(map,n);
+		fillNamespaceMap(map,n,null);
 		return map;
 	}
 
-	private int fillNamespaceMap(HashMap<String, String> map, int n) {
+	private int fillNamespaceMap(HashMap<String, String> map, int n,Set<String> processed) {
+		if(processed==null){
+			processed = new HashSet<String>();
+		}
 		for (JAXBProperty p:properties){
 			if (p.namespace!=null){
 				map.put(p.namespace, "n"+(n++));
 			}
 			JAXBType type = p.getType();
-			if (type!=null){
-				n=type.fillNamespaceMap(map, n);
+			String qName = ((ITypeModel)type.originalType).getFullyQualifiedName();
+			if(!processed.contains(qName)){
+				processed.add(qName);			
+				if (type!=null){
+					n=type.fillNamespaceMap(map, n, processed);
+				}
+				processed.remove(qName);
 			}
 		}
 		return n;

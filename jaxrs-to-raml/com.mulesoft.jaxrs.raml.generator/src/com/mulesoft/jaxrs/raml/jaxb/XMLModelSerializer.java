@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.io.StringWriter;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -73,7 +74,7 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 		private Element element;
 
 		@Override
-		public void processProperty(ISchemaType type, ISchemaProperty prop, ISerializationNode childNode) {
+		public void processProperty(ISchemaType type, ISchemaProperty prop, ISerializationNode childNode, Set<String> processedTypes) {
 			
 			ISchemaType propType = prop.getType();
 			if(prop.isAttribute()){			
@@ -109,7 +110,12 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 					}
 					else{
 						Node keyNode = new Node("key", this.document);
-						XMLModelSerializer.this.process(keyType, keyNode);
+						String qName = keyType.getClassQualifiedName();
+						if(!processedTypes.contains(qName)){
+							processedTypes.add(qName);
+							XMLModelSerializer.this.process(keyType, keyNode, processedTypes);
+							processedTypes.remove(qName);
+						}
 						entryElement.appendChild(keyNode.element);
 					}
 					if(valueType!=null&&valueType.isSimple()){
@@ -119,7 +125,12 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 					}
 					else{
 						Node valueNode = new Node("value", this.document);
-						XMLModelSerializer.this.process(valueType, valueNode);
+						String qName = valueType.getClassQualifiedName();
+						if(!processedTypes.contains(qName)){
+							processedTypes.add(qName);
+							XMLModelSerializer.this.process(valueType, valueNode, processedTypes);
+							processedTypes.remove(qName);
+						}
 						entryElement.appendChild(valueNode.element);
 					}
 				}

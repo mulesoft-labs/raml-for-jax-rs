@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.jsonschema;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -88,7 +89,7 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 		private StructureType structureType;
 
 		@Override
-		public void processProperty(ISchemaType type,ISchemaProperty prop, ISerializationNode childNode) {
+		public void processProperty(ISchemaType type,ISchemaProperty prop, ISerializationNode childNode, Set<String> processedTypes) {
 			
 			if(this.structureType == StructureType.COLLECTION){
 				int l = this.array.length();

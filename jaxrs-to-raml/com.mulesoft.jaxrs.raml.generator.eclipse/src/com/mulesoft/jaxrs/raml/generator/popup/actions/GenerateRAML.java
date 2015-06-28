@@ -182,6 +182,8 @@ public class GenerateRAML implements IObjectActionDelegate {
 		shell = targetPart.getSite().getShell();
 
 	}
+	
+	IProgressMonitor monitor;
 
 	HashSet<IType> types = new HashSet<IType>();
 
@@ -257,42 +259,58 @@ public class GenerateRAML implements IObjectActionDelegate {
 		}
 		final File _outputFile = outputFile;
 		final IProject _project = project;
+		
+		final SourceVisitor sourceVisitor = new SourceVisitor(){
+			@Override
+			protected void visitType(IType q) {
+				GenerateRAML.this.visitType(q);
+			}
+			
+			@Override
+			protected void processException(Exception e) {
+				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
+			}
+			
+			@Override
+			protected void processGenerationException(GenerationException e) {
+				MessageDialog.openError(shell, e.getShortMessage(), e.getDetailMessage());
+			}
+		};
+		
+		final int[] count = new int[1];
+		final SourceVisitor countVisitor = new SourceVisitor(){
+			@Override
+			protected void visitType(IType q) {
+				count[0]++;
+			}
+
+			@Override
+			protected void processException(Exception e) {
+				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
+			}
+			
+			@Override
+			protected void processGenerationException(GenerationException e) {
+				MessageDialog.openError(shell, e.getShortMessage(), e.getDetailMessage());
+			}
+		};
+		for (Object q : selectionObject) {
+			countVisitor.visitObject(q);
+		}
+		
 		final Job job = new Job("Generate RAML from JAX RS classes") {
 			 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-					 
-		monitor.beginTask("Generating RAML from JAX RS classes", selectionObject.size()+1);
+		
+		GenerateRAML.this.monitor = monitor;
+		monitor.beginTask("Generating RAML from JAX RS classes", count[0]+1);
 		monitor.worked(1);
 
 		visitor = new JDTResourceVisitor(_outputFile, classLoader);
-		visitor.setPreferences(new PreferencesConfig());
+		visitor.setPreferences(new PreferencesConfig());		
 		for (Object q : selectionObject) {
-			monitor.worked(1);
-			if (!(q instanceof IJavaElement)){
-				continue;
-			}
-			try {
-				if (q instanceof IType) {
-					visitType((IType) q);
-				}
-				if (q instanceof IPackageFragment) {
-					visitPackage((IPackageFragment) q);
-				}
-				if (q instanceof IPackageFragmentRoot) {
-					visitPackageFragmentRoot((IPackageFragmentRoot) q);
-				}
-				if (q instanceof IJavaProject) {
-					visitProject((IJavaProject) q);
-				}
-				if (q instanceof ICompilationUnit) {
-					visitUnit((ICompilationUnit) q);
-				}
-			} catch (GenerationException e) {
-				MessageDialog.openError(shell, e.getShortMessage(), e.getDetailMessage());
-			} catch (Exception e) {
-				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
-			}
+			sourceVisitor.visitObject(q);
 		}
 		if (_project != null) {
 			if (!separateFiles){
@@ -328,7 +346,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 		};
 		job.schedule();				
 	}
-
+	
 	private void visitType(IType q) {
 		if (!types.add(q)) {
 			return;
@@ -361,39 +379,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 			saveResult(visitor, file);
 			}
 		}
-	}
-
-	private void visitUnit(ICompilationUnit q) throws JavaModelException {
-		for (IType t : q.getAllTypes()) {
-			visitType(t);
-		}
-	}
-
-	private void visitPackage(IPackageFragment q) throws JavaModelException {
-		ICompilationUnit[] compilationUnits = q.getCompilationUnits();
-		for (ICompilationUnit unit : compilationUnits) {
-			visitUnit(unit);
-		}
-	}
-
-	private void visitPackageFragmentRoot(IPackageFragmentRoot pr)
-			throws JavaModelException {
-		if (pr.getKind() == IPackageFragmentRoot.K_SOURCE) {
-			IJavaElement[] children = pr.getChildren();
-			for (IJavaElement z : children) {
-				if (z instanceof IPackageFragment) {
-					visitPackage((IPackageFragment) z);
-				}
-			}
-		}
-	}
-
-	private void visitProject(IJavaProject q) throws JavaModelException {
-		IPackageFragmentRoot[] packageFragmentRoots = q
-				.getPackageFragmentRoots();
-		for (IPackageFragmentRoot pr : packageFragmentRoots) {
-			visitPackageFragmentRoot(pr);
-		}
+		this.monitor.worked(1);
 	}
 
 	private void saveResult(ResourceVisitor visitor, IFile file) {

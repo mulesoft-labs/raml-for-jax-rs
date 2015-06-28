@@ -19,8 +19,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -192,6 +196,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
+		
 		types.clear();
 		boolean cpInited = false;
 		IProject project = null;
@@ -233,8 +238,8 @@ public class GenerateRAML implements IObjectActionDelegate {
 			MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Nothing selected", "Please select some Java elements");
 			return;
 		}
-		IFile file = getNewRAMLFile(project);
-		boolean doSingle = isSingle();
+		final IFile file = getNewRAMLFile(project);
+		final boolean doSingle = isSingle();
 		if (file == null) {
 			return;
 		}
@@ -250,10 +255,20 @@ public class GenerateRAML implements IObjectActionDelegate {
 			}
 			// createTempFile.getParentFile();
 		}
+		final File _outputFile = outputFile;
+		final IProject _project = project;
+		final Job job = new Job("Generate RAML from JAX RS classes") {
+			 
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+					 
+		monitor.beginTask("Generating RAML from JAX RS classes", selectionObject.size()+1);
+		monitor.worked(1);
 
-		visitor = new JDTResourceVisitor(outputFile, classLoader);
+		visitor = new JDTResourceVisitor(_outputFile, classLoader);
 		visitor.setPreferences(new PreferencesConfig());
 		for (Object q : selectionObject) {
+			monitor.worked(1);
 			if (!(q instanceof IJavaElement)){
 				continue;
 			}
@@ -279,12 +294,12 @@ public class GenerateRAML implements IObjectActionDelegate {
 				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
 			}
 		}
-		if (project != null) {
+		if (_project != null) {
 			if (!separateFiles){
 				if (doSingle) {
 				String raml = visitor.getRaml();
 				Raml2 build = build(new ByteArrayInputStream(raml.getBytes()),
-						new FileResourceLoader(outputFile.getParent()));
+						new FileResourceLoader(_outputFile.getParent()));
 				RamlEmitterV2 emmitter = new RamlEmitterV2();
 				emmitter.setSingle(true);
 				String dump = emmitter.dump(build);
@@ -294,20 +309,24 @@ public class GenerateRAML implements IObjectActionDelegate {
 					MessageDialog.openError(shell, e.getMessage(),
 							e.getMessage());
 				}
-				return;
+				return Status.OK_STATUS;
 				}
 				else{
 				saveResult(visitor, file);
 				}
 			}
 			try {
-				project.refreshLocal(IProject.DEPTH_INFINITE,
+				_project.refreshLocal(IProject.DEPTH_INFINITE,
 						new NullProgressMonitor());
 			} catch (CoreException e) {
 				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
 			}
 		}
-
+		
+		return Status.OK_STATUS;
+		}
+		};
+		job.schedule();				
 	}
 
 	private void visitType(IType q) {

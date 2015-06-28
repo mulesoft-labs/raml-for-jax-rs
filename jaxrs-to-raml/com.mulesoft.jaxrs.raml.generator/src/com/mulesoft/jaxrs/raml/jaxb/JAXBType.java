@@ -51,8 +51,11 @@ public class JAXBType extends JAXBModelElement {
 			boolean is = m.getName().startsWith("is");
 			if (get || is) {
 				// it is potential property method
-				properties.add(createProperty(get ? m.getName().substring(3)
-						: m.getName().substring(2), m));
+				String methodName = get ? m.getName().substring(3)
+						: m.getName().substring(2);
+				if(!methodName.isEmpty()){
+					properties.add(createProperty(methodName, m));
+				}
 			}
 		}
 		for (IFieldModel f : model.getFields()) {
@@ -169,7 +172,7 @@ public class JAXBType extends JAXBModelElement {
 				map.put(p.namespace, "n"+(n++));
 			}
 			JAXBType type = p.getType();
-			String qName = ((ITypeModel)type.originalType).getFullyQualifiedName();
+			String qName = type.getClassName();
 			if(!processed.contains(qName)){
 				processed.add(qName);			
 				if (type!=null){

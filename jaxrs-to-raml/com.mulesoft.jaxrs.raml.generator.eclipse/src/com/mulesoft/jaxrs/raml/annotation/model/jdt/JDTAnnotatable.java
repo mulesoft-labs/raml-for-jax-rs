@@ -246,7 +246,7 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		
 		Class<?> basicJavaType = getBasicJavaType(typeName);
 		if(basicJavaType!=null){
-			return new ReflectionType(getClass());
+			return new ReflectionType(basicJavaType);
 		}
 		
 		IType resolveType = resolveType(ownerType, typeName);

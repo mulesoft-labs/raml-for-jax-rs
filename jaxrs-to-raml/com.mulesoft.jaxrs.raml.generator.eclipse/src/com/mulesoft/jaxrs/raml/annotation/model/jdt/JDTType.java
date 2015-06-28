@@ -1,10 +1,14 @@
 package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 
+import java.io.IOException;
+import java.io.Reader;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavadocContentAccess;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -40,7 +44,30 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 	
 	public String getDocumentation() {
 		try {
-			return ((IType) tm).getAttachedJavadoc(new NullProgressMonitor());
+			IType typeDef = (IType) tm;
+			String javadoc = typeDef.getAttachedJavadoc(new NullProgressMonitor());
+			if(javadoc==null){
+				Reader reader = JavadocContentAccess.getContentReader((IType)tm, true);
+				if(reader!=null){
+					int l = 0;
+					StringBuilder bld = new StringBuilder();
+					char[] buf = new char[1024];
+					try {
+						while((l=reader.read(buf))>=0){
+							bld.append(buf,0,l);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if(bld.length()>0){
+						javadoc = bld.toString();
+						if(javadoc.endsWith("\n/")){
+							javadoc = javadoc.substring(0, javadoc.length()-2);
+						}
+					}
+				}
+			}
+			return javadoc;
 		} catch (JavaModelException e) {
 			throw new IllegalStateException();
 		}

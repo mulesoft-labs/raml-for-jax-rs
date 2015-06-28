@@ -3,6 +3,8 @@ package com.mulesoft.jaxrs.raml.jaxb;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAnyAttribute;
+
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
@@ -91,7 +93,10 @@ public abstract class JAXBProperty extends JAXBModelElement{
 		if(isCollection||asJavaType()!=null&&Collection.class.isAssignableFrom(asJavaType())){
 			return StructureType.COLLECTION;
 		}
-		else if(isMap||asJavaType()!=null&&Map.class.isAssignableFrom(asJavaType())){
+		else if(isMap
+				||(asJavaType()!=null&&Map.class.isAssignableFrom(asJavaType())
+				||this.originalType.hasAnnotation(XmlAnyAttribute.class.getSimpleName()))
+			){
 			return StructureType.MAP;
 		}
 		else{

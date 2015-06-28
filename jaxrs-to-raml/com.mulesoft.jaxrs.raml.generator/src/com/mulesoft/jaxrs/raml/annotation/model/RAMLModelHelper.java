@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import org.raml.model.Protocol;
@@ -278,8 +279,16 @@ public class RAMLModelHelper {
 			//list of entries to collapse segment
 			for (String  s:map.keySet()){
 				ArrayList<Entry>e=map.get(s);
+				if(e.size()<2){
+					continue;
+				}
+				LinkedHashSet<String> docs = new LinkedHashSet<String>();
 				Entry base=e.get(0);
 				Resource r0=base.res;
+				String desc0 = r0.getDescription();
+				if(desc0 != null){
+					docs.add(desc0);
+				}
 				Resource newRes=new Resource();
 				String relativeUri = "/"+s;
 				newRes.setRelativeUri(relativeUri);
@@ -289,10 +298,19 @@ public class RAMLModelHelper {
 				base.res=newRes;
 				for (int a=1;a<e.size();a++){
 					Entry entry = e.get(a);
+					String desc = entry.res.getDescription();
+					if(desc != null){
+						docs.add(desc);
+					}
 					stripSegment(entry.res);
 					rt.remove(entry);
 					newRes.getResources().put(entry.res.getRelativeUri(), entry.res);
-				}				
+				}
+				StringBuilder bld = new StringBuilder();
+				for(String desc : docs){
+					bld.append(desc).append("\n\n");
+				}
+				newRes.setDescription(bld.toString().trim());
 			}
 		}
 		resources.clear();

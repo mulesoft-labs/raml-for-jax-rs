@@ -231,7 +231,7 @@ public abstract class ResourceVisitor {
 			}
 			IMethodModel[] methods = t.getMethods();
 			for (IMethodModel m : methods) {
-				visit(m, annotationValue);
+				visit(m, annotationValue, t);
 			}
 		}
 
@@ -296,7 +296,7 @@ public abstract class ResourceVisitor {
 		return holder.content;
 	}
 
-	private void visit(IMethodModel m, String path) {
+	private void visit(IMethodModel m, String path, ITypeModel ownerType) {
 		boolean hasPath = m.hasAnnotation(PATH);
 		if (hasPath) {
 			String localPath = m.getAnnotationValue(PATH);
@@ -316,6 +316,8 @@ public abstract class ResourceVisitor {
 		}
 		if (isWs) {
 			Resource res = new Resource();
+			res.setDescription(ownerType.getDocumentation());
+			
 			IDocInfo documentation = getDocumentation(m);
 
 			String returnName = null;

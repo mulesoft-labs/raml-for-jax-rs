@@ -1,8 +1,11 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -48,6 +51,17 @@ public class JAXBElementProperty extends JAXBProperty{
 	 */
 	public List<JAXBType> getJAXBTypes() {
 		if(this.originalType.hasAnnotation(XmlJavaTypeAdapter.class.getSimpleName())){
+			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
+			list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
+			return list;
+		}
+		else if(this.originalType.hasAnnotation(XmlAnyAttribute.class.getSimpleName())){
+			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
+			list.add(registry.getJAXBModel(new ReflectionType(String.class)));
+			list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
+			return list;
+		}
+		else if(this.originalType.hasAnnotation(XmlAnyElement.class.getSimpleName())){
 			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
 			list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
 			return list;

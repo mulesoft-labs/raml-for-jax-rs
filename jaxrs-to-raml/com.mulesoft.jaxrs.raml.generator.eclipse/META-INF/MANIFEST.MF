@@ -5,6 +5,7 @@ Bundle-SymbolicName: com.mulesoft.jaxrs.raml.generator.eclipse;singleton:=true
 Bundle-Version: 1.3.4.qualifier
 Bundle-Vendor: MULESOFT
 Require-Bundle: org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
  org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,

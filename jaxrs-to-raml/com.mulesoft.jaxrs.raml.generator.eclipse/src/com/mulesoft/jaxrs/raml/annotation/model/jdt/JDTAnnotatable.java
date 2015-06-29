@@ -263,8 +263,19 @@ public abstract class JDTAnnotatable implements IBasicModel {
 			return null;
 		}
 		
-		if(!typeName.endsWith(";")){			
+		if(!typeName.endsWith(";")){
+			int ind = typeName.indexOf("<");
+			if(ind>=0){
+				typeName = "java.util."+typeName.substring(0, ind);
+			}
 			IType type = ownerType.getJavaProject().findType(typeName);
+			if(type==null){
+				String[][] resolveType = ownerType.resolveType(typeName);
+				if (resolveType.length == 1) {
+					type = ownerType.getJavaProject().findType(
+							resolveType[0][0] + '.' + resolveType[0][1]);				
+				}
+			}
 			return type;
 		}
 		
@@ -296,6 +307,10 @@ public abstract class JDTAnnotatable implements IBasicModel {
 	}
 	
 	private boolean implementsInterface(IType type, String interfaceName){
+		
+		if(type==null){
+			return false;
+		}
 		
 		if(type.getFullyQualifiedName().equals(interfaceName)){
 			return true;

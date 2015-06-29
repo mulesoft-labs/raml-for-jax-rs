@@ -172,6 +172,9 @@ public class JAXBType extends JAXBModelElement {
 				map.put(p.namespace, "n"+(n++));
 			}
 			JAXBType type = p.getType();
+			if(type==null){
+				continue;
+			}
 			String qName = type.getClassName();
 			if(!processed.contains(qName)){
 				processed.add(qName);			

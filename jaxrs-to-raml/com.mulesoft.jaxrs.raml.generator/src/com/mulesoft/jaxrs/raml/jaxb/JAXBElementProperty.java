@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
+import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 
 /**
@@ -52,7 +53,13 @@ public class JAXBElementProperty extends JAXBProperty{
 	public List<JAXBType> getJAXBTypes() {
 		if(this.originalType.hasAnnotation(XmlJavaTypeAdapter.class.getSimpleName())){
 			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
-			list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
+			if(this.getStructureType()==StructureType.MAP){
+				list.add(registry.getJAXBModel(new ReflectionType(String.class)));
+				list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
+			}
+			else{
+				list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
+			}
 			return list;
 		}
 		else if(this.originalType.hasAnnotation(XmlAnyAttribute.class.getSimpleName())){

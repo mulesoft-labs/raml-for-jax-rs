@@ -89,28 +89,6 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		if (returnType.equals("[B")){
 			return byte[].class;
 		}
-		returnType=Signature.getElementType(returnType);
-		if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
-			IType ownerType = (IType) ((IMember) tm)
-					.getAncestor(IJavaElement.TYPE);
-			String typeName = returnType.substring(1, returnType.length() - 1);
-			String removeCapture = Signature.getTypeErasure(typeName);
-			try {
-				String[][] resolveType = ownerType.resolveType(removeCapture);
-				if (resolveType == null) {
-					throw new GenerationException(
-							"Type " + typeName + " cannot be resolved", "Type " + typeName + " cannot be resolved, maybe because of the compilation errors"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				}
-				if (resolveType.length == 1) {
-					IType findType = ownerType.getJavaProject().findType(
-							resolveType[0][0] + '.' + resolveType[0][1]);
-
-				}
-			} catch (JavaModelException e) {
-				return null;
-			}
-
-		}
 		if (returnType.equals("QString;")){
 			return String.class;
 		}
@@ -161,36 +139,18 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		}
 		if (returnType.equals("Z")){
 			return boolean.class;
-		}		
+		}
+		if (returnType.equals("V")){
+			return void.class;
+		}
 		return null;
 	}
 
 	protected ITypeModel doGetType(IMember iMethod, String returnType)
 			throws JavaModelException {
 		
-		Class<?> basicType = getBasicJavaType(returnType);
-		if(basicType!=null){
-			return new ReflectionType(basicType);
-		}
-		
-		if (returnType.startsWith("Q") && returnType.endsWith(";")) { //$NON-NLS-1$ //$NON-NLS-2$
-			IType ownerType = (IType) iMethod.getAncestor(IJavaElement.TYPE);
-			String typeName = returnType.substring(1, returnType.length() - 1);
-			String removeCapture = Signature.getTypeErasure(typeName);
-			String[][] resolveType = ownerType.resolveType(removeCapture);
-			if (resolveType == null) {
-				throw new GenerationException(
-						"Type " + typeName + " cannot be resolved", "Type " + typeName + " cannot be resolved, maybe because of the compilation errors"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			}
-			if (resolveType.length == 1) {
-				IType findType = ownerType.getJavaProject().findType(
-						resolveType[0][0] + '.' + resolveType[0][1]);
-				if (findType != null ) {
-					return new JDTType(findType);
-				}
-			}
-		}
-		return null;
+		ITypeModel jaxbType = getJAXBType(returnType,iMethod.getDeclaringType());		
+		return jaxbType;
 	}
 
 	protected List<ITypeModel> doGetJAXBTypes(IMember iMember, String typeSignature)
@@ -248,6 +208,9 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		if(basicJavaType!=null){
 			return new ReflectionType(basicJavaType);
 		}
+		if(typeName.startsWith("T")&&typeName.endsWith(";")){
+			return new ReflectionType(Object.class);
+		}
 		
 		IType resolveType = resolveType(ownerType, typeName);
 		if(resolveType==null){
@@ -279,7 +242,8 @@ public abstract class JDTAnnotatable implements IBasicModel {
 			return type;
 		}
 		
-		if(typeName.startsWith("L")&&typeName.endsWith(";")){			
+		if(typeName.startsWith("L")&&typeName.endsWith(";")){
+			typeName = Signature.getTypeErasure(typeName);
 			typeName = typeName.substring(1, typeName.length()-1);
 			IType type = ownerType.getJavaProject().findType(typeName);
 			return type;
@@ -397,6 +361,9 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		if(basicJavaType!=null){
 			return false;
 		}
+		if(typeSignature.startsWith("T")&&typeSignature.endsWith(";")){
+			return false;
+		}		
 		IType ownerType = (IType) iMemeber.getAncestor(IJavaElement.TYPE);		
 		IType type = resolveType(ownerType, typeSignature);
 		if(type==null){
@@ -411,6 +378,9 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		typeSignature = Signature.getElementType(typeSignature);
 		Class<?> basicJavaType = getBasicJavaType(typeSignature);
 		if(basicJavaType!=null){
+			return false;
+		}
+		if(typeSignature.startsWith("T")&&typeSignature.endsWith(";")){
 			return false;
 		}
 		IType ownerType = (IType) iMember.getAncestor(IJavaElement.TYPE);		

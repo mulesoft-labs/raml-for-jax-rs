@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,12 +39,14 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -68,6 +72,8 @@ import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.jdt.JDTType;
 
 public class GenerateRAML implements IObjectActionDelegate {
+
+	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	private final class RAMLConfigurationDialog extends InputDialog {
 		private RamlConfigurationComposite ramlConfigurationComposite;
@@ -267,13 +273,13 @@ public class GenerateRAML implements IObjectActionDelegate {
 			}
 			
 			@Override
-			protected void processException(Exception e) {
-				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
+			protected void processException(Exception e) {				
+				showException(e);
 			}
-			
+
 			@Override
 			protected void processGenerationException(GenerationException e) {
-				MessageDialog.openError(shell, e.getShortMessage(), e.getDetailMessage());
+				showException(e);
 			}
 		};
 		
@@ -286,12 +292,12 @@ public class GenerateRAML implements IObjectActionDelegate {
 
 			@Override
 			protected void processException(Exception e) {
-				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
+				showException(e);
 			}
 			
 			@Override
 			protected void processGenerationException(GenerationException e) {
-				MessageDialog.openError(shell, e.getShortMessage(), e.getDetailMessage());
+				showException(e);
 			}
 		};
 		for (Object q : selectionObject) {
@@ -324,8 +330,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				try {
 					save(dump, file);
 				} catch (Exception e) {
-					MessageDialog.openError(shell, e.getMessage(),
-							e.getMessage());
+					showException(e);
 				}
 				return Status.OK_STATUS;
 				}
@@ -337,7 +342,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				_project.refreshLocal(IProject.DEPTH_INFINITE,
 						new NullProgressMonitor());
 			} catch (CoreException e) {
-				MessageDialog.openError(shell, e.getMessage(), e.getMessage());
+				showException(e);
 			}
 		}
 		
@@ -370,8 +375,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 				try {
 					save(dump, file);
 				} catch (Exception e) {
-					MessageDialog.openError(shell, e.getMessage(),
-							e.getMessage());
+					showException(e);
 				}
 				return;
 			}
@@ -387,10 +391,9 @@ public class GenerateRAML implements IObjectActionDelegate {
 		try {
 			save(raml, file);
 		} catch (UnsupportedEncodingException e) {
-			MessageDialog.openError(shell, "Error", e.getMessage());
-
+			showException(e, "Error");
 		} catch (CoreException e) {
-			MessageDialog.openError(shell, "Error", e.getMessage());
+			showException(e, "Error");
 		}
 	}
 	
@@ -426,5 +429,81 @@ public class GenerateRAML implements IObjectActionDelegate {
 	public void selectionChanged(IAction action, ISelection selection) {
 		selectionObject = ((IStructuredSelection) selection).toList();
 	}
+	
 
+	private void showException(final Exception e, String... message) {
+		
+		String msg = "";
+		if(e instanceof GenerationException){
+			msg = ((GenerationException)e).getShortMessage();
+		}
+		else{
+			msg = e.getMessage();
+			if(message!=null&&message.length>0&&message[0]!=null){
+				msg = message[0];
+			}
+			if(msg==null){
+				msg = e.getClass().getCanonicalName();
+			}
+		}
+		final String fMsg = msg;
+		
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		String text = "";
+		if(e instanceof GenerationException){
+			text = ((GenerationException)e).getDetailMessage();
+			text += LINE_SEPARATOR;
+			text += LINE_SEPARATOR;
+		}
+		text += sw.toString();
+		final String fText = text;
+				
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {				
+				ErrorDialog dialog = new ErrorDialog(shell, "Generate RAML Error", fMsg, fText);
+				dialog.open();
+			}
+		});
+	}
+	
+	private static class ErrorDialog extends TitleAreaDialog{
+
+		public ErrorDialog(Shell parentShell, String title, String message, String text) {
+			super(parentShell);
+			this.title = title;
+			this.message = message;
+			this.text = text;
+		}
+		private String title;
+		
+		private String message;
+		
+		private String text;
+		
+		@Override
+		protected Control createDialogArea(Composite parent) {
+			if(this.title!=null){
+				this.setTitle(this.title);
+			}
+			if(this.message!=null){
+				this.setMessage(this.message);
+			}
+			Composite area = (Composite) super.createDialogArea(parent);
+		    Composite container = new Composite(area, SWT.NONE);
+		    container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		    GridLayout layout = new GridLayout(1, false);
+		    container.setLayout(layout);
+		    
+		    Text txt = new Text(container, SWT.BORDER|SWT.MULTI);
+		    txt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		    if(this.text!=null){
+		    	txt.setText(this.text);
+		    }
+		    txt.setEditable(false);
+		    return area;			
+		}
+	}
 }

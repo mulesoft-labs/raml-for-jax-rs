@@ -40,7 +40,7 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 
 	public boolean AddParameterFilter(String name, AbstractParam parameter,
 			Class<? extends Annotation> annotationClass, JMethod method) {
-		return false;
+		return true;
 	}
 
 	public void setRaml(Raml raml) {}

@@ -40,6 +40,10 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	private LinkedHashMap<String,IMethodModel> methods = new LinkedHashMap<String,IMethodModel>();
 	private LinkedHashMap<String,IFieldModel> fields = new LinkedHashMap<String,IFieldModel>();
 	
+	private ITypeModel superClass;
+	
+	private ITypeModel[] implementedIntefaces;
+	
 	/**
 	 * <p>Getter for the field <code>methods</code>.</p>
 	 *
@@ -124,5 +128,23 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	 */
 	public void addField(IFieldModel fieldModel) {
 		fields.put(fieldModel.getName(),fieldModel);
+	}
+
+	@Override
+	public ITypeModel getSuperClass() {
+		return this.superClass;
+	}
+
+	@Override
+	public ITypeModel[] getImplementedInterfaces() {
+		return this.implementedIntefaces;
+	}
+
+	public void setSuperClass(ITypeModel superClass) {
+		this.superClass = superClass;
+	}
+
+	public void setImplementedInterfaces(ITypeModel[] implementedIntefaces) {
+		this.implementedIntefaces = implementedIntefaces;
 	}
 }

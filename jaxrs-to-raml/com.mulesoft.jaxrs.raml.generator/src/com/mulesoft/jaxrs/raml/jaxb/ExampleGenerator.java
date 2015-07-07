@@ -44,7 +44,7 @@ public class ExampleGenerator {
 		}
 		HashMap<String,String>prefixes=type.gatherNamespaces();
 		writer.startEntityAndDeclareNamespaces(xmlName,prefixes);		
-		for (JAXBProperty p:type.properties){
+		for (JAXBProperty p:type.getAllProperties()){
 			writeProperty(p,prefixes);
 		}
 		writer.endEntity(xmlName);

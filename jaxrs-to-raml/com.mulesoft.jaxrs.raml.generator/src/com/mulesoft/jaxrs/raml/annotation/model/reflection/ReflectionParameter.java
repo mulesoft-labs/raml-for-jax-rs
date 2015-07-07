@@ -15,16 +15,18 @@ public class ReflectionParameter implements IParameterModel{
 
 	private static final String VALUE = "value";
 	protected ReflectionType type;
+	protected String name;	
 	/**
 	 * <p>Constructor for ReflectionParameter.</p>
 	 *
 	 * @param type a {@link com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType} object.
 	 * @param model an array of {@link com.mulesoft.jaxrs.raml.annotation.model.reflection.AnnotationModel} objects.
 	 */
-	public ReflectionParameter(ReflectionType type, AnnotationModel[] model) {
+	public ReflectionParameter(ReflectionType type, AnnotationModel[] model,String name) {
 		super();
 		this.type = type;
 		this.model = model;
+		this.name = name;
 	}
 	
 	/**
@@ -32,9 +34,11 @@ public class ReflectionParameter implements IParameterModel{
 	 *
 	 * @param cl a {@link java.lang.Class} object.
 	 * @param annotations an array of {@link java.lang.annotation.Annotation} objects.
+	 * @param name 
 	 */
-	public ReflectionParameter(Class<?> cl, Annotation[] annotations) {
+	public ReflectionParameter(Class<?> cl, Annotation[] annotations, String name) {
 		this.type=new ReflectionType(cl);
+		this.name = name;
 		model=new AnnotationModel[annotations.length];
 		int i=0;
 		for (Annotation a:annotations){
@@ -107,8 +111,7 @@ public class ReflectionParameter implements IParameterModel{
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getName() {
-		String name = type.getName();
-		return name;
+		return this.name;
 	}
 	
 	/**

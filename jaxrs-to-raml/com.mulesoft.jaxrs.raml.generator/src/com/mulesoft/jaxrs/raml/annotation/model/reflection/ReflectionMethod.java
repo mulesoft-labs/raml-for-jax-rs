@@ -44,7 +44,7 @@ public class ReflectionMethod extends ReflectionGenericElement<Method> implement
 		IParameterModel[] models=new IParameterModel[parameterTypes.length];
 		int a=0;
 		for (Class<?>cl:parameterTypes){
-			models[a++]=new ReflectionParameter(cl, parameterAnnotations[a-1]);
+			models[a++]=new ReflectionParameter(cl, parameterAnnotations[a-1], "arg"+a);
 		}
 		return models;
 	}

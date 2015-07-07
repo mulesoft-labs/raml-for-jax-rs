@@ -50,7 +50,7 @@ public class SchemaModelBuilder {
 		this.jaxbTypeMap.put(xmlName, typeModel);
 		HashMap<String,String>prefixes=jaxbType.gatherNamespaces();
 	
-		for (JAXBProperty p:jaxbType.properties){
+		for (JAXBProperty p:jaxbType.getAllProperties()){
 			writeProperty(typeModel,p,prefixes);
 		}
 		return typeModel;

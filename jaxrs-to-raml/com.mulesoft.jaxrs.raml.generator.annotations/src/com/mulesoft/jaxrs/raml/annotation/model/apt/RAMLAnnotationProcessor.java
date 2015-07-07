@@ -99,7 +99,6 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 					result.add((TypeElement) element);
 				}
 			}
-			
 		}
 		if (result.size() == 0) {
 			return false;

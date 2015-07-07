@@ -76,4 +76,25 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 		return fields;
 	}
 
+
+	@Override
+	public ITypeModel getSuperClass() {
+		Class<?> superClass = this.element.getSuperclass();		
+		return superClass!=null ? new ReflectionType(superClass) : null;
+	}
+
+
+	@Override
+	public ITypeModel[] getImplementedInterfaces() {
+		Class<?>[] interfaces = this.element.getInterfaces();
+		if(interfaces==null||interfaces.length==0){
+			return new ITypeModel[0];
+		}
+		ITypeModel[] arr = new ITypeModel[interfaces.length];
+		for(int i = 0 ; i < interfaces.length ; i++){
+			arr[i] = new ReflectionType(interfaces[i]);
+		}
+		return arr;
+	}
+
 }

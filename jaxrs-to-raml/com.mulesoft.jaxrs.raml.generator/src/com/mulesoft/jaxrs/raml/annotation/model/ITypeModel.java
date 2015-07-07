@@ -30,4 +30,19 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	 * @return a {@link java.lang.String} object.
 	 */
 	String getFullyQualifiedName();
+	
+	/**
+	 * <p>getSuperClass.</p>
+	 * 
+	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 */
+	ITypeModel getSuperClass();
+	
+	
+	/**
+	 * <p>getImplementedInterfaces</p>
+	 * 
+	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} objects.
+	 */
+	ITypeModel[] getImplementedInterfaces();
 }

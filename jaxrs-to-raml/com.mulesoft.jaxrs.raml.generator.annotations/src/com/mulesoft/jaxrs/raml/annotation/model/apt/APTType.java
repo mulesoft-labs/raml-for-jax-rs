@@ -7,6 +7,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
@@ -114,5 +116,36 @@ public class APTType extends APTGenericElement implements ITypeModel{
 			}
 		}
 		return result.toArray(new IFieldModel[result.size()]);
+	}
+
+
+	@Override
+	public ITypeModel getSuperClass() {
+		TypeMirror superclass = this.element.getSuperclass();
+		if (superclass != null && superclass instanceof DeclaredType) {
+			DeclaredType declaredType = (DeclaredType) superclass;
+			TypeElement returnTypeElement = (TypeElement) declaredType.asElement();
+			return new APTType(returnTypeElement);
+		}
+		return null;
+	}
+
+
+	@Override
+	public ITypeModel[] getImplementedInterfaces() {
+		
+		List<? extends TypeMirror> interfaces = this.element.getInterfaces();		
+		if(interfaces==null||interfaces.size()==0){
+			return new ITypeModel[0];
+		}
+		ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+		for(TypeMirror tm : interfaces){
+			if (tm != null && tm instanceof DeclaredType) {
+				DeclaredType declaredType = (DeclaredType) tm;
+				TypeElement returnTypeElement = (TypeElement) declaredType.asElement();
+				list.add(new APTType(returnTypeElement));
+			}			
+		}
+		return list.toArray(new ITypeModel[list.size()]);
 	}
 }

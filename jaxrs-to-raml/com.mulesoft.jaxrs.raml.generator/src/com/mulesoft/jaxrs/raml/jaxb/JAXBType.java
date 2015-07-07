@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.jaxb;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -185,6 +186,32 @@ public class JAXBType extends JAXBModelElement {
 			}
 		}
 		return n;
+	}
+
+	public ArrayList<JAXBProperty> getAllProperties() {
+		
+		LinkedHashMap<String,JAXBProperty> map = new LinkedHashMap<String, JAXBProperty>();
+		JAXBType type = this;
+		while(type!=null){
+			
+			if(type.properties!=null){
+				for(JAXBProperty prop: type.properties){
+					String propName = prop.name();
+					if(!map.containsKey(propName)){
+						map.put(propName, prop);
+					}
+				}
+			}			
+			ITypeModel superClazz = ((ITypeModel)type.originalType).getSuperClass();
+			if(superClazz==null){
+				type = null;
+			}
+			else{
+				type = this.registry.getJAXBModel(superClazz);
+			}
+		}
+		ArrayList<JAXBProperty> result = new ArrayList<JAXBProperty>(map.values());
+		return result;
 	}
 
 }

@@ -219,7 +219,7 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		return new JDTType(resolveType);
 	}
 
-	private IType resolveType(IType ownerType, String typeName)
+	protected IType resolveType(IType ownerType, String typeName)
 			throws JavaModelException {
 		
 		if(typeName.startsWith("T")&&typeName.endsWith(";")){
@@ -234,6 +234,10 @@ public abstract class JDTAnnotatable implements IBasicModel {
 			IType type = ownerType.getJavaProject().findType(typeName);
 			if(type==null){
 				String[][] resolveType = ownerType.resolveType(typeName);
+				if (resolveType == null) {
+					throw new GenerationException(
+							"Type " + typeName + " cannot be resolved", "Type " + typeName + " cannot be resolved, maybe because of the compilation errors"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				}
 				if (resolveType.length == 1) {
 					type = ownerType.getJavaProject().findType(
 							resolveType[0][0] + '.' + resolveType[0][1]);				

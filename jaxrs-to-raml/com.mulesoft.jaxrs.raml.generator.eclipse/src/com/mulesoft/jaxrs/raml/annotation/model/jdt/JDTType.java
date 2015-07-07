@@ -2,6 +2,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IField;
@@ -98,5 +99,38 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 
 	public IType getElement() {
 		return type;
+	}
+
+
+	@Override
+	public ITypeModel getSuperClass() {
+		try {
+			String signature = this.type.getSuperclassTypeSignature();
+			IType superType = this.resolveType(this.type, signature);
+			return new JDTType(superType);
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	@Override
+	public ITypeModel[] getImplementedInterfaces() {
+		
+		try {
+			String[] interfaces = this.type.getSuperInterfaceTypeSignatures();
+			ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+			for(String signature: interfaces){
+				IType iFace = this.resolveType(this.type, signature);
+				if(iFace!=null){
+					list.add(new JDTType(iFace));
+				}
+			}
+			return list.toArray(new ITypeModel[list.size()]);
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		return new ITypeModel[0];
 	}
 }

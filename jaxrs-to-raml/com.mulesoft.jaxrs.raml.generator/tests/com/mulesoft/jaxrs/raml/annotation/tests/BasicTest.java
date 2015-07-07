@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.annotation.tests;
 
 import java.util.List;
+import java.util.Map;
 
 import org.raml.model.Action;
 import org.raml.model.ActionType;
@@ -10,10 +11,12 @@ import org.raml.model.Resource;
 import org.raml.model.Response;
 import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.Header;
+import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
 import org.raml.parser.visitor.RamlDocumentBuilder;
 
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeRamlBuilder;
+import com.mulesoft.jaxrs.raml.annotation.tests.TestResource5Child;
 
 import junit.framework.TestCase;
 
@@ -102,4 +105,25 @@ public class BasicTest extends TestCase{
 		TestCase.assertNotNull(action);
 	}
 	*/
+	
+	
+	public void test6(){
+		RuntimeRamlBuilder runtimeRamlBuilder = new RuntimeRamlBuilder();
+		runtimeRamlBuilder.addClass(TestResource5Child.class);
+		String raml = runtimeRamlBuilder.toRAML();
+		Raml build = new RamlDocumentBuilder().build(raml);
+		Resource resource = build.getResource("/root");		 //$NON-NLS-1$
+		TestCase.assertNotNull(resource);
+		Action action = resource.getAction(ActionType.POST);
+		TestCase.assertNotNull(action);
+		MimeType mimeType = action.getBody().get("multipart/form-data"); //$NON-NLS-1$
+		TestCase.assertNotNull(mimeType);
+		List<FormParameter> list = mimeType.getFormParameters().get("visible"); //$NON-NLS-1$
+		TestCase.assertNotNull(list);
+		TestCase.assertTrue(list.size()>0);
+		Map<String, QueryParameter> queryParameters = action.getQueryParameters();
+		TestCase.assertNotNull(queryParameters);
+		QueryParameter queryParameter = queryParameters.get("enabled");
+		TestCase.assertNotNull(queryParameter);
+	}
 }

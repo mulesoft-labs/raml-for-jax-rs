@@ -263,6 +263,22 @@ public class SpoonProcessor{
 		fillTypeParameters(type,classElement);
 		
 		if(classElement instanceof CtType){
+			CtTypeReference<?> superClass = classElement.getSuperclass();
+			if(superClass!=null){
+				ITypeModel superType = processTypeReference(superClass);
+				type.setSuperClass(superType);
+			}
+			Set<CtTypeReference<?>> interfaces = classElement.getSuperInterfaces();
+			if(interfaces!=null){
+				ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
+				for(CtTypeReference<?> ref: interfaces){
+					ITypeModel tm = this.processTypeReference(ref);
+					if(tm!=null){
+						list.add(tm);
+					}
+				}
+				type.setImplementedInterfaces(list.toArray(new ITypeModel[list.size()]));
+			}
 			Set<CtMethod<?>> methods = ((CtType<?>)classElement).getMethods();
 			for(CtMethod<?> m : methods){
 				IMethodModel methodModel = processMethod(m,type);

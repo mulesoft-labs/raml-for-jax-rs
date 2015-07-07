@@ -231,7 +231,7 @@ public abstract class ResourceVisitor {
 			}
 			IMethodModel[] methods = t.getMethods();
 			for (IMethodModel m : methods) {
-				visit(m, annotationValue, t);
+				visit(new WrapperMethodModel(t,m), annotationValue, t);
 			}
 		}
 

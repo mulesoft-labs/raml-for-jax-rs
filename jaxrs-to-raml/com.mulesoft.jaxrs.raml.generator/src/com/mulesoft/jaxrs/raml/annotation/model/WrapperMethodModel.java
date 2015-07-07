@@ -129,7 +129,7 @@ public class WrapperMethodModel implements IMethodModel{
 		if(this.actualMethod!=null){
 			return this.actualMethod;
 		}		
-		new ClassHierarchyIterator() {
+		new ClassHierarchyVisitor() {
 			@Override
 			boolean checkMethod(IMethodModel m) {
 				boolean isWS = m.hasAnnotation("Path");
@@ -144,7 +144,7 @@ public class WrapperMethodModel implements IMethodModel{
 				}				
 				return isWS;
 			}
-		}.iterate(ownerType, originalMethod);
+		}.visit(ownerType, originalMethod);
 		if(this.actualMethod!=null){
 			return this.actualMethod;
 		}

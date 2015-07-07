@@ -77,7 +77,7 @@ public class WrapperParameterModel implements IParameterModel {
 		if(this.actualParameter!=null){
 			return this.actualParameter;
 		}
-		new ClassHierarchyIterator() {
+		new ClassHierarchyVisitor() {
 			@Override
 			boolean checkMethod(IMethodModel m) {
 				
@@ -100,7 +100,7 @@ public class WrapperParameterModel implements IParameterModel {
 				}
 				return false;
 			}
-		}.iterate(ownerType, this.ownerMethod);
+		}.visit(ownerType, this.ownerMethod);
 		if(this.actualParameter!=null){
 			return this.actualParameter;
 		}

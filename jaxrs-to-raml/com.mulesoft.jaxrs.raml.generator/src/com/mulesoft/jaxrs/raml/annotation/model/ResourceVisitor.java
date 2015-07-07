@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -229,12 +231,43 @@ public abstract class ResourceVisitor {
 			if (!annotationValue.endsWith("/")) { //$NON-NLS-1$
 				annotationValue = annotationValue + "/"; //$NON-NLS-1$
 			}
-			IMethodModel[] methods = t.getMethods();
+			IMethodModel[] methods = extractmethods(t);
 			for (IMethodModel m : methods) {
 				visit(new WrapperMethodModel(t,m), annotationValue, t);
 			}
 		}
 
+	}
+
+	private IMethodModel[] extractmethods(ITypeModel t) {
+		
+		final LinkedHashMap<String,IMethodModel> map = new LinkedHashMap<String,IMethodModel>();
+		
+		new ClassHierarchyVisitor() {
+			
+			@Override
+			boolean checkMethod(IMethodModel method) {
+				String key = getKey(method);
+				if(!map.containsKey(key)){
+					map.put(key, method);
+				}
+				return false;
+			}
+			private String getKey(IMethodModel method) {
+				StringBuilder bld = new StringBuilder(method.getName());
+				for(IParameterModel param : method.getParameters()){
+					bld.append(";").append(param.getParameterType());
+				}
+				String key = bld.toString();
+				return key;
+			}
+			@Override
+			protected boolean visitInterfaces() {
+				return false;
+			}
+		}.visit(t, null);
+		IMethodModel[] result = map.values().toArray(new IMethodModel[map.size()]);
+		return result;
 	}
 
 	/**

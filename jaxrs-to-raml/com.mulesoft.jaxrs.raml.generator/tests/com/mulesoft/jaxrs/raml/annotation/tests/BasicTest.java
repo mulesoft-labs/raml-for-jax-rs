@@ -114,6 +114,8 @@ public class BasicTest extends TestCase{
 		Raml build = new RamlDocumentBuilder().build(raml);
 		Resource resource = build.getResource("/root");		 //$NON-NLS-1$
 		TestCase.assertNotNull(resource);
+		Action getAction = resource.getAction(ActionType.GET);
+		TestCase.assertNotNull(getAction);
 		Action action = resource.getAction(ActionType.POST);
 		TestCase.assertNotNull(action);
 		MimeType mimeType = action.getBody().get("multipart/form-data"); //$NON-NLS-1$

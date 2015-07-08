@@ -227,10 +227,7 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		}
 		
 		if(!typeName.endsWith(";")){
-			int ind = typeName.indexOf("<");
-			if(ind>=0){
-				typeName = "java.util."+typeName.substring(0, ind);
-			}
+			typeName = Signature.getTypeErasure(typeName);
 			IType type = ownerType.getJavaProject().findType(typeName);
 			if(type==null){
 				String[][] resolveType = ownerType.resolveType(typeName);

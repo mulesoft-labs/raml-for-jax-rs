@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -403,7 +404,7 @@ public class GenerateRAML implements IObjectActionDelegate {
 	private URLClassLoader classLoader;
 	
 	private IFile getNewRAMLFile(IProject project) {
-		container=project;
+		container=project.getFolder(new Path("raml"));
 		InputDialog inputDialog = new RAMLConfigurationDialog(shell, "Generate RAML", "Please type the file name for your RAML file", "api.raml", null);
 		int open = inputDialog.open();
 		if (open == Dialog.OK) {
@@ -415,12 +416,23 @@ public class GenerateRAML implements IObjectActionDelegate {
 	private void save(String raml, IFile file) throws CoreException,
 			UnsupportedEncodingException {
 		if (!file.exists()) {
+			createFolder(file.getParent());
 			file.create(new ByteArrayInputStream(raml.getBytes("UTF-8")), true,
 					new NullProgressMonitor());
 		} else {
 			file.setContents(new ByteArrayInputStream(raml.getBytes("UTF-8")),
 					0, new NullProgressMonitor());
 		}
+	}
+	
+	public void createFolder(IContainer folder) throws CoreException {
+		if(folder==null||!(folder instanceof IFolder)){
+			return;
+		}
+	    if (!folder.exists()) {
+	        createFolder(folder.getParent());
+	        ((IFolder)folder).create(true,true,new NullProgressMonitor());
+	    }
 	}
 
 	/**

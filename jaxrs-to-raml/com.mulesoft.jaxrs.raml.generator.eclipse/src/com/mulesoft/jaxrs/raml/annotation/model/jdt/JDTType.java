@@ -20,8 +20,6 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 	public JDTType(IType tm) {
 		super(tm);
 	}
-
-	protected IType type;
 	
 	public String getName() {
 		return ((IType) tm).getElementName();
@@ -98,15 +96,18 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 
 
 	public IType getElement() {
-		return type;
+		return ((IType) tm);
 	}
 
 
 	@Override
 	public ITypeModel getSuperClass() {
 		try {
-			String signature = this.type.getSuperclassTypeSignature();
-			IType superType = this.resolveType(this.type, signature);
+			String signature = ((IType) tm).getSuperclassTypeSignature();
+			if(signature==null){
+				return null;
+			}
+			IType superType = this.resolveType(((IType) tm), signature);
 			return new JDTType(superType);
 		} catch (JavaModelException e) {
 			e.printStackTrace();
@@ -119,10 +120,10 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 	public ITypeModel[] getImplementedInterfaces() {
 		
 		try {
-			String[] interfaces = this.type.getSuperInterfaceTypeSignatures();
+			String[] interfaces = ((IType) tm).getSuperInterfaceTypeSignatures();
 			ArrayList<ITypeModel> list = new ArrayList<ITypeModel>();
 			for(String signature: interfaces){
-				IType iFace = this.resolveType(this.type, signature);
+				IType iFace = this.resolveType(((IType) tm), signature);
 				if(iFace!=null){
 					list.add(new JDTType(iFace));
 				}

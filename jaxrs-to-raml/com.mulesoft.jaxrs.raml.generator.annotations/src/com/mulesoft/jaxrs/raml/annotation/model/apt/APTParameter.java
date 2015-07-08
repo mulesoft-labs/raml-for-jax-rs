@@ -1,5 +1,6 @@
 package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
@@ -21,7 +22,8 @@ public class APTParameter extends APTModel implements IParameterModel{
 	 *
 	 * @param q a {@link javax.lang.model.element.VariableElement} object.
 	 */
-	public APTParameter(VariableElement q) {
+	public APTParameter(VariableElement q, ProcessingEnvironment environment) {
+		super(environment);
 		this.element=q;
 	}
 

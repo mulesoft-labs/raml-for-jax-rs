@@ -2,6 +2,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
 import java.util.List;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -28,7 +29,8 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	 *
 	 * @param q a {@link javax.lang.model.element.VariableElement} object.
 	 */
-	public APTFieldModel(VariableElement q) {
+	public APTFieldModel(VariableElement q, ProcessingEnvironment environment) {
+		super(environment);
 		this.element=q;
 	}
 	/**
@@ -41,7 +43,7 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 		if (returnType != null && returnType instanceof DeclaredType) {
 			DeclaredType declaredType = (DeclaredType) returnType;
 			TypeElement returnTypeElement = (TypeElement) declaredType.asElement();
-			return new APTType(returnTypeElement);
+			return new APTType(returnTypeElement,this.environment);
 		}
 		return null;
 	}

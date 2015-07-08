@@ -125,7 +125,7 @@ public class RAMLAnnotationProcessor extends AbstractProcessor {
 			PrintWriter writer = null;
 			ResourceVisitor visitor = new APTResourceVisitor(outputFile, processingEnv, null);
 			for (TypeElement typeElement : result) {
-				APTType aptType = new APTType(typeElement);
+				APTType aptType = new APTType(typeElement,this.processingEnv);
 				visitor.visit(aptType);
 			}
 			String raml = visitor.getRaml();

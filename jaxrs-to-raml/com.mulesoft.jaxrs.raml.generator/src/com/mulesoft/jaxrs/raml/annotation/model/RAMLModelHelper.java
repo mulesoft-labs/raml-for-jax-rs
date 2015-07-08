@@ -235,6 +235,7 @@ public class RAMLModelHelper {
 	 * <p>optimize.</p>
 	 */
 	public void optimize() {
+		optimizeDocumentation(coreRaml.getResources());
 		optimizeResourceMap(coreRaml.getResources());
 		coreRaml.visit(new RamlFileVisitorAdapter() {
 			
@@ -243,6 +244,35 @@ public class RAMLModelHelper {
 				return super.startVisit(resource);
 			}
 		});
+	}
+
+	private void optimizeDocumentation(Map<String, Resource> resources) {
+		for(Resource res: resources.values()){
+			LinkedHashSet<String> set = new LinkedHashSet<String>();
+			gatherDocumentation(res,set);
+			StringBuilder bld = new StringBuilder();
+			for(String str : set){
+				bld.append("\n\n").append(str);
+			}
+			if(bld.length()>0){
+				String desc = bld.toString().trim();
+				res.setDescription(desc);
+			}
+		}
+	}
+
+	private void gatherDocumentation(Resource res, LinkedHashSet<String> set) {
+		String desc = res.getDescription();
+		if(desc!=null){
+			res.setDescription(null);
+			desc = desc.trim();
+			if(desc.length()>0){
+				set.add(desc);
+			}
+		}
+		for(Resource r : res.getResources().values()){
+			gatherDocumentation(r, set);
+		}
 	}
 
 	/**
@@ -301,6 +331,7 @@ public class RAMLModelHelper {
 					String desc = entry.res.getDescription();
 					if(desc != null){
 						docs.add(desc);
+						entry.res.setDescription(null);
 					}
 					stripSegment(entry.res);
 					rt.remove(entry);

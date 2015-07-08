@@ -21,6 +21,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.Utils;
 
 /**
  * <p>MethodModel class.</p>
@@ -73,41 +74,17 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
 			
-			
 			public String getReturnInfo() {
-				return getDocumentation("return");
+				return Utils.extractReturnJavadoc(MethodModel.this.getDocumentation());
 			}
 			
 			
 			public String getDocumentation(String pName) {
-				String str = MethodModel.this.getDocumentation();
-				if(str==null){
-					return null;
-				}
-				String tag = "@"+pName;
-				int ind1 = str.indexOf(tag);
-				if(ind1<0){
-					return null;
-				}
-				ind1+=tag.length();
-				int ind2 = str.indexOf("\n",ind1);
-				if(ind2<0){
-					ind2 = str.length();
-				}
-				return str.substring(ind1,ind2).replaceAll("(\\n)(\\s*)\\*(\\s*)","\n").trim();
+				return Utils.extractParamJavadoc(MethodModel.this.getDocumentation(), pName);
 			}
 			
-			
 			public String getDocumentation() {
-				String str = MethodModel.this.getDocumentation();
-				if(str==null){
-					return null;
-				}
-				int ind = str.indexOf("@");
-				if(ind<0){
-					ind = str.length();
-				}
-				return str.substring(0,ind).replaceAll("(\\n)(\\s*)\\*(\\s*)","\n").trim();
+				return Utils.extractMethodJavadoc(MethodModel.this.getDocumentation());
 			}
 		};
 	}

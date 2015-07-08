@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+
 
 //import com.google.common.base.Function;
 import com.google.common.base.Function;
@@ -22,6 +24,12 @@ import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
  * @version $Id: $Id
  */
 public abstract class APTModel implements IBasicModel{
+	
+	protected APTModel(ProcessingEnvironment environment) {
+		this.environment = environment;
+	}
+
+	protected ProcessingEnvironment environment;	
 
 	private static final String VALUE_METHOD_ID = "value"; //$NON-NLS-1$
 
@@ -48,7 +56,7 @@ public abstract class APTModel implements IBasicModel{
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getDocumentation() {
-		return "Needs to be documented";
+		return this.environment.getElementUtils().getDocComment(element());
 	}
 
 	/**

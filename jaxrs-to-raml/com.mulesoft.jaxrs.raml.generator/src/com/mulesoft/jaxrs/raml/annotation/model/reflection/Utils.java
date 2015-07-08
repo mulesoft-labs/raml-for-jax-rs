@@ -13,7 +13,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 public class Utils {
 	
-private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
+	private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
 	
 	private static final String XML_TYPE = "XmlType"; //$NON-NLS-1$
 	
@@ -95,6 +95,42 @@ private static final String XML_ROOT_ELEMENT = "XmlRootElement"; //$NON-NLS-1$
 			list.add(new ReflectionType(type));
 		}
 		return list;
+	}
+	
+	public static String extractReturnJavadoc(String javadocComment) {
+		return extractParamJavadoc(javadocComment, "return");
+	}
+	
+	
+	public static String extractParamJavadoc(String javadocComment, String pName) {
+		String str = javadocComment;
+		if(str==null){
+			return null;
+		}
+		String tag = "@"+pName;
+		int ind1 = str.indexOf(tag);
+		if(ind1<0){
+			return null;
+		}
+		ind1+=tag.length();
+		int ind2 = str.indexOf("\n",ind1);
+		if(ind2<0){
+			ind2 = str.length();
+		}
+		return str.substring(ind1,ind2).replaceAll("(\\n)(\\s*)\\*(\\s*)","\n").trim();
+	}
+	
+	
+	public static String extractMethodJavadoc(String javadocComment) {
+		String str = javadocComment;
+		if(str==null){
+			return null;
+		}
+		int ind = str.indexOf("@");
+		if(ind<0){
+			ind = str.length();
+		}
+		return str.substring(0,ind).replaceAll("(\\n)(\\s*)\\*(\\s*)","\n").trim();
 	}
 
 }

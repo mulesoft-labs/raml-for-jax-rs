@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.apt;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
@@ -13,13 +14,13 @@ import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
 abstract public class APTGenericElement extends APTModel implements IGenericElement {
 
 	
-	public APTGenericElement(TypeElement type) {
-		super();
+	public APTGenericElement(TypeElement type, ProcessingEnvironment environment) {
+		super(environment);
 		this.type = type;
 	}
 	
-	public APTGenericElement(ExecutableElement x) {
-		super();
+	public APTGenericElement(ExecutableElement x, ProcessingEnvironment environment) {
+		super(environment);
 		this.executable = x;
 	}
 	

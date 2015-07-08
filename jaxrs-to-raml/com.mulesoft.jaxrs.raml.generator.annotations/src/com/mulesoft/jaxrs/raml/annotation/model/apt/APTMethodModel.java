@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.apt;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -14,6 +15,7 @@ import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.Utils;
 
 /**
  * <p>APTMethodModel class.</p>
@@ -28,8 +30,8 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	 *
 	 * @param x a {@link javax.lang.model.element.ExecutableElement} object.
 	 */
-	public APTMethodModel(ExecutableElement x) {
-		super(x);
+	public APTMethodModel(ExecutableElement x, ProcessingEnvironment environment) {
+		super(x,environment);
 		this.element = x;
 	}
 	
@@ -47,7 +49,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 		List<? extends VariableElement> parameters = element.getParameters();
 		ArrayList<IParameterModel>result=new ArrayList<IParameterModel>();
 		for (VariableElement q:parameters){
-			result.add(new APTParameter(q));
+			result.add(new APTParameter(q,this.environment));
 		}
 		return result.toArray(new IParameterModel[result.size()]);
 	}
@@ -60,20 +62,16 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	 */
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
-			
-			
 			public String getReturnInfo() {
-				return ""; //$NON-NLS-1$
+				return Utils.extractReturnJavadoc(APTMethodModel.this.getDocumentation());
 			}
-			
-			
+
 			public String getDocumentation(String pName) {
-				return ""; //$NON-NLS-1$
+				return Utils.extractParamJavadoc(APTMethodModel.this.getDocumentation(), pName);
 			}
-			
-			
+
 			public String getDocumentation() {
-				return ""; //$NON-NLS-1$
+				return Utils.extractMethodJavadoc(APTMethodModel.this.getDocumentation());
 			}
 		};
 	}
@@ -99,7 +97,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 		if (returnType != null && returnType instanceof DeclaredType) {
 			DeclaredType declaredType = (DeclaredType) returnType;
 			TypeElement returnTypeElement = (TypeElement) declaredType.asElement();
-			return new APTType(returnTypeElement);
+			return new APTType(returnTypeElement,this.environment);
 		}
 		return null;
 	}

@@ -3,6 +3,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.apt;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -27,9 +28,10 @@ public class APTType extends APTGenericElement implements ITypeModel{
 	 *
 	 * @param element a {@link javax.lang.model.element.TypeElement} object.
 	 */
-	public APTType(TypeElement element) {
-		super(element);
+	public APTType(TypeElement element, ProcessingEnvironment environment) {
+		super(element,environment);
 		this.element = element;
+		TypeMirror asType = element.asType();
 	}
 	
 	TypeElement element;
@@ -46,7 +48,7 @@ public class APTType extends APTGenericElement implements ITypeModel{
 		for (Element r:enclosedElements){
 			if (r instanceof ExecutableElement){
 				ExecutableElement x=(ExecutableElement) r;
-				result.add(new APTMethodModel(x));
+				result.add(new APTMethodModel(x,this.environment));
 			}
 		}
 		return result.toArray(new IMethodModel[result.size()]);
@@ -112,7 +114,7 @@ public class APTType extends APTGenericElement implements ITypeModel{
 		for (Element r:enclosedElements){
 			if (r instanceof VariableElement){
 				VariableElement x=(VariableElement) r;
-				result.add(new APTFieldModel(x));
+				result.add(new APTFieldModel(x,this.environment));
 			}
 		}
 		return result.toArray(new IFieldModel[result.size()]);
@@ -125,7 +127,7 @@ public class APTType extends APTGenericElement implements ITypeModel{
 		if (superclass != null && superclass instanceof DeclaredType) {
 			DeclaredType declaredType = (DeclaredType) superclass;
 			TypeElement returnTypeElement = (TypeElement) declaredType.asElement();
-			return new APTType(returnTypeElement);
+			return new APTType(returnTypeElement,this.environment);
 		}
 		return null;
 	}
@@ -143,7 +145,7 @@ public class APTType extends APTGenericElement implements ITypeModel{
 			if (tm != null && tm instanceof DeclaredType) {
 				DeclaredType declaredType = (DeclaredType) tm;
 				TypeElement returnTypeElement = (TypeElement) declaredType.asElement();
-				list.add(new APTType(returnTypeElement));
+				list.add(new APTType(returnTypeElement,this.environment));
 			}			
 		}
 		return list.toArray(new ITypeModel[list.size()]);

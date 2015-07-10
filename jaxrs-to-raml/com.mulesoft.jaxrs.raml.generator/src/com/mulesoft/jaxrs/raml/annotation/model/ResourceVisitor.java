@@ -579,14 +579,15 @@ public abstract class ResourceVisitor {
 		if (apiResponses!=null)
 		{
 			IAnnotationModel[] subAnnotations = apiResponses.getSubAnnotations("value");
-			if (subAnnotations!=null){				
+			if (subAnnotations!=null){
 				for (IAnnotationModel subAnn:subAnnotations){
 					String code = subAnn.getValue(ResourceVisitor.CODE);
 					String message = subAnn.getValue(ResourceVisitor.MESSAGE);
 					
 					String adjustedReturnName = returnName;
 					String responseQualifiedName = subAnn.getValue(RESPONSE);					
-					if(responseQualifiedName!=null){
+					boolean isValid = Integer.parseInt(code)<400;
+					if(responseQualifiedName!=null&&isValid){
 						try {
 							Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 							ReflectionType rt = new ReflectionType(responseClass); 
@@ -598,7 +599,7 @@ public abstract class ResourceVisitor {
 					}
 					ResponseModel response = responses.get(code);
 					if(response==null){
-						response = new ResponseModel(code, message, adjustedReturnName);
+						response = new ResponseModel(code, message, isValid ? adjustedReturnName : null);
 						responses.put(code, response);
 					}
 					else{

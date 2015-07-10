@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,12 +15,16 @@ import org.raml.schema.model.impl.TypeModelImpl;
 
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 
 public class SchemaModelBuilder {
 	
-	public SchemaModelBuilder() {
+	public SchemaModelBuilder(JAXBRegistry registry) {
 		super();
+		this.registry = registry;
 	}
+	
+	private JAXBRegistry registry;
 	
 	private HashMap<String,TypeModelImpl> javaTypeMap = new HashMap<String, TypeModelImpl>();
 	
@@ -64,8 +69,17 @@ public class SchemaModelBuilder {
 		PropertyModelImpl prop = null;
 		String namespace = p.namespace;
 		StructureType st = p.getStructureType();
-		if (p instanceof JAXBAttributeProperty){			
-			prop = new PropertyModelImpl(name, getType(p), p.required, true, st,namespace);
+		if (p instanceof JAXBAttributeProperty){
+			if(((JAXBAttributeProperty)p).isAnyAttribute()){
+				ISchemaType strType = generateType(
+						registry.getJAXBModel(new ReflectionType(String.class)),
+						StructureType.COMMON);
+				List<ISchemaType> list = Arrays.asList(strType,strType);
+				prop = new MapPropertyImpl(name, list, p.required, true, namespace);
+			}
+			else{
+				prop = new PropertyModelImpl(name, getType(p), p.required, true, st,namespace);
+			}
 		}
 		else if (p instanceof JAXBValueProperty){
 			prop = new PropertyModelImpl(name, getType(p), p.required, false, st,namespace);
@@ -79,7 +93,7 @@ public class SchemaModelBuilder {
 					for(JAXBType t : jaxbTypes){
 						list.add(generateType(t, StructureType.COMMON));
 					}
-					prop = new MapPropertyImpl(name, list, p.required, false, StructureType.MAP, namespace);
+					prop = new MapPropertyImpl(name, list, p.required, false, namespace);
 				}
 				else{
 					ISchemaType propertyType = generateType(jaxbTypes.get(0),st);

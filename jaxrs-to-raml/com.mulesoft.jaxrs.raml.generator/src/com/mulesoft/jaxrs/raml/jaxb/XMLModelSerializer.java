@@ -76,9 +76,18 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 		@Override
 		public void processProperty(ISchemaType type, ISchemaProperty prop, ISerializationNode childNode, Set<String> processedTypes) {
 			
-			ISchemaType propType = prop.getType();
-			if(prop.isAttribute()){			
-				this.element.setAttribute(type.getQualifiedPropertyName(prop), DefaultValueFactory.getDefaultValue(prop).toString());
+			ISchemaType propType = prop.getType();			
+			if(prop.isAttribute()){
+				String propName = type.getQualifiedPropertyName(prop);				
+				if(prop.getStructureType()==StructureType.MAP){
+					String defaultValue = DefaultValueFactory.DEFAULT_STRING_VALUE;
+					this.element.setAttribute(propName+"_1", defaultValue+"_1");
+					this.element.setAttribute(propName+"_2", defaultValue+"_2");
+				}
+				else{
+					String defaultValue = DefaultValueFactory.getDefaultValue(prop).toString();
+					this.element.setAttribute(propName, defaultValue);
+				}
 				return;
 			}
 			else{				

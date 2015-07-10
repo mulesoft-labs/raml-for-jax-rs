@@ -113,6 +113,21 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 			if(this.isGeneric){
 				return;
 			}
+			if(prop.isAttribute()&&prop.getStructureType()==StructureType.MAP){
+				try {
+					this.object.getJSONObject(PATTERN_PROPERTIES);
+					return;
+				} catch (JSONException e) {}
+				JSONObject patternProperties = new JSONObject();
+				try {
+					this.object.put(PATTERN_PROPERTIES, patternProperties);
+					JSONObject property = new JSONObject();
+					property.put("type","string");
+					property.put("required",false);
+					patternProperties.put("@"+DEFAULT_REGEXP, property);
+				} catch (JSONException e) {}
+				return;
+			}
 			
 			String propName = type.getQualifiedPropertyName(prop);
 			if(prop.isAttribute()){

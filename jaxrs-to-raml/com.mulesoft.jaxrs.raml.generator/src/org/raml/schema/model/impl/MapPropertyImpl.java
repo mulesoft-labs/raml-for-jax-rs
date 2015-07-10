@@ -14,9 +14,8 @@ public class MapPropertyImpl extends PropertyModelImpl implements IMapSchemaProp
 			List<ISchemaType> types,
 			boolean required,
 			boolean isAttribute,
-			StructureType structureType,
 			String namespace) {
-		super(name, null, required, isAttribute, structureType, namespace);
+		super(name, null, required, isAttribute, StructureType.MAP, namespace);
 		if(types!=null){
 			if(types.size()>0){
 				this.keyType = types.get(0);

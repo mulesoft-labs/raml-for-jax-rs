@@ -1156,7 +1156,7 @@ public abstract class ResourceVisitor {
 		}
 		ISchemaType schemaModel = null;
 		try{
-			schemaModel = new SchemaModelBuilder().buildSchemaModel(jaxbModel,st);
+			schemaModel = new SchemaModelBuilder(rs).buildSchemaModel(jaxbModel,st);
 		}
 		catch(Exception e){
 			e.printStackTrace();

@@ -124,18 +124,27 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 			Node n = (Node) childNode;
 			ISchemaType propType = prop.getType();
 			String propName = type.getQualifiedPropertyName(prop);
-			try {				
-				if(prop.getStructureType()==StructureType.COLLECTION){
+			try {
+				if(prop.isAttribute()){
+					propName = "@" + propName;
+					Object defaultValue = DefaultValueFactory.DEFAULT_STRING_VALUE;
+					if(prop.getStructureType()==StructureType.MAP){
+						item.put(propName+"_1", defaultValue+"_1");
+						item.put(propName+"_2", defaultValue+"_2");
+					}
+					else{
+						item.put(propName, defaultValue);
+					}
+				}				
+				else if(prop.getStructureType()==StructureType.COLLECTION){
 					item.put(propName, n.array);					
 				}
 				else if(propType==null||propType.isComplex()){
 					item.put(propName, n.object);
 				}
-				else{
-					if(prop.isAttribute()){
-						propName = "@" + propName;
-					}
-					item.put(propName, DefaultValueFactory.getDefaultValue(prop));
+				else { 
+					Object defaultValue = DefaultValueFactory.getDefaultValue(prop);
+					item.put(propName, defaultValue);
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();

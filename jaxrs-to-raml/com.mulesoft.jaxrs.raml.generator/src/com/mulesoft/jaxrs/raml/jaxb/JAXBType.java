@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -116,8 +117,8 @@ public class JAXBType extends JAXBModelElement {
 
 	private JAXBProperty createProperty(String string, IMember m) {
 		boolean isElement = m.hasAnnotation(XmlElement.class.getSimpleName());
-		boolean isAttribute = m.hasAnnotation(XmlAttribute.class
-				.getSimpleName());
+		boolean isAttribute = m.hasAnnotation(XmlAttribute.class.getSimpleName())
+				|| m.hasAnnotation(XmlAnyAttribute.class.getSimpleName());;
 		boolean isValue = m
 				.hasAnnotation(javax.xml.bind.annotation.XmlValue.class
 						.getSimpleName());

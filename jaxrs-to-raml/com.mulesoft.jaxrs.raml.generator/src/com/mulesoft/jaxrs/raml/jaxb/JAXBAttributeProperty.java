@@ -1,5 +1,6 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
@@ -20,8 +21,13 @@ public class JAXBAttributeProperty extends JAXBProperty{
 	 * @param name a {@link java.lang.String} object.
 	 */
 	public JAXBAttributeProperty(IMember model,JAXBRegistry r, String name) {
-		super(model,r, name);		
+		super(model,r, name);
+		this.isAnyAttribute = model.hasAnnotation(XmlAnyAttribute.class.getSimpleName());
 	}
+	/**
+	 * indicates if corresponding field or method is annotated with '@XmlAnyAttribute'
+	 */
+	private boolean isAnyAttribute;
 
 	/**
 	 * <p>asJavaType.</p>
@@ -40,6 +46,10 @@ public class JAXBAttributeProperty extends JAXBProperty{
 	@Override
 	protected String getPropertyAnnotation() {
 		return XmlAttribute.class.getSimpleName();
+	}
+
+	public boolean isAnyAttribute() {
+		return isAnyAttribute;
 	}
 
 }

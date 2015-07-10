@@ -62,17 +62,17 @@ public class JAXBElementProperty extends JAXBProperty{
 			}
 			return list;
 		}
-		else if(this.originalType.hasAnnotation(XmlAnyAttribute.class.getSimpleName())){
-			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
-			list.add(registry.getJAXBModel(new ReflectionType(String.class)));
-			list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
-			return list;
-		}
-		else if(this.originalType.hasAnnotation(XmlAnyElement.class.getSimpleName())){
-			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
-			list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
-			return list;
-		}
+//		else if(this.originalType.hasAnnotation(XmlAnyAttribute.class.getSimpleName())){
+//			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
+//			list.add(registry.getJAXBModel(new ReflectionType(String.class)));
+//			list.add(registry.getJAXBModel(new ReflectionType(String.class)));
+//			return list;
+//		}
+//		else if(this.originalType.hasAnnotation(XmlAnyElement.class.getSimpleName())){
+//			ArrayList<JAXBType> list = new ArrayList<JAXBType>();
+//			list.add(registry.getJAXBModel(new ReflectionType(Object.class)));
+//			return list;
+//		}
 		return registry.getJAXBModels(((IMember)originalType).getJAXBTypes());		
 	}
 

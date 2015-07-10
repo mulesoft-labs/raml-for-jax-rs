@@ -1,8 +1,10 @@
 package com.mulesoft.jaxrs.raml.annotation.model.jdt;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IAnnotation;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
@@ -10,6 +12,13 @@ import org.eclipse.jdt.core.IMemberValuePair;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 
@@ -30,10 +39,51 @@ public class JDTAnnotation implements IAnnotationModel {
 	
 	public String getValue(String pairName) {
 		IMemberValuePair[] memberValuePairs;
-		try {
+		try {			
+			ASTParser parser = ASTParser.newParser(AST.JLS4);
+			parser.setProject(annotation.getJavaProject());
+			IBinding[] bindings = parser.createBindings(new IJavaElement[]{annotation}, new NullProgressMonitor());
+			if(bindings.length>0&&bindings[0] instanceof IAnnotationBinding){
+				IAnnotationBinding bnd = (IAnnotationBinding) bindings[0];
+				IMemberValuePairBinding[] pairs = bnd.getDeclaredMemberValuePairs();				
+				for(IMemberValuePairBinding pair : pairs){
+					if(pair.getName().equals(pairName)){
+						Object value = pair.getValue();
+						ArrayList<Object> values = new ArrayList<Object>();
+						if(value.getClass().isArray()){
+							for(int i = 0 ; i < Array.getLength(value) ; i++){
+								values.add(Array.get(value, i));
+							}
+						}
+						else{
+							values.add(value);
+						}
+						StringBuilder bld = new StringBuilder();
+						for(Object v : values){
+							if(v instanceof Class){
+								bld.append(((Class<?>)v).getCanonicalName());
+							}
+							else if(v instanceof ITypeBinding){
+								bld.append(((ITypeBinding)v).getQualifiedName());
+							}
+							else if(v instanceof IVariableBinding){
+								bld.append(((IVariableBinding)v).getName());
+							}
+							else{
+								bld.append(v.toString());
+							}
+							bld.append(", ");
+						}
+						String str = bld.toString();
+						str = str.substring(0, str.length()-", ".length());
+						return str;
+					}
+				}
+			}
 			memberValuePairs = annotation.getMemberValuePairs();
 			for (IMemberValuePair pair:memberValuePairs){
 				if (pair.getMemberName().equals(pairName)){
+					
 					int valueKind = pair.getValueKind();
 					String string = pair.getValue().toString();
 					if (valueKind==IMemberValuePair.K_CLASS){

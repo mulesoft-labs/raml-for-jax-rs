@@ -100,7 +100,7 @@ public abstract class ResourceVisitor {
 		public Result createOutput(String namespaceURI, String suggestedFileName)
 				throws IOException {
 			
-			this.file = constructFileLocation(name,SCHEMA,XML);
+			this.file = constructFileLocation(name,SCHEMA,XML, StructureType.COMMON);
 			file.getParentFile().mkdirs();
 			StreamResult result = new StreamResult(file);
 			result.setSystemId(file.toURI().toURL().toString());
@@ -508,7 +508,7 @@ public abstract class ResourceVisitor {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
 				MimeType bodyType = new MimeType();
-				tryAppendSchemesAndExamples(bodyType, s, parameterName);
+				tryAppendSchemesAndExamples(bodyType, s, parameterName, StructureType.COMMON);
 				bodyType.setType(s);
 				if (s.contains(FORM)) {
 					for (IParameterModel pm : parameters) {
@@ -530,7 +530,7 @@ public abstract class ResourceVisitor {
 		}
 	}
 
-	private void tryAppendSchemesAndExamples(MimeType bodyType, String mediaType, String typeName) {
+	private void tryAppendSchemesAndExamples(MimeType bodyType, String mediaType, String typeName, StructureType st) {
 		
 		ArrayList<String> mediaTypes = new ArrayList<String>();
 		if (mediaType.contains(XML)) {
@@ -541,13 +541,13 @@ public abstract class ResourceVisitor {
 		}
 		
 		for(String mt:mediaTypes){
-			File schemafile = constructFileLocation(typeName, SCHEMA, mt);
+			File schemafile = constructFileLocation(typeName, SCHEMA, mt, st);
 			if(schemafile.exists()){
 				bodyType.setSchema(typeName + (mt == XML ? "-xml" : ""));
 			}
-			File examplefile = constructFileLocation(typeName, EXAMPLE, mt);
+			File examplefile = constructFileLocation(typeName, EXAMPLE, mt, st);
 			if(examplefile.exists()){
-				String relativePath = constructRelativeFilePath(typeName, EXAMPLE, mt);
+				String relativePath = constructRelativeFilePath(typeName, EXAMPLE, mt, st);
 				bodyType.setExample(relativePath);
 				bodyType.setExampleOrigin(relativePath);
 			}
@@ -564,14 +564,14 @@ public abstract class ResourceVisitor {
 			mainResponseCode = config.getResponseCode(actionType);
 		}
 		
-		ResponseModel mainResponse = new ResponseModel(mainResponseCode, null, returnName);
+		ResponseModel mainResponse = new ResponseModel(mainResponseCode, null, returnName, StructureType.COMMON);
 		responses.put(mainResponseCode, mainResponse);
 		
 		IAnnotationModel apiResponse = m.getAnnotation(ResourceVisitor.API_RESPONSE);
 		if(apiResponse!=null){
 			String code = apiResponse.getValue(ResourceVisitor.CODE);
 			String message = apiResponse.getValue(ResourceVisitor.MESSAGE);
-			ResponseModel response = new ResponseModel(code, message, returnName);
+			ResponseModel response = new ResponseModel(code, message, returnName, StructureType.COMMON);
 			responses.put(code, response);
 		}
 		
@@ -591,7 +591,7 @@ public abstract class ResourceVisitor {
 						try {
 							Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 							ReflectionType rt = new ReflectionType(responseClass); 
-							generateXMLSchema(rt,null);
+							generateXMLSchema(rt,StructureType.COMMON);
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
 						}
@@ -599,7 +599,7 @@ public abstract class ResourceVisitor {
 					}
 					ResponseModel response = responses.get(code);
 					if(response==null){
-						response = new ResponseModel(code, message, isValid ? adjustedReturnName : null);
+						response = new ResponseModel(code, message, isValid ? adjustedReturnName : null, StructureType.COMMON);
 						responses.put(code, response);
 					}
 					else{
@@ -623,18 +623,7 @@ public abstract class ResourceVisitor {
 		}
 		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
 		if(apiOperation!=null){
-			String responseContainer = apiOperation.getValue("responseContainer");
-			StructureType st = StructureType.COMMON;
-			if(responseContainer!=null){
-				responseContainer = responseContainer.toLowerCase();
-				if(responseContainer.equals("set")||responseContainer.equals("list")){
-					st = StructureType.COLLECTION;
-				}
-				else if(responseContainer.equals("map")){
-					st = StructureType.MAP;
-				}
-			}
-			
+			StructureType st = getStructureType(m);
 			String responseQualifiedName = apiOperation.getValue(RESPONSE);
 			if(responseQualifiedName!=null){
 				try {
@@ -646,6 +635,7 @@ public abstract class ResourceVisitor {
 				}	
 				String adjustedReturnType = firstLetterToLowerCase(getSimpleName(responseQualifiedName));
 				mainResponse.setReturnTypeName(adjustedReturnType);
+				mainResponse.setStructureType(st);
 			}
 		}
 		
@@ -669,7 +659,7 @@ public abstract class ResourceVisitor {
 				for (String mediaType : producesValues) {
 					mediaType = sanitizeMediaType(mediaType);
 					MimeType mimeType = new MimeType();
-					tryAppendSchemesAndExamples(mimeType, mediaType, returnTypeName);
+					tryAppendSchemesAndExamples(mimeType, mediaType, returnTypeName, rm.getStructureType());
 					mimeType.setType(mediaType);
 					response.getBody().put(mediaType, mimeType);
 				}
@@ -678,6 +668,24 @@ public abstract class ResourceVisitor {
 			String code = rm.getCode();
 			action.getResponses().put(code, response);
 		}
+	}
+
+	private StructureType getStructureType(IMethodModel m) {
+		StructureType st = StructureType.COMMON;
+		IAnnotationModel apiOperation = m.getAnnotation(API_OPERATION);
+		if(apiOperation!=null){
+			String responseContainer = apiOperation.getValue("responseContainer");			
+			if(responseContainer!=null){
+				responseContainer = responseContainer.toLowerCase();
+				if(responseContainer.equals("set")||responseContainer.equals("list")){
+					st = StructureType.COLLECTION;
+				}
+				else if(responseContainer.equals("map")){
+					st = StructureType.MAP;
+				}
+			}
+		}
+		return st;
 	}
 
 	
@@ -932,46 +940,47 @@ public abstract class ResourceVisitor {
 		return null;
 	}
 	
-	protected File constructFileLocation(String name,String fileType, String mediaType){
+	protected File constructFileLocation(String name,String fileType, String mediaType, StructureType st){
 		
 		if(this.outputFile == null){
-			return new File(constructFileName(name, fileType, mediaType));
+			return new File(constructFileName(name, fileType, mediaType, st));
 		}
 		else{
-			return new File(this.outputFile.getParent(),constructRelativeFilePath(name, fileType, mediaType));
+			return new File(this.outputFile.getParent(),constructRelativeFilePath(name, fileType, mediaType, st));
 		}
 	}
 	
-	protected String constructRelativeFilePath(String name,String fileType, String mediaType){
+	protected String constructRelativeFilePath(String name,String fileType, String mediaType, StructureType st){
 		
 		String result = null;
 		if(fileType.equals(EXAMPLE)){
-			result = EXAMPLES_FOLDER + "/" + constructFileName(name, fileType, mediaType);
+			result = EXAMPLES_FOLDER + "/" + constructFileName(name, fileType, mediaType, st);
 		}
 		else if(fileType.equals(SCHEMA)){
-			result = SCHEMAS_FOLDER + "/" + constructFileName(name, fileType, mediaType);
+			result = SCHEMAS_FOLDER + "/" + constructFileName(name, fileType, mediaType, st);
 		}
 		return result;
 	}
 	
-	protected String constructFileName(String name,String fileType, String mediaType){
+	protected String constructFileName(String name,String fileType, String mediaType, StructureType st){
 		
+		String stStr = (st == StructureType.COMMON || st == null )? "" : "-" + st.toString().toLowerCase(); 
 		String name1 = firstLetterToLowerCase(name);
 		String result = null;
 		if(fileType.equals(EXAMPLE)){
 			if(mediaType.equals(XML)){				
-				result = name1 + "-" + EXAMPLE + XML_FILE_EXT;
+				result = name1 + stStr + "-" + EXAMPLE + XML_FILE_EXT;
 			}
 			else if(mediaType.equals(JSON)){
-				result = name1 + "-" + EXAMPLE + JSON_FILE_EXT;
+				result = name1 + stStr + "-" + EXAMPLE + JSON_FILE_EXT;
 			}
 		}
 		else if(fileType.equals(SCHEMA)){
 			if(mediaType.equals(XML)){
-				result = name1 + "-xml-" + SCHEMA + XSD_FILE_EXT;
+				result = name1 + stStr + "-xml-" + SCHEMA + XSD_FILE_EXT;
 			}
 			else if(mediaType.equals(JSON)){
-				result = name1 + "-" + SCHEMA + JSON_FILE_EXT;
+				result = name1 + stStr + "-" + SCHEMA + JSON_FILE_EXT;
 			}
 		}
 		return result;
@@ -1159,7 +1168,7 @@ public abstract class ResourceVisitor {
 		try{
 			if(st == null || st == StructureType.COMMON){
 				String xmlExample = new XMLModelSerializer().serialize(schemaModel);
-				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML));
+				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML, st));
 			}
 		}
 		catch(Exception e){
@@ -1168,7 +1177,7 @@ public abstract class ResourceVisitor {
 		
 		try{
 			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
-			writeString(jsonExample, constructFileLocation(t.getName(), EXAMPLE, JSON));
+			writeString(jsonExample, constructFileLocation(t.getName(), EXAMPLE, JSON, st));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -1177,7 +1186,7 @@ public abstract class ResourceVisitor {
 		try{
 			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
 			spec.getCoreRaml().addGlobalSchema(firstLetterToLowerCase(t.getName()), jsonSchema, true, true);
-			writeString(jsonSchema, constructFileLocation(t.getName(), SCHEMA, JSON));
+			writeString(jsonSchema, constructFileLocation(t.getName(), SCHEMA, JSON, st));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -1194,12 +1203,15 @@ public abstract class ResourceVisitor {
 	
 	private static class ResponseModel{
 		
-		public ResponseModel(String code, String message, String returnTypeName) {
+		public ResponseModel(String code, String message, String returnTypeName, StructureType structureType) {
 			super();
 			this.code = code;
 			this.message = message;
 			this.returnTypeName = returnTypeName;
+			this.structureType = structureType;
 		}
+		
+		private StructureType structureType;
 
 		private String code;
 		
@@ -1239,6 +1251,14 @@ public abstract class ResourceVisitor {
 
 		public void setProduces(String[] produces) {
 			this.produces = produces;
+		}
+
+		public StructureType getStructureType() {
+			return structureType;
+		}
+
+		public void setStructureType(StructureType structureType) {
+			this.structureType = structureType;
 		}
 	}
 }

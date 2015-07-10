@@ -77,6 +77,10 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	/** {@inheritDoc} */
 	@Override
 	protected boolean generateXMLSchema(ITypeModel t, StructureType st) {
+		String name = t.getFullyQualifiedName();
+		if(name.equals("void")||name.equals("java.lang.Void")){
+			return false;
+		}
 		Class<?> element = null;
 		if (t instanceof ReflectionType) {
 			element = ((ReflectionType) t).getElement();

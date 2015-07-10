@@ -35,7 +35,11 @@ public class APTResourceVisitor extends ResourceVisitor {
 	/** {@inheritDoc} */
 	@Override
 	protected boolean generateXMLSchema(ITypeModel t,StructureType st) {
-		APTType type = (APTType) t;
+		String name = t.getFullyQualifiedName();
+		if(name.equals("void")||name.equals("java.lang.Void")){
+			return false;
+		}
+		APTType type = (APTType) t;		
 		TypeElement element = (TypeElement) type.element();
 		//try just loading this class
 		Class<?> clazz=null;

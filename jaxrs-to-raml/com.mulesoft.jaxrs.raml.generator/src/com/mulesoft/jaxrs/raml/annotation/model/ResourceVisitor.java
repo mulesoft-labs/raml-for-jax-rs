@@ -543,7 +543,7 @@ public abstract class ResourceVisitor {
 		for(String mt:mediaTypes){
 			File schemafile = constructFileLocation(typeName, SCHEMA, mt, st);
 			if(schemafile.exists()){
-				bodyType.setSchema(typeName + (mt == XML ? "-xml" : ""));
+				bodyType.setSchema(getSchemaName(typeName, mediaType, st));
 			}
 			File examplefile = constructFileLocation(typeName, EXAMPLE, mt, st);
 			if(examplefile.exists()){
@@ -929,7 +929,8 @@ public abstract class ResourceVisitor {
 			if(file!=null){
 				String content = FileUtil.fileToString(file);
 				generateExamle(file, content);
-				spec.getCoreRaml().addGlobalSchema(name + "-xml", content, false, true);
+				String schemaName = getSchemaName(element.getSimpleName(), XML,  StructureType.COMMON);
+				spec.getCoreRaml().addGlobalSchema(schemaName, content, false, true);
 				return content;
 			}
 		} catch (JAXBException e) {
@@ -1185,13 +1186,24 @@ public abstract class ResourceVisitor {
 
 		try{
 			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
-			spec.getCoreRaml().addGlobalSchema(firstLetterToLowerCase(t.getName()), jsonSchema, true, true);
+			spec.getCoreRaml().addGlobalSchema(getSchemaName(t.getName(),JSON,st), jsonSchema, true, true);
 			writeString(jsonSchema, constructFileLocation(t.getName(), SCHEMA, JSON, st));
 		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
 
+	}
+
+	private String getSchemaName(String typeName, String mediaType, StructureType st) {
+		StringBuilder bld = new StringBuilder(firstLetterToLowerCase(typeName));
+		if(st!=null&&st!=StructureType.COMMON){
+			bld.append("-").append(st.toString().toLowerCase());
+		}
+		if(mediaType.toLowerCase().indexOf(XML.toLowerCase())>=0){
+			bld.append("-xml");
+		}
+		return bld.toString();
 	}
 
 	private String firstLetterToLowerCase(String str) {

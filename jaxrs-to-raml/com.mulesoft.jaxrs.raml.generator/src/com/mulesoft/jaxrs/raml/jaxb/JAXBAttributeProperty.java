@@ -4,6 +4,8 @@ import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
+import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 /**
  * <p>JAXBAttributeProperty class.</p>
@@ -20,8 +22,8 @@ public class JAXBAttributeProperty extends JAXBProperty{
 	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
 	 * @param name a {@link java.lang.String} object.
 	 */
-	public JAXBAttributeProperty(IMember model,JAXBRegistry r, String name) {
-		super(model,r, name);
+	public JAXBAttributeProperty(IMember model, IMethodModel setter, ITypeModel ownerType, JAXBRegistry r, String name) {
+		super(model,setter, ownerType, r, name);
 		this.isAnyAttribute = model.hasAnnotation(XmlAnyAttribute.class.getSimpleName());
 	}
 	/**
@@ -35,8 +37,8 @@ public class JAXBAttributeProperty extends JAXBProperty{
 	 * @return a {@link java.lang.Class} object.
 	 */
 	public Class<?> asJavaType() {
-		if (originalType instanceof IMember){
-			IMember or=(IMember) originalType;
+		if (originalModel instanceof IMember){
+			IMember or=(IMember) originalModel;
 			return or.getJavaType();
 		}
 		return null;

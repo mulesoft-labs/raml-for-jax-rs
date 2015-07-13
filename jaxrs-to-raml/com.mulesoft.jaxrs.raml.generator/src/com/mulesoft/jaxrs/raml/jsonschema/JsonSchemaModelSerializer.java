@@ -73,19 +73,19 @@ public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 						typeString = "object";
 						if(prop instanceof IMapSchemaProperty){
 							IMapSchemaProperty msp = (IMapSchemaProperty) prop;
-							keyType = msp.getKeyType();
+							keyType = SimpleType.STRING;//msp.getKeyType();
 							typeString = detectType(msp.getValueType(),null);
 						}
-						if(keyType != SimpleType.STRING){
-							StringBuilder bld = new StringBuilder("Invalid map key type. Only String is available as key type.");
-							if(type!=null){
-								bld.append(" Type: " + type.getClassQualifiedName());
-							}
-							if(prop!=null){
-								bld.append(" Property: " + prop.getName());
-							}
-							throw new IllegalArgumentException(bld.toString());
-						}
+//						if(keyType != SimpleType.STRING){
+//							StringBuilder bld = new StringBuilder("Invalid map key type. Only String is available as key type.");
+//							if(type!=null){
+//								bld.append(" Type: " + type.getClassQualifiedName());
+//							}
+//							if(prop!=null){
+//								bld.append(" Property: " + prop.getName());
+//							}
+//							throw new IllegalArgumentException(bld.toString());
+//						}
 					}
 					else{
 						typeString = detectType(type,prop);

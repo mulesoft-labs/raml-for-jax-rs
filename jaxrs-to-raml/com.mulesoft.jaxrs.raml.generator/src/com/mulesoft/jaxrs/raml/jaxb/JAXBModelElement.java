@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 /**
  * <p>JAXBModelElement class.</p>
@@ -18,7 +20,8 @@ public class JAXBModelElement {
 
 	protected static final String NAMESPACE = "namespace";
 	protected static final String NAME = "name";
-	protected IBasicModel originalType;
+	protected IBasicModel originalModel;
+	protected ITypeModel ownerType;
 	protected String namespace;
 	protected String typeName;
 	protected String elementName;
@@ -30,13 +33,14 @@ public class JAXBModelElement {
 	 * @param model a {@link com.mulesoft.jaxrs.raml.annotation.model.IBasicModel} object.
 	 * @param registry a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
 	 */
-	public JAXBModelElement(IBasicModel model,JAXBRegistry registry) {
+	public JAXBModelElement(IBasicModel model,ITypeModel ownerType,JAXBRegistry registry) {
 		super();
 		this.registry=registry;
 		if (model==null){
 			throw new IllegalArgumentException();
 		}
-		this.originalType=model;
+		this.originalModel=model;
+		this.ownerType = ownerType;		
 		elementName=value(XmlElement.class, NAME);
 		namespace=value(XmlElement.class, NAMESPACE);
 		typeName=value(XmlType.class,NAME);
@@ -50,7 +54,7 @@ public class JAXBModelElement {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String value(Class<? extends Annotation>cl,String name){
-		IAnnotationModel annotation = originalType.getAnnotation(cl.getSimpleName());
+		IAnnotationModel annotation = originalModel.getAnnotation(cl.getSimpleName());
 		if( annotation!=null){
 			return annotation.getValue(name);
 		}

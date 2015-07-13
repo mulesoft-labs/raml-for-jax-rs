@@ -1,5 +1,6 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	boolean required;
 	private boolean isCollection;
 	private boolean isMap;
+	protected IMethodModel setter;
 	
 	/**
 	 * <p>Constructor for JAXBProperty.</p>
@@ -32,11 +34,12 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
 	 * @param name a {@link java.lang.String} object.
 	 */
-	public JAXBProperty(IMember model,JAXBRegistry r, String name) {
-		super(model,r);
+	public JAXBProperty(IMember model, IMethodModel setter,ITypeModel ownerType,JAXBRegistry r, String name) {
+		super(model,ownerType,r);
 		this.propertyName=name;
 		this.isCollection = model.isCollection();
 		this.isMap = model.isMap();
+		this.setter = setter;
 		IAnnotationModel annotation = model.getAnnotation(getPropertyAnnotation());
 		if (annotation!=null){
 			String value = annotation.getValue("required");
@@ -54,12 +57,12 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	protected abstract String getPropertyAnnotation();
 
 	JAXBType getType(){
-		if(this.originalType instanceof IFieldModel){
-			ITypeModel type = ((IFieldModel)this.originalType).getType();
+		if(this.originalModel instanceof IFieldModel){
+			ITypeModel type = ((IFieldModel)this.originalModel).getType();
 			return registry.getJAXBModel(type);
 		}
-		else if(this.originalType instanceof IMethodModel){
-			ITypeModel type = ((IMethodModel)this.originalType).getReturnedType();
+		else if(this.originalModel instanceof IMethodModel){
+			ITypeModel type = ((IMethodModel)this.originalModel).getReturnedType();
 			return registry.getJAXBModel(type);
 		}
 		else{
@@ -82,8 +85,8 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	 * @return a {@link java.lang.Class} object.
 	 */
 	public Class<?> asJavaType() {
-		if (originalType instanceof IMember){
-			IMember or=(IMember) originalType;
+		if (originalModel instanceof IMember){
+			IMember or=(IMember) originalModel;
 			return or.getJavaType();
 		}
 		return null;
@@ -95,7 +98,7 @@ public abstract class JAXBProperty extends JAXBModelElement{
 		}
 		else if(isMap
 				||(asJavaType()!=null&&Map.class.isAssignableFrom(asJavaType())
-				||this.originalType.hasAnnotation(XmlAnyAttribute.class.getSimpleName()))
+				||this.originalModel.hasAnnotation(XmlAnyAttribute.class.getSimpleName()))
 			){
 			return StructureType.MAP;
 		}
@@ -105,14 +108,32 @@ public abstract class JAXBProperty extends JAXBModelElement{
 	}
 	
 	public boolean isGeneric(){
-		if(this.originalType instanceof IFieldModel){
-			return ((IFieldModel)this.originalType).isGeneric();
+		if(this.originalModel instanceof IFieldModel){
+			return ((IFieldModel)this.originalModel).isGeneric();
 		}
-		else if(this.originalType instanceof IMethodModel){
-			return ((IMethodModel)this.originalType).hasGenericReturnType();
+		else if(this.originalModel instanceof IMethodModel){
+			return ((IMethodModel)this.originalModel).hasGenericReturnType();
 		}
 		else{
 			return false;
 		}
+	}
+	
+	@Override
+	public String value(Class<? extends Annotation> cl, String name) {
+		String superValue = super.value(cl, name);
+		if(superValue!=null){
+			return superValue;
+		}
+		if(this.setter!=null){
+			IAnnotationModel annotation = originalModel.getAnnotation(cl.getSimpleName());
+			if(annotation!=null){			
+				annotation = setter.getAnnotation(cl.getSimpleName());
+				if( annotation!=null){
+					return annotation.getValue(name);
+				}
+			}
+		}
+		return null;
 	}
 }

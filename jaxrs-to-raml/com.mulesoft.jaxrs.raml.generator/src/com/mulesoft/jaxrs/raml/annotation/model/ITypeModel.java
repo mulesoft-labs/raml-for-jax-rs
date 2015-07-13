@@ -45,4 +45,13 @@ public interface ITypeModel extends IBasicModel, IGenericElement{
 	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} objects.
 	 */
 	ITypeModel[] getImplementedInterfaces();
+	
+	
+	/**
+	 * <p>resolveClass</p>
+	 * 
+	 * @param qualifiedName class qualified name
+	 * @return class model object
+	 */
+	ITypeModel resolveClass(String qualifiedName);
 }

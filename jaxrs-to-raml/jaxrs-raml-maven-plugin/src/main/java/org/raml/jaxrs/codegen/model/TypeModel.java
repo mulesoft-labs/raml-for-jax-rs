@@ -17,6 +17,8 @@ package org.raml.jaxrs.codegen.model;
 
 import java.util.LinkedHashMap;
 
+import org.raml.jaxrs.codegen.maven.TypeModelRegistry;
+
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
@@ -32,7 +34,8 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/**
 	 * <p>Constructor for TypeModel.</p>
 	 */
-	public TypeModel() {
+	public TypeModel(TypeModelRegistry typeModelRegistry) {
+		this.registry = registry;
 	}
 	
 	private String qualifiedName;
@@ -43,6 +46,8 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	private ITypeModel superClass;
 	
 	private ITypeModel[] implementedIntefaces;
+	
+	private TypeModelRegistry registry;
 	
 	/**
 	 * <p>Getter for the field <code>methods</code>.</p>
@@ -146,5 +151,14 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 
 	public void setImplementedInterfaces(ITypeModel[] implementedIntefaces) {
 		this.implementedIntefaces = implementedIntefaces;
+	}
+
+	@Override
+	public ITypeModel resolveClass(String qualifiedName) {
+		ITypeModel result = this.registry.getType(qualifiedName);
+		if(result==null){
+			return null;
+		}
+		return result;
 	}
 }

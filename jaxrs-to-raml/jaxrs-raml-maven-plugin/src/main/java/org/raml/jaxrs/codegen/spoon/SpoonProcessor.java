@@ -253,7 +253,7 @@ public class SpoonProcessor{
 		String qualifiedName = classElement.getQualifiedName();
 		TypeModel type = (TypeModel) registry.getType(qualifiedName);
 		if(type==null){
-			type = new TypeModel();
+			type = new TypeModel(registry);
 			type.setFullyQualifiedName(qualifiedName);
 		}
 		registry.registerType(type);
@@ -572,7 +572,7 @@ public class SpoonProcessor{
 			return processType(ctType);
 		}
 
-		TypeModel type = new TypeModel();
+		TypeModel type = new TypeModel(registry);
 		type.setFullyQualifiedName(qualifiedName);
 		registry.registerType(type);
 		

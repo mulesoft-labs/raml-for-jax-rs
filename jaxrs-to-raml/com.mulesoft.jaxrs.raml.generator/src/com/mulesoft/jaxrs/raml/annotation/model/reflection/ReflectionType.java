@@ -97,4 +97,18 @@ public class ReflectionType extends ReflectionGenericElement<Class<?>> implement
 		return arr;
 	}
 
+
+	@Override
+	public ITypeModel resolveClass(String qualifiedName) {
+		try {
+			Class<?> clazz = this.element.getClassLoader().loadClass(qualifiedName);
+			if(clazz==null){
+				return null;
+			}
+			return new ReflectionType(clazz);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
+
 }

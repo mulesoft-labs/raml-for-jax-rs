@@ -39,7 +39,7 @@ public class SchemaModelBuilder {
 	
 	private ISchemaType generateType(JAXBType jaxbType, StructureType structureType) {
 		
-		String qualifiedName = ((ITypeModel)jaxbType.originalType).getFullyQualifiedName();
+		String qualifiedName = ((ITypeModel)jaxbType.originalModel).getFullyQualifiedName();
 		ISchemaType primitive = getPrimitiveType(qualifiedName);
 		if(primitive!=null){
 			return primitive;

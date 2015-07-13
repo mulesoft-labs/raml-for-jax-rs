@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMember;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 /**
@@ -33,7 +35,7 @@ public class JAXBType extends JAXBModelElement {
 	 * @param r a {@link com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry} object.
 	 */
 	public JAXBType(ITypeModel model,JAXBRegistry r) {
-		super(model,r);
+		super(model,model,r);
 		IMethodModel[] methods = model.getMethods();
 		String value = value(XmlAccessorType.class, "value");
 		XmlAccessType type = XmlAccessType.PUBLIC_MEMBER;
@@ -44,19 +46,57 @@ public class JAXBType extends JAXBModelElement {
 		if(this.className.equals("java.lang.Object")){
 			return;
 		}
+		HashMap<String,List<IMethodModel>> map = new HashMap<String, List<IMethodModel>>();
+		for(IMethodModel m : methods){
+			String name = m.getName();
+			List<IMethodModel> list = map.get(name);
+			if(list==null){
+				list = new ArrayList<IMethodModel>();
+				map.put(name, list);
+			}
+			list.add(m);
+		}
+		
 		for (IMethodModel m : methods) {
 			boolean needToConsume = needToConsume(type, m);
 			if (!needToConsume) {
 				continue;
 			}
-			boolean get = m.getName().startsWith("get");
-			boolean is = m.getName().startsWith("is");
-			if (get || is) {
-				// it is potential property method
-				String methodName = get ? m.getName().substring(3)
-						: m.getName().substring(2);
-				if(!methodName.isEmpty()){
-					properties.add(createProperty(methodName, m));
+			IParameterModel[] getterParams = m.getParameters();
+			ITypeModel returnedType = m.getReturnedType();
+			if(returnedType!=null){
+				String qName = returnedType.getFullyQualifiedName();
+				
+				if( !qName.equals("void")
+						&&!qName.equals("java.lang.Void")
+						&&(getterParams==null||getterParams.length==0)){
+					
+					boolean get = m.getName().startsWith("get");
+					boolean is = m.getName().startsWith("is");
+					if (get || is) {
+						String methodName = get ? m.getName().substring(3)
+								: m.getName().substring(2);
+
+						if(!methodName.isEmpty()){
+							IMethodModel setter = null;
+							List<IMethodModel> list = map.get("set" + methodName);
+							if(list!=null){
+								for(IMethodModel mm : list){
+									ITypeModel rt = mm.getReturnedType();
+									if(rt==null||rt.equals("void")||rt.equals("java.lang.Void")){
+										IParameterModel[] params = mm.getParameters();
+										if(params!=null&&params.length==1&&params[0].getParameterType().equals(qName)){
+											setter = mm;
+											break;
+										}
+									}
+								}
+							}
+							if(setter!=null){
+								properties.add(createProperty(methodName, m,setter, model));
+							}
+						}
+					}
 				}
 			}
 		}
@@ -66,7 +106,7 @@ public class JAXBType extends JAXBModelElement {
 				if (!needToConsume) {
 					continue;
 				}
-				properties.add(createProperty(f.getName(), f));
+				properties.add(createProperty(f.getName(), f, null, model));
 			}
 		}
 	}
@@ -115,7 +155,7 @@ public class JAXBType extends JAXBModelElement {
 		}
 	}
 
-	private JAXBProperty createProperty(String string, IMember m) {
+	private JAXBProperty createProperty(String string, IMember m, IMethodModel setter, ITypeModel ownerType) {
 		boolean isElement = m.hasAnnotation(XmlElement.class.getSimpleName());
 		boolean isAttribute = m.hasAnnotation(XmlAttribute.class.getSimpleName())
 				|| m.hasAnnotation(XmlAnyAttribute.class.getSimpleName());;
@@ -123,15 +163,15 @@ public class JAXBType extends JAXBModelElement {
 				.hasAnnotation(javax.xml.bind.annotation.XmlValue.class
 						.getSimpleName());
 		if (isElement) {
-			return new JAXBElementProperty(m,registry, string);
+			return new JAXBElementProperty(m, setter, ownerType, registry, string);
 		}
 		if (isAttribute) {
-			return new JAXBAttributeProperty(m, registry,string);
+			return new JAXBAttributeProperty(m, setter, ownerType, registry,string);
 		}
 		if (isValue) {
-			return new JAXBAttributeProperty(m, registry,string);
+			return new JAXBAttributeProperty(m, setter, ownerType, registry,string);
 		}
-		return new JAXBElementProperty(m,registry, string);
+		return new JAXBElementProperty(m, setter, ownerType, registry, string);
 	}
 
 	protected JAXBType superClass;
@@ -150,7 +190,7 @@ public class JAXBType extends JAXBModelElement {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getXMLName() {
-		return elementName!=null?elementName:originalType.getName().toLowerCase();
+		return elementName!=null?elementName:originalModel.getName().toLowerCase();
 	}
 
 	/**
@@ -203,7 +243,7 @@ public class JAXBType extends JAXBModelElement {
 					}
 				}
 			}			
-			ITypeModel superClazz = ((ITypeModel)type.originalType).getSuperClass();
+			ITypeModel superClazz = ((ITypeModel)type.originalModel).getSuperClass();
 			if(superClazz==null){
 				type = null;
 			}

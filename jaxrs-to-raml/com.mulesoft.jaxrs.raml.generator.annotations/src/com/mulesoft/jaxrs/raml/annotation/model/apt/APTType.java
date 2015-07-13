@@ -150,4 +150,14 @@ public class APTType extends APTGenericElement implements ITypeModel{
 		}
 		return list.toArray(new ITypeModel[list.size()]);
 	}
+
+
+	@Override
+	public ITypeModel resolveClass(String qualifiedName) {
+		TypeElement typeElement = this.environment.getElementUtils().getTypeElement(qualifiedName);
+		if(typeElement==null){
+			return null;
+		}
+		return new APTType(typeElement, environment);
+	}
 }

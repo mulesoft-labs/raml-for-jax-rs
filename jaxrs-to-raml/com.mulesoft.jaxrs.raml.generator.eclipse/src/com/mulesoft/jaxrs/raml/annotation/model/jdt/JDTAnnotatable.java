@@ -203,7 +203,9 @@ public abstract class JDTAnnotatable implements IBasicModel {
 
 	private ITypeModel getJAXBType(String typeName, IType ownerType)
 			throws JavaModelException {
-		
+		if(typeName.startsWith("[")){
+			typeName=typeName.substring(1);
+		}
 		Class<?> basicJavaType = getBasicJavaType(typeName);
 		if(basicJavaType!=null){
 			return new ReflectionType(basicJavaType);
@@ -221,6 +223,10 @@ public abstract class JDTAnnotatable implements IBasicModel {
 
 	protected IType resolveType(IType ownerType, String typeName)
 			throws JavaModelException {
+		
+		if(typeName.startsWith("[")){
+			typeName=typeName.substring(1);
+		}
 		
 		if(typeName.startsWith("T")&&typeName.endsWith(";")){
 			return null;

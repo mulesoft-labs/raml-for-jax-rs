@@ -14,6 +14,7 @@ import org.eclipse.jdt.ui.JavadocContentAccess;
 import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
 import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 import com.mulesoft.jaxrs.raml.generator.popup.actions.GenerationException;
 
 public class JDTType extends JDTGenericElement implements ITypeModel {
@@ -139,6 +140,10 @@ public class JDTType extends JDTGenericElement implements ITypeModel {
 	@Override
 	public ITypeModel resolveClass(String qualifiedName) {
 		try {
+			Class<?> clazz = getBasicJavaType(qualifiedName);
+			if(clazz!=null){
+				return new ReflectionType(clazz);
+			}
 			IType iType = resolveType(this.getElement(), qualifiedName);
 			if(iType==null){
 				return null;

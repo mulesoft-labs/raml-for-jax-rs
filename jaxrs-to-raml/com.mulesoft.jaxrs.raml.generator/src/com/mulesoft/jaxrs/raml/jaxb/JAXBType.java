@@ -83,16 +83,29 @@ public class JAXBType extends JAXBModelElement {
 							if(list!=null){
 								for(IMethodModel mm : list){
 									ITypeModel rt = mm.getReturnedType();
-									if(rt==null||rt.equals("void")||rt.equals("java.lang.Void")){
+									if(rt==null||rt.getFullyQualifiedName().equals("void")||rt.getFullyQualifiedName().equals("java.lang.Void")){
 										IParameterModel[] params = mm.getParameters();
-										if(params!=null&&params.length==1&&params[0].getParameterType().equals(qName)){
-											setter = mm;
-											break;
+										if(params!=null&&params.length==1){
+											String paramType = params[0].getParameterType();
+											if(paramType.equals(qName)){											
+												setter = mm;
+												break;
+											}
+											ITypeModel paramModel = model.resolveClass(paramType);
+											if(paramModel!=null){
+												if(paramModel.getFullyQualifiedName().equals(qName)){
+													setter = mm;
+													break;													
+												}
+											}
 										}
 									}
 								}
 							}
-							if(setter!=null){
+							if(setter!=null
+									||m.hasAnnotation(XmlElement.class.getSimpleName())
+									||m.hasAnnotation(XmlAttribute.class.getSimpleName())
+									||m.hasAnnotation(XmlAnyAttribute.class.getSimpleName())){
 								properties.add(createProperty(methodName, m,setter, model));
 							}
 						}

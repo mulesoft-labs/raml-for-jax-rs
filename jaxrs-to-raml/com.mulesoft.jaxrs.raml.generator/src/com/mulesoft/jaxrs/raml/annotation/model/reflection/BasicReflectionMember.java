@@ -97,11 +97,19 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
-			if (q.getName().equals(annotation)){
+			if (getAnnotationName(q).equals(annotation)){
 				return q.getValue(VALUE);
 			}
 		}
 		return null;
+	}
+
+
+	private String getAnnotationName(IAnnotationModel q) {
+		String name = q.getName();
+		int ind = name.lastIndexOf('.');
+		ind++;
+		return name.substring(ind);
 	}
 
 	
@@ -109,7 +117,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
-			if (q.getName().equals(annotation)){
+			if (getAnnotationName(q).equals(annotation)){
 				return q.getValues(VALUE);
 			}
 		}
@@ -121,7 +129,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
-			if (q.getName().equals(name)){
+			if (getAnnotationName(q).equals(name)){
 				return true;
 			}
 		}
@@ -132,7 +140,7 @@ public abstract class BasicReflectionMember<T extends AnnotatedElement> implemen
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
-			if (m.getName().equals(name)){
+			if (getAnnotationName(m).equals(name)){
 				return m;
 			}
 		}

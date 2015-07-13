@@ -32,7 +32,7 @@ public class AnnotationModel implements IAnnotationModel {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getName() {
-		return annotation.annotationType().getSimpleName();
+		return annotation.annotationType().getCanonicalName();
 	}
 
 	

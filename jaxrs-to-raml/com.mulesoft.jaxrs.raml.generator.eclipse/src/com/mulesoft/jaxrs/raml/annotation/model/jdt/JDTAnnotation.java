@@ -33,7 +33,10 @@ public class JDTAnnotation implements IAnnotationModel {
 
 	
 	public String getName() {
-		return annotation.getElementName();
+		String qName = annotation.getElementName();
+		int ind = qName.lastIndexOf('.');
+		ind++;
+		return qName.substring(ind);
 	}
 
 	
@@ -42,6 +45,7 @@ public class JDTAnnotation implements IAnnotationModel {
 		try {			
 			ASTParser parser = ASTParser.newParser(AST.JLS4);
 			parser.setProject(annotation.getJavaProject());
+			try{
 			IBinding[] bindings = parser.createBindings(new IJavaElement[]{annotation}, new NullProgressMonitor());
 			if(bindings.length>0&&bindings[0] instanceof IAnnotationBinding){
 				IAnnotationBinding bnd = (IAnnotationBinding) bindings[0];
@@ -80,6 +84,10 @@ public class JDTAnnotation implements IAnnotationModel {
 					}
 				}
 			}
+			}
+			catch(Exception e){
+				//Handle JDT bugs. For example, in JDT 4.3.2, annotations inside binary classes can not be processed.
+			}
 			memberValuePairs = annotation.getMemberValuePairs();
 			for (IMemberValuePair pair:memberValuePairs){
 				if (pair.getMemberName().equals(pairName)){
@@ -102,7 +110,7 @@ public class JDTAnnotation implements IAnnotationModel {
 			}
 		} catch (JavaModelException e) {
 			throw new IllegalStateException(e);
-		}		
+		}	
 		return null;
 	}
 

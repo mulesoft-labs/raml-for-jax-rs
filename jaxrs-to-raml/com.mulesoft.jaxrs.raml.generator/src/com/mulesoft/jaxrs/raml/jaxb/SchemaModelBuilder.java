@@ -51,7 +51,11 @@ public class SchemaModelBuilder {
 			return existing;
 		}
 		HashMap<String,String> namespaces = jaxbType.gatherNamespaces();
-		TypeModelImpl typeModel = new TypeModelImpl(xmlName,jaxbType.getClassName(),namespaces,structureType);
+		ISchemaType schemaType = getType(jaxbType,structureType,namespaces);
+		if(!(schemaType instanceof TypeModelImpl)){
+			return schemaType;
+		}
+		TypeModelImpl typeModel = (TypeModelImpl) schemaType;
 		this.jaxbTypeMap.put(xmlName, typeModel);
 		HashMap<String,String>prefixes=jaxbType.gatherNamespaces();
 	
@@ -113,6 +117,11 @@ public class SchemaModelBuilder {
 	private ISchemaType getType(JAXBProperty p) {
 
 		JAXBType propertyType = p.getType();
+		StructureType st = p.getStructureType();
+		return getType(propertyType, st, null);
+	}
+
+	private ISchemaType getType(JAXBType propertyType, StructureType st, HashMap<String, String> namespaces) {
 		String canonicalName = propertyType!=null ? propertyType.getClassName() : "java.lang.Object";
 		
 		ISchemaType primitive = getPrimitiveType(canonicalName);
@@ -122,7 +131,8 @@ public class SchemaModelBuilder {
 		
 		TypeModelImpl type = this.javaTypeMap.get(canonicalName);
 		if(type==null){
-			type = new TypeModelImpl(canonicalName,canonicalName,null,false,p.getStructureType());
+			String xmlName = propertyType.getXMLName();			
+			type = new TypeModelImpl(xmlName,canonicalName,namespaces,st);
 			this.javaTypeMap.put(canonicalName, type);
 		}
 		return type;

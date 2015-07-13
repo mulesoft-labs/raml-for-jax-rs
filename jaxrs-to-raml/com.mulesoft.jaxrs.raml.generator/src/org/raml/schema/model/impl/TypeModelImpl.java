@@ -19,7 +19,7 @@ public class TypeModelImpl implements ISchemaType{
 		this.parentStructureType = parentStructureType;
 	}
 	
-	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces, boolean isSimple,StructureType parentStructureType) {
+	protected TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces, boolean isSimple,StructureType parentStructureType) {
 		super();
 		this.name = name;
 		this.isSimple = isSimple;
@@ -100,6 +100,18 @@ public class TypeModelImpl implements ISchemaType{
 	@Override
 	public StructureType getParentStructureType() {
 		return this.parentStructureType;
+	}
+
+	@Override
+	public boolean isMapping() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ISchemaType getActualType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -67,4 +67,14 @@ public enum SimpleType implements ISchemaType {
 	public StructureType getParentStructureType() {
 		return StructureType.COMMON;
 	}
+
+	@Override
+	public boolean isMapping() {
+		return false;
+	}
+
+	@Override
+	public ISchemaType getActualType() {
+		return this;
+	}
 }

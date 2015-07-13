@@ -24,4 +24,8 @@ public interface ISchemaType {
 	String getClassQualifiedName();
 	
 	StructureType getParentStructureType();
+	
+	boolean isMapping();
+	
+	ISchemaType getActualType();
 }

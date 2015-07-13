@@ -34,7 +34,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/**
 	 * <p>Constructor for TypeModel.</p>
 	 */
-	public TypeModel(TypeModelRegistry typeModelRegistry) {
+	public TypeModel(TypeModelRegistry registry) {
 		this.registry = registry;
 	}
 	

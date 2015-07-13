@@ -69,12 +69,7 @@ public enum SimpleType implements ISchemaType {
 	}
 
 	@Override
-	public boolean isMapping() {
-		return false;
-	}
-
-	@Override
-	public ISchemaType getActualType() {
-		return this;
+	public JAXBClassMapping getMapping() {
+		return null;
 	}
 }

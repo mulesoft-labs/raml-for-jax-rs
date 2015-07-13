@@ -40,7 +40,12 @@ public class DefaultValueFactory {
 
 	public static Object getDefaultValue(ISchemaType type){
 		
-		if(type.isSimple()){			
+		JAXBClassMapping mapping = type.getMapping();
+		if(mapping!=null){
+			return mapping.getExample();
+		}
+		
+		if(type.isSimple()){
 			if(type instanceof SimpleType){
 				return defaultvalueMap.get((SimpleType)type);
 			}			

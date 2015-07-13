@@ -6,17 +6,29 @@ import java.util.Map;
 
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
+import org.raml.schema.model.JAXBClassMapping;
 
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public class TypeModelImpl implements ISchemaType{
-	
+
 	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces,StructureType parentStructureType) {
 		super();
 		this.name = name;
 		this.namespaces = namespaces;
 		this.classQualifiedName = classQualifiedName;
 		this.parentStructureType = parentStructureType;
+	}
+	
+	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces,
+			StructureType parentStructureType, JAXBClassMapping mapping) {
+		super();
+		this.name = name;
+		this.namespaces = namespaces;
+		this.classQualifiedName = classQualifiedName;
+		this.parentStructureType = parentStructureType;
+		this.mapping = mapping;
+		this.isSimple = true;
 	}
 	
 	protected TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces, boolean isSimple,StructureType parentStructureType) {
@@ -39,6 +51,8 @@ public class TypeModelImpl implements ISchemaType{
 	private List<ISchemaProperty> properties;
 	
 	private StructureType parentStructureType;
+	
+	private JAXBClassMapping mapping;
 
 	@Override
 	public String getName() {
@@ -103,15 +117,8 @@ public class TypeModelImpl implements ISchemaType{
 	}
 
 	@Override
-	public boolean isMapping() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ISchemaType getActualType() {
-		// TODO Auto-generated method stub
-		return null;
+	public JAXBClassMapping getMapping() {
+		return this.mapping;
 	}
 
 }

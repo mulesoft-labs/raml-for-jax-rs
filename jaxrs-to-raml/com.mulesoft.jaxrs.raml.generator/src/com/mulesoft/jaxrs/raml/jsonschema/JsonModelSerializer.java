@@ -50,18 +50,18 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 				ISchemaType keyType = SimpleType.STRING;
 				ISchemaType valueType = new TypeModelImpl("Object", "java.lang.Object", null, StructureType.COMMON);
 				if(prop!=null && prop instanceof IMapSchemaProperty){
-					keyType = SimpleType.STRING;//((IMapSchemaProperty)prop).getKeyType();
+					keyType = ((IMapSchemaProperty)prop).getKeyType();
 					valueType = ((IMapSchemaProperty)prop).getValueType();
-//					if(keyType != SimpleType.STRING){
-//						StringBuilder bld = new StringBuilder("Invalid map key type. Only String is available as key type.");
-//						if(type!=null){
-//							bld.append(" Type: " + type.getClassQualifiedName());
-//						}
-//						if(prop!=null){
-//							bld.append(" Property: " + prop.getName());
-//						}
-//						throw new IllegalArgumentException(bld.toString());
-//					}
+					if(!keyType.getClassName().equals(SimpleType.STRING.getClassName())){
+						StringBuilder bld = new StringBuilder("Invalid map key type. Only String is available as key type.");
+						if(type!=null){
+							bld.append(" Type: " + type.getClassQualifiedName());
+						}
+						if(prop!=null){
+							bld.append(" Property: " + prop.getName());
+						}
+						throw new IllegalArgumentException(bld.toString());
+					}
 				}
 				String key = DefaultValueFactory.getDefaultValue(keyType).toString();
 				try {
@@ -127,12 +127,14 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 			try {
 				if(prop.isAttribute()){
 					propName = "@" + propName;
-					Object defaultValue = DefaultValueFactory.DEFAULT_STRING_VALUE;
 					if(prop.getStructureType()==StructureType.MAP){
+						IMapSchemaProperty mapProp = (IMapSchemaProperty) prop;
+						Object defaultValue = DefaultValueFactory.getDefaultValue(mapProp.getValueType());
 						item.put(propName+"_1", defaultValue+"_1");
 						item.put(propName+"_2", defaultValue+"_2");
 					}
 					else{
+						Object defaultValue = DefaultValueFactory.getDefaultValue(propType);
 						item.put(propName, defaultValue);
 					}
 				}				

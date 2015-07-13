@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
+import org.raml.schema.model.JAXBClassMapping;
 import org.raml.schema.model.SimpleType;
 import org.raml.schema.model.impl.MapPropertyImpl;
 import org.raml.schema.model.impl.PropertyModelImpl;
@@ -131,8 +132,16 @@ public class SchemaModelBuilder {
 		
 		TypeModelImpl type = this.javaTypeMap.get(canonicalName);
 		if(type==null){
-			String xmlName = propertyType.getXMLName();			
-			type = new TypeModelImpl(xmlName,canonicalName,namespaces,st);
+			String xmlName = propertyType.getXMLName();
+			JAXBClassMapping mapping = JAXBClassMapping.getMapping(canonicalName);
+			if(mapping!=null){
+				String mappingClass = mapping.getMappingClass();
+				primitive = getPrimitiveType(mappingClass);
+				type = new TypeModelImpl(xmlName,primitive.getClassQualifiedName(),namespaces,st,mapping);
+			}
+			else{							
+				type = new TypeModelImpl(xmlName,canonicalName,namespaces,st);
+			}
 			this.javaTypeMap.put(canonicalName, type);
 		}
 		return type;

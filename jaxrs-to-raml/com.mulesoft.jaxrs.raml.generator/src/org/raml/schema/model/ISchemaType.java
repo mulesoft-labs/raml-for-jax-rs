@@ -25,7 +25,5 @@ public interface ISchemaType {
 	
 	StructureType getParentStructureType();
 	
-	boolean isMapping();
-	
-	ISchemaType getActualType();
+	JAXBClassMapping getMapping();
 }

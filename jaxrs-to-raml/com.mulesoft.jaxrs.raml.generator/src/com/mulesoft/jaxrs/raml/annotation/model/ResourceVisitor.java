@@ -274,7 +274,7 @@ public abstract class ResourceVisitor {
 	 * <p>generateXMLSchema.</p>
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
-	 * 
+	 * @param st a {@link com.mulesoft.jaxrs.raml.annotation.model.StructureType} object. 
 	 * @return if schema is correctly generated and can be used inside RAML
 	 */
 	protected boolean generateXMLSchema(ITypeModel t, StructureType st){
@@ -918,6 +918,7 @@ public abstract class ResourceVisitor {
 	 * <p>generateXSDForClass.</p>
 	 *
 	 * @param element a {@link java.lang.Class} object.
+	 * @return XSD schema for input class
 	 */
 	protected String generateXSDForClass(Class<?> element) {
 		try {
@@ -1144,8 +1145,7 @@ public abstract class ResourceVisitor {
 	 * <p>afterSchemaGen.</p>
 	 *
 	 * @param t a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
-	 * @param st 
-	 * @param gotXSD 
+	 * @param st a {@link com.mulesoft.jaxrs.raml.annotation.model.StructureType} object. 
 	 */
 	protected void afterSchemaGen(ITypeModel t, StructureType st) {
 

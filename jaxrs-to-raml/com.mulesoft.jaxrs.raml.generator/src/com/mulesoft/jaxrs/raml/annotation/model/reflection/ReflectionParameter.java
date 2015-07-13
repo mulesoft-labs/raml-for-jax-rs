@@ -63,7 +63,7 @@ public class ReflectionParameter implements IParameterModel{
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
-			if (q.getName().equals(annotation)){
+			if (getAnnotationName(q).equals(annotation)){
 				return q.getValue(VALUE);
 			}
 		}
@@ -75,7 +75,7 @@ public class ReflectionParameter implements IParameterModel{
 	public String[] getAnnotationValues(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
-			if (q.getName().equals(annotation)){
+			if (getAnnotationName(q).equals(annotation)){
 				return q.getValues(annotation);
 			}
 		}
@@ -87,18 +87,25 @@ public class ReflectionParameter implements IParameterModel{
 	public boolean hasAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel q:annotations){
-			if (q.getName().equals(name)){
+			if (getAnnotationName(q).equals(name)){
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private String getAnnotationName(IAnnotationModel q) {
+		String n = q.getName();
+		int ind = n.lastIndexOf('.');
+		ind++;
+		return n.substring(ind);
 	}
 	
 	/** {@inheritDoc} */
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){
-			if (m.getName().equals(name)){
+			if (getAnnotationName(m).equals(name)){
 				return m;
 			}
 		}

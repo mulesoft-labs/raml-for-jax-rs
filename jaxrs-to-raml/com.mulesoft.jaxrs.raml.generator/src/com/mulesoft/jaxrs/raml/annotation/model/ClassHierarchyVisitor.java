@@ -16,11 +16,13 @@ public abstract class ClassHierarchyVisitor {
 			}
 			if(visitInterfaces()){
 				ITypeModel[] typeInterfaces = t.getImplementedInterfaces();
-				for(ITypeModel iType : typeInterfaces){
-					String name = iType.getFullyQualifiedName();
-					if(!iSet.contains(name)){
-						iSet.add(name);
-						iList.add(iType);
+				if(typeInterfaces!=null){
+					for(ITypeModel iType : typeInterfaces){
+						String name = iType.getFullyQualifiedName();
+						if(!iSet.contains(name)){
+							iSet.add(name);
+							iList.add(iType);
+						}
 					}
 				}
 			}

@@ -55,7 +55,7 @@ public class Launcher {
 		}
 		boolean generateClient = false;	
 		String generateClientStringValue = argMap.get("generateClientProxy");
-		if(removeOldOutputStringValue!=null){
+		if(generateClientStringValue!=null){
 			generateClient = Boolean.parseBoolean(generateClientStringValue);
 		}
 		configuration.setGenerateClientInterface(generateClient);

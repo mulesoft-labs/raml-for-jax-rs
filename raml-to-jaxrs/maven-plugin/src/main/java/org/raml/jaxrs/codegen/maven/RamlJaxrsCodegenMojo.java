@@ -112,7 +112,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	 * Should client proxy code be generated
 	 */
 	@Parameter(property = "generateClientProxy", defaultValue = "false")
-	private boolean generateClient;
+	private boolean generateClientProxy;
 
 	/**
 	 * The targeted JAX-RS version: either "1.1" or "2.0" .
@@ -209,7 +209,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 			configuration.setOutputDirectory(outputDirectory);
 			configuration.setUseJsr303Annotations(useJsr303Annotations);
 			configuration.setAsyncResourceTrait(asyncResourceTrait);
-			configuration.setGenerateClientInterface(generateClient);
+			configuration.setGenerateClientInterface(generateClientProxy);
 			configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
 			configuration.setSourceDirectory(sourceDirectory);
 			configuration.setJsonMapperConfiguration(jsonMapperConfiguration);

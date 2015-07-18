@@ -52,13 +52,7 @@ public class Launcher {
 		String removeOldOutputStringValue = argMap.get("removeOldOutput");
 		if(removeOldOutputStringValue!=null){
 			removeOldOutput = Boolean.parseBoolean(removeOldOutputStringValue);
-		}
-		boolean generateClient = false;	
-		String generateClientStringValue = argMap.get("generateClientProxy");
-		if(removeOldOutputStringValue!=null){
-			generateClient = Boolean.parseBoolean(generateClientStringValue);
-		}
-		configuration.setGenerateClientInterface(generateClient);
+		}		
 		Collection<File> ramlFiles = getRamlFiles(argMap);
 		if(ramlFiles.isEmpty()){
 			return;
@@ -120,8 +114,12 @@ public class Launcher {
 		boolean useJsr303Annotations = false;
 		boolean mapToVoid = false;
 		String jsonMapper = "jackson1";
-		
-		
+		boolean generateClientProxy = false;
+		boolean useTitlePropertyForSchemaNames=false;
+		String modelPackageName = "model";
+		String asyncResourceTrait = null;
+		String customAnnotator = null;
+				
 		for( Map.Entry<String,String> entry : argMap.entrySet() ){
 			
 			String argName = entry.getKey();			
@@ -148,6 +146,22 @@ public class Launcher {
 			else if(argName.equals("jsonMapper")){
 				jsonMapper = argValue;
 			}
+			else if(argName.equals("generateClientProxy")){
+				generateClientProxy = Boolean.parseBoolean(argValue);
+			}
+			else if(argName.equals("useTitlePropertyForSchemaNames")){
+				useTitlePropertyForSchemaNames = Boolean.parseBoolean(argValue);
+			}
+			else if(argName.equals("modelPackageName")){
+				modelPackageName = argValue;
+			}
+			else if(argName.equals("asyncResourceTrait")){
+				asyncResourceTrait = argValue;
+			}
+			else if(argName.equals("customAnnotator")){
+				customAnnotator = argValue;
+			}
+			
 		}
 		if(basePackageName==null){
 			throw new RuntimeException("Base package must be specified.");
@@ -162,6 +176,17 @@ public class Launcher {
         configuration.setUseJsr303Annotations(useJsr303Annotations);
         configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
         configuration.setSourceDirectory(sourceDirectory);
+        configuration.setGenerateClientInterface(generateClientProxy);
+        configuration.setEmptyResponseReturnVoid(mapToVoid);        
+        configuration.setUseTitlePropertyWhenPossible(useTitlePropertyForSchemaNames);
+		configuration.setModelPackageName(modelPackageName);
+		configuration.setAsyncResourceTrait(asyncResourceTrait);
+
+		if(customAnnotator!=null && !customAnnotator.trim().isEmpty()){
+			try {
+				configuration.setCustomAnnotator((Class)Class.forName(customAnnotator));
+			} catch (ClassNotFoundException e) {}
+		}
         
         return configuration;
 	}

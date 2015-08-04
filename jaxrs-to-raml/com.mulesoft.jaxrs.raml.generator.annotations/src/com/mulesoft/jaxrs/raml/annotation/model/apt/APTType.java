@@ -102,7 +102,7 @@ public class APTType extends APTGenericElement implements ITypeModel{
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getFullyQualifiedName() {
-		return null; //Can't get it without utils
+		return this.element.getQualifiedName().toString();
 	}
 
 

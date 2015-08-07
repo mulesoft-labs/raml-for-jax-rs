@@ -1,9 +1,12 @@
 package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.DeclaredType;
 
@@ -74,6 +77,24 @@ public class APTAnnotation implements IAnnotationModel{
 	@Override
 	public IAnnotationModel[] getSubAnnotations(String pairName) {
 		return new IAnnotationModel[0];
+	}
+
+
+	@Override
+	public String getCanonicalName() {
+		DeclaredType annotationType = mirror.getAnnotationType();
+		Element element = annotationType.asElement();
+		ArrayList<String> list = new ArrayList<String>();
+		while(element!=null){
+			list.add(element.getSimpleName().toString());
+		}
+		Collections.reverse(list);
+		StringBuilder bld = new StringBuilder();
+		for(String s : list){
+			bld.append(s).append(".");
+		}
+		String result = bld.substring(0, bld.length()-1);
+		return result;
 	}
 
 }

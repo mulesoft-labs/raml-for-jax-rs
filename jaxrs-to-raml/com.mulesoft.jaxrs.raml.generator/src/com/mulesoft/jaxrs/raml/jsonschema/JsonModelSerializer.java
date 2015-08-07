@@ -48,7 +48,7 @@ public class JsonModelSerializer extends StructuredModelSerializer {
 				this.object = new JSONObject();
 				
 				ISchemaType keyType = SimpleType.STRING;
-				ISchemaType valueType = new TypeModelImpl("Object", "java.lang.Object", null, StructureType.COMMON);
+				ISchemaType valueType = new TypeModelImpl("Object", "java.lang.Object", null, StructureType.COMMON,null);
 				if(prop!=null && prop instanceof IMapSchemaProperty){
 					keyType = ((IMapSchemaProperty)prop).getKeyType();
 					valueType = ((IMapSchemaProperty)prop).getValueType();

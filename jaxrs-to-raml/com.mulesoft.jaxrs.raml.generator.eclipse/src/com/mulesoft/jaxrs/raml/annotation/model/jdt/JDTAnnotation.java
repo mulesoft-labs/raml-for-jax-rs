@@ -188,4 +188,10 @@ public class JDTAnnotation implements IAnnotationModel {
 	
 	}
 
+
+	@Override
+	public String getCanonicalName() {
+		return annotation.getElementName();
+	}
+
 }

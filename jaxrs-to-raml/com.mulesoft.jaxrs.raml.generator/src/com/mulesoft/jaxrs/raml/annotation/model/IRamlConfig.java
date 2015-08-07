@@ -1,5 +1,6 @@
 package com.mulesoft.jaxrs.raml.annotation.model;
 
+import java.util.List;
 import java.util.Set;
 
 import org.raml.model.ActionType;
@@ -77,6 +78,11 @@ public interface IRamlConfig {
 	 */
 	boolean doFullTree();
 	
-	
+	/**
+	 * <p>getExtensions.</p>
+	 * 
+	 * @return list of resource visitor extensions
+	 */
+	List<IResourceVisitorExtension> getExtensions();
 
 }

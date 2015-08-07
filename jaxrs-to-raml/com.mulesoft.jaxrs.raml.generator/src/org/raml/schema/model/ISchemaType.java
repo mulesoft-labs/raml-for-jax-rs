@@ -3,6 +3,7 @@ package org.raml.schema.model;
 import java.util.List;
 import java.util.Map;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public interface ISchemaType {
@@ -26,4 +27,8 @@ public interface ISchemaType {
 	StructureType getParentStructureType();
 	
 	JAXBClassMapping getMapping();
+	
+	List<IAnnotationModel> getAnnotations();
+
+	void addProperty(ISchemaProperty property);
 }

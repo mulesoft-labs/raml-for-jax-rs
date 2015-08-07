@@ -1,14 +1,25 @@
 package org.raml.schema.model.impl;
 
+import java.util.List;
+
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
+import org.raml.schema.model.SchemaModelElement;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
-public class PropertyModelImpl implements ISchemaProperty {
+public class PropertyModelImpl extends SchemaModelElement implements ISchemaProperty {
 	
-	public PropertyModelImpl(String name, ISchemaType type, boolean required, boolean isAttribute, StructureType structureType, String namespace) {
-		super();
+	public PropertyModelImpl(
+			String name,
+			ISchemaType type,
+			boolean required,
+			boolean isAttribute,
+			StructureType structureType,
+			String namespace,
+			List<IAnnotationModel> annotations) {
+		super(annotations);
 		this.name = name;
 		this.type = type;
 		this.required = required;
@@ -65,5 +76,10 @@ public class PropertyModelImpl implements ISchemaProperty {
 
 	public void setGeneric(boolean isGeneric) {
 		this.isGeneric = isGeneric;
+	}
+
+	@Override
+	public String getDefaultValue() {
+		return null;
 	}
 }

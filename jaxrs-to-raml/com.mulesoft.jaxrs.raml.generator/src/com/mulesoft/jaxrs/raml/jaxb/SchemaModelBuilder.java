@@ -14,18 +14,29 @@ import org.raml.schema.model.impl.MapPropertyImpl;
 import org.raml.schema.model.impl.PropertyModelImpl;
 import org.raml.schema.model.impl.TypeModelImpl;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
+import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
+import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorExtension;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 
 public class SchemaModelBuilder {
 	
-	public SchemaModelBuilder(JAXBRegistry registry) {
+	public SchemaModelBuilder(JAXBRegistry registry,IRamlConfig config) {
 		super();
 		this.registry = registry;
+		for(IResourceVisitorExtension ext : config.getExtensions()){
+			if(ext instanceof ISchemaModelBuilderExtension){
+				this.extensions.add((ISchemaModelBuilderExtension)ext);
+			}
+		}
 	}
 	
 	private JAXBRegistry registry;
+	
+	private List<ISchemaModelBuilderExtension> extensions
+			= new ArrayList<ISchemaModelBuilderExtension>();
 	
 	private HashMap<String,TypeModelImpl> javaTypeMap = new HashMap<String, TypeModelImpl>();
 	
@@ -33,6 +44,9 @@ public class SchemaModelBuilder {
 
 	public ISchemaType buildSchemaModel(JAXBType jaxbType, StructureType st){
 		ISchemaType typeModel = generateType(jaxbType,st);
+		for(ISchemaModelBuilderExtension ext : this.extensions){
+			ext.processModel(typeModel);
+		}
 		return typeModel;
 	}
 
@@ -47,7 +61,7 @@ public class SchemaModelBuilder {
 		}
 		
 		String xmlName = jaxbType.getXMLName();
-		TypeModelImpl existing = this.jaxbTypeMap.get(xmlName);
+		ISchemaType existing = this.jaxbTypeMap.get(xmlName);
 		if(existing!=null){
 			return existing;
 		}
@@ -63,10 +77,13 @@ public class SchemaModelBuilder {
 		for (JAXBProperty p:jaxbType.getAllProperties()){
 			writeProperty(typeModel,p,prefixes);
 		}
+		for(ISchemaModelBuilderExtension ext : this.extensions){
+			ext.processType(typeModel);
+		}
 		return typeModel;
 	}
 
-	private void writeProperty(TypeModelImpl typeModel,JAXBProperty p, HashMap<String, String> prefixes) {
+	private void writeProperty(ISchemaType typeModel,JAXBProperty p, HashMap<String, String> prefixes) {
 		String name=p.name();
 		if (name==null||name.length()==0){
 			return;
@@ -80,14 +97,14 @@ public class SchemaModelBuilder {
 						registry.getJAXBModel(new ReflectionType(String.class)),
 						StructureType.COMMON);
 				List<ISchemaType> list = Arrays.asList(strType,strType);
-				prop = new MapPropertyImpl(name, list, p.required, true, namespace);
+				prop = new MapPropertyImpl(name, list, p.required, true, namespace, p.getAnnotations());
 			}
 			else{
-				prop = new PropertyModelImpl(name, getType(p), p.required, true, st,namespace);
+				prop = new PropertyModelImpl(name, getType(p), p.required, true, st,namespace, p.getAnnotations());
 			}
 		}
 		else if (p instanceof JAXBValueProperty){
-			prop = new PropertyModelImpl(name, getType(p), p.required, false, st,namespace);
+			prop = new PropertyModelImpl(name, getType(p), p.required, false, st,namespace, p.getAnnotations());
 		}
 		else if (p instanceof JAXBElementProperty){
 			JAXBElementProperty el=(JAXBElementProperty) p;
@@ -98,20 +115,26 @@ public class SchemaModelBuilder {
 					for(JAXBType t : jaxbTypes){
 						list.add(generateType(t, StructureType.COMMON));
 					}
-					prop = new MapPropertyImpl(name, list, p.required, false, namespace);
+					prop = new MapPropertyImpl(name, list, p.required, false, namespace, p.getAnnotations());
 				}
 				else{
 					ISchemaType propertyType = generateType(jaxbTypes.get(0),st);
-					prop = new PropertyModelImpl(name, propertyType, p.required, false, st,namespace);
+					prop = new PropertyModelImpl(name, propertyType, p.required, false, st,namespace, p.getAnnotations());
 				}
 			}
 			else{
-				prop = new PropertyModelImpl(name, getType(p), p.required, false, st,namespace);
+				prop = new PropertyModelImpl(name, getType(p), p.required, false, st,namespace, p.getAnnotations());
 			}
-		}		
+		}
 		if(prop!=null){
 			prop.setGeneric(p.isGeneric());
-			typeModel.addProperty(prop);
+		}
+		ISchemaProperty prop1 = prop;
+		for(ISchemaModelBuilderExtension ext : this.extensions){
+			prop1 = ext.processProperty(p,prop1);
+		}
+		if(prop1!=null){
+			typeModel.addProperty(prop1);
 		}
 	}
 
@@ -132,15 +155,16 @@ public class SchemaModelBuilder {
 		
 		TypeModelImpl type = this.javaTypeMap.get(canonicalName);
 		if(type==null){
+			List<IAnnotationModel> annotations = propertyType!=null ? propertyType.getAnnotations() : new ArrayList<IAnnotationModel>();
 			String xmlName = propertyType.getXMLName();
 			JAXBClassMapping mapping = JAXBClassMapping.getMapping(canonicalName);
 			if(mapping!=null){
 				String mappingClass = mapping.getMappingClass();
 				primitive = getPrimitiveType(mappingClass);
-				type = new TypeModelImpl(xmlName,primitive.getClassQualifiedName(),namespaces,st,mapping);
+				type = new TypeModelImpl(xmlName,primitive.getClassQualifiedName(),namespaces,st,mapping,annotations);
 			}
 			else{							
-				type = new TypeModelImpl(xmlName,canonicalName,namespaces,st);
+				type = new TypeModelImpl(xmlName,canonicalName,namespaces,st,annotations);
 			}
 			this.javaTypeMap.put(canonicalName, type);
 		}

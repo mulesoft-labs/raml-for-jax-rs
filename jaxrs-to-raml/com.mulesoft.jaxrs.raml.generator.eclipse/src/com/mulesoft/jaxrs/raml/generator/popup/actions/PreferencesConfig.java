@@ -1,13 +1,16 @@
 package com.mulesoft.jaxrs.raml.generator.popup.actions;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.raml.model.ActionType;
 import org.raml.model.Protocol;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorExtension;
 import com.mulesoft.jaxrs.raml.generator.eclipse.JAXRSTORamlPlagin;
 
 final class PreferencesConfig implements IEditableRamlConfig {
@@ -142,5 +145,11 @@ final class PreferencesConfig implements IEditableRamlConfig {
 	
 	public void setDoFullTree(boolean selection) {
 		preferences.setValue(FULL_TREE, !selection);
+	}
+
+
+	@Override
+	public List<IResourceVisitorExtension> getExtensions() {
+		return new ArrayList<IResourceVisitorExtension>();
 	}
 }

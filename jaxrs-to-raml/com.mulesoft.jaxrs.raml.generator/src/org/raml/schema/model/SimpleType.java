@@ -1,8 +1,10 @@
 package org.raml.schema.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public enum SimpleType implements ISchemaType {
@@ -71,5 +73,13 @@ public enum SimpleType implements ISchemaType {
 	@Override
 	public JAXBClassMapping getMapping() {
 		return null;
+	}
+
+	@Override
+	public List<IAnnotationModel> getAnnotations() {
+		return new ArrayList<IAnnotationModel>();
+	}
+
+	public void addProperty(ISchemaProperty property) {
 	}
 }

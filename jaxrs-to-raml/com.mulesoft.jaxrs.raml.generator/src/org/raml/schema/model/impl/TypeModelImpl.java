@@ -7,22 +7,34 @@ import java.util.Map;
 import org.raml.schema.model.ISchemaProperty;
 import org.raml.schema.model.ISchemaType;
 import org.raml.schema.model.JAXBClassMapping;
+import org.raml.schema.model.SchemaModelElement;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
-public class TypeModelImpl implements ISchemaType{
+public class TypeModelImpl extends SchemaModelElement implements ISchemaType{
 
-	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces,StructureType parentStructureType) {
-		super();
+	public TypeModelImpl(
+			String name,
+			String classQualifiedName,
+			Map<String,String> namespaces,
+			StructureType parentStructureType,
+			List<IAnnotationModel> annotations) {
+		super(annotations);
 		this.name = name;
 		this.namespaces = namespaces;
 		this.classQualifiedName = classQualifiedName;
 		this.parentStructureType = parentStructureType;
 	}
 	
-	public TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces,
-			StructureType parentStructureType, JAXBClassMapping mapping) {
-		super();
+	public TypeModelImpl(
+			String name,
+			String classQualifiedName,
+			Map<String,String> namespaces,
+			StructureType parentStructureType,
+			JAXBClassMapping mapping,
+			List<IAnnotationModel> annotations) {
+		super(annotations);
 		this.name = name;
 		this.namespaces = namespaces;
 		this.classQualifiedName = classQualifiedName;
@@ -31,8 +43,14 @@ public class TypeModelImpl implements ISchemaType{
 		this.isSimple = true;
 	}
 	
-	protected TypeModelImpl(String name, String classQualifiedName, Map<String,String> namespaces, boolean isSimple,StructureType parentStructureType) {
-		super();
+	protected TypeModelImpl(
+			String name,
+			String classQualifiedName,
+			Map<String,String> namespaces,
+			boolean isSimple,
+			StructureType parentStructureType,
+			List<IAnnotationModel> annotations) {
+		super(annotations);
 		this.name = name;
 		this.isSimple = isSimple;
 		this.namespaces = namespaces;
@@ -74,6 +92,7 @@ public class TypeModelImpl implements ISchemaType{
 		return this.properties;
 	}
 	
+	@Override
 	public void addProperty(ISchemaProperty property){
 		if(this.properties==null){
 			this.properties = new ArrayList<ISchemaProperty>();

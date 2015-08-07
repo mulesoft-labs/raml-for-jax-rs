@@ -310,9 +310,11 @@ public class SpoonProcessor{
 	private IAnnotationModel processAnnotation(CtAnnotation<? extends Annotation> annotation) {
 		
 		String simpleName = annotation.getActualAnnotation().annotationType().getSimpleName();
+		String qualifiedName = annotation.getActualAnnotation().annotationType().getCanonicalName();
 		
 		AnnotationModel annotationModel = new AnnotationModel();		
 		annotationModel.setName(simpleName);
+		annotationModel.setFullyQualifiedName(qualifiedName);
 		
 		Map<String, Object> elementValues = annotation.getElementValues();
 		

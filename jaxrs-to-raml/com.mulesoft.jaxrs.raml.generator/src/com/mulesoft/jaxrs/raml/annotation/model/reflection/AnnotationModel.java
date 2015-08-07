@@ -32,7 +32,7 @@ public class AnnotationModel implements IAnnotationModel {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getName() {
-		return annotation.annotationType().getCanonicalName();
+		return annotation.annotationType().getSimpleName();
 	}
 
 	
@@ -104,6 +104,12 @@ public class AnnotationModel implements IAnnotationModel {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+
+	@Override
+	public String getCanonicalName() {
+		return this.annotation.annotationType().getCanonicalName();
 	}
 
 }

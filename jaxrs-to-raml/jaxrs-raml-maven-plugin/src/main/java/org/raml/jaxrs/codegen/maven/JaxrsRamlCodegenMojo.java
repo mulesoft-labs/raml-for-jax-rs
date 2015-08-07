@@ -37,6 +37,7 @@ import org.apache.maven.project.MavenProject;
 import org.raml.jaxrs.codegen.spoon.SpoonProcessor;
 
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
+import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorExtension;
 import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
@@ -113,6 +114,9 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 
 	@Component
 	private MavenProject project;
+	
+	@Parameter(property = "extensions")
+	private List<String> extensions;
 
 
 	/**
@@ -150,6 +154,28 @@ public class JaxrsRamlCodegenMojo extends AbstractMojo {
 		
 		ClassLoader classLoader = launcher.getFactory().getEnvironment().getClassLoader();
 		IRamlConfig config = new MavenRamlConfig(title, baseUrl, version);
+		
+		if (extensions != null) {
+			for (String className : extensions) {
+				try{
+					Class c = Class.forName(className);
+					if (c == null) {
+						throw new MojoExecutionException("generatorExtensionClass " + className
+								+ " cannot be loaded."
+								+ "Have you installed the correct dependency in the plugin configuration?");
+					}
+					if (!((c.newInstance()) instanceof IResourceVisitorExtension)) {
+						throw new MojoExecutionException("generatorExtensionClass " + className
+								+ " does not implement" + IResourceVisitorExtension.class.getCanonicalName());
+	
+					}
+					config.getExtensions().add((IResourceVisitorExtension) c.newInstance());
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 
 		ResourceVisitor rv = new RuntimeResourceVisitor(outputFile, classLoader, config);
 		for(ITypeModel type : spoonProcessor.getRegistry().getTargetTypes()){

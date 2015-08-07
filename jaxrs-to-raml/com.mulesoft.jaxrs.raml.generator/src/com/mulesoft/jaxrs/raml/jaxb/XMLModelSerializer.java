@@ -94,7 +94,7 @@ public class XMLModelSerializer extends StructuredModelSerializer {
 				if(prop.getStructureType()==StructureType.MAP){
 					
 					ISchemaType keyType = SimpleType.STRING;
-					ISchemaType valueType = new TypeModelImpl("Object", "java.lang.Object", null, StructureType.COMMON);
+					ISchemaType valueType = new TypeModelImpl("Object", "java.lang.Object", null, StructureType.COMMON,null);
 					if(prop instanceof IMapSchemaProperty){
 						IMapSchemaProperty msp = (IMapSchemaProperty) prop;
 						keyType = msp.getKeyType();

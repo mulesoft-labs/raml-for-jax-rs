@@ -359,7 +359,13 @@ public abstract class ResourceVisitor {
 			ITypeModel returnedType = m.getReturnedType();
 
 			if (returnedType != null) {
-				if (returnedType.hasAnnotation(XML_ROOT_ELEMENT)) {
+				boolean generateSchema = returnedType.hasAnnotation(XML_ROOT_ELEMENT);
+				if(!generateSchema && this.config != null && this.config.getExtensions() != null){
+					for(IResourceVisitorExtension ext : this.config.getExtensions()){
+						generateSchema |= ext.generateSchema(returnedType);
+					}
+				}
+				if (generateSchema) {
 					generateXMLSchema(returnedType,null);
 					returnName = firstLetterToLowerCase(returnedType.getName());
 				}
@@ -1157,7 +1163,7 @@ public abstract class ResourceVisitor {
 		}
 		ISchemaType schemaModel = null;
 		try{
-			schemaModel = new SchemaModelBuilder(rs).buildSchemaModel(jaxbModel,st);
+			schemaModel = new SchemaModelBuilder(rs,this.config).buildSchemaModel(jaxbModel,st);
 		}
 		catch(Exception e){
 			e.printStackTrace();

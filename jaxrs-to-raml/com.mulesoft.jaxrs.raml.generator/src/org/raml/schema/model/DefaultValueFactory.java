@@ -31,6 +31,11 @@ public class DefaultValueFactory {
 	
 	public static Object getDefaultValue(ISchemaProperty prop){
 		
+		String propValue = prop.getDefaultValue();
+		if(propValue!=null){
+			return propValue;
+		}
+		
 		if(prop.isGeneric()){
 			return "Some " + prop.getName() + " value";
 		}

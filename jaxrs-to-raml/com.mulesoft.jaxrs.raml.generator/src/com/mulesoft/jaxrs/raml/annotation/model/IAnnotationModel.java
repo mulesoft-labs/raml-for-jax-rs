@@ -16,6 +16,13 @@ public interface IAnnotationModel {
 	public String getName();
 	
 	/**
+	 * <p>getFullyQualifiedName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
+	String getCanonicalName();
+	
+	/**
 	 * <p>getValue.</p>
 	 *
 	 * @param pairName a {@link java.lang.String} object.

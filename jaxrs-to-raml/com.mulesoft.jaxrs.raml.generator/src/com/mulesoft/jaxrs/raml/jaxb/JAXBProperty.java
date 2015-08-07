@@ -1,6 +1,7 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -45,6 +46,12 @@ public abstract class JAXBProperty extends JAXBModelElement{
 			String value = annotation.getValue("required");
 			if (value!=null&&value.equals("true")){
 				this.required=true;
+			}
+		}
+		if(setter!=null){
+			IAnnotationModel[] setterAnnotations = setter.getAnnotations();
+			if(setterAnnotations!=null){
+				this.annotations.addAll(Arrays.asList(setterAnnotations));
 			}
 		}
 	}

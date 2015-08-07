@@ -29,6 +29,8 @@ public class AnnotationModel implements IAnnotationModel{
 
 	private String name;
 	
+	private String fullyQualifiedName;
+	
 	private HashMap<String,String[]> stringArrayValues;
 	
 	private HashMap<String,Object> stringValues;
@@ -123,6 +125,16 @@ public class AnnotationModel implements IAnnotationModel{
 			}
 			stringValues.put(key, value);
 		}
+	}
+
+
+	public String getCanonicalName() {
+		return fullyQualifiedName;
+	}
+
+
+	public void setFullyQualifiedName(String fullyQualifiedName) {
+		this.fullyQualifiedName = fullyQualifiedName;
 	}
 
 }

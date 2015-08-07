@@ -5,6 +5,7 @@ import java.util.List;
 import org.raml.schema.model.IMapSchemaProperty;
 import org.raml.schema.model.ISchemaType;
 
+import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
 
 public class MapPropertyImpl extends PropertyModelImpl implements IMapSchemaProperty {
@@ -14,8 +15,9 @@ public class MapPropertyImpl extends PropertyModelImpl implements IMapSchemaProp
 			List<ISchemaType> types,
 			boolean required,
 			boolean isAttribute,
-			String namespace) {
-		super(name, null, required, isAttribute, StructureType.MAP, namespace);
+			String namespace,
+			List<IAnnotationModel> annotations) {
+		super(name, null, required, isAttribute, StructureType.MAP, namespace,annotations);
 		if(types!=null){
 			if(types.size()>0){
 				this.keyType = types.get(0);

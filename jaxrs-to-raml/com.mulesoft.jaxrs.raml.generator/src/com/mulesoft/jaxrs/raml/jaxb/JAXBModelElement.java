@@ -1,6 +1,9 @@
 package com.mulesoft.jaxrs.raml.jaxb;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -26,6 +29,7 @@ public class JAXBModelElement {
 	protected String typeName;
 	protected String elementName;
 	final JAXBRegistry registry;
+	protected ArrayList<IAnnotationModel> annotations;
 
 	/**
 	 * <p>Constructor for JAXBModelElement.</p>
@@ -44,6 +48,8 @@ public class JAXBModelElement {
 		elementName=value(XmlElement.class, NAME);
 		namespace=value(XmlElement.class, NAMESPACE);
 		typeName=value(XmlType.class,NAME);
+		IAnnotationModel[] modelAnnotations = model.getAnnotations();
+		this.annotations = modelAnnotations != null ? new ArrayList<IAnnotationModel>(Arrays.asList(modelAnnotations)) : new ArrayList<IAnnotationModel>();
 	}
 
 	/**
@@ -59,6 +65,10 @@ public class JAXBModelElement {
 			return annotation.getValue(name);
 		}
 		return null;
+	}
+
+	public List<IAnnotationModel> getAnnotations() {
+		return annotations;
 	}
 	
 }

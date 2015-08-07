@@ -1,5 +1,7 @@
 package org.raml.jaxrs.codegen.maven;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.raml.model.ActionType;
@@ -7,6 +9,7 @@ import org.raml.model.Protocol;
 
 import com.google.common.collect.Sets;
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
+import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorExtension;
 
 /**
  * Simple IRamlConfig implementation to handle setting of API title, baseUrl, and version from the Maven plugin configuration.
@@ -18,6 +21,8 @@ public class MavenRamlConfig implements IRamlConfig {
 	private String title;
 	private String baseUrl;
 	private String version;
+	private List<IResourceVisitorExtension> extensions
+			= new ArrayList<IResourceVisitorExtension>();
 	
 	/**
 	 * <p>Constructor for MavenRamlConfig.</p>
@@ -104,5 +109,9 @@ public class MavenRamlConfig implements IRamlConfig {
 	/** {@inheritDoc} */
 	public void setSingle(boolean selection) {
 		// NOOP
+	}
+
+	public List<IResourceVisitorExtension> getExtensions() {
+		return extensions;
 	}
 }

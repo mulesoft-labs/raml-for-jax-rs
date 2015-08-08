@@ -9,7 +9,7 @@
     <modules>
         <module>core</module>
         <module>maven-plugin</module>
-        <module>gradle-plugin</module>
+        <!-- <module>gradle-plugin</module> -->
     </modules>
  <distributionManagement>
        <repository>
@@ -46,7 +46,7 @@
 
     <build>
         <plugins>
-       
+<!--       
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
@@ -86,6 +86,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
         <pluginManagement>
             <plugins>

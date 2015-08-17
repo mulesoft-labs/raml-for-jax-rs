@@ -62,6 +62,16 @@ public class WrapperParameterModel implements IParameterModel {
 	public IAnnotationModel getAnnotation(String name) {
 		return this.getActualParameter().getAnnotation(name);
 	}
+	
+	@Override
+	public boolean hasAnnotationWithCanonicalName(String name) {
+		return this.getActualParameter().hasAnnotationWithCanonicalName(name);
+	}
+
+	@Override
+	public IAnnotationModel getAnnotationByCanonicalName(String name) {
+		return this.getActualParameter().getAnnotationByCanonicalName(name);
+	}
 
 	@Override
 	public String getParameterType() {

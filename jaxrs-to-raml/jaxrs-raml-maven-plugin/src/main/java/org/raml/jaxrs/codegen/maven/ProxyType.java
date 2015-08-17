@@ -150,4 +150,14 @@ public class ProxyType implements ITypeModel {
 		return registry.getType(qualifiedName);
 	}
 
+	@Override
+	public boolean hasAnnotationWithCanonicalName(String name) {
+		return registry.getType(key).hasAnnotationWithCanonicalName(name);
+	}
+
+	@Override
+	public IAnnotationModel getAnnotationByCanonicalName(String name) {
+		return registry.getType(key).getAnnotationByCanonicalName(name);
+	}
+
 }

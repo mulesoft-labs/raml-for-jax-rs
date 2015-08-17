@@ -102,6 +102,28 @@ public class ReflectionParameter implements IParameterModel{
 	}
 	
 	/** {@inheritDoc} */
+	public boolean hasAnnotationWithCanonicalName(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel q:annotations){
+			if (q.getCanonicalName().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	public IAnnotationModel getAnnotationByCanonicalName(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m:annotations){
+			if (m.getCanonicalName().equals(name)){
+				return m;
+			}
+		}
+		return null;
+	}
+	
+	/** {@inheritDoc} */
 	public IAnnotationModel getAnnotation(String name) {
 		IAnnotationModel[] annotations = getAnnotations();
 		for (IAnnotationModel m:annotations){

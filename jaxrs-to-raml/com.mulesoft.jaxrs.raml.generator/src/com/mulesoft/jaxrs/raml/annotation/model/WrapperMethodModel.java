@@ -52,6 +52,16 @@ public class WrapperMethodModel implements IMethodModel{
 	public IAnnotationModel getAnnotation(String name) {
 		return this.getActualMethod().getAnnotation(name);
 	}
+	
+	@Override
+	public boolean hasAnnotationWithCanonicalName(String name) {
+		return this.getActualMethod().hasAnnotationWithCanonicalName(name);
+	}
+
+	@Override
+	public IAnnotationModel getAnnotationByCanonicalName(String name) {
+		return this.getActualMethod().getAnnotationByCanonicalName(name);
+	}
 
 	@Override
 	public ITypeModel getType() {

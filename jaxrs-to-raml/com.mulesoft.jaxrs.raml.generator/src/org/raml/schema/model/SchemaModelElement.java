@@ -16,5 +16,19 @@ public class SchemaModelElement {
 	public List<IAnnotationModel> getAnnotations() {
 		return annotations;
 	}
+	
+	public IAnnotationModel getAnnotation(String name) {
+		if(this.annotations==null){
+			return null;
+		}
+		for(IAnnotationModel am: annotations){
+			if(am.getCanonicalName().equals(name)){
+				return am;
+			}
+		}
+		return null;
+	}
+
+
 
 }

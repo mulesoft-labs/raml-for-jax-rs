@@ -61,4 +61,20 @@ public interface IBasicModel {
 	 * @return {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} for annotation with given name if present, <code>null</code> otherwise
 	 */
 	IAnnotationModel getAnnotation(String name);
+	
+	/**
+	 * <p>hasAnnotation.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @return true if element has annotation with a given canonical name
+	 */
+	boolean hasAnnotationWithCanonicalName(String name);
+	
+	/**
+	 * <p>getAnnotation.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 * @return {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} for annotation with given canonical name if present, <code>null</code> otherwise
+	 */
+	IAnnotationModel getAnnotationByCanonicalName(String name);
 }

@@ -440,6 +440,26 @@ public abstract class JDTAnnotatable implements IBasicModel {
 		}
 		return null;
 	}
+	
+	public boolean hasAnnotationWithCanonicalName(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m : annotations) {
+			if (m.getCanonicalName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public IAnnotationModel getAnnotationByCanonicalName(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m : annotations) {
+			if (m.getCanonicalName().equals(name)) {
+				return m;
+			}
+		}
+		return null;
+	}
 
 	public String getAnnotationValue(String annotation) {
 		IAnnotationModel[] annotations = getAnnotations();

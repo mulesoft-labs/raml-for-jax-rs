@@ -79,6 +79,11 @@ public enum SimpleType implements ISchemaType {
 	public List<IAnnotationModel> getAnnotations() {
 		return new ArrayList<IAnnotationModel>();
 	}
+	
+	@Override
+	public IAnnotationModel getAnnotation(String name) {
+		return null;
+	}
 
 	public void addProperty(ISchemaProperty property) {
 	}

@@ -29,6 +29,8 @@ public interface ISchemaType {
 	JAXBClassMapping getMapping();
 	
 	List<IAnnotationModel> getAnnotations();
+	
+	IAnnotationModel getAnnotation(String name);
 
 	void addProperty(ISchemaProperty property);
 }

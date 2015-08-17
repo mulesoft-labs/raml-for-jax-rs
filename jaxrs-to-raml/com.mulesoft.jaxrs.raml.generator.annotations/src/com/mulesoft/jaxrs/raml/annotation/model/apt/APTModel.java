@@ -147,4 +147,25 @@ public abstract class APTModel implements IBasicModel{
 		}
 		return null;
 	}
+	
+	public boolean hasAnnotationWithCanonicalName(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m:annotations){
+			if (m.getCanonicalName().equals(name)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/** {@inheritDoc} */
+	public IAnnotationModel getAnnotationByCanonicalName(String name) {
+		IAnnotationModel[] annotations = getAnnotations();
+		for (IAnnotationModel m:annotations){
+			if (m.getCanonicalName().equals(name)){
+				return m;
+			}
+		}
+		return null;
+	}
 }

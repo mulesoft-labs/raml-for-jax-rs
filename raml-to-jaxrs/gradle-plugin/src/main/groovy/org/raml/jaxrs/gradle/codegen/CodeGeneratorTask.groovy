@@ -162,7 +162,8 @@ class CodeGeneratorTask extends DefaultTask {
 		}
 
 		getRamlFiles().each { configurationFile ->
-			generator.run(new FileReader(configurationFile), ramlConfiguration)
+			ramlConfiguration.sourceDirectory = configurationFile.parentFile
+			generator.run(new FileReader(configurationFile), ramlConfiguration, configurationFile.absolutePath)
 		}
 	}
 }

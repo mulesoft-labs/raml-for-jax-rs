@@ -54,6 +54,6 @@ class CodeGeneratorTaskSpec extends Specification {
             generatorTask.configuration = configuration
             generatorTask.generate()
         then:
-            1 * generatorTask.generator.run(_,_)
+            1 * generatorTask.generator.run(_,_,_)
     }
 }

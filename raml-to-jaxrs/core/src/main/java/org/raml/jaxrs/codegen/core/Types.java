@@ -299,7 +299,7 @@ public class Types
             case FILE :
                 return File.class;
             case INTEGER :
-                return usePrimitive ? long.class : Long.class;
+                return usePrimitive ? int.class : Integer.class;
             case NUMBER :
                 return BigDecimal.class;
             case STRING :

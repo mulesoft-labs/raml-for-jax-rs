@@ -188,6 +188,22 @@ public class Configuration
                 return getConfiguredValue("useLongIntegers", false);
             }
 
+            @Override
+            public boolean isIncludeConstructors() {
+                return getConfiguredValue("includeConstructors", super.isIncludeConstructors());
+            }
+
+            @Override
+            public boolean isConstructorsRequiredPropertiesOnly() {
+                return getConfiguredValue("constructorsRequiredPropertiesOnly", super
+                        .isConstructorsRequiredPropertiesOnly());
+            }
+
+            @Override
+            public boolean isIncludeAccessors() {
+                return getConfiguredValue("includeAccessors", super.isIncludeAccessors());
+            }
+
             private boolean getConfiguredValue(final String key, final boolean def)
             {
                 if (jsonMapperConfiguration == null || jsonMapperConfiguration.isEmpty())

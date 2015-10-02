@@ -119,6 +119,7 @@ public class Launcher {
 		String modelPackageName = "model";
 		String asyncResourceTrait = null;
 		String customAnnotator = null;
+		Map<String,String> jsonMapperConfiguration = new HashMap<String, String>();
 				
 		for( Map.Entry<String,String> entry : argMap.entrySet() ){
 			
@@ -161,7 +162,11 @@ public class Launcher {
 			else if(argName.equals("customAnnotator")){
 				customAnnotator = argValue;
 			}
-			
+			else if(argName.startsWith("jsonschema2pojo."))
+			{
+				String name = argName.substring("jsonschema2pojo.".length());
+				jsonMapperConfiguration.put(name, argValue);
+			}
 		}
 		if(basePackageName==null){
 			throw new RuntimeException("Base package must be specified.");
@@ -181,6 +186,7 @@ public class Launcher {
         configuration.setUseTitlePropertyWhenPossible(useTitlePropertyForSchemaNames);
 		configuration.setModelPackageName(modelPackageName);
 		configuration.setAsyncResourceTrait(asyncResourceTrait);
+		if(!jsonMapperConfiguration.isEmpty()) configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
 
 		if(customAnnotator!=null && !customAnnotator.trim().isEmpty()){
 			try {

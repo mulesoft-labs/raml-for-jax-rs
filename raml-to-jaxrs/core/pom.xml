@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.jsonschema2pojo</groupId>
             <artifactId>jsonschema2pojo-core</artifactId>
-            <version>0.4.11</version>
+            <version>0.4.15</version>
             <exclusions>
             	<exclusion>
             		<artifactId>jackson-databind</artifactId>

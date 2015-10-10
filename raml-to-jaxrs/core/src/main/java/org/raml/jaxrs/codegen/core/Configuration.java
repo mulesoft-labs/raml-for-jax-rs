@@ -429,5 +429,7 @@ public class Configuration
 		return this.extensions;
 	}
 
-
+    public void setExtensions(List<GeneratorExtension> extensions) {
+        this.extensions=extensions;
+    }
 }

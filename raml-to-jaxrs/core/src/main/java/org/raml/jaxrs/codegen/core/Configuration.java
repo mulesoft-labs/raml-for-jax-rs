@@ -189,6 +189,12 @@ public class Configuration
             }
 
             @Override
+            public boolean isUseCommonsLang3()
+            {
+                return getConfiguredValue("useCommonsLang3", false);
+            }
+
+            @Override
             public boolean isIncludeConstructors() {
                 return getConfiguredValue("includeConstructors", super.isIncludeConstructors());
             }

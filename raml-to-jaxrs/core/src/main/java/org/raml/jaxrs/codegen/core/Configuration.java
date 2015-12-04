@@ -160,6 +160,13 @@ public class Configuration
             {
                 return useJsr303Annotations;
             }
+            
+            @Override
+            public boolean isUseCommonsLang3()
+            {
+                return getConfiguredValue("useCommonsLang3", false);
+            }
+            
             @Override
             public boolean isGenerateBuilders()
             {

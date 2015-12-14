@@ -605,15 +605,17 @@ public class SpoonProcessor{
 	private IFieldModel processField(CtField<?> m, TypeModel ownerType) {
 		FieldModel fm=new FieldModel();
 		fillBasic(fm, m);
-		CtTypeReference<?> type = m.getType();
-		fillJAXBType(fm,type);
-		
-		String typeSimpleName = type.getSimpleName();
-		String typeQualifiedname = type.getQualifiedName();
-		if(typeSimpleName.equalsIgnoreCase(typeQualifiedname)){
-			for(ITypeParameter tp : ownerType.getTypeParameters()){			
-				if(typeSimpleName.equals(tp.getName())){
-					fm.setGeneric(true);
+		if (m.getType() != null) {
+			CtTypeReference<?> type = m.getType();
+			fillJAXBType(fm,type);
+
+			String typeSimpleName = type.getSimpleName();
+			String typeQualifiedName = type.getQualifiedName();
+			if(typeSimpleName.equalsIgnoreCase(typeQualifiedName)){
+				for(ITypeParameter tp : ownerType.getTypeParameters()){
+					if(typeSimpleName.equals(tp.getName())){
+						fm.setGeneric(true);
+					}
 				}
 			}
 		}

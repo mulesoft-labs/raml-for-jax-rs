@@ -1,0 +1,63 @@
+  <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.raml.example</groupId>
+  <artifactId>raml-maven-plugin-example</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>raml-maven-plugin-example</name>
+  <url>http://maven.apache.org</url>
+  
+  <build>
+    <plugins>
+
+      <plugin>
+          <groupId>org.raml.plugins</groupId>
+          <artifactId>raml-jaxrs-maven-plugin</artifactId>
+          <version>1.3.3</version>
+          <configuration>
+              <!-- Use sourcePaths if you want to provide a single RAML file or a list of RAML files -->
+              <sourceDirectory>${basedir}/raml</sourceDirectory>
+              <!-- Optionally configure outputDirectory if you don't like the default value: ${project.build.directory}/generated-sources/raml-JAX-RS -->
+              <!-- Replace with your package name -->
+              <basePackageName>com.acme.api</basePackageName>
+              <!-- Valid values: 1.1 2.0 -->
+              <JAX-RSVersion>2.0</JAX-RSVersion>
+              <useJsr303Annotations>false</useJsr303Annotations>
+              <!-- Valid values: jackson1 jackson2 gson none -->
+              <jsonMapper>jackson2</jsonMapper>
+              <removeOldOutput>true</removeOldOutput>
+              <!-- Optionally set extensions to a list of fully qualified names of classes
+              that implement org.raml.jaxrs.codegen.core.ext.GeneratorExtension -->
+              <!-- for example:
+              <extensions>
+                  <param>com.abc.AuthorizationAnnotationExtension</param>
+                  <param>com.abc.ParameterFilterExtension</param>
+              </extensions>
+              Custom annotator for json schema to pojo convertor
+              <customAnnotator>com.abc.MyCustomAnnotator</customAnnotator>
+              -->
+              <goalPrefix>somePrefix</goalPrefix>
+          </configuration>
+          <executions>
+              <execution>
+                  <goals>
+                      <goal>generate</goal>
+                  </goals>
+                  <phase>generate-sources</phase>
+              </execution>
+          </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

@@ -112,7 +112,7 @@ Note that path separator symbol is not the same for all OS. MacOS and Linux use 
 - processorpath: The path to the jar you downloaded (or built).
 - processor: Indicates the annotation processor. Use: `com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor`
 - -Aramlpath: The folder which the generated RAML definition will be placed.
-- -imlicit: `class` specifies that the annotations in the dependent files must also be resolved by the processor.
+- -implicit: `class` specifies that the annotations in the dependent files must also be resolved by the processor.
 
 For example:
 
@@ -132,7 +132,7 @@ Consider a project with this structure (or part of it):
 Executing:
 ```
 javac src/java/main/services/CustomerResource.java src/java/main/services/ProductResource.java
-      -sourcepath src/java/main
+      -sourcepath src/main/java
       -classpath lib
       -processorpath jax-rs-to-raml/jaxrs.raml.apt.jar
       -processor com.mulesoft.jaxrs.raml.annotation.model.apt.RAMLAnnotationProcessor

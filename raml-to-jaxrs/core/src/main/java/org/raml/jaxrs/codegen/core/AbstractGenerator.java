@@ -44,6 +44,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -661,9 +662,8 @@ public abstract class AbstractGenerator {
 	private void addJsr303Annotations(final AbstractParam parameter,
 			final JVar argumentVariable) {
 		if (isNotBlank(parameter.getPattern())) {
-			LOGGER.info("Pattern constraint ignored for parameter: "
-					+ ToStringBuilder.reflectionToString(parameter,
-							SHORT_PREFIX_STYLE));
+			JAnnotationUse patternAnnotation = argumentVariable.annotate(Pattern.class);
+			patternAnnotation.param("regexp", parameter.getPattern());
 		}
 
 		final Integer minLength = parameter.getMinLength();

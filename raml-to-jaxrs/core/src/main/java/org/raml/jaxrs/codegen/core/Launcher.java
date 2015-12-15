@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
+import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 
 /**
  * <p>Launcher class.</p>
@@ -119,6 +120,8 @@ public class Launcher {
 		String modelPackageName = "model";
 		String asyncResourceTrait = null;
 		String customAnnotator = null;
+		List<GeneratorExtension> extensions = null;
+		Map<String,String> jsonMapperConfiguration = new HashMap<String, String>();
 				
 		for( Map.Entry<String,String> entry : argMap.entrySet() ){
 			
@@ -161,7 +164,22 @@ public class Launcher {
 			else if(argName.equals("customAnnotator")){
 				customAnnotator = argValue;
 			}
-			
+			else if(argName.equals("extensions")){
+				extensions = new ArrayList<GeneratorExtension>();
+				String[] extensionClasses = argValue.split(",");
+				for(String s: extensionClasses) {
+					s = s.trim();
+					try {
+						extensions.add((GeneratorExtension) Class.forName(s).newInstance());
+					} catch (Exception e) {
+						throw new RuntimeException("unknown extension " + s);
+					}
+				}
+			}
+			else if(argName.startsWith("jsonschema2pojo.")) {
+				String name = argName.substring("jsonschema2pojo.".length());
+				jsonMapperConfiguration.put(name, argValue);
+			}
 		}
 		if(basePackageName==null){
 			throw new RuntimeException("Base package must be specified.");
@@ -181,6 +199,8 @@ public class Launcher {
         configuration.setUseTitlePropertyWhenPossible(useTitlePropertyForSchemaNames);
 		configuration.setModelPackageName(modelPackageName);
 		configuration.setAsyncResourceTrait(asyncResourceTrait);
+		if (extensions!=null) configuration.setExtensions(extensions);
+		if(!jsonMapperConfiguration.isEmpty()) configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
 
 		if(customAnnotator!=null && !customAnnotator.trim().isEmpty()){
 			try {

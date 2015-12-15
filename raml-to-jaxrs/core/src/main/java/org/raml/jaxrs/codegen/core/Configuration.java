@@ -160,10 +160,9 @@ public class Configuration
             {
                 return useJsr303Annotations;
             }
-            
+
             @Override
-            public boolean isUseCommonsLang3()
-            {
+            public boolean isUseCommonsLang3() {
                 return getConfiguredValue("useCommonsLang3", false);
             }
             
@@ -193,6 +192,22 @@ public class Configuration
             public boolean isUseLongIntegers()
             {
                 return getConfiguredValue("useLongIntegers", false);
+            }
+
+            @Override
+            public boolean isIncludeConstructors() {
+                return getConfiguredValue("includeConstructors", super.isIncludeConstructors());
+            }
+
+            @Override
+            public boolean isConstructorsRequiredPropertiesOnly() {
+                return getConfiguredValue("constructorsRequiredPropertiesOnly", super
+                        .isConstructorsRequiredPropertiesOnly());
+            }
+
+            @Override
+            public boolean isIncludeAccessors() {
+                return getConfiguredValue("includeAccessors", super.isIncludeAccessors());
             }
 
             private boolean getConfiguredValue(final String key, final boolean def)
@@ -420,5 +435,7 @@ public class Configuration
 		return this.extensions;
 	}
 
-
+    public void setExtensions(List<GeneratorExtension> extensions) {
+        this.extensions=extensions;
+    }
 }

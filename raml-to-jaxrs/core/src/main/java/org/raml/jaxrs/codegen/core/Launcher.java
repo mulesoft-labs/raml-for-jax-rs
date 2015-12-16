@@ -53,7 +53,15 @@ public class Launcher {
 		String removeOldOutputStringValue = argMap.get("removeOldOutput");
 		if(removeOldOutputStringValue!=null){
 			removeOldOutput = Boolean.parseBoolean(removeOldOutputStringValue);
-		}		
+		}
+
+		boolean generateClient = false;	
+		String generateClientStringValue = argMap.get("generateClientProxy");
+		if(generateClientStringValue!=null){
+			generateClient = Boolean.parseBoolean(generateClientStringValue);
+		}
+		configuration.setGenerateClientInterface(generateClient);
+		
 		Collection<File> ramlFiles = getRamlFiles(argMap);
 		if(ramlFiles.isEmpty()){
 			return;

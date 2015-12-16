@@ -37,7 +37,6 @@
               Custom annotator for json schema to pojo convertor
               <customAnnotator>com.abc.MyCustomAnnotator</customAnnotator>
               -->
-              <goalPrefix>somePrefix</goalPrefix>
           </configuration>
           <executions>
               <execution>

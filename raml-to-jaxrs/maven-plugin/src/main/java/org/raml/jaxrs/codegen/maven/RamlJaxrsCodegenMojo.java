@@ -127,7 +127,6 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	@Parameter(property = "removeOldOutput", defaultValue = "false")
 	private boolean removeOldOutput;
 
-
 	/**
 	 * If set to true generator will try to use title property of JSON schemas
 	 * as a name for Java class
@@ -210,7 +209,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 			configuration.setUseJsr303Annotations(useJsr303Annotations);
 			configuration.setAsyncResourceTrait(asyncResourceTrait);
 			configuration.setGenerateClientInterface(generateClientProxy);
-			configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
+            configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
 			configuration.setSourceDirectory(sourceDirectory);
 			configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
 			configuration.setEmptyResponseReturnVoid(mapToVoid);

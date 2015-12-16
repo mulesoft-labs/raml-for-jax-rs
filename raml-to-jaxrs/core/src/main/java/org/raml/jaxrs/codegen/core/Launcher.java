@@ -203,8 +203,12 @@ public class Launcher {
 		if(basePackageName==null){
 			throw new RuntimeException("Base package must be specified.");
 		}
+		
+		if(!outputDirectory.exists()){
+			outputDirectory.mkdirs();
+		}
 		if(!outputDirectory.isDirectory()){
-			throw new RuntimeException("Output destination must be a directory.");
+			throw new RuntimeException("Output destination must be a directory: " + outputDirectory);
 		}
 		
 		configuration.setBasePackageName(basePackageName);

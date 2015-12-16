@@ -16,7 +16,7 @@
 apply plugin: 'groovy'
 apply plugin: 'license'
 apply from: 'gradle/publish.gradle'
-
+apply plugin: 'maven'
 
 group = 'org.raml'
 version = '1.3.4-SNAPSHOT'

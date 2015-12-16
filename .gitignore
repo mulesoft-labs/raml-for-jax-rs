@@ -8,3 +8,5 @@ ddo*
 nogit/
 /.settings
 /.project
+.metadata
+RemoteSystemsTempFiles

@@ -96,8 +96,9 @@ public class Generator extends AbstractGenerator
     
 
     /** {@inheritDoc} */
-    protected void createResourceInterface(final Resource resource, final Raml raml) throws Exception
+    protected void createResourceInterface(final Resource resource, final Raml raml,Configuration config) throws Exception
     {
+
     	String resourceInterfaceName = null;
     	for (GeneratorExtension e : extensions) {
     		if(e instanceof InterfaceNameBuilderExtension){
@@ -109,9 +110,10 @@ public class Generator extends AbstractGenerator
     		}
         }
     	if(resourceInterfaceName==null){
-    		resourceInterfaceName = Names.buildResourceInterfaceName(resource);
+    		resourceInterfaceName = Names.buildResourceInterfaceName(resource,config);
     	}
-        final JDefinedClass resourceInterface = context.createResourceInterface(resourceInterfaceName);
+
+    	final JDefinedClass resourceInterface = context.createResourceInterface(resourceInterfaceName);
         context.setCurrentResourceInterface(resourceInterface);
 
         final String path = strip(resource.getRelativeUri(), "/");

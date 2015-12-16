@@ -123,6 +123,7 @@ public class Launcher {
 		boolean useJsr303Annotations = false;
 		boolean mapToVoid = false;
 		String jsonMapper = "jackson1";
+
 		boolean generateClientProxy = false;
 		boolean useTitlePropertyForSchemaNames=false;
 		String modelPackageName = "model";
@@ -131,6 +132,10 @@ public class Launcher {
 		List<GeneratorExtension> extensions = null;
 		Map<String,String> jsonMapperConfiguration = new HashMap<String, String>();
 				
+		String restIFPackageName = "resource";
+		String interfaceNameSuffix = "Resource";
+	
+
 		for( Map.Entry<String,String> entry : argMap.entrySet() ){
 			
 			String argName = entry.getKey();			
@@ -165,6 +170,12 @@ public class Launcher {
 			}
 			else if(argName.equals("modelPackageName")){
 				modelPackageName = argValue;
+			}
+			else if(argName.equals("restIFPackageName")){
+				restIFPackageName = argValue;
+			}
+			else if(argName.equals("interfaceNameSuffix")){
+				interfaceNameSuffix = argValue;
 			}
 			else if(argName.equals("asyncResourceTrait")){
 				asyncResourceTrait = argValue;
@@ -202,10 +213,13 @@ public class Launcher {
         configuration.setUseJsr303Annotations(useJsr303Annotations);
         configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
         configuration.setSourceDirectory(sourceDirectory);
+
         configuration.setGenerateClientInterface(generateClientProxy);
         configuration.setEmptyResponseReturnVoid(mapToVoid);        
         configuration.setUseTitlePropertyWhenPossible(useTitlePropertyForSchemaNames);
-		configuration.setModelPackageName(modelPackageName);
+        configuration.setModelPackageName(modelPackageName);
+        configuration.setRestIFPackageName(restIFPackageName);
+        configuration.setInterfaceNameSuffix(interfaceNameSuffix);
 		configuration.setAsyncResourceTrait(asyncResourceTrait);
 		if (extensions!=null) configuration.setExtensions(extensions);
 		if(!jsonMapperConfiguration.isEmpty()) configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
@@ -215,6 +229,7 @@ public class Launcher {
 				configuration.setCustomAnnotator((Class)Class.forName(customAnnotator));
 			} catch (ClassNotFoundException e) {}
 		}
+
         
         return configuration;
 	}

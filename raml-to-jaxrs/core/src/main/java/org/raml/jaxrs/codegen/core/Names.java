@@ -58,12 +58,13 @@ public class Names
      * @param resource a {@link org.raml.model.Resource} object.
      * @return a {@link java.lang.String} object.
      */
-    public static String buildResourceInterfaceName(final Resource resource)
+    public static String buildResourceInterfaceName(final Resource resource,Configuration config)
     {
         final String resourceInterfaceName = buildJavaFriendlyName(defaultIfBlank(resource.getDisplayName(),
                 resource.getRelativeUri()));
 
-        return isBlank(resourceInterfaceName) ? "Root" : resourceInterfaceName.concat("Resource");
+        //return isBlank(resourceInterfaceName) ? "Root" : resourceInterfaceName.concat("Resource");
+        return isBlank(resourceInterfaceName) ? "Root" : resourceInterfaceName.concat(config.getInterfaceNameSuffix());
     }
 
     /**

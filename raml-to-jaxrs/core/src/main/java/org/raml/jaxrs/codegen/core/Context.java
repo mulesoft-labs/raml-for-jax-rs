@@ -294,7 +294,7 @@ class Context
             }
         }
 
-        final JPackage pkg = codeModel._package(configuration.getBasePackageName() + ".resource");
+        final JPackage pkg = codeModel._package(configuration.getBasePackageName() + "." +configuration.getRestIFPackageName());
         return pkg._interface(actualName);
     }
 
@@ -447,7 +447,7 @@ class Context
 
     private String getSupportPackage()
     {
-        return configuration.getBasePackageName() + ".support";
+        return configuration.getBasePackageName() + "." +configuration.getRestIFPackageName() +".support";
     }
 
     /**

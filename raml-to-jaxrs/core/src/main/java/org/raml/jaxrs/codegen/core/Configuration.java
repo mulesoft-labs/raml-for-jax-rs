@@ -222,6 +222,46 @@ public class Configuration
                 final String val = jsonMapperConfiguration.get(key);
                 return val!=null?Boolean.parseBoolean(val): def;
             }
+
+            @Override
+            public boolean isUseJodaDates() {
+                return getConfiguredValue("useJodaDates", false);
+            }
+
+            @Override
+            public boolean isUseJodaLocalDates() {
+                return getConfiguredValue("useJodaLocalDates", false);
+            }
+
+            @Override
+            public boolean isUseJodaLocalTimes() {
+                return getConfiguredValue("useJodaLocalTimes", false);
+            }
+
+            @Override
+            public String getDateTimeType() {
+                return getConfiguredValueStr("dateTimeType",null);
+            }
+
+            @Override
+            public String getDateType() {
+                return getConfiguredValueStr("dateType",null);
+            }
+
+            @Override
+            public String getTimeType() {
+                return getConfiguredValueStr("timeType",null);
+            }
+
+            private String getConfiguredValueStr(final String key, final String def)
+            {
+                if (jsonMapperConfiguration == null || jsonMapperConfiguration.isEmpty())
+                {
+                    return def;
+               }
+                final String val = jsonMapperConfiguration.get(key);
+                return val!=null?val: def;
+            }
         };
     }
 

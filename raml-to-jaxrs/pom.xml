@@ -9,7 +9,7 @@
     <modules>
         <module>core</module>
         <module>maven-plugin</module>
-        <!-- <module>gradle-plugin</module> -->
+        <module>gradle-plugin</module>
     </modules>
  <distributionManagement>
        <repository>

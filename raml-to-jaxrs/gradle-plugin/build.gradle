@@ -25,6 +25,10 @@ description '''RAML JAX-RS Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
+
+def signingEnabled = ext."signing.secretKeyRingFile" != ""
+println "signing: $signingEnabled"
+
 buildscript {
     repositories {
         mavenLocal()
@@ -43,9 +47,9 @@ ext {
 
 repositories {
     mavenLocal()
-    if(additionalRepoUrl) {
-        maven { url additionalRepoUrl }
-    }
+    //if(additionalRepoUrl) {
+    //    maven { url additionalRepoUrl }
+    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
@@ -102,14 +106,18 @@ artifacts {
   archives javadocJar, sourcesJar
 }
 
-signing {
+if(signingEnabled) {
+  signing {
     sign configurations.archives
+  }
 }
 
 uploadArchives {
   repositories {
     mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      if(signingEnabled) {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      }
 
       repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
         authentication(userName: ossrhUsername, password: ossrhPassword)

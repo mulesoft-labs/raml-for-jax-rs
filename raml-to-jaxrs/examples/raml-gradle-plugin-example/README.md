@@ -1,8 +1,17 @@
-First build raml gradle plugin and install it to local repository
-Do do so execute **gradlew install** in raml-to-jaxrs/gradle-plugin
+![](http://raml.org/images/logo.png)
 
-To generate output execute **gradle raml-generate** 
-in gradel example directory (raml-to-jaxrs/examples/raml-gradle-plugin-example)
+# RAML to JAX-RS converter - Gradle Plugin Example
+
+This project demonstrates the usage of the RAML-JAX-RS Gradle plug-in in a Jersey 2 API project.
+
+## Pre-requisites
+- JDK6 or better
+- Maven 3
+
+## Running and Testing
+To generate output execute 
+`gradle raml-generate`
+
 
 
 

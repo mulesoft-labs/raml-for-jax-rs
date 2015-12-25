@@ -14,7 +14,7 @@
       <plugin>
           <groupId>org.raml.plugins</groupId>
           <artifactId>raml-jaxrs-maven-plugin</artifactId>
-          <version>1.3.4-SNAPSHOT</version>
+          <version>1.3.4</version>
           <configuration>
               <!-- Use sourcePaths if you want to provide a single RAML file or a list of RAML files -->
               <sourceDirectory>${basedir}/raml</sourceDirectory>

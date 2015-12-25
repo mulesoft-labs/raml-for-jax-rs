@@ -140,11 +140,11 @@ to use this mode you may  use '''generateClientProxy''' parameter in command lin
  - Injection of request parameters to fields.
  - Support for XML examples, JSON examples, and JSON schemas for the Javac plugin.
 
-#Examples
+# Examples
 
-##JAX-RS => RAML
-- [JAX-RS->RAML examples](/jaxrs-to-raml/examples)  
-##[RAML => JAX-RS](/raml-to-jaxrs/examples)
+### JAX-RS => RAML
+- [JAX-RS->RAML example](/jaxrs-to-raml/examples)  
+### RAML => JAX-RS [examples](/raml-to-jaxrs/examples)
 - [Jersey example](/raml-to-jaxrs/examples/jersey-example)
 - [Maven plugin example](/raml-to-jaxrs/examples/raml-maven-plugin-example)
 - [Gradle plugin example](/raml-to-jaxrs/examples/raml-gradle-plugin-example)

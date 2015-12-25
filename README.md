@@ -28,7 +28,7 @@ Maven artifacts are available at:
  - https://repository-master.mulesoft.org/releases/ - release repository
  - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
 
-as well as at Maven Central (http://search.maven.org/#search%7Cga%7C1%7Corg.raml)
+as well as at Maven Central (http://search.maven.org/#search|ga|1|org.raml)
  
 #Design principles
 
@@ -142,8 +142,12 @@ to use this mode you may  use '''generateClientProxy''' parameter in command lin
 
 #Examples
 
+##JAX-RS => RAML
 - [JAX-RS->RAML examples](/jaxrs-to-raml/examples)  
-- [RAML->JAX-RS examples](/raml-to-jaxrs/examples)
+##[RAML => JAX-RS](/raml-to-jaxrs/examples)
+- [Jersey example](/raml-to-jaxrs/examples/jersey-example)
+- [Maven plugin example](/raml-to-jaxrs/examples/raml-maven-plugin-example)
+- [Gradle plugin example](/raml-to-jaxrs/examples/raml-gradle-plugin-example)
 
 ### Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.

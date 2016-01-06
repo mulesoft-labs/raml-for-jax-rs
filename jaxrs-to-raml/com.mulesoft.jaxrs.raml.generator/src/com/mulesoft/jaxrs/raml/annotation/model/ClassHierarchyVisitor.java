@@ -15,16 +15,7 @@ public abstract class ClassHierarchyVisitor {
 				return;
 			}
 			if(visitInterfaces()){
-				ITypeModel[] typeInterfaces = t.getImplementedInterfaces();
-				if(typeInterfaces!=null){
-					for(ITypeModel iType : typeInterfaces){
-						String name = iType.getFullyQualifiedName();
-						if(!iSet.contains(name)){
-							iSet.add(name);
-							iList.add(iType);
-						}
-					}
-				}
+				getInterfaces(iSet, iList, t);
 			}
 		}
 		for(int i = 0 ; i < iList.size() ; i++){
@@ -32,7 +23,13 @@ public abstract class ClassHierarchyVisitor {
 			if(method!=null?processType(t,method):processType(t)){
 				return;
 			}
-			ITypeModel[] typeInterfaces = t.getImplementedInterfaces();
+			getInterfaces(iSet, iList, t);
+		}
+	}
+
+	private void getInterfaces(HashSet<String> iSet, ArrayList<ITypeModel> iList, ITypeModel t) {
+		ITypeModel[] typeInterfaces = t.getImplementedInterfaces();
+		if(typeInterfaces!=null){
 			for(ITypeModel iType : typeInterfaces){
 				String name = iType.getFullyQualifiedName();
 				if(!iSet.contains(name)){
@@ -42,7 +39,7 @@ public abstract class ClassHierarchyVisitor {
 			}
 		}
 	}
-	
+
 	protected boolean processType(ITypeModel type,IMethodModel method){
 		
 		IMethodModel[] methods = type.getMethods();

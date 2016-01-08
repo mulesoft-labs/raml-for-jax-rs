@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jaxrstoraml</groupId>
 	<artifactId>jaxrstoraml</artifactId>
-<version>1.3.4-SNAPSHOT</version>
+<version>1.3.4</version>
 	<packaging>jar</packaging>
 	<name>jaxrstoraml</name>
 	<url>http://maven.apache.org</url>

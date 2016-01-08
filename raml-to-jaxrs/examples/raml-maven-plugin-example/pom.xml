@@ -4,7 +4,7 @@
   <groupId>org.raml.example</groupId>
   <artifactId>raml-maven-plugin-example</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+<version>1.3.4</version>
   <name>raml-maven-plugin-example</name>
   <url>http://maven.apache.org</url>
   

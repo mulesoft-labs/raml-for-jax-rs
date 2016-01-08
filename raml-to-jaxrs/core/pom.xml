@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.raml</groupId>
         <artifactId>raml-jaxrs-codegen-parent</artifactId>
-<version>1.3.4-SNAPSHOT</version>
+<version>1.3.4</version>
     </parent>
 
     <artifactId>raml-jaxrs-codegen-core</artifactId>
     <packaging>jar</packaging>
     <name>RAML JAX-RS Codegen Core</name>
-<version>1.3.4-SNAPSHOT</version>
+<version>1.3.4</version>
 
     <properties>
         <licensePath>../LICENSE_HEADER.txt</licensePath>

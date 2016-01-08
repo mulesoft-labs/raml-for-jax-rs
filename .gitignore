@@ -10,3 +10,4 @@ nogit/
 /.project
 .metadata
 RemoteSystemsTempFiles
+/.gradle

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-<feature url="features/com.mulesoft.jaxrs.raml.feature_1.3.4.qualifier.jar" id="com.mulesoft.jaxrs.raml.feature" version="1.3.4.qualifier">
+<feature url="features/com.mulesoft.jaxrs.raml.feature_1.3.4.jar" id="com.mulesoft.jaxrs.raml.feature" version="1.3.4">
       <category name="jaxrs"/>
    </feature>
    <category-def name="jaxrs" label="RAML Tools"/>

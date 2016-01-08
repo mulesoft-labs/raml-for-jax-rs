@@ -26,7 +26,7 @@ description '''RAML JAX-RS Gradle Plug-in'''
 sourceCompatibility = '1.6'
 
 
-def signingEnabled = ext."signing.secretKeyRingFile" != ""
+def signingEnabled = false //ext."signing.secretKeyRingFile" != ""
 println "signing: $signingEnabled"
 
 buildscript {

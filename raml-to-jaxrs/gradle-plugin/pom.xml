@@ -17,6 +17,7 @@
   
   <build>
     <plugins>
+      <!--
       <plugin>
         <groupId>org.fortasoft</groupId>
         <artifactId>gradle-maven-plugin</artifactId>
@@ -36,6 +37,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
     </plugins>
   </build>
 </project>

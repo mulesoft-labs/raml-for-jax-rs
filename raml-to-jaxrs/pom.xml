@@ -40,7 +40,7 @@
         </distributionManagement>
       <build>
         <plugins>
-          <plugin>
+<!--           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
             <version>1.5</version>
@@ -54,7 +54,7 @@
               </execution>
             </executions>
         	</plugin>
-        </plugins>
+ -->        </plugins>
       </build>
     </profile>
 </profiles>

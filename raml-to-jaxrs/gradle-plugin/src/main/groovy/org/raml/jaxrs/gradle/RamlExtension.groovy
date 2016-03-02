@@ -122,6 +122,15 @@ class RamlExtension {
     
 	List<String> extensions = new ArrayList<String>();
 
+	List<String> getGeneratorExtensions() {
+		extensions
+	} 
+
+	void setGeneratorExtensions(List<String> ex) {
+		extensions = ex
+	} 
+
+
 	/**
 	 * Constructs a new configuration extension for the RAML properties.
 	 * @param project The Gradle {@link Project} for the currently executing build.

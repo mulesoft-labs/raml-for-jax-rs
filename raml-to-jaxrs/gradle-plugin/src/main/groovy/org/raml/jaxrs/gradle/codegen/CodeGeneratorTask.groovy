@@ -119,7 +119,7 @@ class CodeGeneratorTask extends DefaultTask {
     
     @Input
 	List<String> getGeneratorExtensions(){
-		configuration.extensions
+		configuration.generatorExtensions
 	}
 
 	@TaskAction
@@ -155,11 +155,10 @@ class CodeGeneratorTask extends DefaultTask {
 							+ GeneratorExtension.class.getName());
 
 				}
+        logger.info "Add generator extension: $className"
 				ramlConfiguration.getExtensions().add((GeneratorExtension) c.newInstance());
-
-
 			}
-		}
+    }
 
 		getRamlFiles().each { configurationFile ->
 			ramlConfiguration.sourceDirectory = configurationFile.parentFile

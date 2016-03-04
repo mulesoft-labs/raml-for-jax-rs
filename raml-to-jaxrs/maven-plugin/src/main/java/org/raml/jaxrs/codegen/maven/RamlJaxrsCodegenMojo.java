@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -76,6 +77,14 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "sourceDirectory", defaultValue = "${basedir}/src/main/raml")
 	private File sourceDirectory;
+	
+	
+	/**
+	 * Should generator add the source directory hierarchy to the base package name?
+	 * Only applies if using sourceDirectory
+	 */
+	 @Parameter(property = "useSourceHierarchyInPackageName", defaultValue = "false")
+	 private boolean useSourceHierarchyInPackageName;
 
 	/**
 	 * The targeted JAX-RS version: either "1.1" or "2.0" .
@@ -173,6 +182,25 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	 */
 	// @Parameter(property = "methodThrowException")
 	// private String methodThrowException;
+	
+	
+
+	public void setSourceDirectory(File sourceDirectory) {
+		this.sourceDirectory = sourceDirectory;
+	}
+
+	public void setUseSourceHiearchyInPackageName(boolean useSourceHierarchyInPackageName) {
+		this.useSourceHierarchyInPackageName = useSourceHierarchyInPackageName;
+	}
+
+	public void setBasePackageName(String basePackageName) {
+		this.basePackageName = basePackageName;
+	}	
+	
+	
+	
+	
+	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (skip) {
@@ -265,6 +293,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 				reader.close();
 				if(line.startsWith("#%RAML")) {
 					getLog().info("Generating Java classes from: " + ramlFile);
+					configuration.setBasePackageName(basePackageName.concat(computeSubPackageName(ramlFile)));
 					generator.run(new FileReader(ramlFile), configuration, ramlFile.getAbsolutePath());
 				}
 				else{
@@ -276,6 +305,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 			throw new MojoExecutionException("Error generating Java classes from: " + currentSourcePath, e);
 		}
 	}
+
 
 	private Collection<File> getRamlFiles() throws MojoExecutionException {
 		if (sourcePaths != null && sourcePaths.length > 0) {
@@ -293,4 +323,29 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 			return FileUtils.listFiles(sourceDirectory, new String[] { "raml", "yaml" }, true);
 		}
 	}
+	
+	
+	/**
+	 * If useSourceHierarchy is true and sourceDirectory is set, return a sub package name that reflects the
+	 * relative position of the ramlFile to sourceDirectory.  Otherwise return an empty string.
+	 * 
+	 * @param ramlFile
+	 * @return computed sub package name
+	 */
+	protected String computeSubPackageName(File ramlFile) {
+		String subName = "";
+		if (useSourceHierarchyInPackageName && sourceDirectory != null) {
+			Path rel = sourceDirectory.toPath().relativize(ramlFile.toPath());
+			if (rel != null && rel.getParent() != null) {
+				String parent = rel.getParent().toString();
+				String rpn = parent.replace(File.separator, ".");
+				if (StringUtils.isNotBlank(rpn)) {
+					subName = ".".concat(rpn);
+				}
+			}
+		}
+		return subName;
+	}
+
+	
 }

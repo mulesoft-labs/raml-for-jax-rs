@@ -21,6 +21,7 @@
               <!-- Optionally configure outputDirectory if you don't like the default value: ${project.build.directory}/generated-sources/raml-JAX-RS -->
               <!-- Replace with your package name -->
               <basePackageName>com.acme.api</basePackageName>
+              <useSourceHierarchyInPackageName>true</useSourceHierarchyInPackageName>
               <!-- Valid values: 1.1 2.0 -->
               <JAX-RSVersion>2.0</JAX-RSVersion>
               <useJsr303Annotations>false</useJsr303Annotations>

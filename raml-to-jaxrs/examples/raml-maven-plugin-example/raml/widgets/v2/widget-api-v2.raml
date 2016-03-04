@@ -1,0 +1,33 @@
+#%RAML 0.8
+---
+title: Widget API v2"
+version: v2
+schemas:
+  - widget: |
+      {  "$schema": "http://json-schema.org/draft-03/schema",
+         "type": "object",
+         "description": "A widget",
+         "properties": {
+           "id":  { "type": "string", "required": true },
+           "name":  { "type": "string", "required": true },
+           "description":  { "type": "string" }
+         }
+      }
+ 
+ 
+ 
+/widgets:
+   /{widgetId}:
+     uriParameters:
+        widgetId:
+          type: string
+     get:
+      description: |
+         Get a widget
+      responses:
+        200:
+         body:
+          application/json:
+            schema: widget
+
+

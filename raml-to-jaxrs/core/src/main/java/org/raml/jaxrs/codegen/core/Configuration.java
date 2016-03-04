@@ -80,6 +80,7 @@ public class Configuration
     private Class customAnnotator= NoopAnnotator.class;
     private String restIFPackageName = "resource" ;
     private String interfaceNameSuffix = "Resource" ;
+    private boolean useSourceHierarchyInPackageName = false;
 
     public ArrayList<String> getIgnoredParameterNames() {
         return ignoredParameterNames;
@@ -294,7 +295,16 @@ public class Configuration
         this.basePackageName = basePackageName;
     }
 
-    /**
+
+	public boolean isUseSourceHierarchyInPackageName() {
+		return useSourceHierarchyInPackageName;
+	}
+
+	public void setUseSourceHierarchyInPackageName(boolean useSourceHierarchyInPackageName) {
+		this.useSourceHierarchyInPackageName = useSourceHierarchyInPackageName;
+	}
+
+	/**
      * <p>Getter for the field <code>modelPackageName</code>.</p>
      *
      * @return a {@link java.lang.String} object.

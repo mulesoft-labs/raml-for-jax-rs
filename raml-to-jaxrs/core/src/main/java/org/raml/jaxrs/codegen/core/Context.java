@@ -133,9 +133,10 @@ class Context
         final GenerationConfig jsonSchemaGenerationConfig = configuration.createJsonSchemaGenerationConfig();
         schemaMapper = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(jsonSchemaGenerationConfig),
                 new SchemaStore()), new SchemaGenerator());
+        
+     
 
     }
-
 
 
 

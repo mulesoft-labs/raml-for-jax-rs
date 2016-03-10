@@ -78,9 +78,9 @@ You can download the command line tool from [here](http://raml-tools.mulesoft.co
 or you can clone this repository and build it locally by following these steps:
 
 - Go to the `com.mulesoft.jaxrs.raml.generator` folder.
-- Run `mvn clean package install`
+- Run `mvn clean assembly:assembly -DdescriptorId=jar-with-dependencies`
 - Go to the `com.mulesoft.jaxrs.raml.generator.annotations/target` folder where you will find the generated jar
-(`com.mulesoft.jaxrs.raml.generator.annotations-0.0.1-SNAPSHOT-jar-with-dependencies.jar`).
+(`com.mulesoft.jaxrs.raml.generator.annotations-1.3.5-SNAPSHOT-jar-with-dependencies.jar`).
 - **Optional:** This documentation asumes that the JAR is called: `jax-rs-to-raml.jar`. You might want to rename yours to follow the documentation.
 
 

@@ -16,19 +16,17 @@ public class PathCleanuper {
 	 */
 	public static String cleanupPath(String path){
 		StringBuilder bld=new StringBuilder();
-		boolean inParam=false;
+		int inParamCount = 0;
 		boolean inConstraint=false;
 		for (int a=0;a<path.length();a++){
-			char c=path.charAt(a);
-			if (c=='{')
-			{
-				inParam=true;
+			char c = path.charAt(a);
+			if (c=='{') {
+				inParamCount++;
 			}
-			if (c=='}')
-			{
-				inParam=false;
+			if (c=='}') {
+				inParamCount--;
 			}
-			if (inParam){
+			if (inParamCount > 0){
 				if (Character.isWhitespace(c)){
 					continue;
 				}

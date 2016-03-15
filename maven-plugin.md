@@ -30,7 +30,7 @@ You must include the plug-in in your project's pom.xml. For example:
         <!-- Replace with your package name -->
         <basePackageName>com.acme.api</basePackageName>
         <!-- Valid values: 1.1 2.0 -->
-        <JAX-RSVersion>2.0</JAX-RSVersion>
+        <jaxrsVersion>2.0</jaxrsVersion>
         <useJsr303Annotations>false</useJsr303Annotations>
         <!-- Valid values: jackson1 jackson2 gson none -->
         <jsonMapper>jackson2</jsonMapper>

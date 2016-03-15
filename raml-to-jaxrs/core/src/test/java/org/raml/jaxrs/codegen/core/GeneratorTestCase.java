@@ -172,7 +172,7 @@ public class GeneratorTestCase {
 				result.getErrors(), is(emptyArray()));
 
 		assertThat(ToStringBuilder.reflectionToString(result.getWarnings(), ToStringStyle.SHORT_PREFIX_STYLE),
-				result.getWarnings(), is(org.hamcrest.collection.IsArrayWithSize.arrayWithSize(18)));
+				result.getWarnings(), is(org.hamcrest.collection.IsArrayWithSize.arrayWithSize(2)));
 
 		// test load the classes with Jersey
 		final URLClassLoader resourceClassLoader = new URLClassLoader(new URL[] { compilationOutputFolder.getRoot()

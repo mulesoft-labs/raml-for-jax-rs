@@ -26,7 +26,6 @@ import static org.raml.jaxrs.codegen.core.Constants.RESPONSE_HEADER_WILDCARD_SYM
 import static org.raml.jaxrs.codegen.core.Names.EXAMPLE_PREFIX;
 import static org.raml.jaxrs.codegen.core.Names.GENERIC_PAYLOAD_ARGUMENT_NAME;
 import static org.raml.jaxrs.codegen.core.Names.MULTIPLE_RESPONSE_HEADERS_ARGUMENT_NAME;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
@@ -35,9 +34,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.mail.internet.MimeMultipart;
 import javax.management.RuntimeErrorException;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -54,7 +53,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.ResponseBuilder;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.math.NumberUtils;
@@ -71,7 +69,6 @@ import org.raml.model.parameter.FormParameter;
 import org.raml.model.parameter.Header;
 import org.raml.model.parameter.QueryParameter;
 import org.raml.model.parameter.UriParameter;
-
 import com.sun.codemodel.JAnnotationArrayMember;
 import com.sun.codemodel.JAnnotationUse;
 import com.sun.codemodel.JBlock;
@@ -170,6 +167,10 @@ public class Generator extends AbstractGenerator
         // no way of doing this :(
         final JMethod method = context.createResourceMethod(resourceInterface, methodName,
             resourceMethodReturnType);
+        
+        if(configuration.isUseJsr303Annotations()) {
+            method.annotate(Valid.class);
+        }
         
         if (configuration.getMethodThrowException() != null ) {
             method._throws(configuration.getMethodThrowException());

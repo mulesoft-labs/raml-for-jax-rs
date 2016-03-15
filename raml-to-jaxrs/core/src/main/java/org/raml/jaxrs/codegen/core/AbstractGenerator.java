@@ -22,7 +22,6 @@ import static org.apache.commons.lang.StringUtils.strip;
 import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 import static org.raml.jaxrs.codegen.core.Names.EXAMPLE_PREFIX;
 import static org.raml.jaxrs.codegen.core.Names.GENERIC_PAYLOAD_ARGUMENT_NAME;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,8 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-
 import javax.mail.internet.MimeMultipart;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -56,7 +55,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -84,7 +82,6 @@ import org.raml.parser.visitor.RamlDocumentBuilder;
 import org.raml.parser.visitor.RamlValidationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.sun.codemodel.JAnnotationArrayMember;
@@ -440,8 +437,13 @@ public abstract class AbstractGenerator {
 	private void addPlainBodyArgument(final MimeType bodyMimeType,
 			final JMethod method, final JDocComment javadoc) throws IOException {
 
-		method.param(types.getRequestEntityClass(bodyMimeType),
-				GENERIC_PAYLOAD_ARGUMENT_NAME);
+	    if(context.getConfiguration().isUseJsr303Annotations()) {
+            method.param(types.getRequestEntityClass(bodyMimeType),
+                    GENERIC_PAYLOAD_ARGUMENT_NAME).annotate(Valid.class);
+        } else {
+            method.param(types.getRequestEntityClass(bodyMimeType),
+                    GENERIC_PAYLOAD_ARGUMENT_NAME);
+        }
 
 		javadoc.addParam(GENERIC_PAYLOAD_ARGUMENT_NAME).add(
 				getPrefixedExampleOrBlank(bodyMimeType.getExample()));

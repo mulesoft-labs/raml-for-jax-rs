@@ -198,6 +198,11 @@ public class Configuration
             }
 
             @Override
+            public boolean isUseBigDecimals() {
+              return getConfiguredValue("useBigDecimals", false);
+            }
+
+            @Override
             public boolean isIncludeConstructors() {
                 return getConfiguredValue("includeConstructors", super.isIncludeConstructors());
             }

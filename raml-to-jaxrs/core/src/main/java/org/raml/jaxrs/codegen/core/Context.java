@@ -20,7 +20,6 @@ import static org.raml.jaxrs.codegen.core.Constants.JAXRS_HTTP_METHODS;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -28,11 +27,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +52,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXParseException;
 
 import com.google.common.io.Files;
-import com.google.common.io.Resources;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -248,19 +244,9 @@ class Context
 
     private String generateResponseWrapper() throws IOException
     {
-        
-        final String templateName = "/org/raml/templates/ResponseWrapper." + configuration.getJaxrsVersion().toString().toLowerCase()
-                + ".template";
-        LOGGER.info("Loading template {}", templateName);
-        
-        String resourceTemplate;
-        try {
-            resourceTemplate = Resources.toString(Resources.getResource(Generator.class, templateName), Charset.defaultCharset());
-        } catch (IOException e) {
-            resourceTemplate = FileUtils.readFileToString(new File("/home/kchristmas/local/src/other/raml-for-jax-rs/raml-to-jaxrs/core/src/main/resources" + templateName));
-        }
-        
-        final String template = resourceTemplate;
+        final String template = IOUtils.toString(getClass().getResourceAsStream(
+            "/org/raml/templates/ResponseWrapper." + configuration.getJaxrsVersion().toString().toLowerCase()
+                            + ".template"));
 
         final File supportPackageOutputDirectory = new File(configuration.getOutputDirectory(),
             getSupportPackage().replace('.', File.separatorChar));

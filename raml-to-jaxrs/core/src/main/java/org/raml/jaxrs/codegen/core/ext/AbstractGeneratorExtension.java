@@ -18,6 +18,7 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
+import org.raml.jaxrs.codegen.core.Types;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Raml;
@@ -40,6 +41,8 @@ public abstract class AbstractGeneratorExtension implements NestedSchemaNameComp
 	private Raml raml;
 	
 	private JCodeModel codeModel;
+	
+	private Types types;
 	
 	/** {@inheritDoc} */
 	public void onAddResourceMethod(JMethod method,  Action action,  MimeType bodyMimeType,
@@ -93,5 +96,19 @@ public abstract class AbstractGeneratorExtension implements NestedSchemaNameComp
 	 */
 	public JCodeModel getCodeModel() {
 		return codeModel;
+	}
+	
+	/** {@inheritDoc} */
+	public void setTypes(Types types) {
+	    this.types = types;
+	}
+	
+	/**
+	 * <p>Getter for the field <code>types</code>.</p>
+	 * 
+	 * @return a {@link org.raml.jaxrs.codegen.core.Types} object.
+	 */
+	public Types getTypes() {
+	    return types;
 	}
 }

@@ -18,6 +18,7 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
+import org.raml.jaxrs.codegen.core.Types;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Raml;
@@ -86,4 +87,12 @@ public interface GeneratorExtension {
 	 * @param codeModel a {@link com.sun.codemodel.JCodeModel} object.
 	 */
 	void setCodeModel(JCodeModel codeModel);
+	
+	
+	/**
+	 * Sets the Types instance used through the generation process
+	 * 
+	 * @param types a @{link org.raml.jaxrs.codegen.core.Types} object.
+	 */
+	void setTypes(Types types);
 }

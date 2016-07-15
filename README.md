@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/CIResearchGroup/raml-for-jax-rs.svg?branch=master)](https://travis-ci.org/CIResearchGroup/raml-for-jax-rs)
 =======
 ![](http://raml.org/images/logo.png)
 RAML for JAX-RS

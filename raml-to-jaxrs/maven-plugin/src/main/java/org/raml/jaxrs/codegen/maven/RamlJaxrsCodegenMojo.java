@@ -294,6 +294,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 				if(line.startsWith("#%RAML")) {
 					getLog().info("Generating Java classes from: " + ramlFile);
 					configuration.setBasePackageName(basePackageName.concat(computeSubPackageName(ramlFile)));
+					configuration.setSourceDirectory(ramlFile.getParentFile());
 					generator.run(new FileReader(ramlFile), configuration, ramlFile.getAbsolutePath());
 				}
 				else{

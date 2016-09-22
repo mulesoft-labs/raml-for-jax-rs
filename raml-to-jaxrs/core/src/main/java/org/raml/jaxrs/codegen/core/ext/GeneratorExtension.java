@@ -18,11 +18,11 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.parameter.AbstractParam;
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Api;
+import org.aml.apimodel.Resource;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -42,7 +42,7 @@ public interface GeneratorExtension {
 	 *
 	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
 	 * @param resourceInterface
-	 * @param resource a {@link org.raml.model.Resource} object.
+	 * @param resource a {@link org.aml.apimodel.Resource} object.
 	 */
 	public void onCreateResourceInterface(final JDefinedClass resourceInterface, Resource resource);
 	
@@ -50,8 +50,8 @@ public interface GeneratorExtension {
 	 * Called after a method is added to the Java model by the code generator
 	 *
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
-	 * @param action a {@link org.raml.model.Action} object.
-	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
+	 * @param bodyMimeType a {@link org.aml.apimodel.MimeType} object.
 	 * @param uniqueResponseMimeTypes a {@link java.util.Collection} object.
 	 */
 	public void onAddResourceMethod(final JMethod method, final Action action, 
@@ -62,7 +62,7 @@ public interface GeneratorExtension {
 	 * the parameter is handled solely in a servlet filter.
 	 *
 	 * @param name a {@link java.lang.String} object.
-	 * @param parameter a {@link org.raml.model.parameter.AbstractParam} object.
+	 * @param parameter a {@link org.aml.apimodel.AbstractParam} object.
 	 * @param annotationClass a {@link java.lang.Class} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @return true if the parameter should be added; false if it is should be ignored
@@ -74,11 +74,11 @@ public interface GeneratorExtension {
 	
 	
 	/**
-	 * Sets the {@link org.raml.model.Raml}.
+	 * Sets the {@link org.aml.apimodel.Api}.
 	 *
-	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @param raml a {@link org.aml.apimodel.Api} object.
 	 */
-	void setRaml(Raml raml);
+	void setRaml(Api raml);
 	
 	/**
 	 * Sets JCodeModel instance used through the generation process

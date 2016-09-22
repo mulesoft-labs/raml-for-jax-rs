@@ -22,11 +22,11 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.parameter.AbstractParam;
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Api;
+import org.aml.apimodel.Resource;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -49,7 +49,7 @@ public class TestGeneratorExtension implements GeneratorExtension {
 	}
 
 	@Override
-	public void setRaml(Raml raml) {
+	public void setRaml(Api raml) {
 		
 	}
 

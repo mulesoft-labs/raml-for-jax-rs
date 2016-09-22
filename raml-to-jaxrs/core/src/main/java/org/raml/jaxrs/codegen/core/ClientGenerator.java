@@ -19,11 +19,11 @@ import java.util.Collection;
 
 import javax.ws.rs.core.Response;
 
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Resource;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 import org.raml.jaxrs.codegen.core.ext.MethodNameBuilderExtension;
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Resource;
 
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JDocComment;
@@ -66,7 +66,7 @@ public class ClientGenerator extends AbstractGenerator {
 				false, resourceInterface);
 		final JMethod method = context.createResourceMethod(resourceInterface,
 				methodName, resourceMethodReturnType);
-		context.addHttpMethodAnnotation(action.getType().toString(), method);
+		context.addHttpMethodAnnotation(action.method(), method);
 		addParamAnnotation(resourceInterfacePath, action, method);
 		addConsumesAnnotation(bodyMimeType, method);
 		addProducesAnnotation(uniqueResponseMimeTypes, method);

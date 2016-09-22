@@ -18,12 +18,12 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Api;
+import org.aml.apimodel.Resource;
 import org.raml.jaxrs.codegen.core.Names;
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.parameter.AbstractParam;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -43,13 +43,13 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 		return true;
 	}
 
-	public void setRaml(Raml raml) {}
+	public void setRaml(Api raml) {}
 
 	public String buildResourceMethodName(Action action, MimeType bodyMimeType,Resource resource) {
 		if(action==null||resource==null){
 			return null;
 		}
-		String displayName = resource.getDisplayName();
+		String displayName = resource.displayName();
 		if(displayName==null||displayName.trim().isEmpty()){
 			return null;
 		}
@@ -70,7 +70,7 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 				bld.append(Character.isJavaIdentifierPart(ch)?ch:'_');
 			}
 		}
-		String type = action.getType().toString().toLowerCase();
+		String type = action.method().toString().toLowerCase();
 		
 		String mti = Names.buildMimeTypeInfix(bodyMimeType);
 		if(mti!=null&&!mti.isEmpty()){

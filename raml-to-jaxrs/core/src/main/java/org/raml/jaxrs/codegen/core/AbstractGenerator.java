@@ -22,6 +22,7 @@ import static org.apache.commons.lang.StringUtils.strip;
 import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 import static org.raml.jaxrs.codegen.core.Names.EXAMPLE_PREFIX;
 import static org.raml.jaxrs.codegen.core.Names.GENERIC_PAYLOAD_ARGUMENT_NAME;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,8 +37,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
+
 import javax.mail.internet.MimeMultipart;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -55,6 +57,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Api;
+import org.aml.apimodel.Resource;
+import org.aml.apimodel.Response;
+import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
+import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -62,26 +73,16 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 import org.raml.jaxrs.codegen.core.ext.InterfaceNameBuilderExtension;
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.Response;
-import org.raml.model.parameter.AbstractParam;
-import org.raml.model.parameter.FormParameter;
-import org.raml.model.parameter.Header;
-import org.raml.model.parameter.QueryParameter;
-import org.raml.model.parameter.UriParameter;
-import org.raml.parser.loader.ClassPathResourceLoader;
-import org.raml.parser.loader.CompositeResourceLoader;
-import org.raml.parser.loader.FileResourceLoader;
-import org.raml.parser.loader.ResourceLoader;
-import org.raml.parser.loader.UrlResourceLoader;
-import org.raml.parser.rule.ValidationResult;
-import org.raml.parser.visitor.RamlDocumentBuilder;
-import org.raml.parser.visitor.RamlValidationService;
+import org.raml.v2.api.loader.ClassPathResourceLoader;
+import org.raml.v2.api.loader.CompositeResourceLoader;
+import org.raml.v2.api.loader.FileResourceLoader;
+import org.raml.v2.api.loader.ResourceLoader;
+import org.raml.v2.api.loader.UrlResourceLoader;
+import org.raml.v2.api.model.common.ValidationResult;
+import org.raml.v2.internal.impl.commons.model.RamlValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.sun.codemodel.JAnnotationArrayMember;
@@ -136,10 +137,10 @@ public abstract class AbstractGenerator {
 					    {						
 					        File includedFile = new File(resourceName);
 					        FileInputStream inputStream = null;
-					        if (logger.isDebugEnabled())
-					        {
-					            logger.debug(String.format("Looking for resource: %s on directory: %s...", resourceName));
-					        }
+//					        if (logger.isDebugEnabled())FIXME
+//					        {
+//					            logger.debug(String.format("Looking for resource: %s on directory: %s...", resourceName));
+//					        }
 					        try
 					        {
 					            return new FileInputStream(includedFile);
@@ -185,7 +186,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>run.</p>
 	 *
-	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @param raml a {@link org.aml.apimodel.Api} object.
 	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
 	 * @return a {@link java.util.Set} object.
 	 * @throws java.lang.Exception if any.
@@ -197,12 +198,12 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>run.</p>
 	 *
-	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @param raml a {@link org.aml.apimodel.Api} object.
 	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
 	 * @return a {@link java.util.Set} object.
 	 * @throws java.lang.Exception if any.
 	 */
-	protected Set<String> run(final Raml raml, final Configuration configuration)
+	protected Set<String> run(final Api raml, final Configuration configuration)
 			throws Exception {
 		validate(configuration);
 		extensions = configuration.getExtensions();
@@ -214,8 +215,7 @@ public abstract class AbstractGenerator {
 			e.setCodeModel(context.getCodeModel());
 		}
 
-		Collection<Resource> resources = raml.getResources().values();
-		types.generateClassesFromXmlSchemas(resources);
+		Resource[] resources = raml.resources();
 
 		for (final Resource resource : resources) {
 			createResourceInterface(resource, raml,configuration);
@@ -227,11 +227,11 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>createResourceInterface.</p>
 	 *
-	 * @param resource a {@link org.raml.model.Resource} object.
-	 * @param raml a {@link org.raml.model.Raml} object.
+	 * @param resource a {@link org.aml.apimodel.Resource} object.
+	 * @param raml a {@link org.aml.apimodel.Api} object.
 	 * @throws java.lang.Exception if any.
 	 */
-	protected void createResourceInterface(final Resource resource, final Raml raml,Configuration config) throws Exception {
+	protected void createResourceInterface(final Resource resource, final Api raml,Configuration config) throws Exception {
 		
 		String resourceInterfaceName = null;
     	for (GeneratorExtension e : extensions) {
@@ -251,13 +251,13 @@ public abstract class AbstractGenerator {
 				.createResourceInterface(resourceInterfaceName);
 		context.setCurrentResourceInterface(resourceInterface);
 
-		final String path = strip(resource.getRelativeUri(), "/");
+		final String path = strip(resource.relativeUri(), "/");
 		resourceInterface.annotate(Path.class).param(
 				DEFAULT_ANNOTATION_PARAMETER,
 				StringUtils.defaultIfBlank(path, "/"));
 
-		if (isNotBlank(resource.getDescription())) {
-			resourceInterface.javadoc().add(resource.getDescription());
+		if (isNotBlank(resource.description())) {
+			resourceInterface.javadoc().add(resource.description());
 		}
 
 		addResourceMethods(resource, resourceInterface, path);
@@ -271,7 +271,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addResourceMethods.</p>
 	 *
-	 * @param resource a {@link org.raml.model.Resource} object.
+	 * @param resource a {@link org.aml.apimodel.Resource} object.
 	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
 	 * @param resourceInterfacePath a {@link java.lang.String} object.
 	 * @throws java.lang.Exception if any.
@@ -279,24 +279,24 @@ public abstract class AbstractGenerator {
 	protected void addResourceMethods(final Resource resource,
 			final JDefinedClass resourceInterface,
 			final String resourceInterfacePath) throws Exception {
-		for (final Action action : resource.getActions().values()) {
+		for (final Action action : resource.methods()) {
 			if (!action.hasBody()) {
 				addResourceMethods(resourceInterface, resource, resourceInterfacePath,
 						action, null, false);
-			} else if (action.getBody().size() == 1) {
-				final MimeType bodyMimeType = action.getBody().values()
+			} else if (action.body().size() == 1) {
+				final MimeType bodyMimeType = action.body()
 						.iterator().next();
 				addResourceMethods(resourceInterface, resource, resourceInterfacePath,
 						action, bodyMimeType, false);
 			} else {
-				for (final MimeType bodyMimeType : action.getBody().values()) {
+				for (final MimeType bodyMimeType : action.body()) {
 					addResourceMethods(resourceInterface, resource,
 							resourceInterfacePath, action, bodyMimeType, true);
 				}
 			}
 		}
 
-		for (final Resource childResource : resource.getResources().values()) {
+		for (final Resource childResource : resource.resources()) {
 			addResourceMethods(childResource, resourceInterface,
 					resourceInterfacePath);
 		}
@@ -305,16 +305,15 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>getUniqueResponseMimeTypes.</p>
 	 *
-	 * @param action a {@link org.raml.model.Action} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
 	 * @return a {@link java.util.Collection} object.
 	 */
 	protected Collection<MimeType> getUniqueResponseMimeTypes(
 			final Action action) {
 		final Map<String, MimeType> responseMimeTypes = new HashMap<String, MimeType>();
-		for (final Response response : action.getResponses().values()) {
+		for (final Response response : action.responses()) {
 			if (response.hasBody()) {
-				for (final MimeType responseMimeType : response.getBody()
-						.values()) {
+				for (final MimeType responseMimeType : response.body()) {
 					if (responseMimeType != null) {
 						responseMimeTypes.put(responseMimeType.getType(),
 								responseMimeType);
@@ -330,8 +329,8 @@ public abstract class AbstractGenerator {
 	 *
 	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
 	 * @param resourceInterfacePath a {@link java.lang.String} object.
-	 * @param action a {@link org.raml.model.Action} object.
-	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
+	 * @param bodyMimeType a {@link org.aml.apimodel.MimeType} object.
 	 * @param addBodyMimeTypeInMethodName a boolean.
 	 * @param uniqueResponseMimeTypes a {@link java.util.Collection} object.
 	 * @throws java.lang.Exception if any.
@@ -349,7 +348,7 @@ public abstract class AbstractGenerator {
 	 * <p>addParamAnnotation.</p>
 	 *
 	 * @param resourceInterfacePath a {@link java.lang.String} object.
-	 * @param action a {@link org.raml.model.Action} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 */
 	protected void addParamAnnotation(final String resourceInterfacePath,
@@ -368,13 +367,13 @@ public abstract class AbstractGenerator {
 		method.param(argumentType, GENERIC_PAYLOAD_ARGUMENT_NAME);
 
 		// build a javadoc text out of all the params
-		Map<String, List<FormParameter>> formParameters = bodyMimeType.getFormParameters();
+		Map<String, List<AbstractParam>> formParameters = bodyMimeType.getFormParameters();
 		if(formParameters!=null){
-			for (final Entry<String, List<FormParameter>> namedFormParameters : formParameters.entrySet()) {
+			for (final Entry<String, List<AbstractParam>> namedFormParameters : formParameters.entrySet()) {
 				final StringBuilder sb = new StringBuilder();
 				sb.append(namedFormParameters.getKey()).append(": ");
 	
-				for (final FormParameter formParameter : namedFormParameters
+				for (final AbstractParam formParameter : namedFormParameters
 						.getValue()) {
 					appendParameterJavadocDescription(formParameter, sb);
 				}
@@ -387,14 +386,14 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addParameterJavaDoc.</p>
 	 *
-	 * @param parameter a {@link org.raml.model.parameter.AbstractParam} object.
+	 * @param parameter a {@link org.aml.apimodel.AbstractParam} object.
 	 * @param parameterName a {@link java.lang.String} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 */
 	protected void addParameterJavaDoc(final AbstractParam parameter,
 			final String parameterName, final JDocComment javadoc) {
 		javadoc.addParam(parameterName).add(
-				defaultString(parameter.getDescription())
+				defaultString(parameter.description())
 						+ getPrefixedExampleOrBlank(parameter.getExample()));
 	}
 
@@ -411,7 +410,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>appendParameterJavadocDescription.</p>
 	 *
-	 * @param param a {@link org.raml.model.parameter.AbstractParam} object.
+	 * @param param a {@link org.aml.apimodel.AbstractParam} object.
 	 * @param sb a {@link java.lang.StringBuilder} object.
 	 */
 	protected void appendParameterJavadocDescription(final AbstractParam param,
@@ -420,11 +419,11 @@ public abstract class AbstractGenerator {
 			sb.append(param.getDisplayName());
 		}
 
-		if (isNotBlank(param.getDescription())) {
+		if (isNotBlank(param.description())) {
 			if (sb.length() > 0) {
 				sb.append(" - ");
 			}
-			sb.append(param.getDescription());
+			sb.append(param.description());
 		}
 
 		if (isNotBlank(param.getExample())) {
@@ -450,7 +449,7 @@ public abstract class AbstractGenerator {
 	}
 
 	private boolean hasAMultiTypeFormParameter(final MimeType bodyMimeType) {
-		for (final List<FormParameter> formParameters : bodyMimeType
+		for (final List<AbstractParam> formParameters : bodyMimeType
 				.getFormParameters().values()) {
 			if (formParameters.size() > 1) {
 				return true;
@@ -462,7 +461,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addFormParameters.</p>
 	 *
-	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param bodyMimeType a {@link org.aml.apimodel.MimeType} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 * @throws java.lang.Exception if any.
@@ -477,7 +476,7 @@ public abstract class AbstractGenerator {
 			addCatchAllFormParametersArgument(bodyMimeType, method, javadoc,
 					type);
 		} else {
-			for (final Entry<String, List<FormParameter>> namedFormParameters : bodyMimeType
+			for (final Entry<String, List<AbstractParam>> namedFormParameters : bodyMimeType
 					.getFormParameters().entrySet()) {
 				addParameter(namedFormParameters.getKey(), namedFormParameters
 						.getValue().get(0), FormParam.class, method, javadoc);
@@ -488,7 +487,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addConsumesAnnotation.</p>
 	 *
-	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param bodyMimeType a {@link org.aml.apimodel.MimeType} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 */
 	protected void addConsumesAnnotation(final MimeType bodyMimeType,
@@ -523,7 +522,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addBodyParameters.</p>
 	 *
-	 * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+	 * @param bodyMimeType a {@link org.aml.apimodel.MimeType} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 * @throws java.lang.Exception if any.
@@ -547,7 +546,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addPathParameters.</p>
 	 *
-	 * @param action a {@link org.raml.model.Action} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 * @throws java.lang.Exception if any.
@@ -560,10 +559,9 @@ public abstract class AbstractGenerator {
 	private void addAllResourcePathParameters(Resource resource,
 			final JMethod method, final JDocComment javadoc) throws Exception {
 
-		for (final Entry<String, UriParameter> namedUriParameter : resource
-				.getUriParameters().entrySet()) {
+		for (final AbstractParam namedUriParameter : resource.getUriParameters()) {
 			addParameter(namedUriParameter.getKey(),
-					namedUriParameter.getValue(), PathParam.class, method,
+					namedUriParameter, PathParam.class, method,
 					javadoc);
 		}
 
@@ -578,33 +576,32 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addHeaderParameters.</p>
 	 *
-	 * @param action a {@link org.raml.model.Action} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 * @throws java.lang.Exception if any.
 	 */
 	protected void addHeaderParameters(final Action action, final JMethod method,
 			final JDocComment javadoc) throws Exception {
-		for (final Entry<String, Header> namedHeaderParameter : action
-				.getHeaders().entrySet()) {
+		for (final AbstractParam namedHeaderParameter : action.headers()) {
 			addParameter(namedHeaderParameter.getKey(),
-					namedHeaderParameter.getValue(), HeaderParam.class, method,
+					namedHeaderParameter, HeaderParam.class, method,
 					javadoc);
 		}
 	}
 	/**
 	 * <p>addBaseJavaDoc.</p>
 	 *
-	 * @param action a {@link org.raml.model.Action} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @return a {@link com.sun.codemodel.JDocComment} object.
 	 */
 	protected JDocComment addBaseJavaDoc(final Action action, final JMethod method)
     {
         final JDocComment javadoc = method.javadoc();
-        if (isNotBlank(action.getDescription()))
+        if (isNotBlank(action.description()))
         {
-            javadoc.add(action.getDescription());
+            javadoc.add(action.description());
         }
         return javadoc;
     }
@@ -612,17 +609,16 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addQueryParameters.</p>
 	 *
-	 * @param action a {@link org.raml.model.Action} object.
+	 * @param action a {@link org.aml.apimodel.Action} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 * @throws java.lang.Exception if any.
 	 */
 	protected void addQueryParameters(final Action action, final JMethod method,
 			final JDocComment javadoc) throws Exception {
-		for (final Entry<String, QueryParameter> namedQueryParameter : action
-				.getQueryParameters().entrySet()) {
+		for (final AbstractParam namedQueryParameter : action.queryParameters()) {
 			addParameter(namedQueryParameter.getKey(),
-					namedQueryParameter.getValue(), QueryParam.class, method,
+					namedQueryParameter, QueryParam.class, method,
 					javadoc);
 		}
 	}
@@ -734,25 +730,26 @@ public abstract class AbstractGenerator {
 	 * @param item a {@link org.raml.parser.rule.ValidationResult} object.
 	 * @return a {@link java.lang.String} object.
 	 */
-	protected static String toDetailedString(ValidationResult item) {
+	protected static String toDetailedString(RamlValidationResult item) {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("\t");
-		stringBuilder.append(item.getLevel());
-		stringBuilder.append(" ");
 		stringBuilder.append(item.getMessage());
-		if (item.getLine() != ValidationResult.UNKNOWN) {
-			stringBuilder.append(" (line ");
-			stringBuilder.append(item.getLine());
-			if (item.getStartColumn() != ValidationResult.UNKNOWN) {
-				stringBuilder.append(", col ");
-				stringBuilder.append(item.getStartColumn());
-				if (item.getEndColumn() != item.getStartColumn()) {
-					stringBuilder.append(" to ");
-					stringBuilder.append(item.getEndColumn());
-				}
-			}
-			stringBuilder.append(")");
-		}
+//		stringBuilder.append("\t");
+//		stringBuilder.append(item.getLevel());
+//		stringBuilder.append(" ");
+//		stringBuilder.append(item.getMessage());
+//		if (item.getLine() != ValidationResult.UNKNOWN) {
+//			stringBuilder.append(" (line ");
+//			stringBuilder.append(item.getLine());
+//			if (item.getStartColumn() != ValidationResult.UNKNOWN) {
+//				stringBuilder.append(", col ");
+//				stringBuilder.append(item.getStartColumn());
+//				if (item.getEndColumn() != item.getStartColumn()) {
+//					stringBuilder.append(" to ");
+//					stringBuilder.append(item.getEndColumn());
+//				}
+//			}
+//			stringBuilder.append(")");
+//		}
 		return stringBuilder.toString();
 	}
 
@@ -774,19 +771,17 @@ public abstract class AbstractGenerator {
 		final String ramlBuffer = IOUtils.toString(ramlReader);
 		String folder=new File(readerLocation).getParent();
 		ResourceLoader[] loaderArray = prepareResourceLoaders(configuration,folder);
-
-		final List<ValidationResult> results = RamlValidationService
-				.createDefault(new CompositeResourceLoader(loaderArray))
-				.validate(ramlBuffer, readerLocation);
-		if (ValidationResult.areValid(results)) {
-			return run(new RamlDocumentBuilder(new CompositeResourceLoader(
-					loaderArray)).build(ramlBuffer,readerLocation), configuration);
-		} else {
-			final List<String> validationErrors = Lists.transform(results,
+		TopLevelRamlModelBuilder bld=new TopLevelRamlModelBuilder();
+		TopLevelRamlImpl build = bld.build(ramlBuffer, new CompositeResourceLoader(loaderArray), readerLocation);
+		if(build.isOk()&&build instanceof Api){
+			return run((Api)build, configuration);
+		}			
+		 else {
+			final List<String> validationErrors = Lists.transform(build.validationResults(),
 					new Function<ValidationResult, String>() {
 
 						public String apply(final ValidationResult vr) {
-							return toDetailedString(vr);
+							return toDetailedString((RamlValidationResult) vr);
 						}
 					});
 

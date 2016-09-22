@@ -27,31 +27,35 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.URL;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.ws.rs.HttpMethod;
 
-import org.apache.commons.io.FileUtils;
+import org.aml.apimodel.Api;
+import org.aml.raml2java.JavaWriter;
+import org.aml.typesystem.AbstractType;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.jsonschema2pojo.*;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.AnnotatorFactory;
+import org.jsonschema2pojo.CompositeAnnotator;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.model.Raml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXParseException;
 
-import com.google.common.io.Files;
 import com.sun.codemodel.JAnnotatable;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -75,7 +79,7 @@ class Context
     private static final Logger LOGGER = LoggerFactory.getLogger(Context.class);
 
     private final Configuration configuration;
-    private final Raml raml;
+    private final Api raml;
     private final JCodeModel codeModel;
     private final Map<String, Set<String>> resourcesMethods;
     private final Map<String, Object> httpMethodAnnotations;
@@ -84,7 +88,7 @@ class Context
 
     private boolean shouldGenerateResponseWrapper = false;
     private JDefinedClass currentResourceInterface;
-    private final File globalSchemaStore;
+    private JavaWriter writer;
 
     /**
      * <p>ref.</p>
@@ -96,22 +100,26 @@ class Context
     	return codeModel.ref(name);
     }
 
+    public JType getType(AbstractType tp){
+    	return writer.getType(tp);
+    }
+    
     /**
      * <p>Constructor for Context.</p>
      *
      * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
-     * @param raml a {@link org.raml.model.Raml} object.
+     * @param raml a {@link org.aml.apimodel.Api} object.
      * @throws java.io.IOException if any.
      */
-    public Context(final Configuration configuration, final Raml raml) throws IOException
+    public Context(final Configuration configuration, final Api raml) throws IOException
     {
         Validate.notNull(configuration, "configuration can't be null");
         Validate.notNull(raml, "raml can't be null");
 
         this.configuration = configuration;
         this.raml = raml;
-
-        codeModel = new JCodeModel();
+        writer=new JavaWriter();
+        codeModel = writer.getModel();
 
         resourcesMethods = new HashMap<String, Set<String>>();
 
@@ -122,13 +130,7 @@ class Context
             httpMethodAnnotations.put(clazz.getSimpleName(), clazz);
         }
 
-        // write all global schemas to a temporary directory
-        globalSchemaStore = Files.createTempDir();
-        for (final Entry<String, String> nameAndSchema : raml.getConsolidatedSchemas().entrySet())
-        {
-            final File schemaFile = new File(globalSchemaStore, nameAndSchema.getKey());
-            FileUtils.writeStringToFile(schemaFile, nameAndSchema.getValue());
-        }
+        
         // configure the JSON -> POJO generator
         final GenerationConfig jsonSchemaGenerationConfig = configuration.createJsonSchemaGenerationConfig();
         schemaMapper = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(jsonSchemaGenerationConfig),
@@ -174,43 +176,12 @@ class Context
         }
         generatedFiles.addAll(Arrays.asList(StringUtils.split(baos.toString())));
 
-        try
-        {
-            FileUtils.deleteDirectory(globalSchemaStore);
-        }
-        catch (final Exception e)
-        {
-            LOGGER.warn("Failed to delete temporary directory: " + globalSchemaStore);
-        }
+        
 
         return generatedFiles;
     }
 
-    /**
-     * <p>getSchemaFile.</p>
-     *
-     * @return a {schema file, schema name} tuple.
-     * @param schemaNameOrContent a {@link java.lang.String} object.
-     * @throws java.io.IOException if any.
-     */
-    public Entry<File, String> getSchemaFile(final String schemaNameOrContent) throws IOException
-    {
-        if (raml.getConsolidatedSchemas().containsKey(schemaNameOrContent))
-        {
-            // schemaNameOrContent is actually a global name
-            return new SimpleEntry<File, String>(new File(globalSchemaStore, schemaNameOrContent),
-                schemaNameOrContent);
-        }
-        else
-        {
-            // this is not a global reference but a local schema def - dump it to a temp file so
-            // the type generators can pick it up
-            final String schemaFileName = "schema" + schemaNameOrContent.hashCode();
-            final File schemaFile = new File(globalSchemaStore, schemaFileName);
-            FileUtils.writeStringToFile(schemaFile, schemaNameOrContent);
-            return new SimpleEntry<File, String>(schemaFile, null);
-        }
-    }
+    
 
     /**
      * <p>Getter for the field <code>configuration</code>.</p>
@@ -413,18 +384,7 @@ class Context
         return clazz.isPrimitive() ? JType.parse(codeModel, clazz.getSimpleName()) : codeModel.ref(clazz);
     }
 
-    /**
-     * <p>generateClassFromJsonSchema.</p>
-     *
-     * @param className a {@link java.lang.String} object.
-     * @param schemaUrl a {@link java.net.URL} object.
-     * @return a {@link com.sun.codemodel.JClass} object.
-     * @throws java.io.IOException if any.
-     */
-    public JClass generateClassFromJsonSchema(final String className, final URL schemaUrl) throws IOException
-    {
-    	return schemaMapper.generate(codeModel, className, getModelPackage(), schemaUrl).boxify();
-    }
+    
 
     private JDefinedClass createCustomHttpMethodAnnotation(final String httpMethod)
         throws JClassAlreadyExistsException

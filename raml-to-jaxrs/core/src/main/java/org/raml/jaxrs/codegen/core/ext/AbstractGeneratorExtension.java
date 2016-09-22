@@ -18,11 +18,11 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.parameter.AbstractParam;
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Api;
+import org.aml.apimodel.Resource;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -37,7 +37,7 @@ import com.sun.codemodel.JMethod;
  */
 public abstract class AbstractGeneratorExtension implements NestedSchemaNameComputer {
 
-	private Raml raml;
+	private Api raml;
 	
 	private JCodeModel codeModel;
 	
@@ -68,16 +68,16 @@ public abstract class AbstractGeneratorExtension implements NestedSchemaNameComp
 	}
 
 	/** {@inheritDoc} */
-	public void setRaml(Raml raml) {
+	public void setRaml(Api raml) {
 		this.raml = raml;
 	}
 	
 	/**
 	 * <p>Getter for the field <code>raml</code>.</p>
 	 *
-	 * @return a {@link org.raml.model.Raml} object.
+	 * @return a {@link org.aml.apimodel.Api} object.
 	 */
-	protected  Raml getRaml() {
+	protected  Api getRaml() {
 		return raml;
 	}
 

@@ -66,12 +66,12 @@
 </plugins>
 </build>
     <dependencies>
-        <dependency>
-            <groupId>org.raml</groupId>
-            <artifactId>raml-parser</artifactId>
-            <version>0.8.13</version>            
-        </dependency>
-
+        
+		<dependency>
+  		<groupId>org.raml</groupId>
+  			<artifactId>raml-parser-2</artifactId>
+	  		<version>1.0.0</version>
+	  	</dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>jsr311-api</artifactId>
@@ -169,7 +169,22 @@
 	        <groupId>com.sun.xml.bind</groupId>
 	        <artifactId>jaxb-xjc</artifactId>
 	        <version>2.1.6</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+        	<groupId>com.onpositive.aml</groupId>
+        	<artifactId>org.aml.typesystem.yaml</artifactId>
+        	<version>0.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.onpositive.aml</groupId>
+        	<artifactId>org.aml.raml2java</artifactId>
+        	<version>0.0.4-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.onpositive.aml</groupId>
+        	<artifactId>org.aml.typesystem</artifactId>
+        	<version>0.0.4-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <description>RAML JAXRS</description>
     <scm>

@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.codegen.core.ext;
 
-import org.raml.model.Resource;
+import org.aml.apimodel.Resource;
 
 public interface InterfaceNameBuilderExtension extends GeneratorExtension {
 	

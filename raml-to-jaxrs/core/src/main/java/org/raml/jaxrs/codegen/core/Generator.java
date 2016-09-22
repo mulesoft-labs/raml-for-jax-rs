@@ -21,56 +21,32 @@ import static org.apache.commons.lang.StringUtils.capitalize;
 import static org.apache.commons.lang.StringUtils.defaultString;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.StringUtils.strip;
-import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 import static org.raml.jaxrs.codegen.core.Constants.RESPONSE_HEADER_WILDCARD_SYMBOL;
 import static org.raml.jaxrs.codegen.core.Names.EXAMPLE_PREFIX;
 import static org.raml.jaxrs.codegen.core.Names.GENERIC_PAYLOAD_ARGUMENT_NAME;
 import static org.raml.jaxrs.codegen.core.Names.MULTIPLE_RESPONSE_HEADERS_ARGUMENT_NAME;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.math.BigDecimal;
+
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import javax.mail.internet.MimeMultipart;
-import javax.management.RuntimeErrorException;
+
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.ResponseBuilder;
+
+import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Api;
+import org.aml.apimodel.Resource;
+import org.aml.apimodel.Response;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
 import org.raml.jaxrs.codegen.core.ext.InterfaceNameBuilderExtension;
 import org.raml.jaxrs.codegen.core.ext.MethodNameBuilderExtension;
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Raml;
-import org.raml.model.Resource;
-import org.raml.model.Response;
-import org.raml.model.parameter.AbstractParam;
-import org.raml.model.parameter.FormParameter;
-import org.raml.model.parameter.Header;
-import org.raml.model.parameter.QueryParameter;
-import org.raml.model.parameter.UriParameter;
-import com.sun.codemodel.JAnnotationArrayMember;
-import com.sun.codemodel.JAnnotationUse;
+
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
@@ -93,7 +69,7 @@ public class Generator extends AbstractGenerator
     
 
     /** {@inheritDoc} */
-    protected void createResourceInterface(final Resource resource, final Raml raml,Configuration config) throws Exception
+    protected void createResourceInterface(final Resource resource, final Api raml,Configuration config) throws Exception
     {
 
     	String resourceInterfaceName = null;
@@ -113,13 +89,13 @@ public class Generator extends AbstractGenerator
     	final JDefinedClass resourceInterface = context.createResourceInterface(resourceInterfaceName);
         context.setCurrentResourceInterface(resourceInterface);
 
-        final String path = strip(resource.getRelativeUri(), "/");
+        final String path = strip(resource.relativeUri(), "/");
         resourceInterface.annotate(Path.class).param(DEFAULT_ANNOTATION_PARAMETER,
             StringUtils.defaultIfBlank(path, "/"));
 
-        if (isNotBlank(resource.getDescription()))
+        if (isNotBlank(resource.description()))
         {
-            resourceInterface.javadoc().add(resource.getDescription());
+            resourceInterface.javadoc().add(resource.description());
         }
         
         addResourceMethods(resource, resourceInterface, path);
@@ -176,7 +152,7 @@ public class Generator extends AbstractGenerator
             method._throws(configuration.getMethodThrowException());
         }
 
-        context.addHttpMethodAnnotation(action.getType().toString(), method);
+        context.addHttpMethodAnnotation(action.method(), method);
 
         addParamAnnotation(resourceInterfacePath, action, method);
         addConsumesAnnotation(bodyMimeType, method);
@@ -245,7 +221,7 @@ public class Generator extends AbstractGenerator
         responseClassConstructor.param(javax.ws.rs.core.Response.class, "delegate");
         responseClassConstructor.body().invoke("super").arg(JExpr.ref("delegate"));
 
-        for (final Entry<String, Response> statusCodeAndResponse : action.getResponses().entrySet())
+        for (final Response statusCodeAndResponse : action.responses())
         {
             createResponseBuilderInResourceMethodReturnType(action, responseClass, statusCodeAndResponse);
         }
@@ -255,11 +231,11 @@ public class Generator extends AbstractGenerator
 
     private void createResponseBuilderInResourceMethodReturnType(final Action action,
                                                                  final JDefinedClass responseClass,
-                                                                 final Entry<String, Response> statusCodeAndResponse)
+                                                                 final Response statusCodeAndResponse)
         throws Exception
     {
-        final int statusCode = NumberUtils.toInt(statusCodeAndResponse.getKey());
-        final Response response = statusCodeAndResponse.getValue();
+        final int statusCode = NumberUtils.toInt(statusCodeAndResponse.code());
+        final Response response = statusCodeAndResponse;
 
         if (!response.hasBody())
         {
@@ -267,7 +243,7 @@ public class Generator extends AbstractGenerator
         }
         else
         {
-            for (final MimeType mimeType : response.getBody().values())
+            for (final MimeType mimeType : response.body())
             {
                 createResponseBuilderInResourceMethodReturnType(responseClass, statusCode, response, mimeType);
             }
@@ -287,9 +263,9 @@ public class Generator extends AbstractGenerator
 
         final JDocComment javadoc = responseBuilderMethod.javadoc();
 
-        if (isNotBlank(response.getDescription()))
+        if (isNotBlank(response.description()))
         {
-            javadoc.add(response.getDescription());
+            javadoc.add(response.description());
         }
 
         if ((responseMimeType != null) && (isNotBlank(responseMimeType.getExample())))
@@ -310,10 +286,10 @@ public class Generator extends AbstractGenerator
 
         final StringBuilder freeFormHeadersDescription = new StringBuilder();
         
-        for (final Entry<String, Header> namedHeaderParameter : response.getHeaders().entrySet())
+        for (final AbstractParam namedHeaderParameter : response.headers())
         {
             final String headerName = namedHeaderParameter.getKey();
-            final Header header = namedHeaderParameter.getValue();
+            final AbstractParam header = namedHeaderParameter;
 
             if (headerName.contains(RESPONSE_HEADER_WILDCARD_SYMBOL))
             {
@@ -360,10 +336,10 @@ public class Generator extends AbstractGenerator
                 GENERIC_PAYLOAD_ARGUMENT_NAME);
             javadoc.addParam(GENERIC_PAYLOAD_ARGUMENT_NAME).add(defaultString(responseMimeType.getExample()));
         }
-        for (final Entry<String, Header> namedHeaderParameter : response.getHeaders().entrySet())
+        for (final AbstractParam namedHeaderParameter : response.headers())
         {
             final String headerName = namedHeaderParameter.getKey();
-            final Header header = namedHeaderParameter.getValue();
+            final AbstractParam header = namedHeaderParameter;
 
             final String argumentName = Names.buildVariableName(headerName);
             if (header.isRepeat()){

@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.codegen.core.ext;
 
-import org.raml.model.MimeType;
+import org.aml.apimodel.MimeType;
 
 /**
  *

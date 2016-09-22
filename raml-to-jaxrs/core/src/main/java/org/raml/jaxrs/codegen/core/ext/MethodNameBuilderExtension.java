@@ -15,9 +15,9 @@
  */
 package org.raml.jaxrs.codegen.core.ext;
 
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Resource;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Resource;
 
 public interface MethodNameBuilderExtension extends GeneratorExtension {
 	

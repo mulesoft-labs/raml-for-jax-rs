@@ -24,18 +24,17 @@ import static org.apache.commons.lang.WordUtils.capitalize;
 import static org.apache.commons.lang.math.NumberUtils.isDigits;
 import static org.raml.jaxrs.codegen.core.Constants.DEFAULT_LOCALE;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import org.aml.apimodel.Action;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.Resource;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.impl.EnglishReasonPhraseCatalog;
+import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
+import org.raml.jaxrs.codegen.core.ext.NestedSchemaNameComputer;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.impl.EnglishReasonPhraseCatalog;
-import org.codehaus.jackson.map.util.JSONPObject;
-import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
-import org.raml.jaxrs.codegen.core.ext.NestedSchemaNameComputer;
-import org.raml.model.Action;
-import org.raml.model.MimeType;
-import org.raml.model.Resource;
 
 /**
  * <p>Names class.</p>
@@ -55,13 +54,13 @@ public class Names
     /**
      * <p>buildResourceInterfaceName.</p>
      *
-     * @param resource a {@link org.raml.model.Resource} object.
+     * @param resource a {@link org.aml.apimodel.Resource} object.
      * @return a {@link java.lang.String} object.
      */
     public static String buildResourceInterfaceName(final Resource resource,Configuration config)
     {
-        final String resourceInterfaceName = buildJavaFriendlyName(defaultIfBlank(resource.getDisplayName(),
-                resource.getRelativeUri()));
+        final String resourceInterfaceName = buildJavaFriendlyName(defaultIfBlank(resource.displayName(),
+                resource.relativeUri()));
 
         //return isBlank(resourceInterfaceName) ? "Root" : resourceInterfaceName.concat("Resource");
         return isBlank(resourceInterfaceName) ? "Root" : resourceInterfaceName.concat(config.getInterfaceNameSuffix());
@@ -103,8 +102,8 @@ public class Names
     /**
      * <p>buildResourceMethodName.</p>
      *
-     * @param action a {@link org.raml.model.Action} object.
-     * @param bodyMimeType a {@link org.raml.model.MimeType} object.
+     * @param action a {@link org.aml.apimodel.Action} object.
+     * @param bodyMimeType a {@link org.aml.apimodel.MimeType} object.
      * @return a {@link java.lang.String} object.
      */
     public static String buildResourceMethodName(final Action action, final MimeType bodyMimeType)
@@ -113,14 +112,14 @@ public class Names
                 .getUri()
                 .replace("{", " By "));
 
-        return action.getType().toString().toLowerCase() + buildMimeTypeInfix(bodyMimeType) + methodBaseName;
+        return action.method().toString().toLowerCase() + buildMimeTypeInfix(bodyMimeType) + methodBaseName;
     }
 
     /**
      * <p>buildResponseMethodName.</p>
      *
      * @param statusCode a int.
-     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @param mimeType a {@link org.aml.apimodel.MimeType} object.
      * @return a {@link java.lang.String} object.
      */
     public static String buildResponseMethodName(final int statusCode, final MimeType mimeType)
@@ -135,7 +134,7 @@ public class Names
     /**
      * <p>buildNestedSchemaName.</p>
      *
-     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @param mimeType a {@link org.aml.apimodel.MimeType} object.
      * @return a {@link java.lang.String} object.
      */
     public static String buildNestedSchemaName(final MimeType mimeType,Configuration config)
@@ -174,7 +173,7 @@ public class Names
     /**
      * <p>getShortMimeType.</p>
      *
-     * @param mimeType a {@link org.raml.model.MimeType} object.
+     * @param mimeType a {@link org.aml.apimodel.MimeType} object.
      * @return a {@link java.lang.String} object.
      */
     public static String getShortMimeType(final MimeType mimeType)

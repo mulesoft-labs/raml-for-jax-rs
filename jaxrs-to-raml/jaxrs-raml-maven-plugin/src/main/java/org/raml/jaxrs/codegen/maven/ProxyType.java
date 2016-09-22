@@ -125,37 +125,30 @@ public class ProxyType implements ITypeModel {
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public IFieldModel[] getFields() {
 		return registry.getType(key).getFields();
 	}
 
-	@Override
 	public List<ITypeParameter> getTypeParameters() {
 		return registry.getType(key).getTypeParameters();
 	}
 
-	@Override
 	public ITypeModel getSuperClass() {
 		return registry.getType(key).getSuperClass();
 	}
 
-	@Override
 	public ITypeModel[] getImplementedInterfaces() {
 		return registry.getType(key).getImplementedInterfaces();
 	}
 
-	@Override
 	public ITypeModel resolveClass(String qualifiedName) {
 		return registry.getType(qualifiedName);
 	}
 
-	@Override
 	public boolean hasAnnotationWithCanonicalName(String name) {
 		return registry.getType(key).hasAnnotationWithCanonicalName(name);
 	}
 
-	@Override
 	public IAnnotationModel getAnnotationByCanonicalName(String name) {
 		return registry.getType(key).getAnnotationByCanonicalName(name);
 	}

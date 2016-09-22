@@ -1,8 +1,8 @@
 package org.raml.jaxrs.codegen.core.ext;
 
+import org.aml.apimodel.Resource;
 import org.raml.jaxrs.codegen.core.Configuration;
 import org.raml.jaxrs.codegen.core.Names;
-import org.raml.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

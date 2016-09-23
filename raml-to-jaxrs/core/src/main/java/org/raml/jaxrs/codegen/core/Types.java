@@ -30,7 +30,7 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.aml.apimodel.NamedParam;
+import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.apache.commons.lang.Validate;
 
@@ -64,12 +64,12 @@ public class Types
     /**
      * <p>buildParameterType.</p>
      *
-     * @param parameter a {@link org.aml.apimodel.NamedParam} object.
+     * @param parameter a {@link org.aml.typesystem.ramlreader.NamedParam} object.
      * @param name a {@link java.lang.String} object.
      * @return a {@link com.sun.codemodel.JType} object.
      * @throws java.lang.Exception if any.
      */
-    public JType buildParameterType(final NamedParam parameter, final String name) throws Exception
+    public JType buildParameterType(final INamedParam parameter, final String name) throws Exception
     {
         if ((parameter.getEnumeration() != null) && (!parameter.getEnumeration().isEmpty())&&Names.isValidEnumValues(parameter.getEnumeration()))
         {
@@ -181,11 +181,11 @@ public class Types
     
     private JClass getSchemaClass(final MimeType mimeType) throws IOException
     {
-    	return (JClass) context.getType(mimeType.getModel());                
+    	return (JClass) context.getType(mimeType.getTypeModel());                
     }
 
 
-    static Class<?> getJavaType(final NamedParam parameter)
+    static Class<?> getJavaType(final INamedParam parameter)
     {
         if (parameter.getTypeKind() == null)
         {

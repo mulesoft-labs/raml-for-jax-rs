@@ -35,10 +35,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
-import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Api;
+import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
 import org.apache.commons.lang.StringUtils;
@@ -286,10 +286,10 @@ public class Generator extends AbstractGenerator
 
         final StringBuilder freeFormHeadersDescription = new StringBuilder();
         
-        for (final NamedParam namedHeaderParameter : response.headers())
+        for (final INamedParam namedHeaderParameter : response.headers())
         {
             final String headerName = namedHeaderParameter.getKey();
-            final NamedParam header = namedHeaderParameter;
+            final INamedParam header = namedHeaderParameter;
 
             if (headerName.contains(RESPONSE_HEADER_WILDCARD_SYMBOL))
             {
@@ -336,10 +336,10 @@ public class Generator extends AbstractGenerator
                 GENERIC_PAYLOAD_ARGUMENT_NAME);
             javadoc.addParam(GENERIC_PAYLOAD_ARGUMENT_NAME).add(defaultString(responseMimeType.getExample()));
         }
-        for (final NamedParam namedHeaderParameter : response.headers())
+        for (final INamedParam namedHeaderParameter : response.headers())
         {
             final String headerName = namedHeaderParameter.getKey();
-            final NamedParam header = namedHeaderParameter;
+            final INamedParam header = namedHeaderParameter;
 
             final String argumentName = Names.buildVariableName(headerName);
             if (header.isRepeat()){
@@ -350,10 +350,5 @@ public class Generator extends AbstractGenerator
         responseBuilderMethodBody._return(JExpr._new(responseClass).arg(builderVariable.invoke("build")));
     }
 
-    
-
-        
-    
-    
 
 }

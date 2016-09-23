@@ -102,7 +102,7 @@ public class Names
      */
     public static String buildResourceMethodName(final Action action, final MimeType bodyMimeType)
     {
-        final String methodBaseName = buildJavaFriendlyName(action.getResource()
+        final String methodBaseName = buildJavaFriendlyName(action.resource()
                 .getUri()
                 .replace("{", " By "));
 

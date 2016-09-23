@@ -22,10 +22,10 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Api;
+import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.Resource;
 
 import com.sun.codemodel.JCodeModel;
@@ -54,7 +54,7 @@ public class TestGeneratorExtension implements GeneratorExtension {
 	}
 
 	@Override
-	public boolean AddParameterFilter(String name, NamedParam parameter,
+	public boolean AddParameterFilter(String name, INamedParam parameter,
 			Class<? extends Annotation> annotationClass, JMethod method) {
 		return true;
 	}

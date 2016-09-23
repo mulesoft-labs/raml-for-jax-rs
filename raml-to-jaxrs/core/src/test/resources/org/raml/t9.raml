@@ -1,0 +1,31 @@
+#%RAML 1.0
+title: Hello
+traits:
+  Hello:
+    queryParameters:
+      c:
+        required: false
+types:
+  Person:
+    properties:
+      name: string
+      lastName: string
+      age?: number
+/q:
+  displayName: QQ
+  get:
+    is: [ Hello ]
+    description: get some stuff
+    queryParameters:
+      a: string
+      b: string
+    responses:
+      200:
+        body:
+          application/json:
+            properties:
+              name: string
+              lastName: string
+  post:
+    body:
+      application/json: Person

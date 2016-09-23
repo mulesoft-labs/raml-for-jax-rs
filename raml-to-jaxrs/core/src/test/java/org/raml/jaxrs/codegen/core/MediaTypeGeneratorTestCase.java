@@ -73,14 +73,14 @@ public class MediaTypeGeneratorTestCase
         run(JAXRS_1_1, true);
     }*/
 
-    @Ignore("Can only be run with JAX-RS 2.0 API on classpath")
+    //@Ignore("Can only be run with JAX-RS 2.0 API on classpath")
     @Test
     public void runForJaxrs20WithoutJsr303() throws Exception
     {
         run(JAXRS_2_0, false);
     }
 
-    @Ignore("Can only be run with JAX-RS 2.0 API on classpath")
+    //@Ignore("Can only be run with JAX-RS 2.0 API on classpath")
     @Test
     public void runForJaxrs20WithJsr303() throws Exception
     {

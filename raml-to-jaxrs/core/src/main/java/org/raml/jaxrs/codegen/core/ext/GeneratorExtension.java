@@ -18,7 +18,7 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
-import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Api;
@@ -62,13 +62,13 @@ public interface GeneratorExtension {
 	 * the parameter is handled solely in a servlet filter.
 	 *
 	 * @param name a {@link java.lang.String} object.
-	 * @param parameter a {@link org.aml.apimodel.AbstractParam} object.
+	 * @param parameter a {@link org.aml.apimodel.NamedParam} object.
 	 * @param annotationClass a {@link java.lang.Class} object.
 	 * @param method a {@link com.sun.codemodel.JMethod} object.
 	 * @return true if the parameter should be added; false if it is should be ignored
 	 */
 	public boolean AddParameterFilter(final String name,
-            final AbstractParam parameter,
+            final NamedParam parameter,
             final Class<? extends Annotation> annotationClass,
             final JMethod method);
 	

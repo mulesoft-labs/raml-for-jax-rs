@@ -30,7 +30,7 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.MimeType;
 import org.apache.commons.lang.Validate;
 
@@ -64,12 +64,12 @@ public class Types
     /**
      * <p>buildParameterType.</p>
      *
-     * @param parameter a {@link org.aml.apimodel.AbstractParam} object.
+     * @param parameter a {@link org.aml.apimodel.NamedParam} object.
      * @param name a {@link java.lang.String} object.
      * @return a {@link com.sun.codemodel.JType} object.
      * @throws java.lang.Exception if any.
      */
-    public JType buildParameterType(final AbstractParam parameter, final String name) throws Exception
+    public JType buildParameterType(final NamedParam parameter, final String name) throws Exception
     {
         if ((parameter.getEnumeration() != null) && (!parameter.getEnumeration().isEmpty())&&Names.isValidEnumValues(parameter.getEnumeration()))
         {
@@ -185,7 +185,7 @@ public class Types
     }
 
 
-    static Class<?> getJavaType(final AbstractParam parameter)
+    static Class<?> getJavaType(final NamedParam parameter)
     {
         if (parameter.getTypeKind() == null)
         {

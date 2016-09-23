@@ -29,12 +29,6 @@ import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.EnglishReasonPhraseCatalog;
-import org.raml.jaxrs.codegen.core.ext.GeneratorExtension;
-import org.raml.jaxrs.codegen.core.ext.NestedSchemaNameComputer;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 /**
  * <p>Names class.</p>
@@ -131,39 +125,6 @@ public class Names
        return "with" + Character.toUpperCase(string.charAt(0))+string.substring(1);
     }
 
-    /**
-     * <p>buildNestedSchemaName.</p>
-     *
-     * @param mimeType a {@link org.aml.apimodel.MimeType} object.
-     * @return a {@link java.lang.String} object.
-     */
-    public static String buildNestedSchemaName(final MimeType mimeType,Configuration config)
-    {
-        for (GeneratorExtension e:config.getExtensions()){
-            if (e instanceof NestedSchemaNameComputer){
-                NestedSchemaNameComputer nc=(NestedSchemaNameComputer)e;
-                String computed=nc.computeNestedSchemaName(mimeType);
-                if(computed!=null){
-                    return computed;
-                }
-            }
-        }
-        if (!isBlank(mimeType.getSchema())){
-            try{
-                JsonObject p=(JsonObject)new JsonParser().parse(mimeType.getSchema());
-                JsonElement title = p.get("title");
-                if(title != null && title.getAsString()!=null){
-                    return title.getAsString();
-                }
-            }catch (Exception e){
-                //incorrect value
-                return null;
-            }
-        }
-        // TODO improve naming strategy for nested schemas
-        return getShortMimeType(mimeType)
-               + (isBlank(mimeType.getSchema()) ? mimeType.hashCode() : mimeType.getSchema().hashCode());
-    }
 
     public static String buildMimeTypeInfix(final MimeType bodyMimeType)
     {

@@ -58,7 +58,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.aml.apimodel.AbstractParam;
+import org.aml.apimodel.NamedParam;
 import org.aml.apimodel.Action;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Api;
@@ -367,13 +367,13 @@ public abstract class AbstractGenerator {
 		method.param(argumentType, GENERIC_PAYLOAD_ARGUMENT_NAME);
 
 		// build a javadoc text out of all the params
-		Map<String, List<AbstractParam>> formParameters = bodyMimeType.getFormParameters();
+		Map<String, List<NamedParam>> formParameters = bodyMimeType.getFormParameters();
 		if(formParameters!=null){
-			for (final Entry<String, List<AbstractParam>> namedFormParameters : formParameters.entrySet()) {
+			for (final Entry<String, List<NamedParam>> namedFormParameters : formParameters.entrySet()) {
 				final StringBuilder sb = new StringBuilder();
 				sb.append(namedFormParameters.getKey()).append(": ");
 	
-				for (final AbstractParam formParameter : namedFormParameters
+				for (final NamedParam formParameter : namedFormParameters
 						.getValue()) {
 					appendParameterJavadocDescription(formParameter, sb);
 				}
@@ -386,11 +386,11 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addParameterJavaDoc.</p>
 	 *
-	 * @param parameter a {@link org.aml.apimodel.AbstractParam} object.
+	 * @param parameter a {@link org.aml.apimodel.NamedParam} object.
 	 * @param parameterName a {@link java.lang.String} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 */
-	protected void addParameterJavaDoc(final AbstractParam parameter,
+	protected void addParameterJavaDoc(final NamedParam parameter,
 			final String parameterName, final JDocComment javadoc) {
 		javadoc.addParam(parameterName).add(
 				defaultString(parameter.description())
@@ -410,10 +410,10 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>appendParameterJavadocDescription.</p>
 	 *
-	 * @param param a {@link org.aml.apimodel.AbstractParam} object.
+	 * @param param a {@link org.aml.apimodel.NamedParam} object.
 	 * @param sb a {@link java.lang.StringBuilder} object.
 	 */
-	protected void appendParameterJavadocDescription(final AbstractParam param,
+	protected void appendParameterJavadocDescription(final NamedParam param,
 			final StringBuilder sb) {
 		if (isNotBlank(param.getDisplayName())) {
 			sb.append(param.getDisplayName());
@@ -449,7 +449,7 @@ public abstract class AbstractGenerator {
 	}
 
 	private boolean hasAMultiTypeFormParameter(final MimeType bodyMimeType) {
-		for (final List<AbstractParam> formParameters : bodyMimeType
+		for (final List<NamedParam> formParameters : bodyMimeType
 				.getFormParameters().values()) {
 			if (formParameters.size() > 1) {
 				return true;
@@ -476,7 +476,7 @@ public abstract class AbstractGenerator {
 			addCatchAllFormParametersArgument(bodyMimeType, method, javadoc,
 					type);
 		} else {
-			for (final Entry<String, List<AbstractParam>> namedFormParameters : bodyMimeType
+			for (final Entry<String, List<NamedParam>> namedFormParameters : bodyMimeType
 					.getFormParameters().entrySet()) {
 				addParameter(namedFormParameters.getKey(), namedFormParameters
 						.getValue().get(0), FormParam.class, method, javadoc);
@@ -559,7 +559,7 @@ public abstract class AbstractGenerator {
 	private void addAllResourcePathParameters(Resource resource,
 			final JMethod method, final JDocComment javadoc) throws Exception {
 
-		for (final AbstractParam namedUriParameter : resource.getUriParameters()) {
+		for (final NamedParam namedUriParameter : resource.getUriParameters()) {
 			addParameter(namedUriParameter.getKey(),
 					namedUriParameter, PathParam.class, method,
 					javadoc);
@@ -583,7 +583,7 @@ public abstract class AbstractGenerator {
 	 */
 	protected void addHeaderParameters(final Action action, final JMethod method,
 			final JDocComment javadoc) throws Exception {
-		for (final AbstractParam namedHeaderParameter : action.headers()) {
+		for (final NamedParam namedHeaderParameter : action.headers()) {
 			addParameter(namedHeaderParameter.getKey(),
 					namedHeaderParameter, HeaderParam.class, method,
 					javadoc);
@@ -616,14 +616,14 @@ public abstract class AbstractGenerator {
 	 */
 	protected void addQueryParameters(final Action action, final JMethod method,
 			final JDocComment javadoc) throws Exception {
-		for (final AbstractParam namedQueryParameter : action.queryParameters()) {
+		for (final NamedParam namedQueryParameter : action.queryParameters()) {
 			addParameter(namedQueryParameter.getKey(),
 					namedQueryParameter, QueryParam.class, method,
 					javadoc);
 		}
 	}
 
-	private void addParameter(final String name, final AbstractParam parameter,
+	private void addParameter(final String name, final NamedParam parameter,
 			final Class<? extends Annotation> annotationClass,
 			final JMethod method, final JDocComment javadoc) throws Exception {
 		if (this.context.getConfiguration().getIgnoredParameterNames().contains(name)){
@@ -656,7 +656,7 @@ public abstract class AbstractGenerator {
 		addParameterJavaDoc(parameter, argumentVariable.name(), javadoc);
 	}
 
-	private void addJsr303Annotations(final AbstractParam parameter,
+	private void addJsr303Annotations(final NamedParam parameter,
 			final JVar argumentVariable) {
 		if (isNotBlank(parameter.getPattern())) {
 			JAnnotationUse patternAnnotation = argumentVariable.annotate(Pattern.class);
@@ -695,7 +695,7 @@ public abstract class AbstractGenerator {
 		}
 	}
 
-	private void addMinMaxConstraint(final AbstractParam parameter,
+	private void addMinMaxConstraint(final NamedParam parameter,
 			final String name, final Class<? extends Annotation> clazz,
 			final BigDecimal value, final JVar argumentVariable) {
 		try {

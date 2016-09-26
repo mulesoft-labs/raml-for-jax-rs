@@ -32,6 +32,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
+import org.aml.typesystem.AbstractType;
 import org.apache.commons.lang.Validate;
 
 import com.sun.codemodel.JClass;
@@ -98,25 +99,26 @@ public class Types
      */
     public JType getRequestEntityClass(final MimeType mimeType) throws IOException
     {
+    	if (startsWith(mimeType.getType(), "text/"))
+        {
+            return getGeneratorType(String.class);
+        }
+        if (MediaType.APPLICATION_OCTET_STREAM.equals(mimeType.getType()))
+        {
+        	            return getGeneratorType(InputStream.class);
+        }
+        else {
         final JClass schemaClass = getSchemaClass(mimeType);
 
         if (schemaClass != null)
         {
             return schemaClass;
         }
-        else if (startsWith(mimeType.getType(), "text/"))
-        {
-            return getGeneratorType(String.class);
         }
-        else if (MediaType.APPLICATION_OCTET_STREAM.equals(mimeType.getType()))
-        {
-        	            return getGeneratorType(InputStream.class);
-        }
-        else
-        {
+        
             // fallback to a generic reader
-            return getGeneratorType(Reader.class);
-        }
+           return getGeneratorType(Reader.class);
+        
     }
 
     /**
@@ -181,7 +183,10 @@ public class Types
     
     private JClass getSchemaClass(final MimeType mimeType) throws IOException
     {
-    	return (JClass) context.getType(mimeType.getTypeModel());                
+    	AbstractType typeModel = mimeType.getTypeModel();
+    	
+    	
+		return (JClass) context.getType(typeModel);                
     }
 
 

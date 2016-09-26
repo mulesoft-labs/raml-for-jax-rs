@@ -30,9 +30,11 @@ import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 
+import junit.framework.TestCase;
+
 public class RAML1Test {
 
-    private static final String TEST_BASE_PACKAGE = "org.raml.jaxrs.test";
+	private static final String TEST_BASE_PACKAGE = "org.raml.jaxrs.test";
 
 	@Rule
 	public TemporaryFolder codegenOutputFolder = new TemporaryFolder();
@@ -42,7 +44,7 @@ public class RAML1Test {
 
 	@Test
 	public void runForJaxrs20WithJsr303() throws Exception {
-		run(JaxrsVersion.JAXRS_1_1, true);
+		run(JaxrsVersion.JAXRS_2_0, true);
 	}
 
 	private void run(final JaxrsVersion jaxrsVersion, final boolean useJsr303Annotations) throws Exception {
@@ -57,14 +59,11 @@ public class RAML1Test {
 		String dirPath = getClass().getResource("/org/raml").getPath();
 
 		configuration.setSourceDirectory(new File(dirPath));
-		Set<String> run = new Generator().run(
-				new InputStreamReader(
-						getClass().getResourceAsStream("/org/raml/t9.raml")),
-				configuration);
-		for (String s:run){
+		Set<String> run = new Generator()
+				.run(new InputStreamReader(getClass().getResourceAsStream("/org/raml/t9.raml")), configuration);
+		for (String s : run) {
 			generatedSources.add(s.replace('\\', '/'));
 		}
-		
 
 		// test compile the classes
 		final JavaCompiler compiler = new JavaCompilerFactory().createCompiler("eclipse");
@@ -101,10 +100,15 @@ public class RAML1Test {
 			Iterator<Class<?>> it = classes.iterator();
 			Class<?> something = it.next();
 			Method[] methods = something.getDeclaredMethods();
-
-			//Method methodWithInputStreamParam = methods[0];
-
-			//assertEquals(InputStream.class.getName(), methodWithInputStreamParam.getParameterTypes()[0].getName());
+			for (Method method : methods) {
+				if (method.getName().equals("postQ")) {
+					TestCase.assertTrue(method.getParameterTypes()[0].getSimpleName().equals("Person"));
+				} else {
+					TestCase.assertTrue(method.getParameterTypes()[0].getSimpleName().equals("String"));
+				}
+			}
+			// assertEquals(InputStream.class.getName(),
+			// methodWithInputStreamParam.getParameterTypes()[0].getName());
 		} finally {
 			Thread.currentThread().setContextClassLoader(initialClassLoader);
 		}

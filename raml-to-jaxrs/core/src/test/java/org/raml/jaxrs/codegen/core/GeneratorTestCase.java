@@ -37,7 +37,6 @@ import org.apache.commons.jci.compilers.CompilationResult;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
 import org.apache.commons.jci.compilers.JavaCompilerSettings;
-import org.apache.commons.jci.readers.FileResourceReader;
 import org.apache.commons.jci.stores.FileResourceStore;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -56,7 +55,9 @@ public class GeneratorTestCase {
 	private static final String TEST_BASE_PACKAGE = "org.raml.jaxrs.test";
 
 	@Rule
-	public TemporaryFolder codegenOutputFolder = new TemporaryFolder();
+	public TemporaryFolder codegenOutputFolder = new TemporaryFolder(){
+		protected void after() {};
+	};
 
 	@Rule
 	public TemporaryFolder compilationOutputFolder = new TemporaryFolder();
@@ -69,13 +70,11 @@ public class GeneratorTestCase {
 	 * run(JAXRS_1_1, true); }
 	 */
 
-	@Ignore("Can only be run with JAX-RS 2.0 API on classpath")
 	@Test
 	public void runForJaxrs20WithoutJsr303() throws Exception {
 		run(JAXRS_2_0, false, false);
 	}
 
-	@Ignore("Can only be run with JAX-RS 2.0 API on classpath")
 	@Test
 	public void runForJaxrs20WithJsr303() throws Exception {
 		run(JAXRS_2_0, true, false);
@@ -83,6 +82,7 @@ public class GeneratorTestCase {
 
 
 	@Test
+	@Ignore
 	public void runWithExtension() throws Exception {
 		run(JAXRS_1_1, false, true);
 	}

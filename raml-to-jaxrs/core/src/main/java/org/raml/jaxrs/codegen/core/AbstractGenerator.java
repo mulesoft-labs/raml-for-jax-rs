@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.mail.internet.MimeMultipart;
@@ -59,9 +58,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.aml.apimodel.Action;
-import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
+import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
 import org.aml.typesystem.ramlreader.TopLevelRamlImpl;
@@ -367,17 +366,12 @@ public abstract class AbstractGenerator {
 		method.param(argumentType, GENERIC_PAYLOAD_ARGUMENT_NAME);
 
 		// build a javadoc text out of all the params
-		Map<String, List<INamedParam>> formParameters = bodyMimeType.getFormParameters();
+		List<INamedParam> formParameters = bodyMimeType.getFormParameters();
 		if(formParameters!=null){
-			for (final Entry<String, List<INamedParam>> namedFormParameters : formParameters.entrySet()) {
+			for (INamedParam formParameter : formParameters) {
 				final StringBuilder sb = new StringBuilder();
-				sb.append(namedFormParameters.getKey()).append(": ");
-	
-				for (final INamedParam formParameter : namedFormParameters
-						.getValue()) {
-					appendParameterJavadocDescription(formParameter, sb);
-				}
-	
+				sb.append(formParameter.getKey()).append(": ");
+				appendParameterJavadocDescription(formParameter, sb);
 				javadoc.addParam(GENERIC_PAYLOAD_ARGUMENT_NAME).add(sb.toString());
 			}
 		}
@@ -449,9 +443,8 @@ public abstract class AbstractGenerator {
 	}
 
 	private boolean hasAMultiTypeFormParameter(final MimeType bodyMimeType) {
-		for (final List<INamedParam> formParameters : bodyMimeType
-				.getFormParameters().values()) {
-			if (formParameters.size() > 1) {
+		for (final INamedParam formParameters : bodyMimeType.getFormParameters()) {
+			if (formParameters.getTypeModel().isUnion()){
 				return true;
 			}
 		}
@@ -476,10 +469,8 @@ public abstract class AbstractGenerator {
 			addCatchAllFormParametersArgument(bodyMimeType, method, javadoc,
 					type);
 		} else {
-			for (final Entry<String, List<INamedParam>> namedFormParameters : bodyMimeType
-					.getFormParameters().entrySet()) {
-				addParameter(namedFormParameters.getKey(), namedFormParameters
-						.getValue().get(0), FormParam.class, method, javadoc);
+			for (final INamedParam namedFormParameters : bodyMimeType.getFormParameters()) {
+				addParameter(namedFormParameters.getKey(), namedFormParameters, FormParam.class, method, javadoc);
 			}
 		}
 	}

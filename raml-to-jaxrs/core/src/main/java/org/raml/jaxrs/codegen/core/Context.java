@@ -26,7 +26,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,10 +47,6 @@ import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.AnnotatorFactory;
 import org.jsonschema2pojo.CompositeAnnotator;
 import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.rules.RuleFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXParseException;
@@ -79,12 +74,9 @@ class Context
     private static final Logger LOGGER = LoggerFactory.getLogger(Context.class);
 
     private final Configuration configuration;
-    private final Api raml;
     private final JCodeModel codeModel;
     private final Map<String, Set<String>> resourcesMethods;
     private final Map<String, Object> httpMethodAnnotations;
-
-    private final SchemaMapper schemaMapper;
 
     private boolean shouldGenerateResponseWrapper = false;
     private JDefinedClass currentResourceInterface;
@@ -117,10 +109,9 @@ class Context
         Validate.notNull(raml, "raml can't be null");
 
         this.configuration = configuration;
-        this.raml = raml;
         writer=new JavaWriter();
         codeModel = writer.getModel();
-
+        writer.setDefaultPackageName(configuration.getBasePackageName()+"."+configuration.getModelPackageName());
         resourcesMethods = new HashMap<String, Set<String>>();
 
         // prime the HTTP method annotation cache
@@ -133,11 +124,10 @@ class Context
         
         // configure the JSON -> POJO generator
         final GenerationConfig jsonSchemaGenerationConfig = configuration.createJsonSchemaGenerationConfig();
-        schemaMapper = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(jsonSchemaGenerationConfig),
-                new SchemaStore()), new SchemaGenerator());
+//        schemaMapper = new SchemaMapper(new RuleFactory(jsonSchemaGenerationConfig, getAnnotator(jsonSchemaGenerationConfig),
+//                new SchemaStore()), new SchemaGenerator());
         
-     
-
+        
     }
 
 

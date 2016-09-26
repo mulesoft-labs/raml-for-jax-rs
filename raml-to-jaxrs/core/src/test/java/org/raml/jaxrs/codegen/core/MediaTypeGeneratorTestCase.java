@@ -112,8 +112,12 @@ public class MediaTypeGeneratorTestCase
         settings.setTargetVersion("1.5");
         settings.setDebug(true);
 
-        final String[] sources = generatedSources.toArray(EMPTY_STRING_ARRAY);
-
+        String[] sources = generatedSources.toArray(EMPTY_STRING_ARRAY);
+        generatedSources.clear();
+        for (String s : sources) {
+			generatedSources.add(s.replace('\\', '/'));
+		}
+        sources = generatedSources.toArray(EMPTY_STRING_ARRAY);
         final FileResourceReader sourceReader = new FileResourceReader(codegenOutputFolder.getRoot());
         final FileResourceStore classWriter = new FileResourceStore(compilationOutputFolder.getRoot());
         final CompilationResult result = compiler.compile(sources, sourceReader, classWriter,

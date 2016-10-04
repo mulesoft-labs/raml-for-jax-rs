@@ -32,7 +32,7 @@ import com.sun.codemodel.JMethod;
 /**
  * <p>ResourceDisplayNameBasedMethodNameBuilder class.</p>
  *
- * @author Павел
+ * @author Pavel
  * @version $Id: $Id
  */
 public class ResourceDisplayNameBasedMethodNameBuilder implements

@@ -22,7 +22,7 @@ import org.aml.apimodel.Resource;
 /**
  * <p>MethodNameBuilderExtension interface.</p>
  *
- * @author Павел
+ * @author Pavel
  * @version $Id: $Id
  */
 public interface MethodNameBuilderExtension extends GeneratorExtension {

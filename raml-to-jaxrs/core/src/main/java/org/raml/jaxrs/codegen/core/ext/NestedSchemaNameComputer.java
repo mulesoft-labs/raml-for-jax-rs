@@ -21,7 +21,7 @@ import org.aml.apimodel.MimeType;
  *
  * Created by Pavel Petrochenko on 12/04/15.
  *
- * @author Павел
+ * @author Pavel
  * @version $Id: $Id
  */
 public interface NestedSchemaNameComputer extends GeneratorExtension{

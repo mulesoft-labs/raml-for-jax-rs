@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * <p>ResourceInterfaceNameWithVersion class.</p>
  *
- * @author Павел
+ * @author Pavel
  * @version $Id: $Id
  */
 public class ResourceInterfaceNameWithVersion extends AbstractGeneratorExtension implements InterfaceNameBuilderExtension {

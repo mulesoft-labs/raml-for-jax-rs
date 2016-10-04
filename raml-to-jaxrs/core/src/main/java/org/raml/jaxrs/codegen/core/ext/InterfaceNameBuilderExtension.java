@@ -20,7 +20,7 @@ import org.aml.apimodel.Resource;
 /**
  * <p>InterfaceNameBuilderExtension interface.</p>
  *
- * @author Павел
+ * @author Kor
  * @version $Id: $Id
  */
 public interface InterfaceNameBuilderExtension extends GeneratorExtension {

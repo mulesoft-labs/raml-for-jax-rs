@@ -1,0 +1,144 @@
+#%RAML 1.0
+---
+title: "Muse: Mule Sales Enablement API"
+version: v1
+types:
+  Presentation:
+     properties:
+       id: string
+       title: string
+       description: string
+       fileUrl: string
+       productId: string
+  Presentations:
+    properties:
+      size: integer
+      items: Presentation[]
+
+  Product:
+      properties:
+           id:  string
+           name:  string
+           description: string
+           imageUrl: string
+           region: string
+  Products:
+    properties:
+        size: integer
+        items: Product[]
+resourceTypes:
+   base:
+      get?:
+        responses: &standardResponses
+          200:
+            description: OK
+      put?:
+        responses: *standardResponses
+      patch?:
+        responses: *standardResponses
+      post?:
+          responses:
+            201:
+              description: Created
+      delete?:
+        responses: *standardResponses
+   collection:
+      type: base
+      get:
+        is: [ paged ]
+      post:
+   typedCollection:
+      type: collection
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                schema: <<collectionSchema>>
+      post:
+        body:
+          application/json:
+            schema: <<schema>>
+        responses:
+          201:
+            body:
+              application/json:
+                schema: <<schema>>
+   member:
+      type: base
+      get:
+      put:
+      patch:
+      delete:
+   typedMember:
+      type: member
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                schema: <<schema>>
+      put:
+        body:
+          application/json:
+            schema: <<schema>>
+        responses:
+          200:
+            body:
+              application/json:
+                schema: <<schema>>
+      patch:
+        body:
+          application/json:
+            schema: <<schema>>
+        responses:
+          200:
+            body:
+              application/json:
+                schema: <<schema>>
+      delete:
+traits:
+  paged:
+      displayName: paged
+      queryParameters:
+        start:
+          displayName: start
+          description: The first page to return
+          type: integer
+        pages:
+          displayName: pages
+          description: The number of pages to return
+          type: integer
+  secured:
+      displayName: secured
+      headers:
+        Authorization:
+          description: The auth token for this request
+      responses:
+        401:
+          description: Unauthorized
+/presentations: &presentations
+  type: { typedCollection: { schema: Presentation, collectionSchema: Presentations } }
+  is: [ secured ]
+  get:
+    queryParameters:
+      title:
+        type: string
+        displayName: title
+        description: Filter by title
+  /{presentationId}:
+    type: { typedMember: { schema: Presentation } }
+    is: [ secured ]
+/products:
+  type: { typedCollection: { schema: Product, collectionSchema: Products } }
+  is: [ secured ]
+  get:
+    queryParameters:
+      region:
+        type: string
+        displayName: region
+        description: Filter by region
+  /{productId}:
+    type: { typedMember: { schema: Product } }
+    is: [ secured ]
+    /presentations: *presentations

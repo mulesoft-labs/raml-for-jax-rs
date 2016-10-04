@@ -51,9 +51,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>${org.apache.maven.plugin-tools.version}</version>
+				<version>3.3</version>
 				<configuration>
-					<goalPrefix>raml</goalPrefix>
+					<goalPrefix>raml-jaxrs</goalPrefix>
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
 				<executions>

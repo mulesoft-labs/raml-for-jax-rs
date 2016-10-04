@@ -41,6 +41,10 @@ public interface GeneratorExtension {
 	 * Called after a class is added to the Java model by the code generator
 	 *
 	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
 	 * @param resourceInterface
 	 * @param resource a {@link org.aml.apimodel.Resource} object.
 	 */
@@ -82,7 +86,7 @@ public interface GeneratorExtension {
 	
 	/**
 	 * Sets JCodeModel instance used through the generation process
-	 * 
+	 *
 	 * @param codeModel a {@link com.sun.codemodel.JCodeModel} object.
 	 */
 	void setCodeModel(JCodeModel codeModel);

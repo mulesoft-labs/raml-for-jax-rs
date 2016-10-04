@@ -6,9 +6,16 @@ import org.raml.jaxrs.codegen.core.Names;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * <p>ResourceInterfaceNameWithVersion class.</p>
+ *
+ * @author Павел
+ * @version $Id: $Id
+ */
 public class ResourceInterfaceNameWithVersion extends AbstractGeneratorExtension implements InterfaceNameBuilderExtension {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceInterfaceNameWithVersion.class);
 
+    /** {@inheritDoc} */
     @Override
     public String buildResourceInterfaceName(Resource resource) {
         Configuration config = new Configuration();

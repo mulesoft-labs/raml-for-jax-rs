@@ -229,6 +229,7 @@ public abstract class AbstractGenerator {
 	 * @param resource a {@link org.aml.apimodel.Resource} object.
 	 * @param raml a {@link org.aml.apimodel.Api} object.
 	 * @throws java.lang.Exception if any.
+	 * @param config a {@link org.raml.jaxrs.codegen.core.Configuration} object.
 	 */
 	protected void createResourceInterface(final Resource resource, final Api raml,Configuration config) throws Exception {
 		
@@ -272,6 +273,9 @@ public abstract class AbstractGenerator {
 	 *
 	 * @param resource a {@link org.aml.apimodel.Resource} object.
 	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterfacePath a {@link java.lang.String} object.
+	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
+	 * @param resourceInterfacePath a {@link java.lang.String} object.
 	 * @param resourceInterfacePath a {@link java.lang.String} object.
 	 * @throws java.lang.Exception if any.
 	 */
@@ -328,11 +332,13 @@ public abstract class AbstractGenerator {
 	 *
 	 * @param resourceInterface a {@link com.sun.codemodel.JDefinedClass} object.
 	 * @param resourceInterfacePath a {@link java.lang.String} object.
+	 * @param resourceInterfacePath a {@link java.lang.String} object.
 	 * @param action a {@link org.aml.apimodel.Action} object.
 	 * @param bodyMimeType a {@link org.aml.apimodel.MimeType} object.
 	 * @param addBodyMimeTypeInMethodName a boolean.
 	 * @param uniqueResponseMimeTypes a {@link java.util.Collection} object.
 	 * @throws java.lang.Exception if any.
+	 * @param resource a {@link org.aml.apimodel.Resource} object.
 	 */
 	protected abstract void addResourceMethod(
 			final JDefinedClass resourceInterface,
@@ -380,7 +386,8 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>addParameterJavaDoc.</p>
 	 *
-	 * @param parameter a {@link org.aml.typesystem.ramlreader.INamedParam} object.
+	 * @param parameter a {@link INamedParam} object.
+	 * @param parameterName a {@link java.lang.String} object.
 	 * @param parameterName a {@link java.lang.String} object.
 	 * @param javadoc a {@link com.sun.codemodel.JDocComment} object.
 	 */
@@ -404,7 +411,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>appendParameterJavadocDescription.</p>
 	 *
-	 * @param param a {@link org.aml.typesystem.ramlreader.INamedParam} object.
+	 * @param param a {@link INamedParam} object.
 	 * @param sb a {@link java.lang.StringBuilder} object.
 	 */
 	protected void appendParameterJavadocDescription(final INamedParam param,
@@ -716,7 +723,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * <p>toDetailedString.</p>
 	 *
-	 * @param item a {@link org.raml.parser.rule.ValidationResult} object.
+	 * @param item a {@link ValidationResult} object.
 	 * @return a {@link java.lang.String} object.
 	 */
 	protected static String toDetailedString(RamlValidationResult item) {
@@ -749,6 +756,7 @@ public abstract class AbstractGenerator {
 	 * @param configuration a {@link org.raml.jaxrs.codegen.core.Configuration} object.
 	 * @return a {@link java.util.Set} object.
 	 * @throws java.lang.Exception if any.
+	 * @param readerLocation a {@link java.lang.String} object.
 	 */
 	public Set<String> run(final Reader ramlReader,
 			final Configuration configuration,String readerLocation) throws Exception {

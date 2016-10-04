@@ -20,10 +20,14 @@ import org.aml.apimodel.MimeType;
 /**
  *
  * Created by Pavel Petrochenko on 12/04/15.
+ *
+ * @author Павел
+ * @version $Id: $Id
  */
 public interface NestedSchemaNameComputer extends GeneratorExtension{
 
     /**
+     * <p>computeNestedSchemaName.</p>
      *
      * @param mime mime type
      * @return null if nested schema name can not be computed by this extension, or null

@@ -29,22 +29,33 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMethod;
 
+/**
+ * <p>ResourceDisplayNameBasedMethodNameBuilder class.</p>
+ *
+ * @author Павел
+ * @version $Id: $Id
+ */
 public class ResourceDisplayNameBasedMethodNameBuilder implements
 		MethodNameBuilderExtension {
 
+	/** {@inheritDoc} */
 	public void onCreateResourceInterface(JDefinedClass resourceInterface,
 			Resource resource) {}
 
+	/** {@inheritDoc} */
 	public void onAddResourceMethod(JMethod method, Action action,
 			MimeType bodyMimeType, Collection<MimeType> uniqueResponseMimeTypes) {}
 
+	/** {@inheritDoc} */
 	public boolean AddParameterFilter(String name, INamedParam parameter,
 			Class<? extends Annotation> annotationClass, JMethod method) {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	public void setRaml(Api raml) {}
 
+	/** {@inheritDoc} */
 	public String buildResourceMethodName(Action action, MimeType bodyMimeType,Resource resource) {
 		if(action==null||resource==null){
 			return null;
@@ -80,5 +91,6 @@ public class ResourceDisplayNameBasedMethodNameBuilder implements
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	public void setCodeModel(JCodeModel codeModel) {}
 }

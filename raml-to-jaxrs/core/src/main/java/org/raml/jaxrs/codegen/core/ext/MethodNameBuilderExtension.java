@@ -19,10 +19,17 @@ import org.aml.apimodel.Action;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 
+/**
+ * <p>MethodNameBuilderExtension interface.</p>
+ *
+ * @author Павел
+ * @version $Id: $Id
+ */
 public interface MethodNameBuilderExtension extends GeneratorExtension {
 	
 	/**
 	 * Compose name of JAX RS method
+	 *
 	 * @param action RAML method
 	 * @param bodyMimeType mime type used
 	 * @param resource action owner resource

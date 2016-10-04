@@ -17,10 +17,17 @@ package org.raml.jaxrs.codegen.core.ext;
 
 import org.aml.apimodel.Resource;
 
+/**
+ * <p>InterfaceNameBuilderExtension interface.</p>
+ *
+ * @author Павел
+ * @version $Id: $Id
+ */
 public interface InterfaceNameBuilderExtension extends GeneratorExtension {
 	
 	/**
 	 * Compose name of JAX RS interface
+	 *
 	 * @param resource RAML resource
 	 * @return JAX RS interface name
 	 */

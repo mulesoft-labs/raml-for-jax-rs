@@ -82,20 +82,40 @@ public class Configuration
     private String interfaceNameSuffix = "Resource" ;
     private boolean useSourceHierarchyInPackageName = false;
 
+    /**
+     * <p>Getter for the field <code>ignoredParameterNames</code>.</p>
+     *
+     * @return a {@link java.util.ArrayList} object.
+     */
     public ArrayList<String> getIgnoredParameterNames() {
         return ignoredParameterNames;
     }
 
+    /**
+     * <p>Setter for the field <code>ignoredParameterNames</code>.</p>
+     *
+     * @param ignoredParameterNames a {@link java.util.ArrayList} object.
+     */
     public void setIgnoredParameterNames(ArrayList<String> ignoredParameterNames) {
         this.ignoredParameterNames = ignoredParameterNames;
     }
 
     private ArrayList<String>ignoredParameterNames=new ArrayList<String>();
 
+    /**
+     * <p>isUseTitlePropertyWhenPossible.</p>
+     *
+     * @return a boolean.
+     */
     public boolean isUseTitlePropertyWhenPossible() {
         return useTitlePropertyWhenPossible;
     }
 
+    /**
+     * <p>Setter for the field <code>useTitlePropertyWhenPossible</code>.</p>
+     *
+     * @param useTitlePropertyWhenPossible a boolean.
+     */
     public void setUseTitlePropertyWhenPossible(boolean useTitlePropertyWhenPossible) {
         this.useTitlePropertyWhenPossible = useTitlePropertyWhenPossible;
     }
@@ -267,10 +287,20 @@ public class Configuration
     }
 
 
+    /**
+     * <p>Getter for the field <code>customAnnotator</code>.</p>
+     *
+     * @return a {@link java.lang.Class} object.
+     */
     public Class getCustomAnnotator() {
         return customAnnotator;
     }
 
+    /**
+     * <p>Setter for the field <code>customAnnotator</code>.</p>
+     *
+     * @param customAnnotator a {@link java.lang.Class} object.
+     */
     public void setCustomAnnotator(Class customAnnotator) {
         this.customAnnotator = customAnnotator;
     }
@@ -336,15 +366,25 @@ public class Configuration
     }
 
 
+	/**
+	 * <p>isUseSourceHierarchyInPackageName.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isUseSourceHierarchyInPackageName() {
 		return useSourceHierarchyInPackageName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>useSourceHierarchyInPackageName</code>.</p>
+	 *
+	 * @param useSourceHierarchyInPackageName a boolean.
+	 */
 	public void setUseSourceHierarchyInPackageName(boolean useSourceHierarchyInPackageName) {
 		this.useSourceHierarchyInPackageName = useSourceHierarchyInPackageName;
 	}
 
-	/**
+    /**
      * <p>Getter for the field <code>modelPackageName</code>.</p>
      *
      * @return a {@link java.lang.String} object.
@@ -488,22 +528,47 @@ public class Configuration
 	}
 
 
+    /**
+     * <p>Setter for the field <code>extensions</code>.</p>
+     *
+     * @param extensions a {@link java.util.List} object.
+     */
     public void setExtensions(List<GeneratorExtension> extensions) {
         this.extensions=extensions;
     }
 
+	/**
+	 * <p>Getter for the field <code>restIFPackageName</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getRestIFPackageName() {
 		return restIFPackageName;
 	}
 
+	/**
+	 * <p>Setter for the field <code>restIFPackageName</code>.</p>
+	 *
+	 * @param restIFPackageName a {@link java.lang.String} object.
+	 */
 	public void setRestIFPackageName(String restIFPackageName) {
 		this.restIFPackageName = restIFPackageName;
 	}
 
+	/**
+	 * <p>Getter for the field <code>interfaceNameSuffix</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getInterfaceNameSuffix() {
 		return interfaceNameSuffix;
 	}
 
+	/**
+	 * <p>Setter for the field <code>interfaceNameSuffix</code>.</p>
+	 *
+	 * @param interfaceNameSuffix a {@link java.lang.String} object.
+	 */
 	public void setInterfaceNameSuffix(String interfaceNameSuffix) {
 		this.interfaceNameSuffix = interfaceNameSuffix;
 	}

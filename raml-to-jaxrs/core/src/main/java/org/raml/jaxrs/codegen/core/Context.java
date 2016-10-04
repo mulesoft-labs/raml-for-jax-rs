@@ -92,6 +92,12 @@ class Context
     	return codeModel.ref(name);
     }
 
+    /**
+     * <p>getType.</p>
+     *
+     * @param tp a {@link org.aml.typesystem.AbstractType} object.
+     * @return a {@link com.sun.codemodel.JType} object.
+     */
     public JType getType(AbstractType tp){
     	return writer.getType(tp);
     }
@@ -493,6 +499,11 @@ class Context
         return classList;
     }
 
+	/**
+	 * <p>Getter for the field <code>codeModel</code>.</p>
+	 *
+	 * @return a {@link com.sun.codemodel.JCodeModel} object.
+	 */
 	public JCodeModel getCodeModel() {
 		return codeModel;
 	}

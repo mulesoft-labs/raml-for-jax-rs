@@ -181,17 +181,17 @@
         <dependency>
         	<groupId>com.onpositive.aml</groupId>
         	<artifactId>org.aml.typesystem.yaml</artifactId>
-        	<version>0.0.4-SNAPSHOT</version>
+        	<version>0.0.6</version>
         </dependency>
         <dependency>
         	<groupId>com.onpositive.aml</groupId>
         	<artifactId>org.aml.raml2java</artifactId>
-        	<version>0.0.4-SNAPSHOT</version>
+        	<version>0.0.6</version>
         </dependency>
         <dependency>
         	<groupId>com.onpositive.aml</groupId>
         	<artifactId>org.aml.typesystem</artifactId>
-        	<version>0.0.4-SNAPSHOT</version>
+        	<version>0.0.6</version>
         </dependency>
     </dependencies>
     <description>RAML JAXRS</description>

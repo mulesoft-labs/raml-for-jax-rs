@@ -118,9 +118,9 @@ traits:
         401:
           description: Unauthorized
 /presentations: &presentations
-  type: { typedCollection: { schema: Presentation, collectionSchema: Presentations } }
-  is: [ secured ]
+  type: { typedCollection: { schema: Presentation, collectionSchema: Presentations } }  
   get:
+    is: [ secured ]
     queryParameters:
       title:
         type: string
@@ -130,9 +130,9 @@ traits:
     type: { typedMember: { schema: Presentation } }
     is: [ secured ]
 /products:
-  type: { typedCollection: { schema: Product, collectionSchema: Products } }
-  is: [ secured ]
+  type: { typedCollection: { schema: Product, collectionSchema: Products } }  
   get:
+    is: [ secured ]
     queryParameters:
       region:
         type: string

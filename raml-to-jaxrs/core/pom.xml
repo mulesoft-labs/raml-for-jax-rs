@@ -77,7 +77,7 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jaxrs</artifactId>
             <version>3.0.6.Final</version>
-            <scope>test</scope>
+            
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>

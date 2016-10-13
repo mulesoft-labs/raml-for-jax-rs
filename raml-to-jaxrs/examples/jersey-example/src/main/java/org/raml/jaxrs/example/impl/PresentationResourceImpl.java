@@ -28,7 +28,6 @@ import org.raml.jaxrs.example.resource.PresentationsResource;
 public class PresentationResourceImpl implements PresentationsResource
 {
     /** {@inheritDoc} */
-    @Override
     public GetPresentationsResponse getPresentations(final String authorization,
                                                      final String title,
                                                      final Integer start,
@@ -38,7 +37,7 @@ public class PresentationResourceImpl implements PresentationsResource
         {
             return GetPresentationsResponse.withUnauthorized();
         }
-
+        	
         final Presentations presentations = new Presentations().withSize(1);
 
         presentations.getPresentations().add(new Presentation().withId("fake-id").withTitle(title));
@@ -47,7 +46,6 @@ public class PresentationResourceImpl implements PresentationsResource
     }
 
     /** {@inheritDoc} */
-    @Override
     public PostPresentationsResponse postPresentations(final String authorization, final Presentation entity)
     {
         if (!"s3cr3t".equals(authorization))
@@ -61,7 +59,6 @@ public class PresentationResourceImpl implements PresentationsResource
     }
 
     /** {@inheritDoc} */
-    @Override
     public GetPresentationsByPresentationIdResponse getPresentationsByPresentationId(final String presentationId,
                                                                                      final String authorization)
     {
@@ -75,7 +72,6 @@ public class PresentationResourceImpl implements PresentationsResource
     }
 
     /** {@inheritDoc} */
-    @Override
     public PutPresentationsByPresentationIdResponse putPresentationsByPresentationId(final String presentationId,
                                                                                      final String authorization,
                                                                                      final Presentation entity)
@@ -85,7 +81,6 @@ public class PresentationResourceImpl implements PresentationsResource
     }
 
     /** {@inheritDoc} */
-    @Override
     public PatchPresentationsByPresentationIdResponse patchPresentationsByPresentationId(final String presentationId,
                                                                                          final String authorization,
                                                                                          final Presentation entity)
@@ -95,7 +90,6 @@ public class PresentationResourceImpl implements PresentationsResource
     }
 
     /** {@inheritDoc} */
-    @Override
     public DeletePresentationsByPresentationIdResponse deletePresentationsByPresentationId(final String presentationId, final String authorization)
     {
         // TODO implement me!

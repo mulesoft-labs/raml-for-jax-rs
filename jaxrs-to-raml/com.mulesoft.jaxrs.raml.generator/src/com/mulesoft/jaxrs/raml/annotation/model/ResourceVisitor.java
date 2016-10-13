@@ -5,49 +5,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import org.raml.emitter.IRamlHierarchyTarget;
-import org.raml.emitter.RamlEmitterV2;
-import org.raml.model.Action;
-import org.raml.model.ActionType;
-import org.raml.model.DocumentationItem;
-import org.raml.model.MimeType;
-import org.raml.model.ParamType;
-import org.raml.model.Protocol;
-import org.raml.model.Raml2;
-import org.raml.model.Resource;
-import org.raml.model.Response;
-import org.raml.model.parameter.AbstractParam;
-import org.raml.model.parameter.FormParameter;
-import org.raml.model.parameter.Header;
-import org.raml.model.parameter.QueryParameter;
-import org.raml.model.parameter.UriParameter;
-import org.raml.schema.model.ISchemaType;
+import org.aml.apimodel.MimeType;
+import org.aml.apimodel.impl.ActionImpl;
+import org.aml.apimodel.impl.ApiImpl;
+import org.aml.apimodel.impl.DocumentationItemImpl;
+import org.aml.apimodel.impl.MimeTypeImpl;
+import org.aml.apimodel.impl.NamedParamImpl;
+import org.aml.apimodel.impl.ResourceImpl;
+import org.aml.apimodel.impl.ResponseImpl;
+import org.aml.typesystem.AbstractType;
+import org.aml.typesystem.BuiltIns;
+import org.aml.typesystem.TypeOps;
+import org.aml.typesystem.yamlwriter.RamlWriter;
 
+import com.mulesoft.jaxrs.raml.ActionType;
 import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
 import com.mulesoft.jaxrs.raml.jaxb.ExampleGenerator;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBRegistry;
 import com.mulesoft.jaxrs.raml.jaxb.JAXBType;
-import com.mulesoft.jaxrs.raml.jaxb.SchemaModelBuilder;
-import com.mulesoft.jaxrs.raml.jaxb.XMLModelSerializer;
 import com.mulesoft.jaxrs.raml.jaxb.XMLWriter;
-import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
-import com.mulesoft.jaxrs.raml.jsonschema.JsonModelSerializer;
-import com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaModelSerializer;
-import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
-import com.mulesoft.jaxrs.raml.jsonschema.SchemaGenerator;
 
 /**
  * <p>Abstract ResourceVisitor class.</p>
@@ -186,17 +171,16 @@ public abstract class ResourceVisitor {
 			
 			String baseUri = apiAnn.getValue("basePath");
 			if(baseUri!=null&&!baseUri.trim().isEmpty()){
-				spec.getCoreRaml().setBaseUri(baseUri);
+				spec.getCoreRaml().setBaseUrl(baseUri);
 			}	
 			
 			String description = apiAnn.getValue("description");
 			if(description!=null&&!description.trim().isEmpty()){
-				DocumentationItem di = new DocumentationItem();
+				DocumentationItemImpl di = new DocumentationItemImpl();
 				di.setContent(description);
 				di.setTitle("description");
-				spec.getCoreRaml().setDocumentation(new ArrayList<DocumentationItem>(Arrays.asList(di)));				
-			}
-			
+				spec.getCoreRaml().getDocumentation().add(di);				
+			}			
 			String producesString = apiAnn.getValue(PRODUCES.toLowerCase());
 			if(producesString!=null&&!producesString.isEmpty()){
 				classProduces = producesString.split(",");
@@ -312,21 +296,48 @@ public abstract class ResourceVisitor {
 	 */
 	public String getRaml() {
 		spec.optimize();
-		RamlEmitterV2 emmitter = new RamlEmitterV2();
-		emmitter.setSingle(false);
-		final StringHolder holder = new StringHolder();
-		emmitter.dump(new IRamlHierarchyTarget() {
-
-			public void write(String path, String content) {
-
+		RamlWriter emmitter = new RamlWriter();
+		return emmitter.store(spec.getCoreRaml());
+//		emmitter.dump(new IRamlHierarchyTarget() {
+//
+//			public void write(String path, String content) {
+//
+//			}
+//
+//			public void writeRoot(String content) {
+//				holder.content = content;
+//			}
+//
+//		}, spec.getCoreRaml());
+//		return holder.content;
+	}
+	private static String doCleanup(String relativeUri) {
+		relativeUri = PathCleanuper.cleanupPath(relativeUri);
+		StringBuilder bld = new StringBuilder();
+		char pc = 0;
+		for (int a = 0; a < relativeUri.length(); a++) {
+			char c = relativeUri.charAt(a);
+			if (c == '/' && pc == '/') {
+				continue;
+			} else {
+				bld.append(c);
+				pc = c;
 			}
-
-			public void writeRoot(String content) {
-				holder.content = content;
-			}
-
-		}, spec.getCoreRaml());
-		return holder.content;
+		}
+		String string = bld.toString();
+		if (!string.startsWith("/")) {
+			string = "/" + string;
+		}
+		if (string.length() == 0) {
+			string = "/";
+		}
+		if (string.startsWith("/")){
+			string=string.substring(1);
+		}
+		if (string.endsWith("/")) { //$NON-NLS-1$
+			string=string.substring(0, string.length()-1);
+		}
+		return string;
 	}
 
 	private void visit(IMethodModel m, String path, ITypeModel ownerType) {
@@ -347,8 +358,8 @@ public abstract class ResourceVisitor {
 			boolean hasAnnotation = m.hasAnnotation(q.name());
 			isWs |= hasAnnotation;
 		}
-		if (isWs) {
-			Resource res = new Resource();
+		if (isWs) {			
+			ResourceImpl res = spec.getCoreRaml().getOrCreateResource(doCleanup(path));
 			res.setDescription(ownerType.getDocumentation());
 			
 			IDocInfo documentation = getDocumentation(m);
@@ -387,12 +398,7 @@ public abstract class ResourceVisitor {
 					parameterName = bodyType.getName();
 				}
 			}
-			if (path.endsWith("/")) { //$NON-NLS-1$
-				res.setRelativeUri(path.substring(0,
-						path.length() - 1));
-			} else {
-				res.setRelativeUri(path);
-			}
+			
 			for (ActionType q : ActionType.values()) {
 				boolean hasAnnotation = m.hasAnnotation(q.name());
 				if (hasAnnotation) {
@@ -400,7 +406,7 @@ public abstract class ResourceVisitor {
 							parameterName);
 				}
 			}
-			spec.addResource(res);
+			
 		}
 	}
 
@@ -467,18 +473,18 @@ public abstract class ResourceVisitor {
 	 */
 	protected abstract ResourceVisitor createResourceVisitor();
 
-	private void addMethod(ActionType actionType, Resource res, IMethodModel m,
+	private void addMethod(ActionType actionType, ResourceImpl res, IMethodModel m,
 			IDocInfo documentation, String returnName, String parameterName) {
 		
-		Action action = new Action();
+		ActionImpl action = new ActionImpl(actionType.name().toLowerCase());
 		String description = documentation.getDocumentation();
 		if (!"".equals(description)) { //$NON-NLS-1$
 			action.setDescription(description);
 		}
 		
 		ActionType adjustedActionType = adjustActionType(m,actionType);		
-		action.setType(adjustedActionType);		
-		res.getActions().put(adjustedActionType, action);
+		action.setHttpMethod(adjustedActionType.name().toLowerCase());		
+		res.methods().add(action);
 		
 		processResponses(m,action,documentation,returnName);
 		
@@ -486,25 +492,25 @@ public abstract class ResourceVisitor {
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(QUERY_PARAM)) {
 				IAnnotationModel paramAnnotation = pm.getAnnotation(QUERY_PARAM);
-				QueryParameter value2 = new QueryParameter();
-				String paramName = configureParam(pm, value2, documentation,paramAnnotation);
-				action.getQueryParameters().put(paramName, value2);
+				NamedParamImpl value2 = new NamedParamImpl();
+				configureParam(pm, value2, documentation,paramAnnotation);
+				action.queryParameters().add(value2);
 			}
 		}
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(HEADER_PARAM)) {
 				IAnnotationModel paramAnnotation = pm.getAnnotation(HEADER_PARAM);
-				Header value2 = new Header();
-				String paramName = configureParam(pm, value2, documentation,paramAnnotation);
-				action.getHeaders().put(paramName, value2);
+				NamedParamImpl value2 = new NamedParamImpl();
+				configureParam(pm, value2, documentation,paramAnnotation);
+				action.headers().add(value2);
 			}
 		}
 		for (IParameterModel pm : parameters) {
 			if (pm.hasAnnotation(PATH_PARAM)) {
 				IAnnotationModel paramAnnotation = pm.getAnnotation(PATH_PARAM);
-				UriParameter value2 = new UriParameter();
-				String paramName = configureParam(pm, value2, documentation,paramAnnotation);
-				res.getUriParameters().put(paramName, value2);
+				NamedParamImpl value2 = new NamedParamImpl();
+				configureParam(pm, value2, documentation,paramAnnotation);
+				res.uriParameters().add(value2);
 			}
 		}
 
@@ -513,25 +519,23 @@ public abstract class ResourceVisitor {
 		if (consumesValue != null) {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
-				MimeType bodyType = new MimeType();
-				tryAppendSchemesAndExamples(bodyType, s, parameterName, StructureType.COMMON);
-				bodyType.setType(s);
+				MimeTypeImpl bodyType = new MimeTypeImpl();
+				bodyType.setName(s);
+				tryAppendSchemesAndExamples(bodyType, s, parameterName, StructureType.COMMON);				
 				if (s.contains(FORM)) {
+					AbstractType t=TypeOps.derive("", BuiltIns.OBJECT);
 					for (IParameterModel pm : parameters) {
 						if (pm.hasAnnotation(FORM_PARAM)) {
 							IAnnotationModel paramAnnotation = pm.getAnnotation(FORM_PARAM);							
-							FormParameter vl = new FormParameter();
+							NamedParamImpl vl = new NamedParamImpl();
 							String paramName = configureParam(pm,vl,documentation,paramAnnotation);							
-							ArrayList<FormParameter> arrayList = new ArrayList<FormParameter>();
-							arrayList.add(vl);
-							if (bodyType.getFormParameters() == null) {
-								bodyType.setFormParameters(new HashMap<String, java.util.List<FormParameter>>());
-							}
-							bodyType.getFormParameters().put(paramName,	arrayList);
+							
+							t.declareProperty(paramName, vl.getTypeModel(), !vl.isRequired());
 						}
 					}
+					bodyType.setTypeModel(t);
 				}
-				action.getBody().put(s, bodyType);
+				action.body().add(bodyType);
 			}
 		}
 	}
@@ -546,27 +550,27 @@ public abstract class ResourceVisitor {
 			mediaTypes.add(JSON);
 		}
 		
-		for(String mt:mediaTypes){
-			File schemafile = constructFileLocation(typeName, SCHEMA, mt, st);
-			if(schemafile.exists()){
-				bodyType.setSchema(getSchemaName(typeName, mediaType, st));
-			}
-			File examplefile = constructFileLocation(typeName, EXAMPLE, mt, st);
-			if(examplefile.exists()){
-				String relativePath = constructRelativeFilePath(typeName, EXAMPLE, mt, st);
-				bodyType.setExample(relativePath);
-				bodyType.setExampleOrigin(relativePath);
-			}
-		}
+//		for(String mt:mediaTypes){
+//			File schemafile = constructFileLocation(typeName, SCHEMA, mt, st);
+//			if(schemafile.exists()){
+//				bodyType.setSchema(getSchemaName(typeName, mediaType, st));
+//			}
+//			File examplefile = constructFileLocation(typeName, EXAMPLE, mt, st);
+//			if(examplefile.exists()){
+//				String relativePath = constructRelativeFilePath(typeName, EXAMPLE, mt, st);
+//				bodyType.setExample(relativePath);
+//				bodyType.setExampleOrigin(relativePath);
+//			}
+//		}
 	}
 	
 	
-	private void processResponses(IMethodModel m, Action action, IDocInfo documentation, String returnName) {
+	private void processResponses(IMethodModel m, ActionImpl action, IDocInfo documentation, String returnName) {
 		
 		HashMap<String, ResponseModel> responses = new HashMap<String, ResponseModel>();
 		String mainResponseCode = DEFAULT_RESPONSE;
 		if(config != null){
-			ActionType actionType = action.getType();
+			ActionType actionType = ActionType.valueOf(action.getHttpMethod().toUpperCase());
 			mainResponseCode = config.getResponseCode(actionType);
 		}
 		
@@ -647,8 +651,8 @@ public abstract class ResourceVisitor {
 		
 		
 		for(ResponseModel rm : responses.values()){
-			
-			Response response = new Response();
+			String code = rm.getCode();
+			ResponseImpl response = new ResponseImpl(code);
 			
 			String description = rm.getMessage();
 			if(description==null||description.trim().isEmpty()){
@@ -659,20 +663,17 @@ public abstract class ResourceVisitor {
 			}
 			
 			String[] produces = rm.getProduces();
-			if(produces!=null){
-				
+			if(produces!=null){				
 				String returnTypeName = rm.getReturnTypeName();
 				for (String mediaType : producesValues) {
 					mediaType = sanitizeMediaType(mediaType);
-					MimeType mimeType = new MimeType();
+					MimeTypeImpl mimeType = new MimeTypeImpl();
 					tryAppendSchemesAndExamples(mimeType, mediaType, returnTypeName, rm.getStructureType());
-					mimeType.setType(mediaType);
-					response.getBody().put(mediaType, mimeType);
+					mimeType.setName(mediaType);
+					response.body().add(mimeType);
 				}
 			}
-			
-			String code = rm.getCode();
-			action.getResponses().put(code, response);
+			action.responses().add(response);
 		}
 	}
 
@@ -756,7 +757,7 @@ public abstract class ResourceVisitor {
 	}
 
 
-	private String configureParam(IParameterModel model, AbstractParam param, IDocInfo documentation, IAnnotationModel paramAnnotation) {
+	private String configureParam(IParameterModel model, NamedParamImpl param, IDocInfo documentation, IAnnotationModel paramAnnotation) {
 		
 		String paramName = paramAnnotation.getValue("value");
 		
@@ -835,6 +836,7 @@ public abstract class ResourceVisitor {
 				paramName = overridenName;
 			}
 		}
+		param.setName(paramName);
 		return paramName;
 	}
 
@@ -868,55 +870,55 @@ public abstract class ResourceVisitor {
 		return s;
 	}
 
-	private void proceedType(String type, AbstractParam value2,
+	private void proceedType(String type, NamedParamImpl value2,
 			IParameterModel param) {
 		String annotationValue = param.getAnnotationValue(DEFAULT_VALUE);
 		boolean hasDefault = false;
-		if (annotationValue != null) {
-			value2.setDefaultValue(annotationValue);
-			hasDefault = true;
-		}
 		if (type.equals("I")) { //$NON-NLS-1$
-			value2.setType(ParamType.INTEGER);
+			value2.setType(BuiltIns.INTEGER);
 			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("D")) { //$NON-NLS-1$
-			value2.setType(ParamType.NUMBER);
+			value2.setType(BuiltIns.NUMBER);
 			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("Z")) { //$NON-NLS-1$
-			value2.setType(ParamType.BOOLEAN);
+			value2.setType(BuiltIns.BOOLEAN);
 		}
 		if (type.equals("int") || type.equals("long") || type.equals("short")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			value2.setType(ParamType.INTEGER);
+			value2.setType(BuiltIns.INTEGER);
 			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("float") || type.equals("double")) { //$NON-NLS-1$ //$NON-NLS-2$
-			value2.setType(ParamType.NUMBER);
+			value2.setType(BuiltIns.NUMBER);
 			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("boolean")) { //$NON-NLS-1$
-			value2.setType(ParamType.BOOLEAN);
+			value2.setType(BuiltIns.BOOLEAN);
 			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("QInteger;")) { //$NON-NLS-1$
-			value2.setType(ParamType.INTEGER);
+			value2.setType(BuiltIns.INTEGER);
 		}
 		if (type.equals("QDouble;")) { //$NON-NLS-1$
-			value2.setType(ParamType.NUMBER);
+			value2.setType(BuiltIns.NUMBER);
 		}
 		if (type.equals("QBoolean;")) { //$NON-NLS-1$
-			value2.setType(ParamType.BOOLEAN);
+			value2.setType(BuiltIns.BOOLEAN);
 			value2.setRequired(!hasDefault);
 		}
 		if (type.equals("java.lang.Integer") || type.equals("java.lang.Long") || type.equals("java.lang.Short")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			value2.setType(ParamType.INTEGER);
+			value2.setType(BuiltIns.INTEGER);
 		}
 		if (type.equals("java.lang.Float") || type.equals("java.lang.Double")) { //$NON-NLS-1$ //$NON-NLS-2$
-			value2.setType(ParamType.NUMBER);
+			value2.setType(BuiltIns.NUMBER);
 		}
 		if (type.equals("java.lang.Boolean")) { //$NON-NLS-1$
-			value2.setType(ParamType.BOOLEAN);
+			value2.setType(BuiltIns.BOOLEAN);
+		}
+		if (annotationValue != null) {
+			value2.setDefaultValue(annotationValue);
+			hasDefault = true;
 		}
 	}
 
@@ -927,24 +929,24 @@ public abstract class ResourceVisitor {
 	 * @return XSD schema for input class
 	 */
 	protected String generateXSDForClass(Class<?> element) {
-		try {
-			String name = firstLetterToLowerCase(element.getSimpleName());
-			JAXBContext jaxbContext = JAXBContext.newInstance(element);
-			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(name);
-			jaxbContext.generateSchema(sor);
-			File file = sor.getFile();
-			if(file!=null){
-				String content = FileUtil.fileToString(file);
-				generateExamle(file, content);
-				String schemaName = getSchemaName(element.getSimpleName(), XML,  StructureType.COMMON);
-				spec.getCoreRaml().addGlobalSchema(schemaName, content, false, true);
-				return content;
-			}
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			String name = firstLetterToLowerCase(element.getSimpleName());
+//			JAXBContext jaxbContext = JAXBContext.newInstance(element);
+//			CustomSchemaOutputResolver sor = new CustomSchemaOutputResolver(name);
+//			jaxbContext.generateSchema(sor);
+//			File file = sor.getFile();
+//			if(file!=null){
+//				String content = FileUtil.fileToString(file);
+//				generateExamle(file, content);
+//				String schemaName = getSchemaName(element.getSimpleName(), XML,  StructureType.COMMON);
+//				spec.getCoreRaml().addGlobalSchema(schemaName, content, false, true);
+//				return content;
+//			}
+//		} catch (JAXBException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		return null;
 	}
 	
@@ -999,10 +1001,10 @@ public abstract class ResourceVisitor {
 	 * <p>clear.</p>
 	 */
 	public void clear() {
-		spec.coreRaml=new Raml2();
-		spec.coreRaml.setBaseUri("http://example.com"); //$NON-NLS-1$
+		spec.coreRaml=new ApiImpl();
+		spec.coreRaml.setBaseUrl("http://example.com"); //$NON-NLS-1$
 		spec.coreRaml.setTitle("Please type API title here"); //$NON-NLS-1$
-		spec.coreRaml.setProtocols(Collections.singletonList(Protocol.HTTP));
+		spec.coreRaml.setProtocols(Collections.singletonList("http"));
 	}
 
 	/**
@@ -1025,29 +1027,29 @@ public abstract class ResourceVisitor {
 	protected void doGenerateAndSave(File schemaFile, File parentDir,
 			File examplesDir, String dummyXml) {
 
-		String jsonText = JsonUtil.convertToJSON(dummyXml, true);
-		jsonText = JsonFormatter.format(jsonText);	
-		String fName = schemaFile.getName().replace(XML_FILE_EXT,ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
-		fName = fName.replace(".xsd", ResourceVisitor.JSONSCHEMA);
-		
-		String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
-		generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
-		if(generatedSchema != null){
-			spec.getCoreRaml().addGlobalSchema(fName, generatedSchema, true, false);
-		}
-		String name = schemaFile.getName();
-		name = name.substring(0, name.lastIndexOf('.'));
-		File toSave = new File(examplesDir, name + XML_FILE_EXT);
-		writeString(dummyXml, toSave);		
-		toSave = new File(examplesDir, name + JSON_FILE_EXT);
-		if(jsonText != null){
-			writeString(jsonText, toSave);
-		}
-		File shemas = new File(parentDir, SCHEMAS_FOLDER);
-		toSave = new File(shemas, fName + JSON_FILE_EXT);
-		if(generatedSchema != null){
-			writeString(generatedSchema, toSave);
-		}
+//		String jsonText = JsonUtil.convertToJSON(dummyXml, true);
+//		jsonText = JsonFormatter.format(jsonText);	
+//		String fName = schemaFile.getName().replace(XML_FILE_EXT,ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
+//		fName = fName.replace(".xsd", ResourceVisitor.JSONSCHEMA);
+//		
+//		String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
+//		generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
+//		if(generatedSchema != null){
+//			spec.getCoreRaml().addGlobalSchema(fName, generatedSchema, true, false);
+//		}
+//		String name = schemaFile.getName();
+//		name = name.substring(0, name.lastIndexOf('.'));
+//		File toSave = new File(examplesDir, name + XML_FILE_EXT);
+//		writeString(dummyXml, toSave);		
+//		toSave = new File(examplesDir, name + JSON_FILE_EXT);
+//		if(jsonText != null){
+//			writeString(jsonText, toSave);
+//		}
+//		File shemas = new File(parentDir, SCHEMAS_FOLDER);
+//		toSave = new File(shemas, fName + JSON_FILE_EXT);
+//		if(generatedSchema != null){
+//			writeString(generatedSchema, toSave);
+//		}
 	}
 
 	/**
@@ -1136,14 +1138,17 @@ public abstract class ResourceVisitor {
 			spec.getCoreRaml().setVersion(preferencesConfig.getVersion());
 		}
 		if (preferencesConfig.getBaseUrl()!=null&&preferencesConfig.getBaseUrl().length()>0){
-			spec.getCoreRaml().setBaseUri(preferencesConfig.getBaseUrl());
+			spec.getCoreRaml().setBaseUrl(preferencesConfig.getBaseUrl());
 		}
 		if (preferencesConfig.getProtocols()!=null) {
 			ArrayList<Protocol> protocols = new ArrayList<Protocol>(preferencesConfig.getProtocols());
 			Collections.sort(protocols);
-			spec.getCoreRaml().setProtocols(protocols);
+			ArrayList<String>protocolss=new ArrayList<String>();
+			for (Protocol p:protocols){
+				protocolss.add(p.name().toLowerCase());
+			}
+			spec.getCoreRaml().setProtocols(protocolss);
 		}
-		spec.doSort=preferencesConfig.isSorted();
 		spec.extractCommonParts=preferencesConfig.doFullTree();
 	}
 	
@@ -1155,50 +1160,49 @@ public abstract class ResourceVisitor {
 	 */
 	protected void afterSchemaGen(ITypeModel t, StructureType st) {
 
-		JAXBRegistry rs = new JAXBRegistry();
-		JAXBType jaxbModel = rs.getJAXBModel(t);
-		
-		if(jaxbModel==null){
-			return;
-		}
-		ISchemaType schemaModel = null;
-		try{
-			schemaModel = new SchemaModelBuilder(rs,this.config).buildSchemaModel(jaxbModel,st);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		if(schemaModel==null){
-			return;
-		}
-
-		try{
-			if(st == null || st == StructureType.COMMON){
-				String xmlExample = new XMLModelSerializer().serialize(schemaModel);
-				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML, st));
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		try{
-			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
-			writeString(jsonExample, constructFileLocation(t.getName(), EXAMPLE, JSON, st));
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-
-		try{
-			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
-			spec.getCoreRaml().addGlobalSchema(getSchemaName(t.getName(),JSON,st), jsonSchema, true, true);
-			writeString(jsonSchema, constructFileLocation(t.getName(), SCHEMA, JSON, st));
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-
+//		JAXBRegistry rs = new JAXBRegistry();
+//		JAXBType jaxbModel = rs.getJAXBModel(t);
+//		
+//		if(jaxbModel==null){
+//			return;
+//		}
+//		ISchemaType schemaModel = null;
+//		try{
+//			schemaModel = new SchemaModelBuilder(rs,this.config).buildSchemaModel(jaxbModel,st);
+//		}
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		if(schemaModel==null){
+//			return;
+//		}
+//
+//		try{
+//			if(st == null || st == StructureType.COMMON){
+//				String xmlExample = new XMLModelSerializer().serialize(schemaModel);
+//				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML, st));
+//			}
+//		}
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		
+//		try{
+//			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
+//			writeString(jsonExample, constructFileLocation(t.getName(), EXAMPLE, JSON, st));
+//		}
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
+//
+//		try{
+//			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
+//			spec.getCoreRaml().addGlobalSchema(getSchemaName(t.getName(),JSON,st), jsonSchema, true, true);
+//			writeString(jsonSchema, constructFileLocation(t.getName(), SCHEMA, JSON, st));
+//		}
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
 	}
 
 	private String getSchemaName(String typeName, String mediaType, StructureType st) {

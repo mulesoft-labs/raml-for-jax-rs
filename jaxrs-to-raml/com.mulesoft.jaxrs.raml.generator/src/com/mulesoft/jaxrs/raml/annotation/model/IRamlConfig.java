@@ -3,8 +3,8 @@ package com.mulesoft.jaxrs.raml.annotation.model;
 import java.util.List;
 import java.util.Set;
 
-import org.raml.model.ActionType;
-import org.raml.model.Protocol;
+import com.mulesoft.jaxrs.raml.ActionType;
+
 
 /**
  * <p>IRamlConfig interface.</p>

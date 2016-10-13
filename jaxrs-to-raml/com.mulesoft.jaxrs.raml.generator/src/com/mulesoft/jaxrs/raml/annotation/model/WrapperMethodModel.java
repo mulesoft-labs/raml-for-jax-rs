@@ -2,7 +2,7 @@ package com.mulesoft.jaxrs.raml.annotation.model;
 
 import java.util.List;
 
-import org.raml.model.ActionType;
+import com.mulesoft.jaxrs.raml.ActionType;
 
 public class WrapperMethodModel implements IMethodModel{
 	

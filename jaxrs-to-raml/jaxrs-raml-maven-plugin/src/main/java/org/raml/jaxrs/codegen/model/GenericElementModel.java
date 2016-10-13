@@ -3,8 +3,8 @@ package org.raml.jaxrs.codegen.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IGenericElement;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
+import org.aml.typesystem.IGenericElement;
+import org.aml.typesystem.ITypeParameter;
 
 abstract public class GenericElementModel extends BasicModel implements IGenericElement {
 	

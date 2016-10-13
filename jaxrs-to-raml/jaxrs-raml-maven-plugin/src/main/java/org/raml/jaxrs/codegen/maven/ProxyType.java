@@ -2,11 +2,11 @@ package org.raml.jaxrs.codegen.maven;
 
 import java.util.List;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
+import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.IFieldModel;
+import org.aml.typesystem.IMethodModel;
+import org.aml.typesystem.ITypeModel;
+import org.aml.typesystem.ITypeParameter;
 
 /**
  * <p>ProxyType class.</p>
@@ -53,7 +53,7 @@ public class ProxyType implements ITypeModel {
 	/**
 	 * <p>getAnnotations.</p>
 	 *
-	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} objects.
+	 * @return an array of {@link org.aml.typesystem.IAnnotationModel} objects.
 	 */
 	public IAnnotationModel[] getAnnotations() {
 		return registry.getType(key).getAnnotations();
@@ -82,7 +82,7 @@ public class ProxyType implements ITypeModel {
 	/**
 	 * <p>getMethods.</p>
 	 *
-	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} objects.
+	 * @return an array of {@link org.aml.typesystem.java.IMethodModel} objects.
 	 */
 	public IMethodModel[] getMethods() {
 		return registry.getType(key).getMethods();
@@ -151,6 +151,27 @@ public class ProxyType implements ITypeModel {
 
 	public IAnnotationModel getAnnotationByCanonicalName(String name) {
 		return registry.getType(key).getAnnotationByCanonicalName(name);
+	}
+
+	public boolean isCollection() {
+		return registry.getType(key).isCollection();
+		
+	}
+
+	public ITypeModel getComponentType() {
+		return registry.getType(key).getComponentType();
+	}
+
+	public boolean isEnum() {
+		return registry.getType(key).isEnum();
+	}
+
+	public boolean isAnnotation() {
+		return registry.getType(key).isAnnotation();
+	}
+
+	public String getPackageName() {
+		return registry.getType(key).getPackageName();
 	}
 
 }

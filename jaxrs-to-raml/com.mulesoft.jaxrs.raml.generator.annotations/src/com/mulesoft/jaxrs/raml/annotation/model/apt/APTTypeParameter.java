@@ -2,7 +2,7 @@ package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
 import javax.lang.model.element.TypeParameterElement;
 
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
+import org.aml.typesystem.ITypeParameter;
 
 public class APTTypeParameter implements ITypeParameter {
 	

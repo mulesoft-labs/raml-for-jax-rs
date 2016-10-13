@@ -16,8 +16,10 @@
 package org.raml.jaxrs.codegen.model;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
+import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>AnnotationModel class.</p>
@@ -37,10 +39,13 @@ public class AnnotationModel implements IAnnotationModel{
 	
 	private HashMap<String,IAnnotationModel[]> annotationArrayValues;
 
+	private ITypeModel type;
+
 	/**
 	 * <p>Constructor for AnnotationModel.</p>
 	 */
-	public AnnotationModel() {
+	public AnnotationModel(ITypeModel tp) {
+		this.type=tp;
 	}
 
 	
@@ -135,6 +140,16 @@ public class AnnotationModel implements IAnnotationModel{
 
 	public void setFullyQualifiedName(String fullyQualifiedName) {
 		this.fullyQualifiedName = fullyQualifiedName;
+	}
+
+
+	public ITypeModel getType() {
+		return this.type;
+	}
+
+
+	public Map<String, Object> allValues() {
+		return null;
 	}
 
 }

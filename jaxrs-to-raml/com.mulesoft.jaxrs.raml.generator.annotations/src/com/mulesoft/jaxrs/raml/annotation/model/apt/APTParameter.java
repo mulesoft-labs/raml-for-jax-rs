@@ -5,7 +5,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
+import org.aml.typesystem.IParameterModel;
 
 /**
  * <p>APTParameter class.</p>

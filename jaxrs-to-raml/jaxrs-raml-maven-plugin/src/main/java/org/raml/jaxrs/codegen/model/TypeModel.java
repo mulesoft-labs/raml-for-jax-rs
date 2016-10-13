@@ -17,11 +17,10 @@ package org.raml.jaxrs.codegen.model;
 
 import java.util.LinkedHashMap;
 
+import org.aml.typesystem.IFieldModel;
+import org.aml.typesystem.IMethodModel;
+import org.aml.typesystem.ITypeModel;
 import org.raml.jaxrs.codegen.maven.TypeModelRegistry;
-
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
 
 /**
  * <p>TypeModel class.</p>
@@ -47,12 +46,14 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	
 	private ITypeModel[] implementedIntefaces;
 	
+	
+	
 	private TypeModelRegistry registry;
 	
 	/**
 	 * <p>Getter for the field <code>methods</code>.</p>
 	 *
-	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} objects.
+	 * @return an array of {@link org.aml.typesystem.java.IMethodModel} objects.
 	 */
 	public IMethodModel[] getMethods() {
 		return methods.values().toArray(new IMethodModel[methods.size()]);
@@ -61,7 +62,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/**
 	 * <p>addMethod.</p>
 	 *
-	 * @param method a {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} object.
+	 * @param method a {@link org.aml.typesystem.java.IMethodModel} object.
 	 */
 	public void addMethod(IMethodModel method){
 		methods.put(method.getName(),method);
@@ -128,7 +129,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/**
 	 * <p>addField.</p>
 	 *
-	 * @param fieldModel a {@link com.mulesoft.jaxrs.raml.annotation.model.IFieldModel} object.
+	 * @param fieldModel a {@link org.aml.typesystem.java.IFieldModel} object.
 	 */
 	public void addField(IFieldModel fieldModel) {
 		fields.put(fieldModel.getName(),fieldModel);
@@ -156,5 +157,26 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 			return null;
 		}
 		return result;
+	}
+
+	public ITypeModel getComponentType() {
+		return null;
+	}
+
+	public boolean isEnum() {
+		return false;
+	}
+
+	public boolean isAnnotation() {
+		return false;
+	}
+
+	public String getPackageName() {
+		final String qualifiedName = this.qualifiedName;
+		final int indexOf = qualifiedName.indexOf('.');
+		if (indexOf!=-1){
+			return qualifiedName.substring(0, indexOf);
+		}
+		return "";
 	}
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.aml.typesystem.ITypeModel;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -36,11 +37,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.raml.jaxrs.codegen.spoon.SpoonProcessor;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;
-import com.mulesoft.jaxrs.raml.annotation.model.IResourceVisitorExtension;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeResourceVisitor;
+import com.mulesoft.jaxrs.raml.IRamlConfig;
+import com.mulesoft.jaxrs.raml.IResourceVisitorExtension;
+import com.mulesoft.jaxrs.raml.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.reflection.RuntimeResourceVisitor;
 
 import spoon.Launcher;
 import spoon.reflect.declaration.CtPackage;

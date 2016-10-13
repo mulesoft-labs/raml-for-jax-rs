@@ -5,15 +5,16 @@ import java.util.List;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import org.aml.typesystem.IFieldModel;
+import org.aml.typesystem.IMethodModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>APTType class.</p>
@@ -40,7 +41,7 @@ public class APTType extends APTGenericElement implements ITypeModel{
 	/**
 	 * <p>getMethods.</p>
 	 *
-	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IMethodModel} objects.
+	 * @return an array of {@link org.aml.typesystem.java.IMethodModel} objects.
 	 */
 	public IMethodModel[] getMethods() {
 		List<? extends Element> enclosedElements = element.getEnclosedElements();
@@ -159,5 +160,40 @@ public class APTType extends APTGenericElement implements ITypeModel{
 			return null;
 		}
 		return new APTType(typeElement, environment);
+	}
+
+
+	@Override
+	public boolean isCollection() {
+		return false;
+	}
+
+
+	@Override
+	public ITypeModel getComponentType() {
+		return null;
+	}
+
+
+	@Override
+	public boolean isEnum() {
+		return element.getKind()==ElementKind.ENUM;
+	}
+
+
+	@Override
+	public boolean isAnnotation() {
+		return element.getKind()==ElementKind.ANNOTATION_TYPE;
+	}
+
+
+	@Override
+	public String getPackageName() {
+		final String qualifiedName = element.getQualifiedName().toString();
+		final int indexOf = qualifiedName.indexOf('.');
+		if (indexOf!=-1){
+			return qualifiedName.substring(0, indexOf);
+		}
+		return "";
 	}
 }

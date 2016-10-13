@@ -8,7 +8,7 @@ import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.RuntimeRamlBuilder;
+import com.mulesoft.jaxrs.raml.reflection.RuntimeRamlBuilder;
 
 import junit.framework.TestCase;
 
@@ -113,5 +113,13 @@ public class BasicTest extends TestCase{
 		mimeType.getFormParameters().stream().filter(x->x.getKey().equals("visible")).findAny().get(); //$NON-NLS-1$
 		INamedParam queryParameter = action.queryParam("enabled");
 		TestCase.assertNotNull(queryParameter);		
+	}
+	
+	public void test7(){
+		RuntimeRamlBuilder runtimeRamlBuilder = new RuntimeRamlBuilder();
+		runtimeRamlBuilder.addClass(HelloWorldRest.class);
+		String raml = runtimeRamlBuilder.toRAML();
+		final Api build = (Api) TopLevelRamlModelBuilder.build(raml);
+		System.out.println(raml);		
 	}
 }

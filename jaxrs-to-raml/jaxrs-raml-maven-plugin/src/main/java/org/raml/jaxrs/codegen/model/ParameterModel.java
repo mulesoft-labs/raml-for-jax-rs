@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.codegen.model;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
+import org.aml.typesystem.IParameterModel;
 
 /**
  * <p>ParameterModel class.</p>

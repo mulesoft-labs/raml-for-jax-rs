@@ -7,14 +7,14 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.raml.schema.model.IMapSchemaProperty;
-import org.raml.schema.model.ISchemaProperty;
-import org.raml.schema.model.ISchemaType;
-import org.raml.schema.model.SimpleType;
-import org.raml.schema.model.serializer.ISerializationNode;
-import org.raml.schema.model.serializer.StructuredModelSerializer;
 
-import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
+import com.mulesoft.jaxrs.raml.StructureType;
+import com.mulesoft.jaxrs.raml.schemas.IMapSchemaProperty;
+import com.mulesoft.jaxrs.raml.schemas.ISchemaProperty;
+import com.mulesoft.jaxrs.raml.schemas.ISchemaType;
+import com.mulesoft.jaxrs.raml.schemas.ISerializationNode;
+import com.mulesoft.jaxrs.raml.schemas.SimpleType;
+import com.mulesoft.jaxrs.raml.schemas.StructuredModelSerializer;
 
 public class JsonSchemaModelSerializer extends StructuredModelSerializer {
 	

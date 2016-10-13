@@ -8,8 +8,9 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IGenericElement;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
+import org.aml.typesystem.IGenericElement;
+import org.aml.typesystem.ITypeModel;
+import org.aml.typesystem.ITypeParameter;
 
 abstract public class APTGenericElement extends APTModel implements IGenericElement {
 
@@ -47,4 +48,6 @@ abstract public class APTGenericElement extends APTModel implements IGenericElem
 		}
 		return list;
 	}
+
+	
 }

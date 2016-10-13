@@ -16,12 +16,14 @@
 package org.raml.jaxrs.codegen.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.Utils;
+import org.aml.typesystem.IDocInfo;
+import org.aml.typesystem.IMethodModel;
+import org.aml.typesystem.IParameterModel;
+import org.aml.typesystem.ITypeModel;
+import org.aml.typesystem.ITypeParameter;
+import org.aml.typesystem.reflection.Utils;
 
 /**
  * <p>MethodModel class.</p>
@@ -51,7 +53,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Getter for the field <code>parameters</code>.</p>
 	 *
-	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IParameterModel} objects.
+	 * @return an array of {@link org.aml.typesystem.IParameterModel} objects.
 	 */
 	public IParameterModel[] getParameters() {
 		return parameters.toArray(new IParameterModel[parameters.size()]);
@@ -60,7 +62,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>addParameter.</p>
 	 *
-	 * @param param a {@link com.mulesoft.jaxrs.raml.annotation.model.IParameterModel} object.
+	 * @param param a {@link org.aml.typesystem.IParameterModel} object.
 	 */
 	public void addParameter(IParameterModel param){
 		parameters.add(param);
@@ -69,7 +71,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>getBasicDocInfo.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.IDocInfo} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.IDocInfo} object.
 	 */
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
@@ -92,7 +94,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Getter for the field <code>returnedType</code>.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public ITypeModel getReturnedType() {
 		return returnedType;
@@ -102,7 +104,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Setter for the field <code>returnedType</code>.</p>
 	 *
-	 * @param returnType a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @param returnType a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public void setReturnedType(ITypeModel returnType) {
 		this.returnedType = returnType;
@@ -151,7 +153,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Getter for the field <code>bodyType</code>.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public ITypeModel getBodyType() {		
 		return bodyType;
@@ -160,7 +162,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Setter for the field <code>bodyType</code>.</p>
 	 *
-	 * @param bodyType a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @param bodyType a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public void setBodyType(ITypeModel bodyType) {
 		this.bodyType = bodyType;
@@ -180,6 +182,16 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 
 	public void setHasGenericBodyType(boolean isGeneric) {
 		this.hasGenericReturnType = isGeneric;
+	}
+
+	public ITypeModel getCollectionMemberType() {
+		final List<ITypeParameter> typeParameters = getTypeParameters();
+		return null;
+	}
+
+	public Object defaultValue() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

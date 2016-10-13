@@ -19,10 +19,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IBasicModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
+import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.ITypeModel;
+import org.aml.typesystem.reflection.ReflectionType;
+
+import com.mulesoft.jaxrs.raml.IBasicModel;
 
 /**
  * <p>Abstract BasicModel class.</p>
@@ -54,7 +55,7 @@ public abstract class BasicModel implements IBasicModel{
 	/**
 	 * <p>getJAXBType.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public List<ITypeModel> getJAXBTypes() {
 		return this.jaxbTypes;
@@ -132,7 +133,7 @@ public abstract class BasicModel implements IBasicModel{
 	/**
 	 * <p>Getter for the field <code>annotations</code>.</p>
 	 *
-	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} objects.
+	 * @return an array of {@link org.aml.typesystem.IAnnotationModel} objects.
 	 */
 	public IAnnotationModel[] getAnnotations() {		
 		return annotations.values().toArray(new IAnnotationModel[annotations.size()]);
@@ -141,7 +142,7 @@ public abstract class BasicModel implements IBasicModel{
 	/**
 	 * <p>addAnnotation.</p>
 	 *
-	 * @param annotation a {@link com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel} object.
+	 * @param annotation a {@link org.aml.typesystem.IAnnotationModel} object.
 	 */
 	public void addAnnotation(IAnnotationModel annotation){
 		annotations.put(annotation.getName(), annotation);
@@ -260,7 +261,7 @@ public abstract class BasicModel implements IBasicModel{
 	/**
 	 * <p>Setter for the field <code>jaxbType</code>.</p>
 	 *
-	 * @param processTypeReference a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @param processTypeReference a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public void addJaxbType(ITypeModel processTypeReference) {
 		if(this.jaxbTypes==null){
@@ -284,4 +285,15 @@ public abstract class BasicModel implements IBasicModel{
 	public void setMap(boolean isMap) {
 		this.isMap = isMap;
 	}
+	public ITypeModel getCollectionMemberType() {
+		if (!this.jaxbTypes.isEmpty()){
+			return this.jaxbTypes.get(0);
+		}
+		return null;
+	}
+
+	public Object defaultValue() {
+		return null;
+	}
+	
 }

@@ -29,6 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.IFieldModel;
+import org.aml.typesystem.IMethodModel;
+import org.aml.typesystem.IParameterModel;
+import org.aml.typesystem.ITypeModel;
+import org.aml.typesystem.ITypeParameter;
+import org.aml.typesystem.reflection.ReflectionType;
 import org.raml.jaxrs.codegen.maven.ProxyType;
 import org.raml.jaxrs.codegen.maven.TypeModelRegistry;
 import org.raml.jaxrs.codegen.model.AnnotationModel;
@@ -39,13 +46,6 @@ import org.raml.jaxrs.codegen.model.MethodModel;
 import org.raml.jaxrs.codegen.model.ParameterModel;
 import org.raml.jaxrs.codegen.model.TypeModel;
 import org.raml.jaxrs.codegen.model.TypeParameterModel;
-
-import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
 
 import spoon.reflect.code.CtCodeElement;
 import spoon.reflect.code.CtLiteral;
@@ -94,7 +94,7 @@ public class SpoonProcessor{
 	 * @param factory a {@link spoon.reflect.factory.Factory} object.
 	 */
 	public SpoonProcessor(Factory factory) {
-		this.factory = factory;
+		this.factory = factory;		
 	}
 
 	/**
@@ -290,6 +290,7 @@ public class SpoonProcessor{
 				type.addField(methodModel);
 			}
 		}
+		
 		return type;
 	}
 
@@ -309,10 +310,10 @@ public class SpoonProcessor{
 
 	private IAnnotationModel processAnnotation(CtAnnotation<? extends Annotation> annotation) {
 		
-		String simpleName = annotation.getActualAnnotation().annotationType().getSimpleName();
+		final Class<? extends Annotation> annotationType = annotation.getActualAnnotation().annotationType();
+		String simpleName = annotationType.getSimpleName();
 		String qualifiedName = annotation.getActualAnnotation().annotationType().getCanonicalName();
-		
-		AnnotationModel annotationModel = new AnnotationModel();		
+		AnnotationModel annotationModel = new AnnotationModel(new ReflectionType(annotationType));		
 		annotationModel.setName(simpleName);
 		annotationModel.setFullyQualifiedName(qualifiedName);
 		
@@ -475,7 +476,7 @@ public class SpoonProcessor{
 	
 	private IAnnotationModel processJavaLangAnnotation(Annotation annotation) {
 		
-		return new com.mulesoft.jaxrs.raml.annotation.model.reflection.AnnotationModel(annotation);
+		return new org.aml.typesystem.reflection.AnnotationModel(annotation);
 	}
 
 	

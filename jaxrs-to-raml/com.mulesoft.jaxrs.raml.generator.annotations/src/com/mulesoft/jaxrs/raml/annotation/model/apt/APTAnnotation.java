@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
+import org.aml.typesystem.IAnnotationModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>APTAnnotation class.</p>
@@ -21,14 +24,16 @@ import com.mulesoft.jaxrs.raml.annotation.model.IAnnotationModel;
 public class APTAnnotation implements IAnnotationModel{
 
 	AnnotationMirror mirror;
+	private ProcessingEnvironment env;
 	
 	/**
 	 * <p>Constructor for APTAnnotation.</p>
 	 *
 	 * @param m a {@link javax.lang.model.element.AnnotationMirror} object.
 	 */
-	public APTAnnotation(AnnotationMirror m) {
+	public APTAnnotation(AnnotationMirror m,ProcessingEnvironment env) {
 		this.mirror=m;
+		this.env=env;
 	}
 
 	
@@ -95,6 +100,19 @@ public class APTAnnotation implements IAnnotationModel{
 		}
 		String result = bld.substring(0, bld.length()-1);
 		return result;
+	}
+
+
+	@Override
+	public ITypeModel getType() {
+		return new APTType((TypeElement)mirror.getAnnotationType().asElement(), env);		
+	}
+
+
+	@Override
+	public Map<String, Object> allValues() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -11,11 +11,12 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IDocInfo;
-import com.mulesoft.jaxrs.raml.annotation.model.IMethodModel;
-import com.mulesoft.jaxrs.raml.annotation.model.IParameterModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.Utils;
+import org.aml.typesystem.IDocInfo;
+import org.aml.typesystem.IMethodModel;
+import org.aml.typesystem.IParameterModel;
+import org.aml.typesystem.ITypeModel;
+import org.aml.typesystem.reflection.Utils;
+
 
 /**
  * <p>APTMethodModel class.</p>
@@ -43,7 +44,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	/**
 	 * <p>getParameters.</p>
 	 *
-	 * @return an array of {@link com.mulesoft.jaxrs.raml.annotation.model.IParameterModel} objects.
+	 * @return an array of {@link org.aml.typesystem.IParameterModel} objects.
 	 */
 	public IParameterModel[] getParameters() {
 		List<? extends VariableElement> parameters = element.getParameters();
@@ -58,7 +59,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	/**
 	 * <p>getBasicDocInfo.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.IDocInfo} object.
+	 * @return a {@link com.mulesoft.jaxrs.raml.IDocInfo} object.
 	 */
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
@@ -90,7 +91,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	/**
 	 * <p>getReturnedType.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public ITypeModel getReturnedType() {
 		TypeMirror returnType = element.getReturnType();
@@ -137,7 +138,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	/**
 	 * <p>getBodyType.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public ITypeModel getBodyType() {		
 		return null;
@@ -167,13 +168,6 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<ITypeModel> getJAXBTypes() {
-		return null;
-	}
-
-
-	/** {@inheritDoc} */
-	@Override
 	public Class<?> getJavaType() {
 		return null;
 	}
@@ -189,17 +183,6 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	}
 
 
-	@Override
-	public boolean isCollection() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public boolean isMap() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }

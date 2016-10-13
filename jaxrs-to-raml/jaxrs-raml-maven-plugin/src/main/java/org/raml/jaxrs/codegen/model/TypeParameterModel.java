@@ -1,6 +1,6 @@
 package org.raml.jaxrs.codegen.model;
 
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeParameter;
+import org.aml.typesystem.ITypeParameter;
 
 public class TypeParameterModel implements ITypeParameter{
 	

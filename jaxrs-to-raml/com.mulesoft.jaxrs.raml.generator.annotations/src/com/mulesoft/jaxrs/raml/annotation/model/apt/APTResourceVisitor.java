@@ -6,9 +6,10 @@ import java.io.File;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.TypeElement;
 
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ResourceVisitor;
-import com.mulesoft.jaxrs.raml.annotation.model.StructureType;
+import org.aml.typesystem.ITypeModel;
+
+import com.mulesoft.jaxrs.raml.ResourceVisitor;
+import com.mulesoft.jaxrs.raml.StructureType;
 
 /**
  * <p>APTResourceVisitor class.</p>

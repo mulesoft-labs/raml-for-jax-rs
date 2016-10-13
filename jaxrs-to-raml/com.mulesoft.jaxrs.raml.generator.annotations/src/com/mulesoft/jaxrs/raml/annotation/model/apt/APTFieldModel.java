@@ -9,8 +9,8 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
+import org.aml.typesystem.IFieldModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>APTFieldModel class.</p>
@@ -36,7 +36,7 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	/**
 	 * <p>getType.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.annotation.model.ITypeModel} object.
+	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
 	 */
 	public ITypeModel getType() {
 		TypeMirror returnType = element.asType();
@@ -108,11 +108,7 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	public boolean isPublic() {
 		return false;
 	}
-	/** {@inheritDoc} */
-	@Override
-	public List<ITypeModel> getJAXBTypes() {
-		return null;
-	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public Class<?> getJavaType() {
@@ -124,15 +120,4 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	public void setGeneric(boolean isGeneric) {
 		this.isGeneric = isGeneric;
 	}
-	@Override
-	public boolean isCollection() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	@Override
-	public boolean isMap() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

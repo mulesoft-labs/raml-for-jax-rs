@@ -1,8 +1,8 @@
 package org.raml.jaxrs.codegen.model;
 
-import com.mulesoft.jaxrs.raml.annotation.model.IFieldModel;
-import com.mulesoft.jaxrs.raml.annotation.model.ITypeModel;
-import com.mulesoft.jaxrs.raml.annotation.model.reflection.ReflectionType;
+import org.aml.typesystem.IFieldModel;
+import org.aml.typesystem.ITypeModel;
+import org.aml.typesystem.reflection.ReflectionType;
 
 /**
  * <p>FieldModel class.</p>
@@ -21,5 +21,7 @@ public class FieldModel extends BasicModel implements IFieldModel{
 	public void setGeneric(boolean isGeneric) {
 		this.isGeneric = isGeneric;
 	}
+
+
 
 }

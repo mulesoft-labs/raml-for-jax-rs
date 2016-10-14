@@ -1,11 +1,15 @@
 package com.mulesoft.jaxrs.raml.annotation.tests;
 
+import java.util.List;
+
 import org.aml.apimodel.Action;
 import org.aml.apimodel.Api;
 import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.Resource;
 import org.aml.apimodel.Response;
+import org.aml.typesystem.beans.IProperty;
+import org.aml.typesystem.meta.restrictions.Pattern;
 import org.aml.typesystem.ramlreader.TopLevelRamlModelBuilder;
 
 import com.mulesoft.jaxrs.raml.reflection.RuntimeRamlBuilder;
@@ -120,6 +124,10 @@ public class BasicTest extends TestCase{
 		runtimeRamlBuilder.addClass(HelloWorldRest.class);
 		String raml = runtimeRamlBuilder.toRAML();
 		final Api build = (Api) TopLevelRamlModelBuilder.build(raml);
-		System.out.println(raml);		
+		IProperty ps=build.getResource("/world/states/{stateId}").method("get").response("200").body("application/json").getTypeModel().toPropertiesView().property("abbr");
+		Pattern oneMeta = ps.range().oneMeta(Pattern.class);
+		ps=build.getResource("/world/states/{stateId}").method("put").body("application/json").getTypeModel().toPropertiesView().property("abbr");
+		oneMeta = ps.range().oneMeta(Pattern.class);
+		TestCase.assertNotNull(oneMeta);
 	}
 }

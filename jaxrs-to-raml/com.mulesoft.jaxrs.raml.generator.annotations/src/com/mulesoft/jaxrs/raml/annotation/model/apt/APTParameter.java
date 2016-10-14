@@ -2,10 +2,13 @@ package com.mulesoft.jaxrs.raml.annotation.model.apt;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 
 import org.aml.typesystem.IParameterModel;
+import org.aml.typesystem.ITypeModel;
 
 /**
  * <p>APTParameter class.</p>
@@ -87,6 +90,21 @@ public class APTParameter extends APTModel implements IParameterModel{
 		} else if (!element.equals(other.element))
 			return false;
 		return true;
+	}
+
+
+	@Override
+	public ITypeModel getType() {
+		final TypeMirror asType = this.element.asType();
+		final TypeElement asTypeElement = asTypeElement(asType);
+		if (asTypeElement==null){
+			return null;
+		}
+		return new APTType(asTypeElement,this.environment);
+	}
+	private TypeElement asTypeElement(TypeMirror typeMirror) {
+	    Types TypeUtils = this.environment.getTypeUtils();
+	    return (TypeElement)TypeUtils.asElement(typeMirror);
 	}
 
 }

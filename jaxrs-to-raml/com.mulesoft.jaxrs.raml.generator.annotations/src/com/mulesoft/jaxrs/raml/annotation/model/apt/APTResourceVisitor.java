@@ -34,37 +34,37 @@ public class APTResourceVisitor extends ResourceVisitor {
 	
 	
 	/** {@inheritDoc} */
-	@Override
-	protected boolean generateXMLSchema(ITypeModel t,StructureType st) {
-		String name = t.getFullyQualifiedName();
-		if(name.equals("void")||name.equals("java.lang.Void")){
-			return false;
-		}
-		APTType type = (APTType) t;		
-		TypeElement element = (TypeElement) type.element();
-		//try just loading this class
-		Class<?> clazz=null;
-		try {
-			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());			
-		} catch (ClassNotFoundException e1) {
-			// Ignore; try some of further approaches
-		}
-		if (classLoader != null) {
-			try {
-				clazz = classLoader.loadClass(processingEnv.getElementUtils().getBinaryName(element).toString());
-			} catch (ClassNotFoundException e) {
-				//TODO log it
-			}
-		}
-		if(clazz==null){
-			return false;
-		}
-		if(st == null || st == StructureType.COMMON){
-			generateXSDForClass(clazz);
-		}
-		afterSchemaGen(type, st);
-		return true;
-	}
+//	@Override
+//	protected boolean generateType(ITypeModel t,StructureType st) {
+//		String name = t.getFullyQualifiedName();
+//		if(name.equals("void")||name.equals("java.lang.Void")){
+//			return false;
+//		}
+//		APTType type = (APTType) t;		
+//		TypeElement element = (TypeElement) type.element();
+//		//try just loading this class
+//		Class<?> clazz=null;
+//		try {
+//			clazz = Class.forName(processingEnv.getElementUtils().getBinaryName(element).toString());			
+//		} catch (ClassNotFoundException e1) {
+//			// Ignore; try some of further approaches
+//		}
+//		if (classLoader != null) {
+//			try {
+//				clazz = classLoader.loadClass(processingEnv.getElementUtils().getBinaryName(element).toString());
+//			} catch (ClassNotFoundException e) {
+//				//TODO log it
+//			}
+//		}
+//		if(clazz==null){
+//			return false;
+//		}
+//		if(st == null || st == StructureType.COMMON){
+//			generateXSDForClass(clazz);
+//		}
+//		afterSchemaGen(type, st);
+//		return true;
+//	}
 
 	/** {@inheritDoc} */
 	@Override

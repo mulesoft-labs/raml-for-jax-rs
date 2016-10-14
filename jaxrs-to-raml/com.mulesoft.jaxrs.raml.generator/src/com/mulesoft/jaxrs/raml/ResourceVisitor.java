@@ -5,13 +5,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+
 import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
+
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.impl.ActionImpl;
 import org.aml.apimodel.impl.ApiImpl;
@@ -26,8 +29,10 @@ import org.aml.typesystem.IAnnotationModel;
 import org.aml.typesystem.IDocInfo;
 import org.aml.typesystem.IMethodModel;
 import org.aml.typesystem.IParameterModel;
+import org.aml.typesystem.IType;
 import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.TypeOps;
+import org.aml.typesystem.java.JavaTypeBuilder;
 import org.aml.typesystem.reflection.ReflectionType;
 import org.aml.typesystem.yamlwriter.RamlWriter;
 
@@ -49,8 +54,6 @@ public abstract class ResourceVisitor {
 
 	private static final String CODE = "code";
 
-	private static final String JSONSCHEMA = "-jsonschema";
-
 	/** Constant <code>XML_FILE_EXT=".xml"</code> */
 	protected static final String XML_FILE_EXT = ".xml"; //$NON-NLS-1$
 
@@ -68,6 +71,7 @@ public abstract class ResourceVisitor {
 
 	private static final String XML = "xml"; //$NON-NLS-1$
 	
+	private JavaTypeBuilder builder=new JavaTypeBuilder();
 
 	public class CustomSchemaOutputResolver extends SchemaOutputResolver {
 
@@ -257,20 +261,11 @@ public abstract class ResourceVisitor {
 	 * @param st a {@link com.mulesoft.jaxrs.raml.StructureType} object. 
 	 * @return if schema is correctly generated and can be used inside RAML
 	 */
-	protected boolean generateXMLSchema(ITypeModel t, StructureType st){
-		return false;
+	protected AbstractType generateType(ITypeModel t, StructureType st){
+		return builder.getType(t);		
 	}
 	
-	/**
-	 * <p>generateXMLExampleJAXB.</p>
-	 *
-	 * @param t a {@link org.aml.typesystem.java.ITypeModel} object.
-	 * @return a {@link java.lang.String} object.
-	 */
-	protected String generateXMLExampleJAXB(ITypeModel t){
-		
-		return null;
-	}
+	
 
 	class StringHolder {
 		String content;
@@ -284,6 +279,9 @@ public abstract class ResourceVisitor {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getRaml() {
+		for (IType t: builder.getRegistry().types()){
+			spec.coreRaml.addType((AbstractType) t);
+		}
 		spec.optimize();
 		RamlWriter emmitter = new RamlWriter();
 		return emmitter.store(spec.getCoreRaml());
@@ -366,7 +364,7 @@ public abstract class ResourceVisitor {
 					}
 				}
 				if (generateSchema) {
-					generateXMLSchema(returnedType,null);
+					generateType(returnedType,null);
 					returnName = firstLetterToLowerCase(returnedType.getName());
 				}
 				if (hasPath) {
@@ -380,10 +378,10 @@ public abstract class ResourceVisitor {
 					}
 				}
 			}
-			ITypeModel bodyType = m.getBodyType();
+			ITypeModel bodyType = getBodyType(m);
 			if (bodyType != null) {
 				if (bodyType.hasAnnotation(XML_ROOT_ELEMENT)) {
-					generateXMLSchema(bodyType,null);
+					generateType(bodyType,null);
 					parameterName = bodyType.getName();
 				}
 			}
@@ -397,6 +395,50 @@ public abstract class ResourceVisitor {
 			}
 			
 		}
+	}
+	private static HashSet<String> primitives = new HashSet<String>(Arrays.asList(
+			"byte", "java.lang.Byte",
+			"short", "java.lang.Short",
+			"int", "java.lang.Integer",
+			"long", "java.lang.Long",
+			"float", "java.lang.Float",
+			"double", "java.lang.Double",
+			"character", "java.lang.Character",
+			"boolean", "java.lang.Boolean"
+		));
+
+	private boolean isPrimitive(String qName) {		
+		return primitives.contains(qName);
+	}
+	private ITypeModel getBodyType(IMethodModel m) {
+		IParameterModel[] parameters=m.getParameters();
+		for(IParameterModel param_ : parameters){
+			
+			String paramType = param_.getParameterType();
+			if(paramType.startsWith("java.")){
+				continue;
+			}
+			if(isPrimitive(paramType)){
+				continue;
+			}
+			if(param_.hasAnnotation("QueryParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("HeaderParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("PathParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("FormParam")){
+				continue;
+			}
+			if(param_.hasAnnotation("Context")){
+				continue;
+			}
+			return param_.getType(); 
+		}
+		return null;
 	}
 
 	
@@ -503,14 +545,14 @@ public abstract class ResourceVisitor {
 			}
 		}
 
-		boolean hasBody = m.getBodyType()!=null;
+		boolean hasBody = getBodyType(m)!=null;
 		String[] consumesValue = extractMediaTypes(m, CONSUMES, classConsumes, hasBody,adjustedActionType);
 		if (consumesValue != null) {
 			for (String s : consumesValue) {
 				s = sanitizeMediaType(s);
 				MimeTypeImpl bodyType = new MimeTypeImpl();
 				bodyType.setName(s);
-				tryAppendSchemesAndExamples(bodyType, s, parameterName, StructureType.COMMON);				
+				tryAppendSchemesAndExamples(bodyType, s, getBodyType(m), StructureType.COMMON);				
 				if (s.contains(FORM)) {
 					AbstractType t=TypeOps.derive("", BuiltIns.OBJECT);
 					for (IParameterModel pm : parameters) {
@@ -529,7 +571,7 @@ public abstract class ResourceVisitor {
 		}
 	}
 
-	private void tryAppendSchemesAndExamples(MimeType bodyType, String mediaType, String typeName, StructureType st) {
+	private void tryAppendSchemesAndExamples(MimeType bodyType, String mediaType, ITypeModel iTypeModel, StructureType st) {
 		
 		ArrayList<String> mediaTypes = new ArrayList<String>();
 		if (mediaType.contains(XML)) {
@@ -538,7 +580,8 @@ public abstract class ResourceVisitor {
 		if(mediaType.contains(JSON)){
 			mediaTypes.add(JSON);
 		}
-		
+		final AbstractType type = builder.getType(iTypeModel);
+		((MimeTypeImpl)bodyType).setTypeModel(type);
 //		for(String mt:mediaTypes){
 //			File schemafile = constructFileLocation(typeName, SCHEMA, mt, st);
 //			if(schemafile.exists()){
@@ -563,14 +606,14 @@ public abstract class ResourceVisitor {
 			mainResponseCode = config.getResponseCode(actionType);
 		}
 		
-		ResponseModel mainResponse = new ResponseModel(mainResponseCode, null, returnName, StructureType.COMMON);
+		ResponseModel mainResponse = new ResponseModel(mainResponseCode, null,  m.getReturnedType(),StructureType.COMMON);
 		responses.put(mainResponseCode, mainResponse);
 		
 		IAnnotationModel apiResponse = m.getAnnotation(ResourceVisitor.API_RESPONSE);
 		if(apiResponse!=null){
 			String code = apiResponse.getValue(ResourceVisitor.CODE);
 			String message = apiResponse.getValue(ResourceVisitor.MESSAGE);
-			ResponseModel response = new ResponseModel(code, message, returnName, StructureType.COMMON);
+			ResponseModel response = new ResponseModel(code, message, m.getReturnedType(),StructureType.COMMON);
 			responses.put(code, response);
 		}
 		
@@ -590,7 +633,7 @@ public abstract class ResourceVisitor {
 						try {
 							Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 							ReflectionType rt = new ReflectionType(responseClass); 
-							generateXMLSchema(rt,StructureType.COMMON);
+							generateType(rt,StructureType.COMMON);
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
 						}
@@ -598,12 +641,12 @@ public abstract class ResourceVisitor {
 					}
 					ResponseModel response = responses.get(code);
 					if(response==null){
-						response = new ResponseModel(code, message, isValid ? adjustedReturnName : null, StructureType.COMMON);
+						response = new ResponseModel(code, message, isValid ? m.getReturnedType() : null, StructureType.COMMON);
 						responses.put(code, response);
 					}
 					else{
 						response.setMessage(message);
-						response.setReturnTypeName(adjustedReturnName);
+						response.type=m.getReturnedType();
 					}
 				}
 			}
@@ -628,12 +671,13 @@ public abstract class ResourceVisitor {
 				try {
 					Class<?> responseClass = classLoader.loadClass(responseQualifiedName);
 					ReflectionType rt = new ReflectionType(responseClass); 
-					generateXMLSchema(rt,st);
+					generateType(rt,st);
+					mainResponse.type=rt;
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 				}	
 				String adjustedReturnType = firstLetterToLowerCase(getSimpleName(responseQualifiedName));
-				mainResponse.setReturnTypeName(adjustedReturnType);
+				//mainResponse.setReturnTypeName(adjustedReturnType);
 				mainResponse.setStructureType(st);
 			}
 		}
@@ -653,11 +697,10 @@ public abstract class ResourceVisitor {
 			
 			String[] produces = rm.getProduces();
 			if(produces!=null){				
-				String returnTypeName = rm.getReturnTypeName();
 				for (String mediaType : producesValues) {
 					mediaType = sanitizeMediaType(mediaType);
 					MimeTypeImpl mimeType = new MimeTypeImpl();
-					tryAppendSchemesAndExamples(mimeType, mediaType, returnTypeName, rm.getStructureType());
+					tryAppendSchemesAndExamples(mimeType, mediaType, rm.getReturnType(), rm.getStructureType());
 					mimeType.setName(mediaType);
 					response.body().add(mimeType);
 				}
@@ -1016,29 +1059,7 @@ public abstract class ResourceVisitor {
 	protected void doGenerateAndSave(File schemaFile, File parentDir,
 			File examplesDir, String dummyXml) {
 
-//		String jsonText = JsonUtil.convertToJSON(dummyXml, true);
-//		jsonText = JsonFormatter.format(jsonText);	
-//		String fName = schemaFile.getName().replace(XML_FILE_EXT,ResourceVisitor.JSONSCHEMA); //$NON-NLS-1$
-//		fName = fName.replace(".xsd", ResourceVisitor.JSONSCHEMA);
-//		
-//		String generatedSchema = jsonText != null ? new SchemaGenerator().generateSchema(jsonText) : null;
-//		generatedSchema = generatedSchema != null ? JsonFormatter.format(generatedSchema) : null;
-//		if(generatedSchema != null){
-//			spec.getCoreRaml().addGlobalSchema(fName, generatedSchema, true, false);
-//		}
-//		String name = schemaFile.getName();
-//		name = name.substring(0, name.lastIndexOf('.'));
-//		File toSave = new File(examplesDir, name + XML_FILE_EXT);
-//		writeString(dummyXml, toSave);		
-//		toSave = new File(examplesDir, name + JSON_FILE_EXT);
-//		if(jsonText != null){
-//			writeString(jsonText, toSave);
-//		}
-//		File shemas = new File(parentDir, SCHEMAS_FOLDER);
-//		toSave = new File(shemas, fName + JSON_FILE_EXT);
-//		if(generatedSchema != null){
-//			writeString(generatedSchema, toSave);
-//		}
+
 	}
 
 	/**
@@ -1069,47 +1090,7 @@ public abstract class ResourceVisitor {
 	 * @param content a {@link java.lang.String} object.
 	 */
 	protected void generateExamle(File schemaFile, String content) {
-		/*if (schemaFile != null) {
-			File examplesDir = schemaFile.getParentFile();
-			if (examplesDir != null
-					&& examplesDir.getName().endsWith(SCHEMAS_FOLDER)) {
-				examplesDir = new File(examplesDir.getParent(), EXAMPLES_FOLDER);
-				examplesDir.mkdirs();
-				org.apache.xerces.xs.XSModel xsModel = new XSParser().parse(schemaFile.getAbsolutePath());
-
-				XSInstance xsInstance = new XSInstance();
-				xsInstance.minimumElementsGenerated = 2;
-				xsInstance.maximumElementsGenerated = 4;
-				xsInstance.generateOptionalElements = Boolean.TRUE; // null means
-																	// random
-
-				List<XSElementDeclaration> elements = XSUtil.guessRootElements(xsModel);
-				if (elements.size() == 0) {
-					System.err.println("no elements found in given xml schema: "
-							+ schemaFile.getName());
-					return;
-				} else {
-					try {
-						File toSave = new File(examplesDir, schemaFile.getName());
-
-						XSElementDeclaration elem = elements.get(0);
-						javax.xml.namespace.QName rootElement = XSUtil.getQName(elem,new MyNamespaceSupport());
-						StringWriter writer = new StringWriter();
-						XMLDocument sampleXml = new XMLDocument(new StreamResult(
-								writer), true, 4, null);
-						xsInstance.generate(xsModel, rootElement, sampleXml);
-						doGenerateAndSave(toSave, schemaFile.getParentFile().getParentFile(), examplesDir, 
-								writer.toString());
-					} catch (TransformerConfigurationException e) {
-						throw new IllegalStateException(e);
-					} catch (Exception e) {
-						throw new IllegalStateException(e.getMessage(), e);
-					}
-				}
-			}
-		}*/
-		/*String dummyXml = new XSDUtil().instantiateToString(schemaFile.getAbsolutePath(),null);
-		doGenerateAndSave(schemaFile, examplesDir.getParentFile(), examplesDir, dummyXml);*/
+		
 		return;
 	}
 
@@ -1148,63 +1129,10 @@ public abstract class ResourceVisitor {
 	 * @param st a {@link com.mulesoft.jaxrs.raml.StructureType} object. 
 	 */
 	protected void afterSchemaGen(ITypeModel t, StructureType st) {
-
-//		JAXBRegistry rs = new JAXBRegistry();
-//		JAXBType jaxbModel = rs.getJAXBModel(t);
-//		
-//		if(jaxbModel==null){
-//			return;
-//		}
-//		ISchemaType schemaModel = null;
-//		try{
-//			schemaModel = new SchemaModelBuilder(rs,this.config).buildSchemaModel(jaxbModel,st);
-//		}
-//		catch(Exception e){
-//			e.printStackTrace();
-//		}
-//		if(schemaModel==null){
-//			return;
-//		}
-//
-//		try{
-//			if(st == null || st == StructureType.COMMON){
-//				String xmlExample = new XMLModelSerializer().serialize(schemaModel);
-//				writeString(xmlExample, constructFileLocation(t.getName(), EXAMPLE, XML, st));
-//			}
-//		}
-//		catch(Exception e){
-//			e.printStackTrace();
-//		}
-//		
-//		try{
-//			String jsonExample = new JsonModelSerializer().serialize(schemaModel);
-//			writeString(jsonExample, constructFileLocation(t.getName(), EXAMPLE, JSON, st));
-//		}
-//		catch(Exception e){
-//			e.printStackTrace();
-//		}
-//
-//		try{
-//			String jsonSchema = new JsonSchemaModelSerializer().serialize(schemaModel);
-//			spec.getCoreRaml().addGlobalSchema(getSchemaName(t.getName(),JSON,st), jsonSchema, true, true);
-//			writeString(jsonSchema, constructFileLocation(t.getName(), SCHEMA, JSON, st));
-//		}
-//		catch(Exception e){
-//			e.printStackTrace();
-//		}
+		
 	}
 
-	private String getSchemaName(String typeName, String mediaType, StructureType st) {
-		StringBuilder bld = new StringBuilder(firstLetterToLowerCase(typeName));
-		if(st!=null&&st!=StructureType.COMMON){
-			bld.append("-").append(st.toString().toLowerCase());
-		}
-		if(mediaType.toLowerCase().indexOf(XML.toLowerCase())>=0){
-			bld.append("-xml");
-		}
-		return bld.toString();
-	}
-
+	
 	private String firstLetterToLowerCase(String str) {
 		if(str==null){
 			return null;
@@ -1214,12 +1142,14 @@ public abstract class ResourceVisitor {
 	
 	private static class ResponseModel{
 		
-		public ResponseModel(String code, String message, String returnTypeName, StructureType structureType) {
+		protected ITypeModel type;
+		
+		public ResponseModel(String code, String message,ITypeModel returnType, StructureType structureType) {
 			super();
 			this.code = code;
 			this.message = message;
-			this.returnTypeName = returnTypeName;
 			this.structureType = structureType;
+			this.type=returnType;
 		}
 		
 		private StructureType structureType;
@@ -1228,17 +1158,16 @@ public abstract class ResourceVisitor {
 		
 		private String message;
 		
-		private String returnTypeName;
+		
 		
 		private String produces[];
+		
+		
 
 		public String getCode() {
 			return code;
 		}
 
-		public void setCode(String code) {
-			this.code = code;
-		}
 
 		public String getMessage() {
 			return message;
@@ -1248,12 +1177,8 @@ public abstract class ResourceVisitor {
 			this.message = message;
 		}
 
-		public String getReturnTypeName() {
-			return returnTypeName;
-		}
-
-		public void setReturnTypeName(String returnTypeName) {
-			this.returnTypeName = returnTypeName;
+		ITypeModel getReturnType(){
+			return this.type;
 		}
 
 		public String[] getProduces() {

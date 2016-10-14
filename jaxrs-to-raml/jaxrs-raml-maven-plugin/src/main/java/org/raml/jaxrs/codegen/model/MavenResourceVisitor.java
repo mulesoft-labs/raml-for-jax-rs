@@ -2,11 +2,8 @@ package org.raml.jaxrs.codegen.model;
 
 import java.io.File;
 
-import org.aml.typesystem.ITypeModel;
-
 import com.mulesoft.jaxrs.raml.IRamlConfig;
 import com.mulesoft.jaxrs.raml.ResourceVisitor;
-import com.mulesoft.jaxrs.raml.StructureType;
 import com.mulesoft.jaxrs.raml.reflection.RuntimeResourceVisitor;
 
 /**
@@ -32,11 +29,11 @@ public class MavenResourceVisitor extends RuntimeResourceVisitor {
 		this.config=config;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected boolean generateXMLSchema(ITypeModel t, StructureType st) {
-		return super.generateXMLSchema(t,st);
-	}
+//	/** {@inheritDoc} */
+//	@Override
+//	protected boolean generateType(ITypeModel t, StructureType st) {
+//		return super.generateType(t,st);
+//	}
 
 	/**
 	 * <p>createResourceVisitor.</p>

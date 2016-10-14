@@ -114,10 +114,7 @@ public class WrapperMethodModel implements IMethodModel{
 		return originalMethod.getReturnedType();
 	}
 
-	@Override
-	public ITypeModel getBodyType() {
-		return originalMethod.getBodyType();
-	}
+	
 
 	@Override
 	public boolean isStatic() {

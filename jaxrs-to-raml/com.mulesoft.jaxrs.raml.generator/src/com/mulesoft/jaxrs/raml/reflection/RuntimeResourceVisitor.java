@@ -3,13 +3,11 @@ package com.mulesoft.jaxrs.raml.reflection;
 import java.io.File;
 
 import org.aml.typesystem.ITypeModel;
-import org.aml.typesystem.reflection.ReflectionType;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.mulesoft.jaxrs.raml.IRamlConfig;
 import com.mulesoft.jaxrs.raml.ResourceVisitor;
-import com.mulesoft.jaxrs.raml.StructureType;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonFormatter;
 import com.mulesoft.jaxrs.raml.jsonschema.JsonUtil;
 
@@ -67,33 +65,33 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	}
 	
 	/** {@inheritDoc} */
-	@Override
-	protected boolean generateXMLSchema(ITypeModel t, StructureType st) {
-		String name = t.getFullyQualifiedName();
-		if(name.equals("void")||name.equals("java.lang.Void")){
-			return false;
-		}
-		Class<?> element = null;
-		if (t instanceof ReflectionType) {
-			element = ((ReflectionType) t).getElement();
-			
-		}
-		else if (t.getFullyQualifiedName() != null && classLoader != null) {
-			try {
-				element = classLoader.loadClass(t.getFullyQualifiedName());				
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		if(element==null){
-			return false;
-		}
-		if(st == null || st == StructureType.COMMON){
-			generateXSDForClass(element);
-		}
-		afterSchemaGen(t,st);
-		return true;
-	}
+//	@Override
+//	protected boolean generateType(ITypeModel t, StructureType st) {
+//		String name = t.getFullyQualifiedName();
+//		if(name.equals("void")||name.equals("java.lang.Void")){
+//			return false;
+//		}
+//		Class<?> element = null;
+//		if (t instanceof ReflectionType) {
+//			element = ((ReflectionType) t).getElement();
+//			
+//		}
+//		else if (t.getFullyQualifiedName() != null && classLoader != null) {
+//			try {
+//				element = classLoader.loadClass(t.getFullyQualifiedName());				
+//			} catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		if(element==null){
+//			return false;
+//		}
+//		if(st == null || st == StructureType.COMMON){			
+//			generateXSDForClass(element);
+//		}
+//		afterSchemaGen(t,st);
+//		return true;
+//	}
 
 
 	

@@ -121,4 +121,9 @@ public class WrapperParameterModel implements IParameterModel {
 		}
 		return this.originalParameter;
 	}
+
+	@Override
+	public ITypeModel getType() {
+		return  originalParameter.getType();
+	}
 }

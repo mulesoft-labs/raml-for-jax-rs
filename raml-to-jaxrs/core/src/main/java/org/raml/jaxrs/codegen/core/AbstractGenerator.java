@@ -214,7 +214,7 @@ public abstract class AbstractGenerator {
 			e.setCodeModel(context.getCodeModel());
 		}
 
-		Resource[] resources = raml.resources();
+		List<Resource> resources = raml.resources();
 
 		for (final Resource resource : resources) {
 			createResourceInterface(resource, raml,configuration);

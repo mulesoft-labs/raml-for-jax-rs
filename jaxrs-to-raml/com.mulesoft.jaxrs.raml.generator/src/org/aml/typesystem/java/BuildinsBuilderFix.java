@@ -10,6 +10,7 @@ public class BuildinsBuilderFix extends BuiltinsBuilder{
 		bld.bldrs.put(Long.class.getName(), new SimpleBuilder(BuiltIns.INTEGER, false, "int64"));
 		bld.bldrs.put(Short.class.getName(), new SimpleBuilder(BuiltIns.INTEGER, false, "int16"));
 		bld.bldrs.put(Byte.class.getName(), new SimpleBuilder(BuiltIns.INTEGER, false, "int8"));
+		bld.bldrs.put(new org.aml.typesystem.reflection.ReflectionType(byte[].class).getName(), new SimpleBuilder(BuiltIns.STRING, true, null));
 		bld.bldrs.put(Double.class.getName(), new SimpleBuilder(BuiltIns.NUMBER, false, double.class.getName()));
 		bld.bldrs.put(Float.class.getName(), new SimpleBuilder(BuiltIns.NUMBER, false, float.class.getName()));
 	}

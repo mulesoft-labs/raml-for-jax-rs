@@ -181,17 +181,17 @@
         <dependency>
         	<groupId>com.onpositive.aml</groupId>
         	<artifactId>org.aml.typesystem.yaml</artifactId>
-        	<version>0.0.8-SNAPSHOT</version>
+        	<version>0.0.8</version>
         </dependency>
         <dependency>
         	<groupId>com.onpositive.aml</groupId>
         	<artifactId>org.aml.raml2java</artifactId>
-        	<version>0.0.8-SNAPSHOT</version>
+        	<version>0.0.8</version>
         </dependency>
         <dependency>
         	<groupId>com.onpositive.aml</groupId>
         	<artifactId>org.aml.typesystem</artifactId>
-        	<version>0.0.8-SNAPSHOT</version>
+        	<version>0.0.8</version>
         </dependency>
     </dependencies>
     <description>RAML JAXRS</description>
@@ -204,6 +204,5 @@
 		<name>Mulesoft</name>
 		<url>http://mulesoft.com</url>
 	</organization>
-	<url>https://github.com/mulesoft/raml-for-jax-rs</url>
-    
+	<url>https://github.com/mulesoft/raml-for-jax-rs</url>    
 </project>

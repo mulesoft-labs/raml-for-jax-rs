@@ -117,6 +117,8 @@ class Context
         this.configuration = configuration;
         writer=new JavaWriter();
         codeModel = writer.getModel();
+        writer.getConfig().setJacksonSupport(true);
+        writer.getConfig().setJaxbSupport(true);
         writer.setDefaultPackageName(configuration.getBasePackageName()+"."+configuration.getModelPackageName());
         resourcesMethods = new HashMap<String, Set<String>>();
 

@@ -35,6 +35,8 @@ import org.aml.typesystem.IType;
 import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.TypeOps;
 import org.aml.typesystem.java.AllObjectsAreOptional;
+import org.aml.typesystem.java.BuildinsBuilderFix;
+import org.aml.typesystem.java.BuiltinsBuilder;
 import org.aml.typesystem.java.JavaTypeBuilder;
 import org.aml.typesystem.java.OptionalityNullabilityChecker;
 import org.aml.typesystem.reflection.ReflectionType;
@@ -79,6 +81,7 @@ public abstract class ResourceVisitor {
 
 	{
 		builder.getConfig().setCheckNullable(new AllObjectsAreOptional());
+		new BuildinsBuilderFix();
 	}
 	
 	public class CustomSchemaOutputResolver extends SchemaOutputResolver {

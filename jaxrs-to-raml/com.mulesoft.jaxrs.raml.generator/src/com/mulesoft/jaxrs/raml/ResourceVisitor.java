@@ -723,9 +723,12 @@ public abstract class ResourceVisitor {
 				for (String mediaType : producesValues) {
 					mediaType = sanitizeMediaType(mediaType);
 					MimeTypeImpl mimeType = new MimeTypeImpl();
-					tryAppendSchemesAndExamples(mimeType, mediaType, rm.getReturnType(), rm.getStructureType());
-					mimeType.setName(mediaType);
-					response.body().add(mimeType);
+					final ITypeModel returnType2 = rm.getReturnType();
+					if (!returnType2.getName().equals("void")){
+						tryAppendSchemesAndExamples(mimeType, mediaType, returnType2, rm.getStructureType());
+						mimeType.setName(mediaType);
+						response.body().add(mimeType);
+					}
 				}
 			}
 			action.responses().add(response);
@@ -820,7 +823,7 @@ public abstract class ResourceVisitor {
 		proceedType(type, param, model);
 		String text = documentation.getDocumentation(model
 				.getName());
-		if (!"".equals(text)) { //$NON-NLS-1$
+		if (text!=null&&!"".equals(text)) { //$NON-NLS-1$
 			param.setDescription(text);
 		}
 		

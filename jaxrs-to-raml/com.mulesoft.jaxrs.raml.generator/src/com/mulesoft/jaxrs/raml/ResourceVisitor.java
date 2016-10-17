@@ -724,7 +724,7 @@ public abstract class ResourceVisitor {
 					mediaType = sanitizeMediaType(mediaType);
 					MimeTypeImpl mimeType = new MimeTypeImpl();
 					final ITypeModel returnType2 = rm.getReturnType();
-					if (!returnType2.getName().equals("void")){
+					if (returnType2!=null&&!returnType2.getName().equals("void")){
 						tryAppendSchemesAndExamples(mimeType, mediaType, returnType2, rm.getStructureType());
 						mimeType.setName(mediaType);
 						response.body().add(mimeType);

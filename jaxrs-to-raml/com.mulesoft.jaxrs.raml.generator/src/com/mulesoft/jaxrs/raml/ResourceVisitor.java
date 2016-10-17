@@ -15,6 +15,7 @@ import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import org.aml.apimodel.INamedParam;
 import org.aml.apimodel.MimeType;
 import org.aml.apimodel.impl.ActionImpl;
 import org.aml.apimodel.impl.ApiImpl;
@@ -27,12 +28,15 @@ import org.aml.typesystem.AbstractType;
 import org.aml.typesystem.BuiltIns;
 import org.aml.typesystem.IAnnotationModel;
 import org.aml.typesystem.IDocInfo;
+import org.aml.typesystem.IMember;
 import org.aml.typesystem.IMethodModel;
 import org.aml.typesystem.IParameterModel;
 import org.aml.typesystem.IType;
 import org.aml.typesystem.ITypeModel;
 import org.aml.typesystem.TypeOps;
+import org.aml.typesystem.java.AllObjectsAreOptional;
 import org.aml.typesystem.java.JavaTypeBuilder;
+import org.aml.typesystem.java.OptionalityNullabilityChecker;
 import org.aml.typesystem.reflection.ReflectionType;
 import org.aml.typesystem.yamlwriter.RamlWriter;
 
@@ -73,6 +77,10 @@ public abstract class ResourceVisitor {
 	
 	private JavaTypeBuilder builder=new JavaTypeBuilder();
 
+	{
+		builder.getConfig().setCheckNullable(new AllObjectsAreOptional());
+	}
+	
 	public class CustomSchemaOutputResolver extends SchemaOutputResolver {
 
 		private final String name;
@@ -541,7 +549,19 @@ public abstract class ResourceVisitor {
 				IAnnotationModel paramAnnotation = pm.getAnnotation(PATH_PARAM);
 				NamedParamImpl value2 = new NamedParamImpl();
 				configureParam(pm, value2, documentation,paramAnnotation);
-				res.uriParameters().add(value2);
+				ResourceImpl r=res;
+				while (r!=null){
+					if (r.relativeUri().indexOf("{"+value2.getKey()+"}")!=-1){
+						break;
+					}
+					r=(ResourceImpl) r.parentResource();
+				}
+				for (INamedParam p:r.uriParameters()){
+					if (p.getKey().equals(pm.getName())){
+						continue;
+					}
+				}
+				r.uriParameters().add(value2);
 			}
 		}
 

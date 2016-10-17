@@ -42,7 +42,7 @@ public class JsonUtils {
 	 * <p>createSchemaNode.</p>
 	 *
 	 * @param text a {@link java.lang.String} object.
-	 * @return a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @return a {@link JsonSchemaNode} object.
 	 */
 	public static JsonSchemaNode createSchemaNode(String text){
 		

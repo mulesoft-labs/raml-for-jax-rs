@@ -161,7 +161,7 @@ public abstract class ResourceVisitor {
 	/**
 	 * <p>visit.</p>
 	 *
-	 * @param t a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @param t a {@link ITypeModel} object.
 	 */
 	public void visit(ITypeModel t) {
 		consumedTypes.add(t);
@@ -257,8 +257,8 @@ public abstract class ResourceVisitor {
 	/**
 	 * <p>generateXMLSchema.</p>
 	 *
-	 * @param t a {@link org.aml.typesystem.java.ITypeModel} object.
-	 * @param st a {@link com.mulesoft.jaxrs.raml.StructureType} object. 
+	 * @param t a {@link ITypeModel} object.
+	 * @param st a {@link StructureType} object. 
 	 * @return if schema is correctly generated and can be used inside RAML
 	 */
 	protected AbstractType generateType(ITypeModel t, StructureType st){
@@ -500,7 +500,7 @@ public abstract class ResourceVisitor {
 	/**
 	 * <p>createResourceVisitor.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.ResourceVisitor} object.
+	 * @return a {@link ResourceVisitor} object.
 	 */
 	protected abstract ResourceVisitor createResourceVisitor();
 
@@ -1097,7 +1097,7 @@ public abstract class ResourceVisitor {
 	/**
 	 * <p>setPreferences.</p>
 	 *
-	 * @param preferencesConfig a {@link com.mulesoft.jaxrs.raml.IRamlConfig} object.
+	 * @param preferencesConfig a {@link IRamlConfig} object.
 	 */
 	public void setPreferences(IRamlConfig preferencesConfig) {
 		this.config=preferencesConfig;
@@ -1125,8 +1125,8 @@ public abstract class ResourceVisitor {
 	/**
 	 * <p>afterSchemaGen.</p>
 	 *
-	 * @param t a {@link org.aml.typesystem.java.ITypeModel} object.
-	 * @param st a {@link com.mulesoft.jaxrs.raml.StructureType} object. 
+	 * @param t a {@link ITypeModel} object.
+	 * @param st a {@link StructureType} object. 
 	 */
 	protected void afterSchemaGen(ITypeModel t, StructureType st) {
 		

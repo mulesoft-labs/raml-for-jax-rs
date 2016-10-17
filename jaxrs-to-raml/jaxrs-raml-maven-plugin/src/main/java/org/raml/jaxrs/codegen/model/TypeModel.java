@@ -53,7 +53,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/**
 	 * <p>Getter for the field <code>methods</code>.</p>
 	 *
-	 * @return an array of {@link org.aml.typesystem.java.IMethodModel} objects.
+	 * @return an array of {@link IMethodModel} objects.
 	 */
 	public IMethodModel[] getMethods() {
 		return methods.values().toArray(new IMethodModel[methods.size()]);
@@ -62,7 +62,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/**
 	 * <p>addMethod.</p>
 	 *
-	 * @param method a {@link org.aml.typesystem.java.IMethodModel} object.
+	 * @param method a {@link IMethodModel} object.
 	 */
 	public void addMethod(IMethodModel method){
 		methods.put(method.getName(),method);
@@ -129,7 +129,7 @@ public class TypeModel extends GenericElementModel implements ITypeModel{
 	/**
 	 * <p>addField.</p>
 	 *
-	 * @param fieldModel a {@link org.aml.typesystem.java.IFieldModel} object.
+	 * @param fieldModel a {@link IFieldModel} object.
 	 */
 	public void addField(IFieldModel fieldModel) {
 		fields.put(fieldModel.getName(),fieldModel);

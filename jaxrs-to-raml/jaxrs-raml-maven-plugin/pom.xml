@@ -23,6 +23,7 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
   </distributionManagement>
+  
 <profiles>
     <profile>
         <id>sonatype</id>
@@ -60,7 +61,7 @@
 	<packaging>maven-plugin</packaging>
 
 	<properties>
-		<org.apache.maven.plugin-tools.version>3.2</org.apache.maven.plugin-tools.version>
+		<org.apache.maven.plugin-tools.version>3.3</org.apache.maven.plugin-tools.version>
 		<licensePath>../LICENSE_HEADER.txt</licensePath>
 	</properties>
 

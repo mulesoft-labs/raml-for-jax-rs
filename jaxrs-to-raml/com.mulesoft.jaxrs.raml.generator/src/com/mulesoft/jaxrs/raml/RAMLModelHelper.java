@@ -46,7 +46,7 @@ public class RAMLModelHelper {
 	/**
 	 * <p>Getter for the field <code>coreRaml</code>.</p>
 	 *
-	 * @return a {@link org.raml.model.Raml2} object.
+	 * @return a {@link ApiImpl} object.
 	 */
 	public ApiImpl getCoreRaml() {
 		return coreRaml;

@@ -24,7 +24,7 @@ public class JsonSchemaNode implements ISchemaNode{
 	 *
 	 * @param name a {@link java.lang.String} object.
 	 * @param object a {@link org.codehaus.jettison.json.JSONObject} object.
-	 * @param parent a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @param parent a {@link JsonSchemaNode} object.
 	 */
 	public JsonSchemaNode(String name, JSONObject object, JsonSchemaNode parent) {
 		super();
@@ -50,7 +50,7 @@ public class JsonSchemaNode implements ISchemaNode{
 	/**
 	 * <p>Getter for the field <code>parent</code>.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @return a {@link JsonSchemaNode} object.
 	 */
 	public JsonSchemaNode getParent() {
 		return parent;
@@ -237,7 +237,7 @@ public class JsonSchemaNode implements ISchemaNode{
 	/**
 	 * <p>setProperty.</p>
 	 *
-	 * @param property a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @param property a {@link JsonSchemaNode} object.
 	 */
 	public void setProperty(JsonSchemaNode property){
 		
@@ -267,7 +267,7 @@ public class JsonSchemaNode implements ISchemaNode{
 	/**
 	 * <p>addArrayItem.</p>
 	 *
-	 * @param item a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @param item a {@link JsonSchemaNode} object.
 	 */
 	public void addArrayItem(JsonSchemaNode item){
 		
@@ -311,7 +311,7 @@ public class JsonSchemaNode implements ISchemaNode{
 	/**
 	 * <p>removeProperty.</p>
 	 *
-	 * @param property a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @param property a {@link JsonSchemaNode} object.
 	 */
 	public void removeProperty(JsonSchemaNode property){
 		
@@ -393,7 +393,7 @@ public class JsonSchemaNode implements ISchemaNode{
 	/**
 	 * <p>addChildNode.</p>
 	 *
-	 * @param node a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @param node a {@link JsonSchemaNode} object.
 	 */
 	public void addChildNode(JsonSchemaNode node){
 		if(type.equals("array")){
@@ -491,8 +491,8 @@ public class JsonSchemaNode implements ISchemaNode{
 	/**
 	 * <p>compare.</p>
 	 *
-	 * @param node1 a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
-	 * @param node2 a {@link com.mulesoft.jaxrs.raml.jsonschema.JsonSchemaNode} object.
+	 * @param node1 a {@link JsonSchemaNode} object.
+	 * @param node2 a {@link JsonSchemaNode} object.
 	 * @return a boolean.
 	 */
 	public static boolean compare(JsonSchemaNode node1, JsonSchemaNode node2) {

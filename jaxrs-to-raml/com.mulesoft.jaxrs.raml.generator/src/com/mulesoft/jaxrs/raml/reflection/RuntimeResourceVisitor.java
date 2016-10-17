@@ -35,7 +35,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	 *
 	 * @param outputFile a {@link java.io.File} object.
 	 * @param classLoader a {@link java.lang.ClassLoader} object.
-	 * @param preferencesConfig a {@link com.mulesoft.jaxrs.raml.IRamlConfig} object.
+	 * @param preferencesConfig a {@link IRamlConfig} object.
 	 */
 	public RuntimeResourceVisitor(File outputFile, ClassLoader classLoader, IRamlConfig preferencesConfig) {
 		super(outputFile, classLoader);
@@ -98,7 +98,7 @@ public class RuntimeResourceVisitor extends ResourceVisitor {
 	/**
 	 * <p>createResourceVisitor.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.ResourceVisitor} object.
+	 * @return a {@link ResourceVisitor} object.
 	 */
 	protected ResourceVisitor createResourceVisitor() {
 		return new RuntimeResourceVisitor(outputFile, classLoader);

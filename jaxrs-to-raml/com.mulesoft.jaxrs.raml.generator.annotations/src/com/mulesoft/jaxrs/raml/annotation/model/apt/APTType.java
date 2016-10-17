@@ -41,7 +41,7 @@ public class APTType extends APTGenericElement implements ITypeModel{
 	/**
 	 * <p>getMethods.</p>
 	 *
-	 * @return an array of {@link org.aml.typesystem.java.IMethodModel} objects.
+	 * @return an array of {@link IMethodModel} objects.
 	 */
 	public IMethodModel[] getMethods() {
 		List<? extends Element> enclosedElements = element.getEnclosedElements();

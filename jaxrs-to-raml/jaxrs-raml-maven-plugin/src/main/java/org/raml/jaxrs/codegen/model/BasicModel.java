@@ -55,7 +55,7 @@ public abstract class BasicModel implements IBasicModel{
 	/**
 	 * <p>getJAXBType.</p>
 	 *
-	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @return a {@link ITypeModel} object.
 	 */
 	public List<ITypeModel> getJAXBTypes() {
 		return this.jaxbTypes;
@@ -261,7 +261,7 @@ public abstract class BasicModel implements IBasicModel{
 	/**
 	 * <p>Setter for the field <code>jaxbType</code>.</p>
 	 *
-	 * @param processTypeReference a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @param processTypeReference a {@link ITypeModel} object.
 	 */
 	public void addJaxbType(ITypeModel processTypeReference) {
 		if(this.jaxbTypes==null){

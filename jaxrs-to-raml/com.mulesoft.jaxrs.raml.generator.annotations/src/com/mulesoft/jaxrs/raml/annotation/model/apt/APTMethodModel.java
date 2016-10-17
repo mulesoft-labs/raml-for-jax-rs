@@ -59,7 +59,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	/**
 	 * <p>getBasicDocInfo.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.IDocInfo} object.
+	 * @return a {@link IDocInfo} object.
 	 */
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
@@ -91,7 +91,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	/**
 	 * <p>getReturnedType.</p>
 	 *
-	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @return a {@link ITypeModel} object.
 	 */
 	public ITypeModel getReturnedType() {
 		TypeMirror returnType = element.getReturnType();
@@ -138,7 +138,7 @@ public class APTMethodModel extends APTGenericElement implements IMethodModel {
 	/**
 	 * <p>getBodyType.</p>
 	 *
-	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @return a {@link ITypeModel} object.
 	 */
 	public ITypeModel getBodyType() {		
 		return null;

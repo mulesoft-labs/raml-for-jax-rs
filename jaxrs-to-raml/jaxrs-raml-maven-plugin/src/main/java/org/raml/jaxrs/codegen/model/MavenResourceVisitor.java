@@ -22,7 +22,7 @@ public class MavenResourceVisitor extends RuntimeResourceVisitor {
 	 *
 	 * @param outputFile a {@link java.io.File} object.
 	 * @param classLoader a {@link java.lang.ClassLoader} object.
-	 * @param config a {@link com.mulesoft.jaxrs.raml.IRamlConfig} object.
+	 * @param config a {@link IRamlConfig} object.
 	 */
 	public MavenResourceVisitor(File outputFile, ClassLoader classLoader,IRamlConfig config) {
 		super(outputFile, classLoader,config);
@@ -38,7 +38,7 @@ public class MavenResourceVisitor extends RuntimeResourceVisitor {
 	/**
 	 * <p>createResourceVisitor.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.ResourceVisitor} object.
+	 * @return a {@link ResourceVisitor} object.
 	 */
 	protected ResourceVisitor createResourceVisitor() {
 		return new MavenResourceVisitor(outputFile, classLoader,config);

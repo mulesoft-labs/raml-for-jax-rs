@@ -36,7 +36,7 @@ public class APTFieldModel extends APTModel implements IFieldModel{
 	/**
 	 * <p>getType.</p>
 	 *
-	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @return a {@link ITypeModel} object.
 	 */
 	public ITypeModel getType() {
 		TypeMirror returnType = element.asType();

@@ -44,7 +44,7 @@ public class TypeModelRegistry {
 	/**
 	 * <p>registerType.</p>
 	 *
-	 * @param type a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @param type a {@link ITypeModel} object.
 	 */
 	public void registerType(ITypeModel type)
 	{
@@ -61,7 +61,7 @@ public class TypeModelRegistry {
 	/**
 	 * <p>registerTargetType.</p>
 	 *
-	 * @param type a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @param type a {@link ITypeModel} object.
 	 */
 	public void registerTargetType(ITypeModel type)
 	{
@@ -81,7 +81,7 @@ public class TypeModelRegistry {
 	 * <p>getType.</p>
 	 *
 	 * @param qualifiedName a {@link java.lang.String} object.
-	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @return a {@link ITypeModel} object.
 	 */
 	public ITypeModel getType(String qualifiedName){
 		return typeMap.get(qualifiedName);

@@ -43,7 +43,7 @@ public interface IRamlConfig {
 	/**
 	 * <p>getResponseCode.</p>
 	 *
-	 * @param type a {@link org.raml.model.ActionType} object.
+	 * @param type a {@link ActionType} object.
 	 * @return a {@link java.lang.String} object.
 	 */
 	String getResponseCode(ActionType type);

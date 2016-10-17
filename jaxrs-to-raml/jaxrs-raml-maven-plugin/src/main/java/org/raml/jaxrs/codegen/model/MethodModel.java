@@ -71,7 +71,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>getBasicDocInfo.</p>
 	 *
-	 * @return a {@link com.mulesoft.jaxrs.raml.IDocInfo} object.
+	 * @return a {@link IDocInfo} object.
 	 */
 	public IDocInfo getBasicDocInfo() {
 		return new IDocInfo() {
@@ -94,7 +94,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Getter for the field <code>returnedType</code>.</p>
 	 *
-	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @return a {@link ITypeModel} object.
 	 */
 	public ITypeModel getReturnedType() {
 		return returnedType;
@@ -104,7 +104,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Setter for the field <code>returnedType</code>.</p>
 	 *
-	 * @param returnType a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @param returnType a {@link ITypeModel} object.
 	 */
 	public void setReturnedType(ITypeModel returnType) {
 		this.returnedType = returnType;
@@ -153,7 +153,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Getter for the field <code>bodyType</code>.</p>
 	 *
-	 * @return a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @return a {@link ITypeModel} object.
 	 */
 	public ITypeModel getBodyType() {		
 		return bodyType;
@@ -162,7 +162,7 @@ public class MethodModel extends GenericElementModel implements IMethodModel {
 	/**
 	 * <p>Setter for the field <code>bodyType</code>.</p>
 	 *
-	 * @param bodyType a {@link org.aml.typesystem.java.ITypeModel} object.
+	 * @param bodyType a {@link ITypeModel} object.
 	 */
 	public void setBodyType(ITypeModel bodyType) {
 		this.bodyType = bodyType;

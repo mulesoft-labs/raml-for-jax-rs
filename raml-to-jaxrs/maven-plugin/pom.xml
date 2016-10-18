@@ -3,12 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.raml</groupId>
-		<artifactId>raml-jaxrs-codegen-parent</artifactId>
-<version>1.3.5-SNAPSHOT</version>
-	</parent>
+        <groupId>com.onpositive.aml</groupId>
+        <artifactId>raml-jaxrs-codegen-parent</artifactId>
+<version>1.3.6</version>
+    </parent>
 
-	<groupId>org.raml.plugins</groupId>
 	<artifactId>raml-jaxrs-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<name>RAML JAX-RS Maven Plug-in</name>
@@ -20,7 +19,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.raml</groupId>
+			<groupId>com.onpositive.aml</groupId>
 			<artifactId>raml-jaxrs-codegen-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>

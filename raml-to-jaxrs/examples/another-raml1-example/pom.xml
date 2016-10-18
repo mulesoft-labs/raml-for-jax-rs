@@ -68,9 +68,9 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.raml.plugins</groupId>
+				<groupId>com.onpositive.aml</groupId>
 				<artifactId>raml-jaxrs-maven-plugin</artifactId>
-				<version>${project.version}</version>
+				<version>1.3.6</version>
 				<configuration>
 					<sourceDirectory>${basedir}/src/main/resources/raml</sourceDirectory>
 					<basePackageName>org.raml.jaxrs.example</basePackageName>

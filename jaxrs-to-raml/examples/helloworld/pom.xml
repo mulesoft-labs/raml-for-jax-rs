@@ -23,8 +23,8 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<version>1.3.5-SNAPSHOT</version>
-				<groupId>org.raml.plugins</groupId>
+				<version>1.3.6</version>
+				<groupId>com.onpositive.aml</groupId>
 				<artifactId>jaxrs-raml-maven-plugin</artifactId>
 				<configuration>
 					<sourceDirectory>${basedir}/src/main/java</sourceDirectory>

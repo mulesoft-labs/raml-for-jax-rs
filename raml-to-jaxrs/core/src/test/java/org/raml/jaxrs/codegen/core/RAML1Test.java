@@ -44,10 +44,15 @@ public class RAML1Test {
 
 	@Test
 	public void runForJaxrs20WithJsr303() throws Exception {
-		run(JaxrsVersion.JAXRS_2_0, true);
+		run(JaxrsVersion.JAXRS_2_0, true, "/org/raml/t9.raml");
+	}
+	
+	@Test
+	public void runComplete() throws Exception {
+		run(JaxrsVersion.JAXRS_2_0, true, "/testComplete1.raml");
 	}
 
-	private void run(final JaxrsVersion jaxrsVersion, final boolean useJsr303Annotations) throws Exception {
+	private void run(final JaxrsVersion jaxrsVersion, final boolean useJsr303Annotations,String resource) throws Exception {
 		final Set<String> generatedSources = new HashSet<String>();
 
 		final Configuration configuration = new Configuration();
@@ -59,8 +64,9 @@ public class RAML1Test {
 		String dirPath = getClass().getResource("/org/raml").getPath();
 
 		configuration.setSourceDirectory(new File(dirPath));
+		String name = resource;
 		Set<String> run = new Generator()
-				.run(new InputStreamReader(getClass().getResourceAsStream("/org/raml/t9.raml")), configuration);
+				.run(new InputStreamReader(getClass().getResourceAsStream(name)), configuration);
 		for (String s : run) {
 			generatedSources.add(s.replace('\\', '/'));
 		}

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -192,7 +193,7 @@ public abstract class AbstractGenerator {
 	 */
 	public Set<String> run(final Reader raml, final Configuration configuration)throws Exception{
 		System.out.println("relative includes are not supported in this mode!");
-		return run(raml,configuration,"");
+		return run(raml,configuration,"",true);
 	}
 	/**
 	 * <p>run.</p>
@@ -749,6 +750,10 @@ public abstract class AbstractGenerator {
 		return stringBuilder.toString();
 	}
 
+	public Set<String> run(final Reader ramlReader,
+			final Configuration configuration,String readerLocation) throws Exception {
+		return run(ramlReader, configuration,readerLocation,false);
+	}
 	/**
 	 * <p>run.</p>
 	 *
@@ -759,7 +764,7 @@ public abstract class AbstractGenerator {
 	 * @param readerLocation a {@link java.lang.String} object.
 	 */
 	public Set<String> run(final Reader ramlReader,
-			final Configuration configuration,String readerLocation) throws Exception {
+			final Configuration configuration,String readerLocation,boolean ignoreErrors) throws Exception {
 		if (isNotBlank(configuration.getAsyncResourceTrait())
 				&& configuration.getJaxrsVersion() == JaxrsVersion.JAXRS_1_1) {
 			throw new IllegalArgumentException(
@@ -770,10 +775,13 @@ public abstract class AbstractGenerator {
 		ResourceLoader[] loaderArray = prepareResourceLoaders(configuration,folder);
 		TopLevelRamlModelBuilder bld=new TopLevelRamlModelBuilder();
 		TopLevelRamlImpl build = bld.build(ramlBuffer, new CompositeResourceLoader(loaderArray), readerLocation);
-		if(build.isOk()&&build instanceof Api){
-			return run((Api)build, configuration);
+		if(ignoreErrors||(build.isOk())){
+			if (build instanceof Api){
+				return run((Api)build, configuration);
+			}
+			return new LinkedHashSet<>();
 		}			
-		 else {
+		 else {			 
 			final List<String> validationErrors = Lists.transform(build.validationResults(),
 					new Function<ValidationResult, String>() {
 

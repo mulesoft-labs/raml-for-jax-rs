@@ -207,7 +207,7 @@ class Context
             // the type generators can pick it up
             final String schemaFileName = "schema" + schemaNameOrContent.hashCode();
             final File schemaFile = new File(globalSchemaStore, schemaFileName);
-            FileUtils.writeStringToFile(schemaFile, schemaNameOrContent);
+            FileUtils.writeStringToFile(schemaFile, schemaNameOrContent, "UTF-8");
             return new SimpleEntry<File, String>(schemaFile, null);
         }
     }

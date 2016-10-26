@@ -7,9 +7,11 @@
     <name>RAML JAX-RS Codegen</name>
 <version>1.3.5-SNAPSHOT</version>
     <modules>
-        <module>core</module>
+<!--
         <module>maven-plugin</module>
         <module>gradle-plugin</module>
+-->
+        <module>jaxrs-code-generator</module>
     </modules>
  <distributionManagement>
        <repository>

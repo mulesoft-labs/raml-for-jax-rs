@@ -1,13 +1,13 @@
 <project>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.raml</groupId>
-  <artifactId>com.mulesoft.jaxrs-raml.all</artifactId>
-<version>1.3.5-SNAPSHOT</version>
-  <packaging>pom</packaging>  
-  <distributionManagement>
-       <repository>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.raml</groupId>
+    <artifactId>com.mulesoft.jaxrs-raml.all</artifactId>
+    <version>1.3.5-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <distributionManagement>
+        <repository>
             <id>mule-ee-releases</id>
-            <name>Mule Release Repository</name>                                               
+            <name>Mule Release Repository</name>
             <url>http://repository-master.mulesoft.org/releases/</url>
         </repository>
         <snapshotRepository>
@@ -16,104 +16,91 @@
             <url>http://repository-master.mulesoft.org/snapshots/</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
-  </distributionManagement>  
-  <profiles>
-    <profile>
-      <id>sonatype</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
-      <build>
+    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>sonatype</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.raml</groupId>
+                <artifactId>raml-parser-2</artifactId>
+                <version>1.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
         <plugins>
-          <!--
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-        	</plugin>
-          -->  
-        </plugins>
-      </build>
-    </profile>
-     
-  </profiles>
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-source-plugin</artifactId>
-      <version>2.3</version>
-      <executions>
-        <execution>
-          <id>attach-sources</id>
-          <goals>
-            <goal>jar-no-fork</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-javadoc-plugin</artifactId>
-      <version>2.9.1</version>
-      <executions>
-        <execution>
-          <id>attach-javadocs</id>
-          <goals>
-            <goal>jar</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-   
-  </plugins>
-</build>    
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-  <modules>
-	<!-- <module>eclipse</module> -->
-	<module>jaxrs-to-raml</module>
-	<module>raml-to-jaxrs</module>
-  </modules>
-  <name>RAML to JAXRS</name>
-  <description>RAML to JAXRS</description>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>jaxrs-to-raml</module>
+        <module>raml-to-jaxrs</module>
+    </modules>
+    <name>RAML to JAXRS</name>
+    <description>RAML to JAXRS</description>
     <scm>
-		<url>https://github.com/mulesoft/raml-for-jax-rs.git</url>
-		<connection>https://github.com/mulesoft/raml-for-jax-rs.git</connection>
-		<developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
-	</scm>
-	<organization>
-		<name>Mulesoft</name>
-		<url>http://mulesoft.com</url>
-	</organization>
-	<url>https://github.com/mulesoft/raml-for-jax-rs</url>
-	<licenses>
-  <license>
-    <name>The Apache License, Version 2.0</name>
-    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-  </license>   
-</licenses>
-   <developers>
-    <developer>
-      <name>Pavel Petrochenko</name>
-      <email>petrochenko.pavel.a@gmail.com</email>
-      <organization>Mulesoft</organization>
-      <organizationUrl>http://mulesoft.com</organizationUrl>
-    </developer>
-  </developers>
+        <url>https://github.com/mulesoft/raml-for-jax-rs.git</url>
+        <connection>https://github.com/mulesoft/raml-for-jax-rs.git</connection>
+        <developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
+    </scm>
+    <organization>
+        <name>Mulesoft</name>
+        <url>http://mulesoft.com</url>
+    </organization>
+    <url>https://github.com/mulesoft/raml-for-jax-rs</url>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Pavel Petrochenko</name>
+            <email>petrochenko.pavel.a@gmail.com</email>
+            <organization>Mulesoft</organization>
+            <organizationUrl>http://mulesoft.com</organizationUrl>
+        </developer>
+    </developers>
 </project> 

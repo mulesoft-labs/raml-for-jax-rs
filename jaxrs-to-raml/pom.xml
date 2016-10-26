@@ -3,9 +3,12 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.raml</groupId>
+    <parent>
+        <groupId>org.raml</groupId>
+        <artifactId>com.mulesoft.jaxrs-raml.all</artifactId>
+        <version>1.3.5-SNAPSHOT</version>
+    </parent>
     <artifactId>jaxrs-to-raml</artifactId>
-    <version>1.3.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
 <!--

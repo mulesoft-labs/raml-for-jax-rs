@@ -1,10 +1,11 @@
 package org.raml.jaxrs.generator;
 
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.builders.ResourceImplementation;
 
 /**
  * Created by Jean-Philippe Belanger on 10/26/16.
- * Just potential zeroes and ones
+ * The art of building stuff is here.
  */
 public class CurrentBuild {
 
@@ -15,8 +16,8 @@ public class CurrentBuild {
         this.defaultPackage = defaultPackage;
     }
 
-    public ResourceCreator createResource(String name) {
+    public ResourceImplementation createResource(String name) {
 
-        return new ResourceCreator(TypeSpec.classBuilder(name));
+        return new ResourceImplementation(defaultPackage, Names.buildResourceInterfaceName(name));
     }
 }

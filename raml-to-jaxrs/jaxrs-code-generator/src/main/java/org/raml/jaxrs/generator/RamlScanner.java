@@ -1,8 +1,10 @@
 package org.raml.jaxrs.generator;
 
 
+import org.raml.jaxrs.generator.v10.ResourceHandler;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
+import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +45,10 @@ public class RamlScanner {
     public void handle(org.raml.v2.api.model.v10.api.Api api) {
 
 
+        for (Resource resource : api.resources()) {
+            ResourceHandler handler = new ResourceHandler();
+            handler.handle(new CurrentBuild("jp.fun"), api, resource);
+        }
 
     }
 

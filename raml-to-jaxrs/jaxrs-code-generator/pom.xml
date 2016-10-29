@@ -6,9 +6,20 @@
 
     <parent>
         <groupId>org.raml</groupId>
-        <artifactId>raml-jaxrs-codegen-parent</artifactId>
+        <artifactId>raml-to-jaxrs</artifactId>
         <version>1.3.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>jaxrs-code-generator</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-parser-2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -9,7 +9,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 10/27/16.
  * Abstraction of creation.
  */
-public class ResourceImplementation {
+public class ResourceImplementation implements ResourceBuilder {
 
     private final String pack;
     private final TypeSpec.Builder typeSpec;

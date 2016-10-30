@@ -14,9 +14,9 @@ public class ResourceInterface implements ResourceBuilder {
     private final String pack;
     private final TypeSpec.Builder typeSpec;
 
-    public ResourceInterface(String pack, TypeSpec.Builder typeSpec) {
+    public ResourceInterface(String pack, String className) {
         this.pack = pack;
-        this.typeSpec = typeSpec;
+        this.typeSpec = TypeSpec.classBuilder(className);
     }
 
     @Override

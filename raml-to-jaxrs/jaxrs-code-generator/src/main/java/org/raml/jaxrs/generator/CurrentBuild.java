@@ -1,7 +1,9 @@
 package org.raml.jaxrs.generator;
 
-import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.builders.CompositeResourceBuilder;
+import org.raml.jaxrs.generator.builders.ResourceBuilder;
 import org.raml.jaxrs.generator.builders.ResourceImplementation;
+import org.raml.jaxrs.generator.builders.ResourceInterface;
 
 /**
  * Created by Jean-Philippe Belanger on 10/26/16.
@@ -16,8 +18,11 @@ public class CurrentBuild {
         this.defaultPackage = defaultPackage;
     }
 
-    public ResourceImplementation createResource(String name) {
+    public ResourceBuilder createResource(String name) {
 
-        return new ResourceImplementation(defaultPackage, Names.buildResourceInterfaceName(name));
+        return new CompositeResourceBuilder(
+                new ResourceImplementation(defaultPackage, Names.buildResourceInterfaceName(name)),
+                new ResourceInterface(defaultPackage, Names.buildResourceInterfaceName(name) + "Impl")
+        );
     }
 }

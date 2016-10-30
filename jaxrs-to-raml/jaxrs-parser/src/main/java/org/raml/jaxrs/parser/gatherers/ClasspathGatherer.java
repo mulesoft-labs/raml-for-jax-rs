@@ -18,6 +18,8 @@ import org.reflections.scanners.TypeElementsScanner;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,8 +70,18 @@ public class ClasspathGatherer implements Gatherer {
     }
 
     @VisibleForTesting
-    Set<Class<?>> getClassesContainingPaths() {
+    Set<Class<?>> getClassesWithPaths() {
         return Sets.union(getClassesAnnotatedWithPath(), getClassesWithMethodsAnnotatedWithPath());
+    }
+
+    @VisibleForTesting
+    Set<Class<?>> getClassesWithGets() {
+        return classesOfMethods(reflections.getMethodsAnnotatedWith(GET.class));
+    }
+
+    @VisibleForTesting
+    Set<Class<?>> getClassesWithPuts() {
+        return classesOfMethods(reflections.getMethodsAnnotatedWith(PUT.class));
     }
 
     @VisibleForTesting
@@ -79,13 +91,16 @@ public class ClasspathGatherer implements Gatherer {
 
     @VisibleForTesting
     Set<Class<?>> getClassesWithMethodsAnnotatedWithPath() {
-        Set<Method> methodsAnnotatedWithPath = reflections.getMethodsAnnotatedWith(Path.class);
+        return classesOfMethods(reflections.getMethodsAnnotatedWith(Path.class));
+    }
 
+    private Set<Class<?>> classesOfMethods(Iterable<Method> methodsAnnotatedWithPath) {
         Set<Class<?>> theirClasses = Sets.newHashSet();
         for (Method method : methodsAnnotatedWithPath) {
             theirClasses.add(method.getDeclaringClass());
         }
-
         return theirClasses;
     }
+
+
 }

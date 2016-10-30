@@ -2,12 +2,17 @@ package org.raml.jaxrs.generator.builders;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 10/27/16.
@@ -17,6 +22,7 @@ public class ResourceInterface implements ResourceBuilder {
 
     private final String pack;
     private final TypeSpec.Builder typeSpec;
+    private List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
 
     public ResourceInterface(String pack, String className, String relativeURI) {
         this.pack = pack;
@@ -32,7 +38,35 @@ public class ResourceInterface implements ResourceBuilder {
         return this;
     }
 
+    @Override
+    public ResourceBuilder mediaType(List<String> mimeTypes) {
+
+        AnnotationSpec.Builder p = AnnotationSpec.builder(Produces.class);
+        AnnotationSpec.Builder c = AnnotationSpec.builder(Consumes.class);
+        for (String mimeType : mimeTypes) {
+            p.addMember("value", "$S", mimeType);
+            c.addMember("value", "$S", mimeType);
+        }
+        typeSpec.addAnnotation(p.build());
+        typeSpec.addAnnotation(c.build());
+        return this;
+    }
+
+    @Override
+    public MethodBuilder createMethod(String method) {
+
+        MethodSpec.Builder spec = MethodSpec.methodBuilder(method);
+        methods.add(spec);
+
+        return new MethodDeclaration(spec);
+    }
+
     public void output(String rootDirectory) throws IOException {
+
+        for (MethodSpec.Builder method : methods) {
+
+            typeSpec.addMethod(method.build());
+        }
 
         JavaFile.Builder file = JavaFile.builder(pack, typeSpec.build());
         file.build().writeTo(new File(rootDirectory));

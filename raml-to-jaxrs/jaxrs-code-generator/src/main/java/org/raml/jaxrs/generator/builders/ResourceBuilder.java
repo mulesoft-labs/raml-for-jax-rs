@@ -10,5 +10,5 @@ public interface ResourceBuilder {
 
     ResourceBuilder withDocumentation(String docs);
 
-    void output(Appendable appendable) throws IOException;
+    void output(String rootDirectory) throws IOException;
 }

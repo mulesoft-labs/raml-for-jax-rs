@@ -28,7 +28,7 @@ public class RamlScanner {
         handle(resourceName.openStream());
     }
 
-    public void handle(InputStream stream) throws GenerationException {
+    public void handle(InputStream stream) throws GenerationException, IOException {
 
         RamlModelResult result = new RamlModelBuilder().buildApi(new InputStreamReader(stream), ".");
         if ( result.hasErrors() ) {
@@ -42,14 +42,15 @@ public class RamlScanner {
         }
     }
 
-    public void handle(org.raml.v2.api.model.v10.api.Api api) {
+    public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
-
+        CurrentBuild build = new CurrentBuild("jp.fun");
         for (Resource resource : api.resources()) {
             ResourceHandler handler = new ResourceHandler();
-            handler.handle(new CurrentBuild("jp.fun"), api, resource);
+            handler.handle(build, api, resource);
         }
 
+        build.generate("/tmp/fun");
     }
 
     public void handle(org.raml.v2.api.model.v08.api.Api api) {

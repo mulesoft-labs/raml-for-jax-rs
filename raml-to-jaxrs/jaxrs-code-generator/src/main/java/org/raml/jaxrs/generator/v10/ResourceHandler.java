@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.ResourceBuilder;
 import org.raml.jaxrs.generator.builders.ResourceImplementation;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -13,8 +14,8 @@ public class ResourceHandler {
 
     public void handle(CurrentBuild build, Api api, Resource resource) {
 
-        ResourceImplementation creator = build
-                .createResource(resource.displayName().value());
+        ResourceBuilder creator = build
+                .createResource(resource.displayName().value(), resource.relativeUri().value());
         if ( resource.description() != null ) {
                 creator.withDocumentation(resource.description().value() + "\n");
         }

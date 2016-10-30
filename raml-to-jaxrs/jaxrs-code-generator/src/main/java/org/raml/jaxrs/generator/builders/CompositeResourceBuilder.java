@@ -25,10 +25,10 @@ public class CompositeResourceBuilder  implements ResourceBuilder{
     }
 
     @Override
-    public void output(Appendable appendable) throws IOException {
+    public void output(String rootDir) throws IOException {
 
         for (ResourceBuilder builder : builders) {
-            builder.output(appendable);
+            builder.output(rootDir);
         }
     }
 }

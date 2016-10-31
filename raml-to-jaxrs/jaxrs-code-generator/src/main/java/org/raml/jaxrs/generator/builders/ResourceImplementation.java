@@ -4,6 +4,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.Names;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
@@ -21,11 +22,11 @@ public class ResourceImplementation implements ResourceBuilder {
     private final TypeSpec.Builder typeSpec;
     private final List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
 
-    public ResourceImplementation(String pack, String className) {
+    public ResourceImplementation(String pack, String name) {
         this.pack = pack;
-        this.typeSpec = TypeSpec.classBuilder(className + "Impl")
+        this.typeSpec = TypeSpec.classBuilder(Names.buildTypeName(name) + "Impl")
                 .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(ClassName.get(pack, className)); // this could be wrong.
+                .addSuperinterface(ClassName.get(pack, Names.buildTypeName(name))); // this could be wrong.
     }
 
     public ResourceImplementation withDocumentation(String docs) {

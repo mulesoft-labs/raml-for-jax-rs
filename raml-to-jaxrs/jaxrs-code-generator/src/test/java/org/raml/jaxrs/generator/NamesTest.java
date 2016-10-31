@@ -10,12 +10,21 @@ import static org.junit.Assert.*;
  */
 public class NamesTest {
     @Test
-    public void buildResourceInterfaceName() throws Exception {
+    public void buildTypeName() throws Exception {
 
-        assertEquals("Fun", Names.buildResourceInterfaceName("/fun"));
-        assertEquals("Fun", Names.buildResourceInterfaceName("fun"));
-        assertEquals("Root", Names.buildResourceInterfaceName(""));
-        assertEquals("FunAllo", Names.buildResourceInterfaceName("fun allo"));
+        assertEquals("Fun", Names.buildTypeName("/fun"));
+        assertEquals("Fun", Names.buildTypeName("fun"));
+        assertEquals("Root", Names.buildTypeName(""));
+        assertEquals("FunAllo", Names.buildTypeName("fun_allo"));
+        assertEquals("FunAllo", Names.buildTypeName("fun allo"));
+    }
+
+    @Test
+    public void buildVariableName() throws Exception {
+
+        assertEquals("fun", Names.buildVariableName("/fun"));
+        assertEquals("fun", Names.buildVariableName("fun"));
+        assertEquals("funAllo", Names.buildVariableName("fun allo"));
     }
 
 }

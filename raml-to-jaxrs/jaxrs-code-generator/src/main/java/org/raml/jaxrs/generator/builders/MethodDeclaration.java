@@ -4,6 +4,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
+import org.raml.jaxrs.generator.Names;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.QueryParam;
@@ -25,7 +26,7 @@ public class MethodDeclaration implements MethodBuilder {
     @Override
     public MethodBuilder addParameter(String name, String type) {
 
-        ParameterSpec.Builder param = ParameterSpec.builder(TypeName.INT, name);
+        ParameterSpec.Builder param = ParameterSpec.builder(TypeName.INT, Names.buildVariableName(name));
         AnnotationSpec.Builder annotation = AnnotationSpec.builder(QueryParam.class);
         annotation.addMember("value","$S", name);
         param.addAnnotation(annotation.build());

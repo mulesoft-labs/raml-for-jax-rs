@@ -14,6 +14,7 @@ import static org.raml.jaxrs.generator.Paths.relativize;
 /**
  * Created by Jean-Philippe Belanger on 10/26/16.
  * The art of building stuff is here.
+ * Factory for building root stuff.
  */
 public class CurrentBuild {
 
@@ -29,8 +30,8 @@ public class CurrentBuild {
     public ResourceBuilder createResource(String name, String relativeURI) {
 
         ResourceBuilder builder = new CompositeResourceBuilder(
-                new ResourceImplementation(defaultPackage, Names.buildResourceInterfaceName(name)),
-                new ResourceInterface(defaultPackage, Names.buildResourceInterfaceName(name), relativize(relativeURI))
+                new ResourceImplementation(defaultPackage, name),
+                new ResourceInterface(defaultPackage, name, relativize(relativeURI))
         );
 
         resources.add(builder);

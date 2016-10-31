@@ -4,6 +4,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.Names;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
@@ -24,9 +25,9 @@ public class ResourceInterface implements ResourceBuilder {
     private final TypeSpec.Builder typeSpec;
     private List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
 
-    public ResourceInterface(String pack, String className, String relativeURI) {
+    public ResourceInterface(String pack, String name, String relativeURI) {
         this.pack = pack;
-        this.typeSpec = TypeSpec.interfaceBuilder(className)
+        this.typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", relativeURI).build());
     }

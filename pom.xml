@@ -103,12 +103,15 @@
                     </execution>
                 </executions>
             </plugin>
+<!--
             <plugin>
                 <artifactId>mav</artifactId>
             </plugin>
+-->
 
         </plugins>
     </build>
+<!--
 
     <profiles>
         <profile>
@@ -126,6 +129,7 @@
         </profile>
     </profiles>
 
+-->
    <name>RAML to JAXRS</name>
     <description>RAML to JAXRS</description>
     <scm>

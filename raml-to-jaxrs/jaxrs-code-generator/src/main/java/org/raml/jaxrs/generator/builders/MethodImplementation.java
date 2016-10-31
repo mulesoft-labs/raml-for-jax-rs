@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator.builders;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 
 /**
  * Created by Jean-Philippe Belanger on 10/30/16.
@@ -16,4 +17,12 @@ public class MethodImplementation implements MethodBuilder {
         this.builder = spec;
         builder.addAnnotation(AnnotationSpec.builder(Override.class).build());
     }
+
+    @Override
+    public MethodBuilder addParameter(String name, String type) {
+
+        builder.addParameter(TypeName.INT, name);
+        return this;
+    }
+
 }

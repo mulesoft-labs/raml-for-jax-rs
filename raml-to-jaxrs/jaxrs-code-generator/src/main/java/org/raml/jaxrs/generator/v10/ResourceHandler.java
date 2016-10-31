@@ -6,6 +6,7 @@ import org.raml.jaxrs.generator.builders.MethodBuilder;
 import org.raml.jaxrs.generator.builders.ResourceBuilder;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.MimeType;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
@@ -39,6 +40,11 @@ public class ResourceHandler {
 
         for (Method method : resource.methods()) {
             MethodBuilder mb = creator.createMethod(method.method());
+            if (method.queryParameters() != null ) {
+                for (TypeDeclaration typeDeclaration : method.queryParameters()) {
+                    mb.addParameter(typeDeclaration.name(), typeDeclaration.type());
+                }
+            }
         }
     }
 

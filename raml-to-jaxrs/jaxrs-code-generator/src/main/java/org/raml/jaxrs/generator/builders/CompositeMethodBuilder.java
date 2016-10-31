@@ -14,4 +14,14 @@ public class CompositeMethodBuilder implements MethodBuilder {
     public CompositeMethodBuilder(List<MethodBuilder> list) {
         this.list = list;
     }
+
+    @Override
+    public MethodBuilder addParameter(String name, String type) {
+
+        for (MethodBuilder methodBuilder : list) {
+            methodBuilder.addParameter(name, type);
+        }
+
+        return this;
+    }
 }

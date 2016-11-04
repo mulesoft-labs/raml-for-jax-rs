@@ -50,7 +50,7 @@ public class RamlScanner {
             handler.handle(build, api, resource);
         }
 
-        build.generate("/tmp/fun");
+        build.generate("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jars-generated-example/src/main/java");
     }
 
     public void handle(org.raml.v2.api.model.v08.api.Api api) {

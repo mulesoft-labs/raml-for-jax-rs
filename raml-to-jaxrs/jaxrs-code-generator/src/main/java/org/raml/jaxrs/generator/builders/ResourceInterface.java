@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.raml.jaxrs.generator.HTTPMethods.methodNameToAnnotation;
+
 /**
  * Created by Jean-Philippe Belanger on 10/27/16.
  * Abstraction of creation.
@@ -56,7 +58,7 @@ public class ResourceInterface implements ResourceBuilder {
     @Override
     public MethodBuilder createMethod(String method) {
 
-        MethodSpec.Builder spec = MethodSpec.methodBuilder(method);
+        MethodSpec.Builder spec = MethodSpec.methodBuilder(method).addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
         methods.add(spec);
 
         return new MethodDeclaration(spec);

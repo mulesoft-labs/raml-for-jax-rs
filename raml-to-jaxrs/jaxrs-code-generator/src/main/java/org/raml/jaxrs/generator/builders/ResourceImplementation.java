@@ -44,7 +44,7 @@ public class ResourceImplementation implements ResourceBuilder {
     @Override
     public MethodBuilder createMethod(String method) {
 
-        MethodSpec.Builder spec = MethodSpec.methodBuilder(method);
+        MethodSpec.Builder spec = MethodSpec.methodBuilder(method).addModifiers(Modifier.PUBLIC);
         methods.add(spec);
 
         return new MethodImplementation(spec);

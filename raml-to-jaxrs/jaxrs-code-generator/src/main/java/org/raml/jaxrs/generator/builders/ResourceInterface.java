@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator.builders;
 
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -66,7 +67,13 @@ public class ResourceInterface implements ResourceBuilder {
 
         TypeSpec.Builder responseBuilder = TypeSpec.classBuilder(Names.buildTypeName(method) + additionalNames + "Response")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .superclass(Response.class);
+                .superclass(ClassName.get(pack, "ResponseDelegate"))
+                .addMethod(
+                        MethodSpec.constructorBuilder()
+                                .addParameter(Response.class, "response")
+                                .addModifiers(Modifier.PRIVATE)
+                                .addCode("super(response);\n").build()
+                );
         typeSpec.addType(responseBuilder.build());
         return new MethodDeclaration(spec);
     }

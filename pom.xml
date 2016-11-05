@@ -65,17 +65,17 @@
                 <artifactId>guava</artifactId>
                 <version>19.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.9.10</version>
+            </dependency>
             <!-- test only dependencies -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>0.9.10</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

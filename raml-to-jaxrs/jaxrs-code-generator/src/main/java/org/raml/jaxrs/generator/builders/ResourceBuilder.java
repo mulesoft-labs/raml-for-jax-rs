@@ -13,5 +13,5 @@ public interface ResourceBuilder {
     ResourceBuilder mediaType(List<String> mimeTypes);
     void output(String rootDirectory) throws IOException;
 
-    MethodBuilder createMethod(String method);
+    MethodBuilder createMethod(String method, String additionalNames);
 }

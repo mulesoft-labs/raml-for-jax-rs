@@ -56,9 +56,10 @@ public class ResourceInterface implements ResourceBuilder {
     }
 
     @Override
-    public MethodBuilder createMethod(String method) {
+    public MethodBuilder createMethod(String method, String additionalNames) {
 
-        MethodSpec.Builder spec = MethodSpec.methodBuilder(method).addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
+        MethodSpec.Builder spec = MethodSpec.methodBuilder(method + additionalNames)
+                .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
         methods.add(spec);
 
         return new MethodDeclaration(spec);

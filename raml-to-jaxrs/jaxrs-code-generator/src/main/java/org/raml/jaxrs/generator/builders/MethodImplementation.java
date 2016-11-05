@@ -4,6 +4,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.ScalarTypes;
 
 /**
  * Created by Jean-Philippe Belanger on 10/30/16.
@@ -22,7 +23,7 @@ public class MethodImplementation implements MethodBuilder {
     @Override
     public MethodBuilder addParameter(String name, String type) {
 
-        builder.addParameter(TypeName.INT, Names.buildVariableName(name));
+        builder.addParameter(ScalarTypes.scalarToJavaType(type), Names.buildVariableName(name));
         return this;
     }
 

@@ -1,7 +1,9 @@
 package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.MethodBuilder;
 import org.raml.jaxrs.generator.builders.ResourceBuilder;
 import org.raml.v2.api.model.v10.api.Api;
@@ -39,7 +41,17 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            MethodBuilder mb = creator.createMethod(method.method());
+            MethodBuilder mb = creator.createMethod(
+                    method.method(),
+                    Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
+                            new Function<TypeDeclaration, String>() {
+                                @Nullable
+                                @Override
+                                public String apply(@Nullable TypeDeclaration input) {
+                                    return input.name();
+                                }
+                            })));
+
             if (method.queryParameters() != null ) {
                 for (TypeDeclaration typeDeclaration : method.queryParameters()) {
                     mb.addParameter(typeDeclaration.name(), typeDeclaration.type());

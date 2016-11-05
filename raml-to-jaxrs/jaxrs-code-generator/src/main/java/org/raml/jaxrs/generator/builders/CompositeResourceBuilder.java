@@ -38,11 +38,11 @@ public class CompositeResourceBuilder  implements ResourceBuilder{
     }
 
     @Override
-    public MethodBuilder createMethod(String method) {
+    public MethodBuilder createMethod(String method, String additionalNames) {
 
         List<MethodBuilder> list = new ArrayList<MethodBuilder>();
         for (ResourceBuilder builder : builders) {
-            list.add(builder.createMethod(method));
+            list.add(builder.createMethod(method, additionalNames));
         }
 
         return new CompositeMethodBuilder(list);

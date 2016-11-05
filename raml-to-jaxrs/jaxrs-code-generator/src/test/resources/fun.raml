@@ -6,6 +6,12 @@ mediaType:
  - application/json
  - application/xml
 traits:
+types:
+   funk:
+     type: object
+     properties:
+        foo: string
+        faa: number
 resourceTypes:
  basicType:
   get:
@@ -16,10 +22,12 @@ resourceTypes:
   type: basicType
   get:
    queryParameters:
-    hello_dude: string
-    fink: number
+    hello_dude:
+        type: datetime
+    fink:
+        type: integer
   /code:
     get:
      queryParameters:
-       hello_man: string
+       hello_man: integer
        fink: number

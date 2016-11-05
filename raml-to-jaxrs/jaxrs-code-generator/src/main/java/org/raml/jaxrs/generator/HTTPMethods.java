@@ -24,7 +24,7 @@ public class HTTPMethods {
     public static Class<? extends Annotation> methodNameToAnnotation(String name) {
 
         String s = name.toLowerCase();
-        Class<? extends Annotation> annotation = nameToAnnotation.get(name);
+        Class<? extends Annotation> annotation = nameToAnnotation.get(s);
         if ( annotation != null) {
             return annotation;
         } else {

@@ -1,6 +1,9 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.base.CaseFormat;
+import joptsimple.internal.Strings;
+
+import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -47,6 +50,18 @@ public class Names
         }
 
         return friendlyName;
+    }
+
+    public static String parameterNameMethodSuffix(List<String> names) {
+
+        if ( names.size() == 0 ) {
+            return "";
+        }
+
+        String s = Strings.join(names, "_and_");
+        String suffix = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s);
+
+        return "By" + suffix;
     }
 
     private Names()

@@ -2,6 +2,8 @@ package org.raml.jaxrs.generator;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 /**
@@ -25,6 +27,14 @@ public class NamesTest {
         assertEquals("fun", Names.buildVariableName("/fun"));
         assertEquals("fun", Names.buildVariableName("fun"));
         assertEquals("funAllo", Names.buildVariableName("fun allo"));
+    }
+
+    @Test
+    public void buildMethodNameSuffix() throws Exception {
+
+        assertEquals("ById", Names.parameterNameMethodSuffix(Arrays.asList("id")));
+        assertEquals("ByIdAndColor", Names.parameterNameMethodSuffix(Arrays.asList("id", "color")));
+        assertEquals("", Names.parameterNameMethodSuffix(Arrays.<String>asList()));
     }
 
 }

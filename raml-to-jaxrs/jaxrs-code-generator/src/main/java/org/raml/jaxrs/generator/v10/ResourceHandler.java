@@ -41,24 +41,34 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            MethodBuilder mb = creator.createMethod(
-                    method.method(),
-                    Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
-                            new Function<TypeDeclaration, String>() {
-                                @Nullable
-                                @Override
-                                public String apply(@Nullable TypeDeclaration input) {
-                                    return input.name();
-                                }
-                            })));
+            handleMethod(creator, method);
+        }
+    }
 
-            if (method.queryParameters() != null ) {
-                for (TypeDeclaration typeDeclaration : method.queryParameters()) {
-                    mb.addParameter(typeDeclaration.name(), typeDeclaration.type());
-                }
+    private void handleMethod(ResourceBuilder creator, Method method) {
+        String methodNameSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
+                queryParameterToString()));
+
+        MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix);
+
+        if (method.queryParameters() != null ) {
+            for (TypeDeclaration typeDeclaration : method.queryParameters()) {
+                mb.addParameter(typeDeclaration.name(), typeDeclaration.type());
             }
         }
     }
 
 
+    private static Function<TypeDeclaration, String> queryParameterToString() {
+
+        return new TypeDeclarationToString();
+    }
+
+    private static class TypeDeclarationToString implements Function<TypeDeclaration, String> {
+        @Nullable
+        @Override
+        public String apply(@Nullable TypeDeclaration input) {
+            return input.name();
+        }
+    }
 }

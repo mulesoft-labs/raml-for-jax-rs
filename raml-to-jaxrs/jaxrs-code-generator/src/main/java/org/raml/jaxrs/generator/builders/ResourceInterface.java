@@ -10,6 +10,7 @@ import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class ResourceInterface implements ResourceBuilder {
     private final String pack;
     private final TypeSpec.Builder typeSpec;
     private List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
+    private List<TypeSpec.Builder> responseTypes = new ArrayList<TypeSpec.Builder>();
 
     public ResourceInterface(String pack, String name, String relativeURI) {
         this.pack = pack;
@@ -62,6 +64,10 @@ public class ResourceInterface implements ResourceBuilder {
                 .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
         methods.add(spec);
 
+        TypeSpec.Builder responseBuilder = TypeSpec.classBuilder(Names.buildTypeName(method) + additionalNames + "Response")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .superclass(Response.class);
+        typeSpec.addType(responseBuilder.build());
         return new MethodDeclaration(spec);
     }
 

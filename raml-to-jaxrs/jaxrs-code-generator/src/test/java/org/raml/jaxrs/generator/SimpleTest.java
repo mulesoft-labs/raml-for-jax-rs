@@ -8,6 +8,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 10/29/16.
  * Just potential zeroes and ones
  */
+@org.junit.Ignore
 public class SimpleTest {
 
     @Test

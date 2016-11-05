@@ -6,8 +6,10 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.MethodBuilder;
 import org.raml.jaxrs.generator.builders.ResourceBuilder;
+import org.raml.jaxrs.generator.builders.ResponseClassBuilder;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.MimeType;
+import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -50,10 +52,26 @@ public class ResourceHandler {
                 queryParameterToString()));
 
         MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix);
+        ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), methodNameSuffix);
+        setupResponses(method, response);
 
         if (method.queryParameters() != null ) {
             for (TypeDeclaration typeDeclaration : method.queryParameters()) {
                 mb.addParameter(typeDeclaration.name(), typeDeclaration.type());
+            }
+        }
+    }
+
+    private void setupResponses(Method method, ResponseClassBuilder responseBuilder) {
+
+        for (Response response : method.responses()) {
+
+            if ( response.body().size() == 0 ) {
+                responseBuilder.withResponse(response.code().value());
+            } else {
+                for (TypeDeclaration typeDeclaration : response.body()) {
+                    responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), typeDeclaration.type());
+                }
             }
         }
     }

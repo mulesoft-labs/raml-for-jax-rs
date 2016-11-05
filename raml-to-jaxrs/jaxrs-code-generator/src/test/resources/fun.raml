@@ -3,8 +3,8 @@ title: GitHub API
 version: v3
 baseUri: https://api.github.com
 mediaType:
- - application/json
- - application/xml
+    - application/json
+    - application/xml
 traits:
 types:
    funk:
@@ -18,18 +18,33 @@ resourceTypes:
   put:
   post:
 /search:
-  description: The search resource
-  type: basicType
-  get:
-   queryParameters:
-    hello_dude:
-        type: datetime
-    fink:
-        type: integer
-   responses:
-        200:
-            body: string
-  /code:
+    description: The search resource
+    type: basicType
+    get:
+        queryParameters:
+            hello_dude:
+                type: datetime
+            fink:
+                type: integer
+        body:
+            application/json:
+                type: funk
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: funk
+    post:
+        body:
+            application/json:
+                type: funk
+        responses:
+            201:
+                body:
+                    application/json:
+                        type: funk
+
+/code:
     get:
      queryParameters:
        hello_man: integer

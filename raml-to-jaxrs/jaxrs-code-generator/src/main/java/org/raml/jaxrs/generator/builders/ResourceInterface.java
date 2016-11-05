@@ -29,6 +29,7 @@ public class ResourceInterface implements ResourceBuilder {
     private final TypeSpec.Builder typeSpec;
     private List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
     private List<TypeSpec.Builder> responseTypes = new ArrayList<TypeSpec.Builder>();
+    private List<ResponseClassBuilder> responseClassBuilders = new ArrayList<>();
 
     public ResourceInterface(String pack, String name, String relativeURI) {
         this.pack = pack;
@@ -65,24 +66,28 @@ public class ResourceInterface implements ResourceBuilder {
                 .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
         methods.add(spec);
 
-        TypeSpec.Builder responseBuilder = TypeSpec.classBuilder(Names.buildTypeName(method) + additionalNames + "Response")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .superclass(ClassName.get(pack, "ResponseDelegate"))
-                .addMethod(
-                        MethodSpec.constructorBuilder()
-                                .addParameter(Response.class, "response")
-                                .addModifiers(Modifier.PRIVATE)
-                                .addCode("super(response);\n").build()
-                );
-        typeSpec.addType(responseBuilder.build());
         return new MethodDeclaration(spec);
     }
 
+    @Override
+    public ResponseClassBuilder createResponseClassBuilder(String method, String additionalNames) {
+
+        ResponseClassBuilderImpl responseClassBuilder = new ResponseClassBuilderImpl(typeSpec,
+                Names.buildTypeName(method) + additionalNames);
+        responseClassBuilders.add(responseClassBuilder);
+        return responseClassBuilder;
+    }
+
+    @Override
     public void output(String rootDirectory) throws IOException {
 
         for (MethodSpec.Builder method : methods) {
 
             typeSpec.addMethod(method.build());
+        }
+
+        for (ResponseClassBuilder responseClassBuilder : responseClassBuilders) {
+            responseClassBuilder.output();
         }
 
         JavaFile.Builder file = JavaFile.builder(pack, typeSpec.build());

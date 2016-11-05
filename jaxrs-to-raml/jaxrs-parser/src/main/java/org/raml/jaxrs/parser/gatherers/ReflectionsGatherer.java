@@ -1,6 +1,7 @@
 package org.raml.jaxrs.parser.gatherers;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import org.reflections.Reflections;
@@ -14,9 +15,14 @@ import org.reflections.scanners.Scanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.scanners.TypeElementsScanner;
+import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.Set;
 
 import javax.ws.rs.DELETE;
@@ -27,25 +33,54 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 
 /**
  * This class is made to gather all Jax RS
  * resource classes.
  */
-public class ClasspathGatherer implements Gatherer {
+public class ReflectionsGatherer implements Gatherer {
 
     private final Reflections reflections;
 
 
-    private ClasspathGatherer(Reflections reflections) {
+    private ReflectionsGatherer(Reflections reflections) {
         this.reflections = reflections;
     }
 
-    public static ClasspathGatherer forPackage(String packageRoot) {
+    public static ReflectionsGatherer forApplication(java.nio.file.Path application) {
+        checkNotNull(application);
+
+        return new ReflectionsGatherer(reflectionsForApplication(application));
+    }
+
+    private static Reflections reflectionsForApplication(java.nio.file.Path application) {
+        URLClassLoader classLoader;
+
+        try {
+            classLoader = new URLClassLoader(new URL[]{application.toUri().toURL()}, null);
+
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        ConfigurationBuilder builder = new ConfigurationBuilder().addScanners(scanners())
+                .forPackages("");
+//        builder.setClassLoaders(new ClassLoader[] {classLoader} );
+
+        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(classLoader);
+            return new Reflections(builder);
+        } finally {
+            Thread.currentThread().setContextClassLoader(currentClassLoader);
+        }
+    }
+
+    public static ReflectionsGatherer forPackage(String packageRoot) {
         checkNotNull(packageRoot);
 
-        return new ClasspathGatherer(reflectionsForPackage(packageRoot));
+        return new ReflectionsGatherer(reflectionsForPackage(packageRoot));
     }
 
     private static Reflections reflectionsForPackage(String packageRoot) {
@@ -69,8 +104,11 @@ public class ClasspathGatherer implements Gatherer {
 
     @VisibleForTesting
     Set<Class<?>> getJaxRsClasses() {
-
-        return null;
+        Set<Class<?>> result =
+                ImmutableSet.<Class<?>>builder().addAll(getClassesWithPaths()).addAll(getClassesWithGets())
+                        .addAll(getClassesWithPuts()).addAll(getClassesWithPosts()).addAll(getClassesWithDeletes()).addAll(getClassesWithHeads())
+                        .build();
+        return result;
     }
 
     @VisibleForTesting
@@ -99,6 +137,11 @@ public class ClasspathGatherer implements Gatherer {
     }
 
     @VisibleForTesting
+    Iterable<Class<?>> getClassesWithHeads() {
+        return classesOfMethodsAnnotatedWith(HEAD.class);
+    }
+
+    @VisibleForTesting
     Set<Class<?>> getClassesAnnotatedWithPath() {
         return reflections.getTypesAnnotatedWith(Path.class);
     }
@@ -106,11 +149,6 @@ public class ClasspathGatherer implements Gatherer {
     @VisibleForTesting
     Set<Class<?>> getClassesWithMethodsAnnotatedWithPath() {
         return classesOfMethodsAnnotatedWith(Path.class);
-    }
-
-    @VisibleForTesting
-    Iterable<Class<?>> getClassesWithHeads() {
-        return classesOfMethodsAnnotatedWith(HEAD.class);
     }
 
     private Set<Class<?>> classesOfMethodsAnnotatedWith(Class<? extends Annotation> clazz) {
@@ -124,5 +162,20 @@ public class ClasspathGatherer implements Gatherer {
             theirClasses.add(method.getDeclaringClass());
         }
         return theirClasses;
+    }
+
+    public static void main(String[] args) {
+//        ReflectionsGatherer gatherer = forPackage("");
+        ReflectionsGatherer gatherer = forApplication(Paths.get("/home/phil/projects/raml-for-jax-rs/jaxrs-to-raml/jaxrs-test-resources/target/jaxrs-test-resources-2.0.0-SNAPSHOT.jar"));
+
+        Set<Class<?>> jaxRsClasses = gatherer.getJaxRsClasses();
+
+        System.out.println(format("no classes = %s", jaxRsClasses.size()));
+        for (Class<?> clazz : jaxRsClasses) {
+            System.out.println(clazz.getCanonicalName());
+        }
+
+        System.out.println(Test.class.getSimpleName());
+        System.out.println(format("methods: %s", Test.class.getDeclaredMethods()));
     }
 }

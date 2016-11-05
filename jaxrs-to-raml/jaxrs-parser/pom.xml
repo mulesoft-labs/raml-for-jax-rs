@@ -28,10 +28,8 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.raml</groupId>
-            <artifactId>jaxrs-test-resources</artifactId>
-        </dependency>
     </dependencies>
+
+
 
 </project>

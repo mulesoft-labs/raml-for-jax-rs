@@ -20,17 +20,6 @@
         <module>jaxrs-test-resources</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.raml</groupId>
-                <artifactId>jaxrs-test-resources</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <distributionManagement>
         <repository>
             <id>mule-ee-releases</id>

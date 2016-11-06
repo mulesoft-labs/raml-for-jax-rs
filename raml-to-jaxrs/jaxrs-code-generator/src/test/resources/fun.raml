@@ -12,6 +12,12 @@ types:
      properties:
         foo: string
         faa: number
+   jazz:
+     type: object
+     properties:
+        foo: string
+        faa: number
+
 resourceTypes:
  basicType:
   get:
@@ -28,21 +34,25 @@ resourceTypes:
                 type: integer
         body:
             application/json:
-                type: funk
+                type: string
+            application/xml:
+                type: string
         responses:
             200:
                 body:
                     application/json:
-                        type: funk
+                        type: string
     post:
         body:
             application/json:
-                type: funk
+                type: string
+            application/xml:
+                type: integer
         responses:
             201:
                 body:
                     application/json:
-                        type: funk
+                        type: string
 
 /code:
     get:

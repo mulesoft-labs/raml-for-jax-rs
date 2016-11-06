@@ -30,6 +30,7 @@ public class ResourceInterface implements ResourceBuilder {
     private List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
     private List<TypeSpec.Builder> responseTypes = new ArrayList<TypeSpec.Builder>();
     private List<ResponseClassBuilder> responseClassBuilders = new ArrayList<>();
+    private List<MethodBuilder> methodBuilders = new ArrayList<>();
 
     public ResourceInterface(String pack, String name, String relativeURI) {
         this.pack = pack;
@@ -66,7 +67,9 @@ public class ResourceInterface implements ResourceBuilder {
                 .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
         methods.add(spec);
 
-        return new MethodDeclaration(spec);
+        MethodBuilder md = new MethodDeclaration(spec);
+        methodBuilders.add(md);
+        return md;
     }
 
     @Override
@@ -80,6 +83,10 @@ public class ResourceInterface implements ResourceBuilder {
 
     @Override
     public void output(String rootDirectory) throws IOException {
+
+        for (MethodBuilder methodBuilder : methodBuilders) {
+            methodBuilder.output();
+        }
 
         for (MethodSpec.Builder method : methods) {
 

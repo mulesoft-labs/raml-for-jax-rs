@@ -5,5 +5,9 @@ package org.raml.jaxrs.generator.builders;
  * Just potential zeroes and ones
  */
 public interface MethodBuilder {
-    MethodBuilder addParameter(String name, String type);
+    MethodBuilder addQueryParameter(String name, String type);
+    MethodBuilder addEntityParameter(String name, String type);
+    MethodBuilder addConsumeAnnotation(String type);
+
+    void output();
 }

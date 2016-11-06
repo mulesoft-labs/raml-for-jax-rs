@@ -16,6 +16,9 @@ import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.google.common.collect.Lists.transform;
 
 /**
@@ -51,13 +54,30 @@ public class ResourceHandler {
         String methodNameSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
                 queryParameterToString()));
 
-        MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix);
-        ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), methodNameSuffix);
-        setupResponses(method, response);
+        Map<String, MethodBuilder> seenTypes = new HashMap<>();
 
-        if (method.queryParameters() != null ) {
-            for (TypeDeclaration typeDeclaration : method.queryParameters()) {
-                mb.addParameter(typeDeclaration.name(), typeDeclaration.type());
+        for (TypeDeclaration requestTypeDeclaration : method.body()) {
+
+            if ( ! seenTypes.containsKey(requestTypeDeclaration.type()) ) {
+
+                MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix);
+                seenTypes.put(requestTypeDeclaration.type(), mb);
+                ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), methodNameSuffix);
+                setupResponses(method, response);
+
+                if (method.queryParameters() != null ) {
+                    for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {
+                        mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
+                    }
+                }
+
+                mb.addEntityParameter("entity", requestTypeDeclaration.type());
+                mb.addConsumeAnnotation(requestTypeDeclaration.name());
+
+            } else {
+
+                MethodBuilder builder = seenTypes.get(requestTypeDeclaration.type());
+                builder.addConsumeAnnotation(requestTypeDeclaration.name());
             }
         }
     }

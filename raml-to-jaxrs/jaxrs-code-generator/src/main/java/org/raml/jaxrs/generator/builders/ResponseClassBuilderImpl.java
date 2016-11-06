@@ -6,6 +6,8 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.v2.api.model.v10.system.types.StatusCodeString;
 
 import javax.lang.model.element.Modifier;
@@ -57,7 +59,7 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
         current.addMethod(
                 MethodSpec.methodBuilder("respond" + httpCode)
                         .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                        .addParameter(ParameterSpec.builder(Object.class, "entity").build())
+                        .addParameter(ParameterSpec.builder(ScalarTypes.scalarToJavaType(type), "entity").build())
                         .addStatement("Response.ResponseBuilder responseBuilder = Response.status("+ httpCode +")")
                         .addStatement("responseBuilder.entity(entity)")
                         .addStatement("return new $N(responseBuilder.build())", currentClass)

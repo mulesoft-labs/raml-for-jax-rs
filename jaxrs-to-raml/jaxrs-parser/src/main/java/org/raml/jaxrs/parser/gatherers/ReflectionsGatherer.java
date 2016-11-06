@@ -40,51 +40,13 @@ import static java.lang.String.format;
  * This class is made to gather all Jax RS
  * resource classes.
  */
-public class ReflectionsGatherer implements Gatherer {
+public class ReflectionsGatherer implements JaxRsClassesGatherer {
 
     private final Reflections reflections;
 
 
     private ReflectionsGatherer(Reflections reflections) {
         this.reflections = reflections;
-    }
-
-    public static ReflectionsGatherer forApplication(java.nio.file.Path application) {
-        checkNotNull(application);
-
-        return new ReflectionsGatherer(reflectionsForApplication(application));
-    }
-
-    private static Reflections reflectionsForApplication(java.nio.file.Path application) {
-        URLClassLoader classLoader;
-
-        try {
-            classLoader = new URLClassLoader(new URL[]{application.toUri().toURL()}, null);
-
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-        ConfigurationBuilder builder = new ConfigurationBuilder().addScanners(scanners())
-                .forPackages("");
-//        builder.setClassLoaders(new ClassLoader[] {classLoader} );
-
-        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-        try {
-            Thread.currentThread().setContextClassLoader(classLoader);
-            return new Reflections(builder);
-        } finally {
-            Thread.currentThread().setContextClassLoader(currentClassLoader);
-        }
-    }
-
-    public static ReflectionsGatherer forPackage(String packageRoot) {
-        checkNotNull(packageRoot);
-
-        return new ReflectionsGatherer(reflectionsForPackage(packageRoot));
-    }
-
-    private static Reflections reflectionsForPackage(String packageRoot) {
-        return new Reflections(packageRoot, scanners());
     }
 
     private static Scanner[] scanners() {
@@ -96,14 +58,7 @@ public class ReflectionsGatherer implements Gatherer {
                 new TypeElementsScanner()};
     }
 
-    public Set<Class<?>> gather() {
-        Set<Class<?>> classesAnnoted = getJaxRsClasses();
-
-        return null;
-    }
-
-    @VisibleForTesting
-    Set<Class<?>> getJaxRsClasses() {
+    public Set<Class<?>> jaxRsClasses() {
         Set<Class<?>> result =
                 ImmutableSet.<Class<?>>builder().addAll(getClassesWithPaths()).addAll(getClassesWithGets())
                         .addAll(getClassesWithPuts()).addAll(getClassesWithPosts()).addAll(getClassesWithDeletes()).addAll(getClassesWithHeads())
@@ -162,20 +117,5 @@ public class ReflectionsGatherer implements Gatherer {
             theirClasses.add(method.getDeclaringClass());
         }
         return theirClasses;
-    }
-
-    public static void main(String[] args) {
-//        ReflectionsGatherer gatherer = forPackage("");
-        ReflectionsGatherer gatherer = forApplication(Paths.get("/home/phil/projects/raml-for-jax-rs/jaxrs-to-raml/jaxrs-test-resources/target/jaxrs-test-resources-2.0.0-SNAPSHOT.jar"));
-
-        Set<Class<?>> jaxRsClasses = gatherer.getJaxRsClasses();
-
-        System.out.println(format("no classes = %s", jaxRsClasses.size()));
-        for (Class<?> clazz : jaxRsClasses) {
-            System.out.println(clazz.getCanonicalName());
-        }
-
-        System.out.println(Test.class.getSimpleName());
-        System.out.println(format("methods: %s", Test.class.getDeclaredMethods()));
     }
 }

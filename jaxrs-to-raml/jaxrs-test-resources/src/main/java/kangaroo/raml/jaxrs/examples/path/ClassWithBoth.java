@@ -1,4 +1,4 @@
-package org.raml.jaxrs.examples.path;
+package kangaroo.raml.jaxrs.examples.path;
 
 import javax.ws.rs.Path;
 

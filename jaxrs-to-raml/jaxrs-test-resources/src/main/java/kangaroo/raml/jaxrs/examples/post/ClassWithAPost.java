@@ -1,4 +1,4 @@
-package org.raml.jaxrs.examples.post;
+package kangaroo.raml.jaxrs.examples.post;
 
 import javax.ws.rs.POST;
 
@@ -6,6 +6,10 @@ import javax.ws.rs.POST;
  *
  */
 public class ClassWithAPost {
+
+    static {
+        System.out.println("toto");
+    }
 
     @POST
     public void post() {}

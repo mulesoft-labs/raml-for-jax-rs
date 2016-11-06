@@ -1,4 +1,4 @@
-package org.raml.jaxrs.examples.delete;
+package kangaroo.raml.jaxrs.examples.delete;
 
 import javax.ws.rs.DELETE;
 

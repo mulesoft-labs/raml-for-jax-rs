@@ -1,4 +1,4 @@
-package org.raml.jaxrs.examples.resources;
+package kangaroo.raml.jaxrs.examples.resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;

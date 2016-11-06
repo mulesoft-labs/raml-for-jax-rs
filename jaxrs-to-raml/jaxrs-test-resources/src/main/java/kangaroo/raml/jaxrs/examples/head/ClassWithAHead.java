@@ -1,4 +1,4 @@
-package org.raml.jaxrs.examples.head;
+package kangaroo.raml.jaxrs.examples.head;
 
 import javax.ws.rs.HEAD;
 

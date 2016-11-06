@@ -1,4 +1,4 @@
-package org.raml.jaxrs.examples.get;
+package kangaroo.raml.jaxrs.examples.get;
 
 import javax.ws.rs.GET;
 

@@ -1,4 +1,4 @@
-package org.raml.jaxrs.examples.put;
+package kangaroo.raml.jaxrs.examples.put;
 
 import javax.ws.rs.PUT;
 

@@ -55,6 +55,8 @@ public class ResourceHandler {
                 queryParameterToString()));
 
         Map<String, MethodBuilder> seenTypes = new HashMap<>();
+        ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), methodNameSuffix);
+        setupResponses(method, response);
 
         for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
@@ -62,8 +64,6 @@ public class ResourceHandler {
 
                 MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix);
                 seenTypes.put(requestTypeDeclaration.type(), mb);
-                ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), methodNameSuffix);
-                setupResponses(method, response);
 
                 if (method.queryParameters() != null ) {
                     for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {

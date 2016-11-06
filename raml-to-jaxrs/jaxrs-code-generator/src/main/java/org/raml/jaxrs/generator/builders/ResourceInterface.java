@@ -60,25 +60,15 @@ public class ResourceInterface implements ResourceBuilder {
     }
 
     @Override
-    public MethodBuilder createMethod(String method, String additionalNames) {
-
-        MethodSpec.Builder spec = MethodSpec.methodBuilder(method + additionalNames)
-                .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
-        methods.add(spec);
-
-        MethodBuilder md = new MethodDeclaration(spec);
-        methodBuilders.add(md);
-        return md;
-    }
-
-    @Override
     public MethodBuilder createMethod(String method, String additionalNames, String returnClass) {
 
+/*
         MethodSpec.Builder spec = MethodSpec.methodBuilder(method + additionalNames).returns(TypeVariableName.get(returnClass))
                 .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
         methods.add(spec);
+*/
 
-        MethodBuilder md = new MethodDeclaration(spec);
+        MethodBuilder md = new MethodDeclaration(typeSpec, method + additionalNames, returnClass, method);
         methodBuilders.add(md);
         return md;
     }
@@ -97,11 +87,6 @@ public class ResourceInterface implements ResourceBuilder {
 
         for (MethodBuilder methodBuilder : methodBuilders) {
             methodBuilder.output();
-        }
-
-        for (MethodSpec.Builder method : methods) {
-
-            typeSpec.addMethod(method.build());
         }
 
         for (ResponseClassBuilder responseClassBuilder : responseClassBuilders) {

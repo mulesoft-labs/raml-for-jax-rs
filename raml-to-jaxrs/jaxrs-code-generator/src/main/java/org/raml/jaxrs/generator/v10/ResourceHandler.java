@@ -76,35 +76,57 @@ public class ResourceHandler {
         ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), pathSuffix + queryParameterSuffix);
         setupResponses(method, response);
 
-        for (TypeDeclaration requestTypeDeclaration : method.body()) {
+        if (method.body().isEmpty()) {
 
-            if ( ! seenTypes.containsKey(method.method() + requestTypeDeclaration.type()) ) {
+            buildMethodReceivingType(null, creator, method, path, pathParameters, pathSuffix,
+                    queryParameterSuffix,
+                    seenTypes, response);
 
-                MethodBuilder mb = creator.createMethod(method.method(), pathSuffix + queryParameterSuffix, response.name());
-                seenTypes.put(method.method() + requestTypeDeclaration.type(), mb);
+        } else {
+            for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
-                for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {
-                    mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
-                }
+                buildMethodReceivingType(requestTypeDeclaration, creator, method, path, pathParameters, pathSuffix,
+                        queryParameterSuffix,
+                        seenTypes, response);
 
-                for (TypeDeclaration pathTypeDeclaration : pathParameters) {
-                    mb.addPathParameter(pathTypeDeclaration.name(), pathTypeDeclaration.type());
-                }
 
-                if ( ! "".equals(path) ) {
-                    mb.addPathAnnotation(path);
-                }
+            }
+        }
+    }
 
-                mb.addEntityParameter("entity", requestTypeDeclaration.type());
-                mb.addConsumeAnnotation(requestTypeDeclaration.name());
+    private void buildMethodReceivingType(TypeDeclaration requestTypeDeclaration, ResourceBuilder creator, Method method,
+            String path, List<TypeDeclaration> pathParameters, String pathSuffix, String queryParameterSuffix,
+            Map<String, MethodBuilder> seenTypes, ResponseClassBuilder response) {
+        if ( ! seenTypes.containsKey(method.method() + ((requestTypeDeclaration == null ) ? "void": requestTypeDeclaration.type())) ) {
 
-            } else {
+            MethodBuilder mb = creator.createMethod(method.method(), pathSuffix + queryParameterSuffix, response.name());
+            seenTypes.put(method.method() + ((requestTypeDeclaration == null ) ? "void": requestTypeDeclaration.type()), mb);
 
-                MethodBuilder builder = seenTypes.get(method.method() + requestTypeDeclaration.type());
-                builder.addConsumeAnnotation(requestTypeDeclaration.name());
+            for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {
+                mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
             }
 
+            for (TypeDeclaration pathTypeDeclaration : pathParameters) {
+                mb.addPathParameter(pathTypeDeclaration.name(), pathTypeDeclaration.type());
+            }
 
+            if ( ! "".equals(path) ) {
+                mb.addPathAnnotation(path);
+            }
+
+            if ( requestTypeDeclaration != null ) {
+                mb.addEntityParameter("entity", requestTypeDeclaration.type());
+            }
+            if ( requestTypeDeclaration != null ) {
+                mb.addConsumeAnnotation(requestTypeDeclaration.name());
+            }
+
+        } else {
+
+            MethodBuilder builder = seenTypes.get(method.method() + ((requestTypeDeclaration == null ) ? "void": requestTypeDeclaration.type()));
+            if ( requestTypeDeclaration != null ) {
+                builder.addConsumeAnnotation(requestTypeDeclaration.name());
+            }
         }
     }
 

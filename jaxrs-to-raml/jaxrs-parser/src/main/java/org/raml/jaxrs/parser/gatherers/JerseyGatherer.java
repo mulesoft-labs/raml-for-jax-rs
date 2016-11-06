@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
@@ -37,7 +38,11 @@ public class JerseyGatherer implements JaxRsClassesGatherer {
         checkNotNull(application);
         checkArgument(Files.isRegularFile(application));
 
-        return new JerseyGatherer(new ResourceConfig().files(application.toString()));
+        try {
+            return new JerseyGatherer(new ResourceConfig().files(application.toString()).setClassLoader(ClassLoaderUtils.classLoaderFor(application)));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("unable to instantiate gather", e);
+        }
     }
 
     @Override

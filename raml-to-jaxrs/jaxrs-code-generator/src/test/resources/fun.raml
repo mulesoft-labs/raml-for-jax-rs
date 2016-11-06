@@ -59,10 +59,21 @@ resourceTypes:
                 type: string
         responses:
             200:
-
-
-/code:
-    get:
-     queryParameters:
-       hello_man: integer
-       fink: number
+    /code:
+        get:
+            queryParameters:
+                hello_man: integer
+                fink: number
+            responses:
+                200:
+            body:
+                application/json:
+        /bytes:
+            get:
+                queryParameters:
+                    hello_man: integer
+                    fink: number
+                responses:
+                    200:
+                body:
+                    application/json:

@@ -35,7 +35,7 @@ public class ResourceHandler {
                 creator.withDocumentation(resource.description().value() + "\n");
         }
 
-        if ( api.mediaType() != null) {
+        if ( ! api.mediaType().isEmpty()) {
             creator.mediaType(transform(api.mediaType(), new Function<MimeType, String>() {
                 @Nullable
                 @Override
@@ -46,23 +46,38 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            handleMethod(creator, method);
+            handleMethod(creator, method, "");
+        }
+
+        handleSubResources(build, api, resource, creator, "");
+    }
+
+    private void handleSubResources(CurrentBuild build, Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
+
+        for (Resource subresource : resource.resources()) {
+
+            for (Method method : resource.methods()) {
+                handleMethod(creator, method, subresourcePath + "/" + subresource.relativeUri().value());
+            }
+
+            handleSubResources(build, api, subresource, creator, subresourcePath + "/" + subresource.relativeUri().value());
         }
     }
 
-    private void handleMethod(ResourceBuilder creator, Method method) {
-        String methodNameSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
+    private void handleMethod(ResourceBuilder creator, Method method, String path) {
+        String pathSuffix = "".equals(path) ? "": Names.buildTypeName(path);
+        String queryParameterSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
                 queryParameterToString()));
 
         Map<String, MethodBuilder> seenTypes = new HashMap<>();
-        ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), methodNameSuffix);
+        ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), pathSuffix + queryParameterSuffix);
         setupResponses(method, response);
 
         for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
             if ( ! seenTypes.containsKey(requestTypeDeclaration.type()) ) {
 
-                MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix, response.name());
+                MethodBuilder mb = creator.createMethod(method.method(), pathSuffix + queryParameterSuffix, response.name());
                 seenTypes.put(requestTypeDeclaration.type(), mb);
 
                 if (method.queryParameters() != null ) {

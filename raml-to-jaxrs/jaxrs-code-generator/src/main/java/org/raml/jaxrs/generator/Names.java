@@ -40,7 +40,7 @@ public class Names
      */
     private static String buildJavaFriendlyName(final String source, CaseFormat format)
     {
-        final String baseName = source.replaceAll("\\s+", "_").replaceAll("[^\\w_]", "");
+        final String baseName = source.replaceAll("\\W+", "_").replaceAll("^_+", "").replaceAll("[^\\w_]", "");
 
         String friendlyName = CaseFormat.LOWER_UNDERSCORE.to(format, baseName);
 

@@ -16,7 +16,8 @@ public class NamesTest {
     public void buildTypeName() throws Exception {
 
         assertEquals("Fun", Names.buildTypeName("/fun"));
-        assertEquals("Fun", Names.buildTypeName("fun"));
+        assertEquals("Fun", Names.buildTypeName("/fun"));
+        assertEquals("CodeBytes", Names.buildTypeName("//code//bytes"));
         assertEquals("Root", Names.buildTypeName(""));
         assertEquals("FunAllo", Names.buildTypeName("fun_allo"));
         assertEquals("FunAllo", Names.buildTypeName("fun allo"));

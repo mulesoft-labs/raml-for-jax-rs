@@ -1,8 +1,8 @@
-package org.raml.jaxrs.parser.application;
+package org.raml.jaxrs.model;
 
 import java.util.Set;
 
 public interface Resource {
-    Path getPath();
+    String getPath();
     Set<Method> getMethods();
 }

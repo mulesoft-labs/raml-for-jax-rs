@@ -1,4 +1,4 @@
-package org.raml.jaxrs.parser.application;
+package org.raml.jaxrs.model;
 
 public interface PathFragment {
     /**

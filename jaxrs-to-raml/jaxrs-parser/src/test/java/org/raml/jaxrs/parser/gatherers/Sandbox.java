@@ -1,21 +1,15 @@
 package org.raml.jaxrs.parser.gatherers;
 
-import com.google.common.collect.Lists;
-
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.model.Resource;
+import org.raml.jaxrs.model.JaxRsApplication;
+import org.raml.jaxrs.parser.analyzers.Analyzer;
+import org.raml.jaxrs.parser.analyzers.JerseyAnalyzer;
+import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkState;
-import static java.lang.String.format;
+import java.util.concurrent.Callable;
 
 public class Sandbox {
 
@@ -23,24 +17,27 @@ public class Sandbox {
 
         Path path = Paths.get("/home/phil/projects/raml-for-jax-rs/jaxrs-to-raml/jaxrs-test-resources/target/jaxrs-test-resources-2.0.0-SNAPSHOT.jar");
 
-//        checkState(Files.isReadable(path));
-//
-//        URLClassLoader urlClassLoader = new URLClassLoader(new URL[] {path.toUri().toURL()}, null);
-//
-//        Thread.currentThread().setContextClassLoader(urlClassLoader);
-//
-//        Set<Class<?>> classes = new ResourceConfig().packages("org.raml").getClasses();
-
-        Set<Class<?>> classes = JerseyGatherer.forApplication(path).jaxRsClasses();
+        JerseyGatherer gatherer = JerseyGatherer.forApplication(path);
+        final Set<Class<?>> classes = gatherer.jaxRsClasses();
 
         System.out.println("number of classes: " + classes.size());
         System.out.println(classes);
 
-//        List<Resource> resources = Lists.newArrayList();
-//        for (Class<?> clazz : classes) {
-//            resources.add(Resource.from(clazz));
-//        }
-//
-//        System.out.println(resources);
+
+        ClassLoaderUtils.inClassLoaderContextUnchecked(
+                gatherer.getClassLoader(),
+                new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        Analyzer analyzer = JerseyAnalyzer.create(classes);
+
+                        JaxRsApplication application = analyzer.analyze();
+
+                        System.out.println("put a breakpoint here");
+                        return null;
+                    }
+                }
+        );
+
     }
 }

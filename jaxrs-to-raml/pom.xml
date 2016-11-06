@@ -18,6 +18,7 @@
         <module>raml-model-builder</module>
         <module>jaxrs-parser</module>
         <module>jaxrs-test-resources</module>
+        <module>jaxrs-model</module>
     </modules>
 
     <distributionManagement>

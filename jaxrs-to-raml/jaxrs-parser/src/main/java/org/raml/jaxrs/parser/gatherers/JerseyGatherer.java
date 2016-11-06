@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.raml.jaxrs.parser.util.ClassLoaderUtils.inClassLoaderContextUnchecked;
 
 public class JerseyGatherer implements JaxRsClassesGatherer {
 
@@ -57,28 +58,6 @@ public class JerseyGatherer implements JaxRsClassesGatherer {
         Reflections reflections = new Reflections(new SubTypesScanner(false));
         return getPackagesFromTypes(reflections.getAllTypes());
     }
-
-    private static <T> T inClassLoaderContext(ClassLoader classLoader, Callable<T> callable) throws Exception {
-        ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-
-        try {
-            Thread.currentThread().setContextClassLoader(classLoader);
-
-            return callable.call();
-
-        } finally {
-            Thread.currentThread().setContextClassLoader(currentClassLoader);
-        }
-    }
-
-    private static <T> T inClassLoaderContextUnchecked(ClassLoader classLoader, Callable<T> callable) {
-        try {
-            return inClassLoaderContext(classLoader, callable);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     private static ClassLoader getClassLoaderFor(Path application) {
         try {
@@ -134,5 +113,10 @@ public class JerseyGatherer implements JaxRsClassesGatherer {
                     }
                 }
         );
+    }
+
+    //Only there temporary until I fix the classloading issue.
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

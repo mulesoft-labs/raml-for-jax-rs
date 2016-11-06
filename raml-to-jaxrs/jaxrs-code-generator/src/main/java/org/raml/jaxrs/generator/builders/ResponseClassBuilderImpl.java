@@ -40,6 +40,12 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
     }
 
     @Override
+    public String name() {
+
+        return current.build().name;
+    }
+
+    @Override
     public void withResponse(String httpCode) {
         TypeSpec currentClass = current.build();
         current.addMethod(

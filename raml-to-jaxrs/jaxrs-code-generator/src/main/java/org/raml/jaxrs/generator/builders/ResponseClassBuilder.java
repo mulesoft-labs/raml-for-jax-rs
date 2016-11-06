@@ -7,6 +7,8 @@ import org.raml.v2.api.model.v10.system.types.StatusCodeString;
  * Just potential zeroes and ones
  */
 public interface ResponseClassBuilder {
+    String name();
+
     void withResponse(String value);
     void withResponse(String code, String name, String type);
 

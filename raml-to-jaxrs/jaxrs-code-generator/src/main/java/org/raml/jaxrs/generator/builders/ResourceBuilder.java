@@ -17,4 +17,6 @@ public interface ResourceBuilder {
     void output(String rootDirectory) throws IOException;
 
     MethodBuilder createMethod(String method, String additionalNames);
+
+    MethodBuilder createMethod(String method, String additionalNames, String returnClass);
 }

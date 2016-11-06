@@ -1,17 +1,16 @@
 package org.raml.jaxrs.generator.builders;
 
 import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.Names;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,6 +63,18 @@ public class ResourceInterface implements ResourceBuilder {
     public MethodBuilder createMethod(String method, String additionalNames) {
 
         MethodSpec.Builder spec = MethodSpec.methodBuilder(method + additionalNames)
+                .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
+        methods.add(spec);
+
+        MethodBuilder md = new MethodDeclaration(spec);
+        methodBuilders.add(md);
+        return md;
+    }
+
+    @Override
+    public MethodBuilder createMethod(String method, String additionalNames, String returnClass) {
+
+        MethodSpec.Builder spec = MethodSpec.methodBuilder(method + additionalNames).returns(TypeVariableName.get(returnClass))
                 .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
         methods.add(spec);
 

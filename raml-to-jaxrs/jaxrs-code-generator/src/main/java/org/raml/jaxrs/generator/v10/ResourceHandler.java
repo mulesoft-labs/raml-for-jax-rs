@@ -62,7 +62,7 @@ public class ResourceHandler {
 
             if ( ! seenTypes.containsKey(requestTypeDeclaration.type()) ) {
 
-                MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix);
+                MethodBuilder mb = creator.createMethod(method.method(), methodNameSuffix, response.name());
                 seenTypes.put(requestTypeDeclaration.type(), mb);
 
                 if (method.queryParameters() != null ) {

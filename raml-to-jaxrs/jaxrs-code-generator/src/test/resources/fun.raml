@@ -2,9 +2,9 @@
 title: GitHub API
 version: v3
 baseUri: https://api.github.com
-mediaType:
-    - application/json
-    - application/xml
+#mediaType:
+#    - application/json
+#    - application/xml
 traits:
 types:
    funk:
@@ -53,6 +53,13 @@ resourceTypes:
                 body:
                     application/json:
                         type: string
+    delete:
+        body:
+            application/json:
+                type: string
+        responses:
+            200:
+
 
 /code:
     get:

@@ -68,6 +68,22 @@ resourceTypes:
                 200:
             body:
                 application/json:
+    /code/{blah}:
+        uriParameters:
+            blah:
+                type: string
+        get:
+            queryParameters:
+                hello_man: integer
+                fink: number
+            responses:
+                200:
+            body:
+                application/json:
+        delete:
+            body:
+                application/json:
+
         /bytes:
             get:
                 queryParameters:

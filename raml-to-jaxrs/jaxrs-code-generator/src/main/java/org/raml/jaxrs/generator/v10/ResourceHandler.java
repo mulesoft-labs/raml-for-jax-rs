@@ -17,6 +17,7 @@ import org.raml.v2.api.model.v10.resources.Resource;
 import javax.annotation.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.transform;
@@ -46,7 +47,7 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            handleMethod(creator, method, "");
+            handleMethod(creator, method, "", resource.uriParameters());
         }
 
         handleSubResources(build, api, resource, creator, "");
@@ -57,14 +58,16 @@ public class ResourceHandler {
         for (Resource subresource : resource.resources()) {
 
             for (Method method : resource.methods()) {
-                handleMethod(creator, method, subresourcePath + "/" + subresource.relativeUri().value());
+                handleMethod(creator, method, subresourcePath + subresource.relativeUri().value(), resource.uriParameters());
             }
 
-            handleSubResources(build, api, subresource, creator, subresourcePath + "/" + subresource.relativeUri().value());
+            handleSubResources(build, api, subresource, creator, subresourcePath + subresource.relativeUri().value());
         }
+
+
     }
 
-    private void handleMethod(ResourceBuilder creator, Method method, String path) {
+    private void handleMethod(ResourceBuilder creator, Method method, String path, List<TypeDeclaration> pathParameters) {
         String pathSuffix = "".equals(path) ? "": Names.buildTypeName(path);
         String queryParameterSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
                 queryParameterToString()));
@@ -75,15 +78,21 @@ public class ResourceHandler {
 
         for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
-            if ( ! seenTypes.containsKey(requestTypeDeclaration.type()) ) {
+            if ( ! seenTypes.containsKey(method.method() + requestTypeDeclaration.type()) ) {
 
                 MethodBuilder mb = creator.createMethod(method.method(), pathSuffix + queryParameterSuffix, response.name());
-                seenTypes.put(requestTypeDeclaration.type(), mb);
+                seenTypes.put(method.method() + requestTypeDeclaration.type(), mb);
 
-                if (method.queryParameters() != null ) {
-                    for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {
-                        mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
-                    }
+                for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {
+                    mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
+                }
+
+                for (TypeDeclaration pathTypeDeclaration : pathParameters) {
+                    mb.addPathParameter(pathTypeDeclaration.name(), pathTypeDeclaration.type());
+                }
+
+                if ( ! "".equals(path) ) {
+                    mb.addPathAnnotation(path);
                 }
 
                 mb.addEntityParameter("entity", requestTypeDeclaration.type());
@@ -91,9 +100,11 @@ public class ResourceHandler {
 
             } else {
 
-                MethodBuilder builder = seenTypes.get(requestTypeDeclaration.type());
+                MethodBuilder builder = seenTypes.get(method.method() + requestTypeDeclaration.type());
                 builder.addConsumeAnnotation(requestTypeDeclaration.name());
             }
+
+
         }
     }
 

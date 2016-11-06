@@ -7,10 +7,15 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+
+import java.util.List;
 
 import static org.raml.jaxrs.generator.HTTPMethods.methodNameToAnnotation;
 
@@ -54,6 +59,18 @@ public class MethodDeclaration implements MethodBuilder {
     }
 
     @Override
+    public MethodBuilder addPathParameter(String name, String type) {
+
+        ParameterSpec.Builder param = ParameterSpec.builder(ScalarTypes.scalarToJavaType(type), Names.buildVariableName(name));
+        AnnotationSpec.Builder annotation = AnnotationSpec.builder(PathParam.class);
+        annotation.addMember("value","$S", name);
+        param.addAnnotation(annotation.build());
+
+        builder.addParameter(param.build());
+        return this;
+    }
+
+    @Override
     public MethodBuilder addConsumeAnnotation(String mimeType) {
 
         if ( consumerAnnotationBuilder == null ) {
@@ -62,6 +79,12 @@ public class MethodDeclaration implements MethodBuilder {
 
         consumerAnnotationBuilder.addMember("value", "$S", mimeType);
 
+        return this;
+    }
+
+    @Override
+    public MethodBuilder addPathAnnotation(String path) {
+        builder.addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S" , path).build());
         return this;
     }
 

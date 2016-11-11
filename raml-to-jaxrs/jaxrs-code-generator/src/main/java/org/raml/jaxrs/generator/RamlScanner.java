@@ -18,6 +18,14 @@ import java.net.URL;
  */
 public class RamlScanner {
 
+    private final String destDir;
+    private final String packageName;
+
+    public RamlScanner(String destDir, String packageName) {
+        this.destDir = destDir;
+        this.packageName = packageName;
+    }
+
     public void handle(String resourceName) throws IOException, GenerationException {
 
         handle(RamlScanner.class.getResource(resourceName));
@@ -44,13 +52,13 @@ public class RamlScanner {
 
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
-        CurrentBuild build = new CurrentBuild("jp.fun");
+        CurrentBuild build = new CurrentBuild(packageName);
         for (Resource resource : api.resources()) {
             ResourceHandler handler = new ResourceHandler();
             handler.handle(build, api, resource);
         }
 
-        build.generate("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jars-generated-example/src/main/java");
+        build.generate(destDir);
     }
 
     public void handle(org.raml.v2.api.model.v08.api.Api api) {

@@ -14,7 +14,7 @@ public class SimpleTest {
     @Test
     public void simple() throws IOException, GenerationException {
 
-        RamlScanner scanner = new RamlScanner();
+        RamlScanner scanner = new RamlScanner("jp.fun");
         scanner.handle("/fun.raml");
     }
 }

@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.raml</groupId>
@@ -9,17 +9,17 @@
     <artifactId>raml-to-jaxrs</artifactId>
     <packaging>pom</packaging>
     <modules>
-<!--
-        <module>maven-plugin</module>
-        <module>gradle-plugin</module>
--->
+        <!--
+                <module>maven-plugin</module>
+                <module>gradle-plugin</module>
+        -->
         <module>jaxrs-code-generator</module>
-        <module>jars-generated-example</module>
+        <module>jaxrs-generated-example</module>
     </modules>
- <distributionManagement>
-       <repository>
+    <distributionManagement>
+        <repository>
             <id>mule-ee-releases</id>
-            <name>Mule Release Repository</name>                                               
+            <name>Mule Release Repository</name>
             <url>https://repository-master.mulesoft.org/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
@@ -29,87 +29,87 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
 
-  </distributionManagement>
-<profiles>
-    <profile>
-        <id>sonatype</id>
-        <distributionManagement>
-  <snapshotRepository>
-    <id>ossrh</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-  </snapshotRepository>
-  <repository>
-    <id>ossrh</id>
-    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-  </repository>
-        </distributionManagement>
-      <build>
-        <plugins>
-<!--           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-        	</plugin>
- -->        </plugins>
-      </build>
-    </profile>
-</profiles>
-    <properties>       
+    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>sonatype</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <!--           <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-gpg-plugin</artifactId>
+                                <version>1.5</version>
+                                <executions>
+                                  <execution>
+                                    <id>sign-artifacts</id>
+                                    <phase>verify</phase>
+                                    <goals>
+                                      <goal>sign</goal>
+                                    </goals>
+                                  </execution>
+                                </executions>
+                                </plugin>
+                     -->        </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <properties>
         <licensePath>LICENSE_HEADER.txt</licensePath>
     </properties>
 
     <build>
         <plugins>
-<!--       
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
-                <configuration>
-                    <header>${licensePath}</header>
-                    <skip>false</skip>
-                    <excludes>
-                        <exclude>target/**</exclude>
-                        <exclude>**/.gitignore</exclude>
-                        <exclude>.idea/**</exclude>
-                        <exclude>**/*.yaml</exclude>
-                        <exclude>**/*.raml</exclude>
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/*.json</exclude>
-                        <exclude>**/*.xml</exclude>
-                        <exclude>**/*.xsd</exclude>
-                        <exclude>**/*.properties</exclude>
-                        <exclude>**/*.md</exclude>
-                        <exclude>**/*.template</exclude>
-                        <exclude>**/*.buildpath</exclude>
-                        <exclude>**/example-output/**</exclude>
-                    </excludes>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
-                    <strictCheck>true</strictCheck>
-                    <properties>
-                        <licenseYear>2013-2015</licenseYear>
-                    </properties>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
+            <!--
+                        <plugin>
+                            <groupId>com.mycila.maven-license-plugin</groupId>
+                            <artifactId>maven-license-plugin</artifactId>
+                            <version>1.9.0</version>
+                            <configuration>
+                                <header>${licensePath}</header>
+                                <skip>false</skip>
+                                <excludes>
+                                    <exclude>target/**</exclude>
+                                    <exclude>**/.gitignore</exclude>
+                                    <exclude>.idea/**</exclude>
+                                    <exclude>**/*.yaml</exclude>
+                                    <exclude>**/*.raml</exclude>
+                                    <exclude>**/*.txt</exclude>
+                                    <exclude>**/*.json</exclude>
+                                    <exclude>**/*.xml</exclude>
+                                    <exclude>**/*.xsd</exclude>
+                                    <exclude>**/*.properties</exclude>
+                                    <exclude>**/*.md</exclude>
+                                    <exclude>**/*.template</exclude>
+                                    <exclude>**/*.buildpath</exclude>
+                                    <exclude>**/example-output/**</exclude>
+                                </excludes>
+                                <mapping>
+                                    <java>SLASHSTAR_STYLE</java>
+                                </mapping>
+                                <strictCheck>true</strictCheck>
+                                <properties>
+                                    <licenseYear>2013-2015</licenseYear>
+                                </properties>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <goals>
+                                        <goal>check</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        -->
         </plugins>
         <pluginManagement>
             <plugins>
@@ -150,27 +150,27 @@
     </repositories>
     <description>RAML JAXRS</description>
     <scm>
-		<url>https://github.com/mulesoft/raml-for-jax-rs.git</url>
-		<connection>https://github.com/mulesoft/raml-for-jax-rs.git</connection>
-		<developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
-	</scm>
-	<organization>
-		<name>Mulesoft</name>
-		<url>http://mulesoft.com</url>
-	</organization>
-	<url>https://github.com/mulesoft/raml-for-jax-rs</url>
-	<licenses>
-  <license>
-    <name>The Apache License, Version 2.0</name>
-    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-  </license>   
-</licenses>
-   <developers>
-    <developer>
-      <name>Pavel Petrochenko</name>
-      <email>petrochenko.pavel.a@gmail.com</email>
-      <organization>Mulesoft</organization>
-      <organizationUrl>http://mulesoft.com</organizationUrl>
-    </developer>
-  </developers>
+        <url>https://github.com/mulesoft/raml-for-jax-rs.git</url>
+        <connection>https://github.com/mulesoft/raml-for-jax-rs.git</connection>
+        <developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
+    </scm>
+    <organization>
+        <name>Mulesoft</name>
+        <url>http://mulesoft.com</url>
+    </organization>
+    <url>https://github.com/mulesoft/raml-for-jax-rs</url>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Pavel Petrochenko</name>
+            <email>petrochenko.pavel.a@gmail.com</email>
+            <organization>Mulesoft</organization>
+            <organizationUrl>http://mulesoft.com</organizationUrl>
+        </developer>
+    </developers>
 </project>

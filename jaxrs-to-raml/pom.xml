@@ -14,11 +14,10 @@
 <!--
         <module>jaxrs-raml-maven-plugin</module>
 -->
-        <module>raml-node-model</module>
-        <module>raml-model-builder</module>
         <module>jaxrs-parser</module>
         <module>jaxrs-test-resources</module>
         <module>jaxrs-model</module>
+        <module>raml-emitter</module>
     </modules>
 
     <distributionManagement>

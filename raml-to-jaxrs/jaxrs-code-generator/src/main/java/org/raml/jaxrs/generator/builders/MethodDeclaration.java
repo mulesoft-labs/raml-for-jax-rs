@@ -5,6 +5,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
 
@@ -23,10 +24,12 @@ import static org.raml.jaxrs.generator.HTTPMethods.methodNameToAnnotation;
 public class MethodDeclaration implements MethodBuilder {
 
     private final MethodSpec.Builder builder;
+    private final CurrentBuild currentBuild;
     private final TypeSpec.Builder typeSpec;
     private AnnotationSpec.Builder consumerAnnotationBuilder;
 
-    public MethodDeclaration(TypeSpec.Builder typeSpec, String name, String returnClass, String httpMethodType) {
+    public MethodDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, String name, String returnClass, String httpMethodType) {
+        this.currentBuild = currentBuild;
         this.typeSpec = typeSpec;
         this.builder = MethodSpec.methodBuilder(name)
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC)

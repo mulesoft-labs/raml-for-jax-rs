@@ -5,6 +5,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.ScalarTypes;
 
 import javax.lang.model.element.Modifier;
@@ -16,14 +17,14 @@ import javax.ws.rs.core.Response;
  */
 public class ResponseClassBuilderImpl implements ResponseClassBuilder {
 
+    private final CurrentBuild currentBuild;
     private final TypeSpec.Builder owningInterface;
-    private final String packageName;
     private final TypeSpec.Builder current;
 
-    public ResponseClassBuilderImpl(TypeSpec.Builder owningInterface, String packageName, String className) {
+    public ResponseClassBuilderImpl(CurrentBuild currentBuild, TypeSpec.Builder owningInterface, String className) {
+        this.currentBuild = currentBuild;
         this.owningInterface = owningInterface;
-        this.packageName = packageName;
-        this.current = createResponseClass(packageName, className);
+        this.current = createResponseClass(currentBuild.getDefaultPackage(), className);
     }
 
     private TypeSpec.Builder createResponseClass(String packageName, String className) {

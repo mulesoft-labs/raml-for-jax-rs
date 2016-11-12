@@ -37,9 +37,13 @@ public class CurrentBuild {
         this.defaultPackage = defaultPackage;
     }
 
+    public String getDefaultPackage() {
+        return defaultPackage;
+    }
+
     public ResourceBuilder createResource(String name, String relativeURI) {
 
-        ResourceBuilder builder = new ResourceInterface(defaultPackage, name, relativize(relativeURI));
+        ResourceBuilder builder = new ResourceInterface(this, name, relativize(relativeURI));
         resources.add(builder);
         return builder;
     }

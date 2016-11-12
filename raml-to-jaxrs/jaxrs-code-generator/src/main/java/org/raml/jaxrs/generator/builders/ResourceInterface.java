@@ -4,6 +4,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 
 import javax.lang.model.element.Modifier;
@@ -21,15 +22,15 @@ import java.util.List;
  */
 public class ResourceInterface implements ResourceBuilder {
 
-    private final String pack;
     private final TypeSpec.Builder typeSpec;
+    private final CurrentBuild build;
     private List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
     private List<TypeSpec.Builder> responseTypes = new ArrayList<TypeSpec.Builder>();
     private List<ResponseClassBuilder> responseClassBuilders = new ArrayList<>();
     private List<MethodBuilder> methodBuilders = new ArrayList<>();
 
-    public ResourceInterface(String pack, String name, String relativeURI) {
-        this.pack = pack;
+    public ResourceInterface(CurrentBuild build, String name, String relativeURI) {
+        this.build = build;
         this.typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", relativeURI).build());
@@ -65,7 +66,7 @@ public class ResourceInterface implements ResourceBuilder {
         methods.add(spec);
 */
 
-        MethodBuilder md = new MethodDeclaration(typeSpec, method + additionalNames, returnClass, method);
+        MethodBuilder md = new MethodDeclaration(build, typeSpec, method + additionalNames, returnClass, method);
         methodBuilders.add(md);
         return md;
     }
@@ -73,8 +74,7 @@ public class ResourceInterface implements ResourceBuilder {
     @Override
     public ResponseClassBuilder createResponseClassBuilder(String packageName, String method, String additionalNames) {
 
-        ResponseClassBuilderImpl responseClassBuilder = new ResponseClassBuilderImpl(typeSpec, packageName,
-                Names.buildTypeName(method) + additionalNames);
+        ResponseClassBuilderImpl responseClassBuilder = new ResponseClassBuilderImpl(build, typeSpec, Names.buildTypeName(method) + additionalNames);
         responseClassBuilders.add(responseClassBuilder);
         return responseClassBuilder;
     }
@@ -90,7 +90,7 @@ public class ResourceInterface implements ResourceBuilder {
             responseClassBuilder.output();
         }
 
-        JavaFile.Builder file = JavaFile.builder(pack, typeSpec.build());
+        JavaFile.Builder file = JavaFile.builder(build.getDefaultPackage(), typeSpec.build());
         file.build().writeTo(new File(rootDirectory));
     }
 }

@@ -9,12 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>raml-model</artifactId>
+    <artifactId>jaxrs-to-raml-model</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>jaxrs-model</artifactId>
         </dependency>
     </dependencies>
 

@@ -23,7 +23,6 @@ import org.junit.rules.TemporaryFolder
 import org.raml.jaxrs.codegen.core.Generator
 import org.raml.jaxrs.gradle.RamlExtension
 import org.raml.jaxrs.gradle.RamlPlugin
-
 import spock.lang.Specification
 
 class CodeGeneratorTaskSpec extends Specification {

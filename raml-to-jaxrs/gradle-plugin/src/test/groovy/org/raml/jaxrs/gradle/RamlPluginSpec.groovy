@@ -19,7 +19,6 @@ import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-
 import spock.lang.Specification
 
 class RamlPluginSpec extends Specification {

@@ -3,12 +3,9 @@ package org.raml.jaxrs.generator.builders;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
-import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
-import org.raml.v2.api.model.v10.system.types.StatusCodeString;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.core.Response;

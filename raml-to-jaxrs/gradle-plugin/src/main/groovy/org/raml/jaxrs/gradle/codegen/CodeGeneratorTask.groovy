@@ -15,18 +15,14 @@
  */
 package org.raml.jaxrs.gradle.codegen
 
-import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import org.jsonschema2pojo.AnnotationStyle
 import org.raml.jaxrs.codegen.core.Configuration
-import org.raml.jaxrs.codegen.core.Generator
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
-import org.raml.jaxrs.gradle.RamlExtension
+import org.raml.jaxrs.codegen.core.Generator
 import org.raml.jaxrs.codegen.core.ext.GeneratorExtension
+import org.raml.jaxrs.gradle.RamlExtension
 
 /**
  * Custom Gradle task that handles the generation of Java code from RAML

@@ -20,7 +20,6 @@ import org.jsonschema2pojo.AnnotationStyle
 import org.junit.ClassRule
 import org.junit.rules.TemporaryFolder
 import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
-
 import spock.lang.Shared
 import spock.lang.Specification
 

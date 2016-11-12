@@ -1,16 +1,11 @@
 package org.raml.jaxrs.generator;
 
-import com.google.common.collect.Lists;
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
-import com.squareup.javapoet.WildcardTypeName;
 import joptsimple.internal.Strings;
 import org.raml.jaxrs.generator.builders.ResourceBuilder;
 import org.raml.jaxrs.generator.builders.ResourceInterface;

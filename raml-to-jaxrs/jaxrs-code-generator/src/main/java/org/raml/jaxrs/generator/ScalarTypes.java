@@ -2,12 +2,7 @@ package org.raml.jaxrs.generator;
 
 import com.google.common.collect.ImmutableMap;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;

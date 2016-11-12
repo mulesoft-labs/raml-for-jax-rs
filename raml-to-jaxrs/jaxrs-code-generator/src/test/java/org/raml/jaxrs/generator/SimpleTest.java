@@ -1,7 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import org.junit.Test;
-
 import java.io.IOException;
 
 /**

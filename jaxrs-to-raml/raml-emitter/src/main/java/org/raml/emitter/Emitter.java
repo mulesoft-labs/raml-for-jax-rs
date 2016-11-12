@@ -1,7 +1,7 @@
 package org.raml.emitter;
 
-import java.nio.file.Path;
+import org.raml.model.RamlApi;
 
 public interface Emitter {
-    void emit(Path whereTo) throws RamlEmissionException;
+    void emit(RamlApi api) throws RamlEmissionException;
 }

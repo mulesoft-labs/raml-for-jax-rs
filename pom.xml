@@ -33,6 +33,7 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+
     <profiles>
         <profile>
             <id>sonatype</id>
@@ -48,6 +49,7 @@
             </distributionManagement>
         </profile>
     </profiles>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -69,6 +71,11 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.9.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.21</version>
             </dependency>
             <!-- test only dependencies -->
             <dependency>

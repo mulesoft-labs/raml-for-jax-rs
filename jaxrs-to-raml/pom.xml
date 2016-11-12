@@ -18,7 +18,23 @@
         <module>jaxrs-test-resources</module>
         <module>jaxrs-model</module>
         <module>raml-emitter</module>
+        <module>raml-model</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.raml</groupId>
+                <artifactId>jaxrs-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.raml</groupId>
+                <artifactId>raml-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <distributionManagement>
         <repository>

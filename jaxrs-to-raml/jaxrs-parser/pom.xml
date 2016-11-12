@@ -31,7 +31,6 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>jaxrs-model</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>

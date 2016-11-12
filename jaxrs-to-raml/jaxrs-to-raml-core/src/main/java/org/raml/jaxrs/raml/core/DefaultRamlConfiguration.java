@@ -16,7 +16,7 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
 
     public static DefaultRamlConfiguration forApplication(String application) {
         checkNotNull(application);
-        checkArgument(application.trim().isEmpty(), "application name should contain at least one meaningful character");
+        checkArgument(!application.trim().isEmpty(), "application name should contain at least one meaningful character");
 
         return new DefaultRamlConfiguration(application.trim());
     }

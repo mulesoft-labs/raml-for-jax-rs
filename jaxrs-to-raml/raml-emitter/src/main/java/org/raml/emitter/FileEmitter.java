@@ -45,11 +45,11 @@ public class FileEmitter implements Emitter {
     }
 
     private void writeBaseUri(PrintWriter writer, String baseUri) {
-        writer.printf("baseUri: %s", baseUri);
+        writer.printf("baseUri: %s\n", baseUri);
     }
 
     private void writeVersion(PrintWriter writer, String version) {
-        writer.printf("version: %s", version);
+        writer.printf("version: %s\n", version);
     }
 
     private void writeTitle(PrintWriter writer, String title) {

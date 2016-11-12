@@ -26,16 +26,16 @@ public class RamlApiImpl implements RamlApi {
 
     @Override
     public String getTitle() {
-        return null;
+        return this.title;
     }
 
     @Override
     public String getVersion() {
-        return null;
+        return this.version;
     }
 
     @Override
     public String getBaseUri() {
-        return null;
+        return this.baseUri;
     }
 }

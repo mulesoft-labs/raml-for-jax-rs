@@ -57,9 +57,9 @@
                 <configuration>
                     <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                     <arguments>
-                        <argument>${project.basedir}/src/main/resources/fun.raml</argument>
+                        <argument>${project.basedir}/src/main/resources/example_simple_types.raml</argument>
                         <argument>${build.sourceDirectory}</argument>
-                        <argument>jp.fun</argument>
+                        <argument>example.helloworld</argument>
                     </arguments>
                 </configuration>
             </plugin>

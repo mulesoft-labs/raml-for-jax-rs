@@ -11,10 +11,13 @@ import java.io.IOException;
 @org.junit.Ignore
 public class SimpleTest {
 
-    @Test
+    //@Test
     public void simple() throws IOException, GenerationException {
 
-//        RamlScanner scanner = new RamlScanner("jp.fun");
-//        scanner.handle("/fun.raml");
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "jp.fun"
+        );
+        scanner.handle("/fun.raml");
     }
 }

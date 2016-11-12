@@ -28,7 +28,7 @@ import static com.google.common.collect.Lists.transform;
  */
 public class ResourceHandler {
 
-    public void handle(CurrentBuild build, Api api, Resource resource) {
+    public void handle(String packageName, CurrentBuild build, Api api, Resource resource) {
 
         ResourceBuilder creator = build
                 .createResource(resource.displayName().value(), resource.relativeUri().value());
@@ -47,33 +47,34 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            handleMethod(creator, method, "", resource.uriParameters());
+            handleMethod(packageName, creator, method, "", resource.uriParameters());
         }
 
-        handleSubResources(build, api, resource, creator, "");
+        handleSubResources(packageName, build, api, resource, creator, "");
     }
 
-    private void handleSubResources(CurrentBuild build, Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
+    private void handleSubResources(String packageName, CurrentBuild build, Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
 
         for (Resource subresource : resource.resources()) {
 
             for (Method method : resource.methods()) {
-                handleMethod(creator, method, subresourcePath + subresource.relativeUri().value(), resource.uriParameters());
+                handleMethod(packageName, creator, method, subresourcePath + subresource.relativeUri().value(), subresource.uriParameters());
             }
 
-            handleSubResources(build, api, subresource, creator, subresourcePath + subresource.relativeUri().value());
+            handleSubResources(packageName, build, api, subresource, creator, subresourcePath + subresource.relativeUri().value());
         }
 
 
     }
 
-    private void handleMethod(ResourceBuilder creator, Method method, String path, List<TypeDeclaration> pathParameters) {
+    private void handleMethod(String packageName, ResourceBuilder creator, Method method, String path, List<TypeDeclaration> pathParameters) {
         String pathSuffix = "".equals(path) ? "": Names.buildTypeName(path);
         String queryParameterSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
                 queryParameterToString()));
 
         Map<String, MethodBuilder> seenTypes = new HashMap<>();
-        ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(), pathSuffix + queryParameterSuffix);
+        ResponseClassBuilder response = creator.createResponseClassBuilder(packageName, method.method(),
+                pathSuffix + queryParameterSuffix);
         setupResponses(method, response);
 
         if (method.body().isEmpty()) {

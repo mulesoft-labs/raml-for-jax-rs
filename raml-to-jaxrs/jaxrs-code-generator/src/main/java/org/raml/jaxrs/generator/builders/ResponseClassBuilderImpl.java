@@ -20,17 +20,19 @@ import javax.ws.rs.core.Response;
 public class ResponseClassBuilderImpl implements ResponseClassBuilder {
 
     private final TypeSpec.Builder owningInterface;
+    private final String packageName;
     private final TypeSpec.Builder current;
 
-    public ResponseClassBuilderImpl(TypeSpec.Builder owningInterface, String className) {
+    public ResponseClassBuilderImpl(TypeSpec.Builder owningInterface, String packageName, String className) {
         this.owningInterface = owningInterface;
-        this.current = createResponseClass(className);
+        this.packageName = packageName;
+        this.current = createResponseClass(packageName, className);
     }
 
-    private TypeSpec.Builder createResponseClass(String className) {
+    private TypeSpec.Builder createResponseClass(String packageName, String className) {
         return TypeSpec.classBuilder(className + "Response")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .superclass(ClassName.get("jp.fun", "ResponseDelegate")) // todo:  package name
+                .superclass(ClassName.get(packageName, "ResponseDelegate")) // todo:  package name
                 .addMethod(
                         MethodSpec.constructorBuilder()
                                 .addParameter(Response.class, "response")

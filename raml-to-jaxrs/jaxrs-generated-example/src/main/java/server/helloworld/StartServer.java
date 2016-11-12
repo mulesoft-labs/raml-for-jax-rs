@@ -1,4 +1,4 @@
-package org.raml.jaxrs.testproject;
+package server.helloworld;
 //
 //import jp.fun.Search;
 //import jp.fun.SearchImpl;

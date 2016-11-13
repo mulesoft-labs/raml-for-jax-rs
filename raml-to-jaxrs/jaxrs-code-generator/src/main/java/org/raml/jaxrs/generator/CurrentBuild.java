@@ -9,7 +9,9 @@ import com.squareup.javapoet.TypeVariableName;
 import joptsimple.internal.Strings;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
+import org.raml.jaxrs.generator.builders.types.CompositeTypeBuilder;
 import org.raml.jaxrs.generator.builders.types.TypeBuilder;
+import org.raml.jaxrs.generator.builders.types.TypeBuilderImplementation;
 import org.raml.jaxrs.generator.builders.types.TypeBuilderInterface;
 import org.raml.jaxrs.generator.builders.types.TypeDescriber;
 
@@ -67,9 +69,12 @@ public class CurrentBuild {
     }
 
     public TypeBuilder createType(String name, List<String> parentTypes) {
-        TypeBuilder builder = new TypeBuilderInterface(this, name, parentTypes);
-        types.put(name, builder);
-        return builder;
+        TypeBuilderInterface intf = new TypeBuilderInterface(this, name, parentTypes);
+        TypeBuilderImplementation impl = new TypeBuilderImplementation(this, name, name);
+
+        CompositeTypeBuilder compositeTypeBuilder = new CompositeTypeBuilder(intf, impl);
+        types.put(name, compositeTypeBuilder);
+        return compositeTypeBuilder;
     }
 
     public TypeBuilder getDeclaredType(String parentType) {

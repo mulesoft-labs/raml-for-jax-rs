@@ -60,13 +60,13 @@ public class TypeBuilderInterface implements TypeBuilder {
                 final MethodSpec.Builder getSpec = MethodSpec
                         .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-                build.javaTypeName(propertyInfo.getType(), forReturnValue(getSpec));
+                build.javaTypeName(propertyInfo.getType(), TypeBuilderHelpers.forReturnValue(build, getSpec));
 
                 MethodSpec.Builder setSpec = MethodSpec
                         .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 
-                build.javaTypeName(propertyInfo.getType(), forParameter(setSpec, propertyInfo.getName()));
+                build.javaTypeName(propertyInfo.getType(), TypeBuilderHelpers.forParameter(build, setSpec, propertyInfo.getName()));
                 typeSpec.addMethod(getSpec.build());
                 typeSpec.addMethod(setSpec.build());
             }
@@ -74,41 +74,6 @@ public class TypeBuilderInterface implements TypeBuilder {
 
         JavaFile.Builder file = JavaFile.builder(build.getDefaultPackage(), typeSpec.build());
         file.build().writeTo(new File(rootDirectory));
-    }
-
-    private TypeDescriber forReturnValue(final MethodSpec.Builder getSpec) {
-        return new TypeDescriber() {
-            @Override
-            public void asJavaType(Class c) {
-
-                getSpec.returns(c);
-            }
-
-            @Override
-            public void asBuiltType(String name) {
-
-                getSpec.returns(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name)));
-            }
-        };
-    }
-
-    private TypeDescriber forParameter(final MethodSpec.Builder getSpec, final String name) {
-        return new TypeDescriber() {
-            @Override
-            public void asJavaType(Class c) {
-                if ( c.isPrimitive()) {
-                    getSpec.addParameter(ParameterSpec.builder(c, name).build());
-                } else {
-
-                    getSpec.addParameter(ParameterSpec.builder(c, name).build());
-                }
-            }
-
-            @Override
-            public void asBuiltType(String name) {
-                getSpec.addParameter(ParameterSpec.builder(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name)), name).build());
-            }
-        };
     }
 
     private boolean noParentDeclares(List<TypeBuilder> propsFromParents, String name) {

@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import joptsimple.internal.Strings;
 
 import java.util.List;
@@ -58,6 +59,22 @@ public class Names
         String suffix = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s);
 
         return "By" + suffix;
+    }
+
+    public static String methodName(String methodName, String resourcePath, List<String> queryParameters) {
+
+        String methodNamePathPart = "".equals(resourcePath) ? "": Names.buildTypeName(resourcePath);
+        String queryParameterSuffix = Names.parameterNameMethodSuffix(queryParameters);
+
+        return methodName + methodNamePathPart + queryParameterSuffix;
+    }
+
+    public static String methodNameSuffix(String resourcePath, List<String> queryParameters) {
+
+        String methodNamePathPart = "".equals(resourcePath) ? "": Names.buildTypeName(resourcePath);
+        String queryParameterSuffix = Names.parameterNameMethodSuffix(queryParameters);
+
+        return methodNamePathPart + queryParameterSuffix;
     }
 
     private Names()

@@ -29,7 +29,13 @@ import static org.raml.jaxrs.generator.MethodSignature.signature;
  */
 public class ResourceHandler {
 
-    public void handle(String packageName, CurrentBuild build, Api api, Resource resource) {
+    private final CurrentBuild build;
+
+    public ResourceHandler(CurrentBuild build) {
+        this.build = build;
+    }
+
+    public void handle(Api api, Resource resource) {
 
         ResourceBuilder creator = build
                 .createResource(resource.displayName().value(), resource.relativeUri().value());
@@ -48,63 +54,63 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            handleMethod(packageName, creator, method, "", resource.uriParameters());
+            handleMethod(creator, method, "", resource.uriParameters());
         }
 
-        handleSubResources(build, api, resource, creator, "");
+        handleSubResources(api, resource, creator, "");
     }
 
-    private void handleSubResources(CurrentBuild build, Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
+    private void handleSubResources(Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
 
         for (Resource subresource : resource.resources()) {
 
             for (Method method : resource.methods()) {
-                handleMethod(build.getDefaultPackage(), creator, method, subresourcePath + subresource.relativeUri().value(), subresource.uriParameters());
+                handleMethod(creator, method, subresourcePath + subresource.relativeUri().value(), subresource.uriParameters());
             }
 
-            handleSubResources(build, api, subresource, creator, subresourcePath + subresource.relativeUri().value());
+            handleSubResources(api, subresource, creator, subresourcePath + subresource.relativeUri().value());
         }
-
-
     }
 
-    private void handleMethod(String packageName, ResourceBuilder creator, Method method, String path, List<TypeDeclaration> pathParameters) {
-        String pathSuffix = "".equals(path) ? "": Names.buildTypeName(path);
-        String queryParameterSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
+    private void handleMethod(ResourceBuilder creator, Method method, String resourcePath, List<TypeDeclaration> pathParameters) {
+
+        String fullMethodName = Names.methodName(method.method(), resourcePath, Lists.transform(method.queryParameters(),
+                queryParameterToString()));
+
+        String methodNameSuffix = Names.methodNameSuffix(resourcePath, Lists.transform(method.queryParameters(),
                 queryParameterToString()));
 
         Map<MethodSignature, MethodBuilder> seenTypes = new HashMap<>();
-        ResponseClassBuilder response = creator.createResponseClassBuilder(packageName, method.method(),
-                pathSuffix + queryParameterSuffix);
+        ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(),
+                methodNameSuffix);
         setupResponses(method, response);
 
         if (method.body().isEmpty()) {
 
-            buildMethodReceivingType(null, creator, method, path, pathParameters, pathSuffix,
-                    queryParameterSuffix,
-                    seenTypes, response);
+            buildMethodReceivingType(creator, resourcePath, method, fullMethodName, null, pathParameters, response, seenTypes
+            );
 
         } else {
             for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
-                buildMethodReceivingType(requestTypeDeclaration, creator, method, path, pathParameters, pathSuffix,
-                        queryParameterSuffix,
-                        seenTypes, response);
-
-
+                buildMethodReceivingType(creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
+                        pathParameters, response, seenTypes
+                );
             }
         }
     }
 
-    private void buildMethodReceivingType(TypeDeclaration requestTypeDeclaration, ResourceBuilder creator, Method method,
-            String path, List<TypeDeclaration> pathParameters, String pathSuffix, String queryParameterSuffix,
-            Map<MethodSignature, MethodBuilder> seenTypes, ResponseClassBuilder response) {
+
+    private void buildMethodReceivingType(ResourceBuilder creator, String path, Method method,
+            String fullMethodName, TypeDeclaration requestTypeDeclaration,
+            List<TypeDeclaration> pathParameters,
+            ResponseClassBuilder response, Map<MethodSignature, MethodBuilder> seenTypes) {
 
         MethodSignature sig = signature(method, pathParameters, requestTypeDeclaration);
 
         if ( ! seenTypes.containsKey(sig) ) {
 
-            MethodBuilder mb = creator.createMethod(method.method(), pathSuffix + queryParameterSuffix, response.name());
+            MethodBuilder mb = creator.createMethod(method.method(), fullMethodName, response.name());
 
             for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {
                 mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
@@ -128,7 +134,7 @@ public class ResourceHandler {
 
         } else {
 
-            MethodBuilder builder = seenTypes.get(method.method() + ((requestTypeDeclaration == null ) ? "void": requestTypeDeclaration.type()));
+            MethodBuilder builder = seenTypes.get(sig);
             if ( requestTypeDeclaration != null ) {
                 builder.addConsumeAnnotation(requestTypeDeclaration.name());
             }

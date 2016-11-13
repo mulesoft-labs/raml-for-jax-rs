@@ -12,9 +12,9 @@ public interface ResourceBuilder {
     ResourceBuilder withDocumentation(String docs);
     ResourceBuilder mediaType(List<String> mimeTypes);
 
-    ResponseClassBuilder createResponseClassBuilder(String packageName, String method, String additionalNames);
+    ResponseClassBuilder createResponseClassBuilder(String method, String additionalNames);
 
     void output(String rootDirectory) throws IOException;
 
-    MethodBuilder createMethod(String method, String additionalNames, String returnClass);
+    MethodBuilder createMethod(String method, String fullMethodName, String returnClass);
 }

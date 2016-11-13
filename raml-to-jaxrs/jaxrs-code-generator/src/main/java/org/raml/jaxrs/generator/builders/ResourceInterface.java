@@ -58,7 +58,7 @@ public class ResourceInterface implements ResourceBuilder {
     }
 
     @Override
-    public MethodBuilder createMethod(String method, String additionalNames, String returnClass) {
+    public MethodBuilder createMethod(String method, String fullMethodName, String returnClass) {
 
 /*
         MethodSpec.Builder spec = MethodSpec.methodBuilder(method + additionalNames).returns(TypeVariableName.get(returnClass))
@@ -66,13 +66,13 @@ public class ResourceInterface implements ResourceBuilder {
         methods.add(spec);
 */
 
-        MethodBuilder md = new MethodDeclaration(build, typeSpec, method + additionalNames, returnClass, method);
+        MethodBuilder md = new MethodDeclaration(build, typeSpec, fullMethodName, returnClass, method);
         methodBuilders.add(md);
         return md;
     }
 
     @Override
-    public ResponseClassBuilder createResponseClassBuilder(String packageName, String method, String additionalNames) {
+    public ResponseClassBuilder createResponseClassBuilder(String method, String additionalNames) {
 
         ResponseClassBuilderImpl responseClassBuilder = new ResponseClassBuilderImpl(build, typeSpec, Names.buildTypeName(method) + additionalNames);
         responseClassBuilders.add(responseClassBuilder);

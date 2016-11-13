@@ -54,8 +54,8 @@ public class RamlScanner {
 
         CurrentBuild build = new CurrentBuild(packageName);
         for (Resource resource : api.resources()) {
-            ResourceHandler handler = new ResourceHandler();
-            handler.handle(packageName, build, api, resource);
+            ResourceHandler handler = new ResourceHandler(build);
+            handler.handle(api, resource);
         }
 
         build.generate(destDir);

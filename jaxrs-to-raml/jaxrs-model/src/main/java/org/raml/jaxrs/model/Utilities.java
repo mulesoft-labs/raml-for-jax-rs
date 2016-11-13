@@ -7,10 +7,13 @@ public class Utilities {
     /**
      * @param path The path to format
      * @return The same path but starting with "/" and ending without "/" if that is not already
-     * the case.
+     * the case. If the path is empty, return as is.
      */
     public static String uniformizePath(String path) {
         checkNotNull(path);
+        if (path.isEmpty()) {
+            return "";
+        }
 
         String result = withStartingSlash(path);
 

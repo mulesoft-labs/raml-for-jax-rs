@@ -10,6 +10,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PathImpl implements Path {
 
+    private static final PathImpl EMPTY_PATH = new PathImpl("");
+
     private final String pathString;
 
     private PathImpl(String pathString) {
@@ -22,9 +24,18 @@ public class PathImpl implements Path {
         return new PathImpl(Utilities.uniformizePath(pathString));
     }
 
+    public static PathImpl empty() {
+        return EMPTY_PATH;
+    }
+
     @Override
     public List<PathFragment> getFragments() {
         throw new UnsupportedOperationException("unimplemented yet");
+    }
+
+    @Override
+    public Path resolve(Path other) {
+        return PathImpl.fromString(this.pathString + other.getStringRepresentation());
     }
 
     @Override
@@ -46,5 +57,10 @@ public class PathImpl implements Path {
     @Override
     public int hashCode() {
         return pathString.hashCode();
+    }
+
+    @Override
+    public int compareTo(Path o) {
+        return this.getStringRepresentation().compareTo(o.getStringRepresentation());
     }
 }

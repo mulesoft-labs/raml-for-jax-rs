@@ -15,6 +15,7 @@ import org.raml.jaxrs.model.impl.ResourceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,22 +53,42 @@ public class JerseyAnalyzer implements Analyzer {
     private static Iterable<org.raml.jaxrs.model.Resource> jerseyResourcesToOurs(Iterable<Resource> jerseyResources) {
         Map<Path, List<Resource>> jerseyResourcesPerPath = Maps.newHashMap();
 
-        logger.debug("about to analyze {} jersey resources", Iterables.size(jerseyResources));
-        for (Resource resource : jerseyResources) {
-            logger.debug("analyzing jersey resource: {}", resource);
-
-            Path path = PathImpl.fromString(resource.getPath());
-
-            if (jerseyResourcesPerPath.containsKey(path)) {
-                jerseyResourcesPerPath.get(path).add(resource);
-            } else {
-                jerseyResourcesPerPath.put(path, Lists.newArrayList(resource));
-            }
-        }
+        analyzeTopLevelResources(jerseyResourcesPerPath, jerseyResources);
 
         logger.debug("found {} unique resources", jerseyResourcesPerPath.size());
 
         return mergeResources(jerseyResourcesPerPath);
+    }
+
+    private static void analyzeResource(Path prefix, Map<Path, List<Resource>> jerseyResourcesPerPath, Resource resource) {
+        logger.debug("analyzing jersey resource: {}", resource);
+
+        Path path = prefix.resolve(PathImpl.fromString(resource.getPath()));
+
+        if (jerseyResourcesPerPath.containsKey(path)) {
+            jerseyResourcesPerPath.get(path).add(resource);
+        } else {
+            jerseyResourcesPerPath.put(path, Lists.newArrayList(resource));
+        }
+
+        List<Resource> children = resource.getChildResources();
+        if (children != null && !children.isEmpty()) {
+            logger.debug("found {} children in resource", children.size());
+            analyzeChildren(path, jerseyResourcesPerPath, children);
+        }
+    }
+
+    private static void analyzeTopLevelResources(Map<Path, List<Resource>> jerseyResourcesPerPath, Iterable<Resource> resources) {
+        logger.debug("about to analyze {} top level jersey resources", Iterables.size(resources));
+        for (Resource resource : resources) {
+            analyzeResource(PathImpl.empty(), jerseyResourcesPerPath, resource);
+        }
+    }
+
+    private static void analyzeChildren(Path prefix, Map<Path, List<Resource>> jerseyResourcesPerPath, Iterable<Resource> resources) {
+        for (Resource resource : resources) {
+            analyzeResource(prefix, jerseyResourcesPerPath, resource);
+        }
     }
 
     private static Iterable<org.raml.jaxrs.model.Resource> mergeResources(Map<Path, List<Resource>> jerseyResourcesPerPath) {
@@ -81,9 +102,8 @@ public class JerseyAnalyzer implements Analyzer {
     }
 
     private static org.raml.jaxrs.model.Resource mergeResources(Path key, List<Resource> value) {
-        //TODO: implement this logic, like merging children and all that good stuff.
 
-        return ResourceImpl.create(key);
+        return ResourceImpl.create(key, Collections.<org.raml.jaxrs.model.Resource>emptyList());
     }
 
     private static Iterable<Resource> resourcesFor(Set<Class<?>> jaxRsClasses) {

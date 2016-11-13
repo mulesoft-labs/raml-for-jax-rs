@@ -3,6 +3,7 @@ package org.raml.jaxrs.generator.v10;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.MethodSignature;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.MethodBuilder;
 import org.raml.jaxrs.generator.builders.ResourceBuilder;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.transform;
+import static org.raml.jaxrs.generator.MethodSignature.signature;
 
 /**
  * Created by Jean-Philippe Belanger on 10/26/16.
@@ -49,18 +51,18 @@ public class ResourceHandler {
             handleMethod(packageName, creator, method, "", resource.uriParameters());
         }
 
-        handleSubResources(packageName, build, api, resource, creator, "");
+        handleSubResources(build, api, resource, creator, "");
     }
 
-    private void handleSubResources(String packageName, CurrentBuild build, Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
+    private void handleSubResources(CurrentBuild build, Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
 
         for (Resource subresource : resource.resources()) {
 
             for (Method method : resource.methods()) {
-                handleMethod(packageName, creator, method, subresourcePath + subresource.relativeUri().value(), subresource.uriParameters());
+                handleMethod(build.getDefaultPackage(), creator, method, subresourcePath + subresource.relativeUri().value(), subresource.uriParameters());
             }
 
-            handleSubResources(packageName, build, api, subresource, creator, subresourcePath + subresource.relativeUri().value());
+            handleSubResources(build, api, subresource, creator, subresourcePath + subresource.relativeUri().value());
         }
 
 
@@ -71,7 +73,7 @@ public class ResourceHandler {
         String queryParameterSuffix = Names.parameterNameMethodSuffix(Lists.transform(method.queryParameters(),
                 queryParameterToString()));
 
-        Map<String, MethodBuilder> seenTypes = new HashMap<>();
+        Map<MethodSignature, MethodBuilder> seenTypes = new HashMap<>();
         ResponseClassBuilder response = creator.createResponseClassBuilder(packageName, method.method(),
                 pathSuffix + queryParameterSuffix);
         setupResponses(method, response);
@@ -96,11 +98,13 @@ public class ResourceHandler {
 
     private void buildMethodReceivingType(TypeDeclaration requestTypeDeclaration, ResourceBuilder creator, Method method,
             String path, List<TypeDeclaration> pathParameters, String pathSuffix, String queryParameterSuffix,
-            Map<String, MethodBuilder> seenTypes, ResponseClassBuilder response) {
-        if ( ! seenTypes.containsKey(method.method() + ((requestTypeDeclaration == null ) ? "void": requestTypeDeclaration.type())) ) {
+            Map<MethodSignature, MethodBuilder> seenTypes, ResponseClassBuilder response) {
+
+        MethodSignature sig = signature(method, pathParameters, requestTypeDeclaration);
+
+        if ( ! seenTypes.containsKey(sig) ) {
 
             MethodBuilder mb = creator.createMethod(method.method(), pathSuffix + queryParameterSuffix, response.name());
-            seenTypes.put(method.method() + ((requestTypeDeclaration == null ) ? "void": requestTypeDeclaration.type()), mb);
 
             for (TypeDeclaration queryTypeDeclaration : method.queryParameters()) {
                 mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
@@ -116,10 +120,11 @@ public class ResourceHandler {
 
             if ( requestTypeDeclaration != null ) {
                 mb.addEntityParameter("entity", requestTypeDeclaration.type());
-            }
-            if ( requestTypeDeclaration != null ) {
                 mb.addConsumeAnnotation(requestTypeDeclaration.name());
             }
+
+            seenTypes.put(sig, mb);
+
 
         } else {
 

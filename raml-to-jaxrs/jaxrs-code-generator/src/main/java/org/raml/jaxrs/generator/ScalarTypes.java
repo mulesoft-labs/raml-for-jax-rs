@@ -27,10 +27,6 @@ public class ScalarTypes {
 
         String s = name.toLowerCase();
         Class<?> clss = scalarToType.get(s);
-        if ( clss != null) {
-            return clss;
-        } else {
-            throw new IllegalArgumentException(name + " is not a valid type");
-        }
+        return clss;
     }
 }

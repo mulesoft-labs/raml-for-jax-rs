@@ -2,8 +2,10 @@ package org.raml.jaxrs.generator;
 
 
 import org.raml.jaxrs.generator.v10.ResourceHandler;
+import org.raml.jaxrs.generator.v10.TypeHandler;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.io.IOException;
@@ -53,6 +55,13 @@ public class RamlScanner {
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
         CurrentBuild build = new CurrentBuild(packageName);
+
+        for (TypeDeclaration type: api.types()) {
+
+            TypeHandler handler = new TypeHandler(build);
+            handler.handle(api, type);
+        }
+
         for (Resource resource : api.resources()) {
             ResourceHandler handler = new ResourceHandler(build);
             handler.handle(api, resource);

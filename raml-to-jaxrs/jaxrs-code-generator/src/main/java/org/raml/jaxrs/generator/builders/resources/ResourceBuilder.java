@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders;
+package org.raml.jaxrs.generator.builders.resources;
 
 import java.io.IOException;
 import java.util.List;

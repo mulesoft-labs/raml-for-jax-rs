@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders;
+package org.raml.jaxrs.generator.builders.resources;
 
 /**
  * Created by Jean-Philippe Belanger on 11/5/16.

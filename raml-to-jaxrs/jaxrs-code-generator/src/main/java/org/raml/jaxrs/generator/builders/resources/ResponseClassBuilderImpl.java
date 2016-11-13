@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders;
+package org.raml.jaxrs.generator.builders.resources;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;

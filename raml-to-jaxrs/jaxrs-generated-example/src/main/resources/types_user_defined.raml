@@ -1,0 +1,14 @@
+#%RAML 1.0
+title: Hello World API
+version: v1
+baseUri: https://api.github.com
+types:
+    Person:
+        type: object
+        properties:
+            name:
+                required: true
+                type: string
+            weight:
+                required: true
+                type: integer

@@ -7,8 +7,11 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import joptsimple.internal.Strings;
-import org.raml.jaxrs.generator.builders.ResourceBuilder;
-import org.raml.jaxrs.generator.builders.ResourceInterface;
+import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
+import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
+import org.raml.jaxrs.generator.builders.types.TypeBuilder;
+import org.raml.jaxrs.generator.builders.types.TypeBuilderInterface;
+import org.raml.jaxrs.generator.builders.types.TypeDescriber;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.core.Response;
@@ -17,7 +20,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.raml.jaxrs.generator.Paths.relativize;
 
@@ -31,6 +36,7 @@ public class CurrentBuild {
     private final String defaultPackage;
 
     private final List<ResourceBuilder> resources = new ArrayList<ResourceBuilder>();
+    private final Map<String, TypeBuilder> types = new HashMap<>();
 
     public CurrentBuild(String defaultPackage) {
 
@@ -50,70 +56,44 @@ public class CurrentBuild {
 
     public void generate(String rootDirectory) throws IOException {
 
-        buildSupportClasses(rootDirectory);
+        ResponseSupport.buildSupportClasses(rootDirectory, this.defaultPackage);
         for (ResourceBuilder resource : resources) {
             resource.output(rootDirectory);
         }
-    }
 
-    private void buildSupportClasses(String rootDir) throws IOException {
-
-        TypeSpec.Builder builder = TypeSpec.classBuilder("ResponseDelegate")
-                .addModifiers(Modifier.PUBLIC)
-                .superclass(Response.class)
-                .addField(FieldSpec.builder(Response.class, "delegate", Modifier.PRIVATE, Modifier.FINAL).build());
-
-        builder.addMethod(
-                MethodSpec.constructorBuilder()
-                        .addParameter(
-                                ParameterSpec.builder(Response.class, "delegate").build()
-                        )
-                        .addModifiers(Modifier.PROTECTED)
-                        .addCode("this.delegate = delegate;\n").build()
-        );
-
-        for (Method m : Response.class.getDeclaredMethods()) {
-
-            if (java.lang.reflect.Modifier.isStatic(m.getModifiers())) {
-                continue;
-            }
-
-            MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(m.getName())
-                    .addModifiers(Modifier.PUBLIC)
-                    .addAnnotation(Override.class);
-
-            if ( m.getGenericReturnType().toString().equals("T")) {
-                //ParameterizedTypeName.get(ClassName.get(Class.class), WildcardTypeName.subtypeOf(Object.class);
-                methodBuilder.returns(TypeVariableName.get("<T> T"));
-            } else {
-                    methodBuilder.returns(m.getGenericReturnType());
-            }
-
-            int p = 0;
-            for (Type aClass : m.getGenericParameterTypes()) {
-                methodBuilder.addParameter(ParameterSpec.builder(aClass, "p" + (p++)).build());
-            }
-
-            if (m.getReturnType() == void.class) {
-                methodBuilder.addCode("this.delegate." + m.getName() + "(" + buildParamList(m) + ");\n");
-            } else {
-                methodBuilder.addCode("return this.delegate." + m.getName() + "(" + buildParamList(m) + ");\n");
-            }
-
-            builder.addMethod(methodBuilder.build());
-
-            JavaFile.Builder file = JavaFile.builder(defaultPackage, builder.build());
-            file.build().writeTo(new File(rootDir));
+        for (TypeBuilder b: types.values()) {
+            b.ouput(rootDirectory);
         }
     }
 
-    private String buildParamList(Method m) {
+    public TypeBuilder createType(String name, List<String> parentTypes) {
+        TypeBuilder builder = new TypeBuilderInterface(this, name, parentTypes);
+        types.put(name, builder);
+        return builder;
+    }
 
-        ArrayList<String> list = new ArrayList<String>();
-        for(int i = 0; i < m.getParameterTypes().length; i ++) {
-            list.add("p" + i);
+    public TypeBuilder getDeclaredType(String parentType) {
+
+        return types.get(parentType);
+    }
+
+    public void javaTypeName(String type, TypeDescriber describer) {
+        Class<?> scalar = ScalarTypes.scalarToJavaType(type);
+        if ( scalar != null ){
+
+            describer.asJavaType(scalar);
+        } else {
+
+            TypeBuilder builder = types.get(type);
+            if ( builder == null ) {
+
+                describer.asBuiltType(type);
+            } else {
+
+                throw new IllegalArgumentException("unknown type " + type);
+            }
         }
 
-        return Strings.join(list, ",");
+
     }
 }

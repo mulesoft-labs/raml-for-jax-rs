@@ -45,7 +45,7 @@ public class JaxRsToRamlConverter {
                 new Function<Resource, org.raml.model.Resource>() {
                     @Override
                     public org.raml.model.Resource apply(Resource resource) {
-                        return org.raml.model.impl.ResourceImpl.create(resource.getPath());
+                        return org.raml.model.impl.ResourceImpl.create(resource.getPath().getStringRepresentation());
                     }
                 }
         );
@@ -78,7 +78,7 @@ public class JaxRsToRamlConverter {
     private static IndentedAppendable appendResource(IndentedAppendable appendable, Resource resource) throws IOException {
         appendable.appendLine("Resource {");
         appendable.indent();
-        appendable.appendLine("path: " + resource.getPath());
+        appendable.appendLine("path: " + resource.getPath().getStringRepresentation());
         appendable.outdent();
         appendable.appendLine("}");
 

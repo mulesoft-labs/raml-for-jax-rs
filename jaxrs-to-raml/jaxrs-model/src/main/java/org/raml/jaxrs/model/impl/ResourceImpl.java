@@ -1,6 +1,7 @@
 package org.raml.jaxrs.model.impl;
 
 import org.raml.jaxrs.model.Method;
+import org.raml.jaxrs.model.Path;
 import org.raml.jaxrs.model.Resource;
 
 import java.util.Set;
@@ -9,20 +10,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ResourceImpl implements Resource {
 
-    private final String path;
+    private final Path path;
 
-    private ResourceImpl(String path) {
+    private ResourceImpl(Path path) {
         this.path = path;
     }
 
-    public static ResourceImpl create(String path) {
+    public static ResourceImpl create(Path path) {
         checkNotNull(path);
 
         return new ResourceImpl(path);
     }
 
     @Override
-    public String getPath() {
+    public Path getPath() {
         return path;
     }
 

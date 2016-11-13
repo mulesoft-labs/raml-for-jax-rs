@@ -33,7 +33,8 @@ public class ResourceInterface implements ResourceBuilder {
         this.build = build;
         this.typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
                 .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", relativeURI).build());
+                .addAnnotation(AnnotationSpec.builder(Path.class)
+                        .addMember("value", "$S", relativeURI).build());
     }
 
     @Override

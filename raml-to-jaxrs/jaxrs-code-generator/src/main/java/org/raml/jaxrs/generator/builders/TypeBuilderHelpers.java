@@ -64,20 +64,25 @@ public class TypeBuilderHelpers {
         };
     }
 
-    public static TypeDescriber forField(final TypeSpec.Builder getSpec, final String name) {
+    public static TypeDescriber forField(final TypeSpec.Builder getSpec, final String name, final SpecFixer<FieldSpec.Builder>... fixers) {
         return new TypeDescriber() {
             @Override
             public void asJavaType(CurrentBuild currentBuild, Class c) {
 
-                getSpec.addField(FieldSpec.builder(c, name).addModifiers(Modifier.PRIVATE).build());
+                FieldSpec.Builder builder = FieldSpec.builder(c, name).addModifiers(Modifier.PRIVATE);
+                fix(builder, fixers);
+                getSpec.addField(builder.build());
             }
 
             @Override
             public void asBuiltType(CurrentBuild currentBuild, String name) {
+                FieldSpec.Builder builder = FieldSpec.builder(
+                        ClassName.get(currentBuild.getDefaultPackage(), Names.buildTypeName(name)), name)
+                        .addModifiers(Modifier.PRIVATE);
+
+                fix(builder, fixers);
                 getSpec.addField(
-                        FieldSpec.builder(
-                                ClassName.get(currentBuild.getDefaultPackage(), Names.buildTypeName(name)), name)
-                                .addModifiers(Modifier.PRIVATE)
+                        builder
                                 .build()
                 );
             }

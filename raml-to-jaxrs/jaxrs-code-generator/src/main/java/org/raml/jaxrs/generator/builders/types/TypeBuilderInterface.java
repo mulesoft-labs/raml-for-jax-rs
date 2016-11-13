@@ -44,7 +44,9 @@ public class TypeBuilderInterface implements TypeBuilder {
     public void ouput(String rootDirectory) throws IOException {
 
         TypeSpec.Builder typeSpec = TypeSpec
-                .interfaceBuilder(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name)));
+                .interfaceBuilder(
+                        ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name)))
+                    .addModifiers(Modifier.PUBLIC);
 
         List<TypeBuilder> propsFromParents = new ArrayList<>();
         for (String parentType : parentTypes) {

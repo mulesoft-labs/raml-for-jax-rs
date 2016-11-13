@@ -1,26 +1,14 @@
 package org.raml.jaxrs.generator;
 
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
-import com.squareup.javapoet.TypeVariableName;
-import joptsimple.internal.Strings;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
 import org.raml.jaxrs.generator.builders.types.CompositeTypeBuilder;
 import org.raml.jaxrs.generator.builders.types.TypeBuilder;
 import org.raml.jaxrs.generator.builders.types.TypeBuilderImplementation;
 import org.raml.jaxrs.generator.builders.types.TypeBuilderInterface;
-import org.raml.jaxrs.generator.builders.types.TypeDescriber;
+import org.raml.jaxrs.generator.builders.TypeDescriber;
 
-import javax.lang.model.element.Modifier;
-import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,13 +74,13 @@ public class CurrentBuild {
         Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
 
-            describer.asJavaType(scalar);
+            describer.asJavaType(this, scalar);
         } else {
 
             TypeBuilder builder = types.get(type);
-            if ( builder == null ) {
+            if ( builder != null ) {
 
-                describer.asBuiltType(type);
+                describer.asBuiltType(this, type);
             } else {
 
                 throw new IllegalArgumentException("unknown type " + type);

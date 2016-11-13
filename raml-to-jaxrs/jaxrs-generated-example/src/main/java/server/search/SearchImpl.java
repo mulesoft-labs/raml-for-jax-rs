@@ -1,17 +1,17 @@
-package server.helloworld;
+package server.search;
 
-import example.helloworld.Hello;
+import example.helloworld.Search;
 
 /**
  * Created by Jean-Philippe Belanger on 11/11/16.
  * Just potential zeroes and ones
  */
-public class HelloImpl implements Hello {
+public class SearchImpl implements Search {
 
     @Override
     public GetByHelloDudeAndFinkResponse getByHelloDudeAndFink(String helloDude, int fink, String entity) {
 
-        return Hello.GetByHelloDudeAndFinkResponse.respond200("hello_world");
+        return GetByHelloDudeAndFinkResponse.respond200("hello_world");
     }
 
     @Override

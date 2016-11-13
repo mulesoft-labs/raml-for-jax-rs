@@ -1,10 +1,10 @@
 #%RAML 1.0
-title: Hello World API
+title: Humanity
 version: v1
 baseUri: https://api.github.com
 types:
     Person:
-        type: object
+        type: Human
         properties:
             name:
                 required: true
@@ -12,3 +12,8 @@ types:
             weight:
                 required: true
                 type: integer
+    Human:
+        type: object
+        properties:
+            male:
+                type: boolean

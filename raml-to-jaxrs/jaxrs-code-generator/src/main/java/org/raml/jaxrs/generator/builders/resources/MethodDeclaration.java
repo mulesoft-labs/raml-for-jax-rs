@@ -8,6 +8,7 @@ import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
+import org.raml.jaxrs.generator.builders.SpecFixer;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
@@ -15,7 +16,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
+import java.lang.annotation.Annotation;
+
 import static org.raml.jaxrs.generator.HTTPMethods.methodNameToAnnotation;
+import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forParameter;
 
 /**
  * Created by Jean-Philippe Belanger on 10/30/16.
@@ -38,36 +42,38 @@ public class MethodDeclaration implements MethodBuilder {
     }
 
     @Override
-    public MethodBuilder addQueryParameter(String name, String type) {
+    public MethodBuilder addQueryParameter(final String name, String type) {
 
-        ParameterSpec.Builder param = ParameterSpec.builder(ScalarTypes.scalarToJavaType(type), Names.buildVariableName(name));
-        AnnotationSpec.Builder annotation = AnnotationSpec.builder(QueryParam.class);
-        annotation.addMember("value","$S", name);
-        param.addAnnotation(annotation.build());
-
-        builder.addParameter(param.build());
+        currentBuild.javaTypeName(type, forParameter(builder, Names.buildVariableName(name), addAnnotationFix(name, QueryParam.class)));
         return this;
     }
 
     @Override
     public MethodBuilder addEntityParameter(String name, String type) {
 
-        ParameterSpec.Builder param = ParameterSpec.builder(ScalarTypes.scalarToJavaType(type), Names.buildVariableName(name));
-
-        builder.addParameter(param.build());
+        currentBuild.javaTypeName(type, forParameter(builder, name));
         return this;
     }
 
     @Override
-    public MethodBuilder addPathParameter(String name, String type) {
+    public MethodBuilder addPathParameter(final String name, String type) {
 
-        ParameterSpec.Builder param = ParameterSpec.builder(ScalarTypes.scalarToJavaType(type), Names.buildVariableName(name));
-        AnnotationSpec.Builder annotation = AnnotationSpec.builder(PathParam.class);
-        annotation.addMember("value","$S", name);
-        param.addAnnotation(annotation.build());
+        currentBuild.javaTypeName(type, forParameter(builder, Names.buildVariableName(name),
+                addAnnotationFix(name, PathParam.class)));
 
-        builder.addParameter(param.build());
         return this;
+    }
+
+    private SpecFixer<ParameterSpec.Builder> addAnnotationFix(final String name, final Class<? extends Annotation> annotationType) {
+        return new SpecFixer<ParameterSpec.Builder>() {
+            @Override
+            public void adjust(ParameterSpec.Builder spec) {
+
+                AnnotationSpec.Builder annotation = AnnotationSpec.builder(annotationType);
+                annotation.addMember("value","$S", name);
+                spec.addAnnotation(annotation.build());
+            }
+        };
     }
 
     @Override

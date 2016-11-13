@@ -47,7 +47,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>exec-ex1</id>
+                        <id>exec-hello</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>java</goal>
@@ -58,6 +58,27 @@
                                 <argument>${project.basedir}/src/main/resources/example_simple_types.raml</argument>
                                 <argument>${project.build.sourceDirectory}</argument>
                                 <argument>example.helloworld</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>exec-simpletypes</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.raml.jaxrs.generator.Main</mainClass>
+                            <arguments>
+                                <argument>${project.basedir}/src/main/resources/example_declared_type.raml</argument>
+                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>example.realtypes</argument>
                             </arguments>
                         </configuration>
                     </execution>

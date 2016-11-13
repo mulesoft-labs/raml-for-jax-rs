@@ -2,14 +2,14 @@ package org.raml.jaxrs.generator.builders.resources;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.ScalarTypes;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.core.Response;
+
+import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forParameter;
 
 /**
  * Created by Jean-Philippe Belanger on 11/5/16.
@@ -62,15 +62,19 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
     public void withResponse(String httpCode, String name, String type) {
 
         TypeSpec currentClass = current.build();
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("respond" + httpCode);
+        builder
+                .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+                .addStatement("Response.ResponseBuilder responseBuilder = Response.status("+ httpCode +")")
+                .addStatement("responseBuilder.entity(entity)")
+                .addStatement("return new $N(responseBuilder.build())", currentClass)
+                .returns(TypeVariableName.get(currentClass.name))
+                .build();
+
+        currentBuild.javaTypeName(type, forParameter(builder, "entity" ));
+
         current.addMethod(
-                MethodSpec.methodBuilder("respond" + httpCode)
-                        .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                        .addParameter(ParameterSpec.builder(ScalarTypes.scalarToJavaType(type), "entity").build())
-                        .addStatement("Response.ResponseBuilder responseBuilder = Response.status("+ httpCode +")")
-                        .addStatement("responseBuilder.entity(entity)")
-                        .addStatement("return new $N(responseBuilder.build())", currentClass)
-                        .returns(TypeVariableName.get(currentClass.name))
-                        .build()
+                builder.build()
         );
     }
 

@@ -3,10 +3,10 @@ package org.raml.jaxrs.generator.builders.types;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.builders.TypeBuilderHelpers;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
@@ -60,13 +60,13 @@ public class TypeBuilderInterface implements TypeBuilder {
                 final MethodSpec.Builder getSpec = MethodSpec
                         .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-                build.javaTypeName(propertyInfo.getType(), TypeBuilderHelpers.forReturnValue(build, getSpec));
+                build.javaTypeName(propertyInfo.getType(), TypeBuilderHelpers.forReturnValue(getSpec));
 
                 MethodSpec.Builder setSpec = MethodSpec
                         .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 
-                build.javaTypeName(propertyInfo.getType(), TypeBuilderHelpers.forParameter(build, setSpec, propertyInfo.getName()));
+                build.javaTypeName(propertyInfo.getType(), TypeBuilderHelpers.forParameter(setSpec, propertyInfo.getName()));
                 typeSpec.addMethod(getSpec.build());
                 typeSpec.addMethod(setSpec.build());
             }

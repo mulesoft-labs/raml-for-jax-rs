@@ -15,7 +15,7 @@ public class MethodSignature {
     private final TypeDeclaration mediaType;
     private final List<TypeDeclaration> requestParameters;
     private final List<TypeDeclaration> pathParameters;
-    private final StringBuilder cachedSignature = new StringBuilder();
+    private  String cachedSignature ;
 
     public static MethodSignature signature(Method ramlMethod, List<TypeDeclaration> pathParameters,
             TypeDeclaration returnType) {
@@ -35,20 +35,23 @@ public class MethodSignature {
 
     private void cacheSignature() {
 
-        cachedSignature.append(ramlMethod.method());
+        StringBuilder builder = new StringBuilder();
+        builder.append(ramlMethod.method()).append("(");
         for (TypeDeclaration requestParameter : requestParameters) {
 
-            cachedSignature.append(requestParameter.type()).append(",");
+            builder.append(requestParameter.type()).append(",");
         }
 
         for (TypeDeclaration pathParameter : pathParameters) {
 
-            cachedSignature.append(pathParameter.type()).append(",");
+            builder.append(pathParameter.type()).append(",");
         }
 
         if ( mediaType != null ) {
-            cachedSignature.append(mediaType.type());
+            builder.append(mediaType.type());
         }
+        builder.append(")");
+        cachedSignature = builder.toString();
     }
 
     @Override
@@ -67,5 +70,10 @@ public class MethodSignature {
     @Override
     public int hashCode() {
         return cachedSignature.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return cachedSignature;
     }
 }

@@ -17,7 +17,6 @@ import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.transform;
@@ -39,11 +38,11 @@ public class ResourceHandler {
 
         ResourceBuilder creator = build
                 .createResource(resource.displayName().value(), resource.relativeUri().value());
-        if ( resource.description() != null ) {
-                creator.withDocumentation(resource.description().value() + "\n");
+        if (resource.description() != null) {
+            creator.withDocumentation(resource.description().value() + "\n");
         }
 
-        if ( ! api.mediaType().isEmpty()) {
+        if (!api.mediaType().isEmpty()) {
             creator.mediaType(transform(api.mediaType(), new Function<MimeType, String>() {
                 @Nullable
                 @Override
@@ -54,7 +53,7 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            handleMethod(creator, method, "", resource.uriParameters());
+            handleMethod(resource, creator, method, "");
         }
 
         handleSubResources(api, resource, creator, "");
@@ -65,14 +64,14 @@ public class ResourceHandler {
         for (Resource subresource : resource.resources()) {
 
             for (Method method : resource.methods()) {
-                handleMethod(creator, method, subresourcePath + subresource.relativeUri().value(), subresource.uriParameters());
+                handleMethod(subresource, creator, method, subresourcePath + subresource.relativeUri().value());
             }
 
             handleSubResources(api, subresource, creator, subresourcePath + subresource.relativeUri().value());
         }
     }
 
-    private void handleMethod(ResourceBuilder creator, Method method, String resourcePath, List<TypeDeclaration> pathParameters) {
+    private void handleMethod(Resource resource, ResourceBuilder creator, Method method, String resourcePath) {
 
         String fullMethodName = Names.methodName(method.method(), resourcePath, Lists.transform(method.queryParameters(),
                 queryParameterToString()));
@@ -87,28 +86,27 @@ public class ResourceHandler {
 
         if (method.body().isEmpty()) {
 
-            buildMethodReceivingType(creator, resourcePath, method, fullMethodName, null, pathParameters, response, seenTypes
+            buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, null, response, seenTypes
             );
 
         } else {
             for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
-                buildMethodReceivingType(creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
-                        pathParameters, response, seenTypes
+                buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
+                        response, seenTypes
                 );
             }
         }
     }
 
 
-    private void buildMethodReceivingType(ResourceBuilder creator, String path, Method method,
+    private void buildMethodReceivingType(Resource resource, ResourceBuilder creator, String path, Method method,
             String fullMethodName, TypeDeclaration requestTypeDeclaration,
-            List<TypeDeclaration> pathParameters,
             ResponseClassBuilder response, Map<MethodSignature, MethodBuilder> seenTypes) {
 
-        MethodSignature sig = signature(method, pathParameters, requestTypeDeclaration);
+        MethodSignature sig = signature(method, resource.uriParameters(), requestTypeDeclaration);
 
-        if ( ! seenTypes.containsKey(sig) ) {
+        if (!seenTypes.containsKey(sig)) {
 
             MethodBuilder mb = creator.createMethod(method.method(), fullMethodName, response.name());
 
@@ -116,15 +114,15 @@ public class ResourceHandler {
                 mb.addQueryParameter(queryTypeDeclaration.name(), queryTypeDeclaration.type());
             }
 
-            for (TypeDeclaration pathTypeDeclaration : pathParameters) {
+            for (TypeDeclaration pathTypeDeclaration : resource.uriParameters()) {
                 mb.addPathParameter(pathTypeDeclaration.name(), pathTypeDeclaration.type());
             }
 
-            if ( ! "".equals(path) ) {
+            if (!"".equals(path)) {
                 mb.addPathAnnotation(path);
             }
 
-            if ( requestTypeDeclaration != null ) {
+            if (requestTypeDeclaration != null) {
                 mb.addEntityParameter("entity", requestTypeDeclaration.type());
                 mb.addConsumeAnnotation(requestTypeDeclaration.name());
             }
@@ -135,7 +133,7 @@ public class ResourceHandler {
         } else {
 
             MethodBuilder builder = seenTypes.get(sig);
-            if ( requestTypeDeclaration != null ) {
+            if (requestTypeDeclaration != null) {
                 builder.addConsumeAnnotation(requestTypeDeclaration.name());
             }
         }
@@ -145,7 +143,7 @@ public class ResourceHandler {
 
         for (Response response : method.responses()) {
 
-            if ( response.body().size() == 0 ) {
+            if (response.body().size() == 0) {
                 responseBuilder.withResponse(response.code().value());
             } else {
                 for (TypeDeclaration typeDeclaration : response.body()) {

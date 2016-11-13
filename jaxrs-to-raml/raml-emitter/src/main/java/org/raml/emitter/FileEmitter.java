@@ -1,6 +1,7 @@
 package org.raml.emitter;
 
 import org.raml.model.RamlApi;
+import org.raml.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +40,19 @@ public class FileEmitter implements Emitter {
             writeTitle(writer, api.getTitle());
             writeVersion(writer, api.getVersion());
             writeBaseUri(writer, api.getBaseUri());
+
+            for (Resource resource : api.getResources()) {
+                writeResource(writer, resource);
+            }
+
+
         } catch (IOException e) {
             throw new RamlEmissionException(String.format("unable to successfully output raml to %s", filePath), e);
         }
+    }
+
+    private static void writeResource(PrintWriter writer, Resource resource) {
+        writer.printf("%s\n", resource.getPath());
     }
 
     private void writeBaseUri(PrintWriter writer, String baseUri) {

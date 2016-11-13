@@ -25,6 +25,6 @@ public class JaxRsApplicationImpl implements JaxRsApplication {
 
     @Override
     public Set<Resource> getResources() {
-        return null;
+        return resources;
     }
 }

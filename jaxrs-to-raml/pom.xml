@@ -11,16 +11,14 @@
     <artifactId>jaxrs-to-raml</artifactId>
     <packaging>pom</packaging>
     <modules>
-<!--
-        <module>jaxrs-raml-maven-plugin</module>
--->
         <module>jaxrs-parser</module>
         <module>jaxrs-test-resources</module>
         <module>jaxrs-model</module>
         <module>raml-emitter</module>
         <module>raml-model</module>
-        <module>jaxrs-to-raml-model</module>
+        <module>jaxrs-to-raml-converter</module>
         <module>jaxrs-to-raml-core</module>
+        <module>jaxrs-to-raml-cli</module>
     </modules>
 
     <dependencyManagement>
@@ -48,6 +46,11 @@
             <dependency>
                 <groupId>org.raml</groupId>
                 <artifactId>jaxrs-parser</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.raml</groupId>
+                <artifactId>jaxrs-to-raml-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

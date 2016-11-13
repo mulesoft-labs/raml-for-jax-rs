@@ -7,6 +7,8 @@ import com.google.common.collect.Iterables;
 import org.glassfish.jersey.server.model.Resource;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.impl.JaxRsApplicationImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -16,6 +18,8 @@ import javax.annotation.Nullable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JerseyAnalyzer implements Analyzer {
+
+    private static final Logger logger = LoggerFactory.getLogger(JerseyAnalyzer.class);
 
     private final Set<Class<?>> jaxRsClasses;
 
@@ -46,6 +50,8 @@ public class JerseyAnalyzer implements Analyzer {
                     @Nullable
                     @Override
                     public org.raml.jaxrs.model.Resource apply(@Nullable Resource resource) {
+                        logger.debug("analyzing jersey resource: {}", resource);
+
                         return org.raml.jaxrs.model.impl.ResourceImpl.create(resource.getPath());
                     }
                 }

@@ -23,7 +23,7 @@ public class ResourceImpl implements Resource {
 
     @Override
     public String getPath() {
-        return null;
+        return path;
     }
 
     @Override

@@ -46,7 +46,9 @@ public class MethodSignature {
             cachedSignature.append(pathParameter.type()).append(",");
         }
 
-        cachedSignature.append(mediaType.type());
+        if ( mediaType != null ) {
+            cachedSignature.append(mediaType.type());
+        }
     }
 
     @Override

@@ -1,17 +1,22 @@
 package org.raml.jaxrs.model.impl;
 
+import com.google.common.base.Function;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+
 import org.raml.jaxrs.model.Path;
-import org.raml.jaxrs.model.PathFragment;
 import org.raml.jaxrs.model.Utilities;
 
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PathImpl implements Path {
 
     private static final PathImpl EMPTY_PATH = new PathImpl("");
 
+    //TODO: try to reuse java path instead... after unit tests.
     private final String pathString;
 
     private PathImpl(String pathString) {
@@ -29,8 +34,16 @@ public class PathImpl implements Path {
     }
 
     @Override
-    public List<PathFragment> getFragments() {
-        throw new UnsupportedOperationException("unimplemented yet");
+    public Iterable<Path> getFragments() {
+        return Iterables.transform(
+                Splitter.on("/").omitEmptyStrings().split(this.pathString),
+                new Function<String, Path>() {
+                    @Override
+                    public Path apply(String s) {
+                        return fromString(s);
+                    }
+                }
+        );
     }
 
     @Override
@@ -57,6 +70,18 @@ public class PathImpl implements Path {
     @Override
     public int hashCode() {
         return pathString.hashCode();
+    }
+
+    @Override
+    public boolean isSuperPathOf(Path key) {
+        return key.getStringRepresentation().startsWith(this.getStringRepresentation());
+    }
+
+    @Override
+    public Path relativize(Path other) {
+        checkArgument(this.isSuperPathOf(other));
+
+        return PathImpl.fromString(other.getStringRepresentation().substring(this.getStringRepresentation().length()));
     }
 
     @Override

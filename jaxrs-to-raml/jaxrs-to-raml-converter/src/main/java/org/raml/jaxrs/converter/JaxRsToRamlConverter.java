@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
 import org.raml.jaxrs.model.JaxRsApplication;
-import org.raml.jaxrs.model.Resource;
+import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.model.RamlApi;
 import org.raml.model.impl.RamlApiImpl;
 import org.raml.utilities.IndentedAppendable;
@@ -31,7 +31,7 @@ public class JaxRsToRamlConverter {
             logger.debug("converting application: \n{}", jaxRsApplicationPrettyString(application));
         }
 
-        Set<Resource> jaxRsResources = application.getResources();
+        Set<JaxRsResource> jaxRsResources = application.getResources();
 
 
         Iterable<org.raml.model.Resource> ramlResources = toRamlResources(jaxRsResources);
@@ -39,12 +39,12 @@ public class JaxRsToRamlConverter {
         return RamlApiImpl.create(configuration.getTitle(), configuration.getVersion(), configuration.getBaseUri(), ramlResources);
     }
 
-    private static Iterable<org.raml.model.Resource> toRamlResources(Set<Resource> jaxRsResources) {
+    private static Iterable<org.raml.model.Resource> toRamlResources(Set<JaxRsResource> jaxRsResources) {
         return Iterables.transform(
                 jaxRsResources,
-                new Function<Resource, org.raml.model.Resource>() {
+                new Function<JaxRsResource, org.raml.model.Resource>() {
                     @Override
-                    public org.raml.model.Resource apply(Resource resource) {
+                    public org.raml.model.Resource apply(JaxRsResource resource) {
                         return org.raml.model.impl.ResourceImpl.create(resource.getPath().getStringRepresentation());
                     }
                 }
@@ -67,7 +67,7 @@ public class JaxRsToRamlConverter {
         appendable.appendLine("JaxRsApplication {");
 
         appendable.indent();
-        for (Resource resource : application.getResources()) {
+        for (JaxRsResource resource : application.getResources()) {
             appendResource(appendable, resource);
         }
         appendable.outdent();
@@ -75,7 +75,7 @@ public class JaxRsToRamlConverter {
         return appendable;
     }
 
-    private static IndentedAppendable appendResource(IndentedAppendable appendable, Resource resource) throws IOException {
+    private static IndentedAppendable appendResource(IndentedAppendable appendable, JaxRsResource resource) throws IOException {
         appendable.appendLine("Resource {");
         appendable.indent();
         appendable.appendLine("path: " + resource.getPath().getStringRepresentation());

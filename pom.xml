@@ -12,7 +12,7 @@
 
     <modules>
         <module>jaxrs-to-raml</module>
-        <module>raml-to-jaxrs</module>
+        <!--<module>raml-to-jaxrs</module>-->
         <module>utilities</module>
     </modules>
 

@@ -2,35 +2,36 @@ package org.raml.jaxrs.model.impl;
 
 import com.google.common.collect.ImmutableList;
 
+import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Method;
 import org.raml.jaxrs.model.Path;
-import org.raml.jaxrs.model.Resource;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class ResourceImpl implements Resource {
+public class JaxRsResourceImpl implements JaxRsResource {
 
     private final Path path;
 
-    private final ImmutableList<Resource> children;
+    private final ImmutableList<JaxRsResource> children;
 
-    private ResourceImpl(Path path, ImmutableList<Resource> children) {
+    private JaxRsResourceImpl(Path path, ImmutableList<JaxRsResource> children) {
         this.path = path;
         this.children = children;
     }
 
-    public static ResourceImpl create(Path path, Iterable<Resource> children) {
+    public static JaxRsResourceImpl create(Path path, Iterable<JaxRsResource> children) {
         checkNotNull(path);
+        checkNotNull(children);
 
-        return new ResourceImpl(path, ImmutableList.copyOf(checkChildren(children)));
+
+        return new JaxRsResourceImpl(path, ImmutableList.copyOf(checkChildren(children)));
     }
 
-    private static Iterable<Resource> checkChildren(Iterable<Resource> children) {
-        for (Resource child : children) {
+    private static Iterable<JaxRsResource> checkChildren(Iterable<JaxRsResource> children) {
+        for (JaxRsResource child : children) {
             checkNotNull(child, "cannot have null child");
         }
         return children;
@@ -47,7 +48,7 @@ public class ResourceImpl implements Resource {
     }
 
     @Override
-    public List<Resource> getChildren() {
+    public List<JaxRsResource> getChildren() {
         return null;
     }
 }

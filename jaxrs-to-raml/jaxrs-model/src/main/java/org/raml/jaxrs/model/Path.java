@@ -1,9 +1,9 @@
 package org.raml.jaxrs.model;
 
-import java.util.List;
-
 public interface Path extends Comparable<Path> {
-    List<PathFragment> getFragments();
+    Iterable<Path> getFragments();
     String getStringRepresentation(); //Same as joining all fragments.
     Path resolve(Path other);
+    boolean isSuperPathOf(Path key);
+    Path relativize(Path other);
 }

@@ -29,12 +29,12 @@ public class TypeHandler {
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
 
             ObjectTypeDeclaration objectDeclaration = (ObjectTypeDeclaration) typeDeclaration;
-            for (TypeDeclaration parentType: objectDeclaration.parentTypes()) {
+            for (TypeDeclaration parentType: ModelFixer.parentTypes(api.types(), objectDeclaration)) {
 
                 handle(api, parentType);
             }
 
-            TypeBuilder creator = build.createType(objectDeclaration.name(), Lists.transform(objectDeclaration.parentTypes(),
+            TypeBuilder creator = build.createType(objectDeclaration.name(), Lists.transform(ModelFixer.parentTypes(api.types(), objectDeclaration),
                     typeToTypeName()));
 
             for (TypeDeclaration declaration : objectDeclaration.properties()) {

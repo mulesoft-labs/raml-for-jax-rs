@@ -34,7 +34,13 @@ public class CompositeRamlTypeGenerator implements RamlTypeGenerator {
     }
 
     @Override
-    public boolean declares(String name) {
-        return intf.declares(name);
+    public boolean declaresProperty(String name) {
+        return intf.declaresProperty(name);
+    }
+
+    @Override
+    public String getGeneratedJavaType() {
+
+        return intf.getGeneratedJavaType();
     }
 }

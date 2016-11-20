@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.TypeBuilderHelpers;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
@@ -48,10 +49,10 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
                         ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name)))
                     .addModifiers(Modifier.PUBLIC);
 
-        List<RamlTypeGenerator> propsFromParents = new ArrayList<>();
+        List<TypeGenerator> propsFromParents = new ArrayList<>();
         for (String parentType : parentTypes) {
 
-            RamlTypeGenerator builder = build.getDeclaredType(parentType);
+            TypeGenerator builder = build.getDeclaredType(parentType);
             propsFromParents.add(builder);
             typeSpec.addSuperinterface(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(parentType)));
         }
@@ -78,11 +79,11 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
         file.build().writeTo(new File(rootDirectory));
     }
 
-    private boolean noParentDeclares(List<RamlTypeGenerator> propsFromParents, String name) {
+    private boolean noParentDeclares(List<TypeGenerator> propsFromParents, String name) {
 
-        for (RamlTypeGenerator propsFromParent : propsFromParents) {
+        for (TypeGenerator propsFromParent : propsFromParents) {
 
-            if (propsFromParent.declares(name)) {
+            if (propsFromParent.declaresProperty(name)) {
 
                 return false;
             }
@@ -93,7 +94,7 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
     }
 
     @Override
-    public boolean declares(String name) {
+    public boolean declaresProperty(String name) {
 
         if (propertyInfos.containsKey(name)) {
             return true;
@@ -101,12 +102,18 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
 
         for (String parentType : parentTypes) {
 
-            RamlTypeGenerator builder = build.getDeclaredType(parentType);
-            if (builder.declares(name)) {
+            TypeGenerator builder = build.getDeclaredType(parentType);
+            if (builder.declaresProperty(name)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    @Override
+    public String getGeneratedJavaType() {
+
+        return build.getDefaultPackage() + "." + Names.buildTypeName(name);
     }
 }

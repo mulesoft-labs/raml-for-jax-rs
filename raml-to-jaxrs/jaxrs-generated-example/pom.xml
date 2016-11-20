@@ -34,7 +34,7 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>2.24</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>
@@ -94,6 +94,38 @@
                                 <argument>${project.basedir}/src/main/resources/types_user_defined.raml</argument>
                                 <argument>${project.build.sourceDirectory}</argument>
                                 <argument>example.types</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>exec-jsonschema</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+
+                        <configuration>
+                            <mainClass>org.raml.jaxrs.generator.Main</mainClass>
+                            <arguments>
+                                <argument>${project.basedir}/src/main/resources/example_json_schema.raml</argument>
+                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>example.jsonschema</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>exec-xmlschema</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+
+                        <configuration>
+                            <mainClass>org.raml.jaxrs.generator.Main</mainClass>
+                            <arguments>
+                                <argument>${project.basedir}/src/main/resources/example_xml_schema.raml</argument>
+                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>example.xmlschema</argument>
                             </arguments>
                         </configuration>
                     </execution>

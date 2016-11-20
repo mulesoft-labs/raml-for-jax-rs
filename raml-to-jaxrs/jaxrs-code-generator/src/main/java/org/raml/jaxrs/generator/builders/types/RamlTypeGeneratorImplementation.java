@@ -92,24 +92,14 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
         file.build().writeTo(new File(rootDirectory));
     }
 
-
-    private boolean noParentDeclares(List<RamlTypeGenerator> propsFromParents, String name) {
-
-        for (RamlTypeGenerator propsFromParent : propsFromParents) {
-
-            if (propsFromParent.declares(name)) {
-
-                return false;
-            }
-
-        }
+    @Override
+    public boolean declaresProperty(String name) {
 
         return true;
     }
 
     @Override
-    public boolean declares(String name) {
-
-        return true;
+    public String getGeneratedJavaType() {
+        return null;
     }
 }

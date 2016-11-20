@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -11,6 +12,7 @@ import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.jaxrs.generator.builders.Generator;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
 import org.raml.jaxrs.generator.builders.types.CompositeRamlTypeGenerator;
@@ -38,9 +40,7 @@ public class CurrentBuild {
     private final String defaultPackage;
 
     private final List<ResourceGenerator> resources = new ArrayList<ResourceGenerator>();
-    private final Map<String, RamlTypeGenerator> ramlTypes = new HashMap<>();
-    private final Map<String, Generator> jsonTypes = new HashMap<>();
-    private final Map<String, Generator> xmlTypes = new HashMap<>();
+    private final Map<String, TypeGenerator> types = new HashMap<>();
 
     public CurrentBuild(String defaultPackage) {
 
@@ -65,15 +65,7 @@ public class CurrentBuild {
             resource.output(rootDirectory);
         }
 
-        for (RamlTypeGenerator b: ramlTypes.values()) {
-            b.output(rootDirectory);
-        }
-
-        for (Generator b: jsonTypes.values()) {
-            b.output(rootDirectory);
-        }
-
-        for (Generator b: xmlTypes.values()) {
+        for (TypeGenerator b: types.values()) {
             b.output(rootDirectory);
         }
     }
@@ -84,13 +76,13 @@ public class CurrentBuild {
         RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(this, name, name);
 
         CompositeRamlTypeGenerator compositeTypeBuilder = new CompositeRamlTypeGenerator(intf, impl);
-        ramlTypes.put(name, compositeTypeBuilder);
+        types.put(name, compositeTypeBuilder);
         return compositeTypeBuilder;
     }
 
-    public RamlTypeGenerator getDeclaredType(String parentType) {
+    public TypeGenerator getDeclaredType(String parentType) {
 
-        return ramlTypes.get(parentType);
+        return types.get(parentType);
     }
 
     public void javaTypeName(String type, TypeDescriber describer) {
@@ -100,7 +92,7 @@ public class CurrentBuild {
             describer.asJavaType(this, scalar);
         } else {
 
-            RamlTypeGenerator builder = ramlTypes.get(type);
+            TypeGenerator builder = types.get(type);
             if ( builder != null ) {
 
                 describer.asBuiltType(this, type);
@@ -124,15 +116,7 @@ public class CurrentBuild {
         };
 
         final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()), new SchemaGenerator());
-        jsonTypes.put(name, new Generator() {
-            @Override
-            public void output(String rootDirectory) throws IOException {
-
-                final JCodeModel codeModel = new JCodeModel();
-                mapper.generate(codeModel, name, defaultPackage, jsonSchema);
-                codeModel.build(new File(rootDirectory));
-            }
-        });
+        types.put(name, new JsonSchemaTypeGenerator(mapper, defaultPackage, name, jsonSchema));
     }
 
     public void createTypeFromXmlSchema(final String name, String schema) {
@@ -142,16 +126,61 @@ public class CurrentBuild {
             final JCodeModel codeModel = new JCodeModel();
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(defaultPackage, schemaFile, codeModel);
 
-            xmlTypes.put(name, new Generator() {
+            types.put(name, new TypeGenerator() {
                 @Override
                 public void output(String rootDirectory) throws IOException {
 
                     codeModel.build(new File(rootDirectory));
                 }
+
+                @Override
+                public String getGeneratedJavaType() {
+                    return null;
+                }
+
+                @Override
+                public boolean declaresProperty(String name) {
+                    return false;
+                }
             });
 
         } catch (Exception e) {
 
+        }
+    }
+
+    private static class JsonSchemaTypeGenerator implements TypeGenerator {
+        private final SchemaMapper mapper;
+        private final String pack;
+        private final String name;
+        private final String jsonSchema;
+        private final JCodeModel codeModel;
+
+        public JsonSchemaTypeGenerator(SchemaMapper mapper, String pack, String name, String jsonSchema) {
+            this.mapper = mapper;
+            this.pack = pack;
+            this.name = name;
+            this.jsonSchema = jsonSchema;
+            codeModel = new JCodeModel();
+
+        }
+
+        @Override
+        public void output(String rootDirectory) throws IOException {
+
+            mapper.generate(codeModel, name, pack, jsonSchema);
+            codeModel.build(new File(rootDirectory));
+        }
+
+        @Override
+        public String getGeneratedJavaType() {
+            JDefinedClass cls = codeModel._getClass(pack + "." + name);
+            return cls.fullName();
+        }
+
+        @Override
+        public boolean declaresProperty(String name) {
+            return false;
         }
     }
 }

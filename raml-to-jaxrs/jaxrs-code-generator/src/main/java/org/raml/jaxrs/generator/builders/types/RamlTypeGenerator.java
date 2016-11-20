@@ -1,15 +1,14 @@
 package org.raml.jaxrs.generator.builders.types;
 
 import org.raml.jaxrs.generator.builders.Generator;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
 
 /**
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public interface RamlTypeGenerator extends Generator {
+public interface RamlTypeGenerator extends TypeGenerator {
 
     RamlTypeGenerator addProperty(String type, String name);
 
-    // is a property declared here or in my parents ?
-    boolean declares(String name);
 }

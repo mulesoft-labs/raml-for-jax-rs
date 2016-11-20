@@ -1,13 +1,25 @@
 package org.raml.jaxrs.generator;
 
-import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.rules.RuleFactory;
+import org.raml.jaxrs.generator.builders.Generator;
+import org.raml.jaxrs.generator.builders.JAXBHelper;
+import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
-import org.raml.jaxrs.generator.builders.types.CompositeTypeBuilder;
-import org.raml.jaxrs.generator.builders.types.TypeBuilder;
-import org.raml.jaxrs.generator.builders.types.TypeBuilderImplementation;
-import org.raml.jaxrs.generator.builders.types.TypeBuilderInterface;
+import org.raml.jaxrs.generator.builders.types.CompositeRamlTypeGenerator;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
 import org.raml.jaxrs.generator.builders.TypeDescriber;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +37,10 @@ public class CurrentBuild {
 
     private final String defaultPackage;
 
-    private final List<ResourceBuilder> resources = new ArrayList<ResourceBuilder>();
-    private final Map<String, TypeBuilder> types = new HashMap<>();
+    private final List<ResourceGenerator> resources = new ArrayList<ResourceGenerator>();
+    private final Map<String, RamlTypeGenerator> ramlTypes = new HashMap<>();
+    private final Map<String, Generator> jsonTypes = new HashMap<>();
+    private final Map<String, Generator> xmlTypes = new HashMap<>();
 
     public CurrentBuild(String defaultPackage) {
 
@@ -37,9 +51,9 @@ public class CurrentBuild {
         return defaultPackage;
     }
 
-    public ResourceBuilder createResource(String name, String relativeURI) {
+    public ResourceGenerator createResource(String name, String relativeURI) {
 
-        ResourceBuilder builder = new ResourceInterface(this, name, relativize(relativeURI));
+        ResourceGenerator builder = new ResourceInterface(this, name, relativize(relativeURI));
         resources.add(builder);
         return builder;
     }
@@ -47,27 +61,36 @@ public class CurrentBuild {
     public void generate(String rootDirectory) throws IOException {
 
         ResponseSupport.buildSupportClasses(rootDirectory, this.defaultPackage);
-        for (ResourceBuilder resource : resources) {
+        for (ResourceGenerator resource : resources) {
             resource.output(rootDirectory);
         }
 
-        for (TypeBuilder b: types.values()) {
-            b.ouput(rootDirectory);
+        for (RamlTypeGenerator b: ramlTypes.values()) {
+            b.output(rootDirectory);
+        }
+
+        for (Generator b: jsonTypes.values()) {
+            b.output(rootDirectory);
+        }
+
+        for (Generator b: xmlTypes.values()) {
+            b.output(rootDirectory);
         }
     }
 
-    public TypeBuilder createType(String name, List<String> parentTypes) {
-        TypeBuilderInterface intf = new TypeBuilderInterface(this, name, parentTypes);
-        TypeBuilderImplementation impl = new TypeBuilderImplementation(this, name, name);
+    public RamlTypeGenerator createType(String name, List<String> parentTypes) {
 
-        CompositeTypeBuilder compositeTypeBuilder = new CompositeTypeBuilder(intf, impl);
-        types.put(name, compositeTypeBuilder);
+        RamlTypeGeneratorInterface intf = new RamlTypeGeneratorInterface(this, name, parentTypes);
+        RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(this, name, name);
+
+        CompositeRamlTypeGenerator compositeTypeBuilder = new CompositeRamlTypeGenerator(intf, impl);
+        ramlTypes.put(name, compositeTypeBuilder);
         return compositeTypeBuilder;
     }
 
-    public TypeBuilder getDeclaredType(String parentType) {
+    public RamlTypeGenerator getDeclaredType(String parentType) {
 
-        return types.get(parentType);
+        return ramlTypes.get(parentType);
     }
 
     public void javaTypeName(String type, TypeDescriber describer) {
@@ -77,7 +100,7 @@ public class CurrentBuild {
             describer.asJavaType(this, scalar);
         } else {
 
-            TypeBuilder builder = types.get(type);
+            RamlTypeGenerator builder = ramlTypes.get(type);
             if ( builder != null ) {
 
                 describer.asBuiltType(this, type);
@@ -88,5 +111,47 @@ public class CurrentBuild {
         }
 
 
+    }
+
+    public void createTypeFromJsonSchema(final String name, final String jsonSchema) {
+
+
+        GenerationConfig config = new DefaultGenerationConfig() {
+            @Override
+            public boolean isGenerateBuilders() { // set config option by overriding method
+                return true;
+            }
+        };
+
+        final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()), new SchemaGenerator());
+        jsonTypes.put(name, new Generator() {
+            @Override
+            public void output(String rootDirectory) throws IOException {
+
+                final JCodeModel codeModel = new JCodeModel();
+                mapper.generate(codeModel, name, defaultPackage, jsonSchema);
+                codeModel.build(new File(rootDirectory));
+            }
+        });
+    }
+
+    public void createTypeFromXmlSchema(final String name, String schema) {
+
+        try {
+            File schemaFile = JAXBHelper.saveSchema(schema);
+            final JCodeModel codeModel = new JCodeModel();
+            Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(defaultPackage, schemaFile, codeModel);
+
+            xmlTypes.put(name, new Generator() {
+                @Override
+                public void output(String rootDirectory) throws IOException {
+
+                    codeModel.build(new File(rootDirectory));
+                }
+            });
+
+        } catch (Exception e) {
+
+        }
     }
 }

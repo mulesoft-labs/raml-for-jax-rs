@@ -1,5 +1,7 @@
 package org.raml.jaxrs.generator.builders.resources;
 
+import org.raml.jaxrs.generator.builders.Generator;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -7,10 +9,10 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 10/29/16.
  * Just potential zeroes and ones
  */
-public interface ResourceBuilder {
+public interface ResourceGenerator extends Generator {
 
-    ResourceBuilder withDocumentation(String docs);
-    ResourceBuilder mediaType(List<String> mimeTypes);
+    ResourceGenerator withDocumentation(String docs);
+    ResourceGenerator mediaType(List<String> mimeTypes);
 
     ResponseClassBuilder createResponseClassBuilder(String method, String additionalNames);
 

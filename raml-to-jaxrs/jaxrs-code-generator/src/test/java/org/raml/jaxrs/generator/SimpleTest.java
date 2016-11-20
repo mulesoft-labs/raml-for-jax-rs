@@ -17,9 +17,29 @@ public class SimpleTest {
 
         RamlScanner scanner = new RamlScanner(
                 "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
-                "example.types"
+                "example.types.raml"
         );
         scanner.handle("/types_user_defined.raml");
+    }
+
+    @Test
+    public void jsonSchemaToPojo() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.types.schema.json"
+        );
+        scanner.handle("/types_json_schema.raml");
+    }
+
+    @Test
+    public void xmlSchemaToPojo() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.types.schema.xml"
+        );
+        scanner.handle("/types_xml_schema.raml");
     }
 
     @Test
@@ -30,7 +50,7 @@ public class SimpleTest {
                 "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
                 "example.helloworld"
         );
-        scanner.handle("/fun.raml");
+        scanner.handle("/base.raml");
     }
 
 }

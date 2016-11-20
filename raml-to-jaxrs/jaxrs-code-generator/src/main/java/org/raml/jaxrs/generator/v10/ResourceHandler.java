@@ -6,7 +6,7 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.MethodSignature;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.resources.MethodBuilder;
-import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
+import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResponseClassBuilder;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.MimeType;
@@ -36,7 +36,7 @@ public class ResourceHandler {
 
     public void handle(Api api, Resource resource) {
 
-        ResourceBuilder creator = build
+        ResourceGenerator creator = build
                 .createResource(resource.displayName().value(), resource.relativeUri().value());
         if (resource.description() != null) {
             creator.withDocumentation(resource.description().value() + "\n");
@@ -59,7 +59,7 @@ public class ResourceHandler {
         handleSubResources(api, resource, creator, "");
     }
 
-    private void handleSubResources(Api api, Resource resource, ResourceBuilder creator, String subresourcePath) {
+    private void handleSubResources(Api api, Resource resource, ResourceGenerator creator, String subresourcePath) {
 
         for (Resource subresource : resource.resources()) {
 
@@ -71,7 +71,7 @@ public class ResourceHandler {
         }
     }
 
-    private void handleMethod(Resource resource, ResourceBuilder creator, Method method, String resourcePath) {
+    private void handleMethod(Resource resource, ResourceGenerator creator, Method method, String resourcePath) {
 
         String fullMethodName = Names.methodName(method.method(), resourcePath, Lists.transform(method.queryParameters(),
                 queryParameterToString()));
@@ -100,7 +100,7 @@ public class ResourceHandler {
     }
 
 
-    private void buildMethodReceivingType(Resource resource, ResourceBuilder creator, String path, Method method,
+    private void buildMethodReceivingType(Resource resource, ResourceGenerator creator, String path, Method method,
             String fullMethodName, TypeDeclaration requestTypeDeclaration,
             ResponseClassBuilder response, Map<MethodSignature, MethodBuilder> seenTypes) {
 

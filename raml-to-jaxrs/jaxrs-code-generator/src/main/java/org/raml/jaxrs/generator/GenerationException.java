@@ -8,8 +8,12 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 10/26/16.
  * Just potential zeroes and ones
  */
-public class GenerationException extends Throwable {
+public class GenerationException extends Exception {
     public GenerationException(List<ValidationResult> validationResults) {
         super(validationResults.toString());
+    }
+
+    public GenerationException(Exception e) {
+        super(e);
     }
 }

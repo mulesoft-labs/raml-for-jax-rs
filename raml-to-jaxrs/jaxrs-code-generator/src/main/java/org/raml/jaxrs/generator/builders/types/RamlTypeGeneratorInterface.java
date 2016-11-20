@@ -20,38 +20,38 @@ import java.util.Map;
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public class TypeBuilderInterface implements TypeBuilder {
+public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
     private final CurrentBuild build;
     private final String name;
     private final List<String> parentTypes;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
 
-    public TypeBuilderInterface(CurrentBuild build, String name, List<String> parentTypes) {
+    public RamlTypeGeneratorInterface(CurrentBuild build, String name, List<String> parentTypes) {
         this.build = build;
         this.name = name;
         this.parentTypes = parentTypes;
     }
 
     @Override
-    public TypeBuilder addProperty(String type, String name) {
+    public RamlTypeGenerator addProperty(String type, String name) {
 
         propertyInfos.put(name, new PropertyInfo(type, name));
         return this;
     }
 
     @Override
-    public void ouput(String rootDirectory) throws IOException {
+    public void output(String rootDirectory) throws IOException {
 
         TypeSpec.Builder typeSpec = TypeSpec
                 .interfaceBuilder(
                         ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name)))
                     .addModifiers(Modifier.PUBLIC);
 
-        List<TypeBuilder> propsFromParents = new ArrayList<>();
+        List<RamlTypeGenerator> propsFromParents = new ArrayList<>();
         for (String parentType : parentTypes) {
 
-            TypeBuilder builder = build.getDeclaredType(parentType);
+            RamlTypeGenerator builder = build.getDeclaredType(parentType);
             propsFromParents.add(builder);
             typeSpec.addSuperinterface(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(parentType)));
         }
@@ -78,9 +78,9 @@ public class TypeBuilderInterface implements TypeBuilder {
         file.build().writeTo(new File(rootDirectory));
     }
 
-    private boolean noParentDeclares(List<TypeBuilder> propsFromParents, String name) {
+    private boolean noParentDeclares(List<RamlTypeGenerator> propsFromParents, String name) {
 
-        for (TypeBuilder propsFromParent : propsFromParents) {
+        for (RamlTypeGenerator propsFromParent : propsFromParents) {
 
             if (propsFromParent.declares(name)) {
 
@@ -101,7 +101,7 @@ public class TypeBuilderInterface implements TypeBuilder {
 
         for (String parentType : parentTypes) {
 
-            TypeBuilder builder = build.getDeclaredType(parentType);
+            RamlTypeGenerator builder = build.getDeclaredType(parentType);
             if (builder.declares(name)) {
                 return true;
             }

@@ -3,11 +3,12 @@ package org.raml.jaxrs.generator.v10;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
-import org.raml.jaxrs.generator.builders.types.TypeBuilder;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
 import javax.annotation.Nullable;
 
@@ -28,21 +29,49 @@ public class TypeHandler {
 
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
 
-            ObjectTypeDeclaration objectDeclaration = (ObjectTypeDeclaration) typeDeclaration;
-            for (TypeDeclaration parentType: ModelFixer.parentTypes(api.types(), objectDeclaration)) {
-
-                handle(api, parentType);
-            }
-
-            TypeBuilder creator = build.createType(objectDeclaration.name(), Lists.transform(ModelFixer.parentTypes(api.types(), objectDeclaration),
-                    typeToTypeName()));
-
-            for (TypeDeclaration declaration : objectDeclaration.properties()) {
-
-                creator.addProperty(declaration.type(), declaration.name());
-            }
+            handleObjectType(api, (ObjectTypeDeclaration) typeDeclaration);
+            return;
         }
 
+        if ( typeDeclaration instanceof JSONTypeDeclaration ) {
+
+            JSONTypeDeclaration decl = (JSONTypeDeclaration) typeDeclaration;
+            handleJsonSchema(api, decl);
+        }
+
+        if ( typeDeclaration instanceof XMLTypeDeclaration ) {
+
+            XMLTypeDeclaration decl = (XMLTypeDeclaration) typeDeclaration;
+            handleXmlSchema(api, decl);
+        }
+
+    }
+
+    private void handleXmlSchema(Api api, XMLTypeDeclaration decl) {
+
+        build.createTypeFromXmlSchema(decl.name(), decl.schemaContent());
+    }
+
+    private void handleJsonSchema(Api api, JSONTypeDeclaration decl)  {
+
+        build.createTypeFromJsonSchema(decl.name(), decl.schemaContent());
+    }
+
+    private void handleObjectType(Api api, ObjectTypeDeclaration typeDeclaration) {
+        ObjectTypeDeclaration objectDeclaration = typeDeclaration;
+        for (TypeDeclaration parentType: ModelFixer.parentTypes(api.types(), objectDeclaration)) {
+
+            handle(api, parentType);
+        }
+
+        RamlTypeGenerator creator = build.createType(objectDeclaration.name(), Lists
+                .transform(ModelFixer.parentTypes(api.types(), objectDeclaration),
+                typeToTypeName()));
+
+        for (TypeDeclaration declaration : objectDeclaration.properties()) {
+
+            creator.addProperty(declaration.type(), declaration.name());
+        }
     }
 
     private Function<TypeDeclaration, String> typeToTypeName() {

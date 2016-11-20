@@ -2,7 +2,6 @@ package org.raml.jaxrs.generator.builders.types;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -30,28 +29,28 @@ import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forReturnValu
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public class TypeBuilderImplementation implements TypeBuilder {
+public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     private final CurrentBuild build;
     private final String name;
     private final String parentType;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
 
-    public TypeBuilderImplementation(CurrentBuild build, String name, String parentType) {
+    public RamlTypeGeneratorImplementation(CurrentBuild build, String name, String parentType) {
         this.build = build;
         this.name = name;
         this.parentType = parentType;
     }
 
     @Override
-    public TypeBuilder addProperty(String type, String name) {
+    public RamlTypeGenerator addProperty(String type, String name) {
 
         propertyInfos.put(name, new PropertyInfo(type, name));
         return this;
     }
 
     @Override
-    public void ouput(String rootDirectory) throws IOException {
+    public void output(String rootDirectory) throws IOException {
 
         TypeSpec.Builder typeSpec = TypeSpec
                 .classBuilder(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl"))
@@ -94,9 +93,9 @@ public class TypeBuilderImplementation implements TypeBuilder {
     }
 
 
-    private boolean noParentDeclares(List<TypeBuilder> propsFromParents, String name) {
+    private boolean noParentDeclares(List<RamlTypeGenerator> propsFromParents, String name) {
 
-        for (TypeBuilder propsFromParent : propsFromParents) {
+        for (RamlTypeGenerator propsFromParent : propsFromParents) {
 
             if (propsFromParent.declares(name)) {
 

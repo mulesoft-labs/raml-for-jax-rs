@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 10/27/16.
  * Abstraction of creation.
  */
-public class ResourceInterface implements ResourceBuilder {
+public class ResourceInterface implements ResourceGenerator {
 
     private final TypeSpec.Builder typeSpec;
     private final CurrentBuild build;
@@ -45,7 +45,7 @@ public class ResourceInterface implements ResourceBuilder {
     }
 
     @Override
-    public ResourceBuilder mediaType(List<String> mimeTypes) {
+    public ResourceGenerator mediaType(List<String> mimeTypes) {
 
         AnnotationSpec.Builder p = AnnotationSpec.builder(Produces.class);
         AnnotationSpec.Builder c = AnnotationSpec.builder(Consumes.class);

@@ -2,7 +2,6 @@ package org.raml.jaxrs.generator;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jackson2Annotator;
@@ -10,7 +9,6 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.jaxrs.generator.builders.Generator;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
@@ -95,7 +93,7 @@ public class CurrentBuild {
             TypeGenerator builder = types.get(type);
             if ( builder != null ) {
 
-                describer.asBuiltType(this, type);
+                describer.asBuiltType(this, builder.getGeneratedJavaType());
             } else {
 
                 throw new IllegalArgumentException("unknown type " + type);
@@ -108,15 +106,24 @@ public class CurrentBuild {
     public void createTypeFromJsonSchema(final String name, final String jsonSchema) {
 
 
-        GenerationConfig config = new DefaultGenerationConfig() {
-            @Override
-            public boolean isGenerateBuilders() { // set config option by overriding method
-                return true;
-            }
-        };
+        try {
+            GenerationConfig config = new DefaultGenerationConfig() {
+                @Override
+                public boolean isGenerateBuilders() { // set config option by overriding method
+                    return true;
+                }
+            };
 
-        final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()), new SchemaGenerator());
-        types.put(name, new JsonSchemaTypeGenerator(mapper, defaultPackage, name, jsonSchema));
+            final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
+                    new SchemaGenerator());
+            final JCodeModel codeModel = new JCodeModel();
+
+            mapper.generate(codeModel, name, defaultPackage, jsonSchema);
+
+            types.put(name, new JsonSchemaTypeGenerator(mapper, defaultPackage, name, codeModel));
+        } catch (IOException e) {
+            throw new GenerationException(e);
+        }
     }
 
     public void createTypeFromXmlSchema(final String name, String schema) {
@@ -124,63 +131,15 @@ public class CurrentBuild {
         try {
             File schemaFile = JAXBHelper.saveSchema(schema);
             final JCodeModel codeModel = new JCodeModel();
+
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(defaultPackage, schemaFile, codeModel);
 
-            types.put(name, new TypeGenerator() {
-                @Override
-                public void output(String rootDirectory) throws IOException {
-
-                    codeModel.build(new File(rootDirectory));
-                }
-
-                @Override
-                public String getGeneratedJavaType() {
-                    return null;
-                }
-
-                @Override
-                public boolean declaresProperty(String name) {
-                    return false;
-                }
-            });
+            types.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name));
 
         } catch (Exception e) {
 
+            throw new GenerationException(e);
         }
     }
 
-    private static class JsonSchemaTypeGenerator implements TypeGenerator {
-        private final SchemaMapper mapper;
-        private final String pack;
-        private final String name;
-        private final String jsonSchema;
-        private final JCodeModel codeModel;
-
-        public JsonSchemaTypeGenerator(SchemaMapper mapper, String pack, String name, String jsonSchema) {
-            this.mapper = mapper;
-            this.pack = pack;
-            this.name = name;
-            this.jsonSchema = jsonSchema;
-            codeModel = new JCodeModel();
-
-        }
-
-        @Override
-        public void output(String rootDirectory) throws IOException {
-
-            mapper.generate(codeModel, name, pack, jsonSchema);
-            codeModel.build(new File(rootDirectory));
-        }
-
-        @Override
-        public String getGeneratedJavaType() {
-            JDefinedClass cls = codeModel._getClass(pack + "." + name);
-            return cls.fullName();
-        }
-
-        @Override
-        public boolean declaresProperty(String name) {
-            return false;
-        }
-    }
 }

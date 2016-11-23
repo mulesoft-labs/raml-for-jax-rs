@@ -55,7 +55,7 @@ public class FileEmitter implements Emitter {
     }
 
     private static void writeResource(IndentedAppendable writer, Resource resource) throws IOException {
-        writer.appendLine(resource.getPath());
+        writer.appendLine(format("%s:", resource.getPath()));
         writer.indent();
 
         for (Resource child : resource.getChildren()) {

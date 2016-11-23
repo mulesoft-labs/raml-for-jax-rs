@@ -1,17 +1,22 @@
 package org.raml.jaxrs.converter;
 
 import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
+import org.raml.jaxrs.model.Method;
+import org.raml.model.HttpMethod;
 import org.raml.model.RamlApi;
+import org.raml.model.impl.HttpMethodImpl;
 import org.raml.model.impl.RamlApiImpl;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 public class JaxRsToRamlConverter {
@@ -45,7 +50,18 @@ public class JaxRsToRamlConverter {
                 new Function<JaxRsResource, org.raml.model.Resource>() {
                     @Override
                     public org.raml.model.Resource apply(JaxRsResource resource) {
-                        return org.raml.model.impl.ResourceImpl.create(resource.getPath().getStringRepresentation(), toRamlResources(resource.getChildren()));
+                        return org.raml.model.impl.ResourceImpl.create(resource.getPath().getStringRepresentation(), toRamlResources(resource.getChildren()), toRamlMethods(resource.getMethods()));
+                    }
+                }
+        );
+    }
+
+    private static Iterable<HttpMethod> toRamlMethods(List<Method> methods) {
+        return FluentIterable.from(methods).transform(
+                new Function<Method, HttpMethod>() {
+                    @Override
+                    public HttpMethod apply(Method method) {
+                        return HttpMethodImpl.create(method.getHttpVerb().getString().toLowerCase());
                     }
                 }
         );

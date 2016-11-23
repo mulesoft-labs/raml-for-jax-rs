@@ -143,6 +143,7 @@ class JerseyUniquePathsResourceResolver implements ResourceResolver<Resource> {
 
     private static JaxRsResource mergeResource(Path path, List<Resource> correspondingResources, List<JaxRsResource> children) {
         //TODO: get all the methods here.
-        return JaxRsResourceImpl.create(path, children);
+//        return JaxRsResourceImpl.create(path, children);
+        return null;
     }
 }

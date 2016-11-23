@@ -1,5 +1,6 @@
 package org.raml.emitter;
 
+import org.raml.model.HttpMethod;
 import org.raml.model.RamlApi;
 import org.raml.model.Resource;
 import org.raml.utilities.IndentedAppendable;
@@ -58,11 +59,19 @@ public class FileEmitter implements Emitter {
         writer.appendLine(format("%s:", resource.getPath()));
         writer.indent();
 
+        for (HttpMethod method : resource.getMethods()) {
+            writeMethod(writer, method);
+        }
+
         for (Resource child : resource.getChildren()) {
             writeResource(writer, child);
         }
 
         writer.outdent();
+    }
+
+    private static void writeMethod(IndentedAppendable writer, HttpMethod method) throws IOException {
+        writer.appendLine(format("%s:", method.getString()));
     }
 
     private void writeBaseUri(PrintWriter writer, String baseUri) {

@@ -4,16 +4,23 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 import org.glassfish.jersey.server.model.Resource;
+import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.JaxRsResource;
+import org.raml.jaxrs.model.Method;
 import org.raml.jaxrs.model.Path;
+import org.raml.jaxrs.model.HttpVerb;
 import org.raml.jaxrs.model.impl.JaxRsResourceImpl;
+import org.raml.jaxrs.model.impl.MethodImpl;
 import org.raml.jaxrs.model.impl.PathImpl;
+
+import java.util.List;
 
 import javax.annotation.Nullable;
 
 class OneToOneResourceResolver implements ResourceResolver<Resource> {
 
-    private OneToOneResourceResolver() {}
+    private OneToOneResourceResolver() {
+    }
 
     public static OneToOneResourceResolver create() {
         return new OneToOneResourceResolver();
@@ -33,7 +40,23 @@ class OneToOneResourceResolver implements ResourceResolver<Resource> {
     }
 
     private JaxRsResource toJaxRsResource(Resource resource) {
-        return JaxRsResourceImpl.create(toJaxRsPath(resource.getPath()), resolve(resource.getChildResources()));
+        return JaxRsResourceImpl.create(toJaxRsPath(resource.getPath()), resolve(resource.getChildResources()), toJaxRsMethods(resource.getResourceMethods()));
+    }
+
+    private Iterable<Method> toJaxRsMethods(List<ResourceMethod> resourceMethods) {
+        return FluentIterable.from(resourceMethods).transform(
+                new Function<ResourceMethod, Method>() {
+                    @Nullable
+                    @Override
+                    public Method apply(@Nullable ResourceMethod resourceMethod) {
+                        return toJaxRsMethod(resourceMethod);
+                    }
+                }
+        );
+    }
+
+    private Method toJaxRsMethod(ResourceMethod resourceMethod) {
+        return MethodImpl.create(HttpVerb.fromString(resourceMethod.getHttpMethod()));
     }
 
     private Path toJaxRsPath(String path) {

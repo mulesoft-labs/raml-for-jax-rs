@@ -14,19 +14,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class JaxRsResourceImpl implements JaxRsResource {
 
     private final Path path;
-
     private final ImmutableList<JaxRsResource> children;
+    private final ImmutableList<Method> methods;
 
-    private JaxRsResourceImpl(Path path, ImmutableList<JaxRsResource> children) {
+    private JaxRsResourceImpl(Path path, ImmutableList<JaxRsResource> children, ImmutableList<Method> methods) {
         this.path = path;
         this.children = children;
+        this.methods = methods;
     }
 
-    public static JaxRsResourceImpl create(Path path, Iterable<JaxRsResource> children) {
+    public static JaxRsResourceImpl create(Path path, Iterable<JaxRsResource> children, Iterable<Method> methods) {
         checkNotNull(path);
         checkNotNull(children);
+        checkNotNull(methods);
 
-        return new JaxRsResourceImpl(path, ImmutableList.copyOf(checkChildren(children)));
+        return new JaxRsResourceImpl(path, ImmutableList.copyOf(checkChildren(children)), ImmutableList.copyOf(methods));
     }
 
     private static Iterable<JaxRsResource> checkChildren(Iterable<JaxRsResource> children) {
@@ -42,8 +44,8 @@ public class JaxRsResourceImpl implements JaxRsResource {
     }
 
     @Override
-    public Set<Method> getMethods() {
-        throw new UnsupportedOperationException("unimplemented yet thank you very much");
+    public List<Method> getMethods() {
+        return this.methods;
     }
 
     @Override

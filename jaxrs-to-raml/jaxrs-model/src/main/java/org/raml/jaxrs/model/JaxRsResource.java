@@ -5,6 +5,6 @@ import java.util.Set;
 
 public interface JaxRsResource {
     Path getPath();
-    Set<Method> getMethods();
+    List<Method> getMethods();
     List<JaxRsResource> getChildren();
 }

@@ -12,6 +12,7 @@ import org.glassfish.jersey.server.model.RuntimeResourceModel;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.impl.JaxRsApplicationImpl;
+import org.raml.jaxrs.parser.analyzers.runtime.OneToOneRuntimeResourceResolver;
 import org.raml.utilities.format.Joiners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,28 +28,16 @@ public class JerseyAnalyzer implements Analyzer {
 
     private static final Logger logger = LoggerFactory.getLogger(JerseyAnalyzer.class);
 
-    private final Set<Class<?>> jaxRsClasses;
-    private final ResourceResolver<Resource> resourceResolver;
+    private final ImmutableSet<Class<?>> jaxRsClasses;
+    private final ResourceResolver<RuntimeResource> resourceResolver;
 
-    private JerseyAnalyzer(Set<Class<?>> jaxRsClasses, ResourceResolver<Resource> resourceResolver) {
+    private JerseyAnalyzer(ImmutableSet<Class<?>> jaxRsClasses, ResourceResolver<RuntimeResource> resourceResolver) {
         this.jaxRsClasses = jaxRsClasses;
         this.resourceResolver = resourceResolver;
     }
 
     public static JerseyAnalyzer withDefaultResolver(Iterable<Class<?>> classes) {
-        return withResolver(classes, OneToOneResourceResolver.create());
-    }
-
-    public static JerseyAnalyzer withResolver(Iterable<Class<?>> classes, ResourceResolver<Resource> resourceResolver) {
-        checkNotNull(classes);
-        checkNotNull(resourceResolver);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("creating {} with classes: \n{}\nand resource resolver: {}",
-                    JerseyAnalyzer.class.getSimpleName(), Joiners.squareBracketsPerLineJoiner().join(classes), resourceResolver);
-        }
-
-        return new JerseyAnalyzer(ImmutableSet.copyOf(classes), resourceResolver);
+        return new JerseyAnalyzer(ImmutableSet.copyOf(classes), OneToOneRuntimeResourceResolver.create());
     }
 
     @Override
@@ -68,7 +57,7 @@ public class JerseyAnalyzer implements Analyzer {
             logger.debug("found runtime resources: \n{}", Joiners.squareBracketsPerLineJoiner().join(runtimeResources));
         }
 
-        Iterable<JaxRsResource> ourResources = resourceResolver.resolve(jerseyResources);
+        Iterable<JaxRsResource> ourResources = resourceResolver.resolve(runtimeResources);
 
         return JaxRsApplicationImpl.create(ourResources);
 

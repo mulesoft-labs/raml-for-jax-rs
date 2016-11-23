@@ -1,6 +1,7 @@
 package org.raml.emitter;
 
-import org.raml.model.HttpMethod;
+import org.raml.model.MediaType;
+import org.raml.model.ResourceMethod;
 import org.raml.model.RamlApi;
 import org.raml.model.Resource;
 import org.raml.utilities.IndentedAppendable;
@@ -12,6 +13,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -35,7 +37,7 @@ public class FileEmitter implements Emitter {
     @Override
     public void emit(RamlApi api) throws RamlEmissionException {
         if (Files.isRegularFile(filePath)) {
-            logger.warn("output file {} already exists, will be overwritten");
+            logger.warn("output file {} already exists, will be overwritten", filePath);
         }
 
         try (PrintWriter writer = printWriterOf(filePath)) {
@@ -59,7 +61,7 @@ public class FileEmitter implements Emitter {
         writer.appendLine(format("%s:", resource.getPath()));
         writer.indent();
 
-        for (HttpMethod method : resource.getMethods()) {
+        for (ResourceMethod method : resource.getMethods()) {
             writeMethod(writer, method);
         }
 
@@ -70,8 +72,26 @@ public class FileEmitter implements Emitter {
         writer.outdent();
     }
 
-    private static void writeMethod(IndentedAppendable writer, HttpMethod method) throws IOException {
+    private static void writeMethod(IndentedAppendable writer, ResourceMethod method) throws IOException {
         writer.appendLine(format("%s:", method.getString()));
+        writer.indent();
+
+        if (!method.getConsumedMediaTypes().isEmpty()) {
+            writeBody(writer, method.getConsumedMediaTypes());
+        }
+
+        writer.outdent();
+    }
+
+    private static void writeBody(IndentedAppendable writer, List<MediaType> consumedMediaTypes) throws IOException {
+        writer.appendLine("body:");
+        writer.indent();
+
+        for (MediaType mediaType : consumedMediaTypes) {
+            writer.appendLine(format("%s:", mediaType));
+        }
+
+        writer.outdent();
     }
 
     private void writeBaseUri(PrintWriter writer, String baseUri) {

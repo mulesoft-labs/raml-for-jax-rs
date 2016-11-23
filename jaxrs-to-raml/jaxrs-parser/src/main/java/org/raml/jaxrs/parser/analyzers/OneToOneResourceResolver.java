@@ -12,12 +12,16 @@ import org.raml.jaxrs.model.HttpVerb;
 import org.raml.jaxrs.model.impl.JaxRsResourceImpl;
 import org.raml.jaxrs.model.impl.MethodImpl;
 import org.raml.jaxrs.model.impl.PathImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 class OneToOneResourceResolver implements ResourceResolver<Resource> {
+
+    private static final Logger logger = LoggerFactory.getLogger(OneToOneResourceResolver.class);
 
     private OneToOneResourceResolver() {
     }
@@ -56,7 +60,9 @@ class OneToOneResourceResolver implements ResourceResolver<Resource> {
     }
 
     private Method toJaxRsMethod(ResourceMethod resourceMethod) {
-        return MethodImpl.create(HttpVerb.fromString(resourceMethod.getHttpMethod()));
+        logger.debug("converting resource method: {}", resourceMethod);
+
+        return MethodImpl.create(HttpVerb.fromString(resourceMethod.getHttpMethod()), resourceMethod.getConsumedTypes());
     }
 
     private Path toJaxRsPath(String path) {

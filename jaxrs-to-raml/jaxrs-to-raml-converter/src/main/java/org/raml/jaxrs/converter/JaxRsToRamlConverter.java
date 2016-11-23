@@ -7,10 +7,12 @@ import com.google.common.collect.Iterables;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Method;
-import org.raml.model.HttpMethod;
+import org.raml.model.MediaType;
 import org.raml.model.RamlApi;
-import org.raml.model.impl.HttpMethodImpl;
+import org.raml.model.ResourceMethod;
+import org.raml.model.impl.MediaTypeImpl;
 import org.raml.model.impl.RamlApiImpl;
+import org.raml.model.impl.ResourceMethodImpl;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +58,23 @@ public class JaxRsToRamlConverter {
         );
     }
 
-    private static Iterable<HttpMethod> toRamlMethods(List<Method> methods) {
+    private static Iterable<ResourceMethod> toRamlMethods(List<Method> methods) {
         return FluentIterable.from(methods).transform(
-                new Function<Method, HttpMethod>() {
+                new Function<Method, ResourceMethod>() {
                     @Override
-                    public HttpMethod apply(Method method) {
-                        return HttpMethodImpl.create(method.getHttpVerb().getString().toLowerCase());
+                    public ResourceMethod apply(Method method) {
+                        return ResourceMethodImpl.create(method.getHttpVerb().getString().toLowerCase(), toRamlMediaTypes(method.getConsumedMediaTypes()));
+                    }
+                }
+        );
+    }
+
+    private static Iterable<MediaType> toRamlMediaTypes(Iterable<javax.ws.rs.core.MediaType> consumedMediaTypes) {
+        return FluentIterable.from(consumedMediaTypes).transform(
+                new Function<javax.ws.rs.core.MediaType, MediaType>() {
+                    @Override
+                    public MediaType apply(javax.ws.rs.core.MediaType mediaType) {
+                        return MediaTypeImpl.create(mediaType.getType(), mediaType.getSubtype(), mediaType.toString());
                     }
                 }
         );

@@ -1,5 +1,6 @@
 package org.raml.jaxrs.examples.resources;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
@@ -13,6 +14,7 @@ public class Resource {
         return "get";
     }
 
+    @Consumes({"text/xml", "application/*"})
     @POST
     public void post() {
 

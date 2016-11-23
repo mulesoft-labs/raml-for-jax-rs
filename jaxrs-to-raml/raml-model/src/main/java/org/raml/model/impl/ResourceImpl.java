@@ -2,7 +2,7 @@ package org.raml.model.impl;
 
 import com.google.common.collect.ImmutableList;
 
-import org.raml.model.HttpMethod;
+import org.raml.model.ResourceMethod;
 import org.raml.model.Resource;
 
 import java.util.List;
@@ -13,15 +13,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ResourceImpl implements Resource {
     private final String path;
     private final ImmutableList<Resource> children;
-    private final ImmutableList<HttpMethod> methods;
+    private final ImmutableList<ResourceMethod> methods;
 
-    private ResourceImpl(String path, ImmutableList<Resource> children, ImmutableList<HttpMethod> methods) {
+    private ResourceImpl(String path, ImmutableList<Resource> children, ImmutableList<ResourceMethod> methods) {
         this.path = path;
         this.children = children;
         this.methods = methods;
     }
 
-    public static ResourceImpl create(String path, Iterable<Resource> children, Iterable<HttpMethod> methods) {
+    public static ResourceImpl create(String path, Iterable<Resource> children, Iterable<ResourceMethod> methods) {
         checkNotNull(path);
         checkArgument(!path.trim().isEmpty(), "resource path should contain one meaningful character at least");
         checkNotNull(children);
@@ -50,7 +50,7 @@ public class ResourceImpl implements Resource {
     }
 
     @Override
-    public List<HttpMethod> getMethods() {
+    public List<ResourceMethod> getMethods() {
         return this.methods;
     }
 }

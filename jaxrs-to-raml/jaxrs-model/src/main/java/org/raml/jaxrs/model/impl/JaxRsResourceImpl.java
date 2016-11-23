@@ -26,7 +26,6 @@ public class JaxRsResourceImpl implements JaxRsResource {
         checkNotNull(path);
         checkNotNull(children);
 
-
         return new JaxRsResourceImpl(path, ImmutableList.copyOf(checkChildren(children)));
     }
 
@@ -49,6 +48,6 @@ public class JaxRsResourceImpl implements JaxRsResource {
 
     @Override
     public List<JaxRsResource> getChildren() {
-        return null;
+        return children;
     }
 }

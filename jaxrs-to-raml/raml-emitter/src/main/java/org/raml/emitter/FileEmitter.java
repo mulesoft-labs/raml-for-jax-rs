@@ -2,6 +2,7 @@ package org.raml.emitter;
 
 import org.raml.model.RamlApi;
 import org.raml.model.Resource;
+import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 public class FileEmitter implements Emitter {
 
@@ -36,23 +38,31 @@ public class FileEmitter implements Emitter {
         }
 
         try (PrintWriter writer = printWriterOf(filePath)) {
+            IndentedAppendable appendable = IndentedAppendable.forNoSpaces(4, writer);
             writeHeader(writer);
             writeTitle(writer, api.getTitle());
             writeVersion(writer, api.getVersion());
             writeBaseUri(writer, api.getBaseUri());
 
             for (Resource resource : api.getResources()) {
-                writeResource(writer, resource);
+                writeResource(appendable, resource);
             }
 
 
         } catch (IOException e) {
-            throw new RamlEmissionException(String.format("unable to successfully output raml to %s", filePath), e);
+            throw new RamlEmissionException(format("unable to successfully output raml to %s", filePath), e);
         }
     }
 
-    private static void writeResource(PrintWriter writer, Resource resource) {
-        writer.printf("%s\n", resource.getPath());
+    private static void writeResource(IndentedAppendable writer, Resource resource) throws IOException {
+        writer.appendLine(resource.getPath());
+        writer.indent();
+
+        for (Resource child : resource.getChildren()) {
+            writeResource(writer, child);
+        }
+
+        writer.outdent();
     }
 
     private void writeBaseUri(PrintWriter writer, String baseUri) {

@@ -39,13 +39,13 @@ public class JaxRsToRamlConverter {
         return RamlApiImpl.create(configuration.getTitle(), configuration.getVersion(), configuration.getBaseUri(), ramlResources);
     }
 
-    private static Iterable<org.raml.model.Resource> toRamlResources(Set<JaxRsResource> jaxRsResources) {
+    private static Iterable<org.raml.model.Resource> toRamlResources(Iterable<JaxRsResource> jaxRsResources) {
         return Iterables.transform(
                 jaxRsResources,
                 new Function<JaxRsResource, org.raml.model.Resource>() {
                     @Override
                     public org.raml.model.Resource apply(JaxRsResource resource) {
-                        return org.raml.model.impl.ResourceImpl.create(resource.getPath().getStringRepresentation());
+                        return org.raml.model.impl.ResourceImpl.create(resource.getPath().getStringRepresentation(), toRamlResources(resource.getChildren()));
                     }
                 }
         );

@@ -5,6 +5,7 @@ import com.google.common.base.Joiner;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.analyzers.JerseyAnalyzer;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
+import org.raml.utilities.format.Joiners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class JaxRsParser {
 
         Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);
 
-        return JerseyAnalyzer.create(classes).analyze();
+        return JerseyAnalyzer.withDefaultResolver(classes).analyze();
     }
 
     private static Iterable<Class<?>> getJaxRsClassesFor(Path jaxRsResource) {
@@ -35,8 +36,7 @@ public class JaxRsParser {
         Set<Class<?>> classes = JerseyGatherer.forApplication(jaxRsResource).jaxRsClasses();
 
         if (logger.isDebugEnabled()) {
-            String classesString = classes.isEmpty() ? "[]" : String.format("\n[\n  %s\n]", Joiner.on(",\n  ").join(classes));
-            logger.debug("found JaxRs related classes: {}", classesString);
+            logger.debug("found JaxRs related classes: \n{}", Joiners.squareBracketsPerLineJoiner().join(classes));
         }
 
         return classes;

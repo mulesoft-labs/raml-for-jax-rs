@@ -3,9 +3,6 @@ package org.raml.jaxrs.parser.gatherers;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.analyzers.Analyzer;
 import org.raml.jaxrs.parser.analyzers.JerseyAnalyzer;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ConfigurationBuilder;
 
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -26,7 +23,7 @@ public class Sandbox {
         System.out.println(classes);
 
 
-        Analyzer analyzer = JerseyAnalyzer.create(classes);
+        Analyzer analyzer = JerseyAnalyzer.withDefaultResolver(classes);
 
         JaxRsApplication application = analyzer.analyze();
 

@@ -19,19 +19,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-public class JerseyResourceResolver {
+class JerseyUniquePathsResourceResolver implements ResourceResolver<Resource> {
 
-    private static final Logger logger = LoggerFactory.getLogger(JerseyResourceResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(JerseyUniquePathsResourceResolver.class);
 
-    private JerseyResourceResolver() {
+    private JerseyUniquePathsResourceResolver() {
     }
 
-    public static JerseyResourceResolver create() {
-        return new JerseyResourceResolver();
+    public static JerseyUniquePathsResourceResolver create() {
+        return new JerseyUniquePathsResourceResolver();
     }
 
-    Iterable<JaxRsResource> fromJerseyToOurResources(Iterable<Resource> jerseyResources) {
-        return jerseyResourcesToOurs(jerseyResources);
+    @Override
+    public Iterable<JaxRsResource> resolve(Iterable<Resource> resources) {
+        return jerseyResourcesToOurs(resources);
     }
 
     private static Iterable<JaxRsResource> jerseyResourcesToOurs(Iterable<Resource> jerseyResources) {

@@ -48,7 +48,7 @@ public class IndentedAppendableEmitter implements Emitter {
     }
 
     private void writeDefaultMediaType(MediaType defaultMediaType) throws IOException {
-        writer.appendLine(format("mediaType: %s", defaultMediaType.toString()));
+        writer.appendLine(format("mediaType: %s", defaultMediaType.toStringRepresentation()));
     }
 
     private void writeResource(Resource resource) throws IOException {
@@ -67,22 +67,41 @@ public class IndentedAppendableEmitter implements Emitter {
     }
 
     private void writeMethod(ResourceMethod method) throws IOException {
-        writer.appendLine(format("%s:", method.getString()));
+        writer.appendLine(format("%s:", method.getHttpMethod()));
         writer.indent();
 
         if (!method.getConsumedMediaTypes().isEmpty()) {
             writeBody(method.getConsumedMediaTypes());
         }
 
+        if (!method.getProducedMediaTypes().isEmpty()) {
+            writeResponses(method.getProducedMediaTypes());
+        }
+
         writer.outdent();
     }
 
-    private void writeBody(List<MediaType> consumedMediaTypes) throws IOException {
+    private void writeResponses(List<MediaType> producedMediaTypes) throws IOException {
+        writer.appendLine("responses:");
+        writer.indent();
+
+        //We have no clue what the error responses are, however, we want to generate
+        //well formed raml, so we pick one.
+        writer.appendLine("200:");
+        writer.indent();
+
+        writeBody(producedMediaTypes);
+
+        writer.outdent();
+        writer.outdent();
+    }
+
+    private void writeBody(List<MediaType> mediaTypes) throws IOException {
         writer.appendLine("body:");
         writer.indent();
 
-        for (MediaType mediaType : consumedMediaTypes) {
-            writer.appendLine(format("%s:", mediaType));
+        for (MediaType mediaType : mediaTypes) {
+            writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
         }
 
         writer.outdent();

@@ -3,6 +3,7 @@ package org.raml.model;
 import java.util.List;
 
 public interface ResourceMethod {
-    String getString();
+    String getHttpMethod();
     List<MediaType> getConsumedMediaTypes();
+    List<MediaType> getProducedMediaTypes();
 }

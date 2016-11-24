@@ -5,18 +5,20 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 @Path("/classWithMethods")
 public class Resource {
 
     @GET
-    public String get() {
+    @Produces("application/xml")
+    public String getStuff() {
         return "get";
     }
 
     @Consumes({"text/xml", "application/*"})
     @POST
-    public void post() {
+    public void postStuff() {
 
     }
 

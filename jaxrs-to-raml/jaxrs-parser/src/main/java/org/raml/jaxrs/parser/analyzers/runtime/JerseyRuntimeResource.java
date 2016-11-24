@@ -9,8 +9,8 @@ import org.raml.jaxrs.model.HttpVerb;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Method;
 import org.raml.jaxrs.model.Path;
-import org.raml.jaxrs.model.impl.MethodImpl;
 import org.raml.jaxrs.model.impl.PathImpl;
+import org.raml.jaxrs.parser.model.JerseyJaxRsMethod;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ class JerseyRuntimeResource implements JaxRsResource {
     }
 
     private static Method ourMethodOf(ResourceMethod resourceMethod) {
-        return MethodImpl.create(HttpVerb.fromString(resourceMethod.getHttpMethod()), resourceMethod.getConsumedTypes());
+        return JerseyJaxRsMethod.create(resourceMethod);
     }
 
     @Override

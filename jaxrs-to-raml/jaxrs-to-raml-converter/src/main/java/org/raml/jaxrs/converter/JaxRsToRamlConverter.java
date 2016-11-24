@@ -4,15 +4,15 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 
+import org.raml.jaxrs.converter.model.JaxRsRamlMediaType;
+import org.raml.jaxrs.converter.model.JaxRsRamlMethod;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Method;
 import org.raml.model.MediaType;
 import org.raml.model.RamlApi;
 import org.raml.model.ResourceMethod;
-import org.raml.model.impl.MediaTypeImpl;
 import org.raml.model.impl.RamlApiImpl;
-import org.raml.model.impl.ResourceMethodImpl;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class JaxRsToRamlConverter {
 
         Iterable<org.raml.model.Resource> ramlResources = toRamlResources(jaxRsResources);
 
-        return RamlApiImpl.create(configuration.getTitle(), configuration.getVersion(), configuration.getBaseUri(), ramlResources, MediaTypeImpl.create("*/*"));
+        return RamlApiImpl.create(configuration.getTitle(), configuration.getVersion(), configuration.getBaseUri(), ramlResources, JaxRsRamlMediaType.create(javax.ws.rs.core.MediaType.WILDCARD_TYPE));
     }
 
     private static Iterable<org.raml.model.Resource> toRamlResources(Iterable<JaxRsResource> jaxRsResources) {
@@ -63,7 +63,7 @@ public class JaxRsToRamlConverter {
                 new Function<Method, ResourceMethod>() {
                     @Override
                     public ResourceMethod apply(Method method) {
-                        return ResourceMethodImpl.create(method.getHttpVerb().getString().toLowerCase(), toRamlMediaTypes(method.getConsumedMediaTypes()));
+                        return JaxRsRamlMethod.create(method);
                     }
                 }
         );
@@ -74,7 +74,7 @@ public class JaxRsToRamlConverter {
                 new Function<javax.ws.rs.core.MediaType, MediaType>() {
                     @Override
                     public MediaType apply(javax.ws.rs.core.MediaType mediaType) {
-                        return MediaTypeImpl.create(mediaType.toString());
+                        return JaxRsRamlMediaType.create(mediaType);
                     }
                 }
         );

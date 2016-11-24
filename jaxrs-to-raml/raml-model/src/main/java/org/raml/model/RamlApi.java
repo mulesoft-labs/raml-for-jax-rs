@@ -7,4 +7,5 @@ public interface RamlApi {
     String getVersion();
     String getBaseUri();
     List<Resource> getResources();
+    MediaType getDefaultMediaType();
 }

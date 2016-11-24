@@ -1,9 +1,6 @@
 package org.raml.emitter;
 
-import org.raml.model.MediaType;
-import org.raml.model.ResourceMethod;
 import org.raml.model.RamlApi;
-import org.raml.model.Resource;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +10,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -42,72 +38,13 @@ public class FileEmitter implements Emitter {
 
         try (PrintWriter writer = printWriterOf(filePath)) {
             IndentedAppendable appendable = IndentedAppendable.forNoSpaces(4, writer);
-            writeHeader(writer);
-            writeTitle(writer, api.getTitle());
-            writeVersion(writer, api.getVersion());
-            writeBaseUri(writer, api.getBaseUri());
 
-            for (Resource resource : api.getResources()) {
-                writeResource(appendable, resource);
-            }
+            IndentedAppendableEmitter innerEmitter = IndentedAppendableEmitter.create(appendable);
 
-
-        } catch (IOException e) {
+            innerEmitter.emit(api);
+        } catch (IOException | RamlEmissionException e) {
             throw new RamlEmissionException(format("unable to successfully output raml to %s", filePath), e);
         }
-    }
-
-    private static void writeResource(IndentedAppendable writer, Resource resource) throws IOException {
-        writer.appendLine(format("%s:", resource.getPath()));
-        writer.indent();
-
-        for (ResourceMethod method : resource.getMethods()) {
-            writeMethod(writer, method);
-        }
-
-        for (Resource child : resource.getChildren()) {
-            writeResource(writer, child);
-        }
-
-        writer.outdent();
-    }
-
-    private static void writeMethod(IndentedAppendable writer, ResourceMethod method) throws IOException {
-        writer.appendLine(format("%s:", method.getString()));
-        writer.indent();
-
-        if (!method.getConsumedMediaTypes().isEmpty()) {
-            writeBody(writer, method.getConsumedMediaTypes());
-        }
-
-        writer.outdent();
-    }
-
-    private static void writeBody(IndentedAppendable writer, List<MediaType> consumedMediaTypes) throws IOException {
-        writer.appendLine("body:");
-        writer.indent();
-
-        for (MediaType mediaType : consumedMediaTypes) {
-            writer.appendLine(format("%s:", mediaType));
-        }
-
-        writer.outdent();
-    }
-
-    private void writeBaseUri(PrintWriter writer, String baseUri) {
-        writer.printf("baseUri: %s\n", baseUri);
-    }
-
-    private void writeVersion(PrintWriter writer, String version) {
-        writer.printf("version: %s\n", version);
-    }
-
-    private void writeTitle(PrintWriter writer, String title) {
-        writer.printf("title: %s\n", title);
-    }
-
-    private void writeHeader(PrintWriter writer) {
-        writer.println("#%RAML 1.0");
     }
 
     private static PrintWriter printWriterOf(Path path) throws IOException {

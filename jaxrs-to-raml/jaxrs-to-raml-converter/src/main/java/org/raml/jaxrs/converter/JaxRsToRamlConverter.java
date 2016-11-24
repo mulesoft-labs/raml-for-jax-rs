@@ -43,7 +43,7 @@ public class JaxRsToRamlConverter {
 
         Iterable<org.raml.model.Resource> ramlResources = toRamlResources(jaxRsResources);
 
-        return RamlApiImpl.create(configuration.getTitle(), configuration.getVersion(), configuration.getBaseUri(), ramlResources);
+        return RamlApiImpl.create(configuration.getTitle(), configuration.getVersion(), configuration.getBaseUri(), ramlResources, MediaTypeImpl.create("*/*"));
     }
 
     private static Iterable<org.raml.model.Resource> toRamlResources(Iterable<JaxRsResource> jaxRsResources) {
@@ -74,7 +74,7 @@ public class JaxRsToRamlConverter {
                 new Function<javax.ws.rs.core.MediaType, MediaType>() {
                     @Override
                     public MediaType apply(javax.ws.rs.core.MediaType mediaType) {
-                        return MediaTypeImpl.create(mediaType.getType(), mediaType.getSubtype(), mediaType.toString());
+                        return MediaTypeImpl.create(mediaType.toString());
                     }
                 }
         );

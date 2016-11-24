@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
-            <artifactId>jaxrs-model</artifactId>
+            <artifactId>jaxrs-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>

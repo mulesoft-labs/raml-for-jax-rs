@@ -12,7 +12,7 @@ public class Utilities {
     public static String uniformizePath(String path) {
         checkNotNull(path);
         if (path.isEmpty()) {
-            return "";
+            return path;
         }
 
         String result = withStartingSlash(path);

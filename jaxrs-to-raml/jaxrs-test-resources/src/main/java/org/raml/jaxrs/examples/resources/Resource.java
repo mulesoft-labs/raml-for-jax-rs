@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 @Path("/classWithMethods")
 public class Resource {
 
+    @Path("/path/to/get/")
     @GET
     @Produces("application/xml")
     public String getStuff() {

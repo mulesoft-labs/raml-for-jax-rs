@@ -23,7 +23,7 @@ public class Sandbox {
         System.out.println(classes);
 
 
-        Analyzer analyzer = JerseyAnalyzer.withDefaultResolver(classes);
+        Analyzer analyzer = JerseyAnalyzer.create(classes);
 
         JaxRsApplication application = analyzer.analyze();
 

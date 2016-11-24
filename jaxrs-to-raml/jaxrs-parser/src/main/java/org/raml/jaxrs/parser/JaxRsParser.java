@@ -1,7 +1,5 @@
 package org.raml.jaxrs.parser;
 
-import com.google.common.base.Joiner;
-
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.analyzers.JerseyAnalyzer;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
@@ -28,7 +26,7 @@ public class JaxRsParser {
 
         Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);
 
-        return JerseyAnalyzer.withDefaultResolver(classes).analyze();
+        return JerseyAnalyzer.create(classes).analyze();
     }
 
     private static Iterable<Class<?>> getJaxRsClassesFor(Path jaxRsResource) {

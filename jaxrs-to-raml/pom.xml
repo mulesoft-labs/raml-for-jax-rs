@@ -13,7 +13,7 @@
     <modules>
         <module>jaxrs-parser</module>
         <module>jaxrs-test-resources</module>
-        <module>jaxrs-model</module>
+        <module>jaxrs-api</module>
         <module>raml-emitter</module>
         <module>raml-model</module>
         <module>jaxrs-to-raml-converter</module>
@@ -25,7 +25,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.raml</groupId>
-                <artifactId>jaxrs-model</artifactId>
+                <artifactId>jaxrs-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

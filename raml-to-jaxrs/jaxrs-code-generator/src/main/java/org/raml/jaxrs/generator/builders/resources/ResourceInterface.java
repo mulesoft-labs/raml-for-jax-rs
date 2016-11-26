@@ -6,6 +6,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.builders.CodeContainer;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
@@ -80,8 +81,9 @@ public class ResourceInterface implements ResourceGenerator {
         return responseClassBuilder;
     }
 
+
     @Override
-    public void output(String rootDirectory) throws IOException {
+    public void output(CodeContainer<TypeSpec> container) throws IOException {
 
         for (MethodBuilder methodBuilder : methodBuilders) {
             methodBuilder.output();
@@ -91,7 +93,6 @@ public class ResourceInterface implements ResourceGenerator {
             responseClassBuilder.output();
         }
 
-        JavaFile.Builder file = JavaFile.builder(build.getDefaultPackage(), typeSpec.build());
-        file.build().writeTo(new File(rootDirectory));
+        container.into(typeSpec.build());
     }
 }

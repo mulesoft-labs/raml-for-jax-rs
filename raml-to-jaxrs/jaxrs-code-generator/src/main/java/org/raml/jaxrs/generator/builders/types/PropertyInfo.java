@@ -8,10 +8,12 @@ class PropertyInfo {
 
     private final String name;
     private final String type;
+    private final boolean internalType;
 
-    public PropertyInfo(String type, String name) {
+    public PropertyInfo(String type, String name, boolean internalType) {
         this.name = name;
         this.type = type;
+        this.internalType = internalType;
     }
 
     public String getName() {
@@ -20,5 +22,9 @@ class PropertyInfo {
 
     public String getType() {
         return type;
+    }
+
+    public boolean isInternalType() {
+        return internalType;
     }
 }

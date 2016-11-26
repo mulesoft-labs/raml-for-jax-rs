@@ -53,7 +53,6 @@ public class SimpleTest {
     }
 
     @Test
-
     public void simple() throws IOException, GenerationException {
 
         RamlScanner scanner = new RamlScanner(
@@ -61,6 +60,26 @@ public class SimpleTest {
                 "example.helloworld"
         );
         scanner.handle("/base.raml");
+    }
+
+    @Test
+    public void typeDependencies() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.helloworld"
+        );
+        scanner.handle("/type_dependencies.raml");
+    }
+
+    @Test
+    public void internalTypesToTypes() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.helloworld"
+        );
+        scanner.handle("/internal_types_for_types.raml");
     }
 
 }

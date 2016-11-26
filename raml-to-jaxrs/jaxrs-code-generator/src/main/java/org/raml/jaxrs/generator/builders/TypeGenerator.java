@@ -1,10 +1,12 @@
 package org.raml.jaxrs.generator.builders;
 
+import com.squareup.javapoet.TypeSpec;
+
 /**
  * Created by Jean-Philippe Belanger on 11/20/16.
  * Just potential zeroes and ones
  */
-public interface TypeGenerator extends Generator {
+public interface TypeGenerator<T> extends Generator<T> {
 
     String getGeneratedJavaType();
     // is a property declared here or in my parents ?

@@ -1,0 +1,16 @@
+#%RAML 1.0
+title: Hello World API
+version: v1
+baseUri: https://api.github.com
+types:
+    House:
+        type: object
+        properties:
+            address: Address
+    Address:
+        type: object
+        properties:
+            door: integer
+            street: string
+            city: string
+            boo: House

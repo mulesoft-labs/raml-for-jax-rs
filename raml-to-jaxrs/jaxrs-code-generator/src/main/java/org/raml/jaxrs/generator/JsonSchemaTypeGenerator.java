@@ -1,8 +1,11 @@
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import org.jsonschema2pojo.SchemaMapper;
+import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 
 import java.io.File;
@@ -12,7 +15,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 11/20/16.
  * Just potential zeroes and ones
  */
-class JsonSchemaTypeGenerator implements TypeGenerator {
+class JsonSchemaTypeGenerator implements CodeModelTypeGenerator {
     private final SchemaMapper mapper;
     private final String pack;
     private final String name;
@@ -26,9 +29,10 @@ class JsonSchemaTypeGenerator implements TypeGenerator {
     }
 
     @Override
-    public void output(String rootDirectory) throws IOException {
+    public void output(CodeContainer<JCodeModel> container) throws IOException {
 
-        codeModel.build(new File(rootDirectory));
+        container.into(codeModel);
+    //    codeModel.build(new File(rootDirectory));
     }
 
     @Override

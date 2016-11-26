@@ -3,11 +3,12 @@ package org.raml.jaxrs.generator.builders.types;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.SpecFixer;
 
 import javax.lang.model.element.Modifier;
@@ -15,8 +16,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     private final String parentType;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
+    private List<RamlTypeGenerator> internalTypes = new ArrayList<>();
 
     public RamlTypeGeneratorImplementation(CurrentBuild build, String name, String parentType) {
         this.build = build;
@@ -43,14 +45,21 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     }
 
     @Override
-    public RamlTypeGenerator addProperty(String type, String name) {
+    public RamlTypeGenerator addProperty(String type, String name, boolean internalType) {
 
-        propertyInfos.put(name, new PropertyInfo(type, name));
+        propertyInfos.put(name, new PropertyInfo(type, name, internalType));
         return this;
     }
 
     @Override
-    public void output(String rootDirectory) throws IOException {
+    public RamlTypeGenerator addInternalType(RamlTypeGenerator internalGenerator) {
+
+        internalTypes.add(internalGenerator);
+        return this;
+    }
+
+    @Override
+    public void output(CodeContainer<TypeSpec.Builder> container) throws IOException {
 
         TypeSpec.Builder typeSpec = TypeSpec
                 .classBuilder(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl"))
@@ -63,33 +72,49 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
-            build.javaTypeName(propertyInfo.getType(), forField(typeSpec, propertyInfo.getName(),
-                    new SpecFixer<FieldSpec.Builder>() {
-                        @Override
-                        public void adjust(FieldSpec.Builder spec) {
-                            spec.addAnnotation(AnnotationSpec.builder(XmlElement.class).build());
-                        }
-                    }));
+            if ( propertyInfo.isInternalType() ) {
+
+                typeSpec.addField(FieldSpec.builder(ClassName.get("", Names.buildTypeName(propertyInfo.getName() + "_Type")), propertyInfo.getName()).addModifiers(Modifier.PRIVATE).build());
+            } else {
+                build.javaTypeName(propertyInfo.getType(), forField(typeSpec, propertyInfo.getName(),
+                        new SpecFixer<FieldSpec.Builder>() {
+                            @Override
+                            public void adjust(FieldSpec.Builder spec) {
+                                spec.addAnnotation(AnnotationSpec.builder(XmlElement.class).build());
+                            }
+                        }));
+            }
 
             final MethodSpec.Builder getSpec = MethodSpec
                     .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("return this." + propertyInfo.getName());
-            ;
-            build.javaTypeName(propertyInfo.getType(), forReturnValue(getSpec));
+
+            if ( propertyInfo.isInternalType() ) {
+                getSpec.returns(ClassName.get("", Names.buildTypeName(propertyInfo.getName() + "_Type")));
+            } else {
+                build.javaTypeName(propertyInfo.getType(), forReturnValue(getSpec));
+            }
 
             MethodSpec.Builder setSpec = MethodSpec
                     .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("this." + propertyInfo.getName() + " = " + propertyInfo.getName());
 
-            build.javaTypeName(propertyInfo.getType(), forParameter(setSpec, propertyInfo.getName()));
+            if ( propertyInfo.isInternalType()) {
+                setSpec.addParameter(ParameterSpec
+                        .builder(ClassName.get("", Names.buildTypeName(propertyInfo.getName() + "_Type")), propertyInfo.getName()).build());
+            } else {
+                build.javaTypeName(propertyInfo.getType(), forParameter(setSpec, propertyInfo.getName()));
+            }
             typeSpec.addMethod(getSpec.build());
             typeSpec.addMethod(setSpec.build());
         }
 
-        JavaFile.Builder file = JavaFile.builder(build.getDefaultPackage(), typeSpec.build());
-        file.build().writeTo(new File(rootDirectory));
+        // JavaFile.Builder file = JavaFile.builder(build.getDefaultPackage());
+        container.into(typeSpec);
+
+        //file.build().writeTo(new File(rootDirectory));
     }
 
     @Override

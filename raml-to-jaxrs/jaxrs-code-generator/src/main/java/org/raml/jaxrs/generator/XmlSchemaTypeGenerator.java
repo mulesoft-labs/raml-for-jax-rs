@@ -2,6 +2,8 @@ package org.raml.jaxrs.generator;
 
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 
 import java.io.File;
@@ -11,7 +13,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 11/20/16.
  * Just potential zeroes and ones
  */
-class XmlSchemaTypeGenerator implements TypeGenerator {
+class XmlSchemaTypeGenerator implements CodeModelTypeGenerator {
     private final JCodeModel codeModel;
     private final String packageName;
     private final String className;
@@ -23,9 +25,9 @@ class XmlSchemaTypeGenerator implements TypeGenerator {
     }
 
     @Override
-    public void output(String rootDirectory) throws IOException {
+    public void output(CodeContainer<JCodeModel> container) throws IOException {
 
-        codeModel.build(new File(rootDirectory));
+        container.into(codeModel);
     }
 
     @Override

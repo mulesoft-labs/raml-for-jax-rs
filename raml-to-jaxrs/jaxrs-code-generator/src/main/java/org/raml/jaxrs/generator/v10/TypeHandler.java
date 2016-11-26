@@ -11,6 +11,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 11/13/16.
@@ -24,13 +25,16 @@ public class TypeHandler {
         this.build = build;
     }
 
-    public void handle(Api api, TypeDeclaration typeDeclaration) {
+    public void handle(Api api, TypeDeclaration declaration) {
 
+        handle(api, declaration, declaration.name(), false);
+    }
+
+    private RamlTypeGenerator handle(Api api, TypeDeclaration typeDeclaration, String typeName, boolean isInternal) {
 
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
 
-            handleObjectType(api, (ObjectTypeDeclaration) typeDeclaration);
-            return;
+            return handleObjectType(api, (ObjectTypeDeclaration) typeDeclaration, typeName, isInternal);
         }
 
         if ( typeDeclaration instanceof JSONTypeDeclaration ) {
@@ -45,6 +49,7 @@ public class TypeHandler {
             handleXmlSchema(api, decl);
         }
 
+        return null;
     }
 
     private void handleXmlSchema(Api api, XMLTypeDeclaration decl) {
@@ -57,21 +62,45 @@ public class TypeHandler {
         build.createTypeFromJsonSchema(decl.name(), decl.schemaContent());
     }
 
-    private void handleObjectType(Api api, ObjectTypeDeclaration typeDeclaration) {
-        ObjectTypeDeclaration objectDeclaration = typeDeclaration;
-        for (TypeDeclaration parentType: ModelFixer.parentTypes(api.types(), objectDeclaration)) {
+    private RamlTypeGenerator handleObjectType(Api api, ObjectTypeDeclaration typeDeclaration, String typeName, boolean isInternal) {
+
+        for (TypeDeclaration parentType: ModelFixer.parentTypes(api.types(), typeDeclaration)) {
 
             handle(api, parentType);
         }
 
-        RamlTypeGenerator creator = build.createType(objectDeclaration.name(), Lists
-                .transform(ModelFixer.parentTypes(api.types(), objectDeclaration),
-                typeToTypeName()));
+        RamlTypeGenerator creator = build.createType(typeName,
+                Lists.transform(ModelFixer.parentTypes(api.types(), typeDeclaration),
+                typeToTypeName()), isInternal);
 
-        for (TypeDeclaration declaration : objectDeclaration.properties()) {
+        for (TypeDeclaration declaration : typeDeclaration.properties()) {
 
-            creator.addProperty(declaration.type(), declaration.name());
+            if (isNewTypeDeclaration(api, declaration)) {
+
+                RamlTypeGenerator internalGenerator = handle(api, declaration, declaration.name() + "_Type", true);
+                creator.addInternalType(internalGenerator);
+                creator.addProperty(declaration.type(), declaration.name(), true);
+            } else {
+                creator.addProperty(declaration.type(), declaration.name(), false);
+            }
         }
+
+        return creator;
+    }
+
+    private boolean isNewTypeDeclaration(Api api, TypeDeclaration declaration) {
+
+        if ( ! (declaration instanceof ObjectTypeDeclaration) ) {
+            return false;
+        }
+
+        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), declaration);
+        if ( parents.size() != 1) {
+            return true;
+        }
+
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) declaration;
+        return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
     }
 
     private Function<TypeDeclaration, String> typeToTypeName() {

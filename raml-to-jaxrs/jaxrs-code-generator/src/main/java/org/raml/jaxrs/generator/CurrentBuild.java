@@ -1,5 +1,7 @@
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import org.jsonschema2pojo.DefaultGenerationConfig;
@@ -9,7 +11,10 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
+import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
@@ -39,6 +44,8 @@ public class CurrentBuild {
 
     private final List<ResourceGenerator> resources = new ArrayList<ResourceGenerator>();
     private final Map<String, TypeGenerator> types = new HashMap<>();
+    private final Map<String, CodeModelTypeGenerator> codeModelTypes = new HashMap<>();
+    private final Map<String, JavaPoetTypeGenerator> javaPoetTypes = new HashMap<>();
 
     public CurrentBuild(String defaultPackage) {
 
@@ -56,25 +63,52 @@ public class CurrentBuild {
         return builder;
     }
 
-    public void generate(String rootDirectory) throws IOException {
+    public void generate(final String rootDirectory) throws IOException {
 
         ResponseSupport.buildSupportClasses(rootDirectory, this.defaultPackage);
         for (ResourceGenerator resource : resources) {
-            resource.output(rootDirectory);
+            resource.output(new CodeContainer<TypeSpec>() {
+                @Override
+                public void into(TypeSpec g) throws IOException {
+                    JavaFile.Builder file = JavaFile.builder(getDefaultPackage(), g);
+                    file.build().writeTo(new File(rootDirectory));
+                }
+            });
         }
 
-        for (TypeGenerator b: types.values()) {
-            b.output(rootDirectory);
+        for (JavaPoetTypeGenerator b: javaPoetTypes.values()) {
+            b.output(new CodeContainer<TypeSpec.Builder>() {
+                @Override
+                public void into(TypeSpec.Builder g) throws IOException {
+
+                    JavaFile.Builder file = JavaFile.builder(getDefaultPackage(), g.build());
+                    file.build().writeTo(new File(rootDirectory));
+                }
+            });
         }
+
+        for (CodeModelTypeGenerator b: codeModelTypes.values()) {
+            b.output(new CodeContainer<JCodeModel>() {
+                @Override
+                public void into(JCodeModel g) throws IOException {
+
+                    g.build(new File(rootDirectory));
+                }
+            });
+        }
+
     }
 
-    public RamlTypeGenerator createType(String name, List<String> parentTypes) {
+    public RamlTypeGenerator createType(String name, List<String> parentTypes, boolean isInternal) {
 
         RamlTypeGeneratorInterface intf = new RamlTypeGeneratorInterface(this, name, parentTypes);
         RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(this, name, name);
 
         CompositeRamlTypeGenerator compositeTypeBuilder = new CompositeRamlTypeGenerator(intf, impl);
-        types.put(name, compositeTypeBuilder);
+        if ( ! isInternal) {
+            types.put(name, compositeTypeBuilder);
+            javaPoetTypes.put(name, compositeTypeBuilder);
+        }
         return compositeTypeBuilder;
     }
 
@@ -121,6 +155,7 @@ public class CurrentBuild {
             mapper.generate(codeModel, name, defaultPackage, jsonSchema);
 
             types.put(name, new JsonSchemaTypeGenerator(mapper, defaultPackage, name, codeModel));
+            codeModelTypes.put(name, new JsonSchemaTypeGenerator(mapper, defaultPackage, name, codeModel));
         } catch (IOException e) {
             throw new GenerationException(e);
         }
@@ -135,7 +170,7 @@ public class CurrentBuild {
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(defaultPackage, schemaFile, codeModel);
 
             types.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name));
-
+            codeModelTypes.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name));
         } catch (Exception e) {
 
             throw new GenerationException(e);

@@ -1,14 +1,14 @@
 package org.raml.jaxrs.generator.builders.types;
 
-import org.raml.jaxrs.generator.builders.Generator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 
 /**
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public interface RamlTypeGenerator extends TypeGenerator {
+public interface RamlTypeGenerator extends JavaPoetTypeGenerator {
 
-    RamlTypeGenerator addProperty(String type, String name);
+    RamlTypeGenerator addProperty(String type, String name, boolean internalType);
 
+    RamlTypeGenerator addInternalType(RamlTypeGenerator internalGenerator);
 }

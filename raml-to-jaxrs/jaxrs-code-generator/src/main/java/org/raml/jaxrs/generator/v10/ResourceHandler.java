@@ -2,21 +2,25 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import joptsimple.internal.Strings;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.MethodSignature;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.resources.MethodBuilder;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResponseClassBuilder;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.MimeType;
 import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Lists.transform;
@@ -29,9 +33,11 @@ import static org.raml.jaxrs.generator.MethodSignature.signature;
 public class ResourceHandler {
 
     private final CurrentBuild build;
+    private final TypeHandler typeHandler;
 
-    public ResourceHandler(CurrentBuild build) {
+    public ResourceHandler(CurrentBuild build, TypeHandler handler) {
         this.build = build;
+        this.typeHandler = handler;
     }
 
     public void handle(Api api, Resource resource) {
@@ -53,7 +59,7 @@ public class ResourceHandler {
         }
 
         for (Method method : resource.methods()) {
-            handleMethod(resource, creator, method, "");
+            handleMethod(api, resource, creator, method, "");
         }
 
         handleSubResources(api, resource, creator, "");
@@ -64,17 +70,18 @@ public class ResourceHandler {
         for (Resource subresource : resource.resources()) {
 
             for (Method method : resource.methods()) {
-                handleMethod(subresource, creator, method, subresourcePath + subresource.relativeUri().value());
+                handleMethod(api, subresource, creator, method, subresourcePath + subresource.relativeUri().value());
             }
 
             handleSubResources(api, subresource, creator, subresourcePath + subresource.relativeUri().value());
         }
     }
 
-    private void handleMethod(Resource resource, ResourceGenerator creator, Method method, String resourcePath) {
+    private void handleMethod(Api api, Resource resource, ResourceGenerator creator, Method method, String resourcePath) {
 
-        String fullMethodName = Names.methodName(method.method(), resourcePath, Lists.transform(method.queryParameters(),
-                queryParameterToString()));
+        String fullMethodName =
+                method.method() + "_" + resourcePath + "_" + Strings.join(Lists.transform(method.queryParameters(),
+                        queryParameterToString()), "_");
 
         String methodNameSuffix = Names.methodNameSuffix(resourcePath, Lists.transform(method.queryParameters(),
                 queryParameterToString()));
@@ -86,17 +93,49 @@ public class ResourceHandler {
 
         if (method.body().isEmpty()) {
 
-            buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, null, response, seenTypes
-            );
+            buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, null, response, seenTypes);
 
         } else {
             for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
+                if (isNewTypeDeclaration(api, requestTypeDeclaration)) {
+
+                    String methodAsTypeName = Character.toUpperCase(fullMethodName.charAt(0)) + fullMethodName.substring(1);
+
+                    RamlTypeGenerator internalGenerator = typeHandler
+                            .handle(api, requestTypeDeclaration, methodAsTypeName, true);
+                    creator.addInternalType(internalGenerator);
+                }
                 buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
                         response, seenTypes
                 );
             }
         }
+    }
+
+    private static boolean isNewTypeDeclaration(Api api, TypeDeclaration declaration) {
+
+        if (!(declaration instanceof ObjectTypeDeclaration)) {
+            return false;
+        }
+
+        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), declaration);
+        if (parents.size() != 1) {
+            return true;
+        }
+
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) declaration;
+        return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
+    }
+
+    private Function<TypeDeclaration, String> typeToTypeName() {
+        return new Function<TypeDeclaration, String>() {
+            @Nullable
+            @Override
+            public String apply(@Nullable TypeDeclaration input) {
+                return input.name();
+            }
+        };
     }
 
 

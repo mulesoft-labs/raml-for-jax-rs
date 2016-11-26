@@ -56,15 +56,15 @@ public class RamlScanner {
 
         CurrentBuild build = new CurrentBuild(packageName);
 
+        TypeHandler typeHandler = new TypeHandler(build);
+        ResourceHandler resourceHandler = new ResourceHandler(build, typeHandler);
         for (TypeDeclaration type: api.types()) {
 
-            TypeHandler handler = new TypeHandler(build);
-            handler.handle(api, type);
+            typeHandler.handle(api, type);
         }
 
         for (Resource resource : api.resources()) {
-            ResourceHandler handler = new ResourceHandler(build);
-            handler.handle(api, resource);
+            resourceHandler.handle(api, resource);
         }
 
         build.generate(destDir);

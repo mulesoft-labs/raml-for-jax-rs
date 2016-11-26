@@ -30,7 +30,7 @@ public class TypeHandler {
         handle(api, declaration, declaration.name(), false);
     }
 
-    private RamlTypeGenerator handle(Api api, TypeDeclaration typeDeclaration, String typeName, boolean isInternal) {
+    public RamlTypeGenerator handle(Api api, TypeDeclaration typeDeclaration, String typeName, boolean isInternal) {
 
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
 

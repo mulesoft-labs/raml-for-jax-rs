@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
@@ -29,6 +30,7 @@ public class ResourceInterface implements ResourceGenerator {
     private List<TypeSpec.Builder> responseTypes = new ArrayList<TypeSpec.Builder>();
     private List<ResponseClassBuilder> responseClassBuilders = new ArrayList<>();
     private List<MethodBuilder> methodBuilders = new ArrayList<>();
+    private List<RamlTypeGenerator> internalTypes = new ArrayList<>();
 
     public ResourceInterface(CurrentBuild build, String name, String relativeURI) {
         this.build = build;
@@ -81,6 +83,11 @@ public class ResourceInterface implements ResourceGenerator {
         return responseClassBuilder;
     }
 
+    @Override
+    public void addInternalType(RamlTypeGenerator internalGenerator) {
+
+        internalTypes.add(internalGenerator);
+    }
 
     @Override
     public void output(CodeContainer<TypeSpec> container) throws IOException {
@@ -93,6 +100,15 @@ public class ResourceInterface implements ResourceGenerator {
             responseClassBuilder.output();
         }
 
+        for (final RamlTypeGenerator internalType : internalTypes) {
+            internalType.output(new CodeContainer<TypeSpec.Builder>() {
+                @Override
+                public void into(TypeSpec.Builder g) throws IOException {
+                    g.addModifiers(Modifier.STATIC);
+                    typeSpec.addType(g.build());
+                }
+            });
+        }
         container.into(typeSpec.build());
     }
 }

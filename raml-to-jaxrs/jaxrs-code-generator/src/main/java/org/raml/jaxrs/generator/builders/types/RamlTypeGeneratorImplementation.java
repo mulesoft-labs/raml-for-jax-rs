@@ -36,7 +36,7 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     private final String parentType;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
-    private List<RamlTypeGenerator> internalTypes = new ArrayList<>();
+    private List<RamlTypeGeneratorImplementation> internalTypes = new ArrayList<>();
 
     public RamlTypeGeneratorImplementation(CurrentBuild build, String name, String parentType) {
         this.build = build;
@@ -54,14 +54,14 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     @Override
     public RamlTypeGenerator addInternalType(RamlTypeGenerator internalGenerator) {
 
-        internalTypes.add(internalGenerator);
+        internalTypes.add((RamlTypeGeneratorImplementation) internalGenerator);
         return this;
     }
 
     @Override
     public void output(CodeContainer<TypeSpec.Builder> container) throws IOException {
 
-        TypeSpec.Builder typeSpec = TypeSpec
+        final TypeSpec.Builder typeSpec = TypeSpec
                 .classBuilder(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl"))
                 .addModifiers(Modifier.PUBLIC);
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).addMember("name", "$S", name).build());
@@ -69,6 +69,18 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
 
         typeSpec.addSuperinterface(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(parentType)));
 
+
+        for (RamlTypeGeneratorImplementation internalType : internalTypes) {
+
+            internalType.output(new CodeContainer<TypeSpec.Builder>() {
+                @Override
+                public void into(TypeSpec.Builder g) throws IOException {
+
+                    g.addModifiers(Modifier.STATIC);
+                    typeSpec.addType(g.build());
+                }
+            });
+        }
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 

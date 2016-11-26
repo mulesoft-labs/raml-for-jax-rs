@@ -82,4 +82,14 @@ public class SimpleTest {
         scanner.handle("/internal_types_for_types.raml");
     }
 
+    @Test
+    public void internalTypesToResources() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.helloworld"
+        );
+        scanner.handle("/internal_types_for_resources.raml");
+    }
+
 }

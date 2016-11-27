@@ -5,9 +5,15 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.Generator;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.core.Response;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forParameter;
 
@@ -18,13 +24,18 @@ import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forParameter;
 public class ResponseClassBuilderImpl implements ResponseClassBuilder {
 
     private final CurrentBuild currentBuild;
-    private final TypeSpec.Builder owningInterface;
-    private final TypeSpec.Builder current;
+    private final String className;
+    private List<Builder<TypeSpec.Builder>> builders = new ArrayList<>();
 
-    public ResponseClassBuilderImpl(CurrentBuild currentBuild, TypeSpec.Builder owningInterface, String className) {
+    interface Builder<T> {
+
+        void build(T parent);
+    }
+
+
+    public ResponseClassBuilderImpl(CurrentBuild currentBuild, String className) {
         this.currentBuild = currentBuild;
-        this.owningInterface = owningInterface;
-        this.current = createResponseClass(currentBuild.getDefaultPackage(), className);
+        this.className = className;
     }
 
     private TypeSpec.Builder createResponseClass(String packageName, String className) {
@@ -42,44 +53,62 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
     @Override
     public String name() {
 
-        return current.build().name;
+        // idiotic.  Must fix
+        return createResponseClass(currentBuild.getDefaultPackage(), className).build().name;
     }
 
     @Override
-    public void withResponse(String httpCode) {
-        TypeSpec currentClass = current.build();
-        current.addMethod(
-                MethodSpec.methodBuilder("respond" + httpCode)
+    public void withResponse(final String httpCode) {
+
+        builders.add(new Builder<TypeSpec.Builder>() {
+            @Override
+            public void build(TypeSpec.Builder response) {
+
+                TypeSpec currentClass = response.build();
+                response.addMethod(
+                        MethodSpec.methodBuilder("respond" + httpCode)
+                                .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+                                .addStatement("Response.ResponseBuilder responseBuilder = Response.status("+ httpCode +")")
+                                .addStatement("return new $N(responseBuilder.build())", currentClass)
+                                .returns(TypeVariableName.get(currentClass.name))
+                                .build()
+                );
+            }
+        });
+    }
+
+    @Override
+    public void withResponse(final String httpCode, String name, final String type) {
+
+        builders.add(new Builder<TypeSpec.Builder>() {
+            @Override
+            public void build(TypeSpec.Builder current) {
+
+                TypeSpec currentClass = current.build();
+                MethodSpec.Builder builder = MethodSpec.methodBuilder("respond" + httpCode);
+                builder
                         .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
                         .addStatement("Response.ResponseBuilder responseBuilder = Response.status("+ httpCode +")")
+                        .addStatement("responseBuilder.entity(entity)")
                         .addStatement("return new $N(responseBuilder.build())", currentClass)
                         .returns(TypeVariableName.get(currentClass.name))
-                        .build()
-        );
+                        .build();
+
+                currentBuild.javaTypeName(type, forParameter(builder, "entity" ));
+                current.addMethod(builder.build());
+            }
+        });
     }
 
     @Override
-    public void withResponse(String httpCode, String name, String type) {
+    public void output(CodeContainer<TypeSpec.Builder> container) throws IOException {
 
-        TypeSpec currentClass = current.build();
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("respond" + httpCode);
-        builder
-                .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                .addStatement("Response.ResponseBuilder responseBuilder = Response.status("+ httpCode +")")
-                .addStatement("responseBuilder.entity(entity)")
-                .addStatement("return new $N(responseBuilder.build())", currentClass)
-                .returns(TypeVariableName.get(currentClass.name))
-                .build();
+        TypeSpec.Builder current = createResponseClass(currentBuild.getDefaultPackage(), className);
 
-        currentBuild.javaTypeName(type, forParameter(builder, "entity" ));
+        for (Builder<TypeSpec.Builder> builder : builders) {
+            builder.build(current);
+        }
 
-        current.addMethod(
-                builder.build()
-        );
-    }
-
-    @Override
-    public void output() {
-        owningInterface.addType(current.build());
+        container.into(current);
     }
 }

@@ -79,9 +79,8 @@ public class ResourceHandler {
 
     private void handleMethod(Api api, Resource resource, ResourceGenerator creator, Method method, String resourcePath) {
 
-        String fullMethodName =
-                method.method() + "_" + resourcePath + "_" + Strings.join(Lists.transform(method.queryParameters(),
-                        queryParameterToString()), "_");
+        String fullMethodName = Names.methodName(method.method(), resourcePath, Lists.transform(method.queryParameters(),
+                queryParameterToString()));
 
         String methodNameSuffix = Names.methodNameSuffix(resourcePath, Lists.transform(method.queryParameters(),
                 queryParameterToString()));

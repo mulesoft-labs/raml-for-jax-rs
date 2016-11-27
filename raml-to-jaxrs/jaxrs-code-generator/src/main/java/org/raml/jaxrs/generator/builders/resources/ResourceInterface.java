@@ -78,7 +78,7 @@ public class ResourceInterface implements ResourceGenerator {
     @Override
     public ResponseClassBuilder createResponseClassBuilder(String method, String additionalNames) {
 
-        ResponseClassBuilderImpl responseClassBuilder = new ResponseClassBuilderImpl(build, typeSpec, Names.buildTypeName(method) + additionalNames);
+        ResponseClassBuilderImpl responseClassBuilder = new ResponseClassBuilderImpl(build, Names.buildTypeName(method) + additionalNames);
         responseClassBuilders.add(responseClassBuilder);
         return responseClassBuilder;
     }
@@ -97,7 +97,12 @@ public class ResourceInterface implements ResourceGenerator {
         }
 
         for (ResponseClassBuilder responseClassBuilder : responseClassBuilders) {
-            responseClassBuilder.output();
+            responseClassBuilder.output(new CodeContainer<TypeSpec.Builder>() {
+                @Override
+                public void into(TypeSpec.Builder g) throws IOException {
+                    typeSpec.addType(g.build());
+                }
+            });
         }
 
         for (final RamlTypeGenerator internalType : internalTypes) {

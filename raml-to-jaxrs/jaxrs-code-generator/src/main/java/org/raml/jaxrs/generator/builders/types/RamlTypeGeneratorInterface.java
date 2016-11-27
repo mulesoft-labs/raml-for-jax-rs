@@ -25,14 +25,16 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
     private final CurrentBuild build;
     private final String name;
     private final List<String> parentTypes;
+    private final boolean isInternal;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
     private List<RamlTypeGeneratorInterface> internalTypes = new ArrayList<>();
 
-    public RamlTypeGeneratorInterface(CurrentBuild build, String name, List<String> parentTypes) {
+    public RamlTypeGeneratorInterface(CurrentBuild build, String name, List<String> parentTypes, boolean isInternal) {
         this.build = build;
         this.name = name;
         this.parentTypes = parentTypes;
+        this.isInternal = isInternal;
     }
 
     @Override
@@ -52,9 +54,17 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
     @Override
     public void output(CodeContainer<TypeSpec.Builder> into) throws IOException {
 
+        ClassName className;
+        if ( isInternal ) {
+
+            className = ClassName.get(build.getDefaultPackage(), name);
+        } else {
+
+            className = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name));
+        }
+
         final TypeSpec.Builder typeSpec = TypeSpec
-                .interfaceBuilder(
-                        ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name)))
+                .interfaceBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
 
         for (RamlTypeGeneratorInterface internalType : internalTypes) {

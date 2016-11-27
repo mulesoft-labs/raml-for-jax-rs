@@ -34,14 +34,16 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     private final CurrentBuild build;
     private final String name;
     private final String parentType;
+    private final boolean isInternal;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
     private List<RamlTypeGeneratorImplementation> internalTypes = new ArrayList<>();
 
-    public RamlTypeGeneratorImplementation(CurrentBuild build, String name, String parentType) {
+    public RamlTypeGeneratorImplementation(CurrentBuild build, String name, String parentType, boolean isInternal) {
         this.build = build;
         this.name = name;
         this.parentType = parentType;
+        this.isInternal = isInternal;
     }
 
     @Override
@@ -61,13 +63,25 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     @Override
     public void output(CodeContainer<TypeSpec.Builder> container) throws IOException {
 
+        ClassName className;
+        ClassName parentClassName;
+        if ( isInternal ) {
+
+            className = ClassName.get(build.getDefaultPackage(), name + "Impl");
+            parentClassName = ClassName.get("", name);
+        } else {
+
+            className = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl");
+            parentClassName = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl");
+        }
+
         final TypeSpec.Builder typeSpec = TypeSpec
-                .classBuilder(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl"))
+                .classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).addMember("name", "$S", name).build());
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class).addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
 
-        typeSpec.addSuperinterface(ClassName.get(build.getDefaultPackage(), Names.buildTypeName(parentType)));
+        typeSpec.addSuperinterface(parentClassName);
 
 
         for (RamlTypeGeneratorImplementation internalType : internalTypes) {

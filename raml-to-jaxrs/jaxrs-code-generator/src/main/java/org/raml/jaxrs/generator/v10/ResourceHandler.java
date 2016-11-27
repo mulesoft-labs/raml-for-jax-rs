@@ -92,7 +92,7 @@ public class ResourceHandler {
 
         if (method.body().isEmpty()) {
 
-            buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, null, response, seenTypes);
+            buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, null, response, seenTypes, null);
 
         } else {
             for (TypeDeclaration requestTypeDeclaration : method.body()) {
@@ -101,13 +101,17 @@ public class ResourceHandler {
 
                     String methodAsTypeName = Character.toUpperCase(fullMethodName.charAt(0)) + fullMethodName.substring(1);
 
-                    RamlTypeGenerator internalGenerator = typeHandler
-                            .handle(api, requestTypeDeclaration, methodAsTypeName, true);
+                    RamlTypeGenerator internalGenerator = typeHandler.handle(api, requestTypeDeclaration, methodAsTypeName, true);
                     creator.addInternalType(internalGenerator);
+                    buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
+                            response, seenTypes, methodAsTypeName
+                    );
+                } else {
+
+                    buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
+                            response, seenTypes, null
+                    );
                 }
-                buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
-                        response, seenTypes
-                );
             }
         }
     }
@@ -140,7 +144,7 @@ public class ResourceHandler {
 
     private void buildMethodReceivingType(Resource resource, ResourceGenerator creator, String path, Method method,
             String fullMethodName, TypeDeclaration requestTypeDeclaration,
-            ResponseClassBuilder response, Map<MethodSignature, MethodBuilder> seenTypes) {
+            ResponseClassBuilder response, Map<MethodSignature, MethodBuilder> seenTypes, String internalTypeName) {
 
         MethodSignature sig = signature(method, resource.uriParameters(), requestTypeDeclaration);
 
@@ -161,7 +165,13 @@ public class ResourceHandler {
             }
 
             if (requestTypeDeclaration != null) {
-                mb.addEntityParameter("entity", requestTypeDeclaration.type());
+                if ( internalTypeName != null ) {
+                    mb.addEntityParameter("entity", internalTypeName);
+                } else {
+
+                    mb.addEntityParameter("entity", requestTypeDeclaration.type());
+                }
+
                 mb.addConsumeAnnotation(requestTypeDeclaration.name());
             }
 

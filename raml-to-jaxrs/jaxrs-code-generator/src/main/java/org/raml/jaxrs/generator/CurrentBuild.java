@@ -101,8 +101,8 @@ public class CurrentBuild {
 
     public RamlTypeGenerator createType(String name, List<String> parentTypes, boolean isInternal) {
 
-        RamlTypeGeneratorInterface intf = new RamlTypeGeneratorInterface(this, name, parentTypes);
-        RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(this, name, name);
+        RamlTypeGeneratorInterface intf = new RamlTypeGeneratorInterface(this, name, parentTypes, isInternal);
+        RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(this, name, name, isInternal);
 
         CompositeRamlTypeGenerator compositeTypeBuilder = new CompositeRamlTypeGenerator(intf, impl);
         if ( ! isInternal) {

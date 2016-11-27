@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.Generator;
+import org.raml.jaxrs.generator.builders.OutputBuilder;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.core.Response;
@@ -25,12 +26,7 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
 
     private final CurrentBuild currentBuild;
     private final String className;
-    private List<Builder<TypeSpec.Builder>> builders = new ArrayList<>();
-
-    interface Builder<T> {
-
-        void build(T parent);
-    }
+    private List<OutputBuilder<TypeSpec.Builder>> builders = new ArrayList<>();
 
 
     public ResponseClassBuilderImpl(CurrentBuild currentBuild, String className) {
@@ -60,7 +56,7 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
     @Override
     public void withResponse(final String httpCode) {
 
-        builders.add(new Builder<TypeSpec.Builder>() {
+        builders.add(new OutputBuilder<TypeSpec.Builder>() {
             @Override
             public void build(TypeSpec.Builder response) {
 
@@ -80,7 +76,7 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
     @Override
     public void withResponse(final String httpCode, String name, final String type) {
 
-        builders.add(new Builder<TypeSpec.Builder>() {
+        builders.add(new OutputBuilder<TypeSpec.Builder>() {
             @Override
             public void build(TypeSpec.Builder current) {
 
@@ -105,7 +101,7 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
 
         TypeSpec.Builder current = createResponseClass(currentBuild.getDefaultPackage(), className);
 
-        for (Builder<TypeSpec.Builder> builder : builders) {
+        for (OutputBuilder<TypeSpec.Builder> builder : builders) {
             builder.build(current);
         }
 

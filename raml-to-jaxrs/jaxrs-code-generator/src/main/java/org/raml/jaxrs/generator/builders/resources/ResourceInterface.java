@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.OutputBuilder;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
 
 import javax.lang.model.element.Modifier;
@@ -24,53 +25,60 @@ import java.util.List;
  */
 public class ResourceInterface implements ResourceGenerator {
 
-    private final TypeSpec.Builder typeSpec;
     private final CurrentBuild build;
-    private List<MethodSpec.Builder> methods = new ArrayList<MethodSpec.Builder>();
-    private List<TypeSpec.Builder> responseTypes = new ArrayList<TypeSpec.Builder>();
+    private final String name;
+    private final String relativeURI;
+
+    private List<OutputBuilder<TypeSpec.Builder>> builders = new ArrayList<>();
     private List<ResponseClassBuilder> responseClassBuilders = new ArrayList<>();
     private List<MethodBuilder> methodBuilders = new ArrayList<>();
     private List<RamlTypeGenerator> internalTypes = new ArrayList<>();
 
     public ResourceInterface(CurrentBuild build, String name, String relativeURI) {
         this.build = build;
-        this.typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(AnnotationSpec.builder(Path.class)
-                        .addMember("value", "$S", relativeURI).build());
+        this.name = name;
+        this.relativeURI = relativeURI;
     }
 
     @Override
-    public ResourceInterface withDocumentation(String docs) {
+    public ResourceInterface withDocumentation(final String docs) {
 
-        typeSpec.addJavadoc(docs);
+        builders.add(new OutputBuilder<TypeSpec.Builder>() {
+            @Override
+            public void build(TypeSpec.Builder parent) {
+
+                parent.addJavadoc(docs);
+            }
+        });
+
         return this;
     }
 
     @Override
-    public ResourceGenerator mediaType(List<String> mimeTypes) {
+    public ResourceGenerator mediaType(final List<String> mimeTypes) {
 
-        AnnotationSpec.Builder p = AnnotationSpec.builder(Produces.class);
-        AnnotationSpec.Builder c = AnnotationSpec.builder(Consumes.class);
-        for (String mimeType : mimeTypes) {
-            p.addMember("value", "$S", mimeType);
-            c.addMember("value", "$S", mimeType);
-        }
-        typeSpec.addAnnotation(p.build());
-        typeSpec.addAnnotation(c.build());
+        builders.add(new OutputBuilder<TypeSpec.Builder>() {
+            @Override
+            public void build(TypeSpec.Builder parent) {
+
+                AnnotationSpec.Builder p = AnnotationSpec.builder(Produces.class);
+                AnnotationSpec.Builder c = AnnotationSpec.builder(Consumes.class);
+                for (String mimeType : mimeTypes) {
+                    p.addMember("value", "$S", mimeType);
+                    c.addMember("value", "$S", mimeType);
+                }
+                parent.addAnnotation(p.build());
+                parent.addAnnotation(c.build());
+            }
+        });
+
         return this;
     }
 
     @Override
     public MethodBuilder createMethod(String method, String fullMethodName, String returnClass) {
 
-/*
-        MethodSpec.Builder spec = MethodSpec.methodBuilder(method + additionalNames).returns(TypeVariableName.get(returnClass))
-                .addAnnotation(AnnotationSpec.builder(methodNameToAnnotation(method)).build());
-        methods.add(spec);
-*/
-
-        MethodBuilder md = new MethodDeclaration(build, typeSpec, fullMethodName, returnClass, method);
+        MethodBuilder md = new MethodDeclaration(build, fullMethodName, returnClass, method);
         methodBuilders.add(md);
         return md;
     }
@@ -92,8 +100,23 @@ public class ResourceInterface implements ResourceGenerator {
     @Override
     public void output(CodeContainer<TypeSpec> container) throws IOException {
 
+        final TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(AnnotationSpec.builder(Path.class)
+                        .addMember("value", "$S", relativeURI).build());
+
+        for (OutputBuilder<TypeSpec.Builder> builder : builders) {
+
+            builder.build(typeSpec);
+        }
+
         for (MethodBuilder methodBuilder : methodBuilders) {
-            methodBuilder.output();
+            methodBuilder.output(new CodeContainer<MethodSpec.Builder>() {
+                @Override
+                public void into(MethodSpec.Builder g) throws IOException {
+                    typeSpec.addMethod(g.build());
+                }
+            });
         }
 
         for (ResponseClassBuilder responseClassBuilder : responseClassBuilders) {

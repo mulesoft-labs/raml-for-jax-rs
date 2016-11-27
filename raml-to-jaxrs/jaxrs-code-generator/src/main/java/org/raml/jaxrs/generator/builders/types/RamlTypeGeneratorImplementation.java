@@ -72,7 +72,7 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
         } else {
 
             className = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl");
-            parentClassName = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl");
+            parentClassName = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name));
         }
 
         final TypeSpec.Builder typeSpec = TypeSpec

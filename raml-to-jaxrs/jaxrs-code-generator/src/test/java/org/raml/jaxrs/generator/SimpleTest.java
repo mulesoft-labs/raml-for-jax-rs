@@ -2,8 +2,16 @@ package org.raml.jaxrs.generator;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.raml.v2.api.RamlModelBuilder;
+import org.raml.v2.api.RamlModelResult;
+import org.raml.v2.api.model.v10.resources.Resource;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * Created by Jean-Philippe Belanger on 10/29/16.
@@ -90,6 +98,17 @@ public class SimpleTest {
                 "example.helloworld"
         );
         scanner.handle("/internal_types_for_resources.raml");
+    }
+
+    @Test
+    public void fick() throws Exception {
+        RamlModelResult result = new RamlModelBuilder().buildApi(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-code-generator/src/test/resources/base.raml"));
+        Resource r1 = result.getApiV10().resources().get(0);
+        Resource r2 = result.getApiV10().resources().get(0).resources().get(1);
+
+        System.err.println("foo " + r1.resourcePath() + " " + r2.resourcePath());
+        assertEquals(r1, r2);
+
     }
 
 }

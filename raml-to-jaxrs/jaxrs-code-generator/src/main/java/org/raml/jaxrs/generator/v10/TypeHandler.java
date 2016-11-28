@@ -3,12 +3,15 @@ package org.raml.jaxrs.generator.v10;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
+import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -75,7 +78,7 @@ public class TypeHandler {
 
         for (TypeDeclaration declaration : typeDeclaration.properties()) {
 
-            if (isNewTypeDeclaration(api, declaration)) {
+            if (TypeUtils.isNewTypeDeclaration(api, declaration)) {
 
                 RamlTypeGenerator internalGenerator = handle(api, declaration, declaration.name() + "_Type", true);
                 creator.addInternalType(internalGenerator);
@@ -88,21 +91,6 @@ public class TypeHandler {
         return creator;
     }
 
-    private boolean isNewTypeDeclaration(Api api, TypeDeclaration declaration) {
-
-        if ( ! (declaration instanceof ObjectTypeDeclaration) ) {
-            return false;
-        }
-
-        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), declaration);
-        if ( parents.size() != 1) {
-            return true;
-        }
-
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) declaration;
-        return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
-    }
-
     private Function<TypeDeclaration, String> typeToTypeName() {
         return new Function<TypeDeclaration, String>() {
             @Nullable
@@ -111,5 +99,44 @@ public class TypeHandler {
                 return input.name();
             }
         };
+    }
+
+    public void handlePrivateType(Api api, Resource resource, TypeDeclaration typeDeclaration) {
+
+        handlePrivateType(api, resource.resourcePath() + "_" + typeDeclaration.name(), typeDeclaration);
+    }
+
+    public void handlePrivateType(Api api, Resource resource, Response response, TypeDeclaration typeDeclaration) {
+
+        handlePrivateType(api, resource.resourcePath() + "_"  + response.code().value() + "_" + typeDeclaration.name(), typeDeclaration);
+    }
+
+    private void handlePrivateType(Api api, String name, TypeDeclaration typeDeclaration) {
+
+        if ( TypeUtils.isNewTypeDeclaration(api, typeDeclaration)) {
+
+            ObjectTypeDeclaration objectTypeDeclaration = (ObjectTypeDeclaration) typeDeclaration;
+
+            for (TypeDeclaration parentType: ModelFixer.parentTypes(api.types(), typeDeclaration)) {
+
+                handle(api, parentType);
+            }
+
+            RamlTypeGenerator creator = build.createPrivateType(name,
+                    Lists.transform(ModelFixer.parentTypes(api.types(), typeDeclaration),
+                            typeToTypeName()));
+
+            for (TypeDeclaration declaration : objectTypeDeclaration.properties()) {
+
+                if (TypeUtils.isNewTypeDeclaration(api, declaration)) {
+
+                    RamlTypeGenerator internalGenerator = handle(api, declaration, declaration.name() + "_Type", true);
+                    creator.addInternalType(internalGenerator);
+                    creator.addProperty(declaration.type(), declaration.name(), true);
+                } else {
+                    creator.addProperty(declaration.type(), declaration.name(), false);
+                }
+            }
+        }
     }
 }

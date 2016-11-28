@@ -88,7 +88,7 @@ public class ResourceHandler {
         Map<MethodSignature, MethodBuilder> seenTypes = new HashMap<>();
         ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(),
                 methodNameSuffix);
-        setupResponses(method, response);
+        setupResponses(api, method, response);
 
         if (method.body().isEmpty()) {
 
@@ -97,12 +97,10 @@ public class ResourceHandler {
         } else {
             for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
-                if (isNewTypeDeclaration(api, requestTypeDeclaration)) {
+                if (TypeUtils.isNewTypeDeclaration(api, requestTypeDeclaration)) {
 
-                    String methodAsTypeName = Character.toUpperCase(fullMethodName.charAt(0)) + fullMethodName.substring(1);
+                    String methodAsTypeName = resource.resourcePath() + "_" + requestTypeDeclaration.name();
 
-                    RamlTypeGenerator internalGenerator = typeHandler.handle(api, requestTypeDeclaration, methodAsTypeName, true);
-                    creator.addInternalType(internalGenerator);
                     buildMethodReceivingType(resource, creator, resourcePath, method, fullMethodName, requestTypeDeclaration,
                             response, seenTypes, methodAsTypeName
                     );
@@ -114,21 +112,6 @@ public class ResourceHandler {
                 }
             }
         }
-    }
-
-    private static boolean isNewTypeDeclaration(Api api, TypeDeclaration declaration) {
-
-        if (!(declaration instanceof ObjectTypeDeclaration)) {
-            return false;
-        }
-
-        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), declaration);
-        if (parents.size() != 1) {
-            return true;
-        }
-
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) declaration;
-        return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
     }
 
     private Function<TypeDeclaration, String> typeToTypeName() {
@@ -187,7 +170,7 @@ public class ResourceHandler {
         }
     }
 
-    private void setupResponses(Method method, ResponseClassBuilder responseBuilder) {
+    private void setupResponses(Api api, Method method, ResponseClassBuilder responseBuilder) {
 
         for (Response response : method.responses()) {
 
@@ -195,7 +178,14 @@ public class ResourceHandler {
                 responseBuilder.withResponse(response.code().value());
             } else {
                 for (TypeDeclaration typeDeclaration : response.body()) {
-                    responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), typeDeclaration.type());
+                    if ( TypeUtils.isNewTypeDeclaration(api, typeDeclaration)) {
+
+                        String privateTypeName = method.resource().resourcePath() + "_"  + response.code().value() + "_" + typeDeclaration.name();
+                        responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), privateTypeName);
+                    } else {
+
+                        responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), typeDeclaration.type());
+                    }
                 }
             }
         }

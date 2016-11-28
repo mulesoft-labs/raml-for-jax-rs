@@ -42,7 +42,7 @@ public class CurrentBuild {
 
     private final String defaultPackage;
 
-    private final List<ResourceGenerator> resources = new ArrayList<ResourceGenerator>();
+    private final List<ResourceGenerator> resources = new ArrayList<>();
     private final Map<String, TypeGenerator> types = new HashMap<>();
     private final Map<String, CodeModelTypeGenerator> codeModelTypes = new HashMap<>();
     private final Map<String, JavaPoetTypeGenerator> javaPoetTypes = new HashMap<>();
@@ -66,16 +66,6 @@ public class CurrentBuild {
     public void generate(final String rootDirectory) throws IOException {
 
         ResponseSupport.buildSupportClasses(rootDirectory, this.defaultPackage);
-        for (ResourceGenerator resource : resources) {
-            resource.output(new CodeContainer<TypeSpec>() {
-                @Override
-                public void into(TypeSpec g) throws IOException {
-                    JavaFile.Builder file = JavaFile.builder(getDefaultPackage(), g);
-                    file.build().writeTo(new File(rootDirectory));
-                }
-            });
-        }
-
         for (JavaPoetTypeGenerator b: javaPoetTypes.values()) {
             b.output(new CodeContainer<TypeSpec.Builder>() {
                 @Override
@@ -97,6 +87,27 @@ public class CurrentBuild {
             });
         }
 
+        for (ResourceGenerator resource : resources) {
+            resource.output(new CodeContainer<TypeSpec>() {
+                @Override
+                public void into(TypeSpec g) throws IOException {
+                    JavaFile.Builder file = JavaFile.builder(getDefaultPackage(), g);
+                    file.build().writeTo(new File(rootDirectory));
+                }
+            });
+        }
+
+    }
+
+    public RamlTypeGenerator createPrivateType(String name, List<String> parentTypes) {
+
+        RamlTypeGeneratorInterface intf = new RamlTypeGeneratorInterface(this, name, parentTypes, false);
+        RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(this, name, name, false);
+
+        CompositeRamlTypeGenerator compositeTypeBuilder = new CompositeRamlTypeGenerator(intf, impl);
+        types.put(name, compositeTypeBuilder);
+        javaPoetTypes.put(name, compositeTypeBuilder);
+        return compositeTypeBuilder;
     }
 
     public RamlTypeGenerator createType(String name, List<String> parentTypes, boolean isInternal) {
@@ -176,5 +187,4 @@ public class CurrentBuild {
             throw new GenerationException(e);
         }
     }
-
 }

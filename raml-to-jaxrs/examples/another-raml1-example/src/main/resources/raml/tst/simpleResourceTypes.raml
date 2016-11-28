@@ -1,0 +1,10 @@
+#%RAML 1.0 Library
+usage: Standard resourceTypes
+resourceTypes:
+  collection:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: <<itemType>>

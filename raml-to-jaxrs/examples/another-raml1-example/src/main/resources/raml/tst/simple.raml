@@ -1,0 +1,10 @@
+#%RAML 1.0
+title: My API with Types
+mediaType: application/json
+uses:
+  myDataTypes: standardDataTypes.raml
+  simpleResourceTypes: simpleResourceTypes.raml
+/orgs/{orgId}:
+  type:
+    simpleResourceTypes.collection:
+      itemType: myDataTypes.Org

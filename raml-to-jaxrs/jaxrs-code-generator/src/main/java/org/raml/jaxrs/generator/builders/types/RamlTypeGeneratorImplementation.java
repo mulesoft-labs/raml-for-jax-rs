@@ -78,8 +78,12 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
         final TypeSpec.Builder typeSpec = TypeSpec
                 .classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
+
+        build.withTypeListeners().onTypeImplementation(typeSpec);
+/*
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).addMember("name", "$S", name).build());
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class).addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
+*/
 
         typeSpec.addSuperinterface(parentClassName);
 
@@ -102,13 +106,7 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
 
                 typeSpec.addField(FieldSpec.builder(ClassName.get("", Names.buildTypeName(propertyInfo.getName() + "_Type")), propertyInfo.getName()).addModifiers(Modifier.PRIVATE).build());
             } else {
-                build.javaTypeName(propertyInfo.getType(), forField(typeSpec, propertyInfo.getName(),
-                        new SpecFixer<FieldSpec.Builder>() {
-                            @Override
-                            public void adjust(FieldSpec.Builder spec) {
-                                spec.addAnnotation(AnnotationSpec.builder(XmlElement.class).build());
-                            }
-                        }));
+                build.javaTypeName(propertyInfo.getType(), forField(typeSpec, propertyInfo.getName()));
             }
 
             final MethodSpec.Builder getSpec = MethodSpec

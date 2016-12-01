@@ -16,6 +16,9 @@ import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.builders.extensions.JaxbTypeExtensionImpl;
+import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
+import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
 import org.raml.jaxrs.generator.builders.types.CompositeRamlTypeGenerator;
@@ -46,10 +49,12 @@ public class CurrentBuild {
     private final Map<String, TypeGenerator> types = new HashMap<>();
     private final Map<String, CodeModelTypeGenerator> codeModelTypes = new HashMap<>();
     private final Map<String, JavaPoetTypeGenerator> javaPoetTypes = new HashMap<>();
+    private TypeExtensionList typeExtensionList = new TypeExtensionList();
 
     public CurrentBuild(String defaultPackage) {
 
         this.defaultPackage = defaultPackage;
+        typeExtensionList.addExtension(new JaxbTypeExtensionImpl());
     }
 
     public String getDefaultPackage() {
@@ -186,5 +191,10 @@ public class CurrentBuild {
 
             throw new GenerationException(e);
         }
+    }
+
+    public TypeExtension withTypeListeners() {
+
+        return typeExtensionList;
     }
 }

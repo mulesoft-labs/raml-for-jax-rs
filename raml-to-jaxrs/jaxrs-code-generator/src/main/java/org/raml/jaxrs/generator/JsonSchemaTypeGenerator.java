@@ -1,5 +1,7 @@
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
@@ -15,7 +17,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 11/20/16.
  * Just potential zeroes and ones
  */
-class JsonSchemaTypeGenerator implements CodeModelTypeGenerator {
+public class JsonSchemaTypeGenerator implements CodeModelTypeGenerator {
     private final SchemaMapper mapper;
     private final String pack;
     private final String name;
@@ -32,13 +34,12 @@ class JsonSchemaTypeGenerator implements CodeModelTypeGenerator {
     public void output(CodeContainer<JCodeModel> container) throws IOException {
 
         container.into(codeModel);
-    //    codeModel.build(new File(rootDirectory));
     }
 
     @Override
-    public String getGeneratedJavaType() {
+    public TypeName getGeneratedJavaType() {
         JDefinedClass cls = codeModel._getClass(pack + "." + name);
-        return cls.fullName();
+        return ClassName.get(pack, cls.name());
     }
 
     @Override

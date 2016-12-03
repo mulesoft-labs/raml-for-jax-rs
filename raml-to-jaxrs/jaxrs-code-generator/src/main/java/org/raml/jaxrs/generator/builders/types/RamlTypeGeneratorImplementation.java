@@ -1,21 +1,19 @@
 package org.raml.jaxrs.generator.builders.types;
 
-import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.SpecFixer;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,63 +30,46 @@ import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forReturnValu
  */
 public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     private final CurrentBuild build;
-    private final String name;
-    private final String parentType;
-    private final boolean isInternal;
+    private final ClassName className;
+    private final ClassName parentClassName;
+    private final List<TypeDeclaration> parentTypes;
+    private Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
-    private List<RamlTypeGeneratorImplementation> internalTypes = new ArrayList<>();
+    private final TypeDeclaration typeDeclaration;
 
-    public RamlTypeGeneratorImplementation(CurrentBuild build, String name, String parentType, boolean isInternal) {
+
+    public RamlTypeGeneratorImplementation(CurrentBuild build, ClassName className, ClassName parentClassName,
+            List<TypeDeclaration> parentTypes,
+            List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, TypeDeclaration typeDeclaration) {
+
         this.build = build;
-        this.name = name;
-        this.parentType = parentType;
-        this.isInternal = isInternal;
+        this.className = className;
+        this.parentClassName = parentClassName;
+        this.parentTypes = parentTypes;
+        this.internalTypes = internalTypes;
+        this.typeDeclaration = typeDeclaration;
+        for (PropertyInfo property : properties) {
+            propertyInfos.put(property.getName(), property);
+        }
+
     }
 
-    @Override
-    public RamlTypeGenerator addProperty(String type, String name, boolean internalType) {
-
-        propertyInfos.put(name, new PropertyInfo(type, name, internalType));
-        return this;
-    }
-
-    @Override
-    public RamlTypeGenerator addInternalType(RamlTypeGenerator internalGenerator) {
-
-        internalTypes.add((RamlTypeGeneratorImplementation) internalGenerator);
-        return this;
-    }
 
     @Override
     public void output(CodeContainer<TypeSpec.Builder> container) throws IOException {
 
-        ClassName className;
-        ClassName parentClassName;
-        if ( isInternal ) {
-
-            className = ClassName.get(build.getDefaultPackage(), name + "Impl");
-            parentClassName = ClassName.get("", name);
-        } else {
-
-            className = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name) + "Impl");
-            parentClassName = ClassName.get(build.getDefaultPackage(), Names.buildTypeName(name));
-        }
 
         final TypeSpec.Builder typeSpec = TypeSpec
                 .classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
 
         build.withTypeListeners().onTypeImplementation(typeSpec);
-/*
-        typeSpec.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).addMember("name", "$S", name).build());
-        typeSpec.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class).addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
-*/
 
         typeSpec.addSuperinterface(parentClassName);
 
 
-        for (RamlTypeGeneratorImplementation internalType : internalTypes) {
+        for (TypeGenerator internalType : internalTypes.values()) {
 
             internalType.output(new CodeContainer<TypeSpec.Builder>() {
                 @Override
@@ -102,35 +83,21 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
-            if ( propertyInfo.isInternalType() ) {
-
-                typeSpec.addField(FieldSpec.builder(ClassName.get("", Names.buildTypeName(propertyInfo.getName() + "_Type")), propertyInfo.getName()).addModifiers(Modifier.PRIVATE).build());
-            } else {
-                build.javaTypeName(propertyInfo.getType(), forField(typeSpec, propertyInfo.getName()));
-            }
+            typeSpec.addField(FieldSpec.builder(build.getJavaType(propertyInfo.getType(), internalTypes), propertyInfo.getName()).addModifiers(Modifier.PRIVATE).build());
 
             final MethodSpec.Builder getSpec = MethodSpec
                     .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("return this." + propertyInfo.getName());
 
-            if ( propertyInfo.isInternalType() ) {
-                getSpec.returns(ClassName.get("", Names.buildTypeName(propertyInfo.getName() + "_Type")));
-            } else {
-                build.javaTypeName(propertyInfo.getType(), forReturnValue(getSpec));
-            }
+            getSpec.returns(build.getJavaType(propertyInfo.getType(), internalTypes));
 
             MethodSpec.Builder setSpec = MethodSpec
                     .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("this." + propertyInfo.getName() + " = " + propertyInfo.getName());
 
-            if ( propertyInfo.isInternalType()) {
-                setSpec.addParameter(ParameterSpec
-                        .builder(ClassName.get("", Names.buildTypeName(propertyInfo.getName() + "_Type")), propertyInfo.getName()).build());
-            } else {
-                build.javaTypeName(propertyInfo.getType(), forParameter(setSpec, propertyInfo.getName()));
-            }
+                setSpec.addParameter(ParameterSpec.builder(build.getJavaType(propertyInfo.getType(), internalTypes), propertyInfo.getName()).build());
             typeSpec.addMethod(getSpec.build());
             typeSpec.addMethod(setSpec.build());
         }
@@ -148,7 +115,7 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
     }
 
     @Override
-    public String getGeneratedJavaType() {
+    public TypeName getGeneratedJavaType() {
         return null;
     }
 }

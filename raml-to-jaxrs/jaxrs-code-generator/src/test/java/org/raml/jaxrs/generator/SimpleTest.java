@@ -101,6 +101,16 @@ public class SimpleTest {
     }
 
     @Test
+    public void worldMusic() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.worldmusic"
+        );
+        scanner.handle(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/resources/world-music-api/api.raml"));
+    }
+
+    @Test
     public void fick() throws Exception {
         RamlModelResult result = new RamlModelBuilder().buildApi(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-code-generator/src/test/resources/base.raml"));
         Resource r1 = result.getApiV10().resources().get(0);

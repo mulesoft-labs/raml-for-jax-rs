@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator.builders;
 
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 /**
@@ -8,7 +9,7 @@ import com.squareup.javapoet.TypeSpec;
  */
 public interface TypeGenerator<T> extends Generator<T> {
 
-    String getGeneratedJavaType();
+    TypeName getGeneratedJavaType();
     // is a property declared here or in my parents ?
     boolean declaresProperty(String name);
 

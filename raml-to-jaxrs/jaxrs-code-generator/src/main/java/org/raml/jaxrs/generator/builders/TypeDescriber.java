@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator.builders;
 
+import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 
 /**
@@ -9,5 +10,5 @@ import org.raml.jaxrs.generator.CurrentBuild;
 public interface TypeDescriber {
 
     void asJavaType(CurrentBuild currentBuild, Class c);
-    void asBuiltType(CurrentBuild currentBuild, String name);
+    void asBuiltType(CurrentBuild currentBuild, TypeName name);
 }

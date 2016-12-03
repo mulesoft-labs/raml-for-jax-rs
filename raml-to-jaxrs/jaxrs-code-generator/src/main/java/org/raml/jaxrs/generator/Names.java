@@ -3,6 +3,10 @@ package org.raml.jaxrs.generator;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import joptsimple.internal.Strings;
+import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.methods.Method;
+import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.util.List;
 
@@ -80,5 +84,22 @@ public class Names
     private Names()
     {
         throw new UnsupportedOperationException();
+    }
+
+
+    public static String javaTypeName(Resource resource, Method method, TypeDeclaration declaration) {
+        return buildTypeName(resource.resourcePath() + "_" +  method.method() + "_" + declaration.name());
+    }
+
+    public static String ramlTypeName(Resource resource, Method method, TypeDeclaration declaration) {
+        return resource.resourcePath() + method.method() + declaration.name();
+    }
+
+    public static String javaTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
+        return buildTypeName(resource.resourcePath() + "_" +  method.method() + "_" + response.code().value() + "_" + declaration.name());
+    }
+
+    public static String ramlTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
+        return resource.resourcePath() + method.method() + response.code() + declaration.name();
     }
 }

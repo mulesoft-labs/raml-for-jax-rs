@@ -13,13 +13,6 @@ public class TypeExtensionList implements TypeExtension {
 
     private List<TypeExtension> extensions = new ArrayList<>();
 
-    @Override
-    public void onTypeDeclaration() {
-
-        for (TypeExtension extension : extensions) {
-            extension.onTypeDeclaration();
-        }
-    }
 
     @Override
     public void onTypeImplementation(TypeSpec.Builder typeSpec) {
@@ -27,16 +20,6 @@ public class TypeExtensionList implements TypeExtension {
         for (TypeExtension extension : extensions) {
             extension.onTypeImplementation(typeSpec);
         }
-    }
-
-    @Override
-    public void onFieldDeclaration() {
-
-    }
-
-    @Override
-    public void onMethodDeclaration() {
-
     }
 
     public void addExtension(TypeExtension typeExtension) {

@@ -8,7 +8,4 @@ import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
  */
 public interface RamlTypeGenerator extends JavaPoetTypeGenerator {
 
-    RamlTypeGenerator addProperty(String type, String name, boolean internalType);
-
-    RamlTypeGenerator addInternalType(RamlTypeGenerator internalGenerator);
 }

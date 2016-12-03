@@ -129,6 +129,25 @@
                             </arguments>
                         </configuration>
                     </execution>
+<!--
+                    <execution>
+                        <id>exec-worldmusic</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+
+                        <configuration>
+                            <mainClass>org.raml.jaxrs.generator.Main</mainClass>
+                            <arguments>
+                                <argument>${project.basedir}/src/main/resources/world-music-api/api.raml</argument>
+                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>example.worldmusic</argument>
+                                <argument>${project.basedir}/src/main/resources/world-music-api/api.raml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+-->
                 </executions>
             </plugin>
         </plugins>

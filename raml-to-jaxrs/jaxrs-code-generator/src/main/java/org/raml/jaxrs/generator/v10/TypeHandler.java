@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.json.XML;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
@@ -21,11 +22,13 @@ import java.util.List;
  * Just potential zeroes and ones
  */
 public class TypeHandler {
-    private final CurrentBuild build;
+ /*   private final CurrentBuild build;
+    private final TypeFactory factory;
 
-    public TypeHandler(CurrentBuild build) {
+    public TypeHandler(CurrentBuild build, TypeFactory factory) {
 
         this.build = build;
+        this.factory = factory;
     }
 
     public void handle(Api api, TypeDeclaration declaration) {
@@ -72,7 +75,7 @@ public class TypeHandler {
             handle(api, parentType);
         }
 
-        RamlTypeGenerator creator = build.createType(typeName,
+        RamlTypeGenerator creator = build.createType(typeDeclaration, typeName,
                 Lists.transform(ModelFixer.parentTypes(api.types(), typeDeclaration),
                 typeToTypeName()), isInternal);
 
@@ -113,6 +116,12 @@ public class TypeHandler {
 
     private void handlePrivateType(Api api, String name, TypeDeclaration typeDeclaration) {
 
+
+        if ( typeDeclaration instanceof XMLTypeDeclaration ) {
+
+            build.createTypeFromXmlSchema(name, ((XMLTypeDeclaration) typeDeclaration).schemaContent());
+            return;
+        }
         if ( TypeUtils.isNewTypeDeclaration(api, typeDeclaration)) {
 
             ObjectTypeDeclaration objectTypeDeclaration = (ObjectTypeDeclaration) typeDeclaration;
@@ -122,7 +131,7 @@ public class TypeHandler {
                 handle(api, parentType);
             }
 
-            RamlTypeGenerator creator = build.createPrivateType(name,
+            RamlTypeGenerator creator = build.createPrivateType(objectTypeDeclaration, name,
                     Lists.transform(ModelFixer.parentTypes(api.types(), typeDeclaration),
                             typeToTypeName()));
 
@@ -138,5 +147,5 @@ public class TypeHandler {
                 }
             }
         }
-    }
+    }*/
 }

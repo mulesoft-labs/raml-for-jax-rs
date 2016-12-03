@@ -2,10 +2,12 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.squareup.javapoet.TypeSpec;
 import joptsimple.internal.Strings;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.MethodSignature;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.resources.MethodBuilder;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResponseClassBuilder;
@@ -15,10 +17,12 @@ import org.raml.v2.api.model.v10.bodies.MimeType;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +37,9 @@ import static org.raml.jaxrs.generator.MethodSignature.signature;
 public class ResourceHandler {
 
     private final CurrentBuild build;
-    private final TypeHandler typeHandler;
 
-    public ResourceHandler(CurrentBuild build, TypeHandler handler) {
+    public ResourceHandler(CurrentBuild build) {
         this.build = build;
-        this.typeHandler = handler;
     }
 
     public void handle(Api api, Resource resource) {
@@ -69,7 +71,7 @@ public class ResourceHandler {
 
         for (Resource subresource : resource.resources()) {
 
-            for (Method method : resource.methods()) {
+            for (Method method : subresource.methods()) {
                 handleMethod(api, subresource, creator, method, subresourcePath + subresource.relativeUri().value());
             }
 
@@ -86,8 +88,31 @@ public class ResourceHandler {
                 queryParameterToString()));
 
         Map<MethodSignature, MethodBuilder> seenTypes = new HashMap<>();
+/*
         ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(),
                 methodNameSuffix);
+*/
+        ResponseClassBuilder response = new ResponseClassBuilder() {
+            @Override
+            public String name() {
+                return null;
+            }
+
+            @Override
+            public void withResponse(String value) {
+
+            }
+
+            @Override
+            public void withResponse(String code, String name, String type) {
+
+            }
+
+            @Override
+            public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
+
+            }
+        };
         setupResponses(api, method, response);
 
         if (method.body().isEmpty()) {
@@ -178,6 +203,14 @@ public class ResourceHandler {
                 responseBuilder.withResponse(response.code().value());
             } else {
                 for (TypeDeclaration typeDeclaration : response.body()) {
+
+                    if ( typeDeclaration instanceof XMLTypeDeclaration ) {
+
+                        String privateTypeName = method.resource().resourcePath() + "_"  + response.code().value() + "_" + typeDeclaration.name();
+                        responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), privateTypeName);
+                        continue;
+                    }
+
                     if ( TypeUtils.isNewTypeDeclaration(api, typeDeclaration)) {
 
                         String privateTypeName = method.resource().resourcePath() + "_"  + response.code().value() + "_" + typeDeclaration.name();

@@ -8,8 +8,5 @@ import com.squareup.javapoet.TypeSpec;
  */
 public interface TypeExtension {
 
-    void onTypeDeclaration();
     void onTypeImplementation(TypeSpec.Builder typeSpec);
-    void onFieldDeclaration();
-    void onMethodDeclaration();
 }

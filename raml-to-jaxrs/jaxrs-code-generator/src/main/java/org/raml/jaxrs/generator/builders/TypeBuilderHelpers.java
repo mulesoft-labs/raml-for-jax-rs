@@ -4,10 +4,10 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GenerationException;
-import org.raml.jaxrs.generator.Names;
 
 import javax.lang.model.element.Modifier;
 import java.util.regex.Matcher;
@@ -28,11 +28,10 @@ public class TypeBuilderHelpers {
             }
 
             @Override
-            public void asBuiltType(CurrentBuild currentBuild, String name) {
+            public void asBuiltType(CurrentBuild currentBuild, TypeName name) {
 
-                String[] pAndA = splitIntoPackageAndClass(name);
 
-                getSpec.returns(ClassName.get(pAndA[0], pAndA[1]));
+                getSpec.returns(name);
             }
         };
     }
@@ -57,10 +56,9 @@ public class TypeBuilderHelpers {
             }
 
             @Override
-            public void asBuiltType(CurrentBuild currentBuild, String typeName) {
-                String[] pAndA = splitIntoPackageAndClass(typeName);
+            public void asBuiltType(CurrentBuild currentBuild, TypeName typeName) {
                 ParameterSpec.Builder builder = ParameterSpec
-                        .builder(ClassName.get(pAndA[0], pAndA[1]), name);
+                        .builder(typeName, name);
                 fix(builder, fixers);
 
                 getSpec.addParameter(
@@ -81,11 +79,10 @@ public class TypeBuilderHelpers {
             }
 
             @Override
-            public void asBuiltType(CurrentBuild currentBuild, String typeName) {
+            public void asBuiltType(CurrentBuild currentBuild, TypeName typeName) {
 
-                String[] pAndA = splitIntoPackageAndClass(typeName);
                 FieldSpec.Builder builder = FieldSpec.builder(
-                        ClassName.get(pAndA[0], pAndA[1]), name)
+                        typeName, name)
                         .addModifiers(Modifier.PRIVATE);
 
                 fix(builder, fixers);

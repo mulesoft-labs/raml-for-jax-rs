@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator.builders.types;
 
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 
@@ -22,25 +23,6 @@ public class CompositeRamlTypeGenerator implements RamlTypeGenerator {
     }
 
     @Override
-    public RamlTypeGenerator addInternalType(RamlTypeGenerator internalGenerator) {
-
-        CompositeRamlTypeGenerator gen = (CompositeRamlTypeGenerator) internalGenerator;
-        intf.addInternalType(gen.intf);
-        impl.addInternalType(gen.impl);
-
-        return this;
-    }
-
-    @Override
-    public RamlTypeGenerator addProperty(String type, String name, boolean internalType) {
-
-        impl.addProperty(type, name, internalType);
-        intf.addProperty(type, name, internalType);
-
-        return this;
-    }
-
-    @Override
     public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
 
         intf.output(rootDirectory);
@@ -53,7 +35,7 @@ public class CompositeRamlTypeGenerator implements RamlTypeGenerator {
     }
 
     @Override
-    public String getGeneratedJavaType() {
+    public TypeName getGeneratedJavaType() {
 
         return intf.getGeneratedJavaType();
     }

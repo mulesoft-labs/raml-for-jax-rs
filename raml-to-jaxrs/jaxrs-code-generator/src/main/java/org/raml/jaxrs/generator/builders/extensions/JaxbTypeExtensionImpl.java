@@ -12,25 +12,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Just potential zeroes and ones
  */
 public class JaxbTypeExtensionImpl implements TypeExtension {
-    @Override
-    public void onTypeDeclaration() {
-
-    }
 
     @Override
     public void onTypeImplementation(TypeSpec.Builder typeSpec) {
 
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).addMember("name", "$S", "booboo").build());
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class).addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
-    }
-
-    @Override
-    public void onFieldDeclaration() {
-
-    }
-
-    @Override
-    public void onMethodDeclaration() {
-
     }
 }

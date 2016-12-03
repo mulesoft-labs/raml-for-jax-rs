@@ -12,18 +12,30 @@ import java.util.List;
  */
 public class TypeUtils {
 
-    public static boolean isNewTypeDeclaration(Api api, TypeDeclaration declaration) {
+    public static boolean isNewTypeDeclaration(Api api, TypeDeclaration typeDeclaration) {
 
-        if ( ! (declaration instanceof ObjectTypeDeclaration) ) {
+        if ( ! (typeDeclaration instanceof ObjectTypeDeclaration) ) {
             return false;
         }
 
-        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), declaration);
+        if ( typeDeclaration.type().equals("null_AnonymousType")) {
+
+            return true;
+        }
+
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) typeDeclaration;
+        if ( typeDeclaration.type().equals("object") ) {
+            return true;
+        }
+        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), typeDeclaration);
+        if ( parents.size() == 0 ) {
+            return false;
+        }
         if ( parents.size() != 1) {
             return true;
         }
 
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) declaration;
+
         return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
     }
 }

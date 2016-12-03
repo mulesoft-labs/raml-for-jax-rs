@@ -1,5 +1,7 @@
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import org.raml.jaxrs.generator.builders.CodeContainer;
@@ -13,7 +15,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 11/20/16.
  * Just potential zeroes and ones
  */
-class XmlSchemaTypeGenerator implements CodeModelTypeGenerator {
+public class XmlSchemaTypeGenerator implements CodeModelTypeGenerator {
     private final JCodeModel codeModel;
     private final String packageName;
     private final String className;
@@ -31,10 +33,10 @@ class XmlSchemaTypeGenerator implements CodeModelTypeGenerator {
     }
 
     @Override
-    public String getGeneratedJavaType() {
+    public TypeName getGeneratedJavaType() {
 
         JDefinedClass cls = codeModel._getClass(packageName + "." + className);
-        return cls.fullName();
+        return ClassName.get(packageName, className);
     }
 
     @Override

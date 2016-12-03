@@ -88,31 +88,10 @@ public class ResourceHandler {
                 queryParameterToString()));
 
         Map<MethodSignature, MethodBuilder> seenTypes = new HashMap<>();
-/*
+
         ResponseClassBuilder response = creator.createResponseClassBuilder(method.method(),
                 methodNameSuffix);
-*/
-        ResponseClassBuilder response = new ResponseClassBuilder() {
-            @Override
-            public String name() {
-                return null;
-            }
 
-            @Override
-            public void withResponse(String value) {
-
-            }
-
-            @Override
-            public void withResponse(String code, String name, String type) {
-
-            }
-
-            @Override
-            public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
-
-            }
-        };
         setupResponses(api, method, response);
 
         if (method.body().isEmpty()) {
@@ -204,17 +183,14 @@ public class ResourceHandler {
             } else {
                 for (TypeDeclaration typeDeclaration : response.body()) {
 
-                    if ( typeDeclaration instanceof XMLTypeDeclaration ) {
-
-                        String privateTypeName = method.resource().resourcePath() + "_"  + response.code().value() + "_" + typeDeclaration.name();
-                        responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), privateTypeName);
-                        continue;
-                    }
 
                     if ( TypeUtils.isNewTypeDeclaration(api, typeDeclaration)) {
 
-                        String privateTypeName = method.resource().resourcePath() + "_"  + response.code().value() + "_" + typeDeclaration.name();
-                        responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), privateTypeName);
+                        if ( typeDeclaration instanceof XMLTypeDeclaration ) {
+
+                            responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), Names.ramlTypeName(method.resource(), method, response, typeDeclaration));
+                            continue;
+                        }
                     } else {
 
                         responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), typeDeclaration.type());

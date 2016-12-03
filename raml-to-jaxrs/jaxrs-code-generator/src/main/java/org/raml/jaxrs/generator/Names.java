@@ -100,6 +100,6 @@ public class Names
     }
 
     public static String ramlTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
-        return resource.resourcePath() + method.method() + response.code() + declaration.name();
+        return resource.resourcePath() + method.method() + response.code().value() + declaration.name();
     }
 }

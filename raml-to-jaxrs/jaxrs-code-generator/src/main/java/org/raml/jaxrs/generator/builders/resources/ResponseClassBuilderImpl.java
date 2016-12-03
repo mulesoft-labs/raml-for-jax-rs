@@ -2,12 +2,15 @@ package org.raml.jaxrs.generator.builders.resources;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.Generator;
 import org.raml.jaxrs.generator.builders.OutputBuilder;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.core.Response;
@@ -90,7 +93,11 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
                         .returns(TypeVariableName.get(currentClass.name))
                         .build();
 
-                currentBuild.javaTypeName(type, forParameter(builder, "entity" ));
+                TypeGenerator gen = currentBuild.getDeclaredType(type);
+                if ( gen == null ) {
+                    throw new GenerationException(type + " was not seen before");
+                }
+                builder.addParameter(ParameterSpec.builder(gen.getGeneratedJavaType(), "entity").build());
                 current.addMethod(builder.build());
             }
         });

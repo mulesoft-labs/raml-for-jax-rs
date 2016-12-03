@@ -8,7 +8,10 @@ import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
@@ -85,6 +88,7 @@ public class RamlScanner {
             findPrivateTypes(api, resource, typeHandler);
         }
 
+        // handle resources.
         for (Resource resource : api.resources()) {
             resourceHandler.handle(api, resource);
         }
@@ -98,7 +102,20 @@ public class RamlScanner {
             for (TypeDeclaration typeDeclaration : method.body()) {
 
                 if (TypeUtils.isNewTypeDeclaration(api, typeDeclaration) ) {
-                    typeHandler.createPrivateTypeForResponse(api, resource, method, typeDeclaration);
+                    if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
+
+                        typeHandler.createPrivateTypeForResponse(api, resource, method, typeDeclaration);
+                    }
+
+                    if ( typeDeclaration instanceof JSONTypeDeclaration ) {
+
+                        typeHandler.createType(api, Names.ramlTypeName(resource, method, typeDeclaration), typeDeclaration);
+                    }
+
+                    if ( typeDeclaration instanceof XMLTypeDeclaration) {
+
+                        typeHandler.createType(api, Names.ramlTypeName(resource, method, typeDeclaration), typeDeclaration);
+                    }
                 } else {
                     typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
                 }
@@ -109,8 +126,23 @@ public class RamlScanner {
                 for (TypeDeclaration typeDeclaration : response.body()) {
 
                     if (TypeUtils.isNewTypeDeclaration(api, typeDeclaration) ) {
-                        typeHandler.createPrivateTypeForResponse(api, resource, method, response, typeDeclaration);
+                        if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
+
+                            typeHandler.createPrivateTypeForResponse(api, resource, method, response, typeDeclaration);
+                        }
+
+                        if ( typeDeclaration instanceof JSONTypeDeclaration ) {
+
+                            typeHandler.createType(api, Names.ramlTypeName(resource, method, response, typeDeclaration), typeDeclaration);
+                        }
+
+                        if ( typeDeclaration instanceof XMLTypeDeclaration) {
+
+                            typeHandler.createType(api, Names.ramlTypeName(resource, method, response, typeDeclaration), typeDeclaration);
+                        }
+
                     } else {
+
                         typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
                     }
                 }

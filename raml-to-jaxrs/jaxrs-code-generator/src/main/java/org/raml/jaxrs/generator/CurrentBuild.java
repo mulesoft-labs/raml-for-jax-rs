@@ -23,12 +23,7 @@ import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResourceInterface;
-import org.raml.jaxrs.generator.builders.types.CompositeRamlTypeGenerator;
-import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
-import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
-import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
 import org.raml.jaxrs.generator.builders.TypeDescriber;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 
 import java.io.File;
 import java.io.IOException;
@@ -206,8 +201,9 @@ public class CurrentBuild {
 
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(defaultPackage, schemaFile, codeModel);
 
-            types.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name));
-            codeModelTypes.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name));
+            types.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name, generated.values().iterator().next()));
+            codeModelTypes.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name,
+                    generated.values().iterator().next()));
         } catch (Exception e) {
 
             throw new GenerationException(e);

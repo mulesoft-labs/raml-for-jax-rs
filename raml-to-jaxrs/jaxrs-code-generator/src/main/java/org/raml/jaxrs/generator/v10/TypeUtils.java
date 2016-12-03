@@ -1,8 +1,12 @@
 package org.raml.jaxrs.generator.v10;
 
+import org.raml.jaxrs.generator.JsonSchemaTypeGenerator;
+import org.raml.jaxrs.generator.XmlSchemaTypeGenerator;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
 import java.util.List;
 
@@ -13,6 +17,17 @@ import java.util.List;
 public class TypeUtils {
 
     public static boolean isNewTypeDeclaration(Api api, TypeDeclaration typeDeclaration) {
+
+        if ( typeDeclaration instanceof JSONTypeDeclaration) {
+
+            return true;
+        }
+
+        if ( typeDeclaration instanceof XMLTypeDeclaration) {
+
+            return true;
+        }
+
 
         if ( ! (typeDeclaration instanceof ObjectTypeDeclaration) ) {
             return false;

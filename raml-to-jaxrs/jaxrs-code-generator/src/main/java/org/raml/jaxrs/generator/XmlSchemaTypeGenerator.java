@@ -2,13 +2,12 @@ package org.raml.jaxrs.generator;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -19,11 +18,13 @@ public class XmlSchemaTypeGenerator implements CodeModelTypeGenerator {
     private final JCodeModel codeModel;
     private final String packageName;
     private final String className;
+    private final JClass jclass;
 
-    public XmlSchemaTypeGenerator(JCodeModel codeModel, String packageName, String className) {
+    public XmlSchemaTypeGenerator(JCodeModel codeModel, String packageName, String className, JClass jclass) {
         this.codeModel = codeModel;
         this.packageName = packageName;
         this.className = className;
+        this.jclass = jclass;
     }
 
     @Override
@@ -35,8 +36,7 @@ public class XmlSchemaTypeGenerator implements CodeModelTypeGenerator {
     @Override
     public TypeName getGeneratedJavaType() {
 
-        JDefinedClass cls = codeModel._getClass(packageName + "." + className);
-        return ClassName.get(packageName, className);
+        return ClassName.get(packageName, jclass.name());
     }
 
     @Override

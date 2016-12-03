@@ -75,94 +75,108 @@ public class TypeFactory {
 
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
 
-            ObjectTypeDeclaration object = (ObjectTypeDeclaration) typeDeclaration;
-            List<TypeDeclaration> parentTypes = ModelFixer.parentTypes(api.types(), typeDeclaration);
-            for (TypeDeclaration parentType : parentTypes) {
-
-                if ( currentBuild.getDeclaredType(parentType.name()) == null ) {
-                    build(api, parentType.name(), Names.buildTypeName(parentType.name()), parentType, true);
-                }
-            }
-
-            Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
-            int internalTypeCounter = 0;
-            List<PropertyInfo> properties = new ArrayList<>();
-            for (TypeDeclaration declaration : object.properties()) {
-
-                if (TypeUtils.isNewTypeDeclaration(api, declaration)) {
-                    String internalTypeName = Integer.toString(internalTypeCounter);
-                    TypeGenerator internalGenerator = build(api, internalTypeName, Names.buildTypeName(declaration.name() + "_Type"), declaration, false);
-                    if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
-                        internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
-                        properties.add(new PropertyInfo(declaration.name(), internalTypeName));
-                        internalTypeCounter ++;
-                    } else {
-                        throw new GenerationException("internal type bad");
-                    }
-                } else {
-                    properties.add(new PropertyInfo(declaration.name(), declaration.type()));
-                }
-
-            }
-
-            ClassName interf = buildClassName(currentBuild.getModelPackage(), javaTypeName, publicType);
-            ClassName impl = buildClassName(currentBuild.getModelPackage(), javaTypeName + "Impl", publicType);
-
-            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf, parentTypes, properties, internalTypes, typeDeclaration);
-            RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, typeDeclaration);
-            CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
-
-            if ( publicType ) {
-                currentBuild.newKnownType(ramlTypeName, gen);
-            }
-
-            return gen;
+            return createObjectType(api, ramlTypeName, javaTypeName, typeDeclaration, publicType);
         }
 
         if ( typeDeclaration instanceof JSONTypeDeclaration) {
 
-            JSONTypeDeclaration decl = (JSONTypeDeclaration) typeDeclaration;
-            GenerationConfig config = new DefaultGenerationConfig() {
-                @Override
-                public boolean isGenerateBuilders() { // set config option by overriding method
-                    return true;
-                }
-            };
-
-            final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
-                    new SchemaGenerator());
-            final JCodeModel codeModel = new JCodeModel();
-
-            try {
-                mapper.generate(codeModel, ramlTypeName , currentBuild.getModelPackage(), decl.schemaContent());
-            } catch (IOException e) {
-                throw new GenerationException(e);
-            }
-
-            JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), ramlTypeName, codeModel);
-            currentBuild.newKnownType(ramlTypeName, gen);
-            return gen;
+            return createJsonType(ramlTypeName, (JSONTypeDeclaration) typeDeclaration);
         }
 
         if ( typeDeclaration instanceof XMLTypeDeclaration) {
 
-            XMLTypeDeclaration decl = (XMLTypeDeclaration) typeDeclaration;
-            try {
-                File schemaFile = JAXBHelper.saveSchema(decl.schemaContent());
-                final JCodeModel codeModel = new JCodeModel();
-
-                Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(currentBuild.getModelPackage(), schemaFile, codeModel);
-                XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), javaTypeName);
-                currentBuild.newKnownType(ramlTypeName, gen);
-                return gen;
-            } catch (Exception e) {
-
-                throw new GenerationException(e);
-            }
+            return createXmlType(ramlTypeName, javaTypeName, (XMLTypeDeclaration) typeDeclaration);
         }
 
         throw new GenerationException("don't know what to do with type " + typeDeclaration);
     }
+
+    private TypeGenerator createXmlType(String ramlTypeName, String javaTypeName, XMLTypeDeclaration typeDeclaration) {
+        XMLTypeDeclaration decl = typeDeclaration;
+        try {
+            File schemaFile = JAXBHelper.saveSchema(decl.schemaContent());
+            final JCodeModel codeModel = new JCodeModel();
+
+            Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(currentBuild.getModelPackage(), schemaFile, codeModel);
+            XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), javaTypeName, generated.values().iterator().next());
+            currentBuild.newKnownType(ramlTypeName, gen);
+            return gen;
+        } catch (Exception e) {
+
+            throw new GenerationException(e);
+        }
+    }
+
+    private TypeGenerator createJsonType(String ramlTypeName, JSONTypeDeclaration typeDeclaration) {
+        JSONTypeDeclaration decl = typeDeclaration;
+        GenerationConfig config = new DefaultGenerationConfig() {
+            @Override
+            public boolean isGenerateBuilders() { // set config option by overriding method
+                return true;
+            }
+        };
+
+        final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
+                new SchemaGenerator());
+        final JCodeModel codeModel = new JCodeModel();
+
+        try {
+            mapper.generate(codeModel, ramlTypeName , currentBuild.getModelPackage(), decl.schemaContent());
+        } catch (IOException e) {
+            throw new GenerationException(e);
+        }
+
+        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), ramlTypeName, codeModel);
+        currentBuild.newKnownType(ramlTypeName, gen);
+        return gen;
+    }
+
+    private TypeGenerator createObjectType(Api api, String ramlTypeName, String javaTypeName,
+            TypeDeclaration typeDeclaration, boolean publicType) {
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) typeDeclaration;
+        List<TypeDeclaration> parentTypes = ModelFixer.parentTypes(api.types(), typeDeclaration);
+        for (TypeDeclaration parentType : parentTypes) {
+
+            if ( currentBuild.getDeclaredType(parentType.name()) == null ) {
+                build(api, parentType.name(), Names.buildTypeName(parentType.name()), parentType, true);
+            }
+        }
+
+        Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
+        int internalTypeCounter = 0;
+        List<PropertyInfo> properties = new ArrayList<>();
+        for (TypeDeclaration declaration : object.properties()) {
+
+            if (TypeUtils.isNewTypeDeclaration(api, declaration)) {
+                String internalTypeName = Integer.toString(internalTypeCounter);
+                TypeGenerator internalGenerator = build(api, internalTypeName, Names.buildTypeName(declaration.name() + "_Type"), declaration, false);
+                if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
+                    internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
+                    properties.add(new PropertyInfo(declaration.name(), internalTypeName));
+                    internalTypeCounter ++;
+                } else {
+                    throw new GenerationException("internal type bad");
+                }
+            } else {
+                properties.add(new PropertyInfo(declaration.name(), declaration.type()));
+            }
+
+        }
+
+        ClassName interf = buildClassName(currentBuild.getModelPackage(), javaTypeName, publicType);
+        ClassName impl = buildClassName(currentBuild.getModelPackage(), javaTypeName + "Impl", publicType);
+
+        RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf, parentTypes, properties, internalTypes, typeDeclaration);
+        RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, typeDeclaration);
+        CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
+
+        if ( publicType ) {
+            currentBuild.newKnownType(ramlTypeName, gen);
+        }
+
+        return gen;
+    }
+
     /*
         Name of type is a mime type
      */

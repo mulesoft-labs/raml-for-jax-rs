@@ -3,12 +3,14 @@ package org.raml.jaxrs.generator.builders.resources;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.Generator;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.OutputBuilder;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 
@@ -17,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forParameter;
@@ -93,11 +96,11 @@ public class ResponseClassBuilderImpl implements ResponseClassBuilder {
                         .returns(TypeVariableName.get(currentClass.name))
                         .build();
 
-                TypeGenerator gen = currentBuild.getDeclaredType(type);
-                if ( gen == null ) {
+                TypeName typeName = currentBuild.getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>());
+                if ( typeName == null ) {
                     throw new GenerationException(type + " was not seen before");
                 }
-                builder.addParameter(ParameterSpec.builder(gen.getGeneratedJavaType(), "entity").build());
+                builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
                 current.addMethod(builder.build());
             }
         });

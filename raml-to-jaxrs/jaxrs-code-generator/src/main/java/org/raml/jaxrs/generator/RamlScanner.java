@@ -85,7 +85,7 @@ public class RamlScanner {
         // Find types in resources.
         for (Resource resource : api.resources()) {
 
-            findPrivateTypes(api, resource, typeHandler);
+            findPrivateTypes(api, build, resource, typeHandler);
         }
 
         // handle resources.
@@ -96,12 +96,12 @@ public class RamlScanner {
         build.generate(destDir);
     }
 
-    private void findPrivateTypes(Api api, Resource resource, TypeFactory typeHandler) {
+    private void findPrivateTypes(Api api, CurrentBuild build, Resource resource, TypeFactory typeHandler) {
         for (Method method : resource.methods()) {
 
             for (TypeDeclaration typeDeclaration : method.body()) {
 
-                if (TypeUtils.isNewTypeDeclaration(api, typeDeclaration) ) {
+                if (TypeUtils.isInlineTypeDeclarationFromResource(api, build, typeDeclaration) ) {
                     if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
 
                         typeHandler.createPrivateTypeForResponse(api, resource, method, typeDeclaration);
@@ -117,7 +117,9 @@ public class RamlScanner {
                         typeHandler.createType(api, Names.ramlTypeName(resource, method, typeDeclaration), typeDeclaration);
                     }
                 } else {
-                    typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
+                    if ( TypeUtils.isComposite(typeDeclaration) && build.getDeclaredType(typeDeclaration.type()) == null ) {
+                        typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
+                    }
                 }
             }
 
@@ -125,7 +127,7 @@ public class RamlScanner {
 
                 for (TypeDeclaration typeDeclaration : response.body()) {
 
-                    if (TypeUtils.isNewTypeDeclaration(api, typeDeclaration) ) {
+                    if (TypeUtils.isInlineTypeDeclarationFromResource(api, build, typeDeclaration) ) {
                         if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
 
                             typeHandler.createPrivateTypeForResponse(api, resource, method, response, typeDeclaration);
@@ -143,14 +145,16 @@ public class RamlScanner {
 
                     } else {
 
-                        typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
+                        if ( TypeUtils.isComposite(typeDeclaration) && build.getDeclaredType(typeDeclaration.type()) == null ) {
+                            typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
+                        }
                     }
                 }
             }
         }
 
         for (Resource subresource : resource.resources()) {
-            findPrivateTypes(api, subresource, typeHandler);
+            findPrivateTypes(api, build, subresource, typeHandler);
         }
     }
 

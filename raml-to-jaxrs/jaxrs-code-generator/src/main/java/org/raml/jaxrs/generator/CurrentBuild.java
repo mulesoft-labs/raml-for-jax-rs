@@ -228,6 +228,16 @@ public class CurrentBuild {
 
     public TypeName getJavaType(String type, Map<String, JavaPoetTypeGenerator> internalTypes) {
 
+
+        TypeName name = checkJavaType(type, internalTypes);
+        if ( name == null ) {
+            throw new GenerationException("unknown type " + type);
+        }
+        return name;
+    }
+
+    public TypeName checkJavaType(String type, Map<String, JavaPoetTypeGenerator> internalTypes) {
+
         Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
 
@@ -257,9 +267,10 @@ public class CurrentBuild {
                 return builder.getGeneratedJavaType();
             } else {
 
-                throw new IllegalArgumentException("unknown type " + type);
+                return null;
             }
         }
     }
+
 }
 

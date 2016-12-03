@@ -2,12 +2,14 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import joptsimple.internal.Strings;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.MethodSignature;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.resources.MethodBuilder;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.resources.ResponseClassBuilder;
@@ -101,7 +103,7 @@ public class ResourceHandler {
         } else {
             for (TypeDeclaration requestTypeDeclaration : method.body()) {
 
-                if (TypeUtils.isNewTypeDeclaration(api, requestTypeDeclaration)) {
+                if (TypeUtils.isInlineTypeDeclarationFromResource(api, build, requestTypeDeclaration)) {
 
                     String methodAsTypeName = resource.resourcePath() + "_" + requestTypeDeclaration.name();
 
@@ -152,11 +154,13 @@ public class ResourceHandler {
             }
 
             if (requestTypeDeclaration != null) {
-                if ( internalTypeName != null ) {
-                    mb.addEntityParameter("entity", internalTypeName);
-                } else {
+                TypeName name = build.checkJavaType(requestTypeDeclaration.type(), new HashMap<String, JavaPoetTypeGenerator>());
+                if ( name != null ) {
 
                     mb.addEntityParameter("entity", requestTypeDeclaration.type());
+                } else {
+
+                    mb.addEntityParameter("entity", Names.ramlTypeName(resource, method, requestTypeDeclaration));
                 }
 
                 mb.addConsumeAnnotation(requestTypeDeclaration.name());
@@ -184,13 +188,10 @@ public class ResourceHandler {
                 for (TypeDeclaration typeDeclaration : response.body()) {
 
 
-                    if ( TypeUtils.isNewTypeDeclaration(api, typeDeclaration)) {
+                    if ( TypeUtils.isInlineTypeDeclarationFromResource(api, build,  typeDeclaration)) {
 
-                        if ( typeDeclaration instanceof XMLTypeDeclaration ) {
 
-                            responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), Names.ramlTypeName(method.resource(), method, response, typeDeclaration));
-                            continue;
-                        }
+                        responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), Names.ramlTypeName(method.resource(), method, response, typeDeclaration));
                     } else {
 
                         responseBuilder.withResponse(response.code().value(), typeDeclaration.name(), typeDeclaration.type());

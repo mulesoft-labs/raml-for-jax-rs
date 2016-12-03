@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator.v10;
 
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.JsonSchemaTypeGenerator;
 import org.raml.jaxrs.generator.XmlSchemaTypeGenerator;
 import org.raml.v2.api.model.v10.api.Api;
@@ -52,5 +53,43 @@ public class TypeUtils {
 
 
         return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
+    }
+
+    public static boolean isInlineTypeDeclarationFromResource(Api api, CurrentBuild current, TypeDeclaration typeDeclaration) {
+
+
+        if ( isComposite(typeDeclaration) && current.getDeclaredType(typeDeclaration.type()) != null ) {
+
+            return false;
+        }
+
+        if ( typeDeclaration.type().equals("null_AnonymousType")) {
+
+            return true;
+        }
+
+        if ( ! isComposite(typeDeclaration)) {
+            return false;
+        }
+
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) typeDeclaration;
+        if ( typeDeclaration.type().equals("object") ) {
+            return true;
+        }
+        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), typeDeclaration);
+        if ( parents.size() == 0 ) {
+            return false;
+        }
+        if ( parents.size() != 1) {
+            return true;
+        }
+
+
+        return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
+    }
+
+    public static boolean isComposite(TypeDeclaration typeDeclaration) {
+
+        return typeDeclaration instanceof ObjectTypeDeclaration || typeDeclaration instanceof XMLTypeDeclaration || typeDeclaration instanceof JSONTypeDeclaration;
     }
 }

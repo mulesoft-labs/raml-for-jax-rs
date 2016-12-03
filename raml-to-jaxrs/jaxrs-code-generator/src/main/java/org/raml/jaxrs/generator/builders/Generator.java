@@ -8,4 +8,5 @@ import java.io.IOException;
  */
 public interface Generator<T> {
     void output(CodeContainer<T> rootDirectory) throws IOException;
+
 }

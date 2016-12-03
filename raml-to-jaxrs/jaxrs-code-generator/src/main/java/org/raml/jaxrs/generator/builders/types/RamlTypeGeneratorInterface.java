@@ -7,6 +7,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeBuilderHelpers;
@@ -25,7 +26,7 @@ import java.util.Map;
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
+public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.Builder> implements RamlTypeGenerator {
     private final CurrentBuild build;
     private final List<TypeDeclaration> parentTypes;
     private final ClassName interf;
@@ -49,8 +50,7 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
     }
 
     @Override
-    public void output(CodeContainer<TypeSpec.Builder> into) throws IOException {
-
+    public void output(CodeContainer<TypeSpec.Builder> into, TYPE type) throws IOException {
 
         final TypeSpec.Builder typeSpec = TypeSpec
                 .interfaceBuilder(interf)
@@ -65,7 +65,7 @@ public class RamlTypeGeneratorInterface implements RamlTypeGenerator {
                     g.addModifiers(Modifier.STATIC);
                     typeSpec.addType(g.build());
                 }
-            });
+            }, type);
         }
 
 

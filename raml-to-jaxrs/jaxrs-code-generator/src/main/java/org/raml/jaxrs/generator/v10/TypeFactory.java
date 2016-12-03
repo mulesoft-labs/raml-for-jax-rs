@@ -88,7 +88,7 @@ public class TypeFactory {
             return createXmlType(ramlTypeName, javaTypeName, (XMLTypeDeclaration) typeDeclaration);
         }
 
-        throw new GenerationException("don't know what to do with type " + typeDeclaration);
+        throw new GenerationException("don't know what to do with type " + typeDeclaration.name() + " of type " + typeDeclaration.type());
     }
 
     private TypeGenerator createXmlType(String ramlTypeName, String javaTypeName, XMLTypeDeclaration typeDeclaration) {

@@ -8,6 +8,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
@@ -28,7 +29,7 @@ import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forReturnValu
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
+public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeSpec.Builder> implements RamlTypeGenerator {
     private final CurrentBuild build;
     private final ClassName className;
     private final ClassName parentClassName;
@@ -57,7 +58,7 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
 
 
     @Override
-    public void output(CodeContainer<TypeSpec.Builder> container) throws IOException {
+    public void output(CodeContainer<TypeSpec.Builder> container, TYPE type) throws IOException {
 
 
         final TypeSpec.Builder typeSpec = TypeSpec
@@ -78,7 +79,7 @@ public class RamlTypeGeneratorImplementation implements RamlTypeGenerator {
                     g.addModifiers(Modifier.STATIC);
                     typeSpec.addType(g.build());
                 }
-            });
+            }, type);
         }
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {

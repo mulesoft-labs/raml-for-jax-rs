@@ -1,5 +1,7 @@
 package org.raml.jaxrs.parser.gatherers;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.glassfish.jersey.server.ResourceConfig;
 import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 
@@ -15,7 +17,8 @@ public class JerseyGatherer implements JaxRsClassesGatherer {
 
     private final ResourceConfig resourceConfig;
 
-    private JerseyGatherer(ResourceConfig resourceConfig) {
+    @VisibleForTesting
+    JerseyGatherer(ResourceConfig resourceConfig) {
         this.resourceConfig = resourceConfig;
     }
 
@@ -31,14 +34,18 @@ public class JerseyGatherer implements JaxRsClassesGatherer {
 
         try {
             return create(new ResourceConfig().files(application.toString()).setClassLoader(ClassLoaderUtils.classLoaderFor(application)));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("unable to instantiate gather", e);
+        } catch (Exception e) {
+            throw new RuntimeException("unable to instantiate gatherer", e);
         }
     }
 
     @Override
     public Set<Class<?>> jaxRsClasses() {
         return resourceConfig.getClasses();
+    }
 
+    @VisibleForTesting
+    ResourceConfig getResourceConfig() {
+        return resourceConfig;
     }
 }

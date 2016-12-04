@@ -1,6 +1,8 @@
 package org.raml.jaxrs.raml.core;
 
 import org.raml.jaxrs.converter.RamlConfiguration;
+import org.raml.jaxrs.converter.model.JaxRsRamlMediaType;
+import org.raml.model.MediaType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,5 +36,10 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
     @Override
     public String getVersion() {
         return "1.0";
+    }
+
+    @Override
+    public MediaType getDefaultMediaType() {
+        return JaxRsRamlMediaType.create(javax.ws.rs.core.MediaType.WILDCARD_TYPE);
     }
 }

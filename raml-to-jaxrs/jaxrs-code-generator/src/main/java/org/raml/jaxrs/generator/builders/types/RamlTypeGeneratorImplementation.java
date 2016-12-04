@@ -84,21 +84,21 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
-            typeSpec.addField(FieldSpec.builder(build.getJavaType(propertyInfo.getType(), internalTypes), propertyInfo.getName()).addModifiers(Modifier.PRIVATE).build());
+            typeSpec.addField(FieldSpec.builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName()).addModifiers(Modifier.PRIVATE).build());
 
             final MethodSpec.Builder getSpec = MethodSpec
                     .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("return this." + propertyInfo.getName());
 
-            getSpec.returns(build.getJavaType(propertyInfo.getType(), internalTypes));
+            getSpec.returns(propertyInfo.resolve(build, internalTypes));
 
             MethodSpec.Builder setSpec = MethodSpec
                     .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("this." + propertyInfo.getName() + " = " + propertyInfo.getName());
 
-                setSpec.addParameter(ParameterSpec.builder(build.getJavaType(propertyInfo.getType(), internalTypes), propertyInfo.getName()).build());
+                setSpec.addParameter(ParameterSpec.builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName()).build());
             typeSpec.addMethod(getSpec.build());
             typeSpec.addMethod(setSpec.build());
         }

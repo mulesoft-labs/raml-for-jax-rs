@@ -160,7 +160,7 @@ public class TypeFactory {
                     throw new GenerationException("internal type bad");
                 }
             } else {
-                properties.add(new PropertyInfo(declaration.name(), declaration.type()));
+                properties.add(new PropertyInfo(declaration.name(), declaration));
             }
 
         }

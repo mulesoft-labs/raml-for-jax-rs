@@ -114,7 +114,7 @@ public class TopResource implements ResourceGenerator {
                 for (TypeDeclaration typeDeclaration : decls) {
 
                     MethodSpec.Builder methodSpec = createMethodBuilder(method, methodName, mediaTypesForMethod);
-                    TypeName name = build.getJavaType(typeDeclaration.type());
+                    TypeName name = build.getJavaType(typeDeclaration);
                     methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
                     handleMethodConsumer(methodSpec, ramlTypeToMediaType, typeDeclaration);
                     typeSpec.addMethod(methodSpec.build());
@@ -189,7 +189,7 @@ public class TopResource implements ResourceGenerator {
                                 .returns(TypeVariableName.get(currentClass.name))
                                 .build();
                         TypeName typeName = build
-                                .getJavaType(typeDeclaration.type(), new HashMap<String, JavaPoetTypeGenerator>());
+                                .getJavaType(typeDeclaration);
                         if (typeName == null) {
                             throw new GenerationException(typeDeclaration.type() + " was not seen before");
                         }
@@ -218,7 +218,7 @@ public class TopResource implements ResourceGenerator {
 
             methodSpec.addParameter(
                     ParameterSpec.builder(
-                            build.getJavaType(typeDeclaration.type()), Names.buildVariableName(typeDeclaration.name()))
+                            build.getJavaType(typeDeclaration), Names.buildVariableName(typeDeclaration.name()))
                             .addAnnotation(
                                     AnnotationSpec.builder(PathParam.class).addMember("value", "$S", typeDeclaration.name())
                                             .build())
@@ -233,7 +233,7 @@ public class TopResource implements ResourceGenerator {
 
             methodSpec.addParameter(
                     ParameterSpec.builder(
-                            build.getJavaType(typeDeclaration.type()), Names.buildVariableName(typeDeclaration.name()))
+                            build.getJavaType(typeDeclaration), Names.buildVariableName(typeDeclaration.name()))
                             .addAnnotation(
                                     AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", typeDeclaration.name())
                                             .build())

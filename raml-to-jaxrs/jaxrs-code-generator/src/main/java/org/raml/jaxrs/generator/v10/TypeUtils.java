@@ -74,7 +74,7 @@ public class TypeUtils {
             return false;
         }
 
-        if ( current.checkJavaType(typeDeclaration.type(), new HashMap<String, JavaPoetTypeGenerator>()) == null ) {
+        if ( current.checkJavaType(typeDeclaration, new HashMap<String, JavaPoetTypeGenerator>()) == null ) {
             return true;
         }
 

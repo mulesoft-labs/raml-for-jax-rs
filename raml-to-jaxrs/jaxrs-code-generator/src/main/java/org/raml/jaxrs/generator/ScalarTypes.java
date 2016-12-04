@@ -1,6 +1,15 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.collect.ImmutableMap;
+import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.FileTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -14,20 +23,28 @@ import java.util.Map;
 public class ScalarTypes {
 
 
-    private static Map<String, Class<?>> scalarToType = ImmutableMap.<String, Class<?>>builder()
-            .put("integer", int.class)
-            .put("boolean", boolean.class)
-            .put("datetime", Date.class)
-            .put("date-only", Date.class)
-            .put("number", BigDecimal.class)
-            .put("any", Object.class)
-            .put("string", String.class)
-            .put("file", File.class).build();
+    private static Map<Class, Class<?>> scalarToType = ImmutableMap.<Class, Class<?>>builder()
+            .put(IntegerTypeDeclaration.class, int.class)
+            .put(BooleanTypeDeclaration.class, boolean.class)
+            .put(DateTimeOnlyTypeDeclaration.class, Date.class)
+            .put(DateTypeDeclaration.class, Date.class)
+            .put(NumberTypeDeclaration.class, BigDecimal.class)
+         //   .put(ObjectTypeDeclaration.class, Object.class)
+            .put(StringTypeDeclaration.class, String.class)
+            .put(FileTypeDeclaration.class, File.class).build();
 
-    public static Class<?> scalarToJavaType(String name) {
+    public static Class<?> scalarToJavaType(TypeDeclaration name) {
 
-        String s = name.toLowerCase();
-        Class<?> clss = scalarToType.get(s);
-        return clss;
+        //String s = name.type().toLowerCase();
+        for (Class<?> aClass : name.getClass().getInterfaces()) {
+
+            if ( TypeDeclaration.class.isAssignableFrom(aClass)) {
+
+                Class<?> clss = scalarToType.get(aClass);
+                return clss;
+            }
+        }
+
+        return null;
     }
 }

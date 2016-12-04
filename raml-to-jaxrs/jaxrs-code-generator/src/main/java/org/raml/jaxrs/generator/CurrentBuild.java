@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
@@ -14,6 +15,8 @@ import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.builders.TypeDescriber;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,7 +107,7 @@ public class CurrentBuild {
 
     }
 
-    public void javaTypeName(String type, TypeDescriber describer) {
+    public void javaTypeName(TypeDeclaration type, TypeDescriber describer) {
         Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
 
@@ -140,22 +143,22 @@ public class CurrentBuild {
         return types.get(ramlType);
     }
 
-    public TypeName getJavaType(String type) {
+    public TypeName getJavaType(TypeDeclaration type) {
 
         return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>());
     }
 
-    public TypeName getJavaType(String type, Map<String, JavaPoetTypeGenerator> internalTypes) {
+    public TypeName getJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes) {
 
 
         TypeName name = checkJavaType(type, internalTypes);
         if ( name == null ) {
-            throw new GenerationException("unknown type " + type);
+            throw new GenerationException("unknown type " + type.type() + "(" + type.name() + ")");
         }
         return name;
     }
 
-    public TypeName checkJavaType(String type, Map<String, JavaPoetTypeGenerator> internalTypes) {
+    public TypeName checkJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes) {
 
         Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
@@ -168,6 +171,12 @@ public class CurrentBuild {
                     case "boolean":
                         return TypeName.BOOLEAN;
 
+                    case "double":
+                        return TypeName.DOUBLE;
+
+                    case "float":
+                        return TypeName.FLOAT;
+
                     default:
                         throw new GenerationException("JP, finish the list " + scalar);
                 }
@@ -176,17 +185,26 @@ public class CurrentBuild {
             }
         } else {
 
-            TypeGenerator builder = internalTypes.get(type);
-            if ( builder == null ) {
-                builder = types.get(type);
-            }
+            if ( type instanceof ArrayTypeDeclaration ) {
 
-            if ( builder != null ) {
+                ArrayTypeDeclaration listType = (ArrayTypeDeclaration) type;
+                TypeName contained = getJavaType(listType.items(), internalTypes);
+                return ParameterizedTypeName.get(ClassName.get("java.util", "List"), contained);
 
-                return builder.getGeneratedJavaType();
             } else {
 
-                return null;
+                TypeGenerator builder = internalTypes.get(type.type());
+                if ( builder == null ) {
+                    builder = types.get(type.type());
+                }
+
+                if ( builder != null ) {
+
+                    return builder.getGeneratedJavaType();
+                } else {
+
+                    return null;
+                }
             }
         }
     }

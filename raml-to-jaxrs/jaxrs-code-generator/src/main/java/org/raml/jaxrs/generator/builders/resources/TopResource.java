@@ -17,7 +17,7 @@ import org.raml.jaxrs.generator.HTTPMethods;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.v10.MethodAndResponse;
+import org.raml.jaxrs.generator.v10.ResourceUtils;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -46,35 +46,50 @@ import java.util.TreeSet;
  * Created by Jean-Philippe Belanger on 10/27/16.
  * Abstraction of creation.
  */
-public class ResourceInterface implements ResourceGenerator {
+public class TopResource implements ResourceGenerator {
 
     private final CurrentBuild build;
-    private final Resource resource;
+    private final Resource topResource;
     private final String name;
     private final String uri;
-    private final Multimap<Method, TypeDeclaration> incomingBodies;
-    private final Multimap<Method, Response> responses;
 
 
-    public ResourceInterface(CurrentBuild build, Resource resource, String name, String uri,
-            Multimap<Method, TypeDeclaration> incomingBodies,
-            Multimap<Method, Response> responses) {
+    public TopResource(CurrentBuild build, Resource resource, String name, String uri) {
 
         this.build = build;
-        this.resource = resource;
+        this.topResource = resource;
         this.name = name;
         this.uri = uri;
-        this.incomingBodies = incomingBodies;
-        this.responses = responses;
     }
 
     @Override
     public void output(CodeContainer<TypeSpec> container) throws IOException {
 
+
         final TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(AnnotationSpec.builder(Path.class)
                         .addMember("value", "$S", uri).build());
+
+        buildResource(typeSpec, topResource);
+
+        recurse(typeSpec, topResource);
+        container.into(typeSpec.build());
+    }
+
+    private void recurse(TypeSpec.Builder typeSpec, Resource parentResource) {
+
+        for (Resource resource : parentResource.resources()) {
+
+            buildResource(typeSpec, resource);
+            recurse(typeSpec, resource);
+        }
+    }
+
+    private void buildResource(TypeSpec.Builder typeSpec, Resource currentResource) {
+        Multimap<Method, TypeDeclaration> incomingBodies = ArrayListMultimap.create();
+        Multimap<Method, Response> responses = ArrayListMultimap.create();
+        ResourceUtils.fillInBodiesAndResponses(currentResource, incomingBodies, responses);
 
         createResponseClass(typeSpec, incomingBodies, responses);
 
@@ -106,8 +121,6 @@ public class ResourceInterface implements ResourceGenerator {
                 }
             }
         }
-
-        container.into(typeSpec.build());
     }
 
     private List<String> fetchAllMediaTypesForMethod(Method method) {
@@ -193,7 +206,7 @@ public class ResourceInterface implements ResourceGenerator {
     }
 
 
-    public MethodSpec.Builder createMethodBuilder(Method method, String methodName, List<String> mediaTypesForMethod) {
+    private MethodSpec.Builder createMethodBuilder(Method method, String methodName, List<String> mediaTypesForMethod) {
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
@@ -229,6 +242,11 @@ public class ResourceInterface implements ResourceGenerator {
 
         methodSpec
                 .addAnnotation(AnnotationSpec.builder(HTTPMethods.methodNameToAnnotation(method.method())).build());
+
+        if ( method.resource().parentResource() != null ) {
+
+            methodSpec.addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", method.resource().relativeUri().value()).build());
+        }
 
         methodSpec.returns(ClassName.get("", Names.responseClassName(method.resource(), method)));
 

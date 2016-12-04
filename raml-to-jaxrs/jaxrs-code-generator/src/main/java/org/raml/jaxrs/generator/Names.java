@@ -65,7 +65,7 @@ public class Names
         String s = Strings.join(names, "_and_");
         String suffix = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s);
 
-        return "By" + suffix;
+        return "By_" + suffix;
     }
 
 
@@ -73,17 +73,20 @@ public class Names
 
         if ( resource.uriParameters().size() == 0) {
 
-            return Names.buildVariableName(method.method() + "_" + resource.relativeUri().value());
+            return Names.buildVariableName(method.method() + "_" +
+                    resource.relativeUri().value().replaceAll("\\{[^}]+}", ""));
         } else {
 
-            return Names.buildVariableName(method.method() + "_" + resource.relativeUri().value()) + parameterNameMethodSuffix(Lists.transform(
+            return Names.buildVariableName(method.method() + "_"
+                    + resource.relativeUri().value().replaceAll("\\{[^}]+}", "")
+                    + parameterNameMethodSuffix(Lists.transform(
                     resource.uriParameters(), new Function<TypeDeclaration, String>() {
                         @Nullable
                         @Override
                         public String apply(@Nullable TypeDeclaration input) {
                             return input.name();
                         }
-                    }));
+                    })));
         }
     }
 
@@ -91,11 +94,11 @@ public class Names
 
         if ( resource.uriParameters().size() == 0) {
 
-            return Names.buildTypeName(method.method() + "_" + resource.relativeUri().value() + "_Response");
+            return Names.buildTypeName(method.method() + "_" + resource.relativeUri().value().replaceAll("\\{[^}]+}", "") + "_Response");
         } else {
 
             return Names.buildTypeName(
-                    method.method() + "_" + resource.relativeUri().value()
+                    method.method() + "_" + resource.relativeUri().value().replaceAll("\\{[^}]+\\}", "")
                     + parameterNameMethodSuffix(Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, String>() {
                         @Nullable
                         @Override

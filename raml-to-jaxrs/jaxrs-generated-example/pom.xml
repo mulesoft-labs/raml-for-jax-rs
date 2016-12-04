@@ -129,7 +129,6 @@
                             </arguments>
                         </configuration>
                     </execution>
-<!--
                     <execution>
                         <id>exec-worldmusic</id>
                         <phase>generate-sources</phase>
@@ -147,7 +146,6 @@
                             </arguments>
                         </configuration>
                     </execution>
--->
                 </executions>
             </plugin>
         </plugins>

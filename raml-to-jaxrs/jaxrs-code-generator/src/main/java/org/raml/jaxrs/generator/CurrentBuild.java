@@ -193,9 +193,9 @@ public class CurrentBuild {
 
             } else {
 
-                TypeGenerator builder = internalTypes.get(type.type());
+                TypeGenerator builder = internalTypes.get(type.name());
                 if ( builder == null ) {
-                    builder = types.get(type.type());
+                    builder = types.get(getTypeName(type));
                 }
 
                 if ( builder != null ) {
@@ -206,6 +206,17 @@ public class CurrentBuild {
                     return null;
                 }
             }
+        }
+    }
+
+    private String getTypeName(TypeDeclaration type) {
+
+        if ( type.name().contains("/") ) { // horrible hack.
+
+            return type.type();
+        } else {
+
+            return type.name();
         }
     }
 

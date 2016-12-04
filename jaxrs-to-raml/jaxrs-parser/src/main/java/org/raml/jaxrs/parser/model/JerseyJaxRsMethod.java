@@ -3,6 +3,7 @@ package org.raml.jaxrs.parser.model;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.HttpVerb;
 import org.raml.jaxrs.model.Method;
+import org.raml.jaxrs.model.JaxRsQueryParameter;
 
 import java.util.List;
 
@@ -35,7 +36,12 @@ public class JerseyJaxRsMethod implements Method {
     }
 
     @Override
-    public Iterable<MediaType> getProducedMediaTypes() {
+    public List<MediaType> getProducedMediaTypes() {
         return resourceMethod.getProducedTypes();
+    }
+
+    @Override
+    public List<JaxRsQueryParameter> getQueryParameters() {
+        return Utilities.toJaxRsQueryParameters(Utilities.getQueryParameters(resourceMethod)).toList();
     }
 }

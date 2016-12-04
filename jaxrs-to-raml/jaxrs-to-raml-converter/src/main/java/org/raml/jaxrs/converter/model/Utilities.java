@@ -5,7 +5,9 @@ import com.google.common.collect.FluentIterable;
 
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Method;
+import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.model.MediaType;
+import org.raml.model.RamlQueryParameter;
 import org.raml.model.Resource;
 import org.raml.model.ResourceMethod;
 
@@ -39,6 +41,17 @@ public class Utilities {
                     @Override
                     public ResourceMethod apply(Method method) {
                         return JaxRsRamlMethod.create(method);
+                    }
+                }
+        );
+    }
+
+    public static FluentIterable<RamlQueryParameter> toRamlQueryParameters(Iterable<JaxRsQueryParameter> queryParameters) {
+        return FluentIterable.from(queryParameters).transform(
+                new Function<JaxRsQueryParameter, RamlQueryParameter>() {
+                    @Override
+                    public RamlQueryParameter apply(JaxRsQueryParameter queryParameter) {
+                        return JaxRsRamlQueryParameter.create(queryParameter);
                     }
                 }
         );

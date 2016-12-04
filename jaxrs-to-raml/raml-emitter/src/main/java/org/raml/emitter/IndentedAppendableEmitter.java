@@ -1,10 +1,15 @@
 package org.raml.emitter;
 
+import com.google.common.base.Optional;
+
 import org.raml.model.MediaType;
 import org.raml.model.RamlApi;
+import org.raml.model.RamlQueryParameter;
 import org.raml.model.Resource;
 import org.raml.model.ResourceMethod;
 import org.raml.utilities.IndentedAppendable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,15 +19,17 @@ import static java.lang.String.format;
 
 public class IndentedAppendableEmitter implements Emitter {
 
+    private static final Logger logger = LoggerFactory.getLogger(IndentedAppendableEmitter.class);
+
     private final IndentedAppendable writer;
 
     private IndentedAppendableEmitter(IndentedAppendable writer) {
         this.writer = writer;
     }
-    
+
     public static IndentedAppendableEmitter create(IndentedAppendable appendable) {
         checkNotNull(appendable);
-        
+
         return new IndentedAppendableEmitter(appendable);
     }
 
@@ -78,8 +85,35 @@ public class IndentedAppendableEmitter implements Emitter {
             writeResponses(method.getProducedMediaTypes());
         }
 
+        if (!method.getQueryParameters().isEmpty()) {
+            writeQueryParameters(method.getQueryParameters());
+        }
+
         writer.outdent();
     }
+
+    private void writeQueryParameters(List<RamlQueryParameter> queryParameters) throws IOException {
+        writer.appendLine("queryParameters:");
+        writer.indent();
+        for (RamlQueryParameter queryParameter : queryParameters) {
+            writeQueryParameter(queryParameter);
+        }
+        writer.outdent();
+    }
+
+    private void writeQueryParameter(RamlQueryParameter queryParameter) throws IOException {
+        writer.appendLine(String.format("%s:", queryParameter.getName()));
+        writer.indent();
+        writer.appendLine(format("type: %s", ""));
+
+        Optional<String> defaultValue = queryParameter.getDefaultValue();
+        if (defaultValue.isPresent()) {
+            writer.appendLine(format("default: %s", defaultValue.get()));
+        }
+
+        writer.outdent();
+    }
+
 
     private void writeResponses(List<MediaType> producedMediaTypes) throws IOException {
         writer.appendLine("responses:");

@@ -2,6 +2,7 @@ package org.raml.jaxrs.converter.model;
 
 import org.raml.jaxrs.model.Method;
 import org.raml.model.MediaType;
+import org.raml.model.RamlQueryParameter;
 import org.raml.model.ResourceMethod;
 
 import java.util.List;
@@ -35,5 +36,10 @@ public class JaxRsRamlMethod implements ResourceMethod {
     @Override
     public List<MediaType> getProducedMediaTypes() {
         return Utilities.toRamlMediaTypes(this.resourceMethod.getProducedMediaTypes()).toList();
+    }
+
+    @Override
+    public List<RamlQueryParameter> getQueryParameters() {
+        return Utilities.toRamlQueryParameters(this.resourceMethod.getQueryParameters()).toList();
     }
 }

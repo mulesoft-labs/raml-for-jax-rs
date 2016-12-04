@@ -7,5 +7,6 @@ import javax.ws.rs.core.MediaType;
 public interface Method {
     HttpVerb getHttpVerb();
     List<MediaType> getConsumedMediaTypes();
-    Iterable<MediaType> getProducedMediaTypes();
+    List<MediaType> getProducedMediaTypes();
+    List<JaxRsQueryParameter> getQueryParameters();
 }

@@ -20,6 +20,6 @@ public class JerseyJaxRsPath implements org.raml.jaxrs.model.Path {
 
     @Override
     public String getStringRepresentation() {
-        return runtimeResource.getRegex();
+        return runtimeResource.getPathPattern().getTemplate().getTemplate();
     }
 }

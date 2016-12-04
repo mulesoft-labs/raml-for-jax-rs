@@ -50,14 +50,14 @@ public class TypeFactory {
         this.currentBuild = currentBuild;
     }
 
-    public TypeGenerator createType(Api api, TypeDeclaration typeDeclaration) {
+    public void createType(Api api, TypeDeclaration typeDeclaration) {
 
-        return build(api, typeDeclaration.name(), Names.buildTypeName(typeDeclaration.name()), typeDeclaration, true);
+        build(api, typeDeclaration.name(), Names.buildTypeName(typeDeclaration.name()), typeDeclaration, true);
     }
 
-    public TypeGenerator createType(Api api, String name, TypeDeclaration typeDeclaration) {
+    public void createType(Api api, String name, TypeDeclaration typeDeclaration) {
 
-        return build(api, name, Names.buildTypeName(name), typeDeclaration, true);
+        build(api, name, Names.buildTypeName(name), typeDeclaration, true);
     }
 
     private ClassName buildClassName(String pack, String name, boolean publicType) {
@@ -88,7 +88,9 @@ public class TypeFactory {
             return createXmlType(ramlTypeName, javaTypeName, (XMLTypeDeclaration) typeDeclaration);
         }
 
-        throw new GenerationException("don't know what to do with type " + typeDeclaration.name() + " of type " + typeDeclaration.type());
+
+        //throw new GenerationException("don't know what to do with type " + typeDeclaration.name() + " of type " + typeDeclaration.type());
+        return null;
     }
 
     private TypeGenerator createXmlType(String ramlTypeName, String javaTypeName, XMLTypeDeclaration typeDeclaration) {
@@ -180,21 +182,21 @@ public class TypeFactory {
     /*
         Name of type is a mime type
      */
-    public TypeGenerator createPrivateTypeForResponse(Api api, Resource resource, Method method, TypeDeclaration declaration) {
+    public void createPrivateTypeForResponse(Api api, Resource resource, Method method, TypeDeclaration declaration) {
 
         String ramlType = Names.ramlTypeName(resource, method, declaration);
         String javaType = Names.javaTypeName(resource, method, declaration);
-        return build(api, ramlType, javaType, declaration, true);
+        build(api, ramlType, javaType, declaration, true);
     }
 
     /*
         Name of type is a mime type
      */
-    public TypeGenerator createPrivateTypeForResponse(Api api, Resource resource, Method method, Response response, TypeDeclaration declaration) {
+    public void createPrivateTypeForResponse(Api api, Resource resource, Method method, Response response, TypeDeclaration declaration) {
 
         String ramlType = Names.ramlTypeName(resource, method, response, declaration);
         String javaType = Names.javaTypeName(resource, method, response, declaration);
-        return build(api, ramlType, Names.buildTypeName(javaType), declaration, true);
+        build(api, ramlType, Names.buildTypeName(javaType), declaration, true);
     }
 
 }

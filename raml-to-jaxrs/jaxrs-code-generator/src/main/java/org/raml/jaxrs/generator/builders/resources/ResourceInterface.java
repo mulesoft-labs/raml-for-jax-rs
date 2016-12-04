@@ -1,23 +1,46 @@
 package org.raml.jaxrs.generator.builders.resources;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GenerationException;
+import org.raml.jaxrs.generator.HTTPMethods;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.OutputBuilder;
-import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.v10.MethodAndResponse;
+import org.raml.jaxrs.generator.v10.TypeUtils;
+import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.methods.Method;
+import org.raml.v2.api.model.v10.resources.Resource;
 
+import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.io.File;
+import javax.ws.rs.QueryParam;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Jean-Philippe Belanger on 10/27/16.
@@ -26,75 +49,23 @@ import java.util.List;
 public class ResourceInterface implements ResourceGenerator {
 
     private final CurrentBuild build;
+    private final Resource resource;
     private final String name;
-    private final String relativeURI;
+    private final String uri;
+    private final Multimap<Method, TypeDeclaration> incomingBodies;
+    private final Multimap<Method, Response> responses;
 
-    private List<OutputBuilder<TypeSpec.Builder>> builders = new ArrayList<>();
-    private List<ResponseClassBuilder> responseClassBuilders = new ArrayList<>();
-    private List<MethodBuilder> methodBuilders = new ArrayList<>();
-    private List<RamlTypeGenerator> internalTypes = new ArrayList<>();
 
-    public ResourceInterface(CurrentBuild build, String name, String relativeURI) {
+    public ResourceInterface(CurrentBuild build, Resource resource, String name, String uri,
+            Multimap<Method, TypeDeclaration> incomingBodies,
+            Multimap<Method, Response> responses) {
+
         this.build = build;
+        this.resource = resource;
         this.name = name;
-        this.relativeURI = relativeURI;
-    }
-
-    @Override
-    public ResourceInterface withDocumentation(final String docs) {
-
-        builders.add(new OutputBuilder<TypeSpec.Builder>() {
-            @Override
-            public void build(TypeSpec.Builder parent) {
-
-                parent.addJavadoc(docs);
-            }
-        });
-
-        return this;
-    }
-
-    @Override
-    public ResourceGenerator mediaType(final List<String> mimeTypes) {
-
-        builders.add(new OutputBuilder<TypeSpec.Builder>() {
-            @Override
-            public void build(TypeSpec.Builder parent) {
-
-                AnnotationSpec.Builder p = AnnotationSpec.builder(Produces.class);
-                AnnotationSpec.Builder c = AnnotationSpec.builder(Consumes.class);
-                for (String mimeType : mimeTypes) {
-                    p.addMember("value", "$S", mimeType);
-                    c.addMember("value", "$S", mimeType);
-                }
-                parent.addAnnotation(p.build());
-                parent.addAnnotation(c.build());
-            }
-        });
-
-        return this;
-    }
-
-    @Override
-    public MethodBuilder createMethod(String method, String fullMethodName, String returnClass) {
-
-        MethodBuilder md = new MethodDeclaration(build, fullMethodName, returnClass, method);
-        methodBuilders.add(md);
-        return md;
-    }
-
-    @Override
-    public ResponseClassBuilder createResponseClassBuilder(String method, String additionalNames) {
-
-        ResponseClassBuilderImpl responseClassBuilder = new ResponseClassBuilderImpl(build, Names.buildTypeName(method) + additionalNames);
-        responseClassBuilders.add(responseClassBuilder);
-        return responseClassBuilder;
-    }
-
-    @Override
-    public void addInternalType(RamlTypeGenerator internalGenerator) {
-
-        internalTypes.add(internalGenerator);
+        this.uri = uri;
+        this.incomingBodies = incomingBodies;
+        this.responses = responses;
     }
 
     @Override
@@ -103,40 +74,193 @@ public class ResourceInterface implements ResourceGenerator {
         final TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(AnnotationSpec.builder(Path.class)
-                        .addMember("value", "$S", relativeURI).build());
+                        .addMember("value", "$S", uri).build());
 
-        for (OutputBuilder<TypeSpec.Builder> builder : builders) {
+        createResponseClass(typeSpec, incomingBodies, responses);
 
-            builder.build(typeSpec);
-        }
+        for (Method method : incomingBodies.keySet()) {
 
-        for (MethodBuilder methodBuilder : methodBuilders) {
-            methodBuilder.output(new CodeContainer<MethodSpec.Builder>() {
-                @Override
-                public void into(MethodSpec.Builder g) throws IOException {
-                    typeSpec.addMethod(g.build());
+            List<String> mediaTypesForMethod = fetchAllMediaTypesForMethod(method);
+            TreeSet<TypeDeclaration> decls = new TreeSet<>(new TypeDeclarationTypeComparator());
+
+            Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
+            for (TypeDeclaration typeDeclaration : incomingBodies.get(method)) {
+                if ( typeDeclaration != null ) {
+                    decls.add(typeDeclaration);
+                    ramlTypeToMediaType.put(typeDeclaration.type(), typeDeclaration.name());
                 }
-            });
+            }
+
+            String methodName = Names.methodName(method.resource(), method);
+            if (decls.size() == 0) {
+                MethodSpec.Builder methodSpec = createMethodBuilder(method, methodName, mediaTypesForMethod);
+                typeSpec.addMethod(methodSpec.build());
+            } else {
+                for (TypeDeclaration typeDeclaration : decls) {
+
+                    MethodSpec.Builder methodSpec = createMethodBuilder(method, methodName, mediaTypesForMethod);
+                    TypeName name = build.getJavaType(typeDeclaration.type());
+                    methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
+                    handleMethodConsumer(methodSpec, ramlTypeToMediaType, typeDeclaration);
+                    typeSpec.addMethod(methodSpec.build());
+                }
+            }
         }
 
-        for (ResponseClassBuilder responseClassBuilder : responseClassBuilders) {
-            responseClassBuilder.output(new CodeContainer<TypeSpec.Builder>() {
-                @Override
-                public void into(TypeSpec.Builder g) throws IOException {
-                    typeSpec.addType(g.build());
-                }
-            });
-        }
-
-        for (final RamlTypeGenerator internalType : internalTypes) {
-            internalType.output(new CodeContainer<TypeSpec.Builder>() {
-                @Override
-                public void into(TypeSpec.Builder g) throws IOException {
-                    g.addModifiers(Modifier.STATIC);
-                    typeSpec.addType(g.build());
-                }
-            });
-        }
         container.into(typeSpec.build());
+    }
+
+    private List<String> fetchAllMediaTypesForMethod(Method method) {
+
+        List<String> mediaTypes = new ArrayList<>();
+        for (Response response : method.responses()) {
+
+            mediaTypes.addAll(Lists.transform(response.body(), new Function<TypeDeclaration, String>() {
+                @Nullable
+                @Override
+                public String apply(@Nullable TypeDeclaration input) {
+                    return input.name();
+                }
+            }));
+        }
+
+        return mediaTypes;
+    }
+
+    private void createResponseClass(TypeSpec.Builder typeSpec, Multimap<Method, TypeDeclaration> bodies, Multimap<Method, Response> responses) {
+
+        Set<Method> allMethods = new HashSet<>();
+        allMethods.addAll(bodies.keySet());
+        allMethods.addAll(responses.keySet());
+        for (Method method : allMethods) {
+
+            TypeSpec.Builder responseClass = TypeSpec
+                    .classBuilder(Names.responseClassName(method.resource(), method))
+                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                    .superclass(ClassName.get(build.getDefaultPackage(), "ResponseDelegate"))
+                    .addMethod(
+                            MethodSpec.constructorBuilder()
+                                    .addParameter(javax.ws.rs.core.Response.class, "response")
+                                    .addModifiers(Modifier.PRIVATE)
+                                    .addCode("super(response);\n").build()
+                    );
+
+
+            TypeSpec currentClass = responseClass.build();
+            for (Response response : responses.get(method)) {
+
+                if ( response == null ) {
+                    continue;
+                }
+                if(response.body().size() == 0 ) {
+                    String httpCode = response.code().value();
+                    MethodSpec.Builder builder = MethodSpec.methodBuilder("respond" + httpCode);
+                    builder
+                            .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+                            .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
+                            .addStatement("return new $N(responseBuilder.build())", currentClass)
+                            .returns(TypeVariableName.get(currentClass.name))
+                            .build();
+
+                    responseClass.addMethod(builder.build());
+                } else {
+                    for (TypeDeclaration typeDeclaration : response.body()) {
+
+                        String httpCode = response.code().value();
+                        MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.buildVariableName("respond_" + httpCode + "_With_" + typeDeclaration.name() ) );
+                        builder
+                                .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+                                .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
+                                .addStatement("responseBuilder.entity(entity)")
+                                .addStatement("return new $N(responseBuilder.build())", currentClass)
+                                .returns(TypeVariableName.get(currentClass.name))
+                                .build();
+                        TypeName typeName = build
+                                .getJavaType(typeDeclaration.type(), new HashMap<String, JavaPoetTypeGenerator>());
+                        if (typeName == null) {
+                            throw new GenerationException(typeDeclaration.type() + " was not seen before");
+                        }
+
+                        builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
+                        responseClass.addMethod(builder.build());
+
+                    }
+                }
+            }
+
+            typeSpec.addType(responseClass.build());
+        }
+    }
+
+
+    public MethodSpec.Builder createMethodBuilder(Method method, String methodName, List<String> mediaTypesForMethod) {
+        MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
+                .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
+
+        for (TypeDeclaration typeDeclaration : method.resource().uriParameters()) {
+
+            if (TypeUtils.isComposite(typeDeclaration)) {
+                throw new GenerationException("query parameter is composite: " + typeDeclaration.type());
+            }
+
+            methodSpec.addParameter(
+                    ParameterSpec.builder(
+                            build.getJavaType(typeDeclaration.type()), Names.buildVariableName(typeDeclaration.name()))
+                            .addAnnotation(
+                                    AnnotationSpec.builder(PathParam.class).addMember("value", "$S", typeDeclaration.name())
+                                            .build())
+                            .build());
+
+        }
+
+        for (TypeDeclaration typeDeclaration : method.queryParameters()) {
+            if (TypeUtils.isComposite(typeDeclaration)) {
+                throw new GenerationException("query parameter is composite: " + typeDeclaration.type());
+            }
+
+            methodSpec.addParameter(
+                    ParameterSpec.builder(
+                            build.getJavaType(typeDeclaration.type()), Names.buildVariableName(typeDeclaration.name()))
+                            .addAnnotation(
+                                    AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", typeDeclaration.name())
+                                            .build())
+                            .build());
+        }
+
+        methodSpec
+                .addAnnotation(AnnotationSpec.builder(HTTPMethods.methodNameToAnnotation(method.method())).build());
+
+        methodSpec.returns(ClassName.get("", Names.responseClassName(method.resource(), method)));
+
+        if ( mediaTypesForMethod.size() > 0 ) {
+            AnnotationSpec.Builder ann = buildAnnotation(mediaTypesForMethod, Produces.class);
+            methodSpec.addAnnotation(ann.build());
+        }
+        return methodSpec;
+    }
+
+    private void handleMethodConsumer(MethodSpec.Builder methodSpec,
+            Multimap<String, String> ramlTypeToMediaType,
+            TypeDeclaration typeDeclaration) {
+        Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration.type());
+
+        AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
+        methodSpec.addAnnotation(ann.build());
+    }
+
+    private AnnotationSpec.Builder buildAnnotation(Collection<String> mediaTypes, Class<? extends Annotation> type) {
+        AnnotationSpec.Builder ann = AnnotationSpec.builder(type);
+        for (String mediaType : mediaTypes) {
+
+            ann.addMember("value", "$S", mediaType);
+        }
+        return ann;
+    }
+
+    private static class TypeDeclarationTypeComparator implements Comparator<TypeDeclaration> {
+        @Override
+        public int compare(TypeDeclaration o1, TypeDeclaration o2) {
+            return o1.type().compareTo(o2.type());
+        }
     }
 }

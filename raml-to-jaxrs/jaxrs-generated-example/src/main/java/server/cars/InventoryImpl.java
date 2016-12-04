@@ -12,16 +12,15 @@ import example.realtypes.Inventory;
 public class InventoryImpl implements Inventory {
 
     @Override
-    public GetResponse get() {
-
+    public GetInventoryResponse getInventory() {
         CarImpl ci = new CarImpl();
         ci.setMake("Foo");
         ci.setNumber(10000);
-        return GetResponse.respond200(ci);
+        return GetInventoryResponse.respond200WithApplicationJson(ci);
     }
 
     @Override
-    public PutResponse put(Car entity) {
+    public PutInventoryResponse putInventory(Car entity) {
         System.err.println("entity " + entity.getMake());
         return null;
     }

@@ -5,6 +5,7 @@ import example.jsonschema.Tracks;
 import example.realtypes.Car;
 import example.realtypes.CarImpl;
 import example.realtypes.Inventory;
+import example.xmlschema.Hr;
 
 /**
  * Created by Jean-Philippe Belanger on 11/11/16.
@@ -13,16 +14,15 @@ import example.realtypes.Inventory;
 public class TracksImpl implements Tracks {
 
     @Override
-    public GetResponse get() {
-
+    public GetTracksResponse getTracks() {
         Track track = new Track();
         track.setAlbumId("17");
         track.setSongTitle("Booyakasha");
-        return Tracks.GetResponse.respond200(track);
+        return GetTracksResponse.respond200WithApplicationJson(track);
     }
 
     @Override
-    public PutResponse put(Track entity) {
+    public PutTracksResponse putTracks(Track entity) {
         return null;
     }
 }

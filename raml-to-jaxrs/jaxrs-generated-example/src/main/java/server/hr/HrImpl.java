@@ -9,20 +9,19 @@ import example.xmlschema.Person;
  */
 public class HrImpl implements Hr {
 
+    @Override
+    public PutHrResponse putHr(Person entity) {
+        return null;
+    }
 
     @Override
-    public GetResponse get() {
+    public GetHrResponse getHr() {
         Person p = new Person();
         p.setName("Foo");
         Person.Address addr = new Person.Address();
         addr.setPostCode("HFOF");
 
         p.setAddress(addr);
-        return GetResponse.respond200(p);
-    }
-
-    @Override
-    public PutResponse put(Person entity) {
-        return null;
+        return GetHrResponse.respond200WithApplicationXml(p);
     }
 }

@@ -9,15 +9,7 @@ import example.helloworld.Search;
 public class SearchImpl implements Search {
 
     @Override
-    public GetByHelloDudeAndFinkResponse getByHelloDudeAndFink(String helloDude, int fink, String entity) {
-
-        return GetByHelloDudeAndFinkResponse.respond200("hello_world");
-    }
-
-    @Override
-    public GetIdByHelloDudeAndFinkResponse getIdByHelloDudeAndFink(String helloDude, int fink, String id,
-            String entity) {
-
-        return GetIdByHelloDudeAndFinkResponse.respond200(id);
+    public GetSearchResponse getSearch(String hello_dude, int fink, String entity) {
+        return GetSearchResponse.respond200WithApplicationJson("hello");
     }
 }

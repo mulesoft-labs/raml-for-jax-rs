@@ -18,6 +18,7 @@ public class ScalarTypes {
             .put("integer", int.class)
             .put("boolean", boolean.class)
             .put("datetime", Date.class)
+            .put("date-only", Date.class)
             .put("number", BigDecimal.class)
             .put("any", Object.class)
             .put("string", String.class)

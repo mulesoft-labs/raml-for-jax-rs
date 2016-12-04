@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import joptsimple.internal.Strings;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -8,10 +9,12 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.left;
+import static org.apache.commons.lang.math.NumberUtils.compare;
 import static org.apache.commons.lang.math.NumberUtils.isDigits;
 
 /**
@@ -65,12 +68,42 @@ public class Names
         return "By" + suffix;
     }
 
-    public static String methodName(String methodName, String resourcePath, List<String> queryParameters) {
 
-        String methodNamePathPart = "".equals(resourcePath) ? "": Names.buildTypeName(resourcePath);
-        String queryParameterSuffix = Names.parameterNameMethodSuffix(queryParameters);
+    public static String methodName(Resource resource, Method method) {
 
-        return methodName + methodNamePathPart + queryParameterSuffix;
+        if ( resource.uriParameters().size() == 0) {
+
+            return Names.buildVariableName(method.method() + "_" + resource.relativeUri().value());
+        } else {
+
+            return Names.buildVariableName(method.method() + "_" + resource.relativeUri().value()) + parameterNameMethodSuffix(Lists.transform(
+                    resource.uriParameters(), new Function<TypeDeclaration, String>() {
+                        @Nullable
+                        @Override
+                        public String apply(@Nullable TypeDeclaration input) {
+                            return input.name();
+                        }
+                    }));
+        }
+    }
+
+    public static String responseClassName(Resource resource, Method method) {
+
+        if ( resource.uriParameters().size() == 0) {
+
+            return Names.buildTypeName(method.method() + "_" + resource.relativeUri().value() + "_Response");
+        } else {
+
+            return Names.buildTypeName(
+                    method.method() + "_" + resource.relativeUri().value()
+                    + parameterNameMethodSuffix(Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, String>() {
+                        @Nullable
+                        @Override
+                        public String apply(@Nullable TypeDeclaration input) {
+                            return input.name();
+                        }
+                    })) + "_Response");
+        }
     }
 
     public static String methodNameSuffix(String resourcePath, List<String> queryParameters) {

@@ -7,6 +7,7 @@ import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
@@ -82,6 +83,13 @@ public class RamlScanner {
             typeHandler.createType(api, typeDeclaration);
         }
 
+        for (Library library : api.uses()) {
+
+            for (TypeDeclaration typeDeclaration : library.types()) {
+
+                typeHandler.createType(api, typeDeclaration);
+            }
+        }
         // Find types in resources.
         for (Resource resource : api.resources()) {
 

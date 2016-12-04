@@ -65,12 +65,6 @@ public class CurrentBuild {
         return defaultPackage;
     }
 
-    public ResourceGenerator createResource(String name, String relativeURI) {
-
-        ResourceGenerator builder = new ResourceInterface(this, name, relativize(relativeURI));
-        resources.add(builder);
-        return builder;
-    }
 
     public void generate(final String rootDirectory) throws IOException {
 
@@ -122,33 +116,6 @@ public class CurrentBuild {
 
     }
 
-/*
-    public RamlTypeGenerator createPrivateType(ObjectTypeDeclaration objectTypeDeclaration, String name, List<String> parentTypes) {
-
-        RamlTypeGeneratorInterface intf = new RamlTypeGeneratorInterface(objectTypeDeclaration, this, name, parentTypes, false);
-        RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(objectTypeDeclaration, this, name, name, false);
-
-        CompositeRamlTypeGenerator compositeTypeBuilder = new CompositeRamlTypeGenerator(intf, impl);
-        types.put(name, compositeTypeBuilder);
-        javaPoetTypes.put(name, compositeTypeBuilder);
-        return compositeTypeBuilder;
-    }
-
-    public RamlTypeGenerator createType(ObjectTypeDeclaration objectTypeDeclaration, String name, List<String> parentTypes, boolean isInternal) {
-
-        RamlTypeGeneratorInterface intf = new RamlTypeGeneratorInterface(objectTypeDeclaration, this, name, parentTypes, isInternal);
-        RamlTypeGeneratorImplementation impl = new RamlTypeGeneratorImplementation(objectTypeDeclaration, this, name, name, isInternal);
-
-        CompositeRamlTypeGenerator compositeTypeBuilder = new CompositeRamlTypeGenerator(intf, impl);
-        if ( ! isInternal) {
-            types.put(name, compositeTypeBuilder);
-            javaPoetTypes.put(name, compositeTypeBuilder);
-        }
-        return compositeTypeBuilder;
-    }
-*/
-
-
     public void javaTypeName(String type, TypeDescriber describer) {
         Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
@@ -169,47 +136,6 @@ public class CurrentBuild {
 
     }
 
-    public void createTypeFromJsonSchema(final String name, final String jsonSchema) {
-
-
-        try {
-            GenerationConfig config = new DefaultGenerationConfig() {
-                @Override
-                public boolean isGenerateBuilders() { // set config option by overriding method
-                    return true;
-                }
-            };
-
-            final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
-                    new SchemaGenerator());
-            final JCodeModel codeModel = new JCodeModel();
-
-            mapper.generate(codeModel, name, defaultPackage, jsonSchema);
-
-            types.put(name, new JsonSchemaTypeGenerator(mapper, defaultPackage, name, codeModel));
-            codeModelTypes.put(name, new JsonSchemaTypeGenerator(mapper, defaultPackage, name, codeModel));
-        } catch (IOException e) {
-            throw new GenerationException(e);
-        }
-    }
-
-    public void createTypeFromXmlSchema(final String name, String schema) {
-
-        try {
-            File schemaFile = JAXBHelper.saveSchema(schema);
-            final JCodeModel codeModel = new JCodeModel();
-
-            Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(defaultPackage, schemaFile, codeModel);
-
-            types.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name, generated.values().iterator().next()));
-            codeModelTypes.put(name, new XmlSchemaTypeGenerator(codeModel, defaultPackage, name,
-                    generated.values().iterator().next()));
-        } catch (Exception e) {
-
-            throw new GenerationException(e);
-        }
-    }
-
     public TypeExtension withTypeListeners() {
 
         return typeExtensionList;
@@ -224,6 +150,11 @@ public class CurrentBuild {
     public TypeGenerator getDeclaredType(String ramlType) {
 
         return types.get(ramlType);
+    }
+
+    public TypeName getJavaType(String type) {
+
+        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>());
     }
 
     public TypeName getJavaType(String type, Map<String, JavaPoetTypeGenerator> internalTypes) {
@@ -272,5 +203,9 @@ public class CurrentBuild {
         }
     }
 
+    public void newResource(ResourceGenerator rg) {
+
+        resources.add(rg);
+    }
 }
 

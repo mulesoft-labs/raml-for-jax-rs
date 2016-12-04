@@ -13,12 +13,4 @@ import java.util.List;
  */
 public interface ResourceGenerator extends Generator<TypeSpec> {
 
-    ResourceGenerator withDocumentation(String docs);
-    ResourceGenerator mediaType(List<String> mimeTypes);
-
-    ResponseClassBuilder createResponseClassBuilder(String method, String additionalNames);
-
-    MethodBuilder createMethod(String method, String fullMethodName, String returnClass);
-
-    void addInternalType(RamlTypeGenerator internalGenerator);
 }

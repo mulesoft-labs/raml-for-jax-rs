@@ -3,12 +3,14 @@ package org.raml.jaxrs.generator.v10;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.JsonSchemaTypeGenerator;
 import org.raml.jaxrs.generator.XmlSchemaTypeGenerator;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -71,6 +73,11 @@ public class TypeUtils {
         if ( ! isComposite(typeDeclaration)) {
             return false;
         }
+
+        if ( current.checkJavaType(typeDeclaration.type(), new HashMap<String, JavaPoetTypeGenerator>()) == null ) {
+            return true;
+        }
+
 
         ObjectTypeDeclaration object = (ObjectTypeDeclaration) typeDeclaration;
         if ( typeDeclaration.type().equals("object") ) {

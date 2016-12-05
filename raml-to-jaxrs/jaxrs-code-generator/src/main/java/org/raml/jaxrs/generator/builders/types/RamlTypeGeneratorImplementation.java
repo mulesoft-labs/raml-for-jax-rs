@@ -65,7 +65,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
                 .classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
 
-        build.withTypeListeners().onTypeImplementation(typeSpec);
+        build.withTypeListeners().onTypeImplementation(typeSpec, typeDeclaration);
 
         typeSpec.addSuperinterface(parentClassName);
 
@@ -84,7 +84,9 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
-            typeSpec.addField(FieldSpec.builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName()).addModifiers(Modifier.PRIVATE).build());
+            FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName()).addModifiers(Modifier.PRIVATE);
+            build.withTypeListeners().onFieldlementation(fieldSpec, propertyInfo.getType());
+            typeSpec.addField(fieldSpec.build());
 
             final MethodSpec.Builder getSpec = MethodSpec
                     .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
@@ -92,13 +94,18 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
                     .addStatement("return this." + propertyInfo.getName());
 
             getSpec.returns(propertyInfo.resolve(build, internalTypes));
+            build.withTypeListeners().onGetterMethodImplementation(getSpec, propertyInfo.getType());
 
             MethodSpec.Builder setSpec = MethodSpec
                     .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("this." + propertyInfo.getName() + " = " + propertyInfo.getName());
 
-                setSpec.addParameter(ParameterSpec.builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName()).build());
+            ParameterSpec.Builder parameterSpec = ParameterSpec
+                    .builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName());
+            build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec, propertyInfo.getType() );
+
+            setSpec.addParameter(parameterSpec.build());
             typeSpec.addMethod(getSpec.build());
             typeSpec.addMethod(setSpec.build());
         }

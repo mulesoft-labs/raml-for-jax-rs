@@ -56,6 +56,8 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                 .interfaceBuilder(interf)
                 .addModifiers(Modifier.PUBLIC);
 
+        build.withTypeListeners().onTypeDeclaration(typeSpec, typeDeclaration);
+
         for (JavaPoetTypeGenerator internalType : internalTypes.values()) {
 
             internalType.output(new CodeContainer<TypeSpec.Builder>() {
@@ -84,12 +86,17 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                         .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
                 getSpec.returns(propertyInfo.resolve(build, internalTypes));
+                build.withTypeListeners().onGetterMethodDeclaration(getSpec, propertyInfo.getType());
 
                 MethodSpec.Builder setSpec = MethodSpec
                         .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 
-                setSpec.addParameter(ParameterSpec.builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName()).build());
+                ParameterSpec.Builder parameterSpec = ParameterSpec
+                        .builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName());
+                build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec, propertyInfo.getType() );
+                setSpec.addParameter(
+                        parameterSpec.build());
 
                 typeSpec.addMethod(getSpec.build());
                 typeSpec.addMethod(setSpec.build());

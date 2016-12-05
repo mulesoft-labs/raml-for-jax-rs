@@ -1,6 +1,10 @@
 package org.raml.jaxrs.generator.builders.extensions;
 
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +19,63 @@ public class TypeExtensionList implements TypeExtension {
 
 
     @Override
-    public void onTypeImplementation(TypeSpec.Builder typeSpec) {
+    public void onTypeImplementation(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
-            extension.onTypeImplementation(typeSpec);
+            extension.onTypeImplementation(typeSpec, typeDeclaration);
+        }
+    }
+
+    @Override
+    public void onFieldlementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onFieldlementation(fieldSpec, typeDeclaration);
+        }
+    }
+
+    @Override
+    public void onGetterMethodImplementation(MethodSpec.Builder methodSpec, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onGetterMethodImplementation(methodSpec, typeDeclaration);
+        }
+    }
+
+
+    @Override
+    public void onSetterMethodImplementation(MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onSetterMethodImplementation(typeSpec, param, typeDeclaration);
+        }
+
+    }
+
+    @Override
+    public void onTypeDeclaration(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onTypeDeclaration(typeSpec, typeDeclaration);
+        }
+
+    }
+
+    @Override
+    public void onGetterMethodDeclaration(MethodSpec.Builder methodSpec, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onGetterMethodDeclaration(methodSpec, typeDeclaration);
+        }
+    }
+
+    @Override
+    public void onSetterMethodDeclaration(MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onSetterMethodDeclaration(typeSpec, param, typeDeclaration);
         }
     }
 

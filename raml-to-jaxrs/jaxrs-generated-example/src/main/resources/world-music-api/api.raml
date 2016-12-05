@@ -156,46 +156,46 @@ uses:
   SongsLib: libraries/songs-library.raml
   ApiLib: libraries/api-library.raml
 
-#/api:
-#  get:
-#    queryString:
-#      properties:
-#        start?: number
-#        page-size?: number
-#  post:
-#    body:
-#      application/json:
-#        type: ApiLib.RamlDataType
+/api:
+  get:
+    queryString:
+      properties:
+        start?: number
+        page-size?: number
+  post:
+    body:
+      application/json:
+        type: ApiLib.RamlDataType
 /entry:
   type:  collection
   post:
     responses:
       200:
         body: AnotherEntry
-#/songs:
-#  displayName: Songs
-#  description:  Access to all songs inside the music world library.
-#  (ready):
-#  is: [ secured ]
-#  get:
-#    securedBy: [ oauth_2_0, null ]
-#    (monitoringInterval): 30
-#    queryParameters:
-#      genre:
-#        description: filter the songs by genre
-#  post:
-#  /{songId}:
-#    get:
-#      (deprecated):
-#        date: 2016-02-28T16:41:41.090Z
-#        deprecatedBy:
-#          firstname: Christian
-#        comment: no comment
-#      responses:
-#        200:
-#          body:
-##            application/json:
-##              type: SongsLib.Song
+/songs:
+  displayName: Songs
+  description:  Access to all songs inside the music world library.
+  (ready):
+  is: [ secured ]
+  get:
+    securedBy: [ oauth_2_0, null ]
+    (monitoringInterval): 30
+    queryParameters:
+      genre:
+        description: filter the songs by genre
+  post:
+  /{songId}:
+    get:
+      (deprecated):
+        date: 2016-02-28T16:41:41.090Z
+        deprecatedBy:
+          firstname: Christian
+        comment: no comment
+      responses:
+        200:
+          body:
+            application/json:
+              type: SongsLib.Song
 #            application/xml:
 #              type: !include schemas/songs.xsd
 #              example: !include examples/songs.xml

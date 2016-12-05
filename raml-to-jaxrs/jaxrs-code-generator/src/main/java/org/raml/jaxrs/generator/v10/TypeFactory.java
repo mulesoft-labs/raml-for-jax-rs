@@ -154,7 +154,7 @@ public class TypeFactory {
                 TypeGenerator internalGenerator = build(api, internalTypeName, Names.buildTypeName(declaration.name() + "_Type"), declaration, false);
                 if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
                     internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
-                    properties.add(new PropertyInfo(declaration.name(), internalTypeName));
+                    properties.add(new PropertyInfo(declaration.name(), internalTypeName, declaration));
                     internalTypeCounter ++;
                 } else {
                     throw new GenerationException("internal type bad");

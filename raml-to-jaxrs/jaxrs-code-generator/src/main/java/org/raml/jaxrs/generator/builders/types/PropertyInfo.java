@@ -24,9 +24,10 @@ public class PropertyInfo {
         this.type = type;
     }
 
-    public PropertyInfo(String name, String internalTypeName) {
+    public PropertyInfo(String name, String internalTypeName, TypeDeclaration declaration) {
         this.name = name;
         this.internalTypeName = internalTypeName;
+        this.type = declaration;
     }
 
     public String getName() {
@@ -39,7 +40,7 @@ public class PropertyInfo {
 
     public TypeName resolve(CurrentBuild currentBuild, Map<String, JavaPoetTypeGenerator> internalTypes) {
 
-        if ( type != null ) {
+        if ( internalTypeName == null ) {
 
             return currentBuild.getJavaType(type);
         } else {

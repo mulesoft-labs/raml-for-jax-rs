@@ -2,11 +2,12 @@ package org.raml.emitter;
 
 import com.google.common.base.Optional;
 
-import org.raml.model.MediaType;
-import org.raml.model.RamlApi;
-import org.raml.model.RamlQueryParameter;
-import org.raml.model.Resource;
-import org.raml.model.ResourceMethod;
+import org.raml.api.RamlMediaType;
+import org.raml.api.RamlApi;
+import org.raml.api.RamlQueryParameter;
+import org.raml.api.RamlResource;
+import org.raml.api.RamlResourceMethod;
+import org.raml.api.RamlTypes;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,31 +50,31 @@ public class IndentedAppendableEmitter implements Emitter {
         writeBaseUri(api.getBaseUri());
         writeDefaultMediaType(api.getDefaultMediaType());
 
-        for (Resource resource : api.getResources()) {
+        for (RamlResource resource : api.getResources()) {
             writeResource(resource);
         }
     }
 
-    private void writeDefaultMediaType(MediaType defaultMediaType) throws IOException {
+    private void writeDefaultMediaType(RamlMediaType defaultMediaType) throws IOException {
         writer.appendLine(format("mediaType: %s", defaultMediaType.toStringRepresentation()));
     }
 
-    private void writeResource(Resource resource) throws IOException {
+    private void writeResource(RamlResource resource) throws IOException {
         writer.appendLine(format("%s:", resource.getPath()));
         writer.indent();
 
-        for (ResourceMethod method : resource.getMethods()) {
+        for (RamlResourceMethod method : resource.getMethods()) {
             writeMethod(method);
         }
 
-        for (Resource child : resource.getChildren()) {
+        for (RamlResource child : resource.getChildren()) {
             writeResource(child);
         }
 
         writer.outdent();
     }
 
-    private void writeMethod(ResourceMethod method) throws IOException {
+    private void writeMethod(RamlResourceMethod method) throws IOException {
         writer.appendLine(format("%s:", method.getHttpMethod()));
         writer.indent();
 
@@ -104,7 +105,7 @@ public class IndentedAppendableEmitter implements Emitter {
     private void writeQueryParameter(RamlQueryParameter queryParameter) throws IOException {
         writer.appendLine(String.format("%s:", queryParameter.getName()));
         writer.indent();
-        writer.appendLine(format("type: %s", ""));
+        writer.appendLine(format("type: %s", RamlTypes.fromType(queryParameter.getType()).getRamlSyntax()));
 
         Optional<String> defaultValue = queryParameter.getDefaultValue();
         if (defaultValue.isPresent()) {
@@ -114,8 +115,7 @@ public class IndentedAppendableEmitter implements Emitter {
         writer.outdent();
     }
 
-
-    private void writeResponses(List<MediaType> producedMediaTypes) throws IOException {
+    private void writeResponses(List<RamlMediaType> producedMediaTypes) throws IOException {
         writer.appendLine("responses:");
         writer.indent();
 
@@ -130,11 +130,11 @@ public class IndentedAppendableEmitter implements Emitter {
         writer.outdent();
     }
 
-    private void writeBody(List<MediaType> mediaTypes) throws IOException {
+    private void writeBody(List<RamlMediaType> mediaTypes) throws IOException {
         writer.appendLine("body:");
         writer.indent();
 
-        for (MediaType mediaType : mediaTypes) {
+        for (RamlMediaType mediaType : mediaTypes) {
             writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
         }
 

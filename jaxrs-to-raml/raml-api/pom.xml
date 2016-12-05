@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>raml-model</artifactId>
+    <artifactId>raml-api</artifactId>
 
     <dependencies>
         <dependency>

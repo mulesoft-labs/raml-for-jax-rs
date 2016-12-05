@@ -1,6 +1,6 @@
 package org.raml.emitter;
 
-import org.raml.model.RamlApi;
+import org.raml.api.RamlApi;
 
 public interface Emitter {
     void emit(RamlApi api) throws RamlEmissionException;

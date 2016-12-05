@@ -2,9 +2,9 @@ package org.raml.jaxrs.converter.model;
 
 import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.model.JaxRsApplication;
-import org.raml.model.MediaType;
-import org.raml.model.RamlApi;
-import org.raml.model.Resource;
+import org.raml.api.RamlMediaType;
+import org.raml.api.RamlApi;
+import org.raml.api.RamlResource;
 
 import java.util.List;
 
@@ -42,12 +42,12 @@ public class JaxRsRamlApi implements RamlApi {
     }
 
     @Override
-    public List<Resource> getResources() {
+    public List<RamlResource> getResources() {
         return Utilities.toRamlResources(this.application.getResources()).toList();
     }
 
     @Override
-    public MediaType getDefaultMediaType() {
+    public RamlMediaType getDefaultMediaType() {
         return configuration.getDefaultMediaType();
     }
 }

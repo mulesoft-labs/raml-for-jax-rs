@@ -1,4 +1,4 @@
-package org.raml.model;
+package org.raml.api;
 
 import java.util.List;
 
@@ -6,6 +6,6 @@ public interface RamlApi {
     String getTitle();
     String getVersion();
     String getBaseUri();
-    List<Resource> getResources();
-    MediaType getDefaultMediaType();
+    List<RamlResource> getResources();
+    RamlMediaType getDefaultMediaType();
 }

@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.raml</groupId>
-            <artifactId>raml-model</artifactId>
+            <artifactId>raml-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

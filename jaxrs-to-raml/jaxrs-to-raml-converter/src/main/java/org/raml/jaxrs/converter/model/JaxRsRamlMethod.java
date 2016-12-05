@@ -1,15 +1,15 @@
 package org.raml.jaxrs.converter.model;
 
 import org.raml.jaxrs.model.Method;
-import org.raml.model.MediaType;
-import org.raml.model.RamlQueryParameter;
-import org.raml.model.ResourceMethod;
+import org.raml.api.RamlMediaType;
+import org.raml.api.RamlQueryParameter;
+import org.raml.api.RamlResourceMethod;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class JaxRsRamlMethod implements ResourceMethod {
+public class JaxRsRamlMethod implements RamlResourceMethod {
 
     private final Method resourceMethod;
 
@@ -29,12 +29,12 @@ public class JaxRsRamlMethod implements ResourceMethod {
     }
 
     @Override
-    public List<MediaType> getConsumedMediaTypes() {
+    public List<RamlMediaType> getConsumedMediaTypes() {
         return Utilities.toRamlMediaTypes(this.resourceMethod.getConsumedMediaTypes()).toList();
     }
 
     @Override
-    public List<MediaType> getProducedMediaTypes() {
+    public List<RamlMediaType> getProducedMediaTypes() {
         return Utilities.toRamlMediaTypes(this.resourceMethod.getProducedMediaTypes()).toList();
     }
 

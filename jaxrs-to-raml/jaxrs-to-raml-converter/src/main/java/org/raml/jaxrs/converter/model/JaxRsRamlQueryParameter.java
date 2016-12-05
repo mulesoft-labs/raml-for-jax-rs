@@ -3,7 +3,9 @@ package org.raml.jaxrs.converter.model;
 import com.google.common.base.Optional;
 
 import org.raml.jaxrs.model.JaxRsQueryParameter;
-import org.raml.model.RamlQueryParameter;
+import org.raml.api.RamlQueryParameter;
+
+import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -28,6 +30,11 @@ class JaxRsRamlQueryParameter implements RamlQueryParameter {
     @Override
     public Optional<String> getDefaultValue() {
         return this.queryParameter.getDefaultValue();
+    }
+
+    @Override
+    public Type getType() {
+        return this.queryParameter.getType();
     }
 
     @Override

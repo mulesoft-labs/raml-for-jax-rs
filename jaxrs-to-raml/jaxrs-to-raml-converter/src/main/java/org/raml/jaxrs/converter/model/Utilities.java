@@ -6,40 +6,40 @@ import com.google.common.collect.FluentIterable;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Method;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
-import org.raml.model.MediaType;
-import org.raml.model.RamlQueryParameter;
-import org.raml.model.Resource;
-import org.raml.model.ResourceMethod;
+import org.raml.api.RamlMediaType;
+import org.raml.api.RamlQueryParameter;
+import org.raml.api.RamlResource;
+import org.raml.api.RamlResourceMethod;
 
 public class Utilities {
 
-    public static FluentIterable<MediaType> toRamlMediaTypes(Iterable<javax.ws.rs.core.MediaType> mediaTypes) {
+    public static FluentIterable<RamlMediaType> toRamlMediaTypes(Iterable<javax.ws.rs.core.MediaType> mediaTypes) {
         return FluentIterable.from(mediaTypes).transform(
-                new Function<javax.ws.rs.core.MediaType, MediaType>() {
+                new Function<javax.ws.rs.core.MediaType, RamlMediaType>() {
                     @Override
-                    public MediaType apply(javax.ws.rs.core.MediaType mediaType) {
+                    public RamlMediaType apply(javax.ws.rs.core.MediaType mediaType) {
                         return JaxRsRamlMediaType.create(mediaType);
                     }
                 }
         );
     }
 
-    public static FluentIterable<Resource> toRamlResources(Iterable<JaxRsResource> jaxRsResources) {
+    public static FluentIterable<RamlResource> toRamlResources(Iterable<JaxRsResource> jaxRsResources) {
         return FluentIterable.from(jaxRsResources).transform(
-                new Function<JaxRsResource, Resource>() {
+                new Function<JaxRsResource, RamlResource>() {
                     @Override
-                    public Resource apply(JaxRsResource jaxRsResource) {
+                    public RamlResource apply(JaxRsResource jaxRsResource) {
                         return JaxRsRamlResource.create(jaxRsResource);
                     }
                 }
         );
     }
 
-    public static FluentIterable<ResourceMethod> toRamlMethods(Iterable<Method> methods) {
+    public static FluentIterable<RamlResourceMethod> toRamlMethods(Iterable<Method> methods) {
         return FluentIterable.from(methods).transform(
-                new Function<Method, ResourceMethod>() {
+                new Function<Method, RamlResourceMethod>() {
                     @Override
-                    public ResourceMethod apply(Method method) {
+                    public RamlResourceMethod apply(Method method) {
                         return JaxRsRamlMethod.create(method);
                     }
                 }

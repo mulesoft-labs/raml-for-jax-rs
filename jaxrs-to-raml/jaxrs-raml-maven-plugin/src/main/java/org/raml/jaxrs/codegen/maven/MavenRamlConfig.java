@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.raml.model.ActionType;
-import org.raml.model.Protocol;
+import org.raml.api.ActionType;
+import org.raml.api.Protocol;
 
 import com.google.common.collect.Sets;
 import com.mulesoft.jaxrs.raml.annotation.model.IRamlConfig;

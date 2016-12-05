@@ -5,6 +5,8 @@ import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 
+import java.lang.reflect.Type;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -30,5 +32,10 @@ public class JerseyJaxRsQueryParameter implements JaxRsQueryParameter {
     @Override
     public Optional<String> getDefaultValue() {
         return Optional.fromNullable(this.parameter.getDefaultValue());
+    }
+
+    @Override
+    public Type getType() {
+        return this.parameter.getType();
     }
 }

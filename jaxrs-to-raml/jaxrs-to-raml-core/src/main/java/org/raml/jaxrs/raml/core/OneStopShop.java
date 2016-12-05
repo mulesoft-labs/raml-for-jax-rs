@@ -9,7 +9,7 @@ import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.JaxRsParsers;
 import org.raml.jaxrs.parser.JaxRsParsingException;
-import org.raml.model.RamlApi;
+import org.raml.api.RamlApi;
 
 import java.nio.file.Path;
 

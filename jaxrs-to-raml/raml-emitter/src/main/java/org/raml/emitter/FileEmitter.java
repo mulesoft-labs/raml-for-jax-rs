@@ -1,6 +1,6 @@
 package org.raml.emitter;
 
-import org.raml.model.RamlApi;
+import org.raml.api.RamlApi;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

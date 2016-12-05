@@ -11,14 +11,14 @@
     <artifactId>jaxrs-to-raml</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>jaxrs-parser</module>
-        <module>jaxrs-test-resources</module>
         <module>jaxrs-api</module>
-        <module>raml-emitter</module>
-        <module>raml-model</module>
-        <module>jaxrs-to-raml-converter</module>
+        <module>jaxrs-parser</module>
         <module>jaxrs-to-raml-core</module>
+        <module>jaxrs-to-raml-converter</module>
         <module>jaxrs-to-raml-cli</module>
+        <module>jaxrs-test-resources</module>
+        <module>raml-api</module>
+        <module>raml-emitter</module>
     </modules>
 
     <dependencyManagement>
@@ -30,7 +30,7 @@
             </dependency>
             <dependency>
                 <groupId>org.raml</groupId>
-                <artifactId>raml-model</artifactId>
+                <artifactId>raml-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

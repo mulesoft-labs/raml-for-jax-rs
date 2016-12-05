@@ -1,10 +1,10 @@
 package org.raml.jaxrs.converter.model;
 
-import org.raml.model.MediaType;
+import org.raml.api.RamlMediaType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class JaxRsRamlMediaType implements MediaType {
+public class JaxRsRamlMediaType implements RamlMediaType {
     private final javax.ws.rs.core.MediaType mediaType;
 
     private JaxRsRamlMediaType(javax.ws.rs.core.MediaType mediaType) {

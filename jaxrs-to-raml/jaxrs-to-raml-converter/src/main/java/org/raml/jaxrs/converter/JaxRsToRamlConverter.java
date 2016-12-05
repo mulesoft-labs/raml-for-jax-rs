@@ -3,7 +3,7 @@ package org.raml.jaxrs.converter;
 import org.raml.jaxrs.converter.model.JaxRsRamlApi;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
-import org.raml.model.RamlApi;
+import org.raml.api.RamlApi;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

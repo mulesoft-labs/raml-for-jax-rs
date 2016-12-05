@@ -5,7 +5,7 @@ import org.glassfish.jersey.server.model.RuntimeResource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class JerseyJaxRsPath implements org.raml.jaxrs.model.Path {
+class JerseyJaxRsPath implements org.raml.jaxrs.model.Path {
     private final RuntimeResource runtimeResource;
 
     private JerseyJaxRsPath(RuntimeResource runtimeResource) {

@@ -11,7 +11,8 @@ public class ResourceWithQueryParameters {
 
     @Path("step")
     @POST
-    public Response postWithQueryParameters(@DefaultValue("military") @QueryParam("typeOfStep") String typeOfStep) {
+    public Response postWithQueryParameters(@DefaultValue("military") @QueryParam("typeOfStep") String typeOfStep,
+    @DefaultValue("jack") @QueryParam("captainName") String theName, @QueryParam("ageOfCaptain") int captainAge ) {
         return null;
     }
 }

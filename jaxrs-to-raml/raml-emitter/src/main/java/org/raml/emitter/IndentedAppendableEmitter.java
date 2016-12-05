@@ -2,6 +2,7 @@ package org.raml.emitter;
 
 import com.google.common.base.Optional;
 
+import org.raml.api.RamlHeaderParameter;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlApi;
 import org.raml.api.RamlQueryParameter;
@@ -86,14 +87,45 @@ public class IndentedAppendableEmitter implements Emitter {
             writeResponses(method.getProducedMediaTypes());
         }
 
+        if (!method.getHeaderParameters().isEmpty()) {
+            writeHeaderParameters(method.getHeaderParameters());
+        }
+
         if (!method.getQueryParameters().isEmpty()) {
             writeQueryParameters(method.getQueryParameters());
+        }
+
+
+        writer.outdent();
+    }
+
+    private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters) throws IOException {
+        writer.appendLine("headers:");
+        writer.indent();
+
+        for (RamlHeaderParameter parameter : headerParameters) {
+            writeHeaderParameter(parameter);
         }
 
         writer.outdent();
     }
 
-    private void writeQueryParameters(List<RamlQueryParameter> queryParameters) throws IOException {
+    //TODO: remove this duplicate code
+    private void writeHeaderParameter(RamlHeaderParameter parameter) throws IOException {
+        writer.appendLine(String.format("%s:", parameter.getName()));
+        writer.indent();
+        writer.appendLine(format("type: %s", RamlTypes.fromType(parameter.getType()).getRamlSyntax()));
+
+        Optional<String> defaultValue = parameter.getDefaultValue();
+        if (defaultValue.isPresent()) {
+            writer.appendLine(format("default: %s", defaultValue.get()));
+            writer.appendLine("required: false");
+        }
+
+        writer.outdent();
+    }
+
+    private void writeQueryParameters(Iterable<RamlQueryParameter> queryParameters) throws IOException {
         writer.appendLine("queryParameters:");
         writer.indent();
         for (RamlQueryParameter queryParameter : queryParameters) {
@@ -110,6 +142,7 @@ public class IndentedAppendableEmitter implements Emitter {
         Optional<String> defaultValue = queryParameter.getDefaultValue();
         if (defaultValue.isPresent()) {
             writer.appendLine(format("default: %s", defaultValue.get()));
+            writer.appendLine("required: false");
         }
 
         writer.outdent();

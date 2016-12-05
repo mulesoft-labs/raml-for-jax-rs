@@ -2,6 +2,7 @@ package org.raml.jaxrs.parser.model;
 
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.HttpVerb;
+import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.Method;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 
@@ -11,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class JerseyJaxRsMethod implements Method {
+class JerseyJaxRsMethod implements Method {
 
     private final ResourceMethod resourceMethod;
 
@@ -43,5 +44,10 @@ public class JerseyJaxRsMethod implements Method {
     @Override
     public List<JaxRsQueryParameter> getQueryParameters() {
         return Utilities.toJaxRsQueryParameters(Utilities.getQueryParameters(resourceMethod)).toList();
+    }
+
+    @Override
+    public List<JaxRsHeaderParameter> getHeaderParameters() {
+        return Utilities.toJaxRsHeaderParameters(Utilities.getHeaderParameters(resourceMethod)).toList();
     }
 }

@@ -16,7 +16,9 @@ public enum ScalarType implements RamlType {
     DATETIME_ONLY("datetime-only", ImmutableList.<Type>of()),
     DATETIME("datetime", ImmutableList.<Type>of()),
     FILE("file", ImmutableList.<Type>of()),
-    INTEGER("integer", ImmutableList.<Type>of(int.class, Integer.class)),
+    //All "integer" types are mapped to raml's "integer". Not sure if that is correct.
+    INTEGER("integer", ImmutableList.<Type>of(int.class, Integer.class, byte.class, Byte.class, short.class,
+            Short.class, long.class, Long.class)),
     NIL("nil", ImmutableList.<Type>of());
 
     private static final Map<Type, ScalarType> JAVA_TO_RAML_TYPES;
@@ -45,7 +47,7 @@ public enum ScalarType implements RamlType {
     public String getRamlSyntax() {
         return ramlSyntax;
     }
-    
+
     public static Optional<ScalarType> fromType(Type type) {
         return Optional.fromNullable(JAVA_TO_RAML_TYPES.get(type));
     }

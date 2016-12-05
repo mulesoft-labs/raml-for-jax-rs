@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 
 import static jersey.repackaged.com.google.common.base.Preconditions.checkNotNull;
 
-public class JerseyJaxRsResource implements JaxRsResource {
+class JerseyJaxRsResource implements JaxRsResource {
 
     private final RuntimeResource runtimeResource;
 

@@ -1,5 +1,6 @@
 package org.raml.jaxrs.converter.model;
 
+import org.raml.api.RamlHeaderParameter;
 import org.raml.jaxrs.model.Method;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlQueryParameter;
@@ -41,5 +42,10 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
     @Override
     public List<RamlQueryParameter> getQueryParameters() {
         return Utilities.toRamlQueryParameters(this.resourceMethod.getQueryParameters()).toList();
+    }
+
+    @Override
+    public List<RamlHeaderParameter> getHeaderParameters() {
+        return Utilities.toRamlHeaderParameters(this.resourceMethod.getHeaderParameters()).toList();
     }
 }

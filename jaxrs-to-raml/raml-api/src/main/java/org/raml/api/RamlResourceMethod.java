@@ -7,4 +7,5 @@ public interface RamlResourceMethod {
     List<RamlMediaType> getConsumedMediaTypes();
     List<RamlMediaType> getProducedMediaTypes();
     List<RamlQueryParameter> getQueryParameters();
+    List<RamlHeaderParameter> getHeaderParameters();
 }

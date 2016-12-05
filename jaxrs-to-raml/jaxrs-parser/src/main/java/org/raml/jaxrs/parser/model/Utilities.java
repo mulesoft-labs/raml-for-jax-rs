@@ -6,6 +6,7 @@ import com.google.common.collect.FluentIterable;
 
 import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.ResourceMethod;
+import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 
 import javax.annotation.Nullable;
@@ -16,6 +17,13 @@ class Utilities {
         @Override
         public boolean apply(@Nullable Parameter parameter) {
             return parameter.getSource() == Parameter.Source.QUERY;
+        }
+    };
+
+    public static final Predicate<Parameter> IS_HEADER_PARAMETER_PREDICATE = new Predicate<Parameter>() {
+        @Override
+        public boolean apply(@Nullable Parameter parameter) {
+            return parameter.getSource() == Parameter.Source.HEADER;
         }
     };
 
@@ -44,4 +52,25 @@ class Utilities {
     }
 
 
+    public static FluentIterable<Parameter> getHeaderParameters(ResourceMethod resourceMethod) {
+        return FluentIterable.from(resourceMethod.getInvocable().getParameters()).filter(
+                isHeaderParameterPredicate()
+        );
+    }
+
+    public static Predicate<Parameter> isHeaderParameterPredicate() {
+        return IS_HEADER_PARAMETER_PREDICATE;
+    }
+
+    public static FluentIterable<JaxRsHeaderParameter> toJaxRsHeaderParameters(Iterable<Parameter> headerParameters) {
+        return FluentIterable.from(headerParameters).transform(
+                new Function<Parameter, JaxRsHeaderParameter>() {
+                    @Nullable
+                    @Override
+                    public JaxRsHeaderParameter apply(@Nullable Parameter parameter) {
+                        return JerseyJaxRsHeaderParameter.create(parameter);
+                    }
+                }
+        );
+    }
 }

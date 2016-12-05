@@ -9,4 +9,5 @@ public interface Method {
     List<MediaType> getConsumedMediaTypes();
     List<MediaType> getProducedMediaTypes();
     List<JaxRsQueryParameter> getQueryParameters();
+    List<JaxRsHeaderParameter> getHeaderParameters();
 }

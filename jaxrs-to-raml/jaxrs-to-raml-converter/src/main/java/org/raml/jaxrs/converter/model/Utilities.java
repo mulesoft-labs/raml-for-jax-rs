@@ -3,6 +3,8 @@ package org.raml.jaxrs.converter.model;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
+import org.raml.api.RamlHeaderParameter;
+import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Method;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
@@ -10,6 +12,8 @@ import org.raml.api.RamlMediaType;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
+
+import java.util.List;
 
 public class Utilities {
 
@@ -54,6 +58,18 @@ public class Utilities {
                         return JaxRsRamlQueryParameter.create(queryParameter);
                     }
                 }
+        );
+    }
+
+    public static FluentIterable<RamlHeaderParameter> toRamlHeaderParameters(List<JaxRsHeaderParameter> headerParameters) {
+        return FluentIterable.from(headerParameters).transform(
+                new Function<JaxRsHeaderParameter, RamlHeaderParameter>() {
+                    @Override
+                    public RamlHeaderParameter apply(JaxRsHeaderParameter jaxRsHeaderParameter) {
+                        return JaxRsRamlHeaderParameter.create(jaxRsHeaderParameter);
+                    }
+                }
+
         );
     }
 }

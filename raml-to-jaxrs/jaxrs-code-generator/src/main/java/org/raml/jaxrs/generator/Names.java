@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator;
 
+import com.google.common.base.Ascii;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -10,6 +11,7 @@ import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -26,14 +28,161 @@ import static org.apache.commons.lang.math.NumberUtils.isDigits;
 public class Names
 {
 
-    public static String buildTypeName(String resourceInterfaceName)
+    public static String typeName(String... name)
     {
-        return isBlank(resourceInterfaceName) ? "Root" : buildJavaFriendlyName(resourceInterfaceName, CaseFormat.UPPER_CAMEL);
+        if ( name.length == 1 && isBlank(name[0])) {
+
+            return "Root";
+        }
+
+        List<String> values = new ArrayList<>();
+        for (String s : name) {
+            if ( s.matches(".*[^a-zA-Z0-9].*")) {
+
+                values.add(buildJavaFriendlyName(s, CaseFormat.UPPER_CAMEL));
+            } else {
+                values.add(firstCharToUpper(s));
+            }
+        }
+        return Strings.join(values, "");
     }
 
-    public static String buildVariableName(String resourceInterfaceName)
+    public static String methodName(String... name) {
+
+        return variableName(name);
+    }
+
+    public static String variableName(String... name)
     {
-        return isBlank(resourceInterfaceName) ? "Root" : buildJavaFriendlyName(resourceInterfaceName, CaseFormat.LOWER_CAMEL);
+        if ( name.length == 1 && isBlank(name[0])) {
+
+            return "root";
+        }
+
+        List<String> values = new ArrayList<>();
+        for (int i = 0; i < name.length; i ++) {
+            String s = name[i];
+            if ( s.matches(".*[^a-zA-Z0-9].*")) {
+
+                if ( i == 0 ) {
+                    values.add(buildJavaFriendlyName(s, CaseFormat.LOWER_CAMEL));
+                } else {
+                    values.add(buildJavaFriendlyName(s, CaseFormat.UPPER_CAMEL));
+                }
+            } else {
+                if ( i == 0) {
+                    values.add(firstCharToLower(s));
+                } else {
+                    values.add(firstCharToUpper(s));
+                }
+            }
+        }
+        return Strings.join(values, "");
+    }
+
+    public static String resourceMethodName(Resource resource, Method method) {
+
+        if ( resource.uriParameters().size() == 0) {
+
+            return Names.methodName(method.method(), resource.resourcePath().replaceAll("\\{[^}]+}", ""));
+        } else {
+
+            List<String> elements = new ArrayList<>();
+            elements.add(method.method());
+            elements.add(resource.resourcePath().replaceAll("\\{[^}]+\\}", ""));
+            elements.add("By");
+            List<String> uriparam = Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, String>() {
+                @Nullable
+                @Override
+                public String apply(@Nullable TypeDeclaration input) {
+                    return input.name();
+                }
+            });
+
+            for(int i = 0; i < uriparam.size(); i ++ ) {
+                elements.add(uriparam.get(i));
+                if ( i < uriparam.size() - 1 ) {
+
+                    elements.add("and");
+                }
+            }
+
+            return Names.methodName(elements.toArray(new String[elements.size()]));
+        }
+    }
+
+    public static String responseClassName(Resource resource, Method method) {
+
+        if ( resource.uriParameters().size() == 0) {
+
+            return Names.typeName(method.method(), resource.resourcePath().replaceAll("\\{[^}]+}", ""), "Response");
+        } else {
+
+            List<String> elements = new ArrayList<>();
+            elements.add(method.method());
+            elements.add(resource.resourcePath().replaceAll("\\{[^}]+\\}", ""));
+            elements.add("By");
+            List<String> uriparam = Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, String>() {
+                @Nullable
+                @Override
+                public String apply(@Nullable TypeDeclaration input) {
+                    return input.name();
+                }
+            });
+
+            for(int i = 0; i < uriparam.size(); i ++ ) {
+                elements.add(uriparam.get(i));
+                if ( i < uriparam.size() - 1 ) {
+
+                    elements.add("and");
+                }
+            }
+            elements.add("Response");
+
+            return Names.typeName(elements.toArray(new String[elements.size()]));
+        }
+    }
+
+
+    public static String javaTypeName(Resource resource, Method method, TypeDeclaration declaration) {
+        return typeName(resource.resourcePath(), method.method(), declaration.name());
+    }
+
+    public static String ramlTypeName(Resource resource, Method method, TypeDeclaration declaration) {
+        return resource.resourcePath() + method.method() + declaration.name();
+    }
+
+    public static String javaTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
+        return typeName(resource.resourcePath(), method.method(), response.code().value(), declaration.name());
+    }
+
+    public static String ramlTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
+        return resource.resourcePath() + method.method() + response.code().value() + declaration.name();
+    }
+
+
+    private Names()
+    {
+        throw new UnsupportedOperationException();
+    }
+
+
+    private static String firstCharToUpper(String word) {
+        return (word.isEmpty())
+                ? word
+                : new StringBuilder(word.length())
+                .append(Ascii.toUpperCase(word.charAt(0)))
+                .append(word.substring(1))
+                .toString();
+    }
+
+    private static String firstCharToLower(String word) {
+        return (word.isEmpty())
+                ? word
+                : new StringBuilder(word.length())
+                .append(Ascii.toLowerCase(word.charAt(0)))
+                .append(word.substring(1))
+                .toString();
     }
 
     /**
@@ -56,86 +205,5 @@ public class Names
         return friendlyName;
     }
 
-    public static String parameterNameMethodSuffix(List<String> names) {
 
-        if ( names.size() == 0 ) {
-            return "";
-        }
-
-        String s = Strings.join(names, "_and_");
-        String suffix = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, s);
-
-        return "By_" + suffix;
-    }
-
-
-    public static String methodName(Resource resource, Method method) {
-
-        if ( resource.uriParameters().size() == 0) {
-
-            return Names.buildVariableName(method.method() + "_" +
-                    resource.relativeUri().value().replaceAll("\\{[^}]+}", ""));
-        } else {
-
-            return Names.buildVariableName(method.method() + "_"
-                    + resource.relativeUri().value().replaceAll("\\{[^}]+}", "")
-                    + parameterNameMethodSuffix(Lists.transform(
-                    resource.uriParameters(), new Function<TypeDeclaration, String>() {
-                        @Nullable
-                        @Override
-                        public String apply(@Nullable TypeDeclaration input) {
-                            return input.name();
-                        }
-                    })));
-        }
-    }
-
-    public static String responseClassName(Resource resource, Method method) {
-
-        if ( resource.uriParameters().size() == 0) {
-
-            return Names.buildTypeName(method.method() + "_" + resource.relativeUri().value().replaceAll("\\{[^}]+}", "") + "_Response");
-        } else {
-
-            return Names.buildTypeName(
-                    method.method() + "_" + resource.relativeUri().value().replaceAll("\\{[^}]+\\}", "")
-                    + parameterNameMethodSuffix(Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, String>() {
-                        @Nullable
-                        @Override
-                        public String apply(@Nullable TypeDeclaration input) {
-                            return input.name();
-                        }
-                    })) + "_Response");
-        }
-    }
-
-    public static String methodNameSuffix(String resourcePath, List<String> queryParameters) {
-
-        String methodNamePathPart = "".equals(resourcePath) ? "": Names.buildTypeName(resourcePath);
-        String queryParameterSuffix = Names.parameterNameMethodSuffix(queryParameters);
-
-        return methodNamePathPart + queryParameterSuffix;
-    }
-
-    private Names()
-    {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public static String javaTypeName(Resource resource, Method method, TypeDeclaration declaration) {
-        return buildTypeName(resource.resourcePath() + "_" +  method.method() + "_" + declaration.name());
-    }
-
-    public static String ramlTypeName(Resource resource, Method method, TypeDeclaration declaration) {
-        return resource.resourcePath() + method.method() + declaration.name();
-    }
-
-    public static String javaTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
-        return buildTypeName(resource.resourcePath() + "_" +  method.method() + "_" + response.code().value() + "_" + declaration.name());
-    }
-
-    public static String ramlTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
-        return resource.resourcePath() + method.method() + response.code().value() + declaration.name();
-    }
 }

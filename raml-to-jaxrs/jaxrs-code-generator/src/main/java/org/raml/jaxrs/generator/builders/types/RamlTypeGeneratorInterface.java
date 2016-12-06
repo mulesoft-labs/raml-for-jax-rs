@@ -10,9 +10,7 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeBuilderHelpers;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
@@ -83,13 +81,13 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
 
             if (noParentDeclares(propsFromParents, propertyInfo.getName())) {
                 final MethodSpec.Builder getSpec = MethodSpec
-                        .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
+                        .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
                 getSpec.returns(propertyInfo.resolve(build, internalTypes));
                 build.withTypeListeners().onGetterMethodDeclaration(getSpec, propertyInfo.getType());
 
                 MethodSpec.Builder setSpec = MethodSpec
-                        .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
+                        .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 
                 ParameterSpec.Builder parameterSpec = ParameterSpec

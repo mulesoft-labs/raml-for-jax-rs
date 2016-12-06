@@ -16,14 +16,9 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forField;
-import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forParameter;
-import static org.raml.jaxrs.generator.builders.TypeBuilderHelpers.forReturnValue;
 
 /**
  * Created by Jean-Philippe Belanger on 11/13/16.
@@ -89,7 +84,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
             typeSpec.addField(fieldSpec.build());
 
             final MethodSpec.Builder getSpec = MethodSpec
-                    .methodBuilder("get" + Names.buildTypeName(propertyInfo.getName()))
+                    .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("return this." + propertyInfo.getName());
 
@@ -97,7 +92,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
             build.withTypeListeners().onGetterMethodImplementation(getSpec, propertyInfo.getType());
 
             MethodSpec.Builder setSpec = MethodSpec
-                    .methodBuilder("set" + Names.buildTypeName(propertyInfo.getName()))
+                    .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("this." + propertyInfo.getName() + " = " + propertyInfo.getName());
 

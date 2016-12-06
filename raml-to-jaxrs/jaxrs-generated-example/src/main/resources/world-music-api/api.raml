@@ -185,6 +185,8 @@ uses:
         description: filter the songs by genre
   post:
   /{songId}:
+    uriParameters:
+        songId: string
     get:
       (deprecated):
         date: 2016-02-28T16:41:41.090Z

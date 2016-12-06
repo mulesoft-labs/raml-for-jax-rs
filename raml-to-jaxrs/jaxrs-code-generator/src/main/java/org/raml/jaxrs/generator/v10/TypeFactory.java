@@ -52,12 +52,12 @@ public class TypeFactory {
 
     public void createType(Api api, TypeDeclaration typeDeclaration) {
 
-        build(api, typeDeclaration.name(), Names.buildTypeName(typeDeclaration.name()), typeDeclaration, true);
+        build(api, typeDeclaration.name(), Names.typeName(typeDeclaration.name()), typeDeclaration, true);
     }
 
     public void createType(Api api, String name, TypeDeclaration typeDeclaration) {
 
-        build(api, name, Names.buildTypeName(name), typeDeclaration, true);
+        build(api, name, Names.typeName(name), typeDeclaration, true);
     }
 
     private ClassName buildClassName(String pack, String name, boolean publicType) {
@@ -140,7 +140,7 @@ public class TypeFactory {
         for (TypeDeclaration parentType : parentTypes) {
 
             if ( currentBuild.getDeclaredType(parentType.name()) == null ) {
-                build(api, parentType.name(), Names.buildTypeName(parentType.name()), parentType, true);
+                build(api, parentType.name(), Names.typeName(parentType.name()), parentType, true);
             }
         }
 
@@ -151,7 +151,7 @@ public class TypeFactory {
 
             if (TypeUtils.isNewTypeDeclaration(api, declaration)) {
                 String internalTypeName = Integer.toString(internalTypeCounter);
-                TypeGenerator internalGenerator = build(api, internalTypeName, Names.buildTypeName(declaration.name() + "_Type"), declaration, false);
+                TypeGenerator internalGenerator = build(api, internalTypeName, Names.typeName(declaration.name(), "Type"), declaration, false);
                 if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
                     internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
                     properties.add(new PropertyInfo(declaration.name(), internalTypeName, declaration));
@@ -196,7 +196,7 @@ public class TypeFactory {
 
         String ramlType = Names.ramlTypeName(resource, method, response, declaration);
         String javaType = Names.javaTypeName(resource, method, response, declaration);
-        build(api, ramlType, Names.buildTypeName(javaType), declaration, true);
+        build(api, ramlType, Names.typeName(javaType), declaration, true);
     }
 
 }

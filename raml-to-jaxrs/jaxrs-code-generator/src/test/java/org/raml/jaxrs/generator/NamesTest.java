@@ -1,10 +1,19 @@
 package org.raml.jaxrs.generator;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.methods.Method;
+import org.raml.v2.api.model.v10.resources.Resource;
+import org.raml.v2.api.model.v10.system.types.RelativeUriString;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Jean-Philippe Belanger on 10/29/16.
@@ -12,31 +21,124 @@ import static org.junit.Assert.assertEquals;
  */
 @org.junit.Ignore
 public class NamesTest {
+
+    @Mock
+    Resource resource;
+
+    @Mock
+    Method method;
+
+    @Mock
+    RelativeUriString url;
+
+    @Mock
+    TypeDeclaration uriParameter;
+
+    @Before
+    public void mocks() {
+        MockitoAnnotations.initMocks(this);
+    }
+
     @Test
     public void buildTypeName() throws Exception {
 
-        assertEquals("Fun", Names.buildTypeName("/fun"));
-        assertEquals("Fun", Names.buildTypeName("/fun"));
-        assertEquals("CodeBytes", Names.buildTypeName("//code//bytes"));
-        assertEquals("Root", Names.buildTypeName(""));
-        assertEquals("FunAllo", Names.buildTypeName("fun_allo"));
-        assertEquals("FunAllo", Names.buildTypeName("fun allo"));
+        assertEquals("Fun", Names.typeName("/fun"));
+        assertEquals("Fun", Names.typeName("/fun"));
+        assertEquals("CodeBytes", Names.typeName("//code//bytes"));
+        assertEquals("Root", Names.typeName(""));
+        assertEquals("FunAllo", Names.typeName("fun_allo"));
+        assertEquals("FunAllo", Names.typeName("fun allo"));
+        assertEquals("FunAllo", Names.typeName("funAllo"));
+        assertEquals("FunAllo", Names.typeName("FunAllo"));
+        assertEquals("FunAllo", Names.typeName("Fun", "allo"));
+        assertEquals("FunAllo", Names.typeName("fun", "_allo"));
+        assertEquals("FunAllo", Names.typeName("fun", "allo"));
     }
 
     @Test
     public void buildVariableName() throws Exception {
 
-        assertEquals("fun", Names.buildVariableName("/fun"));
-        assertEquals("fun", Names.buildVariableName("fun"));
-        assertEquals("funAllo", Names.buildVariableName("fun allo"));
+        assertEquals("fun", Names.variableName("/fun"));
+        assertEquals("fun", Names.variableName("/fun"));
+        assertEquals("codeBytes", Names.variableName("//code//bytes"));
+        assertEquals("root", Names.variableName(""));
+        assertEquals("funAllo", Names.variableName("fun_allo"));
+        assertEquals("funAllo", Names.variableName("fun allo"));
+        assertEquals("funAllo", Names.variableName("funAllo"));
+        assertEquals("funAllo", Names.variableName("FunAllo"));
+        assertEquals("funAllo", Names.variableName("Fun", "allo"));
+        assertEquals("funAllo", Names.variableName("fun", "_allo"));
+        assertEquals("funAllo", Names.variableName("fun", "allo"));
     }
 
     @Test
-    public void buildMethodNameSuffix() throws Exception {
+    public void buildResponseClassname() throws Exception {
 
-        assertEquals("ById", Names.parameterNameMethodSuffix(Arrays.asList("id")));
-        assertEquals("ByIdAndColor", Names.parameterNameMethodSuffix(Arrays.asList("id", "color")));
-        assertEquals("", Names.parameterNameMethodSuffix(Arrays.<String>asList()));
+        when(method.resource()).thenReturn(resource);
+        when(resource.resourcePath()).thenReturn("/songs");
+        when(resource.uriParameters()).thenReturn(new ArrayList<TypeDeclaration>());
+        when(method.method()).thenReturn("get");
+
+        assertEquals("GetSongsResponse", Names.responseClassName(resource, method));
+    }
+
+    @Test
+    public void buildResponseClassnameWithURIParam() throws Exception {
+
+        when(method.resource()).thenReturn(resource);
+        when(resource.resourcePath()).thenReturn("/songs/{songId}");
+        when(uriParameter.name()).thenReturn("songId");
+        when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter));
+        when(method.method()).thenReturn("get");
+
+        assertEquals("GetSongsBySongIdResponse", Names.responseClassName(resource, method));
+    }
+
+    @Test
+    public void buildResponseClassnameWithTwoURIParam() throws Exception {
+
+        when(method.resource()).thenReturn(resource);
+        when(resource.resourcePath()).thenReturn("/songs/{songId}/{songId}");
+        when(uriParameter.name()).thenReturn("songId");
+        when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter, uriParameter));
+        when(method.method()).thenReturn("get");
+
+        assertEquals("GetSongsBySongIdAndSongIdResponse", Names.responseClassName(resource, method));
+    }
+
+    @Test
+    public void buildResourceMethodClassname() throws Exception {
+
+        when(method.resource()).thenReturn(resource);
+        when(resource.resourcePath()).thenReturn("/songs");
+        when(resource.uriParameters()).thenReturn(new ArrayList<TypeDeclaration>());
+        when(method.method()).thenReturn("get");
+
+        assertEquals("getSongs", Names.resourceMethodName(resource, method));
+    }
+
+    @Test
+    public void buildResourceMethodNameWithURIParam() throws Exception {
+
+        when(method.resource()).thenReturn(resource);
+        when(resource.resourcePath()).thenReturn("/songs/{songId}");
+        when(uriParameter.name()).thenReturn("songId");
+        when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter));
+        when(method.method()).thenReturn("get");
+
+        assertEquals("getSongsBySongId", Names.resourceMethodName(resource, method));
+    }
+
+    @Test
+    public void buildResourceMethodNameWithTwoURIParam() throws Exception {
+
+        when(method.resource()).thenReturn(resource);
+        when(resource.resourcePath()).thenReturn("/songs/{songId}/{songId}");
+        when(uriParameter.name()).thenReturn("songId");
+        when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter, uriParameter));
+        when(method.method()).thenReturn("get");
+
+        assertEquals("getSongsBySongIdAndSongId", Names.resourceMethodName(resource, method));
     }
 
 }

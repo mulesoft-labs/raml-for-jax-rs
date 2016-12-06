@@ -16,7 +16,6 @@ import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.HTTPMethods;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.v10.ResourceUtils;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -36,7 +35,6 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,7 +64,7 @@ public class TopResource implements ResourceGenerator {
     public void output(CodeContainer<TypeSpec> container) throws IOException {
 
 
-        final TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.buildTypeName(name))
+        final TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(AnnotationSpec.builder(Path.class)
                         .addMember("value", "$S", uri).build());
@@ -106,7 +104,7 @@ public class TopResource implements ResourceGenerator {
                 }
             }
 
-            String methodName = Names.methodName(method.resource(), method);
+            String methodName = Names.resourceMethodName(method.resource(), method);
             if (decls.size() == 0) {
                 MethodSpec.Builder methodSpec = createMethodBuilder(method, methodName, mediaTypesForMethod);
                 typeSpec.addMethod(methodSpec.build());
@@ -180,7 +178,7 @@ public class TopResource implements ResourceGenerator {
                     for (TypeDeclaration typeDeclaration : response.body()) {
 
                         String httpCode = response.code().value();
-                        MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.buildVariableName("respond_" + httpCode + "_With_" + typeDeclaration.name() ) );
+                        MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.methodName("respond", httpCode,  "With", typeDeclaration.name() ) );
                         builder
                                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
                                 .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
@@ -218,7 +216,7 @@ public class TopResource implements ResourceGenerator {
 
             methodSpec.addParameter(
                     ParameterSpec.builder(
-                            build.getJavaType(typeDeclaration), Names.buildVariableName(typeDeclaration.name()))
+                            build.getJavaType(typeDeclaration), Names.methodName(typeDeclaration.name()))
                             .addAnnotation(
                                     AnnotationSpec.builder(PathParam.class).addMember("value", "$S", typeDeclaration.name())
                                             .build())
@@ -233,7 +231,7 @@ public class TopResource implements ResourceGenerator {
 
             methodSpec.addParameter(
                     ParameterSpec.builder(
-                            build.getJavaType(typeDeclaration), Names.buildVariableName(typeDeclaration.name()))
+                            build.getJavaType(typeDeclaration), Names.methodName(typeDeclaration.name()))
                             .addAnnotation(
                                     AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", typeDeclaration.name())
                                             .build())

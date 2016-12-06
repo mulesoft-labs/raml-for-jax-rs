@@ -9,10 +9,6 @@ import example.xmlschema.Person;
  */
 public class HrImpl implements Hr {
 
-    @Override
-    public PutHrResponse putHr(Person entity) {
-        return null;
-    }
 
     @Override
     public GetHrResponse getHr() {
@@ -24,4 +20,10 @@ public class HrImpl implements Hr {
         p.setAddress(addr);
         return GetHrResponse.respond200WithApplicationXml(p);
     }
+
+    @Override
+    public PutHrResponse putHr(Person entity) {
+        return null;
+    }
+
 }

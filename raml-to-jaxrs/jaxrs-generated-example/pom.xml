@@ -146,6 +146,25 @@
                             </arguments>
                         </configuration>
                     </execution>
+<!--
+                    <execution>
+                        <id>exec-marketing-cloud</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+
+                        <configuration>
+                            <mainClass>org.raml.jaxrs.generator.Main</mainClass>
+                            <arguments>
+                                <argument>${project.basedir}/src/main/resources/marketing-cloud/api.raml</argument>
+                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>example.marketingcloud</argument>
+                                <argument>${project.basedir}/src/main/resources/marketing-cloud/api.raml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+-->
                 </executions>
             </plugin>
         </plugins>

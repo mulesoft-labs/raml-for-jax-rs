@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jaxrs-test-resources</artifactId>
-    <!--<packaging>war</packaging>-->
 
     <dependencies>
         <dependency>
@@ -18,5 +17,25 @@
             <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.raml</groupId>
+                <artifactId>jaxrs-to-raml-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jaxrstoraml</goal>
+                        </goals>
+                        <configuration>
+                            <input>target/jaxrs-test-resources-2.0.0-SNAPSHOT-sources.jar</input>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

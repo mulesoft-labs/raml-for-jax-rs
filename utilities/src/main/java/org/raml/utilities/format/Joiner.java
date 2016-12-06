@@ -34,6 +34,7 @@ public class Joiner {
 
     public String join(Iterable<?> stuff) {
         if (stuff == null || Iterables.isEmpty(stuff)) {
+            //TODO: if ifEmpty is not specified default to prefix + suffix instead.
             return ifEmpty;
         }
 

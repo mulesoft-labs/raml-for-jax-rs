@@ -29,7 +29,6 @@ public class ScalarTypes {
             .put(DateTimeOnlyTypeDeclaration.class, Date.class)
             .put(DateTypeDeclaration.class, Date.class)
             .put(NumberTypeDeclaration.class, BigDecimal.class)
-         //   .put(ObjectTypeDeclaration.class, Object.class)
             .put(StringTypeDeclaration.class, String.class)
             .put(FileTypeDeclaration.class, File.class).build();
 
@@ -46,5 +45,10 @@ public class ScalarTypes {
         }
 
         return null;
+    }
+
+    public static boolean extendsScalarRamlType(TypeDeclaration typeDeclaration) {
+
+        return /*typeDeclaration.type().equals("object") ||*/ scalarToJavaType(typeDeclaration) != null;
     }
 }

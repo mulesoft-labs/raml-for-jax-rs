@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: who cares
+types:
+    ObjectBase:
+        type: object
+        properties:
+            time: string
+    ObjectBase2:
+        type: object
+        properties:
+            day: string
+    ObjectOne:
+        properties:
+            name:
+                type: [ObjectBase, ObjectBase2]

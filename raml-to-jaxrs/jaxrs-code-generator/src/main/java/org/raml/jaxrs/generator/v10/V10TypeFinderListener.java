@@ -1,5 +1,7 @@
-package org.raml.jaxrs.generator;
+package org.raml.jaxrs.generator.v10;
 
+import org.raml.jaxrs.generator.GeneratorType;
+import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.v10.TypeFinderListener;
 import org.raml.jaxrs.generator.v10.V10GeneratorContext;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -20,7 +22,7 @@ import static org.raml.jaxrs.generator.v10.V10ObjectType.XML_OBJECT_TYPE;
  * Created by Jean-Philippe Belanger on 12/8/16.
  * Just potential zeroes and ones
  */
-class V10TypeFinderListener implements TypeFinderListener {
+public class V10TypeFinderListener implements TypeFinderListener {
     private final Map<String, GeneratorType<V10GeneratorContext>> foundTypes;
 
     public V10TypeFinderListener(Map<String, GeneratorType<V10GeneratorContext>> foundTypes) {

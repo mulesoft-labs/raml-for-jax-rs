@@ -18,6 +18,7 @@ import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.v10.TypeFactory;
 import org.raml.jaxrs.generator.v10.TypeFinder;
 import org.raml.jaxrs.generator.v10.V10GeneratorContext;
+import org.raml.jaxrs.generator.v10.V10TypeFinderListener;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -135,26 +136,14 @@ public class CurrentBuild {
         return type;
     }
 
-    public TypeName getDeclaredTypeForProperty(TypeDeclaration ramlType) {
-
-        Class<?> scalarType = ScalarTypes.scalarToJavaType(ramlType);
-        if ( scalarType != null ) {
-
-            return classToTypeName(scalarType);
-        }
-
-        GeneratorType<V10GeneratorContext> type = foundTypes.get(ramlType.type());
-        if ( type == null ) {
-
-            throw new GenerationException("no such type " + ramlType);
-        }
-
-        return ClassName.get(getModelPackage(), type.getJavaTypeName());
-    }
-
     public TypeName getJavaType(TypeDeclaration type) {
 
         return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
+    }
+
+    public TypeName getJavaType(TypeDeclaration type, boolean useName) {
+
+        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), useName);
     }
 
 

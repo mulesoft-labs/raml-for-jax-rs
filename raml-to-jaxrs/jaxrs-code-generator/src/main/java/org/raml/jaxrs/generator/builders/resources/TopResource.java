@@ -187,7 +187,7 @@ public class TopResource implements ResourceGenerator {
                                 .returns(TypeVariableName.get(currentClass.name))
                                 .build();
                         TypeName typeName = build
-                                .getJavaType(typeDeclaration);
+                                .getJavaType(typeDeclaration, true);
                         if (typeName == null) {
                             throw new GenerationException(typeDeclaration.type() + " was not seen before");
                         }

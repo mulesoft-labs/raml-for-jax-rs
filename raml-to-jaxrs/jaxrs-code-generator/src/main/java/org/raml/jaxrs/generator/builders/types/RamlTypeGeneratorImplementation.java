@@ -105,7 +105,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
             typeSpec.addMethod(setSpec.build());
         }
 
-        // JavaFile.Builder file = JavaFile.builder(build.getDefaultPackage());
+        // JavaFile.Builder file = JavaFile.builder(build.getResourcePackage());
         container.into(typeSpec);
 
         //file.build().writeTo(new File(rootDirectory));

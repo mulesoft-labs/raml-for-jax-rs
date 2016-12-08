@@ -105,7 +105,8 @@ public class SimpleTest {
 
         RamlScanner scanner = new RamlScanner(
                 "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
-                "example.worldmusic"
+                "example.worldmusic.resources",
+                "example.worldmusic.model"
         );
         scanner.handle(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/resources/world-music-api/api.raml"));
     }
@@ -115,7 +116,8 @@ public class SimpleTest {
 
         RamlScanner scanner = new RamlScanner(
                 "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
-                "example.marketing"
+                "example.marketing.resources",
+                 "example.marketing.model"
         );
         scanner.handle(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/resources/marketing-cloud/api.raml"));
     }

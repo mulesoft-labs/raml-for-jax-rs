@@ -37,34 +37,36 @@ import java.util.Map;
 public class CurrentBuild {
 
     private final TypeFinder typeFinder;
-    private final String defaultPackage;
+    private final String resourcePackage;
+    private final String modelPackage;
 
     private final List<ResourceGenerator> resources = new ArrayList<>();
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
     private Map<String, GeneratorType<V10GeneratorContext>> foundTypes = new HashMap<>();
 
-    public CurrentBuild(TypeFinder typeFinder, String defaultPackage) {
+    public CurrentBuild(TypeFinder typeFinder, String resourcePackage, String modelPackage) {
         this.typeFinder = typeFinder;
-        this.defaultPackage = defaultPackage;
+        this.resourcePackage = resourcePackage;
+        this.modelPackage = modelPackage;
 
         typeExtensionList.addExtension(new JaxbTypeExtension());
         typeExtensionList.addExtension(new JavadocTypeExtension());
     }
 
-    public String getDefaultPackage() {
-        return defaultPackage;
+    public String getResourcePackage() {
+        return resourcePackage;
     }
 
     public String getModelPackage() {
 
-        return defaultPackage;
+        return modelPackage;
     }
 
     public void generate(final String rootDirectory) throws IOException {
 
         if ( resources.size() > 0 ) {
-            ResponseSupport.buildSupportClasses(rootDirectory, this.defaultPackage);
+            ResponseSupport.buildSupportClasses(rootDirectory, getResourcePackage());
         }
 
         for (TypeGenerator typeGenerator : builtTypes.values()) {
@@ -77,7 +79,7 @@ public class CurrentBuild {
                     @Override
                     public void into(TypeSpec.Builder g) throws IOException {
 
-                        JavaFile.Builder file = JavaFile.builder(getDefaultPackage(), g.build());
+                        JavaFile.Builder file = JavaFile.builder(getModelPackage(), g.build());
                         file.build().writeTo(new File(rootDirectory));
                     }
                 }
@@ -102,7 +104,7 @@ public class CurrentBuild {
             resource.output(new CodeContainer<TypeSpec>() {
                 @Override
                 public void into(TypeSpec g) throws IOException {
-                    JavaFile.Builder file = JavaFile.builder(getDefaultPackage(), g);
+                    JavaFile.Builder file = JavaFile.builder(getResourcePackage(), g);
                     file.build().writeTo(new File(rootDirectory));
                 }
             });

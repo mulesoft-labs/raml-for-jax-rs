@@ -32,10 +32,18 @@ public class RamlScanner {
 
     private final String destDir;
     private final String packageName;
+    private final String modelPackageName;
+
+    public RamlScanner(String destDir, String packageName, String modelPackageName) {
+        this.destDir = destDir;
+        this.packageName = packageName;
+        this.modelPackageName = modelPackageName;
+    }
 
     public RamlScanner(String destDir, String packageName) {
         this.destDir = destDir;
         this.packageName = packageName;
+        this.modelPackageName = packageName;
     }
 
     public void handle(String resourceName) throws IOException, GenerationException {
@@ -74,7 +82,7 @@ public class RamlScanner {
 
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
-        CurrentBuild build = new CurrentBuild(new TypeFinder(), packageName);
+        CurrentBuild build = new CurrentBuild(new TypeFinder(), packageName, modelPackageName);
         build.constructClasses(api, new TypeFactory(build));
 
         ResourceHandler resourceHandler = new ResourceHandler(build);

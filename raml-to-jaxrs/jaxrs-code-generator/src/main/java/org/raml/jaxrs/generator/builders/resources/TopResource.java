@@ -93,7 +93,7 @@ public class TopResource implements ResourceGenerator {
 
         for (Method method : incomingBodies.keySet()) {
 
-            List<String> mediaTypesForMethod = fetchAllMediaTypesForMethod(method);
+            Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethod(method);
             TreeSet<TypeDeclaration> decls = new TreeSet<>(new TypeDeclarationTypeComparator());
 
             Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
@@ -121,9 +121,9 @@ public class TopResource implements ResourceGenerator {
         }
     }
 
-    private List<String> fetchAllMediaTypesForMethod(Method method) {
+    private Set<String> fetchAllMediaTypesForMethod(Method method) {
 
-        List<String> mediaTypes = new ArrayList<>();
+        Set<String> mediaTypes = new HashSet<>();
         for (Response response : method.responses()) {
 
             mediaTypes.addAll(Lists.transform(response.body(), new Function<TypeDeclaration, String>() {
@@ -148,7 +148,7 @@ public class TopResource implements ResourceGenerator {
             TypeSpec.Builder responseClass = TypeSpec
                     .classBuilder(Names.responseClassName(method.resource(), method))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .superclass(ClassName.get(build.getDefaultPackage(), "ResponseDelegate"))
+                    .superclass(ClassName.get(build.getResourcePackage(), "ResponseDelegate"))
                     .addMethod(
                             MethodSpec.constructorBuilder()
                                     .addParameter(javax.ws.rs.core.Response.class, "response")
@@ -204,14 +204,14 @@ public class TopResource implements ResourceGenerator {
     }
 
 
-    private MethodSpec.Builder createMethodBuilder(Method method, String methodName, List<String> mediaTypesForMethod) {
+    private MethodSpec.Builder createMethodBuilder(Method method, String methodName, Set<String> mediaTypesForMethod) {
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
         for (TypeDeclaration typeDeclaration : method.resource().uriParameters()) {
 
             if (TypeUtils.isComposite(typeDeclaration)) {
-                throw new GenerationException("query parameter is composite: " + typeDeclaration.type());
+                throw new GenerationException("uri parameter is composite: " + typeDeclaration.type());
             }
 
             methodSpec.addParameter(

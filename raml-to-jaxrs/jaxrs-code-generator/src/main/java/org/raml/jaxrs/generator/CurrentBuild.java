@@ -37,17 +37,13 @@ public class CurrentBuild {
 
     private final List<ResourceGenerator> resources = new ArrayList<>();
     private final Map<String, TypeGenerator> types = new HashMap<>();
-    private final Map<String, CodeModelTypeGenerator> codeModelTypes = new HashMap<>();
-    private final Map<String, JavaPoetTypeGenerator> javaPoetTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
-    private String modelPackage;
 
     public CurrentBuild(String defaultPackage) {
 
         this.defaultPackage = defaultPackage;
         typeExtensionList.addExtension(new JaxbTypeExtension());
         typeExtensionList.addExtension(new JavadocTypeExtension());
-
     }
 
     public String getDefaultPackage() {
@@ -59,9 +55,7 @@ public class CurrentBuild {
         return defaultPackage;
     }
 
-
     public void generate(final String rootDirectory) throws IOException {
-
 
         if ( resources.size() > 0 ) {
             ResponseSupport.buildSupportClasses(rootDirectory, this.defaultPackage);
@@ -110,25 +104,6 @@ public class CurrentBuild {
 
     }
 
-    public void javaTypeName(TypeDeclaration type, TypeDescriber describer) {
-        Class<?> scalar = ScalarTypes.scalarToJavaType(type);
-        if ( scalar != null ){
-
-            describer.asJavaType(this, scalar);
-        } else {
-
-            TypeGenerator builder = types.get(type);
-            if ( builder != null ) {
-
-                describer.asBuiltType(this, builder.getGeneratedJavaType());
-            } else {
-
-                throw new IllegalArgumentException("unknown type " + type);
-            }
-        }
-
-
-    }
 
     public TypeExtension withTypeListeners() {
 

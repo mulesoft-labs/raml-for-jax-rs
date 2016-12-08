@@ -6,15 +6,15 @@ import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Jean-Philippe Belanger on 12/6/16.
@@ -22,66 +22,67 @@ import java.util.Map;
  */
 public class TypeFinder {
 
-    private Map<String, TypeDeclaration> declarations = new HashMap<>();
-
-    public<T> T getDeclarations(String name) {
-        return (T) declarations.get(name);
-    }
-
-    public TypeFinder findTypes(Api api) {
+    public TypeFinder findTypes(Api api, TypeFinderListener listener) {
 
         if ( api.uses() != null ) {
 
-            goThroughLibraries(api.uses());
+            goThroughLibraries(new HashSet<String>(), api.uses(), listener);
         }
 
-        localTypes(api.types());
-        resourceTypes(api.resources());
+        localTypes(api.types(), listener);
+        resourceTypes(api.resources(), listener);
 
         return this;
     }
 
-    private void resourceTypes(List<Resource> resources) {
+    private void resourceTypes(List<Resource> resources, TypeFinderListener listener) {
 
         for (Resource resource : resources) {
 
-            resourceTypes(resource.resources());
+            resourceTypes(resource.resources(), listener);
             for (Method method : resource.methods()) {
 
-                typesInBodies(resource, method, method.body());
+                typesInBodies(resource, method, method.body(), listener);
             }
         }
     }
 
-    private void typesInBodies(Resource resource, Method method, List<TypeDeclaration> body) {
+    private void typesInBodies(Resource resource, Method method, List<TypeDeclaration> body, TypeFinderListener listener) {
         for (TypeDeclaration typeDeclaration : body) {
-            System.err.println("ResourceBodyType: " + resource.resourcePath() + " " + method.method() + ":" + typeDeclaration.getClass().getInterfaces()[0] + " -> " + typeDeclaration.name() + ":" + typeDeclaration.type());
+
+            listener.newType(resource, method, typeDeclaration);
         }
 
         for (Response response : method.responses()) {
             for (TypeDeclaration typeDeclaration : response.body()) {
-                System.err.println("ResourceResponseType: " + resource.resourcePath() + " " + method.method() + "(" + response.code().value() + "):" + typeDeclaration.getClass().getInterfaces()[0] + " -> " + typeDeclaration.name() + ":" + typeDeclaration.type());
+                listener.newType(resource, method, response, typeDeclaration);
             }
         }
     }
 
-    private void localTypes(List<TypeDeclaration> types) {
+    private void localTypes(List<TypeDeclaration> types, TypeFinderListener listener) {
 
         for (TypeDeclaration typeDeclaration : types) {
 
-            System.err.println("Type: " + typeDeclaration.getClass().getInterfaces()[0] + " -> " + typeDeclaration.name() + ":" + typeDeclaration.type());
-            declarations.put(typeDeclaration.name(), typeDeclaration);
-        }
+            listener.newType(typeDeclaration);
+       }
     }
 
-    private void goThroughLibraries(List<Library> libraries) {
+    private void goThroughLibraries(Set<String> visitedLibraries, List<Library> libraries, TypeFinderListener listener) {
 
         for (Library library : libraries) {
-            goThroughLibraries(library.uses());
+            if (visitedLibraries.contains(library.name())) {
+
+                continue;
+            } else {
+
+                visitedLibraries.add(library.name());
+            }
+
+            goThroughLibraries(visitedLibraries, library.uses(), listener);
             for (TypeDeclaration typeDeclaration : library.types()) {
 
-                System.err.println("Type: " + typeDeclaration.getClass().getInterfaces()[0] + " -> " + typeDeclaration.name() + ":" + typeDeclaration.type());
-                declarations.put(typeDeclaration.name(), typeDeclaration);
+                listener.newType(typeDeclaration);
             }
         }
 
@@ -106,12 +107,25 @@ public class TypeFinder {
         else
         {
             Api api = ramlModelResult.getApiV10();
-            new TypeFinder().findTypes(api);
+            new TypeFinder().findTypes(api, new TypeFinderListener() {
+                @Override
+                public void newType(TypeDeclaration typeDeclaration) {
+
+                    System.err.println("Type: " + typeDeclaration.getClass().getInterfaces()[0] + " -> " + typeDeclaration.name() + ":" + typeDeclaration.type());
+                }
+
+                @Override
+                public void newType(Resource resource, Method method, Response response, TypeDeclaration typeDeclaration) {
+
+                    System.err.println("Type: " + typeDeclaration.getClass().getInterfaces()[0] + " -> " + typeDeclaration.name() + ":" + typeDeclaration.type());
+                }
+
+                @Override
+                public void newType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
+
+                    System.err.println("Type: " + typeDeclaration.getClass().getInterfaces()[0] + " -> " + typeDeclaration.name() + ":" + typeDeclaration.type());
+                }
+            });
         }
-    }
-
-    public List<TypeDeclaration> allTypes() {
-
-        return new ArrayList<>(declarations.values());
     }
 }

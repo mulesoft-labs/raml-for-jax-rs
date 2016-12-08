@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  */
 public class ModelFixer {
 
-    public static List<TypeDeclaration> parentTypes(List<TypeDeclaration> allTypes, TypeDeclaration type) {
+    public static List<TypeDeclaration> parentTypes(Collection<TypeDeclaration> allTypes, TypeDeclaration type) {
 
         List<String> typeNames = pullOutNames(type);
         List<TypeDeclaration> result = new ArrayList<>();

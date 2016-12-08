@@ -9,6 +9,7 @@ import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class TypeUtils {
      * Called on type extension. If there are no properties ? We create an empty class.
      * if the class is of type object, we don't extend anything.
      */
-    public static boolean shouldCreateNewClass(TypeDeclaration extending, TypeDeclaration extended, List<TypeDeclaration>... all) {
+    public static boolean shouldCreateNewClass(TypeDeclaration extending, TypeDeclaration extended, Collection<TypeDeclaration>... all) {
 
         if (ScalarTypes.extendsScalarRamlType(extending)) {
 

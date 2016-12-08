@@ -40,6 +40,7 @@ public class PropertyInfo {
 
     public TypeName resolve(CurrentBuild currentBuild, Map<String, JavaPoetTypeGenerator> internalTypes) {
 
+        // If the type is not internal, then it must exist.  The type of the property must be correct.
         if ( internalTypeName == null ) {
 
             return currentBuild.getJavaType(type);

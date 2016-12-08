@@ -133,59 +133,57 @@ public class CurrentBuild {
         return type;
     }
 
-    public TypeName getJavaType(TypeDeclaration type) {
+    public TypeName getDeclaredTypeForProperty(TypeDeclaration ramlType) {
 
-        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>());
+        Class<?> scalarType = ScalarTypes.scalarToJavaType(ramlType);
+        if ( scalarType != null ) {
+
+            return classToTypeName(scalarType);
+        }
+
+        GeneratorType<V10GeneratorContext> type = foundTypes.get(ramlType.type());
+        if ( type == null ) {
+
+            throw new GenerationException("no such type " + ramlType);
+        }
+
+        return ClassName.get(getModelPackage(), type.getJavaTypeName());
     }
 
-    public TypeName getJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes) {
+    public TypeName getJavaType(TypeDeclaration type) {
+
+        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
+    }
 
 
-        TypeName name = checkJavaType(type, internalTypes);
+    public TypeName getJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
+
+        TypeName name = checkJavaType(type, internalTypes, useName);
         if ( name == null ) {
             throw new GenerationException("unknown type " + type.type() + "(" + type.name() + ")");
         }
         return name;
     }
 
-    public TypeName checkJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes) {
+    private TypeName checkJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
         Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
 
-            if ( scalar.isPrimitive()) {
-                switch(scalar.getSimpleName()) {
-                    case "int":
-                        return TypeName.INT;
-
-                    case "boolean":
-                        return TypeName.BOOLEAN;
-
-                    case "double":
-                        return TypeName.DOUBLE;
-
-                    case "float":
-                        return TypeName.FLOAT;
-
-                    default:
-                        throw new GenerationException("JP, finish the list " + scalar);
-                }
-            } else {
-                return ClassName.get(scalar);
-            }
+            return classToTypeName(scalar);
         } else {
 
             if ( type instanceof ArrayTypeDeclaration ) {
 
                 ArrayTypeDeclaration listType = (ArrayTypeDeclaration) type;
-                TypeName contained = getJavaType(listType.items(), internalTypes);
+                TypeName contained = getJavaType(listType.items(), internalTypes, true);
                 return ParameterizedTypeName.get(ClassName.get("java.util", "List"), contained);
 
             } else {
 
                 TypeGenerator builder = internalTypes.get(type.name());
                 if ( builder == null ) {
-                    GeneratorType gen = foundTypes.get(getTypeName(type));
+                    GeneratorType gen = foundTypes.get(getTypeName(type, useName));
                     return ClassName.get(getModelPackage(), gen.getJavaTypeName());
                 }
 
@@ -194,14 +192,37 @@ public class CurrentBuild {
         }
     }
 
+    public TypeName classToTypeName(Class<?> scalar) {
+        if ( scalar.isPrimitive()) {
+            switch(scalar.getSimpleName()) {
+                case "int":
+                    return TypeName.INT;
+
+                case "boolean":
+                    return TypeName.BOOLEAN;
+
+                case "double":
+                    return TypeName.DOUBLE;
+
+                case "float":
+                    return TypeName.FLOAT;
+
+                default:
+                    throw new GenerationException("JP, finish the list " + scalar);
+            }
+        } else {
+            return ClassName.get(scalar);
+        }
+    }
+
     public boolean isBuilt(String name) {
 
         return builtTypes.containsKey(name);
     }
 
-    private String getTypeName(TypeDeclaration type) {
+    private String getTypeName(TypeDeclaration type, boolean useName) {
 
-        if ( type.name().contains("/") ) { // horrible hack.
+        if (!useName) { // horrible hack.
 
             return type.type();
         } else {

@@ -32,9 +32,17 @@ public class ScalarTypes {
             .put(StringTypeDeclaration.class, String.class)
             .put(FileTypeDeclaration.class, File.class).build();
 
+    private static Map<String, Class<?>> stringScalarToType = ImmutableMap.<String, Class<?>>builder()
+            .put("integer", int.class)
+            .put("boolean", boolean.class)
+            .put("date-time", Date.class)
+            .put("date", Date.class)
+            .put("number", BigDecimal.class)
+            .put("string", String.class)
+            .put("file", File.class).build();
+
     public static Class<?> scalarToJavaType(TypeDeclaration name) {
 
-        //String s = name.type().toLowerCase();
         for (Class<?> aClass : name.getClass().getInterfaces()) {
 
             if ( TypeDeclaration.class.isAssignableFrom(aClass)) {
@@ -45,6 +53,11 @@ public class ScalarTypes {
         }
 
         return null;
+    }
+
+    public static Class<?> scalarToJavaType(String name) {
+
+        return stringScalarToType.get(name.toLowerCase());
     }
 
     public static boolean extendsScalarRamlType(TypeDeclaration typeDeclaration) {

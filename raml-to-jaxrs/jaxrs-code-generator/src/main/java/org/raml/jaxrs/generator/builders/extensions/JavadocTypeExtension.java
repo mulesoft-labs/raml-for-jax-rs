@@ -66,6 +66,6 @@ public class JavadocTypeExtension extends TypeExtensionHelper {
             adder.addJavadoc(" $L\n", exampleSpec.name());
         }
 
-        adder.addJavadoc(" $L\n", exampleSpec.value());
+        adder.addJavadoc(" $L\n",  "<pre>\n{@code\n" + exampleSpec.value() + "\n}</pre>");
     }
 }

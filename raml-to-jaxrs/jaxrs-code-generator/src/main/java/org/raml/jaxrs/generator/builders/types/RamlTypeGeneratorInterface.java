@@ -6,9 +6,11 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.Generator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -69,12 +71,12 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
         }
 
 
-        List<TypeGenerator> propsFromParents = new ArrayList<>();
+        List<GeneratorType<?>> propsFromParents = new ArrayList<>();
         for (TypeDeclaration parentType : parentTypes) {
 
-            TypeGenerator builder = build.getDeclaredType(parentType.name());
+            GeneratorType<?> builder = build.getDeclaredType(parentType.name());
             propsFromParents.add(builder);
-            typeSpec.addSuperinterface(builder.getGeneratedJavaType());
+            typeSpec.addSuperinterface(ClassName.get(build.getModelPackage(), builder.getJavaTypeName()));
         }
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
@@ -91,7 +93,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 
                 ParameterSpec.Builder parameterSpec = ParameterSpec
-                        .builder(propertyInfo.resolve(build, internalTypes), propertyInfo.getName());
+                        .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
                 build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec, propertyInfo.getType() );
                 setSpec.addParameter(
                         parameterSpec.build());
@@ -104,9 +106,9 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
         into.into(typeSpec);
     }
 
-    private boolean noParentDeclares(List<TypeGenerator> propsFromParents, String name) {
+    private boolean noParentDeclares(List<GeneratorType<?>> propsFromParents, String name) {
 
-        for (TypeGenerator propsFromParent : propsFromParents) {
+        for (GeneratorType<?> propsFromParent : propsFromParents) {
 
             if (propsFromParent.declaresProperty(name)) {
 
@@ -127,7 +129,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
 
         for (TypeDeclaration parentType : parentTypes) {
 
-            TypeGenerator builder = build.getDeclaredType(parentType.name());
+            GeneratorType<?> builder = build.getDeclaredType(parentType.name());
             if (builder.declaresProperty(name)) {
                 return true;
             }

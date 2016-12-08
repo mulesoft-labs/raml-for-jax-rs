@@ -99,45 +99,6 @@ public class TypeUtils {
         return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
     }
 
-    public static boolean isInlineTypeDeclarationFromResource(Api api, CurrentBuild current,
-            TypeDeclaration typeDeclaration) {
-
-
-        if (isComposite(typeDeclaration) && current.getDeclaredType(typeDeclaration.type()) != null) {
-
-            return false;
-        }
-
-        if (typeDeclaration.type().equals("null_AnonymousType")) {
-
-            return true;
-        }
-
-        if (!isComposite(typeDeclaration)) {
-            return false;
-        }
-
-        if (current.checkJavaType(typeDeclaration, new HashMap<String, JavaPoetTypeGenerator>()) == null) {
-            return true;
-        }
-
-
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) typeDeclaration;
-        if (typeDeclaration.type().equals("object")) {
-            return true;
-        }
-        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), typeDeclaration);
-        if (parents.size() == 0) {
-            return false;
-        }
-        if (parents.size() != 1) {
-            return true;
-        }
-
-
-        return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
-    }
-
     public static boolean isComposite(TypeDeclaration typeDeclaration) {
 
         return typeDeclaration instanceof ObjectTypeDeclaration || typeDeclaration instanceof XMLTypeDeclaration

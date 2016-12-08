@@ -101,7 +101,7 @@ public class TypeFactory {
 
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(currentBuild.getModelPackage(), schemaFile, codeModel);
             XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), javaTypeName, generated.values().iterator().next());
-            currentBuild.newKnownType(ramlTypeName, gen);
+            currentBuild.newGenerator(ramlTypeName, gen);
             return gen;
         } catch (Exception e) {
 
@@ -129,7 +129,7 @@ public class TypeFactory {
         }
 
         JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), ramlTypeName, codeModel);
-        currentBuild.newKnownType(ramlTypeName, gen);
+        currentBuild.newGenerator(ramlTypeName, gen);
         return gen;
     }
 
@@ -139,7 +139,7 @@ public class TypeFactory {
         List<TypeDeclaration> parentTypes = ModelFixer.parentTypes(api.types(), typeDeclaration);
         for (TypeDeclaration parentType : parentTypes) {
 
-            if ( currentBuild.getDeclaredType(parentType.name()) == null ) {
+            if ( ! currentBuild.isBuilt(parentType.name()) ) {
                 build(api, parentType.name(), Names.typeName(parentType.name()), parentType, true);
             }
         }
@@ -173,7 +173,7 @@ public class TypeFactory {
         CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
 
         if ( publicType ) {
-            currentBuild.newKnownType(ramlTypeName, gen);
+            currentBuild.newGenerator(ramlTypeName, gen);
         }
 
         return gen;
@@ -182,7 +182,7 @@ public class TypeFactory {
     /*
         Name of type is a mime type
      */
-    public void createPrivateTypeForResponse(Api api, Resource resource, Method method, TypeDeclaration declaration) {
+    public void createPrivateTypeForRequest(Api api, Resource resource, Method method, TypeDeclaration declaration) {
 
         String ramlType = Names.ramlTypeName(resource, method, declaration);
         String javaType = Names.javaTypeName(resource, method, declaration);

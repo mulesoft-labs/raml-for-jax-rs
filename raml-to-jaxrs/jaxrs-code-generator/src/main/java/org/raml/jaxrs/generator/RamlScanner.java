@@ -3,11 +3,11 @@ package org.raml.jaxrs.generator;
 
 import org.raml.jaxrs.generator.v10.ResourceHandler;
 import org.raml.jaxrs.generator.v10.TypeFactory;
+import org.raml.jaxrs.generator.v10.TypeFinder;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
@@ -74,27 +74,10 @@ public class RamlScanner {
 
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
-        CurrentBuild build = new CurrentBuild(packageName);
+        CurrentBuild build = new CurrentBuild(new TypeFinder(), packageName);
+        build.constructClasses(api, new TypeFactory(build));
 
-        TypeFactory typeHandler = new TypeFactory(build);
         ResourceHandler resourceHandler = new ResourceHandler(build);
-        for (TypeDeclaration typeDeclaration: api.types()) {
-
-            typeHandler.createType(api, typeDeclaration);
-        }
-
-        for (Library library : api.uses()) {
-
-            for (TypeDeclaration typeDeclaration : library.types()) {
-
-                typeHandler.createType(api, typeDeclaration);
-            }
-        }
-        // Find types in resources.
-        for (Resource resource : api.resources()) {
-
-            findPrivateTypes(api, build, resource, typeHandler);
-        }
 
         // handle resources.
         for (Resource resource : api.resources()) {
@@ -102,68 +85,6 @@ public class RamlScanner {
         }
 
         build.generate(destDir);
-    }
-
-    private void findPrivateTypes(Api api, CurrentBuild build, Resource resource, TypeFactory typeHandler) {
-        for (Method method : resource.methods()) {
-
-            for (TypeDeclaration typeDeclaration : method.body()) {
-
-                if (TypeUtils.isInlineTypeDeclarationFromResource(api, build, typeDeclaration) ) {
-                    if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
-
-                        typeHandler.createPrivateTypeForResponse(api, resource, method, typeDeclaration);
-                    }
-
-                    if ( typeDeclaration instanceof JSONTypeDeclaration ) {
-
-                        typeHandler.createType(api, Names.ramlTypeName(resource, method, typeDeclaration), typeDeclaration);
-                    }
-
-                    if ( typeDeclaration instanceof XMLTypeDeclaration) {
-
-                        typeHandler.createType(api, Names.ramlTypeName(resource, method, typeDeclaration), typeDeclaration);
-                    }
-                } else {
-                    if ( TypeUtils.isComposite(typeDeclaration) && build.getDeclaredType(typeDeclaration.type()) == null ) {
-                        typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
-                    }
-                }
-            }
-
-            for (Response response : method.responses()) {
-
-                for (TypeDeclaration typeDeclaration : response.body()) {
-
-                    if (TypeUtils.isInlineTypeDeclarationFromResource(api, build, typeDeclaration) ) {
-                        if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
-
-                            typeHandler.createPrivateTypeForResponse(api, resource, method, response, typeDeclaration);
-                        }
-
-                        if ( typeDeclaration instanceof JSONTypeDeclaration ) {
-
-                            typeHandler.createType(api, Names.ramlTypeName(resource, method, response, typeDeclaration), typeDeclaration);
-                        }
-
-                        if ( typeDeclaration instanceof XMLTypeDeclaration) {
-
-                            typeHandler.createType(api, Names.ramlTypeName(resource, method, response, typeDeclaration), typeDeclaration);
-                        }
-
-                    } else {
-
-                        if ( TypeUtils.isComposite(typeDeclaration) && build.getDeclaredType(typeDeclaration.type()) == null ) {
-                            typeHandler.createType(api, typeDeclaration.type(), typeDeclaration);
-                        }
-                    }
-                }
-            }
-        }
-
-        for (Resource subresource : resource.resources()) {
-            findPrivateTypes(api, build, subresource, typeHandler);
-        }
     }
 
 

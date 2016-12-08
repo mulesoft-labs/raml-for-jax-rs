@@ -15,7 +15,10 @@ import org.raml.jaxrs.generator.builders.extensions.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
-import org.raml.jaxrs.generator.builders.TypeDescriber;
+import org.raml.jaxrs.generator.v10.TypeFactory;
+import org.raml.jaxrs.generator.v10.TypeFinder;
+import org.raml.jaxrs.generator.v10.V10GeneratorContext;
+import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -33,15 +36,18 @@ import java.util.Map;
  */
 public class CurrentBuild {
 
+    private final TypeFinder typeFinder;
     private final String defaultPackage;
 
     private final List<ResourceGenerator> resources = new ArrayList<>();
-    private final Map<String, TypeGenerator> types = new HashMap<>();
+    private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
+    private Map<String, GeneratorType<V10GeneratorContext>> foundTypes = new HashMap<>();
 
-    public CurrentBuild(String defaultPackage) {
-
+    public CurrentBuild(TypeFinder typeFinder, String defaultPackage) {
+        this.typeFinder = typeFinder;
         this.defaultPackage = defaultPackage;
+
         typeExtensionList.addExtension(new JaxbTypeExtension());
         typeExtensionList.addExtension(new JavadocTypeExtension());
     }
@@ -61,7 +67,7 @@ public class CurrentBuild {
             ResponseSupport.buildSupportClasses(rootDirectory, this.defaultPackage);
         }
 
-        for (TypeGenerator typeGenerator : types.values()) {
+        for (TypeGenerator typeGenerator : builtTypes.values()) {
 
             if ( typeGenerator instanceof JavaPoetTypeGenerator ) {
 
@@ -111,14 +117,20 @@ public class CurrentBuild {
     }
 
 
-    public void newKnownType(String ramlTypeName, TypeGenerator generator) {
+    public void newGenerator(String ramlTypeName, TypeGenerator generator) {
 
-        types.put(ramlTypeName, generator);
+        builtTypes.put(ramlTypeName, generator);
     }
 
-    public TypeGenerator getDeclaredType(String ramlType) {
+    public GeneratorType<?> getDeclaredType(String ramlType) {
 
-        return types.get(ramlType);
+        GeneratorType<V10GeneratorContext> type = foundTypes.get(ramlType);
+        if ( type == null ) {
+
+            throw new GenerationException("no such type " + ramlType);
+        }
+
+        return type;
     }
 
     public TypeName getJavaType(TypeDeclaration type) {
@@ -173,18 +185,18 @@ public class CurrentBuild {
 
                 TypeGenerator builder = internalTypes.get(type.name());
                 if ( builder == null ) {
-                    builder = types.get(getTypeName(type));
+                    GeneratorType gen = foundTypes.get(getTypeName(type));
+                    return ClassName.get(getModelPackage(), gen.getJavaTypeName());
                 }
 
-                if ( builder != null ) {
-
-                    return builder.getGeneratedJavaType();
-                } else {
-
-                    return null;
-                }
+                return builder.getGeneratedJavaType();
             }
         }
+    }
+
+    public boolean isBuilt(String name) {
+
+        return builtTypes.containsKey(name);
     }
 
     private String getTypeName(TypeDeclaration type) {
@@ -202,5 +214,27 @@ public class CurrentBuild {
 
         resources.add(rg);
     }
+
+    public void constructClasses(Api api, TypeFactory typeFactory) {
+
+        typeFinder.findTypes(api, new V10TypeFinderListener(foundTypes));
+        for (GeneratorType<V10GeneratorContext> type : foundTypes.values()) {
+
+            V10GeneratorContext context = type.getContext();
+            if ( context.getResponse() != null ) {
+
+                typeFactory.createPrivateTypeForResponse(api, context.getResource(), context.getMethod(), context.getResponse(), context.getTypeDeclaration());
+                continue;
+            }
+
+            if ( context.getMethod() != null ) {
+                typeFactory.createPrivateTypeForRequest(api, context.getResource(), context.getMethod(), context.getTypeDeclaration());
+            } else {
+
+                typeFactory.createType(api, context.getTypeDeclaration());
+            }
+        }
+    }
+
 }
 

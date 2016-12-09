@@ -1,19 +1,14 @@
 package org.raml.jaxrs.generator.v10;
 
-import org.junit.Assert;
 import org.junit.Test;
+import org.raml.jaxrs.generator.TypeFinderListener;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
-import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -102,22 +97,12 @@ public class TypeUtilsTest {
         else
         {
             final Map<String, TypeDeclaration> decls = new HashMap<>();
-            new TypeFinder().findTypes(ramlModelResult.getApiV10(), new TypeFinderListener() {
-                @Override
-                public void newType(TypeDeclaration typeDeclaration) {
-                    decls.put(typeDeclaration.name(), typeDeclaration);
-                }
+            new V10TypeFinder(ramlModelResult.getApiV10()).findTypes(new TypeFinderListener<V10GeneratorContext>() {
 
                 @Override
-                public void newType(Resource resource, Method method, Response response, TypeDeclaration typeDeclaration) {
-
-                    decls.put(typeDeclaration.name(), typeDeclaration);
-                }
-
-                @Override
-                public void newType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
-
-                    decls.put(typeDeclaration.name(), typeDeclaration);
+                public void newType(V10GeneratorContext generatorContext) {
+                    TypeDeclaration decl = generatorContext.getTypeDeclaration();
+                    decls.put(decl.name(), decl);
                 }
             });
 

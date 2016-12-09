@@ -16,7 +16,7 @@ import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.v10.TypeFactory;
-import org.raml.jaxrs.generator.v10.TypeFinder;
+import org.raml.jaxrs.generator.v10.V10TypeFinder;
 import org.raml.jaxrs.generator.v10.V10GeneratorContext;
 import org.raml.jaxrs.generator.v10.V10TypeFinderListener;
 import org.raml.v2.api.model.v10.api.Api;
@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class CurrentBuild {
 
-    private final TypeFinder typeFinder;
+    private final V10TypeFinder typeFinder;
     private final String resourcePackage;
     private final String modelPackage;
 
@@ -46,7 +46,7 @@ public class CurrentBuild {
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
     private Map<String, GeneratorType<V10GeneratorContext>> foundTypes = new HashMap<>();
 
-    public CurrentBuild(TypeFinder typeFinder, String resourcePackage, String modelPackage) {
+    public CurrentBuild(V10TypeFinder typeFinder, String resourcePackage, String modelPackage) {
         this.typeFinder = typeFinder;
         this.resourcePackage = resourcePackage;
         this.modelPackage = modelPackage;
@@ -229,7 +229,7 @@ public class CurrentBuild {
 
     public void constructClasses(Api api, TypeFactory typeFactory) {
 
-        typeFinder.findTypes(api, new V10TypeFinderListener(foundTypes));
+        typeFinder.findTypes(new V10TypeFinderListener(foundTypes));
         for (GeneratorType<V10GeneratorContext> type : foundTypes.values()) {
 
             V10GeneratorContext context = type.getContext();

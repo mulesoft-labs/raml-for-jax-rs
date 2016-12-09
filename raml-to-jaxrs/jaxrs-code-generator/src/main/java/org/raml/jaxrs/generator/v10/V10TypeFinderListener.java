@@ -2,8 +2,7 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.v10.TypeFinderListener;
-import org.raml.jaxrs.generator.v10.V10GeneratorContext;
+import org.raml.jaxrs.generator.TypeFinderListener;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
@@ -22,7 +21,7 @@ import static org.raml.jaxrs.generator.v10.V10ObjectType.XML_OBJECT_TYPE;
  * Created by Jean-Philippe Belanger on 12/8/16.
  * Just potential zeroes and ones
  */
-public class V10TypeFinderListener implements TypeFinderListener {
+public class V10TypeFinderListener implements TypeFinderListener<V10GeneratorContext> {
     private final Map<String, GeneratorType<V10GeneratorContext>> foundTypes;
 
     public V10TypeFinderListener(Map<String, GeneratorType<V10GeneratorContext>> foundTypes) {
@@ -31,7 +30,20 @@ public class V10TypeFinderListener implements TypeFinderListener {
     }
 
     @Override
-    public void newType(TypeDeclaration typeDeclaration) {
+    public void newType(V10GeneratorContext context) {
+
+        TypeDeclaration typeDeclaration = context.getTypeDeclaration();
+        if ( context.getResponse() != null ) {
+
+            newResponseType(context);
+            return;
+        }
+
+        if ( context.getMethod() != null ) {
+
+            newRequestType(context);
+            return;
+        }
 
         // Just a plain type we found.
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
@@ -61,8 +73,12 @@ public class V10TypeFinderListener implements TypeFinderListener {
         }
     }
 
-    @Override
-    public void newType(Resource resource, Method method, Response response, TypeDeclaration typeDeclaration) {
+    private void newResponseType(V10GeneratorContext context) {
+
+        TypeDeclaration typeDeclaration = context.getTypeDeclaration();
+        Response response = context.getResponse();
+        Method method = context.getMethod();
+        Resource resource = context.getResource();
 
         // Just a plain type we found.
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
@@ -99,8 +115,11 @@ public class V10TypeFinderListener implements TypeFinderListener {
 
     }
 
-    @Override
-    public void newType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
+    private void newRequestType(V10GeneratorContext context) {
+
+        TypeDeclaration typeDeclaration = context.getTypeDeclaration();
+        Method method = context.getMethod();
+        Resource resource = context.getResource();
 
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
             String ramlType = Names.ramlTypeName(resource, method, typeDeclaration);

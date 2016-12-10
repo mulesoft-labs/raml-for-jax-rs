@@ -1,5 +1,7 @@
 package org.raml.jaxrs.generator;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -16,13 +18,18 @@ import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.v10.TypeFactory;
+import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10TypeFinder;
 import org.raml.jaxrs.generator.v10.V10GeneratorContext;
 import org.raml.jaxrs.generator.v10.V10TypeFinderListener;
 import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.methods.Method;
+import org.raml.v2.api.model.v10.resources.Resource;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -146,6 +153,28 @@ public class CurrentBuild {
         return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), useName);
     }
 
+    public TypeName getJavaType(TypeDeclaration type, Resource resource, Method method, Response response) {
+
+        if ( shouldCreateNewClass(type)) {
+            String ramlType = Names.ramlTypeName(resource, method, response, type);
+            GeneratorType<V10GeneratorContext> context = foundTypes.get(ramlType);
+            return ClassName.get(getModelPackage(), context.getContext().javaTypeName());
+        } else {
+            return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
+        }
+    }
+
+    public TypeName getJavaType(TypeDeclaration type, Resource resource, Method method) {
+
+        if ( shouldCreateNewClass(type)) {
+            String ramlType = Names.ramlTypeName(resource, method, type);
+            GeneratorType<V10GeneratorContext> context = foundTypes.get(ramlType);
+            return ClassName.get(getModelPackage(), context.getContext().javaTypeName());
+        } else {
+            return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
+        }
+    }
+
 
     public TypeName getJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
@@ -206,11 +235,6 @@ public class CurrentBuild {
         }
     }
 
-    public boolean isBuilt(String name) {
-
-        return builtTypes.containsKey(name);
-    }
-
     private String getTypeName(TypeDeclaration type, boolean useName) {
 
         if (!useName) { // horrible hack.
@@ -229,23 +253,40 @@ public class CurrentBuild {
 
     public void constructClasses(Api api, TypeFactory typeFactory) {
 
-        typeFinder.findTypes(new V10TypeFinderListener(foundTypes));
+        typeFinder.findTypes(new V10TypeFinderListener(api, foundTypes));
         for (GeneratorType<V10GeneratorContext> type : foundTypes.values()) {
 
             V10GeneratorContext context = type.getContext();
             if ( context.getResponse() != null ) {
 
-                typeFactory.createPrivateTypeForResponse(api, context.getResource(), context.getMethod(), context.getResponse(), context.getTypeDeclaration());
+                TypeDeclaration extending = context.getTypeDeclaration();
+                if (shouldCreateNewClass(extending)) {
+                    typeFactory.createPrivateTypeForResponse(context);
+                }
                 continue;
             }
 
             if ( context.getMethod() != null ) {
-                typeFactory.createPrivateTypeForRequest(api, context.getResource(), context.getMethod(), context.getTypeDeclaration());
+                TypeDeclaration extending = context.getTypeDeclaration();
+                if (shouldCreateNewClass(extending)) {
+                    typeFactory.createPrivateTypeForRequest(context);
+                }
+
             } else {
 
-                typeFactory.createType(api, context.getTypeDeclaration());
+                typeFactory.createType(context);
             }
         }
+    }
+
+    public boolean shouldCreateNewClass(TypeDeclaration extending) {
+
+        if ( foundTypes.get(extending.type()) == null ) {
+            return false;
+        }
+
+        return TypeUtils.shouldCreateNewClass(
+                extending, foundTypes.get(extending.type()).getContext().getTypeDeclaration());
     }
 
 }

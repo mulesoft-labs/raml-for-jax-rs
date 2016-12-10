@@ -54,12 +54,12 @@ public class V10TypeFinder implements TypeFinder<V10GeneratorContext> {
     private void typesInBodies(Resource resource, Method method, List<TypeDeclaration> body, TypeFinderListener<V10GeneratorContext> listener) {
         for (TypeDeclaration typeDeclaration : body) {
 
-            listener.newType(new V10GeneratorContext(resource, method, typeDeclaration));
+            listener.newType(new V10GeneratorContext(api, resource, method, typeDeclaration));
         }
 
         for (Response response : method.responses()) {
             for (TypeDeclaration typeDeclaration : response.body()) {
-                listener.newType(new V10GeneratorContext(resource, method, response, typeDeclaration));
+                listener.newType(new V10GeneratorContext(api, resource, method, response, typeDeclaration));
             }
         }
     }
@@ -68,7 +68,7 @@ public class V10TypeFinder implements TypeFinder<V10GeneratorContext> {
 
         for (TypeDeclaration typeDeclaration : types) {
 
-            listener.newType(new V10GeneratorContext(typeDeclaration));
+            listener.newType(new V10GeneratorContext(api, typeDeclaration));
        }
     }
 
@@ -86,7 +86,7 @@ public class V10TypeFinder implements TypeFinder<V10GeneratorContext> {
             goThroughLibraries(visitedLibraries, library.uses(), listener);
             for (TypeDeclaration typeDeclaration : library.types()) {
 
-                listener.newType(new V10GeneratorContext(typeDeclaration));
+                listener.newType(new V10GeneratorContext(api, typeDeclaration));
             }
         }
 

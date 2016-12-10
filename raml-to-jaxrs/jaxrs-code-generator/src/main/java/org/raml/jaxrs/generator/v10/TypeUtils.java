@@ -24,14 +24,14 @@ public class TypeUtils {
      * Called on type extension. If there are no properties ? We create an empty class.
      * if the class is of type object, we don't extend anything.
      */
-    public static boolean shouldCreateNewClass(TypeDeclaration extending, TypeDeclaration extended, Collection<TypeDeclaration>... all) {
+    public static boolean shouldCreateNewClass(TypeDeclaration extending, TypeDeclaration extended) {
 
         if (ScalarTypes.extendsScalarRamlType(extending)) {
 
             return false;
         }
 
-        if ( all.length > 0 && ModelFixer.parentTypes(all[0], extending).size() > 1 ) {
+        if ( extending.parentTypes().size() > 1 ) {
 
             return true;
         }
@@ -47,7 +47,7 @@ public class TypeUtils {
         }
 
         if (extended instanceof XMLTypeDeclaration && extending instanceof XMLTypeDeclaration) {
-            return true;
+            return false;
         }
 
         if (extending instanceof ObjectTypeDeclaration && extended instanceof ObjectTypeDeclaration) {
@@ -87,7 +87,7 @@ public class TypeUtils {
         if (typeDeclaration.type().equals("object")) {
             return true;
         }
-        List<TypeDeclaration> parents = ModelFixer.parentTypes(api.types(), typeDeclaration);
+        List<TypeDeclaration> parents = typeDeclaration.parentTypes();
         if (parents.size() == 0) {
             return false;
         }

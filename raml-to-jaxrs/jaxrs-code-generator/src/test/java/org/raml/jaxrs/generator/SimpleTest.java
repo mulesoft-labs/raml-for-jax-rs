@@ -100,6 +100,17 @@ public class SimpleTest {
         scanner.handle("/internal_types_for_resources.raml");
     }
 
+
+    @Test
+    public void grrr() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.realtypes"
+        );
+        scanner.handle(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/resources/example_xml_schema.raml"));
+    }
+
     @Test
     public void worldMusic() throws IOException, GenerationException {
 

@@ -112,7 +112,7 @@ public class TopResource implements ResourceGenerator {
                 for (TypeDeclaration typeDeclaration : decls) {
 
                     MethodSpec.Builder methodSpec = createMethodBuilder(method, methodName, mediaTypesForMethod);
-                    TypeName name = build.getJavaType(typeDeclaration);
+                    TypeName name = build.getJavaType(typeDeclaration, method.resource(), method);
                     methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
                     handleMethodConsumer(methodSpec, ramlTypeToMediaType, typeDeclaration);
                     typeSpec.addMethod(methodSpec.build());
@@ -186,15 +186,13 @@ public class TopResource implements ResourceGenerator {
                                 .addStatement("return new $N(responseBuilder.build())", currentClass)
                                 .returns(TypeVariableName.get(currentClass.name))
                                 .build();
-                        TypeName typeName = build
-                                .getJavaType(typeDeclaration, true);
+                        TypeName typeName = build.getJavaType(typeDeclaration, method.resource(), method, response);
                         if (typeName == null) {
                             throw new GenerationException(typeDeclaration.type() + " was not seen before");
                         }
 
                         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
                         responseClass.addMethod(builder.build());
-
                     }
                 }
             }
@@ -203,7 +201,11 @@ public class TopResource implements ResourceGenerator {
         }
     }
 
+  /*  private TypeName getRightTypeName(TypeDeclaration decl) {
 
+
+    }
+*/
     private MethodSpec.Builder createMethodBuilder(Method method, String methodName, Set<String> mediaTypesForMethod) {
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);

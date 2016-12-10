@@ -71,7 +71,7 @@ public class TypeUtilsTest {
         ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("ObjectOne");
         TypeDeclaration extending = findProperty(object, "name");
         ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type());
-        assertTrue(TypeUtils.shouldCreateNewClass(extending, extended, finder.values()));
+        assertTrue(TypeUtils.shouldCreateNewClass(extending, extended));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class TypeUtilsTest {
         ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("RamlDataType");
         TypeDeclaration extending = findProperty(object, "NilValue");
         ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type());
-        assertTrue(TypeUtils.shouldCreateNewClass(extending, extended, finder.values()));
+        assertTrue(TypeUtils.shouldCreateNewClass(extending, extended));
     }
 
     private Map<String, TypeDeclaration> finder(String raml) {

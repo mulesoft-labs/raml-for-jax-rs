@@ -89,7 +89,7 @@ public class TopResource implements ResourceGenerator {
 
     private void buildResource(TypeSpec.Builder typeSpec, GResource currentResource) {
 
-        Multimap<GMethod, GType> incomingBodies = ArrayListMultimap.create();
+        Multimap<GMethod, GRequest> incomingBodies = ArrayListMultimap.create();
         Multimap<GMethod, GResponse> responses = ArrayListMultimap.create();
         ResourceUtils.fillInBodiesAndResponses(currentResource, incomingBodies, responses);
 
@@ -101,10 +101,10 @@ public class TopResource implements ResourceGenerator {
             List<GType> decls = new ArrayList<>();
 
             Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
-            for (GType typeDeclaration : incomingBodies.get(gMethod)) {
+            for (GRequest typeDeclaration : incomingBodies.get(gMethod)) {
                 if ( typeDeclaration != null ) {
-                    decls.add(typeDeclaration);
-                    ramlTypeToMediaType.put(typeDeclaration.type(), typeDeclaration.name());
+                    decls.add(typeDeclaration.type());
+                    ramlTypeToMediaType.put(typeDeclaration.type().name(), typeDeclaration.mediaType());
                 }
             }
 
@@ -126,7 +126,7 @@ public class TopResource implements ResourceGenerator {
                         MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>());
                         TypeName name = build.getJavaType(gRequest.type());
                         methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
-                        handleMethodConsumer(methodSpec, ArrayListMultimap.<String, String>create(), gRequest.type());
+                        handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
                         typeSpec.addMethod(methodSpec.build());
                         //                   }
                     }
@@ -152,7 +152,7 @@ public class TopResource implements ResourceGenerator {
         return mediaTypes;
     }
 
-    private void createResponseClass(TypeSpec.Builder typeSpec, Multimap<GMethod, GType> bodies, Multimap<GMethod, GResponse> responses) {
+    private void createResponseClass(TypeSpec.Builder typeSpec, Multimap<GMethod, GRequest> bodies, Multimap<GMethod, GResponse> responses) {
 
         Set<GMethod> allMethods = new HashSet<>();
         allMethods.addAll(bodies.keySet());

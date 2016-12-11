@@ -17,7 +17,7 @@ import org.raml.v2.api.model.v10.resources.Resource;
  */
 public class ResourceUtils {
 
-    public static void fillInBodiesAndResponses(GResource resource, Multimap<GMethod, GType> incomingBodies, Multimap<GMethod, GResponse> responses) {
+    public static void fillInBodiesAndResponses(GResource resource, Multimap<GMethod, GRequest> incomingBodies, Multimap<GMethod, GResponse> responses) {
 
 
         for (GMethod method : resource.methods()) {
@@ -27,7 +27,7 @@ public class ResourceUtils {
             } else {
                 for (GRequest typeDeclaration : method.body()) {
 
-                    incomingBodies.put(method, typeDeclaration.type());
+                    incomingBodies.put(method, typeDeclaration);
                 }
             }
 

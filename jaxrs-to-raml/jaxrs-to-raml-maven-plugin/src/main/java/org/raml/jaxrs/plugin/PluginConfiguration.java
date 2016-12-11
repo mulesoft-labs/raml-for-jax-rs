@@ -23,7 +23,7 @@ class PluginConfiguration {
         return new PluginConfiguration(ImmutableList.copyOf(inputPaths), outputDirectory, ramlFileName);
     }
 
-    public ImmutableList<Path> getInputPaths() {
+    public Iterable<Path> getInputPaths() {
         return inputPaths;
     }
 

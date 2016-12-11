@@ -2,6 +2,8 @@ package org.raml.jaxrs.parser.util;
 
 import com.google.common.collect.FluentIterable;
 
+import org.omg.PortableServer.THREAD_POLICY_ID;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -16,7 +18,7 @@ public class ClassLoaderUtils {
 
         URL[] allOfDem = FluentIterable.of(theRest).append(firstUrl).toArray(URL.class);
 
-        return new URLClassLoader(allOfDem);
+        return new URLClassLoader(allOfDem, Thread.currentThread().getContextClassLoader());
     }
 
     public static ClassLoader classLoaderFor(Path path) throws MalformedURLException {

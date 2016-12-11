@@ -30,7 +30,7 @@
                             <goal>jaxrstoraml</goal>
                         </goals>
                         <configuration>
-                            <input>target/jaxrs-test-resources-2.0.0-SNAPSHOT-sources.jar</input>
+                            <input>target/jaxrs-test-resources-2.0.0-SNAPSHOT.jar</input>
                         </configuration>
                     </execution>
                 </executions>

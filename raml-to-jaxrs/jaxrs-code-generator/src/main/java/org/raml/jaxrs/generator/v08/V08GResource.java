@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.v10;
+package org.raml.jaxrs.generator.v08;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -6,18 +6,20 @@ import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GMethod;
 import org.raml.jaxrs.generator.GParameter;
 import org.raml.jaxrs.generator.GResource;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
+import org.raml.v2.api.model.v08.methods.Method;
+import org.raml.v2.api.model.v08.parameters.Parameter;
+import org.raml.v2.api.model.v08.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Created by Jean-Philippe Belanger on 12/10/16.
+ * Created by Jean-Philippe Belanger on 12/11/16.
  * Just potential zeroes and ones
  */
-public class V10GResource implements GResource {
+public class V08GResource implements GResource {
+
     private final GAbstractionFactory factory;
     private final GResource parent;
     private final Resource resource;
@@ -25,12 +27,12 @@ public class V10GResource implements GResource {
     private final List<GParameter> uriParameters;
     private final List<GMethod> methods;
 
-    public V10GResource(GAbstractionFactory factory, Resource resource) {
+    public V08GResource(GAbstractionFactory factory, Resource resource, Set<String> globalSchemas) {
 
-        this(factory, null, resource);
+        this(factory, null, resource, globalSchemas);
     }
 
-    public V10GResource(final GAbstractionFactory factory, GResource parent, Resource resource) {
+    public V08GResource(final GAbstractionFactory factory, GResource parent, Resource resource, final Set<String> globalSchemas) {
         this.factory = factory;
         this.parent = parent;
         this.resource = resource;
@@ -39,15 +41,16 @@ public class V10GResource implements GResource {
             @Override
             public GResource apply(@Nullable Resource input) {
 
-                return factory.newResource(V10GResource.this, input);
+                return factory.newResource(globalSchemas, V08GResource.this, input);
             }
         });
 
-        this.uriParameters = Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, GParameter>() {
+        this.uriParameters = Lists.transform(resource.uriParameters(), new Function<Parameter, GParameter>() {
+
             @Nullable
             @Override
-            public GParameter apply(@Nullable TypeDeclaration input) {
-                return new V10PGParameter(input);
+            public GParameter apply(@Nullable Parameter input) {
+                return new V08PGParameter(input);
             }
         });
 
@@ -55,15 +58,19 @@ public class V10GResource implements GResource {
             @Nullable
             @Override
             public GMethod apply(@Nullable Method input) {
-                return new V10GMethod(V10GResource.this, input);
+                return new V08Method(V08GResource.this, input, globalSchemas);
             }
         });
 
     }
 
     @Override
-    public List<GResource> resources() {
+    public Object implementation() {
+        return resource;
+    }
 
+    @Override
+    public List<GResource> resources() {
         return subResources;
     }
 
@@ -86,11 +93,4 @@ public class V10GResource implements GResource {
     public GResource parentResource() {
         return parent;
     }
-
-    @Override
-    public Object implementation() {
-        return resource;
-    }
-
-
 }

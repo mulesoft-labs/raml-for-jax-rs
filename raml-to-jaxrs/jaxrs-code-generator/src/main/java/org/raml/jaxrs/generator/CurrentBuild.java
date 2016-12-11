@@ -152,7 +152,7 @@ public class CurrentBuild {
 
     private TypeName checkJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
-        Class<?> scalar = ScalarTypes.scalarToJavaType((TypeDeclaration) type.implementation());
+        Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
 
             return classToTypeName(scalar);
@@ -198,17 +198,6 @@ public class CurrentBuild {
         }
     }
 
-    private String getTypeName(TypeDeclaration type, boolean useName) {
-
-        if (!useName) { // horrible hack.
-
-            return type.type();
-        } else {
-
-            return type.name();
-        }
-    }
-
     public void newResource(ResourceGenerator rg) {
 
         resources.add(rg);
@@ -225,15 +214,5 @@ public class CurrentBuild {
             }
         }
     }
-
-    public boolean shouldCreateNewClass(TypeDeclaration extending) {
-
-        if ( foundTypes.get(extending.type()) == null ) {
-            return false;
-        }
-
-        return false;
-    }
-
 }
 

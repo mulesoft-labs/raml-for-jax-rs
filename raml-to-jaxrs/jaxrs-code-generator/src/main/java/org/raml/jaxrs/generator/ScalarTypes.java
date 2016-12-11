@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.collect.ImmutableMap;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
@@ -51,6 +52,16 @@ public class ScalarTypes {
         return stringScalarToType.get(name.toLowerCase());
     }
 
+    public static Class<?> scalarToJavaType(GType type) {
+
+        if ( type instanceof V10GType) {
+
+            return scalarToJavaType((TypeDeclaration) type.implementation());
+        } else {
+
+            return scalarToJavaType(type.name());
+        }
+    }
 
     public static boolean extendsScalarRamlType(TypeDeclaration typeDeclaration) {
 

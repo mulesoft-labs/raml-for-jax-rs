@@ -119,14 +119,11 @@ public class TopResource implements ResourceGenerator {
                         typeSpec.addMethod(methodSpec.build());
                     } else {
 
-                        //                    for (GType typeDeclaration : decls) {
-
                         MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>());
                         TypeName name = build.getJavaType(gRequest.type());
                         methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
                         handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
                         typeSpec.addMethod(methodSpec.build());
-                        //                   }
                     }
                 }
             }

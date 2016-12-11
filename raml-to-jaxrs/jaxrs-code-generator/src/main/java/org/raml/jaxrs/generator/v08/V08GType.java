@@ -39,16 +39,21 @@ public class V08GType implements GType {
         this.typeDeclaration = typeDeclaration;
     }
 
-    public V08GType(GlobalSchema schema) {
+    public V08GType(String type) {
+        this.ramlName = type;
+        this.typeDeclaration = null;
+        this.defaultJavaName = Names.typeName(type);
+    }
 
-        this.ramlName = schema.key();
-        this.defaultJavaName = Names.typeName(schema.key());
-        this.typeDeclaration = null; // ?
+    public V08GType(String type, BodyLike typeDeclaration) {
+        this.ramlName = type;
+        this.typeDeclaration = typeDeclaration;
+        this.defaultJavaName = Names.typeName(type);
     }
 
     @Override
     public Object implementation() {
-        return null;
+        return typeDeclaration;
     }
 
     @Override
@@ -63,12 +68,12 @@ public class V08GType implements GType {
 
     @Override
     public boolean isJson() {
-        return typeDeclaration instanceof JSONBody;
+        return typeDeclaration != null && typeDeclaration.name().equals("application/json");
     }
 
     @Override
     public boolean isXml() {
-        return typeDeclaration instanceof XMLBody;
+        return typeDeclaration != null && typeDeclaration.name().equals("application/xml");
     }
 
     @Override

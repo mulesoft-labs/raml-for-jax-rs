@@ -112,6 +112,15 @@ public class SimpleTest {
     }
 
     @Test
+    public void v08() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.animals"
+        );
+        scanner.handle(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/resources/simple-raml08.raml"));
+    }
+    @Test
     public void worldMusic() throws IOException, GenerationException {
 
         RamlScanner scanner = new RamlScanner(

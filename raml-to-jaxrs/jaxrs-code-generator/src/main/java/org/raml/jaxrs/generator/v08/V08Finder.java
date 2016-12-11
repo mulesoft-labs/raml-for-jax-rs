@@ -26,6 +26,7 @@ public class V08Finder implements GFinder {
 
     private final Api api;
     private final GAbstractionFactory factory;
+    private Set<String> globalSchemas = new HashSet<>();
 
 
     public V08Finder(Api api, GAbstractionFactory factory) {
@@ -46,10 +47,12 @@ public class V08Finder implements GFinder {
 
     private void goThroughSchemas(List<GlobalSchema> schemas) {
 
+
         for (GlobalSchema schema : schemas) {
 
-            V08GType type = new V08GType(schema);
+            globalSchemas.add(schema.key());
         }
+
     }
 
     private void resourceTypes(List<Resource> resources, GFinderListener listener) {
@@ -67,16 +70,33 @@ public class V08Finder implements GFinder {
     private void typesInBodies(Resource resource, Method method, List<BodyLike> body, GFinderListener listener) {
         for (BodyLike typeDeclaration : body) {
 
-            V08GType type = new V08GType(resource, method, typeDeclaration);
-            listener.newTypeDeclaration(type);
+            if ( globalSchemas.contains(typeDeclaration.schema().value()) ) {
+                V08GType type = new V08GType(typeDeclaration.schema().value(), typeDeclaration);
+                listener.newTypeDeclaration(type);
+            } else {
+
+                V08GType type = new V08GType(resource, method, typeDeclaration);
+                listener.newTypeDeclaration(type);
+            }
         }
 
         for (Response response : method.responses()) {
             for (BodyLike typeDeclaration : response.body()) {
 
-                V08GType type = new V08GType(resource, method, response, typeDeclaration);
-                listener.newTypeDeclaration(type);
+                if ( globalSchemas.contains(typeDeclaration.schema().value()) ) {
+                    V08GType type = new V08GType(typeDeclaration.schema().value());
+                    listener.newTypeDeclaration(type);
+                } else {
+
+                    V08GType type = new V08GType(resource, method, response, typeDeclaration);
+                    listener.newTypeDeclaration(type);
+                }
             }
         }
+    }
+
+    public Set<String> globalSchemas() {
+
+        return globalSchemas;
     }
 }

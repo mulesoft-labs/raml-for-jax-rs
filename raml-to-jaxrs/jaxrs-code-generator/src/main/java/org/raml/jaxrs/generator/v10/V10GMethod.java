@@ -21,15 +21,13 @@ import java.util.List;
  */
 class V10GMethod implements GMethod {
     private V10GResource v10GResource;
-    private final GResource resource;
     private final Method method;
     private final List<GParameter> queryParameters;
     private final List<GResponse> responses;
     private List<GRequest> requests;
 
-    public V10GMethod(final V10GResource v10GResource, GResource resource, final Method method) {
+    public V10GMethod(final V10GResource v10GResource, final Method method) {
         this.v10GResource = v10GResource;
-        this.resource = resource;
         this.method = method;
         this.requests = Lists.transform(this.method.body(), new Function<TypeDeclaration, GRequest>() {
             @Nullable
@@ -74,7 +72,7 @@ class V10GMethod implements GMethod {
 
     @Override
     public GResource resource() {
-        return resource;
+        return v10GResource;
     }
 
     @Override
@@ -95,7 +93,7 @@ class V10GMethod implements GMethod {
     @Override
     public String toString() {
         return "V10GMethod{" +
-                "resource=" + resource.resourcePath() +
+                "resource=" + v10GResource.resourcePath() +
                 ", method=" + method.method() +
                 '}';
     }

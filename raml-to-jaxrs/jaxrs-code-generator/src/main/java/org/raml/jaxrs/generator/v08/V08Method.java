@@ -28,7 +28,7 @@ public class V08Method implements GMethod {
     private final Method input;
     private List<GRequest> requests;
 
-    public V08Method(final V08GResource v08GResource, Method input, final Set<String> globalSchemas) {
+    public V08Method(final V08GResource v08GResource, final Method input, final Set<String> globalSchemas) {
         this.v08GResource = v08GResource;
 
         this.queryParameters = Lists.transform(input.queryParameters(), new Function<Parameter, GParameter>() {
@@ -50,15 +50,15 @@ public class V08Method implements GMethod {
         this.responses = Lists.transform(input.responses(), new Function<Response, GResponse>() {
             @Nullable
             @Override
-            public GResponse apply(@Nullable Response input) {
-                return new V08Response(input, globalSchemas);
+            public GResponse apply(@Nullable Response resp) {
+                return new V08Response(v08GResource.implementation(), input, resp, globalSchemas);
             }
         });
         this.input = input;
     }
 
     @Override
-    public Object implementation() {
+    public Method implementation() {
         return input;
     }
 

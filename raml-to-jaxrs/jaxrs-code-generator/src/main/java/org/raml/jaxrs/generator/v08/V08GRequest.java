@@ -23,12 +23,12 @@ public class V08GRequest implements GRequest {
             this.type = new V08GType(input.schema().value());
         } else {
 
-            this.type = new V08GType((Resource)v08GResource.implementation(), (Method)v08Method.implementation(), input );
+            this.type = new V08GType(v08GResource.implementation(), v08Method.implementation(), input );
         }
     }
 
     @Override
-    public Object implementation() {
+    public BodyLike implementation() {
         return input;
     }
 

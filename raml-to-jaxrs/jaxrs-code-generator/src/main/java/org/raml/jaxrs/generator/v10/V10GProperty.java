@@ -18,7 +18,7 @@ public class V10GProperty implements GProperty {
     }
 
     @Override
-    public Object implementation() {
+    public TypeDeclaration implementation() {
         return input;
     }
 

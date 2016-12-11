@@ -31,7 +31,7 @@ class V10GResponse implements GResponse {
             @Override
             public GResponseType apply(@Nullable TypeDeclaration input) {
                 if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
-                    return new V10GResponseType(input, new V10GType((Resource) v10GResource.implementation(), method, response, input));
+                    return new V10GResponseType(input, new V10GType(v10GResource.implementation(), method, response, input));
                 } else {
                     return new V10GResponseType(input, new V10GType(input.type(), input));
                 }

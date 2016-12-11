@@ -6,6 +6,8 @@ import org.raml.jaxrs.generator.GResponse;
 import org.raml.jaxrs.generator.GResponseType;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v08.bodies.Response;
+import org.raml.v2.api.model.v08.methods.Method;
+import org.raml.v2.api.model.v08.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -20,7 +22,7 @@ public class V08Response implements GResponse {
     private final Response response;
     private final List<GResponseType> bodies;
 
-    public V08Response(Response input, Set<String> globalSchemas) {
+    public V08Response(final Resource resource, final Method method, Response input, final Set<String> globalSchemas) {
 
         this.response = input;
         this.bodies = Lists.transform(input.body(), new Function<BodyLike, GResponseType>() {
@@ -28,13 +30,13 @@ public class V08Response implements GResponse {
             @Override
             public GResponseType apply(@Nullable BodyLike input) {
 
-                return new V08GResponseType(input);
+                return new V08GResponseType(resource, method, response, input, globalSchemas);
             }
         });
     }
 
     @Override
-    public Object implementation() {
+    public Response implementation() {
         return response;
     }
 

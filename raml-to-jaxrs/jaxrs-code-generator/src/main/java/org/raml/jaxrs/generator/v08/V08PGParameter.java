@@ -19,7 +19,7 @@ public class V08PGParameter implements GParameter {
     }
 
     @Override
-    public Object implementation() {
+    public Parameter implementation() {
         return input;
     }
 

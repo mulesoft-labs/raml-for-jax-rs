@@ -52,7 +52,7 @@ public class V08GType implements GType {
     }
 
     @Override
-    public Object implementation() {
+    public BodyLike implementation() {
         return typeDeclaration;
     }
 

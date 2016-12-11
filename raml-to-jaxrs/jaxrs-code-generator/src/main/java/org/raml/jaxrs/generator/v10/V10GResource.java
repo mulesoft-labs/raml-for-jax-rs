@@ -88,7 +88,7 @@ public class V10GResource implements GResource {
     }
 
     @Override
-    public Object implementation() {
+    public Resource implementation() {
         return resource;
     }
 

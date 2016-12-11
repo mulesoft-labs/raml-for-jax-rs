@@ -19,7 +19,7 @@ public class ResourceUtils {
 
     public static void fillInBodiesAndResponses(GResource resource, Multimap<GMethod, GType> incomingBodies, Multimap<GMethod, GResponse> responses) {
 
-/*
+
         for (GMethod method : resource.methods()) {
 
             if ( method.body().size() == 0 ) {
@@ -27,7 +27,7 @@ public class ResourceUtils {
             } else {
                 for (GRequest typeDeclaration : method.body()) {
 
-                    incomingBodies.put(method, typeDeclaration);
+                    incomingBodies.put(method, typeDeclaration.type());
                 }
             }
 
@@ -40,6 +40,6 @@ public class ResourceUtils {
                 }
             }
         }
-*/
+
     }
 }

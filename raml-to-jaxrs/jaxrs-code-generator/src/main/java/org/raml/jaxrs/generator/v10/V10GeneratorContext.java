@@ -2,8 +2,8 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.GeneratorContext;
-import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.GObjectType;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -13,9 +13,9 @@ import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
-import static org.raml.jaxrs.generator.v10.V10ObjectType.JSON_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.v10.V10ObjectType.PLAIN_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.v10.V10ObjectType.XML_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.GObjectType.JSON_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.GObjectType.PLAIN_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.GObjectType.XML_OBJECT_TYPE;
 
 /**
  * Created by Jean-Philippe Belanger on 12/8/16.
@@ -97,7 +97,7 @@ public class V10GeneratorContext implements GeneratorContext {
     }
 
     @Override
-    public V10ObjectType constructionType() {
+    public GObjectType constructionType() {
         if (typeDeclaration instanceof ObjectTypeDeclaration) {
             return PLAIN_OBJECT_TYPE;
         }

@@ -6,4 +6,6 @@ package org.raml.jaxrs.generator;
  */
 public interface GRequest extends GAbstraction {
     String mediaType();
+
+    GType type();
 }

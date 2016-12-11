@@ -79,14 +79,14 @@ public class RamlScanner {
         CurrentBuild build = new CurrentBuild(new V10Finder(api, factory), packageName, modelPackageName);
         build.constructClasses(new TypeFactory(build, factory));
 
-     //   ResourceHandler resourceHandler = new ResourceHandler(build);
+        ResourceHandler resourceHandler = new ResourceHandler(build);
 
-/*
+
         // handle resources.
         for (Resource resource : api.resources()) {
-            resourceHandler.handle(api, resource);
+            resourceHandler.handle(resource);
         }
-*/
+
 
         build.generate(destDir);
     }

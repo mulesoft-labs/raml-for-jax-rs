@@ -15,7 +15,6 @@ import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
-import org.raml.jaxrs.generator.GeneratorContext;
 import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.JsonSchemaTypeGenerator;
 import org.raml.jaxrs.generator.Names;
@@ -27,7 +26,7 @@ import org.raml.jaxrs.generator.builders.types.CompositeRamlTypeGenerator;
 import org.raml.jaxrs.generator.builders.types.PropertyInfo;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
-import org.raml.v2.api.model.v10.api.Api;
+
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -37,10 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.raml.jaxrs.generator.v10.V10ObjectType.JSON_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.v10.V10ObjectType.PLAIN_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.v10.V10ObjectType.XML_OBJECT_TYPE;
 
 /**
  * Created by Jean-Philippe Belanger on 12/2/16.
@@ -59,11 +54,6 @@ public class TypeFactory {
     public void createType(GeneratorType type) {
 
         build(type, true);
-    }
-
-    public void createType(Api api, String name, TypeDeclaration typeDeclaration) {
-
-      //  build(api, name, Names.typeName(name), typeDeclaration, true);
     }
 
     private ClassName buildClassName(String pack, String name, boolean publicType) {
@@ -99,7 +89,7 @@ public class TypeFactory {
             final JCodeModel codeModel = new JCodeModel();
 
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(currentBuild.getModelPackage(), schemaFile, codeModel);
-            XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), type.javaType(), generated.values().iterator().next());
+            XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), type.defaultJavaTypeName(), generated.values().iterator().next());
             currentBuild.newGenerator(type.name(), gen);
             return gen;
         } catch (Exception e) {
@@ -122,12 +112,12 @@ public class TypeFactory {
         final JCodeModel codeModel = new JCodeModel();
 
         try {
-            mapper.generate(codeModel, type.javaType() , currentBuild.getModelPackage(), type.schema());
+            mapper.generate(codeModel, type.defaultJavaTypeName() , currentBuild.getModelPackage(), type.schema());
         } catch (IOException e) {
             throw new GenerationException(e);
         }
 
-        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), type.javaType(), codeModel);
+        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), type.defaultJavaTypeName(), codeModel);
         currentBuild.newGenerator(type.name(), gen);
         return gen;
     }
@@ -150,7 +140,7 @@ public class TypeFactory {
                 TypeGenerator internalGenerator = build(GeneratorType.generatorFrom(type),  false);
                 if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
                     internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
-                    properties.add(new PropertyInfo(declaration));
+                    properties.add(new PropertyInfo(declaration.overrideType(type)));
                     internalTypeCounter ++;
                 } else {
                     throw new GenerationException("internal type bad");
@@ -161,8 +151,8 @@ public class TypeFactory {
 
         }
 
-        ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.javaType(), publicType);
-        ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.javaType() + "Impl", publicType);
+        ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+        ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
 
         RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf, parentTypes, properties, internalTypes, object);
         RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, object);

@@ -20,16 +20,8 @@ public class GAbstractionFactory {
         return new V10GResource(this, parent, resource);
     }
 
-    public GType newType(String resource, String method, String resonseCode, String type,  TypeDeclaration typeDeclaration) {
-        return new V10GType(resource, method, resonseCode, type, typeDeclaration);
-    }
+    public GType newType(String internalTypeName, String type, TypeDeclaration implementation) {
 
-    public GType newType(String resource, String method, String type,  TypeDeclaration typeDeclaration) {
-        return new V10GType(resource, method, type, typeDeclaration);
+        return new V10GType(internalTypeName, implementation);
     }
-
-    public GType newType(TypeDeclaration typeDeclaration) {
-        return new V10GType(typeDeclaration);
-    }
-
 }

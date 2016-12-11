@@ -1,7 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import org.raml.jaxrs.generator.v10.V10ObjectType;
-
 /**
  * Created by Jean-Philippe Belanger on 12/8/16.
  * Just potential zeroes and ones
@@ -9,6 +7,6 @@ import org.raml.jaxrs.generator.v10.V10ObjectType;
 public interface GeneratorContext {
     String ramlTypeName();
     String javaTypeName();
-    V10ObjectType constructionType();
+    GObjectType constructionType();
     String schemaContent();
 }

@@ -30,4 +30,6 @@ public interface GType extends GAbstraction {
     List<GProperty> properties();
 
     GType arrayContents();
+
+    String defaultJavaTypeName();
 }

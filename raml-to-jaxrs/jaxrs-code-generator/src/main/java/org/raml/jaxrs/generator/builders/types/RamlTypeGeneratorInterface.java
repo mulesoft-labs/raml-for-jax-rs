@@ -81,7 +81,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
             GeneratorType builder = build.getDeclaredType(parentType.name());
 
             propsFromParents.add(builder);
-            typeSpec.addSuperinterface(builder.getDeclaredType().javaType(build));
+            typeSpec.addSuperinterface(build.getJavaType(builder.getDeclaredType()));
         }
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {

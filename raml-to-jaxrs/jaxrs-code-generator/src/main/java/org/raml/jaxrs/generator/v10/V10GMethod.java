@@ -21,32 +21,32 @@ import java.util.List;
 class V10GMethod implements GMethod {
     private V10GResource v10GResource;
     private final GResource resource;
-    private final Method input;
+    private final Method method;
     private final List<GParameter> queryParameters;
     private final List<GResponse> responses;
     private List<GRequest> requests;
 
-    public V10GMethod(final V10GResource v10GResource, GResource resource, Method input) {
+    public V10GMethod(final V10GResource v10GResource, GResource resource, final Method method) {
         this.v10GResource = v10GResource;
         this.resource = resource;
-        this.input = input;
-        this.requests = Lists.transform(input.body(), new Function<TypeDeclaration, GRequest>() {
+        this.method = method;
+        this.requests = Lists.transform(this.method.body(), new Function<TypeDeclaration, GRequest>() {
             @Nullable
             @Override
             public GRequest apply(@Nullable TypeDeclaration input) {
-                return new V10GRequest(input);
+                return new V10GRequest(input, new V10GType(input.type(), input));
             }
         });
 
-        this.responses = Lists.transform(input.responses(), new Function<Response, GResponse>() {
+        this.responses = Lists.transform(this.method.responses(), new Function<Response, GResponse>() {
             @Nullable
             @Override
             public GResponse apply(@Nullable Response input) {
-                return new V10GResponse(v10GResource, input);
+                return new V10GResponse(v10GResource, method, input);
             }
         });
 
-        this.queryParameters = Lists.transform(input.queryParameters(), new Function<TypeDeclaration, GParameter>() {
+        this.queryParameters = Lists.transform(this.method.queryParameters(), new Function<TypeDeclaration, GParameter>() {
             @Nullable
             @Override
             public GParameter apply(@Nullable TypeDeclaration input) {
@@ -58,7 +58,7 @@ class V10GMethod implements GMethod {
 
     @Override
     public Method implementation() {
-        return input;
+        return method;
     }
 
     @Override
@@ -73,7 +73,7 @@ class V10GMethod implements GMethod {
 
     @Override
     public String method() {
-        return input.method();
+        return method.method();
     }
 
     @Override
@@ -84,5 +84,13 @@ class V10GMethod implements GMethod {
     @Override
     public List<GResponse> responses() {
         return responses;
+    }
+
+    @Override
+    public String toString() {
+        return "V10GMethod{" +
+                "resource=" + resource.resourcePath() +
+                ", method=" + method.method() +
+                '}';
     }
 }

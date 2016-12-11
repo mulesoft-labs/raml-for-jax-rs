@@ -148,15 +148,15 @@ public class Names
         return typeName(resource.resourcePath(), method.method(), declaration.name());
     }
 
-    public static String ramlTypeName(String... resource, String method, String declaration) {
-        return resource + method + declaration;
+    public static String ramlTypeName(Resource resource, Method method, TypeDeclaration declaration) {
+        return resource.resourcePath() + method.method() + declaration.name();
     }
 
     public static String javaTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
         return typeName(resource.resourcePath(), method.method(), response.code().value(), declaration.name());
     }
 
-    public static String ramlTypeName(String resource, Method method, Response response, TypeDeclaration declaration) {
+    public static String ramlTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
         return resource.resourcePath() + method.method() + response.code().value() + declaration.name();
     }
 

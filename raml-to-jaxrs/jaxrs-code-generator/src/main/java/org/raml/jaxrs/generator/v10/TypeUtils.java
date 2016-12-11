@@ -27,7 +27,7 @@ public class TypeUtils {
      * Called on type extension. If there are no properties ? We create an empty class.
      * if the class is of type object, we don't extend anything.
      */
-    public static boolean shouldCreateNewClass(TypeDeclaration extending, TypeDeclaration extended) {
+    public static boolean shouldCreateNewClass(TypeDeclaration extending, TypeDeclaration... extended) {
 
         if (ScalarTypes.extendsScalarRamlType(extending)) {
 
@@ -44,19 +44,19 @@ public class TypeUtils {
             return true;
         }
 
-        if (extended instanceof JSONTypeDeclaration && extending instanceof JSONTypeDeclaration) {
+        if (extended != null && extended[0] instanceof JSONTypeDeclaration && extending instanceof JSONTypeDeclaration) {
 
             return false;
         }
 
-        if (extended instanceof XMLTypeDeclaration && extending instanceof XMLTypeDeclaration) {
+        if (extended != null && extended[0] instanceof XMLTypeDeclaration && extending instanceof XMLTypeDeclaration) {
             return false;
         }
 
-        if (extending instanceof ObjectTypeDeclaration && extended instanceof ObjectTypeDeclaration) {
+        if (extending instanceof ObjectTypeDeclaration && extended[0] instanceof ObjectTypeDeclaration) {
 
             ObjectTypeDeclaration extendingObject = (ObjectTypeDeclaration) extending;
-            ObjectTypeDeclaration extendedObject = (ObjectTypeDeclaration) extended;
+            ObjectTypeDeclaration extendedObject = (ObjectTypeDeclaration) extended[0];
             return extendedObject.properties().size() < extendingObject.properties().size();
         }
 

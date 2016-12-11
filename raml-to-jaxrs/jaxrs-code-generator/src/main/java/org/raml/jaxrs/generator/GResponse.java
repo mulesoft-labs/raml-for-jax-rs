@@ -7,6 +7,6 @@ import java.util.List;
  * Just potential zeroes and ones
  */
 public interface GResponse extends GAbstraction {
-    List<GType> body();
+    List<GResponseType> body();
     String code();
 }

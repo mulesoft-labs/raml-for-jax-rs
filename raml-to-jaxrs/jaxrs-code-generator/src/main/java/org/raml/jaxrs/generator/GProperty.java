@@ -11,4 +11,5 @@ public interface GProperty extends GAbstraction{
     GType type();
 
     boolean isInternal();
+    GProperty overrideType(GType type);
 }

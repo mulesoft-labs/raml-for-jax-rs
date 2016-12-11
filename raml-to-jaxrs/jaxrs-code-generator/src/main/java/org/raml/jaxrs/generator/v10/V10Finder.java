@@ -67,17 +67,18 @@ public class V10Finder implements GFinder {
                 continue;
             }
 
-            listener.newTypeDeclaration(factory.newType(resource.resourcePath(), method.method(), typeDeclaration.name(),
-                    typeDeclaration));
+            V10GType type = new V10GType(resource, method, typeDeclaration);
+            listener.newTypeDeclaration(type);
         }
-
         for (Response response : method.responses()) {
             for (TypeDeclaration typeDeclaration : response.body()) {
                 TypeDeclaration supertype = foundTypes.get(typeDeclaration.type());
                 if (supertype == null || ! TypeUtils.shouldCreateNewClass(typeDeclaration, supertype)) {
                     continue;
                 }
-                listener.newTypeDeclaration(factory.newType(resource.resourcePath(), method.method(), response.code().value(), typeDeclaration.name(),  typeDeclaration));
+
+                V10GType type = new V10GType(resource, method, response, typeDeclaration);
+                listener.newTypeDeclaration(type);
             }
         }
     }
@@ -87,7 +88,8 @@ public class V10Finder implements GFinder {
         for (TypeDeclaration typeDeclaration : types) {
 
             foundTypes.put(typeDeclaration.name(), typeDeclaration);
-            listener.newTypeDeclaration(factory.newType(typeDeclaration));
+            V10GType type = new V10GType(typeDeclaration);
+            listener.newTypeDeclaration(type);
        }
     }
 
@@ -105,12 +107,9 @@ public class V10Finder implements GFinder {
             goThroughLibraries(visitedLibraries, library.uses(), listener);
             for (TypeDeclaration typeDeclaration : library.types()) {
 
-                listener.newTypeDeclaration(factory.newType(typeDeclaration));
+                V10GType type = new V10GType(typeDeclaration);
+                listener.newTypeDeclaration(type);
             }
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 }

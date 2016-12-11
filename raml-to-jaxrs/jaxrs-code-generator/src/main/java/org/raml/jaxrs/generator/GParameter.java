@@ -8,4 +8,6 @@ public interface GParameter extends GAbstraction{
     String name();
 
     boolean isComposite();
+
+    GType type();
 }

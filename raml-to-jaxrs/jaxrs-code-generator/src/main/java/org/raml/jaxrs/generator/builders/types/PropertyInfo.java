@@ -46,7 +46,7 @@ public class PropertyInfo {
         // If the type is not internal, then it must exist.  The type of the property must be correct.
         if ( internalTypeName == null ) {
 
-            return currentBuild.getJavaType(property.type());
+            return currentBuild.getJavaType(property.type(), internalTypes);
         } else {
 
             TypeGenerator tg = internalTypes.get(internalTypeName);

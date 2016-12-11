@@ -1,13 +1,9 @@
 package org.raml.jaxrs.generator;
 
-import org.raml.jaxrs.generator.v10.TypeUtils;
-import org.raml.jaxrs.generator.v10.V10ObjectType;
-import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
-
-import static org.raml.jaxrs.generator.v10.V10ObjectType.JSON_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.v10.V10ObjectType.PLAIN_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.v10.V10ObjectType.SCALAR;
-import static org.raml.jaxrs.generator.v10.V10ObjectType.XML_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.GObjectType.JSON_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.GObjectType.PLAIN_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.GObjectType.SCALAR;
+import static org.raml.jaxrs.generator.GObjectType.XML_OBJECT_TYPE;
 
 /**
  * Created by Jean-Philippe Belanger on 12/7/16.
@@ -15,7 +11,7 @@ import static org.raml.jaxrs.generator.v10.V10ObjectType.XML_OBJECT_TYPE;
  */
 public class GeneratorType {
 
-    private final V10ObjectType objectType;
+    private final GObjectType objectType;
     private final GType declaredType;
 
     public static GeneratorType generatorFrom(GType typeDeclaration) {
@@ -39,7 +35,7 @@ public class GeneratorType {
         return new GeneratorType(SCALAR, typeDeclaration);
     }
 
-    public GeneratorType(V10ObjectType objectType,  GType declaredType) {
+    public GeneratorType(GObjectType objectType,  GType declaredType) {
 
         this.objectType = objectType;
         this.declaredType = declaredType;
@@ -49,7 +45,7 @@ public class GeneratorType {
         return declaredType;
     }
 
-    public V10ObjectType getObjectType() {
+    public GObjectType getObjectType() {
         return objectType;
     }
 }

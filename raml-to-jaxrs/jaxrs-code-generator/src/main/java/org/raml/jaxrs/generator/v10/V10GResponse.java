@@ -2,10 +2,14 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GResponse;
+import org.raml.jaxrs.generator.GResponseType;
 import org.raml.jaxrs.generator.GType;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.methods.Method;
+import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -16,33 +20,37 @@ import java.util.List;
  */
 class V10GResponse implements GResponse {
     private V10GResource v10GResource;
-    private final Response input;
-    private final List<GType> bodies;
+    private final Response response;
+    private final List<GResponseType> bodies;
 
-    public V10GResponse(V10GResource v10GResource, Response input) {
+    public V10GResponse(final V10GResource v10GResource, final Method method, final Response response) {
         this.v10GResource = v10GResource;
-        this.input = input;
-        this.bodies = Lists.transform(input.body(), new Function<TypeDeclaration, GType>() {
+        this.response = response;
+        this.bodies = Lists.transform(this.response.body(), new Function<TypeDeclaration, GResponseType>() {
             @Nullable
             @Override
-            public GType apply(@Nullable TypeDeclaration input) {
-                return new V10GType(input);
+            public GResponseType apply(@Nullable TypeDeclaration input) {
+                if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
+                    return new V10GResponseType(input, new V10GType((Resource) v10GResource.implementation(), method, response, input));
+                } else {
+                    return new V10GResponseType(input, new V10GType(input.type(), input));
+                }
             }
         });
     }
 
     @Override
     public Response implementation() {
-        return input;
+        return response;
     }
 
     @Override
-    public List<GType> body() {
+    public List<GResponseType> body() {
         return bodies;
     }
 
     @Override
     public String code() {
-        return input.code().value();
+        return response.code().value();
     }
 }

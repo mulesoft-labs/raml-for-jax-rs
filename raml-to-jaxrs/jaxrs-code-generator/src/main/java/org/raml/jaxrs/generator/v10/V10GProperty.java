@@ -34,7 +34,13 @@ public class V10GProperty implements GProperty {
 
     @Override
     public boolean isInternal() {
-        return false;
+        return TypeUtils.isNewTypeDeclaration(input);
+    }
+
+    @Override
+    public GProperty overrideType(GType type) {
+
+        return new V10GProperty(input, type);
     }
 
     @Override

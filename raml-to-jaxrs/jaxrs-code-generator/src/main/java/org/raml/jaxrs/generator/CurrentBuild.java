@@ -165,11 +165,19 @@ public class CurrentBuild {
             } else {
 
                 TypeGenerator builder = internalTypes.get(type.name());
-                if (builder == null) {
-                    GeneratorType gen = foundTypes.get(type.name());
-                    return ClassName.get(getModelPackage(), gen.getDeclaredType().defaultJavaTypeName());
-                }
 
+                if (builder == null) {
+                    // it's not an internal type.  It's a global type.
+                    if ( builtTypes.get(type.name()) != null ) {
+                        // it's a build type.  We have a new class for this.
+                        return builtTypes.get(type.name()).getGeneratedJavaType();
+                    } else {
+                        // it's an extension of an existing class, but a new type nontheless.
+                        GeneratorType gen = foundTypes.get(type.name());
+                        return ClassName.get(getModelPackage(), gen.getDeclaredType().defaultJavaTypeName());
+                    }
+                }
+                // it was an internal class that we built....
                 return builder.getGeneratedJavaType();
             }
         }

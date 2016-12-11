@@ -5,6 +5,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import joptsimple.internal.Strings;
+import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -206,4 +207,27 @@ public class Names
     }
 
 
+    public static String ramlTypeName(org.raml.v2.api.model.v08.resources.Resource resource,
+            org.raml.v2.api.model.v08.methods.Method method, BodyLike typeDeclaration) {
+
+        return resource.resourcePath() + method.method() + typeDeclaration.name();
+    }
+
+    public static String ramlTypeName(org.raml.v2.api.model.v08.resources.Resource resource,
+            org.raml.v2.api.model.v08.methods.Method method, org.raml.v2.api.model.v08.bodies.Response response,
+            BodyLike typeDeclaration) {
+
+        return resource.resourcePath() + method.method() + response.code().value() + typeDeclaration.name();
+    }
+
+    public static String javaTypeName(org.raml.v2.api.model.v08.resources.Resource resource,
+            org.raml.v2.api.model.v08.methods.Method method, BodyLike typeDeclaration) {
+        return typeName(resource.resourcePath(), method.method(), typeDeclaration.name());
+    }
+
+    public static String javaTypeName(org.raml.v2.api.model.v08.resources.Resource resource,
+            org.raml.v2.api.model.v08.methods.Method method, org.raml.v2.api.model.v08.bodies.Response response,
+            BodyLike typeDeclaration) {
+        return typeName(resource.resourcePath(), method.method(), response.code().value(), typeDeclaration.name());
+    }
 }

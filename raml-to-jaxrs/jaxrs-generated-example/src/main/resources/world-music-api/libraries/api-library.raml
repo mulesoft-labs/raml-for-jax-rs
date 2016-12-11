@@ -12,10 +12,10 @@ types:
 #      ideas:
 #        type: array
 #        items: !include ../schemas/idea.raml
-      extIdeas:
-        type: !include ../schemas/idea.raml
-        properties:
-          createdBy: string
+#      extIdeas:
+#        type: !include ../schemas/idea.raml
+#        properties:
+#          createdBy: string
       feedback:
         type: string
         default: "very nice"
@@ -36,18 +36,18 @@ types:
         format: int8
         multipleOf: 1
       propBoolean: boolean
-      propDate:
-        type: date-only
-        example: 2015-05-23
+#      propDate:
+#        type: date-only
+#        example: 2015-05-23
       userPicture:
         type: file
         fileTypes: ['image/jpeg', 'image/png']
         maxLength: 307200
-      NilValue:
-        type: object
-        properties:
-          name:
-          comment: string
+#      NilValue:
+#        type: object
+#        properties:
+#          name:
+#          comment: string
 #      CatOrDog: Cat | Dog
 #      CatAndDog: [ Cat, Dog ]
       PossibleMeetingDate:

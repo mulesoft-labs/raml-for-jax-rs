@@ -41,11 +41,6 @@ public class CompositeRamlTypeGenerator extends AbstractTypeGenerator<TypeSpec.B
     }
 
     @Override
-    public boolean declaresProperty(String name) {
-        return intf.declaresProperty(name);
-    }
-
-    @Override
     public TypeName getGeneratedJavaType() {
 
         return intf.getGeneratedJavaType();

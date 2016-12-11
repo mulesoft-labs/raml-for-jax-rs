@@ -3,6 +3,7 @@ package org.raml.jaxrs.generator;
 
 import org.raml.jaxrs.generator.v10.ResourceHandler;
 import org.raml.jaxrs.generator.v10.TypeFactory;
+import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.jaxrs.generator.v10.V10TypeFinder;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
@@ -74,15 +75,18 @@ public class RamlScanner {
 
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
-        CurrentBuild build = new CurrentBuild(new V10TypeFinder(api), packageName, modelPackageName);
-        build.constructClasses(api, new TypeFactory(build));
+        GAbstractionFactory factory = new GAbstractionFactory();
+        CurrentBuild build = new CurrentBuild(new V10Finder(api, factory), packageName, modelPackageName);
+        build.constructClasses(new TypeFactory(build, factory));
 
-        ResourceHandler resourceHandler = new ResourceHandler(build);
+     //   ResourceHandler resourceHandler = new ResourceHandler(build);
 
+/*
         // handle resources.
         for (Resource resource : api.resources()) {
             resourceHandler.handle(api, resource);
         }
+*/
 
         build.generate(destDir);
     }

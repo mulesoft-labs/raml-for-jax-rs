@@ -80,7 +80,7 @@ public class Names
         return Strings.join(values, "");
     }
 
-    public static String resourceMethodName(Resource resource, Method method) {
+    public static String resourceMethodName(GResource resource, GMethod method) {
 
         if ( resource.uriParameters().size() == 0) {
 
@@ -91,10 +91,10 @@ public class Names
             elements.add(method.method());
             elements.add(resource.resourcePath().replaceAll("\\{[^}]+\\}", ""));
             elements.add("By");
-            List<String> uriparam = Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, String>() {
+            List<String> uriparam = Lists.transform(resource.uriParameters(), new Function<GParameter, String>() {
                 @Nullable
                 @Override
-                public String apply(@Nullable TypeDeclaration input) {
+                public String apply(@Nullable GParameter input) {
                     return input.name();
                 }
             });
@@ -111,7 +111,7 @@ public class Names
         }
     }
 
-    public static String responseClassName(Resource resource, Method method) {
+    public static String responseClassName(GResource resource, GMethod method) {
 
         if ( resource.uriParameters().size() == 0) {
 
@@ -122,10 +122,10 @@ public class Names
             elements.add(method.method());
             elements.add(resource.resourcePath().replaceAll("\\{[^}]+\\}", ""));
             elements.add("By");
-            List<String> uriparam = Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, String>() {
+            List<String> uriparam = Lists.transform(resource.uriParameters(), new Function<GParameter, String>() {
                 @Nullable
                 @Override
-                public String apply(@Nullable TypeDeclaration input) {
+                public String apply(@Nullable GParameter input) {
                     return input.name();
                 }
             });
@@ -148,15 +148,15 @@ public class Names
         return typeName(resource.resourcePath(), method.method(), declaration.name());
     }
 
-    public static String ramlTypeName(Resource resource, Method method, TypeDeclaration declaration) {
-        return resource.resourcePath() + method.method() + declaration.name();
+    public static String ramlTypeName(String... resource, String method, String declaration) {
+        return resource + method + declaration;
     }
 
     public static String javaTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
         return typeName(resource.resourcePath(), method.method(), response.code().value(), declaration.name());
     }
 
-    public static String ramlTypeName(Resource resource, Method method, Response response, TypeDeclaration declaration) {
+    public static String ramlTypeName(String resource, Method method, Response response, TypeDeclaration declaration) {
         return resource.resourcePath() + method.method() + response.code().value() + declaration.name();
     }
 

@@ -41,18 +41,9 @@ public class ScalarTypes {
             .put("string", String.class)
             .put("file", File.class).build();
 
-    public static Class<?> scalarToJavaType(TypeDeclaration name) {
+    public static Class<?> scalarToJavaType(TypeDeclaration type) {
 
-        for (Class<?> aClass : name.getClass().getInterfaces()) {
-
-            if ( TypeDeclaration.class.isAssignableFrom(aClass)) {
-
-                Class<?> clss = scalarToType.get(aClass);
-                return clss;
-            }
-        }
-
-        return null;
+        return scalarToType.get(type.getClass().getInterfaces()[0]);
     }
 
     public static Class<?> scalarToJavaType(String name) {
@@ -60,8 +51,10 @@ public class ScalarTypes {
         return stringScalarToType.get(name.toLowerCase());
     }
 
+
     public static boolean extendsScalarRamlType(TypeDeclaration typeDeclaration) {
 
-        return /*typeDeclaration.type().equals("object") ||*/ scalarToJavaType(typeDeclaration) != null;
+        return /*typeDeclaration.type().equals("object") ||*/ scalarToJavaType(typeDeclaration.name()) != null;
     }
+
 }

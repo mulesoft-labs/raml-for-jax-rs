@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.builders.resources.TopResource;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -17,10 +18,11 @@ public class ResourceHandler {
         this.build = build;
     }
 
-    public void handle(Api api, final Resource resource) {
+    public void handle(final Resource resource) {
 
+        GAbstractionFactory factory = new GAbstractionFactory();
 
-        TopResource rg = new TopResource(build, resource, resource.displayName().value(),
+        TopResource rg = new TopResource(build, factory.newResource(resource), resource.displayName().value(),
                 resource.relativeUri().value());
 
         build.newResource(rg);

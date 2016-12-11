@@ -11,8 +11,12 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GAbstractionFactory;
+import org.raml.jaxrs.generator.GProperty;
+import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.GeneratorContext;
+import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.JsonSchemaTypeGenerator;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.XmlSchemaTypeGenerator;
@@ -24,13 +28,8 @@ import org.raml.jaxrs.generator.builders.types.PropertyInfo;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
 import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +38,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.raml.jaxrs.generator.v10.V10ObjectType.JSON_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.v10.V10ObjectType.PLAIN_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.v10.V10ObjectType.XML_OBJECT_TYPE;
+
 /**
  * Created by Jean-Philippe Belanger on 12/2/16.
  * Just potential zeroes and ones
@@ -46,14 +49,16 @@ import java.util.Map;
 public class TypeFactory {
 
     private CurrentBuild currentBuild;
+    private final GAbstractionFactory factory;
 
-    public TypeFactory(CurrentBuild currentBuild) {
+    public TypeFactory(CurrentBuild currentBuild, GAbstractionFactory factory) {
         this.currentBuild = currentBuild;
+        this.factory = factory;
     }
 
-    public void createType(GeneratorContext context) {
+    public void createType(GeneratorType type) {
 
-        build(context, context.ramlTypeName(), context.javaTypeName(), true);
+        build(type, true);
     }
 
     public void createType(Api api, String name, TypeDeclaration typeDeclaration) {
@@ -71,31 +76,31 @@ public class TypeFactory {
         }
     }
 
-    private TypeGenerator build(GeneratorContext context,  String ramlType, String javaType, boolean publicType) {
+    private TypeGenerator build(GeneratorType type, boolean publicType) {
 
-        switch (context.constructionType()) {
+        switch (type.getObjectType()) {
 
             case PLAIN_OBJECT_TYPE:
-                return createObjectType(context, ramlType, javaType,  publicType);
+                return createObjectType(type.getDeclaredType(),  publicType);
 
             case JSON_OBJECT_TYPE:
-                return createJsonType(context, ramlType, javaType);
+                return createJsonType(type.getDeclaredType());
 
             case XML_OBJECT_TYPE:
-                return createXmlType(context, ramlType, javaType);
+                return createXmlType(type.getDeclaredType());
         }
 
-        throw new GenerationException("don't know what to do with type " + ramlType + " of type " + javaType);
+        throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
     }
 
-    private TypeGenerator createXmlType(GeneratorContext context, String ramlTypeName, String javaTypeName) {
+    private TypeGenerator createXmlType(GType type) {
         try {
-            File schemaFile = JAXBHelper.saveSchema(context.schemaContent());
+            File schemaFile = JAXBHelper.saveSchema(type.schema());
             final JCodeModel codeModel = new JCodeModel();
 
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(currentBuild.getModelPackage(), schemaFile, codeModel);
-            XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), javaTypeName, generated.values().iterator().next());
-            currentBuild.newGenerator(ramlTypeName, gen);
+            XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), type.javaType(), generated.values().iterator().next());
+            currentBuild.newGenerator(type.name(), gen);
             return gen;
         } catch (Exception e) {
 
@@ -103,7 +108,7 @@ public class TypeFactory {
         }
     }
 
-    private TypeGenerator createJsonType(GeneratorContext context, String ramlTypeName, String javaType) {
+    private TypeGenerator createJsonType(GType type) {
         //JSONTypeDeclaration decl = typeDeclaration;
         GenerationConfig config = new DefaultGenerationConfig() {
             @Override
@@ -117,76 +122,57 @@ public class TypeFactory {
         final JCodeModel codeModel = new JCodeModel();
 
         try {
-            mapper.generate(codeModel, javaType , currentBuild.getModelPackage(), context.schemaContent());
+            mapper.generate(codeModel, type.javaType() , currentBuild.getModelPackage(), type.schema());
         } catch (IOException e) {
             throw new GenerationException(e);
         }
 
-        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), ramlTypeName, codeModel);
-        currentBuild.newGenerator(ramlTypeName, gen);
+        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), type.javaType(), codeModel);
+        currentBuild.newGenerator(type.name(), gen);
         return gen;
     }
 
-    private TypeGenerator createObjectType(GeneratorContext context, String ramlTypeName, String javaTypeName, boolean publicType) {
-        V10GeneratorContext v10Context = (V10GeneratorContext) context;
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) v10Context.getTypeDeclaration();
-        Api api = v10Context.getApi();
+    private TypeGenerator createObjectType(GType originalType, boolean publicType) {
+
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) originalType.implementation();
         List<TypeDeclaration> parentTypes = object.parentTypes();
 
         Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
         int internalTypeCounter = 0;
         List<PropertyInfo> properties = new ArrayList<>();
-        for (TypeDeclaration declaration : object.properties()) {
+        for (GProperty declaration : originalType.properties()) {
 
-            if (TypeUtils.isNewTypeDeclaration(api, declaration)) {
+            if (declaration.isInternal()) {
                 String internalTypeName = Integer.toString(internalTypeCounter);
-                V10GeneratorContext internal = new V10GeneratorContext(api, declaration);
-                TypeGenerator internalGenerator = build(internal, internalTypeName, Names.typeName(declaration.name(), "Type"),  false);
+
+                GType type = factory.newType(internalTypeName, Names.typeName(declaration.name(), "Type"),
+                        (TypeDeclaration) declaration.implementation());
+                TypeGenerator internalGenerator = build(GeneratorType.generatorFrom(type),  false);
                 if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
                     internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
-                    properties.add(new PropertyInfo(declaration.name(), internalTypeName, declaration));
+                    properties.add(new PropertyInfo(declaration));
                     internalTypeCounter ++;
                 } else {
                     throw new GenerationException("internal type bad");
                 }
             } else {
-                properties.add(new PropertyInfo(declaration.name(), declaration));
+                properties.add(new PropertyInfo(declaration));
             }
 
         }
 
-        ClassName interf = buildClassName(currentBuild.getModelPackage(), javaTypeName, publicType);
-        ClassName impl = buildClassName(currentBuild.getModelPackage(), javaTypeName + "Impl", publicType);
+        ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.javaType(), publicType);
+        ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.javaType() + "Impl", publicType);
 
         RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf, parentTypes, properties, internalTypes, object);
         RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, object);
         CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
 
         if ( publicType ) {
-            currentBuild.newGenerator(ramlTypeName, gen);
+            currentBuild.newGenerator(originalType.name(), gen);
         }
 
         return gen;
-    }
-
-    /*
-        Name of type is a mime type
-     */
-    public void createPrivateTypeForRequest(GeneratorContext context) {
-
-        String ramlType = context.ramlTypeName();
-        String javaType = context.javaTypeName();
-        build(context, ramlType, javaType,  true);
-    }
-
-    /*
-        Name of type is a mime type
-     */
-    public void createPrivateTypeForResponse(GeneratorContext context ) {
-
-        String ramlType = context.ramlTypeName();
-        String javaType = context.javaTypeName();
-        build(context, ramlType, javaType, true);
     }
 
 }

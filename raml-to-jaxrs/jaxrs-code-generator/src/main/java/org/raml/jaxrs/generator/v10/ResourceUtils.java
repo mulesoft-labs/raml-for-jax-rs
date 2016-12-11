@@ -1,6 +1,11 @@
 package org.raml.jaxrs.generator.v10;
 
 import com.google.common.collect.Multimap;
+import org.raml.jaxrs.generator.GMethod;
+import org.raml.jaxrs.generator.GRequest;
+import org.raml.jaxrs.generator.GResource;
+import org.raml.jaxrs.generator.GResponse;
+import org.raml.jaxrs.generator.GType;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -12,14 +17,15 @@ import org.raml.v2.api.model.v10.resources.Resource;
  */
 public class ResourceUtils {
 
-    public static void fillInBodiesAndResponses(Resource resource, Multimap<Method, TypeDeclaration> incomingBodies, Multimap<Method, Response> responses) {
+    public static void fillInBodiesAndResponses(GResource resource, Multimap<GMethod, GType> incomingBodies, Multimap<GMethod, GResponse> responses) {
 
-        for (Method method : resource.methods()) {
+/*
+        for (GMethod method : resource.methods()) {
 
             if ( method.body().size() == 0 ) {
                 incomingBodies.put(method, null);
             } else {
-                for (TypeDeclaration typeDeclaration : method.body()) {
+                for (GRequest typeDeclaration : method.body()) {
 
                     incomingBodies.put(method, typeDeclaration);
                 }
@@ -28,11 +34,12 @@ public class ResourceUtils {
             if ( method.responses().size() == 0 ) {
                 incomingBodies.put(method, null);
             } else {
-                for (Response response : method.responses()) {
+                for (GResponse response : method.responses()) {
 
                         responses.put(method, response);
                 }
             }
         }
+*/
     }
 }

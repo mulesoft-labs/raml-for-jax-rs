@@ -1,7 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -18,18 +16,14 @@ import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.v10.TypeFactory;
-import org.raml.jaxrs.generator.v10.TypeUtils;
-import org.raml.jaxrs.generator.v10.V10TypeFinder;
 import org.raml.jaxrs.generator.v10.V10GeneratorContext;
-import org.raml.jaxrs.generator.v10.V10TypeFinderListener;
-import org.raml.v2.api.model.v10.api.Api;
+import org.raml.jaxrs.generator.v10.V10ObjectType;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,16 +38,16 @@ import java.util.Map;
  */
 public class CurrentBuild {
 
-    private final V10TypeFinder typeFinder;
+    private final GFinder typeFinder;
     private final String resourcePackage;
     private final String modelPackage;
 
     private final List<ResourceGenerator> resources = new ArrayList<>();
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
-    private Map<String, GeneratorType<V10GeneratorContext>> foundTypes = new HashMap<>();
+    private Map<String, GeneratorType> foundTypes = new HashMap<>();
 
-    public CurrentBuild(V10TypeFinder typeFinder, String resourcePackage, String modelPackage) {
+    public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage) {
         this.typeFinder = typeFinder;
         this.resourcePackage = resourcePackage;
         this.modelPackage = modelPackage;
@@ -132,9 +126,9 @@ public class CurrentBuild {
         builtTypes.put(ramlTypeName, generator);
     }
 
-    public GeneratorType<?> getDeclaredType(String ramlType) {
+    public GeneratorType getDeclaredType(String ramlType) {
 
-        GeneratorType<V10GeneratorContext> type = foundTypes.get(ramlType);
+        GeneratorType type = foundTypes.get(ramlType);
         if ( type == null ) {
 
             throw new GenerationException("no such type " + ramlType);
@@ -143,29 +137,28 @@ public class CurrentBuild {
         return type;
     }
 
-    public TypeName getJavaType(TypeDeclaration type) {
+    public TypeName getJavaType(GType type) {
 
         return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
     }
 
-    public TypeName getJavaType(TypeDeclaration type, boolean useName) {
-
-        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), useName);
-    }
 
     public TypeName getJavaType(TypeDeclaration type, Resource resource, Method method, Response response) {
 
-        if ( shouldCreateNewClass(type)) {
+  /*      if ( shouldCreateNewClass(type)) {
             String ramlType = Names.ramlTypeName(resource, method, response, type);
-            GeneratorType<V10GeneratorContext> context = foundTypes.get(ramlType);
+            GeneratorType context = foundTypes.get(ramlType);
             return ClassName.get(getModelPackage(), context.getContext().javaTypeName());
         } else {
             return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
-        }
+        }*/
+
+        return null;
     }
 
     public TypeName getJavaType(TypeDeclaration type, Resource resource, Method method) {
 
+/*
         if ( shouldCreateNewClass(type)) {
             String ramlType = Names.ramlTypeName(resource, method, type);
             GeneratorType<V10GeneratorContext> context = foundTypes.get(ramlType);
@@ -173,10 +166,12 @@ public class CurrentBuild {
         } else {
             return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
         }
+*/
+        return null;
     }
 
 
-    public TypeName getJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
+    public TypeName getJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
         TypeName name = checkJavaType(type, internalTypes, useName);
         if ( name == null ) {
@@ -185,30 +180,24 @@ public class CurrentBuild {
         return name;
     }
 
-    private TypeName checkJavaType(TypeDeclaration type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
+    private TypeName checkJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
-        Class<?> scalar = ScalarTypes.scalarToJavaType(type);
-        if ( scalar != null ){
+        if ( type.isArray() ) {
 
-            return classToTypeName(scalar);
+
+            TypeName contained = getJavaType(type.arrayContents(), internalTypes, true);
+
+            return ParameterizedTypeName.get(ClassName.get("java.util", "List"), contained);
+
         } else {
 
-            if ( type instanceof ArrayTypeDeclaration ) {
-
-                ArrayTypeDeclaration listType = (ArrayTypeDeclaration) type;
-                TypeName contained = getJavaType(listType.items(), internalTypes, true);
-                return ParameterizedTypeName.get(ClassName.get("java.util", "List"), contained);
-
-            } else {
-
-                TypeGenerator builder = internalTypes.get(type.name());
-                if ( builder == null ) {
-                    GeneratorType gen = foundTypes.get(getTypeName(type, useName));
-                    return ClassName.get(getModelPackage(), gen.getJavaTypeName());
-                }
-
-                return builder.getGeneratedJavaType();
+            TypeGenerator builder = internalTypes.get(type.name());
+            if ( builder == null ) {
+                GeneratorType gen = foundTypes.get(type.name());
+                return  gen.getDeclaredType().javaType(this);
             }
+
+            return builder.getGeneratedJavaType();
         }
     }
 
@@ -251,30 +240,14 @@ public class CurrentBuild {
         resources.add(rg);
     }
 
-    public void constructClasses(Api api, TypeFactory typeFactory) {
+    public void constructClasses(TypeFactory typeFactory) {
 
-        typeFinder.findTypes(new V10TypeFinderListener(api, foundTypes));
-        for (GeneratorType<V10GeneratorContext> type : foundTypes.values()) {
+        typeFinder.findTypes(new TypeFindingListener(foundTypes));
 
-            V10GeneratorContext context = type.getContext();
-            if ( context.getResponse() != null ) {
+        for (GeneratorType type : foundTypes.values()) {
 
-                TypeDeclaration extending = context.getTypeDeclaration();
-                if (shouldCreateNewClass(extending)) {
-                    typeFactory.createPrivateTypeForResponse(context);
-                }
-                continue;
-            }
-
-            if ( context.getMethod() != null ) {
-                TypeDeclaration extending = context.getTypeDeclaration();
-                if (shouldCreateNewClass(extending)) {
-                    typeFactory.createPrivateTypeForRequest(context);
-                }
-
-            } else {
-
-                typeFactory.createType(context);
+            if ( type.getObjectType() != V10ObjectType.SCALAR) {
+                typeFactory.createType(type);
             }
         }
     }
@@ -285,8 +258,7 @@ public class CurrentBuild {
             return false;
         }
 
-        return TypeUtils.shouldCreateNewClass(
-                extending, foundTypes.get(extending.type()).getContext().getTypeDeclaration());
+        return false;
     }
 
 }

@@ -43,9 +43,4 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
         JDefinedClass cls = codeModel._getClass(pack + "." + name);
         return ClassName.get(pack, cls.name());
     }
-
-    @Override
-    public boolean declaresProperty(String name) {
-        return false;
-    }
 }

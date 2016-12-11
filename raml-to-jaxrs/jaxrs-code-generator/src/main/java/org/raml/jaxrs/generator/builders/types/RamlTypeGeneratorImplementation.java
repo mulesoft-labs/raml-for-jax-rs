@@ -80,7 +80,8 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
             FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
-            build.withTypeListeners().onFieldlementation(fieldSpec, propertyInfo.getType());
+            build.withTypeListeners().onFieldlementation(fieldSpec,
+                    (TypeDeclaration) propertyInfo.getType().implementation());
             typeSpec.addField(fieldSpec.build());
 
             final MethodSpec.Builder getSpec = MethodSpec
@@ -89,7 +90,8 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
                     .addStatement("return this." + Names.variableName(propertyInfo.getName()));
 
             getSpec.returns(propertyInfo.resolve(build, internalTypes));
-            build.withTypeListeners().onGetterMethodImplementation(getSpec, propertyInfo.getType());
+            build.withTypeListeners().onGetterMethodImplementation(getSpec,
+                    (TypeDeclaration) propertyInfo.getType().implementation());
 
             MethodSpec.Builder setSpec = MethodSpec
                     .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
@@ -98,7 +100,8 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
 
             ParameterSpec.Builder parameterSpec = ParameterSpec
                     .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
-            build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec, propertyInfo.getType() );
+            build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec,
+                    (TypeDeclaration) propertyInfo.getType().implementation());
 
             setSpec.addParameter(parameterSpec.build());
             typeSpec.addMethod(getSpec.build());
@@ -111,11 +114,6 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
         //file.build().writeTo(new File(rootDirectory));
     }
 
-    @Override
-    public boolean declaresProperty(String name) {
-
-        return true;
-    }
 
     @Override
     public TypeName getGeneratedJavaType() {

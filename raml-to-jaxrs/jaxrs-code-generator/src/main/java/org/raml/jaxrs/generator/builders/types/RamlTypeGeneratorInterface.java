@@ -71,27 +71,28 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
         }
 
 
-        List<GeneratorType<?>> propsFromParents = new ArrayList<>();
+        List<GeneratorType> propsFromParents = new ArrayList<>();
         for (TypeDeclaration parentType : parentTypes) {
 
             if ( parentType.name().equals("object") ) {
 
                 continue;
             }
-            GeneratorType<?> builder = build.getDeclaredType(parentType.name());
+            GeneratorType builder = build.getDeclaredType(parentType.name());
 
             propsFromParents.add(builder);
-            typeSpec.addSuperinterface(ClassName.get(build.getModelPackage(), builder.getJavaTypeName()));
+            typeSpec.addSuperinterface(builder.getDeclaredType().javaType(build));
         }
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
-            if (noParentDeclares(propsFromParents, propertyInfo.getName())) {
+    //        if (noParentDeclares(propsFromParents, propertyInfo.getName())) {
                 final MethodSpec.Builder getSpec = MethodSpec
                         .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
                 getSpec.returns(propertyInfo.resolve(build, internalTypes));
-                build.withTypeListeners().onGetterMethodDeclaration(getSpec, propertyInfo.getType());
+                build.withTypeListeners().onGetterMethodDeclaration(getSpec,
+                        (TypeDeclaration) propertyInfo.getType().implementation());
 
                 MethodSpec.Builder setSpec = MethodSpec
                         .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
@@ -99,48 +100,17 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
 
                 ParameterSpec.Builder parameterSpec = ParameterSpec
                         .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
-                build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec, propertyInfo.getType() );
+                build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec,
+                        (TypeDeclaration) propertyInfo.getType().implementation());
                 setSpec.addParameter(
                         parameterSpec.build());
 
                 typeSpec.addMethod(getSpec.build());
                 typeSpec.addMethod(setSpec.build());
-            }
+  //          }
         }
 
         into.into(typeSpec);
-    }
-
-    private boolean noParentDeclares(List<GeneratorType<?>> propsFromParents, String name) {
-
-        for (GeneratorType<?> propsFromParent : propsFromParents) {
-
-            if (propsFromParent.declaresProperty(name)) {
-
-                return false;
-            }
-
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean declaresProperty(String name) {
-
-        if (propertyInfos.containsKey(name)) {
-            return true;
-        }
-
-        for (TypeDeclaration parentType : parentTypes) {
-
-            GeneratorType<?> builder = build.getDeclaredType(parentType.name());
-            if (builder.declaresProperty(name)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override

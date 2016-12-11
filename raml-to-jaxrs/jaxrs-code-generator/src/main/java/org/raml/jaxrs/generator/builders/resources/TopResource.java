@@ -12,16 +12,17 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GMethod;
+import org.raml.jaxrs.generator.GParameter;
+import org.raml.jaxrs.generator.GResource;
+import org.raml.jaxrs.generator.GResponse;
+import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.HTTPMethods;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.v10.ResourceUtils;
 import org.raml.jaxrs.generator.v10.TypeUtils;
-import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -47,12 +48,12 @@ import java.util.TreeSet;
 public class TopResource implements ResourceGenerator {
 
     private final CurrentBuild build;
-    private final Resource topResource;
+    private final GResource topResource;
     private final String name;
     private final String uri;
 
 
-    public TopResource(CurrentBuild build, Resource resource, String name, String uri) {
+    public TopResource(CurrentBuild build, GResource resource, String name, String uri) {
 
         this.build = build;
         this.topResource = resource;
@@ -75,61 +76,63 @@ public class TopResource implements ResourceGenerator {
         container.into(typeSpec.build());
     }
 
-    private void recurse(TypeSpec.Builder typeSpec, Resource parentResource) {
+    private void recurse(TypeSpec.Builder typeSpec, GResource parentResource) {
 
-        for (Resource resource : parentResource.resources()) {
+        for (GResource resource : parentResource.resources()) {
 
             buildResource(typeSpec, resource);
             recurse(typeSpec, resource);
         }
     }
 
-    private void buildResource(TypeSpec.Builder typeSpec, Resource currentResource) {
-        Multimap<Method, TypeDeclaration> incomingBodies = ArrayListMultimap.create();
-        Multimap<Method, Response> responses = ArrayListMultimap.create();
+    private void buildResource(TypeSpec.Builder typeSpec, GResource currentResource) {
+/*
+        Multimap<GMethod, GType> incomingBodies = ArrayListMultimap.create();
+        Multimap<GMethod, GResponse> responses = ArrayListMultimap.create();
         ResourceUtils.fillInBodiesAndResponses(currentResource, incomingBodies, responses);
 
         createResponseClass(typeSpec, incomingBodies, responses);
 
-        for (Method method : incomingBodies.keySet()) {
+        for (GMethod gMethod : incomingBodies.keySet()) {
 
-            Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethod(method);
-            TreeSet<TypeDeclaration> decls = new TreeSet<>(new TypeDeclarationTypeComparator());
+            Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethod(gMethod);
+            TreeSet<GType> decls = new TreeSet<>(new TypeDeclarationTypeComparator());
 
             Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
-            for (TypeDeclaration typeDeclaration : incomingBodies.get(method)) {
+            for (GType typeDeclaration : incomingBodies.get(gMethod)) {
                 if ( typeDeclaration != null ) {
                     decls.add(typeDeclaration);
                     ramlTypeToMediaType.put(typeDeclaration.type(), typeDeclaration.name());
                 }
             }
 
-            String methodName = Names.resourceMethodName(method.resource(), method);
+            String methodName = Names.resourceMethodName(gMethod.resource(), gMethod);
             if (decls.size() == 0) {
-                MethodSpec.Builder methodSpec = createMethodBuilder(method, methodName, mediaTypesForMethod);
+                MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod);
                 typeSpec.addMethod(methodSpec.build());
             } else {
-                for (TypeDeclaration typeDeclaration : decls) {
+                for (GType typeDeclaration : decls) {
 
-                    MethodSpec.Builder methodSpec = createMethodBuilder(method, methodName, mediaTypesForMethod);
-                    TypeName name = build.getJavaType(typeDeclaration, method.resource(), method);
+                    MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod);
+                    TypeName name = build.getJavaType(typeDeclaration, gMethod.resource(), gMethod);
                     methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
                     handleMethodConsumer(methodSpec, ramlTypeToMediaType, typeDeclaration);
                     typeSpec.addMethod(methodSpec.build());
                 }
             }
         }
+*/
     }
 
-    private Set<String> fetchAllMediaTypesForMethod(Method method) {
+    private Set<String> fetchAllMediaTypesForMethod(GMethod gMethod) {
 
         Set<String> mediaTypes = new HashSet<>();
-        for (Response response : method.responses()) {
+        for (GResponse gResponse : gMethod.responses()) {
 
-            mediaTypes.addAll(Lists.transform(response.body(), new Function<TypeDeclaration, String>() {
+            mediaTypes.addAll(Lists.transform(gResponse.body(), new Function<GType, String>() {
                 @Nullable
                 @Override
-                public String apply(@Nullable TypeDeclaration input) {
+                public String apply(@Nullable GType input) {
                     return input.name();
                 }
             }));
@@ -138,57 +141,58 @@ public class TopResource implements ResourceGenerator {
         return mediaTypes;
     }
 
-    private void createResponseClass(TypeSpec.Builder typeSpec, Multimap<Method, TypeDeclaration> bodies, Multimap<Method, Response> responses) {
+    private void createResponseClass(TypeSpec.Builder typeSpec, Multimap<GMethod, GType> bodies, Multimap<GMethod, GResponse> responses) {
 
-        Set<Method> allMethods = new HashSet<>();
+/*
+        Set<GMethod> allMethods = new HashSet<>();
         allMethods.addAll(bodies.keySet());
         allMethods.addAll(responses.keySet());
-        for (Method method : allMethods) {
+        for (GMethod gMethod : allMethods) {
 
             TypeSpec.Builder responseClass = TypeSpec
-                    .classBuilder(Names.responseClassName(method.resource(), method))
+                    .classBuilder(Names.responseClassName(gMethod.resource(), gMethod))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                     .superclass(ClassName.get(build.getResourcePackage(), "ResponseDelegate"))
                     .addMethod(
                             MethodSpec.constructorBuilder()
-                                    .addParameter(javax.ws.rs.core.Response.class, "response")
+                                    .addParameter(javax.ws.rs.core.Response.class, "GResponse")
                                     .addModifiers(Modifier.PRIVATE)
-                                    .addCode("super(response);\n").build()
+                                    .addCode("super(GResponse);\n").build()
                     );
 
 
             TypeSpec currentClass = responseClass.build();
-            for (Response response : responses.get(method)) {
+            for (GResponse gResponse : responses.get(gMethod)) {
 
-                if ( response == null ) {
+                if ( gResponse == null ) {
                     continue;
                 }
-                if(response.body().size() == 0 ) {
-                    String httpCode = response.code().value();
+                if(gResponse.body().size() == 0 ) {
+                    String httpCode = gResponse.code();
                     MethodSpec.Builder builder = MethodSpec.methodBuilder("respond" + httpCode);
                     builder
                             .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                            .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
+                            .addStatement("GResponse.ResponseBuilder responseBuilder = GResponse.status(" + httpCode + ")")
                             .addStatement("return new $N(responseBuilder.build())", currentClass)
                             .returns(TypeVariableName.get(currentClass.name))
                             .build();
 
                     responseClass.addMethod(builder.build());
                 } else {
-                    for (TypeDeclaration typeDeclaration : response.body()) {
+                    for (GType typeDeclaration : gResponse.body()) {
 
-                        String httpCode = response.code().value();
+                        String httpCode = gResponse.code();
                         MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.methodName("respond", httpCode,  "With", typeDeclaration.name() ) );
                         builder
                                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                                .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
+                                .addStatement("GResponse.ResponseBuilder responseBuilder = GResponse.status(" + httpCode + ")")
                                 .addStatement("responseBuilder.entity(entity)")
                                 .addStatement("return new $N(responseBuilder.build())", currentClass)
                                 .returns(TypeVariableName.get(currentClass.name))
                                 .build();
-                        TypeName typeName = build.getJavaType(typeDeclaration, method.resource(), method, response);
+                        TypeName typeName = build.getJavaType(typeDeclaration, gMethod.resource(), gMethod, gResponse);
                         if (typeName == null) {
-                            throw new GenerationException(typeDeclaration.type() + " was not seen before");
+                            throw new GenerationException(typeDeclaration + " was not seen before");
                         }
 
                         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
@@ -199,21 +203,18 @@ public class TopResource implements ResourceGenerator {
 
             typeSpec.addType(responseClass.build());
         }
-    }
-
-  /*  private TypeName getRightTypeName(TypeDeclaration decl) {
-
-
-    }
 */
-    private MethodSpec.Builder createMethodBuilder(Method method, String methodName, Set<String> mediaTypesForMethod) {
+    }
+/*
+    private MethodSpec.Builder createMethodBuilder(GMethod gMethod, String methodName, Set<String> mediaTypesForMethod) {
+
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
-        for (TypeDeclaration typeDeclaration : method.resource().uriParameters()) {
+        for (GParameter typeDeclaration : GMethod.resource().uriParameters()) {
 
             if (TypeUtils.isComposite(typeDeclaration)) {
-                throw new GenerationException("uri parameter is composite: " + typeDeclaration.type());
+                throw new GenerationException("uri parameter is composite: " + typeDeclaration);
             }
 
             methodSpec.addParameter(
@@ -225,10 +226,9 @@ public class TopResource implements ResourceGenerator {
                             .build());
 
         }
-
-        for (TypeDeclaration typeDeclaration : method.queryParameters()) {
+        for (GParameter typeDeclaration : gMethod.queryParameters()) {
             if (TypeUtils.isComposite(typeDeclaration)) {
-                throw new GenerationException("query parameter is composite: " + typeDeclaration.type());
+                throw new GenerationException("query parameter is composite: " + typeDeclaration);
             }
 
             methodSpec.addParameter(
@@ -241,14 +241,14 @@ public class TopResource implements ResourceGenerator {
         }
 
         methodSpec
-                .addAnnotation(AnnotationSpec.builder(HTTPMethods.methodNameToAnnotation(method.method())).build());
+                .addAnnotation(AnnotationSpec.builder(HTTPMethods.methodNameToAnnotation(gMethod.method())).build());
 
-        if ( method.resource().parentResource() != null ) {
+        if ( gMethod.resource().parentResource() != null ) {
 
-            methodSpec.addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", method.resource().relativeUri().value()).build());
+            methodSpec.addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", GMethod.resource().relativeUri().value()).build());
         }
 
-        methodSpec.returns(ClassName.get("", Names.responseClassName(method.resource(), method)));
+        methodSpec.returns(ClassName.get("", Names.responseClassName(gMethod.resource(), gMethod)));
 
         if ( mediaTypesForMethod.size() > 0 ) {
             AnnotationSpec.Builder ann = buildAnnotation(mediaTypesForMethod, Produces.class);
@@ -259,7 +259,7 @@ public class TopResource implements ResourceGenerator {
 
     private void handleMethodConsumer(MethodSpec.Builder methodSpec,
             Multimap<String, String> ramlTypeToMediaType,
-            TypeDeclaration typeDeclaration) {
+            GType typeDeclaration) {
         Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration.type());
 
         AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
@@ -274,10 +274,11 @@ public class TopResource implements ResourceGenerator {
         }
         return ann;
     }
+*/
 
-    private static class TypeDeclarationTypeComparator implements Comparator<TypeDeclaration> {
+    private static class TypeDeclarationTypeComparator implements Comparator<GType> {
         @Override
-        public int compare(TypeDeclaration o1, TypeDeclaration o2) {
+        public int compare(GType o1, GType o2) {
             return o1.type().compareTo(o2.type());
         }
     }

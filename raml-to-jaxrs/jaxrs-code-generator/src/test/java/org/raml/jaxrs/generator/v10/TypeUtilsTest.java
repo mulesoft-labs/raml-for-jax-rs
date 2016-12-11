@@ -1,6 +1,9 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.junit.Test;
+import org.raml.jaxrs.generator.GAbstractionFactory;
+import org.raml.jaxrs.generator.GFinderListener;
+import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.TypeFinderListener;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
@@ -23,7 +26,7 @@ public class TypeUtilsTest {
     @Test
     public void shouldExtendingString() throws Exception {
 
-        ObjectTypeDeclaration typeDeclaration = (ObjectTypeDeclaration) finder("extendString.raml").get("ObjectOne");
+        ObjectTypeDeclaration typeDeclaration = (ObjectTypeDeclaration) finder("extendString.raml").get("ObjectOne").implementation();
         TypeDeclaration property = findProperty(typeDeclaration, "name");
         assertFalse(TypeUtils.shouldCreateNewClass(property, null));
     }
@@ -31,7 +34,7 @@ public class TypeUtilsTest {
     @Test
     public void shouldExtendingObject() throws Exception {
 
-        ObjectTypeDeclaration typeDeclaration = (ObjectTypeDeclaration) finder("extendObject.raml").get("ObjectOne");
+        ObjectTypeDeclaration typeDeclaration = (ObjectTypeDeclaration) finder("extendObject.raml").get("ObjectOne").implementation();
         TypeDeclaration property = findProperty(typeDeclaration, "name");
         assertTrue(TypeUtils.shouldCreateNewClass(property, null));
     }
@@ -39,7 +42,7 @@ public class TypeUtilsTest {
     @Test
     public void shouldExtendingObjectWithProperties() throws Exception {
 
-        ObjectTypeDeclaration typeDeclaration = (ObjectTypeDeclaration) finder("extendObjectWithProperties.raml").get("ObjectOne");
+        ObjectTypeDeclaration typeDeclaration = (ObjectTypeDeclaration) finder("extendObjectWithProperties.raml").get("ObjectOne").implementation();
         TypeDeclaration property = findProperty(typeDeclaration, "name");
         assertTrue(TypeUtils.shouldCreateNewClass(property, null));
     }
@@ -47,28 +50,28 @@ public class TypeUtilsTest {
     @Test
     public void shouldExtendingAnother() throws Exception {
 
-        Map<String, TypeDeclaration> finder = finder("extendingAnother.raml");
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("ObjectOne");
+        Map<String, GType> finder = finder("extendingAnother.raml");
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("ObjectOne").implementation();
         TypeDeclaration extending = findProperty(object, "name");
-        ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type());
+        ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type()).implementation();
         assertFalse(TypeUtils.shouldCreateNewClass(extending, extended));
     }
 
     @Test
     public void shouldExtendingAnotherWithProperties() throws Exception {
 
-        Map<String, TypeDeclaration> finder = finder("extendingAnotherWithProperties.raml");
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("ObjectOne");
+        Map<String, GType> finder = finder("extendingAnotherWithProperties.raml");
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("ObjectOne").implementation();
         TypeDeclaration extending = findProperty(object, "name");
-        ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type());
+        ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type()).implementation();
         assertTrue(TypeUtils.shouldCreateNewClass(extending, extended));
     }
 
     @Test
     public void shouldExtendingAnotherMultipleInheritance() throws Exception {
 
-        Map<String, TypeDeclaration> finder = finder("extendObjectMultipleIneritance.raml");
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("ObjectOne");
+        Map<String, GType> finder = finder("extendObjectMultipleIneritance.raml");
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("ObjectOne").implementation();
         TypeDeclaration extending = findProperty(object, "name");
         ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type());
         assertTrue(TypeUtils.shouldCreateNewClass(extending, extended));
@@ -77,14 +80,14 @@ public class TypeUtilsTest {
     @Test
     public void bigRaml() throws Exception {
 
-        Map<String, TypeDeclaration> finder = finder("big.raml");
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("RamlDataType");
+        Map<String, GType> finder = finder("big.raml");
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) finder.get("RamlDataType").implementation();
         TypeDeclaration extending = findProperty(object, "NilValue");
         ObjectTypeDeclaration extended = (ObjectTypeDeclaration) finder.get(extending.type());
         assertTrue(TypeUtils.shouldCreateNewClass(extending, extended));
     }
 
-    private Map<String, TypeDeclaration> finder(String raml) {
+    private Map<String, GType> finder(String raml) {
         RamlModelResult ramlModelResult = new RamlModelBuilder().buildApi(new InputStreamReader(this.getClass().getResourceAsStream(raml)), ".");
         if (ramlModelResult.hasErrors())
         {
@@ -96,13 +99,11 @@ public class TypeUtilsTest {
         }
         else
         {
-            final Map<String, TypeDeclaration> decls = new HashMap<>();
-            new V10TypeFinder(ramlModelResult.getApiV10()).findTypes(new TypeFinderListener<V10GeneratorContext>() {
-
+            final Map<String, GType> decls = new HashMap<>();
+            new V10Finder(ramlModelResult.getApiV10(), new GAbstractionFactory()).findTypes(new GFinderListener() {
                 @Override
-                public void newType(V10GeneratorContext generatorContext) {
-                    TypeDeclaration decl = generatorContext.getTypeDeclaration();
-                    decls.put(decl.name(), decl);
+                public void newTypeDeclaration(GType type) {
+                    decls.put(type.name(), type);
                 }
             });
 

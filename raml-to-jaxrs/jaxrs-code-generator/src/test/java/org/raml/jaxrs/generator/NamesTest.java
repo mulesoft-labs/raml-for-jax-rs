@@ -23,16 +23,16 @@ import static org.mockito.Mockito.when;
 public class NamesTest {
 
     @Mock
-    Resource resource;
+    GResource resource;
 
     @Mock
-    Method method;
+    GMethod method;
 
     @Mock
     RelativeUriString url;
 
     @Mock
-    TypeDeclaration uriParameter;
+    GParameter uriParameter;
 
     @Before
     public void mocks() {
@@ -76,7 +76,7 @@ public class NamesTest {
 
         when(method.resource()).thenReturn(resource);
         when(resource.resourcePath()).thenReturn("/songs");
-        when(resource.uriParameters()).thenReturn(new ArrayList<TypeDeclaration>());
+        when(resource.uriParameters()).thenReturn(new ArrayList<GParameter>());
         when(method.method()).thenReturn("get");
 
         assertEquals("GetSongsResponse", Names.responseClassName(resource, method));
@@ -111,7 +111,7 @@ public class NamesTest {
 
         when(method.resource()).thenReturn(resource);
         when(resource.resourcePath()).thenReturn("/songs");
-        when(resource.uriParameters()).thenReturn(new ArrayList<TypeDeclaration>());
+        when(resource.uriParameters()).thenReturn(new ArrayList<GParameter>());
         when(method.method()).thenReturn("get");
 
         assertEquals("getSongs", Names.resourceMethodName(resource, method));

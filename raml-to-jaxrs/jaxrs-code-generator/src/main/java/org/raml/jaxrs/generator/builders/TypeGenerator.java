@@ -15,7 +15,4 @@ public interface TypeGenerator<T> extends Generator<T> {
     void output(CodeContainer<T> rootDirectory, TYPE type) throws IOException;
 
     TypeName getGeneratedJavaType();
-    // is a property declared here or in my parents ?
-    boolean declaresProperty(String name);
-
 }

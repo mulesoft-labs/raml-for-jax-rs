@@ -39,9 +39,4 @@ public class XmlSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> im
 
         return ClassName.get(packageName, jclass.name());
     }
-
-    @Override
-    public boolean declaresProperty(String name) {
-        return false;
-    }
 }

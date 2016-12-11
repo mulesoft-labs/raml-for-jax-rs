@@ -8,5 +8,5 @@ import org.raml.jaxrs.generator.GeneratorObjectType;
  */
 public enum V10ObjectType implements GeneratorObjectType {
 
-    PLAIN_OBJECT_TYPE, XML_OBJECT_TYPE, JSON_OBJECT_TYPE;
+    PLAIN_OBJECT_TYPE, XML_OBJECT_TYPE, JSON_OBJECT_TYPE, SCALAR;
 }

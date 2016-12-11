@@ -1,6 +1,9 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GParameter;
+import org.raml.jaxrs.generator.GProperty;
+import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.v2.api.model.v10.api.Api;
@@ -61,7 +64,8 @@ public class TypeUtils {
     }
 
 
-    public static boolean isNewTypeDeclaration(Api api, TypeDeclaration typeDeclaration) {
+
+    public static boolean isNewTypeDeclaration(TypeDeclaration typeDeclaration) {
 
         if (typeDeclaration instanceof JSONTypeDeclaration) {
 
@@ -99,9 +103,13 @@ public class TypeUtils {
         return ((ObjectTypeDeclaration) parents.get(0)).properties().size() < object.properties().size();
     }
 
-    public static boolean isComposite(TypeDeclaration typeDeclaration) {
+    public static boolean isComposite(GParameter declaration) {
 
-        return typeDeclaration instanceof ObjectTypeDeclaration || typeDeclaration instanceof XMLTypeDeclaration
-                || typeDeclaration instanceof JSONTypeDeclaration;
+        return declaration.isComposite();
+    }
+
+    public static boolean isNewTypeDeclaration(GProperty declaration) {
+
+        return isNewTypeDeclaration((TypeDeclaration) declaration.implementation());
     }
 }

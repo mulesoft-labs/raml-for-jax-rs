@@ -1,15 +1,10 @@
-package org.raml.jaxrs.generator.v10;
+package org.raml.jaxrs.generator;
 
 import com.google.common.collect.Multimap;
 import org.raml.jaxrs.generator.GMethod;
 import org.raml.jaxrs.generator.GRequest;
 import org.raml.jaxrs.generator.GResource;
 import org.raml.jaxrs.generator.GResponse;
-import org.raml.jaxrs.generator.GType;
-import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 /**
  * Created by Jean-Philippe Belanger on 12/4/16.

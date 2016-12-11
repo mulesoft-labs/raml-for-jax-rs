@@ -6,6 +6,7 @@ import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.Names;
+import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -103,6 +104,8 @@ public class V10GType implements GType {
             properties = new ArrayList<>();
         }
     }
+
+
 
     private void getProperties(final ObjectTypeDeclaration input) {
 

@@ -2,9 +2,7 @@ package org.raml.jaxrs.generator;
 
 
 import org.raml.jaxrs.generator.v10.ResourceHandler;
-import org.raml.jaxrs.generator.v10.TypeFactory;
 import org.raml.jaxrs.generator.v10.V10Finder;
-import org.raml.jaxrs.generator.v10.V10TypeFinder;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.v10.resources.Resource;

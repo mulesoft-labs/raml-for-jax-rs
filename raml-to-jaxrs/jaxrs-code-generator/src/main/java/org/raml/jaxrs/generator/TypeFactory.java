@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.v10;
+package org.raml.jaxrs.generator;
 
 import com.squareup.javapoet.ClassName;
 import com.sun.codemodel.JClass;
@@ -10,15 +10,6 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GAbstractionFactory;
-import org.raml.jaxrs.generator.GProperty;
-import org.raml.jaxrs.generator.GType;
-import org.raml.jaxrs.generator.GenerationException;
-import org.raml.jaxrs.generator.GeneratorType;
-import org.raml.jaxrs.generator.JsonSchemaTypeGenerator;
-import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.XmlSchemaTypeGenerator;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;

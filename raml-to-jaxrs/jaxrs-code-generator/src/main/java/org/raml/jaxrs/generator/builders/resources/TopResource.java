@@ -23,7 +23,7 @@ import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.HTTPMethods;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.v10.ResourceUtils;
+import org.raml.jaxrs.generator.ResourceUtils;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 
 import javax.annotation.Nullable;
@@ -37,11 +37,9 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Created by Jean-Philippe Belanger on 10/27/16.

@@ -39,6 +39,7 @@ public class CurrentBuild {
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
     private Map<String, GeneratorType> foundTypes = new HashMap<>();
+    private final Map<String, JavaPoetTypeGenerator> supportGenerators = new HashMap<>();
 
     public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage, String supportPackage) {
         this.typeFinder = typeFinder;
@@ -106,6 +107,17 @@ public class CurrentBuild {
             });
         }
 
+        for (JavaPoetTypeGenerator typeGenerator : supportGenerators.values()) {
+
+            typeGenerator.output(new CodeContainer<TypeSpec.Builder>() {
+                @Override
+                public void into(TypeSpec.Builder g) throws IOException {
+
+                    JavaFile.Builder file = JavaFile.builder(getSupportPackage(), g.build());
+                    file.build().writeTo(new File(rootDirectory));
+                }
+            });
+        }
     }
 
 
@@ -118,6 +130,11 @@ public class CurrentBuild {
     public void newGenerator(String ramlTypeName, TypeGenerator generator) {
 
         builtTypes.put(ramlTypeName, generator);
+    }
+
+    public void newSupportGenerator(String name, JavaPoetTypeGenerator generator) {
+
+        supportGenerators.put(name, generator);
     }
 
     public GeneratorType getDeclaredType(String ramlType) {

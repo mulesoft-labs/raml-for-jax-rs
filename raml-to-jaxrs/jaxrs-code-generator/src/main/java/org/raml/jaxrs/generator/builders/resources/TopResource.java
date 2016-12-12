@@ -24,21 +24,30 @@ import org.raml.jaxrs.generator.HTTPMethods;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.ResourceUtils;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -51,7 +60,6 @@ public class TopResource implements ResourceGenerator {
     private final GResource topResource;
     private final String name;
     private final String uri;
-
 
     public TopResource(CurrentBuild build, GResource resource, String name, String uri) {
 
@@ -73,6 +81,7 @@ public class TopResource implements ResourceGenerator {
         buildResource(typeSpec, topResource);
 
         recurse(typeSpec, topResource);
+
         container.into(typeSpec.build());
     }
 
@@ -244,8 +253,8 @@ public class TopResource implements ResourceGenerator {
                             .build());
         }
 
-        methodSpec
-                .addAnnotation(AnnotationSpec.builder(HTTPMethods.methodNameToAnnotation(gMethod.method())).build());
+        buildNewWebMethod(gMethod, methodSpec);
+
 
         if ( gMethod.resource().parentResource() != null ) {
 
@@ -259,6 +268,46 @@ public class TopResource implements ResourceGenerator {
             methodSpec.addAnnotation(ann.build());
         }
         return methodSpec;
+    }
+
+    private void buildNewWebMethod(GMethod gMethod, MethodSpec.Builder methodSpec) {
+        Class<? extends Annotation> type = HTTPMethods.methodNameToAnnotation(gMethod.method());
+        if ( type == null ) {
+
+            String name = gMethod.method().toUpperCase();
+            final ClassName className = ClassName.get(build.getSupportPackage(), name);
+            final TypeSpec.Builder builder = TypeSpec.annotationBuilder(className);
+            builder
+                    .addAnnotation(AnnotationSpec.builder(Target.class)
+                       .addMember("value", "{$T.$L}", ElementType.class, "METHOD").build())
+                    .addAnnotation(AnnotationSpec.builder(Retention.class).addMember("value", "$T.$L", RetentionPolicy.class, "RUNTIME").build())
+                    .addAnnotation(AnnotationSpec.builder(HttpMethod.class).addMember("value", "$S", name).build());
+            build.newSupportGenerator(name, new JavaPoetTypeGenerator() {
+                @Override
+                public void output(CodeContainer<TypeSpec.Builder> rootDirectory, TYPE type) throws IOException {
+
+                }
+
+                @Override
+                public TypeName getGeneratedJavaType() {
+                    return className;
+                }
+
+                @Override
+                public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
+
+                    rootDirectory.into(builder);
+                }
+            });
+
+            methodSpec
+                    .addAnnotation(AnnotationSpec.builder(className).build());
+
+        } else {
+
+            methodSpec
+                    .addAnnotation(AnnotationSpec.builder(type).build());
+        }
     }
 
     private void handleMethodConsumer(MethodSpec.Builder methodSpec,

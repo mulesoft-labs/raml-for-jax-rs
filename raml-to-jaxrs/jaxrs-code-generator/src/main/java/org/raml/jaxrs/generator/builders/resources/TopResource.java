@@ -25,6 +25,7 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.ResourceUtils;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 
@@ -282,16 +283,7 @@ public class TopResource implements ResourceGenerator {
                        .addMember("value", "{$T.$L}", ElementType.class, "METHOD").build())
                     .addAnnotation(AnnotationSpec.builder(Retention.class).addMember("value", "$T.$L", RetentionPolicy.class, "RUNTIME").build())
                     .addAnnotation(AnnotationSpec.builder(HttpMethod.class).addMember("value", "$S", name).build());
-            build.newSupportGenerator(name, new JavaPoetTypeGenerator() {
-                @Override
-                public void output(CodeContainer<TypeSpec.Builder> rootDirectory, TYPE type) throws IOException {
-
-                }
-
-                @Override
-                public TypeName getGeneratedJavaType() {
-                    return className;
-                }
+            build.newSupportGenerator(name, new JavaPoetTypeGeneratorBase(className) {
 
                 @Override
                 public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {

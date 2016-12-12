@@ -1,7 +1,7 @@
 package org.raml.jaxrs.parser;
 
 import org.raml.jaxrs.model.JaxRsApplication;
-import org.raml.jaxrs.parser.analyzers.JerseyAnalyzer;
+import org.raml.jaxrs.parser.analyzers.Analyzers;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
 import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 import org.raml.utilities.format.Joiners;
@@ -31,12 +31,12 @@ class JerseyJaxRsParser implements JaxRsParser {
 
         Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);
 
-        return JerseyAnalyzer.create(classes).analyze();
+        return Analyzers.jerserAnalyzerFor(classes).analyze();
     }
 
     private static Iterable<Class<?>> getJaxRsClassesFor(Path jaxRsResource) throws JaxRsParsingException {
 
-        ClassLoader classLoader = null;
+        ClassLoader classLoader;
         try {
             classLoader = ClassLoaderUtils.classLoaderFor(jaxRsResource);
         } catch (MalformedURLException e) {

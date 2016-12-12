@@ -28,7 +28,7 @@ class JerseyJaxRsMethod implements Method {
 
     @Override
     public HttpVerb getHttpVerb() {
-        return HttpVerb.fromString(resourceMethod.getHttpMethod());
+        return HttpVerb.fromStringUnchecked(resourceMethod.getHttpMethod());
     }
 
     @Override

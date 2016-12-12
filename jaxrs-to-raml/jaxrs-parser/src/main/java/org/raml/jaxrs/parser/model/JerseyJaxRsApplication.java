@@ -8,6 +8,7 @@ import org.glassfish.jersey.server.model.RuntimeResource;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;

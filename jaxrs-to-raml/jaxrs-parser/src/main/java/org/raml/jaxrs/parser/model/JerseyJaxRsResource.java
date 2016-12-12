@@ -47,10 +47,6 @@ class JerseyJaxRsResource implements JaxRsResource {
         ).toList();
     }
 
-    private static Method ourMethodOf(ResourceMethod resourceMethod) {
-        return JerseyJaxRsMethod.create(resourceMethod);
-    }
-
     @Override
     public List<JaxRsResource> getChildren() {
         return FluentIterable.from(runtimeResource.getChildRuntimeResources()).transform(
@@ -62,5 +58,9 @@ class JerseyJaxRsResource implements JaxRsResource {
                     }
                 }
         ).toList();
+    }
+
+    private static Method ourMethodOf(ResourceMethod resourceMethod) {
+        return JerseyJaxRsMethod.create(resourceMethod);
     }
 }

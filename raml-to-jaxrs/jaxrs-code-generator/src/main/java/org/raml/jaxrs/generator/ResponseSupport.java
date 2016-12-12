@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -24,7 +25,7 @@ public class ResponseSupport {
 
     public static void buildSupportClasses(String rootDir, String defaultPackage) throws IOException {
 
-        TypeSpec.Builder builder = TypeSpec.classBuilder("ResponseDelegate")
+        TypeSpec.Builder builder = TypeSpec.classBuilder(ClassName.get(defaultPackage, "ResponseDelegate"))
                 .addModifiers(Modifier.PUBLIC)
                 .superclass(Response.class)
                 .addField(FieldSpec.builder(Response.class, "delegate", Modifier.PRIVATE, Modifier.FINAL).build());

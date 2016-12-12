@@ -15,7 +15,6 @@ import org.raml.jaxrs.generator.builders.extensions.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,16 +33,18 @@ public class CurrentBuild {
     private final GFinder typeFinder;
     private final String resourcePackage;
     private final String modelPackage;
+    private final String supportPackage;
 
     private final List<ResourceGenerator> resources = new ArrayList<>();
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
     private Map<String, GeneratorType> foundTypes = new HashMap<>();
 
-    public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage) {
+    public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage, String supportPackage) {
         this.typeFinder = typeFinder;
         this.resourcePackage = resourcePackage;
         this.modelPackage = modelPackage;
+        this.supportPackage = supportPackage;
 
         typeExtensionList.addExtension(new JaxbTypeExtension());
         typeExtensionList.addExtension(new JavadocTypeExtension());
@@ -60,30 +61,30 @@ public class CurrentBuild {
 
     public void generate(final String rootDirectory) throws IOException {
 
-        if ( resources.size() > 0 ) {
-            ResponseSupport.buildSupportClasses(rootDirectory, getResourcePackage());
+        if (resources.size() > 0) {
+            ResponseSupport.buildSupportClasses(rootDirectory, getSupportPackage());
         }
 
         for (TypeGenerator typeGenerator : builtTypes.values()) {
 
-            if ( typeGenerator instanceof JavaPoetTypeGenerator ) {
+            if (typeGenerator instanceof JavaPoetTypeGenerator) {
 
 
                 JavaPoetTypeGenerator b = (JavaPoetTypeGenerator) typeGenerator;
                 b.output(new CodeContainer<TypeSpec.Builder>() {
-                    @Override
-                    public void into(TypeSpec.Builder g) throws IOException {
+                             @Override
+                             public void into(TypeSpec.Builder g) throws IOException {
 
-                        JavaFile.Builder file = JavaFile.builder(getModelPackage(), g.build());
-                        file.build().writeTo(new File(rootDirectory));
-                    }
-                }
+                                 JavaFile.Builder file = JavaFile.builder(getModelPackage(), g.build());
+                                 file.build().writeTo(new File(rootDirectory));
+                             }
+                         }
                 );
 
                 continue;
             }
 
-            if ( typeGenerator instanceof  CodeModelTypeGenerator ) {
+            if (typeGenerator instanceof CodeModelTypeGenerator) {
                 CodeModelTypeGenerator b = (CodeModelTypeGenerator) typeGenerator;
                 b.output(new CodeContainer<JCodeModel>() {
                     @Override
@@ -221,6 +222,10 @@ public class CurrentBuild {
                 typeFactory.createType(type);
             }
         }
+    }
+
+    public String getSupportPackage() {
+        return supportPackage;
     }
 }
 

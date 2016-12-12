@@ -25,17 +25,20 @@ public class RamlScanner {
     private final String destDir;
     private final String packageName;
     private final String modelPackageName;
+    private final String supportPackage;
 
-    public RamlScanner(String destDir, String packageName, String modelPackageName) {
+    public RamlScanner(String destDir, String packageName, String modelPackageName, String supportPackage) {
         this.destDir = destDir;
         this.packageName = packageName;
         this.modelPackageName = modelPackageName;
+        this.supportPackage = supportPackage;
     }
 
     public RamlScanner(String destDir, String packageName) {
         this.destDir = destDir;
         this.packageName = packageName;
         this.modelPackageName = packageName;
+        this.supportPackage =  packageName;
     }
 
     public void handle(String resourceName) throws IOException, GenerationException {
@@ -75,7 +78,7 @@ public class RamlScanner {
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
         GAbstractionFactory factory = new GAbstractionFactory();
-        CurrentBuild build = new CurrentBuild(new V10Finder(api, factory), packageName, modelPackageName);
+        CurrentBuild build = new CurrentBuild(new V10Finder(api, factory), packageName, modelPackageName, supportPackage);
         build.constructClasses(new TypeFactory(build, factory));
 
         ResourceHandler resourceHandler = new ResourceHandler(build);
@@ -95,7 +98,7 @@ public class RamlScanner {
 
         GAbstractionFactory factory = new GAbstractionFactory();
         V08Finder typeFinder = new V08Finder(api, factory);
-        CurrentBuild build = new CurrentBuild(typeFinder, packageName, modelPackageName);
+        CurrentBuild build = new CurrentBuild(typeFinder, packageName, modelPackageName, supportPackage);
 
         build.constructClasses(new TypeFactory(build, factory));
 

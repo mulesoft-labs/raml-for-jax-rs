@@ -157,7 +157,7 @@ public class TopResource implements ResourceGenerator {
             TypeSpec.Builder responseClass = TypeSpec
                     .classBuilder(Names.responseClassName(gMethod.resource(), gMethod))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .superclass(ClassName.get(build.getResourcePackage(), "ResponseDelegate"))
+                    .superclass(ClassName.get(build.getSupportPackage(), "ResponseDelegate"))
                     .addMethod(
                             MethodSpec.constructorBuilder()
                                     .addParameter(javax.ws.rs.core.Response.class, "Response")

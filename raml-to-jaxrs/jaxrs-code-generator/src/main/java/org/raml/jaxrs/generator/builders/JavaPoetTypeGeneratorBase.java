@@ -9,7 +9,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 12/11/16.
  * Just potential zeroes and ones
  */
-abstract public class JavaPoetTypeGeneratorBase implements JavaPoetTypeGenerator {
+public abstract class JavaPoetTypeGeneratorBase implements JavaPoetTypeGenerator {
 
     private TypeName typeName;
 

@@ -9,9 +9,19 @@ types:
             name:
                 required: true
                 type: string
+                minLength: 4
+                maxLength: 8
             weight:
                 required: true
-                type: integer
+                type: number
+                minimum: 12
+                maximum: 17
+            limbs:
+                type: string[]
+                minItems: 3
+                maxItems: 9
+                required: true
+
     Human:
         type: object
         properties:

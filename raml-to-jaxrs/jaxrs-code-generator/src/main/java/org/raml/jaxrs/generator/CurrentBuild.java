@@ -12,6 +12,7 @@ import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.JavadocTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.JaxbTypeExtension;
+import org.raml.jaxrs.generator.builders.extensions.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
@@ -49,6 +50,8 @@ public class CurrentBuild {
 
         typeExtensionList.addExtension(new JaxbTypeExtension());
         typeExtensionList.addExtension(new JavadocTypeExtension());
+        typeExtensionList.addExtension(new Jsr303Extension());
+
     }
 
     public String getResourcePackage() {

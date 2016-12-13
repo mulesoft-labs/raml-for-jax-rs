@@ -21,6 +21,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.raml.utilities.builder.Preconditions.checkSet;
 import static org.raml.utilities.builder.Preconditions.checkUnset;
 
+/**
+ * A {@link JaxRsClassesGatherer} implementation that leverages Jersey
+ * code.
+ */
 public class JerseyGatherer implements JaxRsClassesGatherer {
 
     private final ResourceConfig resourceConfig;

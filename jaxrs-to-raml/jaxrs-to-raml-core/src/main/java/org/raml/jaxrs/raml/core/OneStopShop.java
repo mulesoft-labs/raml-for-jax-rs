@@ -24,7 +24,7 @@ public class OneStopShop {
 
     public void parseJaxRsAndOutputRaml(Path jaxRsUrl, Path ramlOutputFile, RamlConfiguration configuration) throws JaxRsToRamlConversionException, JaxRsParsingException, RamlEmissionException {
 
-        JaxRsApplication application = JaxRsParsers.usingJersey().parse(jaxRsUrl);
+        JaxRsApplication application = JaxRsParsers.usingJerseyForPath(jaxRsUrl).parse();
 
         RamlApi ramlApi = JaxRsToRamlConverter.create().convert(configuration, application);
 

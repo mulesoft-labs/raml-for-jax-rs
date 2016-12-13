@@ -18,6 +18,9 @@ public class ClassLoaderUtils {
 
         URL[] allOfDem = FluentIterable.of(theRest).append(firstUrl).toArray(URL.class);
 
+        //In the absence of specific parent, we use the current one as the parent.
+        //Otherwise, some incongruities might happen when running from the maven
+        //plugin for example.
         return new URLClassLoader(allOfDem, Thread.currentThread().getContextClassLoader());
     }
 

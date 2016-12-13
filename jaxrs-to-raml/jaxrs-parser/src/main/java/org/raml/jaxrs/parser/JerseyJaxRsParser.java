@@ -12,21 +12,28 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 class JerseyJaxRsParser implements JaxRsParser {
 
     private static final Logger logger = LoggerFactory.getLogger(JerseyJaxRsParser.class);
 
-    private JerseyJaxRsParser() {
+    private final Path jaxRsResource;
+
+
+    private JerseyJaxRsParser(Path jaxRsResource) {
+        this.jaxRsResource = jaxRsResource;
     }
 
-    public static JerseyJaxRsParser create() {
-        return new JerseyJaxRsParser();
+    public static JerseyJaxRsParser create(Path path) {
+        checkNotNull(path);
+
+        return new JerseyJaxRsParser(path);
     }
 
     @Override
-    public JaxRsApplication parse(Path jaxRsResource) throws JaxRsParsingException {
+    public JaxRsApplication parse() throws JaxRsParsingException {
         logger.info("parsing JaxRs resource: {}", jaxRsResource);
 
         Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);

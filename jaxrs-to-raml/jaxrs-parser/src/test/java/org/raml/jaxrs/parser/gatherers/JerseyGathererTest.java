@@ -27,12 +27,4 @@ public class JerseyGathererTest {
     public void testConstructor() {
         assertSame(resourceConfig, jerseyGatherer.getResourceConfig());
     }
-
-//    @Test
-//    public void testGetClassesDispatches() {
-//        jerseyGatherer.jaxRsClasses();
-//        Can't test this because getClasses if final...
-//        verify(resourceConfig).getClasses();
-//    }
-
 }

@@ -6,6 +6,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
@@ -32,15 +33,12 @@ public class Jsr303Extension extends TypeExtensionHelper {
     public void onFieldlementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
 
+        addFacetsForAll(typeSpec, typeDeclaration);
+
         if ( typeDeclaration instanceof NumberTypeDeclaration ) {
 
             addFacetsForNumbers(typeSpec, (NumberTypeDeclaration) typeDeclaration);
             return;
-        }
-
-        if ( typeDeclaration instanceof BooleanTypeDeclaration ) {
-
-            addFacetsForBoolean(typeSpec, typeDeclaration);
         }
 
         if ( typeDeclaration instanceof StringTypeDeclaration ) {
@@ -51,6 +49,14 @@ public class Jsr303Extension extends TypeExtensionHelper {
         if ( typeDeclaration instanceof ArrayTypeDeclaration ) {
 
             addFacetsForArray(typeSpec, (ArrayTypeDeclaration) typeDeclaration);
+        }
+    }
+
+    private void addFacetsForAll(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+
+        if ( typeDeclaration.required() != null && typeDeclaration.required()) {
+
+            typeSpec.addAnnotation(AnnotationSpec.builder(NotNull.class).build());
         }
     }
 
@@ -74,12 +80,6 @@ public class Jsr303Extension extends TypeExtensionHelper {
         if ( minMax != null ) {
             typeSpec.addAnnotation(minMax.build());
         }
-
-        if ( typeDeclaration.required() != null && typeDeclaration.required()) {
-
-            typeSpec.addAnnotation(AnnotationSpec.builder(NotNull.class).build());
-        }
-
     }
 
     private void addFacetsForString(FieldSpec.Builder typeSpec, StringTypeDeclaration typeDeclaration) {
@@ -103,25 +103,8 @@ public class Jsr303Extension extends TypeExtensionHelper {
         if ( minMax != null ) {
             typeSpec.addAnnotation(minMax.build());
         }
-
-        if ( typeDeclaration.required() != null && typeDeclaration.required()) {
-
-            typeSpec.addAnnotation(AnnotationSpec.builder(NotNull.class).build());
-        }
     }
 
-    private void addFacetsForBoolean(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
-
-
-        FieldSpec t = typeSpec.build();
-        if ( typeDeclaration.required() != null && typeDeclaration.required()) {
-
-            if ( ! t.type.isPrimitive()) {
-
-                typeSpec.addAnnotation(AnnotationSpec.builder(NotNull.class).build());
-            }
-        }
-    }
 
     private void addFacetsForNumbers(FieldSpec.Builder typeSpec, NumberTypeDeclaration typeDeclaration) {
 
@@ -139,15 +122,6 @@ public class Jsr303Extension extends TypeExtensionHelper {
                 typeSpec.addAnnotation(AnnotationSpec.builder(Max.class).addMember("value", "$L", typeDeclaration.maximum().intValue()).build());
             }
         }
-
-        if ( typeDeclaration.required() != null && typeDeclaration.required()) {
-
-            if ( isInteger(t.type) && ! t.type.isPrimitive()) {
-
-                typeSpec.addAnnotation(AnnotationSpec.builder(NotNull.class).build());
-            }
-        }
-
     }
 
     private boolean isInteger(TypeName type) {

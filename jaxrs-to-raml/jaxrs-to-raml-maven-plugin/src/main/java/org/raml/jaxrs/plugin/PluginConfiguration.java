@@ -1,29 +1,32 @@
 package org.raml.jaxrs.plugin;
 
-import com.google.common.collect.ImmutableList;
-
 import java.nio.file.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 class PluginConfiguration {
-    private final ImmutableList<Path> inputPaths;
+    private final Path inputPaths;
+    private final Path sourceDirectory;
     private final Path outputDirectory;
     private final Path ramlFileName;
 
-    private PluginConfiguration(ImmutableList<Path> inputPaths, Path outputDirectory, Path ramlFileName) {
+    private PluginConfiguration(Path inputPaths, Path sourceDirectory, Path outputDirectory, Path ramlFileName) {
         this.inputPaths = inputPaths;
+        this.sourceDirectory = sourceDirectory;
         this.outputDirectory = outputDirectory;
         this.ramlFileName = ramlFileName;
     }
 
-    public static PluginConfiguration create(Iterable<Path> inputPaths, Path outputDirectory, Path ramlFileName) {
-        checkNotNull(inputPaths);
+    public static PluginConfiguration create(Path inputPath, Path sourceDirectory, Path outputDirectory, Path ramlFileName) {
+        checkNotNull(inputPath);
+        checkNotNull(sourceDirectory);
+        checkNotNull(outputDirectory);
+        checkNotNull(ramlFileName);
 
-        return new PluginConfiguration(ImmutableList.copyOf(inputPaths), outputDirectory, ramlFileName);
+        return new PluginConfiguration(inputPath, sourceDirectory, outputDirectory, ramlFileName);
     }
 
-    public Iterable<Path> getInputPaths() {
+    public Path getInput() {
         return inputPaths;
     }
 
@@ -33,5 +36,9 @@ class PluginConfiguration {
 
     public Path getRamlFileName() {
         return ramlFileName;
+    }
+
+    public Path getSourceDirectory() {
+        return sourceDirectory;
     }
 }

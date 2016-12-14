@@ -30,7 +30,7 @@ import static java.lang.String.format;
 @Mojo(name = "jaxrstoraml", requiresDependencyResolution = ResolutionScope.COMPILE)
 public class JaxRsToRamlMojo extends AbstractMojo {
 
-    @Parameter(property = "jaxrs.to.raml.input", required = true)
+    @Parameter(property = "jaxrs.to.raml.input", defaultValue = "${project.build.directory}/classes")
     private File input;
 
     @Parameter(property = "jaxrs.to.raml.outputFileName", defaultValue = "${project.artifactId}.raml")
@@ -81,7 +81,7 @@ public class JaxRsToRamlMojo extends AbstractMojo {
     private static void checkInputFiles(Iterable<Path> inputFiles) throws MojoExecutionException {
         for (Path inputPath : inputFiles) {
             //Check that input is an existing file, otherwise fail.
-            if (!Files.isRegularFile(inputPath)) {
+            if (!Files.isRegularFile(inputPath) && !Files.isDirectory(inputPath)) {
                 throw new MojoExecutionException(format("invalid input file: %s", inputPath));
             }
         }

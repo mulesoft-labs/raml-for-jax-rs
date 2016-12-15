@@ -17,7 +17,7 @@ public class TypeExtensionHelper implements TypeExtension {
     }
 
     @Override
-    public void onFieldlementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
     }
 

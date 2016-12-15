@@ -3,8 +3,6 @@ package org.raml.jaxrs.generator.builders.extensions;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -50,7 +48,7 @@ public class Jsr303ExtensionTest {
         Jsr303Extension ext = new Jsr303Extension();
         FieldSpec.Builder builder = FieldSpec.builder(ClassName.get(Integer.class), "champ", Modifier.PUBLIC);
 
-        ext.onFieldlementation(builder, number);
+        ext.onFieldImplementation(builder, number);
 
         assertForIntegerNumber(builder);
     }
@@ -63,7 +61,7 @@ public class Jsr303ExtensionTest {
         Jsr303Extension ext = new Jsr303Extension();
         FieldSpec.Builder builder = FieldSpec.builder(ClassName.get(BigInteger.class), "champ", Modifier.PUBLIC);
 
-        ext.onFieldlementation(builder, number);
+        ext.onFieldImplementation(builder, number);
 
         assertForIntegerNumber(builder);
     }
@@ -76,7 +74,7 @@ public class Jsr303ExtensionTest {
         Jsr303Extension ext = new Jsr303Extension();
         FieldSpec.Builder builder = FieldSpec.builder(ClassName.get(Double.class), "champ", Modifier.PUBLIC);
 
-        ext.onFieldlementation(builder, number);
+        ext.onFieldImplementation(builder, number);
 
         assertEquals(1, builder.build().annotations.size());
         assertEquals(NotNull.class.getName(), builder.build().annotations.get(0).type.toString());
@@ -90,7 +88,7 @@ public class Jsr303ExtensionTest {
 
         FieldSpec.Builder builder = FieldSpec.builder(ParameterizedTypeName.get(List.class, String.class), "champ", Modifier.PUBLIC);
         Jsr303Extension ext = new Jsr303Extension();
-        ext.onFieldlementation(builder, array);
+        ext.onFieldImplementation(builder, array);
         assertEquals(1, builder.build().annotations.size());
         assertEquals(Size.class.getName(), builder.build().annotations.get(0).type.toString());
         assertEquals("3", builder.build().annotations.get(0).members.get("min").get(0).toString());
@@ -105,7 +103,7 @@ public class Jsr303ExtensionTest {
 
         FieldSpec.Builder builder = FieldSpec.builder(ParameterizedTypeName.get(List.class, String.class), "champ", Modifier.PUBLIC);
         Jsr303Extension ext = new Jsr303Extension();
-        ext.onFieldlementation(builder, array);
+        ext.onFieldImplementation(builder, array);
         assertEquals(1, builder.build().annotations.size());
         assertEquals(Size.class.getName(), builder.build().annotations.get(0).type.toString());
         assertEquals(1, builder.build().annotations.get(0).members.size());
@@ -121,7 +119,7 @@ public class Jsr303ExtensionTest {
 
         FieldSpec.Builder builder = FieldSpec.builder(ParameterizedTypeName.get(List.class, String.class), "champ", Modifier.PUBLIC);
         Jsr303Extension ext = new Jsr303Extension();
-        ext.onFieldlementation(builder, array);
+        ext.onFieldImplementation(builder, array);
         assertEquals(1, builder.build().annotations.size());
         assertEquals(NotNull.class.getName(), builder.build().annotations.get(0).type.toString());
     }

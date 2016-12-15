@@ -30,7 +30,7 @@ import java.util.Map;
 public class Jsr303Extension extends TypeExtensionHelper {
 
     @Override
-    public void onFieldlementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
 
         addFacetsForAll(typeSpec, typeDeclaration);

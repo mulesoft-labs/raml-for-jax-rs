@@ -27,10 +27,10 @@ public class TypeExtensionList implements TypeExtension {
     }
 
     @Override
-    public void onFieldlementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
-            extension.onFieldlementation(fieldSpec, typeDeclaration);
+            extension.onFieldImplementation(fieldSpec, typeDeclaration);
         }
     }
 

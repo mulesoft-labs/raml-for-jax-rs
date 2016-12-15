@@ -13,7 +13,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 public interface TypeExtension {
 
     void onTypeImplementation(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
-    void onFieldlementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
+    void onFieldImplementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
     void onGetterMethodImplementation(MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
     void onSetterMethodImplementation(MethodSpec.Builder typeSpec, ParameterSpec.Builder param, TypeDeclaration typeDeclaration);
 

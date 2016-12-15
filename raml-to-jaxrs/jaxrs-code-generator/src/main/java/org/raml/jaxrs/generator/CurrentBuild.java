@@ -10,6 +10,7 @@ import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.builders.extensions.JacksonExtension;
 import org.raml.jaxrs.generator.builders.extensions.JavadocTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.Jsr303Extension;
@@ -51,6 +52,8 @@ public class CurrentBuild {
         typeExtensionList.addExtension(new JaxbTypeExtension());
         typeExtensionList.addExtension(new JavadocTypeExtension());
         typeExtensionList.addExtension(new Jsr303Extension());
+        typeExtensionList.addExtension(new JacksonExtension());
+
 
     }
 

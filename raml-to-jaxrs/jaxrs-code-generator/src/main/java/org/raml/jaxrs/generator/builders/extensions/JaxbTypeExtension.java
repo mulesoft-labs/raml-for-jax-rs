@@ -25,7 +25,7 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
     }
 
     @Override
-    public void onFieldlementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
 
         fieldSpec.addAnnotation(AnnotationSpec.builder(XmlElement.class).addMember("name", "$S", typeDeclaration.name()).build());
     }

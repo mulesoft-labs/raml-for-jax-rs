@@ -80,7 +80,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
             FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
-            build.withTypeListeners().onFieldlementation(fieldSpec,
+            build.withTypeListeners().onFieldImplementation(fieldSpec,
                     (TypeDeclaration) propertyInfo.getType().implementation());
             typeSpec.addField(fieldSpec.build());
 

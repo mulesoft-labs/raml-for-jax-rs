@@ -3,13 +3,6 @@ package org.raml.jaxrs.generator;
 import com.squareup.javapoet.ClassName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
-import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
@@ -22,7 +15,6 @@ import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,25 +82,8 @@ public class TypeFactory {
     }
 
     private TypeGenerator createJsonType(GType type) {
-        //JSONTypeDeclaration decl = typeDeclaration;
-        GenerationConfig config = new DefaultGenerationConfig() {
-            @Override
-            public boolean isGenerateBuilders() { // set config option by overriding method
-                return true;
-            }
-        };
 
-        final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
-                new SchemaGenerator());
-        final JCodeModel codeModel = new JCodeModel();
-
-        try {
-            mapper.generate(codeModel, type.defaultJavaTypeName() , currentBuild.getModelPackage(), type.schema());
-        } catch (IOException e) {
-            throw new GenerationException(e);
-        }
-
-        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(mapper, currentBuild.getModelPackage(), type.defaultJavaTypeName(), codeModel);
+        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(currentBuild.getModelPackage(), type.defaultJavaTypeName(), type.schema());
         currentBuild.newGenerator(type.name(), gen);
         return gen;
     }

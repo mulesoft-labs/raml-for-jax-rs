@@ -101,7 +101,7 @@ public class ScalarTypes {
             }
         }
 
-        return true;
+        return type.required();
     }
 
     public static Class<?> scalarToJavaType(String name) {

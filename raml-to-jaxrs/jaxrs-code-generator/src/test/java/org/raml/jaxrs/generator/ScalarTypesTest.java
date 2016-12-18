@@ -8,12 +8,10 @@ import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeInstance;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.Assert.*;
@@ -56,9 +54,22 @@ public class ScalarTypesTest {
     @Test
     public void scalarToJavaType() throws Exception {
 
+        when(integer.required()).thenReturn(true);
+        when(number.required()).thenReturn(true);
+
         assertEquals(int.class, ScalarTypes.scalarToJavaType(integer));
         assertEquals(BigDecimal.class, ScalarTypes.scalarToJavaType(number));
         assertEquals(boolean.class, ScalarTypes.scalarToJavaType(bool) );
+    }
+
+    @Test
+    public void requiredMeansPrimitive() throws Exception {
+
+        when(integer.required()).thenReturn(true);
+        assertEquals(int.class, ScalarTypes.scalarToJavaType(integer));
+
+        when(integer.required()).thenReturn(false);
+        assertEquals(Integer.class, ScalarTypes.scalarToJavaType(integer));
     }
 
     @Test
@@ -72,8 +83,7 @@ public class ScalarTypesTest {
     @Test
     public void size8() throws Exception {
 
-        when(integer.format()).thenReturn("int8");
-        when(number.format()).thenReturn("int8");
+        setupBasic("int8");
         assertEquals(byte.class, ScalarTypes.scalarToJavaType(integer));
         assertEquals(byte.class, ScalarTypes.scalarToJavaType(number));
     }
@@ -81,16 +91,17 @@ public class ScalarTypesTest {
     @Test
     public void size16() throws Exception {
 
-        when(integer.format()).thenReturn("int16");
-        when(number.format()).thenReturn("int16");
+        setupBasic("int16");
+
         assertEquals(short.class, ScalarTypes.scalarToJavaType(integer));
         assertEquals(short.class, ScalarTypes.scalarToJavaType(number));
     }
+
+
     @Test
     public void size32() throws Exception {
 
-        when(integer.format()).thenReturn("int32");
-        when(number.format()).thenReturn("int32");
+       setupBasic("int32");
         assertEquals(int.class, ScalarTypes.scalarToJavaType(integer));
         assertEquals(int.class, ScalarTypes.scalarToJavaType(number));
     }
@@ -98,8 +109,7 @@ public class ScalarTypesTest {
     @Test
     public void size64() throws Exception {
 
-        when(integer.format()).thenReturn("int64");
-        when(number.format()).thenReturn("int64");
+        setupBasic("int64");
         assertEquals(long.class, ScalarTypes.scalarToJavaType(integer));
         assertEquals(long.class, ScalarTypes.scalarToJavaType(number));
     }
@@ -107,14 +117,14 @@ public class ScalarTypesTest {
     @Test
     public void sizeFloat() throws Exception {
 
-        when(number.format()).thenReturn("float");
+        setupBasic("float");
         assertEquals(float.class, ScalarTypes.scalarToJavaType(number));
     }
 
     @Test
     public void sizeDouble() throws Exception {
 
-        when(number.format()).thenReturn("double");
+        setupBasic("double");
         assertEquals(double.class, ScalarTypes.scalarToJavaType(number));
     }
 
@@ -184,4 +194,12 @@ public class ScalarTypesTest {
         when(number.annotations()).thenReturn(Collections.singletonList(javaTypeAnnotationRef));
         assertEquals(Double.class, ScalarTypes.scalarToJavaType(number));
     }
+
+    public void setupBasic(String format) {
+        when(integer.format()).thenReturn(format);
+        when(number.format()).thenReturn(format);
+        when(number.required()).thenReturn(true);
+        when(integer.required()).thenReturn(true);
+    }
+
 }

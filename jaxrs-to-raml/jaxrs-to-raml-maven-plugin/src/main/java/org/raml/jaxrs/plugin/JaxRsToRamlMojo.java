@@ -47,15 +47,22 @@ public class JaxRsToRamlMojo extends AbstractMojo {
         checkConfiguration(configuration);
         printConfiguration(configuration, logger);
 
-        Path finalOutputFile = configuration.getOutputDirectory().resolve(configuration.getRamlFileName());
-        String applicationName = FilenameUtils.removeExtension(configuration.getRamlFileName().getFileName().toString());
-
-
         Path jaxRsUrl = configuration.getInput();
+        Path sourceCodeRoot = configuration.getSourceDirectory();
+        Path finalOutputFile = configuration.getOutputDirectory().resolve(configuration.getRamlFileName());
 
+        String applicationName = FilenameUtils.removeExtension(configuration.getRamlFileName().getFileName().toString());
         RamlConfiguration ramlConfiguration = DefaultRamlConfiguration.forApplication(applicationName);
+
+        OneStopShop oneStopShop = OneStopShop.builder()
+                .withJaxRsClassesRoot(jaxRsUrl)
+                .withSourceCodeRoot(sourceCodeRoot)
+                .withRamlOutputFile(finalOutputFile)
+                .withRamlConfiguration(ramlConfiguration)
+                .build();
+
         try {
-            OneStopShop.create().parseJaxRsAndOutputRaml(jaxRsUrl, finalOutputFile, ramlConfiguration);
+            oneStopShop.parseJaxRsAndOutputRaml();
         } catch (JaxRsToRamlConversionException | JaxRsParsingException | RamlEmissionException e) {
             throw new MojoExecutionException(format("unable to generate output raml file: %s", finalOutputFile), e);
         }

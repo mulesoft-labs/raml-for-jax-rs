@@ -224,6 +224,9 @@ public class CurrentBuild {
                 case "float":
                     return TypeName.FLOAT;
 
+                case "byte":
+                    return TypeName.BYTE;
+
                 default:
                     throw new GenerationException("JP, finish the list " + scalar);
             }

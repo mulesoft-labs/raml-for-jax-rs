@@ -2,6 +2,10 @@
 title: Hello World API
 version: v1
 baseUri: https://api.github.com
+annotationTypes:
+    javaPrimitiveType:
+        type: boolean
+        allowedTargets: TypeDeclaration
 types:
     Person:
         type: Human
@@ -14,6 +18,8 @@ types:
             weight:
                 required: true
                 type: number
+                format: int16
+                (javaPrimitiveType): false
                 minimum: 12
                 maximum: 17
             limbs:

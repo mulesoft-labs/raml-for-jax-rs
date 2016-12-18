@@ -4,6 +4,7 @@ import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.analyzers.Analyzers;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
 import org.raml.jaxrs.parser.util.ClassLoaderUtils;
+import org.raml.utilities.builder.NonNullableField;
 import org.raml.utilities.format.Joiners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +21,19 @@ class JerseyJaxRsParser implements JaxRsParser {
     private static final Logger logger = LoggerFactory.getLogger(JerseyJaxRsParser.class);
 
     private final Path jaxRsResource;
+    private final NonNullableField<Path> sourceRootDirectory;
 
 
-    private JerseyJaxRsParser(Path jaxRsResource) {
+    private JerseyJaxRsParser(Path jaxRsResource, NonNullableField<Path> sourceRootDirectory) {
         this.jaxRsResource = jaxRsResource;
+        this.sourceRootDirectory = sourceRootDirectory;
     }
 
-    public static JerseyJaxRsParser create(Path path) {
-        checkNotNull(path);
+    public static JerseyJaxRsParser create(Path classesPath, NonNullableField<Path> sourceRootDirectory) {
+        checkNotNull(classesPath);
+        checkNotNull(sourceRootDirectory);
 
-        return new JerseyJaxRsParser(path);
+        return new JerseyJaxRsParser(classesPath, sourceRootDirectory);
     }
 
     @Override

@@ -1,15 +1,10 @@
-package org.raml.jaxrs.generator.builders.extensions;
+package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -19,9 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Jean-Philippe Belanger on 12/12/16.

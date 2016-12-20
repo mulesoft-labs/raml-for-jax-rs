@@ -106,12 +106,10 @@ public class TopResource implements ResourceGenerator {
         for (GMethod gMethod : incomingBodies.keySet()) {
 
             Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(gMethod);
-            List<GType> decls = new ArrayList<>();
 
             Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
             for (GRequest typeDeclaration : incomingBodies.get(gMethod)) {
                 if ( typeDeclaration != null ) {
-                    decls.add(typeDeclaration.type());
                     ramlTypeToMediaType.put(typeDeclaration.type().name(), typeDeclaration.mediaType());
                 }
             }

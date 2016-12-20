@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders.extensions;
+package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

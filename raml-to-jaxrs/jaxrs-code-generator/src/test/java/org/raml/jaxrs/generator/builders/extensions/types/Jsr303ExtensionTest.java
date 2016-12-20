@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders.extensions;
+package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 

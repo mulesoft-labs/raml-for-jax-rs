@@ -91,6 +91,24 @@ class V10GMethod implements GMethod {
     }
 
     @Override
+    public boolean equals(Object obj) {
+
+        if ( obj == null || ! (obj instanceof V10GMethod) ) {
+
+            return false;
+        }
+
+        V10GMethod method = (V10GMethod) obj;
+        return method.v10GResource.resourcePath().equals(v10GResource.resourcePath()) && method.method().equals(method());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return method().hashCode() + v10GResource.resourcePath().hashCode();
+    }
+
+    @Override
     public String toString() {
         return "V10GMethod{" +
                 "resource=" + v10GResource.resourcePath() +

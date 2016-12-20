@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders.extensions;
+package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;

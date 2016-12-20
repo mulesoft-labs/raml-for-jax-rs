@@ -1,7 +1,6 @@
-package org.raml.jaxrs.generator.builders.extensions;
+package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;

@@ -86,4 +86,23 @@ public class V08Method implements GMethod {
     public List<GResponse> responses() {
         return responses;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if ( obj == null || ! (obj instanceof V08Method) ) {
+
+            return false;
+        }
+
+        V08Method method = (V08Method) obj;
+        return method.v08GResource.resourcePath().equals(v08GResource.resourcePath()) && method.method().equals(method());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return method().hashCode() + v08GResource.resourcePath().hashCode();
+    }
+
 }

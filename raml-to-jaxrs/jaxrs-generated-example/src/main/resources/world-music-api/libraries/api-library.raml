@@ -1,5 +1,8 @@
 #%RAML 1.0 Library
-
+annotationTypes:
+  javaClassName:
+    type: string
+    allowedTargets: TypeDeclaration
 types:
   RamlDataType:
     type: object
@@ -14,6 +17,7 @@ types:
 #        items: !include ../schemas/idea.raml
       extIdeas:
         type: !include ../schemas/idea.raml
+        (javaClassName): example.worldmusic.model.RamlDataTypeImpl.NilValueImpl
         properties:
           createdBy: string
       feedback:

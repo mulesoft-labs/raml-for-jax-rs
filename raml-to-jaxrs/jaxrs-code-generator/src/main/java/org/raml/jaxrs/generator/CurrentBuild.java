@@ -17,6 +17,9 @@ import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
+import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import java.io.File;
 import java.io.IOException;
@@ -177,6 +180,15 @@ public class CurrentBuild {
 
     private TypeName checkJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
+        if ( type instanceof V10GType) {
+            V10GType v10Type = (V10GType) type;
+            TypeName typename = getJavaTypeNameFromAnnotation(v10Type);
+            if ( typename != null ) {
+
+                return typename;
+            }
+        }
+
         Class<?> scalar = ScalarTypes.scalarToJavaType(type);
         if ( scalar != null ){
 
@@ -192,19 +204,36 @@ public class CurrentBuild {
                 TypeGenerator builder = internalTypes.get(type.name());
 
                 if (builder == null) {
-                    // it's not an internal type.  It's a global type.
-                    if ( builtTypes.get(type.name()) != null ) {
-                        // it's a build type.  We have a new class for this.
-                        return builtTypes.get(type.name()).getGeneratedJavaType();
-                    } else {
-                        // it's an extension of an existing class, but a new type nontheless.
-                        GeneratorType gen = foundTypes.get(type.name());
-                        return ClassName.get(getModelPackage(), gen.getDeclaredType().defaultJavaTypeName());
-                    }
+                    return findInCatalogOfTypes(type);
+                } else {
+                    // it was an internal class that we built....
+                    return builder.getGeneratedJavaType();
                 }
-                // it was an internal class that we built....
-                return builder.getGeneratedJavaType();
             }
+        }
+    }
+
+    private TypeName getJavaTypeNameFromAnnotation(V10GType v10Type) {
+        TypeDeclaration td = v10Type.implementation();
+        for (AnnotationRef annotationRef : td.annotations()) {
+            if ( "javaClassName".equals(annotationRef.annotation().name())) {
+
+                return ClassName.bestGuess((String) annotationRef.structuredValue().value());
+            }
+        }
+
+        return null;
+    }
+
+    private TypeName findInCatalogOfTypes(GType type) {
+        // it's not an internal type.  It's a global type.
+        if ( builtTypes.get(type.name()) != null ) {
+            // it's a built type.  We have a new class for this.
+            return builtTypes.get(type.name()).getGeneratedJavaType();
+        } else {
+            // it's an extension of an existing class, but a new type nonetheless.
+            GeneratorType gen = foundTypes.get(type.name());
+            return ClassName.get(getModelPackage(), gen.getDeclaredType().defaultJavaTypeName());
         }
     }
 

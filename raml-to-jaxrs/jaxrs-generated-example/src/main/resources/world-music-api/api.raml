@@ -82,6 +82,10 @@ annotationTypes:
     type: nil
     description: markes a resource as ready
     allowedTargets: Resource
+  javaClassName:
+    type: string
+    allowedTargets: TypeDeclaration
+
   info:
     properties:
       license:
@@ -171,6 +175,7 @@ uses:
     body:
       application/json:
         type: ApiLib.RamlDataType
+        (javaClassName): example.worldmusic.model.RamlDataTypeImpl
 /entry:
   type:  collection
   post:

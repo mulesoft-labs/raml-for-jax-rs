@@ -277,6 +277,7 @@ public class TopResource implements ResourceGenerator {
             final ClassName className = ClassName.get(build.getSupportPackage(), name);
             final TypeSpec.Builder builder = TypeSpec.annotationBuilder(className);
             builder
+                    .addModifiers(Modifier.PUBLIC)
                     .addAnnotation(AnnotationSpec.builder(Target.class)
                        .addMember("value", "{$T.$L}", ElementType.class, "METHOD").build())
                     .addAnnotation(AnnotationSpec.builder(Retention.class).addMember("value", "$T.$L", RetentionPolicy.class, "RUNTIME").build())

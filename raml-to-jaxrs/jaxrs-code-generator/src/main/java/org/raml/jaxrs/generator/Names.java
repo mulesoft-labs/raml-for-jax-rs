@@ -81,6 +81,11 @@ public class Names
         return Strings.join(values, "");
     }
 
+    public static String constantName(String value) {
+
+        return buildJavaFriendlyName(value, CaseFormat.UPPER_UNDERSCORE);
+    }
+
     public static String resourceMethodName(GResource resource, GMethod method) {
 
         if ( resource.uriParameters().size() == 0) {
@@ -230,4 +235,5 @@ public class Names
             BodyLike typeDeclaration) {
         return typeName(resource.resourcePath(), method.method(), response.code().value(), typeDeclaration.name());
     }
+
 }

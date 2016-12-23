@@ -1,8 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-
 import java.util.List;
 
 /**
@@ -32,4 +29,8 @@ public interface GType extends GAbstraction {
     GType arrayContents();
 
     String defaultJavaTypeName();
+
+    boolean isEnum();
+
+    List<String> enumValues();
 }

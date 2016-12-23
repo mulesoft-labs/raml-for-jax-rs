@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator;
 
+import static org.raml.jaxrs.generator.GObjectType.ENUMERATION_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.JSON_OBJECT_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.PLAIN_OBJECT_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.SCALAR;
@@ -30,6 +31,11 @@ public class GeneratorType {
         if (typeDeclaration.isObject()) {
 
             return new GeneratorType(PLAIN_OBJECT_TYPE, typeDeclaration);
+        }
+
+        if (typeDeclaration.isEnum()) {
+
+            return new GeneratorType(ENUMERATION_TYPE, typeDeclaration);
         }
 
         return new GeneratorType(SCALAR, typeDeclaration);

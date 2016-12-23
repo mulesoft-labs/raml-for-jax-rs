@@ -111,6 +111,10 @@ public class ScalarTypes {
 
     public static Class<?> scalarToJavaType(GType type) {
 
+        if ( type.isEnum() ) {
+            return null;
+        }
+
         if ( type instanceof V10GType) {
 
             return scalarToJavaType((TypeDeclaration) type.implementation());

@@ -21,4 +21,8 @@ public interface TypeExtension {
     void onGetterMethodDeclaration(MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
     void onSetterMethodDeclaration(MethodSpec.Builder typeSpec, ParameterSpec.Builder param, TypeDeclaration typeDeclaration);
 
+    void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name);
+    void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration);
+
+    void onEnumField(FieldSpec.Builder field, TypeDeclaration typeDeclaration);
 }

@@ -11,6 +11,7 @@ import org.raml.jaxrs.generator.builders.types.PropertyInfo;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
 
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -53,6 +54,9 @@ public class TypeFactory {
 
         switch (type.getObjectType()) {
 
+            case ENUMERATION_TYPE:
+                return createEnumerationType(type.getDeclaredType(), publicType);
+
             case PLAIN_OBJECT_TYPE:
                 return createObjectType(type.getDeclaredType(),  publicType);
 
@@ -64,6 +68,17 @@ public class TypeFactory {
         }
 
         throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
+    }
+
+    private TypeGenerator createEnumerationType(GType type, boolean publicType) {
+        JavaPoetTypeGenerator generator =  new EnumerationGenerator(
+                currentBuild,
+                ((V10GType)type).implementation(),
+                ClassName.get(currentBuild.getModelPackage(), type.defaultJavaTypeName()),
+                type.enumValues());
+
+        currentBuild.newGenerator(type.name(), generator);
+        return generator;
     }
 
     private TypeGenerator createXmlType(GType type) {

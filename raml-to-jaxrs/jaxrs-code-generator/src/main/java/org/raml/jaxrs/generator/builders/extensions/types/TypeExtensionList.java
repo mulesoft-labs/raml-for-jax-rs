@@ -79,6 +79,30 @@ public class TypeExtensionList implements TypeExtension {
         }
     }
 
+    @Override
+    public void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onEnumConstant(builder, typeDeclaration, name);
+        }
+    }
+
+    @Override
+    public void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onEnumerationClass(builder, typeDeclaration);
+        }
+    }
+
+    @Override
+    public void onEnumField(FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onEnumField(field, typeDeclaration);
+        }
+    }
+
     public void addExtension(TypeExtension typeExtension) {
         extensions.add(typeExtension);
     }

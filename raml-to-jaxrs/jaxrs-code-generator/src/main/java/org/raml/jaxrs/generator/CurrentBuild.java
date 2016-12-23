@@ -56,7 +56,7 @@ public class CurrentBuild {
         typeExtensionList.addExtension(new JavadocTypeExtension());
         typeExtensionList.addExtension(new Jsr303Extension());
         //typeExtensionList.addExtension(new JacksonExtension());
-        typeExtensionList.addExtension(new GsonExtension());
+        //typeExtensionList.addExtension(new GsonExtension());
 
 
     }

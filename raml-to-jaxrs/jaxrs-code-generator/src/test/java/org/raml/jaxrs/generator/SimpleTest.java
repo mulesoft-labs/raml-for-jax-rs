@@ -145,6 +145,19 @@ public class SimpleTest {
     }
 
     @Test
+    public void enumeration() throws IOException, GenerationException {
+
+        RamlScanner scanner = new RamlScanner(
+                "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
+                "example.enums.resources",
+                "example.enums.model",
+                "example.enums.support"
+        );
+
+        scanner.handle("/enums.raml");
+    }
+
+    @Test
     public void fick() throws Exception {
         RamlModelResult result = new RamlModelBuilder().buildApi(new File("/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-code-generator/src/test/resources/base.raml"));
         Resource r1 = result.getApiV10().resources().get(0);

@@ -9,6 +9,8 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -34,5 +36,17 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
     public void onGetterMethodImplementation(MethodSpec.Builder typeSpec,
             TypeDeclaration typeDeclaration) {
 
+    }
+
+    @Override
+    public void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name) {
+
+        builder.addAnnotation(AnnotationSpec.builder(XmlEnumValue.class).addMember("value", "$S", name).build());
+    }
+
+    @Override
+    public void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+
+        builder.addAnnotation(AnnotationSpec.builder(XmlEnum.class).build());
     }
 }

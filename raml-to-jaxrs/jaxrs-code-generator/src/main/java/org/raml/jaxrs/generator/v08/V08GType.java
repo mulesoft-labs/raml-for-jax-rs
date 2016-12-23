@@ -3,15 +3,13 @@ package org.raml.jaxrs.generator.v08;
 import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.Names;
-import org.raml.v2.api.model.v08.api.GlobalSchema;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
-import org.raml.v2.api.model.v08.bodies.JSONBody;
 import org.raml.v2.api.model.v08.bodies.Response;
-import org.raml.v2.api.model.v08.bodies.XMLBody;
 import org.raml.v2.api.model.v08.methods.Method;
 import org.raml.v2.api.model.v08.resources.Resource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -114,5 +112,15 @@ public class V08GType implements GType {
     @Override
     public String defaultJavaTypeName() {
         return defaultJavaName;
+    }
+
+    @Override
+    public boolean isEnum() {
+        return false;
+    }
+
+    @Override
+    public List<String> enumValues() {
+        return Collections.emptyList();
     }
 }

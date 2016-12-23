@@ -47,4 +47,19 @@ public class TypeExtensionHelper implements TypeExtension {
             TypeDeclaration typeDeclaration) {
 
     }
+
+    @Override
+    public void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name) {
+
+    }
+
+    @Override
+    public void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+
+    }
+
+    @Override
+    public void onEnumField(FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
+
+    }
 }

@@ -11,6 +11,7 @@ import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -224,9 +225,19 @@ public class V10GType implements GType {
     }
 
     @Override
+    public boolean isEnum() {
+        return  typeDeclaration instanceof StringTypeDeclaration && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0;
+    }
+
+    @Override
+    public List<String> enumValues() {
+        return ((StringTypeDeclaration)typeDeclaration).enumValues();
+    }
+
+    @Override
     public String toString() {
         return "V10GType{" +
-                ", input=" + typeDeclaration.name() + ":" + typeDeclaration.type()+
+                "input=" + typeDeclaration.name() + ":" + typeDeclaration.type()+
                 ", name='" + name() + '\'' +
                 '}';
     }

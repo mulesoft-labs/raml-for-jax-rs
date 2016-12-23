@@ -43,6 +43,7 @@ public class EnumerationGenerator  extends AbstractTypeGenerator<TypeSpec.Builde
 
         TypeSpec.Builder enumBuilder = TypeSpec.enumBuilder(javaName)
                 .addField(field.build())
+                .addModifiers(Modifier.PUBLIC)
                 .addMethod(
                         MethodSpec.constructorBuilder().addParameter(ClassName.get(String.class), "name")
                                 .addStatement("this.$N = $N", "name", "name")

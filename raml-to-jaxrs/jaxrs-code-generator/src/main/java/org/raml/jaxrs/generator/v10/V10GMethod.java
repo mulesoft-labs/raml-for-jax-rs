@@ -35,7 +35,7 @@ class V10GMethod implements GMethod {
             public GRequest apply(@Nullable TypeDeclaration input) {
 
                 if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
-                    return new V10GRequest(input, new V10GType((Resource) v10GResource.implementation(), method, input));
+                    return new V10GRequest(input, new V10GType(v10GResource.implementation(), method, input));
                 } else {
                     return new V10GRequest(input, new V10GType(input.type(), input));
                 }

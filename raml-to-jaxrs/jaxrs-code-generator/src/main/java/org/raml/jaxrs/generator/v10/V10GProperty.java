@@ -34,7 +34,7 @@ public class V10GProperty implements GProperty {
 
     @Override
     public boolean isInternal() {
-        return TypeUtils.isNewTypeDeclaration(input);
+        return TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]));
     }
 
     @Override

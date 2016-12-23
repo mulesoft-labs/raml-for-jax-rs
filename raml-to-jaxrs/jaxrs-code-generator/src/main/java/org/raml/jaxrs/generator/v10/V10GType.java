@@ -115,13 +115,7 @@ public class V10GType implements GType {
             @Override
             public GProperty apply(@Nullable TypeDeclaration declaration) {
 
-                if ( TypeUtils.isNewTypeDeclaration(declaration)) {
-
-                    return new V10GProperty(declaration, new V10GType(declaration.type(),  declaration));
-                } else {
-
-                    return new V10GProperty(declaration, new V10GType(declaration.type(),  declaration));
-                }
+                return new V10GProperty(declaration, new V10GType(declaration.type(),  declaration));
             }
         });
     }

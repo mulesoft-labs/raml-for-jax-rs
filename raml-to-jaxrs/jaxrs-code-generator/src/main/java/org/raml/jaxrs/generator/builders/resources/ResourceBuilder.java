@@ -55,14 +55,14 @@ import java.util.Set;
  * Created by Jean-Philippe Belanger on 10/27/16.
  * Abstraction of creation.
  */
-public class TopResource implements ResourceGenerator {
+public class ResourceBuilder implements ResourceGenerator {
 
     private final CurrentBuild build;
     private final GResource topResource;
     private final String name;
     private final String uri;
 
-    public TopResource(CurrentBuild build, GResource resource, String name, String uri) {
+    public ResourceBuilder(CurrentBuild build, GResource resource, String name, String uri) {
 
         this.build = build;
         this.topResource = resource;
@@ -107,35 +107,50 @@ public class TopResource implements ResourceGenerator {
 
             Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(gMethod);
 
-            Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
-            for (GRequest typeDeclaration : incomingBodies.get(gMethod)) {
-                if ( typeDeclaration != null ) {
-                    ramlTypeToMediaType.put(typeDeclaration.type().name(), typeDeclaration.mediaType());
-                }
-            }
+            Multimap<String, String> ramlTypeToMediaType = accumulateMediaTypesPerType(incomingBodies, gMethod);
 
             String methodName = Names.resourceMethodName(gMethod.resource(), gMethod);
             if ( gMethod.body().size() == 0) {
 
-                MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod);
-                typeSpec.addMethod(methodSpec.build());
+                createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, methodName);
             } else {
                 for (GRequest gRequest : gMethod.body()) {
 
                     if (gRequest.type() == null) {
-                        MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod);
-                        typeSpec.addMethod(methodSpec.build());
+                        createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, methodName);
                     } else {
 
-                        MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>());
-                        TypeName name = build.getJavaType(gRequest.type());
-                        methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
-                        handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
-                        typeSpec.addMethod(methodSpec.build());
+                        createMethodWithBody(typeSpec, gMethod, ramlTypeToMediaType, methodName, gRequest);
                     }
                 }
             }
         }
+    }
+
+    private Multimap<String, String> accumulateMediaTypesPerType(Multimap<GMethod, GRequest> incomingBodies,
+            GMethod gMethod) {
+        Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
+        for (GRequest request : incomingBodies.get(gMethod)) {
+            if ( request != null ) {
+                ramlTypeToMediaType.put(request.type().name(), request.mediaType());
+            }
+        }
+        return ramlTypeToMediaType;
+    }
+
+    private void createMethodWithoutBody(TypeSpec.Builder typeSpec, GMethod gMethod, Set<String> mediaTypesForMethod,
+            String methodName) {
+        MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod);
+        typeSpec.addMethod(methodSpec.build());
+    }
+
+    private void createMethodWithBody(TypeSpec.Builder typeSpec, GMethod gMethod,
+            Multimap<String, String> ramlTypeToMediaType, String methodName, GRequest gRequest) {
+        MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>());
+        TypeName name = build.getJavaType(gRequest.type());
+        methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
+        handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
+        typeSpec.addMethod(methodSpec.build());
     }
 
     private Set<String> fetchAllMediaTypesForMethodResponses(GMethod gMethod) {

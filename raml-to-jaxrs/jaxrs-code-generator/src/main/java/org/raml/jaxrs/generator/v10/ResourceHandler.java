@@ -2,8 +2,7 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstractionFactory;
-import org.raml.jaxrs.generator.builders.resources.TopResource;
-import org.raml.v2.api.model.v10.api.Api;
+import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.util.Set;
@@ -24,7 +23,7 @@ public class ResourceHandler {
 
         GAbstractionFactory factory = new GAbstractionFactory();
 
-        TopResource rg = new TopResource(build, factory.newResource(resource), resource.displayName().value(),
+        ResourceBuilder rg = new ResourceBuilder(build, factory.newResource(resource), resource.displayName().value(),
                 resource.relativeUri().value());
 
         build.newResource(rg);
@@ -34,7 +33,7 @@ public class ResourceHandler {
 
         GAbstractionFactory factory = new GAbstractionFactory();
 
-        TopResource rg = new TopResource(build, factory.newResource(globalSchemas, resource), resource.displayName(),
+        ResourceBuilder rg = new ResourceBuilder(build, factory.newResource(globalSchemas, resource), resource.displayName(),
                 resource.relativeUri().value());
 
         build.newResource(rg);

@@ -47,18 +47,16 @@ public class CurrentBuild {
     private final Map<String, JavaPoetTypeGenerator> supportGenerators = new HashMap<>();
 
     public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage, String supportPackage) {
+
         this.typeFinder = typeFinder;
         this.resourcePackage = resourcePackage;
         this.modelPackage = modelPackage;
         this.supportPackage = supportPackage;
+    }
 
-        typeExtensionList.addExtension(new JaxbTypeExtension());
-        typeExtensionList.addExtension(new JavadocTypeExtension());
-        typeExtensionList.addExtension(new Jsr303Extension());
-        //typeExtensionList.addExtension(new JacksonExtension());
-        //typeExtensionList.addExtension(new GsonExtension());
+    public void addExtension(TypeExtension extension) {
 
-
+        typeExtensionList.addExtension(extension);
     }
 
     public String getResourcePackage() {
@@ -169,7 +167,7 @@ public class CurrentBuild {
     }
 
 
-    public TypeName getJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
+    private TypeName getJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
         TypeName name = checkJavaType(type, internalTypes, useName);
         if ( name == null ) {

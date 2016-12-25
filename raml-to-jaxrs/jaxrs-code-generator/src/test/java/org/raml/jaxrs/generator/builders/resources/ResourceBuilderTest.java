@@ -44,4 +44,22 @@ public class ResourceBuilderTest {
             }
         }, "foo", "/fun");
     }
+
+    @Test
+    public void build_empty() throws Exception {
+
+        Raml.buildResource(this, "resource_no_entity_no_response.raml", new CodeContainer<TypeSpec>() {
+            @Override
+            public void into(TypeSpec g) throws IOException {
+
+                assertEquals("Foo", g.name);
+                assertEquals(1, g.methodSpecs.size());
+                MethodSpec methodSpec = g.methodSpecs.get(0);
+                assertEquals("postSearch", methodSpec.name);
+                assertEquals(1, methodSpec.annotations.size());
+                assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                assertEquals(0, methodSpec.parameters.size());
+            }
+        }, "foo", "/fun");
+    }
 }

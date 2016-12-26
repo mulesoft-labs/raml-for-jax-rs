@@ -10,6 +10,9 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <generated.sources>${project.build.directory}/generated-sources/ramltojaxrs/src/main</generated.sources>
+    </properties>
     <artifactId>jaxrs-generated-example</artifactId>
     <dependencies>
         <dependency>
@@ -50,6 +53,25 @@
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${generated.sources}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
@@ -61,12 +83,15 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/main/resources/example_simple_types.raml</argument>
-                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>--directory</argument>
+                                <argument>${generated.sources}</argument>
+                                <argument>--resource</argument>
                                 <argument>example.helloworld</argument>
+                                <argument>${project.basedir}/src/main/resources/example_simple_types.raml</argument>
                             </arguments>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>exec-simpletypes</id>
                         <phase>generate-sources</phase>
@@ -76,9 +101,11 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/main/resources/example_declared_type.raml</argument>
-                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>--directory</argument>
+                                <argument>${generated.sources}</argument>
+                                <argument>--resource</argument>
                                 <argument>example.realtypes</argument>
+                                <argument>${project.basedir}/src/main/resources/example_declared_type.raml</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -91,9 +118,11 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/main/resources/types_user_defined.raml</argument>
-                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>--directory</argument>
+                                <argument>${generated.sources}</argument>
+                                <argument>--resource</argument>
                                 <argument>example.types</argument>
+                                <argument>${project.basedir}/src/main/resources/types_user_defined.raml</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -107,9 +136,11 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/main/resources/example_json_schema.raml</argument>
-                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>--directory</argument>
+                                <argument>${generated.sources}</argument>
+                                <argument>--resource</argument>
                                 <argument>example.jsonschema</argument>
+                                <argument>${project.basedir}/src/main/resources/example_json_schema.raml</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -123,9 +154,11 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/main/resources/example_xml_schema.raml</argument>
-                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>--directory</argument>
+                                <argument>${generated.sources}</argument>
+                                <argument>--resource</argument>
                                 <argument>example.xmlschema</argument>
+                                <argument>${project.basedir}/src/main/resources/example_xml_schema.raml</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -139,13 +172,15 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/main/resources/world-music-api/api.raml</argument>
-                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>--directory</argument>
+                                <argument>${generated.sources}</argument>
+                                <argument>--resource</argument>
                                 <argument>example.worldmusic</argument>
                                 <argument>${project.basedir}/src/main/resources/world-music-api/api.raml</argument>
                             </arguments>
                         </configuration>
                     </execution>
+
 <!--
                     <execution>
                         <id>exec-marketing-cloud</id>

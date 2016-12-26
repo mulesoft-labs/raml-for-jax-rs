@@ -13,6 +13,7 @@
     <properties>
         <generated.sources>${project.build.directory}/generated-sources/ramltojaxrs/src/main</generated.sources>
     </properties>
+
     <artifactId>jaxrs-generated-example</artifactId>
     <dependencies>
         <dependency>

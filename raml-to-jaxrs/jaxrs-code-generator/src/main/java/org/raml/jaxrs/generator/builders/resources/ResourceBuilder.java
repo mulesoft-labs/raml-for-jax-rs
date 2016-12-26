@@ -103,25 +103,21 @@ public class ResourceBuilder implements ResourceGenerator {
 
         createResponseClass(typeSpec, incomingBodies, responses);
 
-        for (GMethod gMethod : incomingBodies.keySet()) {
-
-            Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(gMethod);
-
-            Multimap<String, String> ramlTypeToMediaType = accumulateMediaTypesPerType(incomingBodies, gMethod);
+        for (GMethod gMethod : currentResource.methods()) {
 
             String methodName = Names.resourceMethodName(gMethod.resource(), gMethod);
+            Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(gMethod);
             if ( gMethod.body().size() == 0) {
 
                 createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, methodName);
             } else {
+                Multimap<String, String> ramlTypeToMediaType = accumulateMediaTypesPerType(incomingBodies, gMethod);
                 for (GRequest gRequest : gMethod.body()) {
 
-                    if (gRequest.type() == null) {
-                        createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, methodName);
-                    } else {
-
-                        createMethodWithBody(typeSpec, gMethod, ramlTypeToMediaType, methodName, gRequest);
-                    }
+                   if (ramlTypeToMediaType.containsKey(gRequest.type().name())) {
+                       createMethodWithBody(typeSpec, gMethod, ramlTypeToMediaType, methodName, gRequest);
+                       ramlTypeToMediaType.removeAll(gRequest.type().name());
+                   }
                 }
             }
         }

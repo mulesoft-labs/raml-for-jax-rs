@@ -29,6 +29,11 @@ public class Configuration {
     private static Map<String, String> parseString(String configString) {
 
         Map<String, String> props = new HashMap<>();
+        if ( configString == null ) {
+
+            return props;
+        }
+
         String[] propArray = configString.split(",");
         for (String prop : propArray) {
 

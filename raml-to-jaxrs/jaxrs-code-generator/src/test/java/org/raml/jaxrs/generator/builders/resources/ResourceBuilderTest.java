@@ -50,6 +50,68 @@ public class ResourceBuilderTest {
     }
 
     @Test
+    public void build_same_type_two_media() throws Exception {
+
+        Raml.buildResource(this, "resource_entity_same_type_two_media.raml", new CodeContainer<TypeSpec>() {
+            @Override
+            public void into(TypeSpec g) throws IOException {
+
+                assertEquals("Foo", g.name);
+                assertEquals(1, g.methodSpecs.size());
+                MethodSpec methodSpec = g.methodSpecs.get(0);
+                assertEquals("postSearch", methodSpec.name);
+                assertEquals(2, methodSpec.annotations.size());
+                assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                AnnotationSpec mediaTypeSpec = methodSpec.annotations.get(1);
+                assertEquals(ClassName.get(Consumes.class), mediaTypeSpec.type);
+                assertEquals(2, mediaTypeSpec.members.get("value").size());
+                assertEquals("\"application/json\"", mediaTypeSpec.members.get("value").get(0).toString());
+                assertEquals("\"application/xml\"", mediaTypeSpec.members.get("value").get(1).toString());
+                assertEquals(1, methodSpec.parameters.size());
+                assertEquals(ClassName.get(String.class), methodSpec.parameters.get(0).type);
+            }
+        }, "foo", "/fun");
+    }
+
+    @Test
+    public void build_two_types_different_media() throws Exception {
+
+        Raml.buildResource(this, "resource_entity_two_types_different_media.raml", new CodeContainer<TypeSpec>() {
+            @Override
+            public void into(TypeSpec g) throws IOException {
+
+                assertEquals("Foo", g.name);
+                assertEquals(2, g.methodSpecs.size());
+                {
+                    MethodSpec methodSpec = g.methodSpecs.get(0);
+                    assertEquals("postSearch", methodSpec.name);
+                    assertEquals(2, methodSpec.annotations.size());
+                    assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                    AnnotationSpec mediaTypeSpec = methodSpec.annotations.get(1);
+                    assertEquals(ClassName.get(Consumes.class), mediaTypeSpec.type);
+                    assertEquals(1, mediaTypeSpec.members.get("value").size());
+                    assertEquals("\"application/json\"", mediaTypeSpec.members.get("value").get(0).toString());
+                    assertEquals(1, methodSpec.parameters.size());
+                    assertEquals(ClassName.get(String.class), methodSpec.parameters.get(0).type);
+                }
+                {
+                    MethodSpec methodSpec = g.methodSpecs.get(1);
+                    assertEquals("postSearch", methodSpec.name);
+                    assertEquals(2, methodSpec.annotations.size());
+                    assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                    AnnotationSpec mediaTypeSpec = methodSpec.annotations.get(1);
+                    assertEquals(ClassName.get(Consumes.class), mediaTypeSpec.type);
+                    assertEquals(1, mediaTypeSpec.members.get("value").size());
+                    assertEquals("\"application/xml\"", mediaTypeSpec.members.get("value").get(0).toString());
+                    assertEquals(1, methodSpec.parameters.size());
+                    assertEquals(ClassName.INT, methodSpec.parameters.get(0).type);
+                }
+
+            }
+        }, "foo", "/fun");
+    }
+
+    @Test
     public void build_empty() throws Exception {
 
         Raml.buildResource(this, "resource_no_entity_no_response.raml", new CodeContainer<TypeSpec>() {

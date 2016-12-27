@@ -22,8 +22,7 @@ public class HrImpl implements Hr {
     }
 
     @Override
-    public PutHrResponse putHr(Person entity) {
-        return null;
+    public void putHr(Person entity) {
     }
 
 }

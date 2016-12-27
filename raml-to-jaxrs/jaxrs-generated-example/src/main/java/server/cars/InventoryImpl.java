@@ -20,8 +20,7 @@ public class InventoryImpl implements Inventory {
     }
 
     @Override
-    public PutInventoryResponse putInventory(Car entity) {
+    public void putInventory(Car entity) {
         System.err.println("entity " + entity.getMake());
-        return null;
     }
 }

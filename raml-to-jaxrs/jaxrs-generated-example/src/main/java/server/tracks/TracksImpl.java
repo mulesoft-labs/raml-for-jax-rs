@@ -23,7 +23,6 @@ public class TracksImpl implements Tracks {
     }
 
     @Override
-    public PutTracksResponse putTracks(Track entity) {
-        return null;
+    public void putTracks(Track entity) {
     }
 }

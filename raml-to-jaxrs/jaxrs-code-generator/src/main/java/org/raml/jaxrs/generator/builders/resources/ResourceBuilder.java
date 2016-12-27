@@ -173,6 +173,11 @@ public class ResourceBuilder implements ResourceGenerator {
         allMethods.addAll(responses.keySet());
         for (GMethod gMethod : allMethods) {
 
+            if ( gMethod.responses().size() == 0 ) {
+
+                continue;
+            }
+
             TypeSpec.Builder responseClass = TypeSpec
                     .classBuilder(Names.responseClassName(gMethod.resource(), gMethod))
                     .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -209,7 +214,8 @@ public class ResourceBuilder implements ResourceGenerator {
                         MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.methodName("respond", httpCode,  "With", typeDeclaration.mediaType() ) );
                         builder
                                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                                .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
+                                .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ").header(\"Content-Type\", \""
+                                        + typeDeclaration.mediaType() + "\")")
                                 .addStatement("responseBuilder.entity(entity)")
                                 .addStatement("return new $N(responseBuilder.build())", currentClass)
                                 .returns(TypeVariableName.get(currentClass.name))
@@ -271,7 +277,11 @@ public class ResourceBuilder implements ResourceGenerator {
             methodSpec.addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", gMethod.resource().resourcePath()).build());
         }
 
-        methodSpec.returns(ClassName.get("", Names.responseClassName(gMethod.resource(), gMethod)));
+        if ( gMethod.responses().size() != 0 ) {
+            methodSpec.returns(ClassName.get("", Names.responseClassName(gMethod.resource(), gMethod)));
+        } else {
+            methodSpec.returns(ClassName.VOID);
+        }
 
         if ( mediaTypesForMethod.size() > 0 ) {
             AnnotationSpec.Builder ann = buildAnnotation(mediaTypesForMethod, Produces.class);

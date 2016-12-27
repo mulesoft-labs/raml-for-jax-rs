@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
  * Created by Jean-Philippe Belanger on 10/29/16.
  * Just potential zeroes and ones
  */
-@org.junit.Ignore
 public class NamesTest {
 
     @Mock

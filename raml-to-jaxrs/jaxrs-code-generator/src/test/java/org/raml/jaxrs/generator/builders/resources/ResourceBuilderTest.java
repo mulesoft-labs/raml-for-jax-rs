@@ -2,11 +2,9 @@ package org.raml.jaxrs.generator.builders.resources;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import com.sun.codemodel.ClassType;
 import org.junit.Test;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.utils.Raml;
@@ -18,7 +16,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -277,5 +274,4 @@ public class ResourceBuilderTest {
             }
         }, "foo", "/fun");
     }
-
 }

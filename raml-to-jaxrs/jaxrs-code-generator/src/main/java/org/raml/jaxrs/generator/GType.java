@@ -33,4 +33,6 @@ public interface GType extends GAbstraction {
     boolean isEnum();
 
     List<String> enumValues();
+
+    boolean isInline();
 }

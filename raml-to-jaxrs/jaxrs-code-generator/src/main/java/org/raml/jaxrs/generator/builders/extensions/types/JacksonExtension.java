@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -14,6 +17,8 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -27,11 +32,23 @@ import java.util.Map;
  */
 public class JacksonExtension extends TypeExtensionHelper {
 
+    /*
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "humanType")
+@JsonSubTypes(
+        {
+                @JsonSubTypes.Type(value = PersonImpl.class, name = "person"),
+                @JsonSubTypes.Type(value = CorpseImpl.class, name = "corpse"),
+        }
+)
+
+     */
+
     public static final ParameterizedTypeName ADDITIONAL_PROPERTIES_TYPE = ParameterizedTypeName
             .get(Map.class, String.class, Object.class);
 
+
     @Override
-    public void onTypeImplementation(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
         ObjectTypeDeclaration obj = (ObjectTypeDeclaration) typeDeclaration;
 
@@ -39,8 +56,14 @@ public class JacksonExtension extends TypeExtensionHelper {
                 AnnotationSpec.builder(JsonInclude.class).addMember("value", "$T.$L", JsonInclude.Include.class, "NON_NULL")
                         .build());
 
-        AnnotationSpec.Builder builder = AnnotationSpec.builder(JsonPropertyOrder.class);
+        if ( obj.discriminatorValue() != null ) {
 
+            typeSpec.addAnnotation(AnnotationSpec.builder(JsonTypeName.class)
+                    .addMember("value", "$S", obj.discriminatorValue()).build());
+        }
+
+
+        AnnotationSpec.Builder builder = AnnotationSpec.builder(JsonPropertyOrder.class);
         for (TypeDeclaration declaration : obj.properties()) {
 
 
@@ -69,25 +92,28 @@ public class JacksonExtension extends TypeExtensionHelper {
     }
 
     @Override
-    public void onFieldImplementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder fieldSpec,
+            TypeDeclaration typeDeclaration) {
 
         fieldSpec.addAnnotation(AnnotationSpec.builder(JsonProperty.class).addMember("value", "$S", typeDeclaration.name()).build());
     }
 
 
     @Override
-    public void onGetterMethodImplementation(MethodSpec.Builder methodSpec, TypeDeclaration typeDeclaration) {
-        methodSpec.addAnnotation(AnnotationSpec.builder(JsonProperty.class).addMember("value", "$S", typeDeclaration.name()).build());
-    }
-
-    @Override
-    public void onSetterMethodImplementation(MethodSpec.Builder methodSpec, ParameterSpec.Builder param,
+    public void onGetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder methodSpec,
             TypeDeclaration typeDeclaration) {
         methodSpec.addAnnotation(AnnotationSpec.builder(JsonProperty.class).addMember("value", "$S", typeDeclaration.name()).build());
     }
 
     @Override
-    public void onTypeDeclaration(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onSetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder methodSpec,
+            ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration) {
+        methodSpec.addAnnotation(AnnotationSpec.builder(JsonProperty.class).addMember("value", "$S", typeDeclaration.name()).build());
+    }
+
+    @Override
+    public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
         typeSpec.addMethod(MethodSpec.methodBuilder("getAdditionalProperties").returns(ADDITIONAL_PROPERTIES_TYPE)
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).build());
@@ -96,5 +122,36 @@ public class JacksonExtension extends TypeExtensionHelper {
                 ParameterSpec.builder(ADDITIONAL_PROPERTIES_TYPE, "additionalProperties").build())
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).build());
 
+        ObjectTypeDeclaration otr = (ObjectTypeDeclaration) typeDeclaration;
+
+        buildSubtypeAnnotationIfNecessary(currentBuild, typeSpec, typeDeclaration, otr);
+
+    }
+
+    private void buildSubtypeAnnotationIfNecessary(CurrentBuild currentBuild, TypeSpec.Builder typeSpec,
+            TypeDeclaration typeDeclaration, ObjectTypeDeclaration otr) {
+        if ( otr.discriminator() != null  && currentBuild.childClasses(typeDeclaration.name()).size() > 0 ) {
+
+            typeSpec.addAnnotation(
+                    AnnotationSpec.builder(JsonTypeInfo.class)
+                            .addMember("use", "$T.Id.NAME", JsonTypeInfo.class)
+                            .addMember("include", "$T.As.PROPERTY", JsonTypeInfo.class)
+                            .addMember("property", "$S", otr.discriminator())
+                            .build()
+            );
+
+            AnnotationSpec.Builder subTypes = AnnotationSpec.builder(JsonSubTypes.class);
+            for (GType gType : currentBuild.childClasses(typeDeclaration.name())) {
+
+                subTypes.addMember("value", "$L",
+                        AnnotationSpec.builder(JsonSubTypes.Type.class).addMember("value", "$L", gType.defaultJavaTypeName() + "Impl.class").build()
+                );
+            }
+
+            typeSpec.addAnnotation(
+                    subTypes.build()
+            );
+
+        }
     }
 }

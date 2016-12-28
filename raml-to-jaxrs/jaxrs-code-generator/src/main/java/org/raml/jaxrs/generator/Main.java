@@ -31,6 +31,11 @@ public class Main {
         String supportDir = command.getOptionValue("s");
         String resourceDir = command.getOptionValue("r");
         String directory = command.getOptionValue("d");
+        String extensions = command.getOptionValue("e");
+
+        if ( extensions != null ) {
+            System.getProperties().setProperty("ramltojaxrs", extensions);
+        }
 
         if ( modelDir == null ) {
             modelDir = resourceDir;
@@ -49,5 +54,7 @@ public class Main {
 
             scanner.handle(new File(ramlFile));
         }
+
+        System.getProperties().remove("ramltojaxrs");
     }
 }

@@ -4,6 +4,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
@@ -12,54 +13,59 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  */
 public class TypeExtensionHelper implements TypeExtension {
     @Override
-    public void onTypeImplementation(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
     }
 
     @Override
-    public void onFieldImplementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
     }
 
     @Override
-    public void onGetterMethodImplementation(MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
-
-    }
-
-    @Override
-    public void onSetterMethodImplementation(MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+    public void onGetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
             TypeDeclaration typeDeclaration) {
 
     }
 
     @Override
-    public void onTypeDeclaration(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
-
-    }
-
-    @Override
-    public void onGetterMethodDeclaration(MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
-
-    }
-
-    @Override
-    public void onSetterMethodDeclaration(MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+    public void onSetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
+            ParameterSpec.Builder param,
             TypeDeclaration typeDeclaration) {
 
     }
 
     @Override
-    public void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name) {
+    public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
     }
 
     @Override
-    public void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+    public void onGetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
+            TypeDeclaration typeDeclaration) {
 
     }
 
     @Override
-    public void onEnumField(FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
+    public void onSetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
+            ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration) {
+
+    }
+
+    @Override
+    public void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration,
+            String name) {
+
+    }
+
+    @Override
+    public void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+
+    }
+
+    @Override
+    public void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
 
     }
 }

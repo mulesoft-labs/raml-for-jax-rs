@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -17,7 +18,8 @@ public class JavadocTypeExtension extends TypeExtensionHelper {
     }
 
     @Override
-    public void onTypeDeclaration(final TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onTypeDeclaration(CurrentBuild currentBuild, final TypeSpec.Builder typeSpec,
+            TypeDeclaration typeDeclaration) {
 
         if ( typeDeclaration.description() != null ) {
             typeSpec.addJavadoc("$L\n", typeDeclaration.description().value());
@@ -33,7 +35,8 @@ public class JavadocTypeExtension extends TypeExtensionHelper {
     }
 
     @Override
-    public void onGetterMethodDeclaration(final MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onGetterMethodDeclaration(CurrentBuild currentBuild, final MethodSpec.Builder typeSpec,
+            TypeDeclaration typeDeclaration) {
         if ( typeDeclaration.description() != null ) {
             typeSpec.addJavadoc("$L\n", typeDeclaration.description().value());
         }

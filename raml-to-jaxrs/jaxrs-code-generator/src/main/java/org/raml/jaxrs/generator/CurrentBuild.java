@@ -1,5 +1,7 @@
 package org.raml.jaxrs.generator;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -20,6 +22,7 @@ import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +43,8 @@ public class CurrentBuild {
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
     private Map<String, GeneratorType> foundTypes = new HashMap<>();
+    private Multimap<String, GType> childMap = ArrayListMultimap.create();
+
     private final Map<String, JavaPoetTypeGenerator> supportGenerators = new HashMap<>();
 
     private boolean implementationsOnly;
@@ -266,7 +271,8 @@ public class CurrentBuild {
 
     public void constructClasses(TypeFactory typeFactory) {
 
-        typeFinder.findTypes(new TypeFindingListener(foundTypes));
+        TypeFindingListener listener = new TypeFindingListener(foundTypes, childMap);
+        typeFinder.findTypes(listener);
 
         for (GeneratorType type : foundTypes.values()) {
 
@@ -274,6 +280,11 @@ public class CurrentBuild {
                 typeFactory.createType(type);
             }
         }
+    }
+
+    public Collection<GType> childClasses(String typeName) {
+
+        return childMap.get(typeName);
     }
 
     public String getSupportPackage() {

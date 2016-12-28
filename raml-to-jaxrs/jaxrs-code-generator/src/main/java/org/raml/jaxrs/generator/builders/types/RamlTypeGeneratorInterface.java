@@ -10,9 +10,8 @@ import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.Generator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
@@ -33,11 +32,11 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
     private Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
-    private final TypeDeclaration typeDeclaration;
+    private final ObjectTypeDeclaration typeDeclaration;
 
 
     public RamlTypeGeneratorInterface(CurrentBuild currentBuild, ClassName interf, List<TypeDeclaration> parentTypes,
-            List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, TypeDeclaration typeDeclaration) {
+            List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, ObjectTypeDeclaration typeDeclaration) {
 
         this.build = currentBuild;
         this.interf = interf;
@@ -56,7 +55,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                 .interfaceBuilder(interf)
                 .addModifiers(Modifier.PUBLIC);
 
-        build.withTypeListeners().onTypeDeclaration(typeSpec, typeDeclaration);
+        build.withTypeListeners().onTypeDeclaration(build, typeSpec, typeDeclaration);
 
         for (JavaPoetTypeGenerator internalType : internalTypes.values()) {
 
@@ -86,27 +85,26 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
-    //        if (noParentDeclares(propsFromParents, propertyInfo.getName())) {
                 final MethodSpec.Builder getSpec = MethodSpec
                         .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
                 getSpec.returns(propertyInfo.resolve(build, internalTypes));
-                build.withTypeListeners().onGetterMethodDeclaration(getSpec,
-                        (TypeDeclaration) propertyInfo.getType().implementation());
-
-                MethodSpec.Builder setSpec = MethodSpec
-                        .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-
-                ParameterSpec.Builder parameterSpec = ParameterSpec
-                        .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
-                build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec,
-                        (TypeDeclaration) propertyInfo.getType().implementation());
-                setSpec.addParameter(
-                        parameterSpec.build());
-
+                build.withTypeListeners().onGetterMethodDeclaration(build,
+                        getSpec, (TypeDeclaration) propertyInfo.getType().implementation());
                 typeSpec.addMethod(getSpec.build());
-                typeSpec.addMethod(setSpec.build());
+
+                if ( ! propertyInfo.getName().equals(typeDeclaration.discriminator()) ) {
+                    MethodSpec.Builder setSpec = MethodSpec
+                            .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
+                            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
+                    ParameterSpec.Builder parameterSpec = ParameterSpec
+                            .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
+                    build.withTypeListeners().onSetterMethodDeclaration(build, setSpec,
+                            parameterSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+                    setSpec.addParameter(
+                            parameterSpec.build());
+                    typeSpec.addMethod(setSpec.build());
+                }
   //          }
         }
 

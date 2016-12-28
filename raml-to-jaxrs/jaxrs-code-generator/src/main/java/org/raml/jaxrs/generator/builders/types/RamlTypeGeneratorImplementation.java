@@ -12,6 +12,7 @@ import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
@@ -32,12 +33,12 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
     private Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
-    private final TypeDeclaration typeDeclaration;
+    private final ObjectTypeDeclaration typeDeclaration;
 
 
     public RamlTypeGeneratorImplementation(CurrentBuild build, ClassName className, ClassName parentClassName,
             List<TypeDeclaration> parentTypes,
-            List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, TypeDeclaration typeDeclaration) {
+            List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, ObjectTypeDeclaration typeDeclaration) {
 
         this.build = build;
         this.className = className;
@@ -60,7 +61,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
                 .classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
 
-        build.withTypeListeners().onTypeImplementation(typeSpec, typeDeclaration);
+        build.withTypeListeners().onTypeImplementation(build, typeSpec, typeDeclaration);
 
         if ( parentClassName != null ) {
             typeSpec.addSuperinterface(parentClassName);
@@ -82,8 +83,11 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
             FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
-            build.withTypeListeners().onFieldImplementation(fieldSpec,
-                    (TypeDeclaration) propertyInfo.getType().implementation());
+            build.withTypeListeners().onFieldImplementation(build,
+                    fieldSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+            if ( propertyInfo.getName().equals(typeDeclaration.discriminator()) ) {
+                fieldSpec.initializer("$S", typeDeclaration.discriminatorValue());
+            }
             typeSpec.addField(fieldSpec.build());
 
             final MethodSpec.Builder getSpec = MethodSpec
@@ -92,22 +96,26 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
                     .addStatement("return this." + Names.variableName(propertyInfo.getName()));
 
             getSpec.returns(propertyInfo.resolve(build, internalTypes));
-            build.withTypeListeners().onGetterMethodImplementation(getSpec,
-                    (TypeDeclaration) propertyInfo.getType().implementation());
-
-            MethodSpec.Builder setSpec = MethodSpec
-                    .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
-                    .addModifiers(Modifier.PUBLIC)
-                    .addStatement("this." + Names.variableName(propertyInfo.getName()) + " = " + Names.variableName(propertyInfo.getName()));
-
-            ParameterSpec.Builder parameterSpec = ParameterSpec
-                    .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
-            build.withTypeListeners().onSetterMethodImplementation(setSpec, parameterSpec,
-                    (TypeDeclaration) propertyInfo.getType().implementation());
-
-            setSpec.addParameter(parameterSpec.build());
+            build.withTypeListeners().onGetterMethodImplementation(build,
+                    getSpec, (TypeDeclaration) propertyInfo.getType().implementation());
             typeSpec.addMethod(getSpec.build());
-            typeSpec.addMethod(setSpec.build());
+
+            if ( ! propertyInfo.getName().equals(typeDeclaration.discriminator()) ) {
+
+                MethodSpec.Builder setSpec = MethodSpec
+                        .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
+                        .addModifiers(Modifier.PUBLIC)
+                        .addStatement("this." + Names.variableName(propertyInfo.getName()) + " = " + Names
+                                .variableName(propertyInfo.getName()));
+
+                ParameterSpec.Builder parameterSpec = ParameterSpec
+                        .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
+                build.withTypeListeners().onSetterMethodImplementation(build, setSpec,
+                        parameterSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+
+                setSpec.addParameter(parameterSpec.build());
+                typeSpec.addMethod(setSpec.build());
+            }
         }
 
         container.into(typeSpec);

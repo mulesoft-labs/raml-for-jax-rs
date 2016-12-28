@@ -4,6 +4,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -20,32 +21,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JaxbTypeExtension extends TypeExtensionHelper {
 
     @Override
-    public void onTypeImplementation(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).addMember("name", "$S", typeDeclaration.name()).build());
         typeSpec.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class).addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
     }
 
     @Override
-    public void onFieldImplementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder fieldSpec,
+            TypeDeclaration typeDeclaration) {
 
         fieldSpec.addAnnotation(AnnotationSpec.builder(XmlElement.class).addMember("name", "$S", typeDeclaration.name()).build());
     }
 
     @Override
-    public void onGetterMethodImplementation(MethodSpec.Builder typeSpec,
+    public void onGetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
             TypeDeclaration typeDeclaration) {
 
     }
 
     @Override
-    public void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name) {
+    public void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration,
+            String name) {
 
         builder.addAnnotation(AnnotationSpec.builder(XmlEnumValue.class).addMember("value", "$S", name).build());
     }
 
     @Override
-    public void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+    public void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
 
         builder.addAnnotation(AnnotationSpec.builder(XmlEnum.class).build());
     }

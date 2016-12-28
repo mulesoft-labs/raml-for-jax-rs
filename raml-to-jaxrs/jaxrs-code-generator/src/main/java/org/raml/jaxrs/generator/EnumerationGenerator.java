@@ -1,6 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -12,7 +11,6 @@ import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
-import javax.xml.bind.annotation.XmlElement;
 import java.io.IOException;
 import java.util.List;
 
@@ -39,7 +37,7 @@ public class EnumerationGenerator  extends AbstractTypeGenerator<TypeSpec.Builde
     public void output(CodeContainer<TypeSpec.Builder> rootDirectory, TYPE type) throws IOException {
 
         FieldSpec.Builder field = FieldSpec.builder(ClassName.get(String.class), "name").addModifiers(Modifier.PRIVATE);
-        build.withTypeListeners().onEnumField(field, typeDeclaration);
+        build.withTypeListeners().onEnumField(build, field, typeDeclaration);
 
         TypeSpec.Builder enumBuilder = TypeSpec.enumBuilder(javaName)
                 .addField(field.build())
@@ -49,11 +47,11 @@ public class EnumerationGenerator  extends AbstractTypeGenerator<TypeSpec.Builde
                                 .addStatement("this.$N = $N", "name", "name")
                                 .build()
                 );
-        build.withTypeListeners().onEnumerationClass(enumBuilder, typeDeclaration);
+        build.withTypeListeners().onEnumerationClass(build, enumBuilder, typeDeclaration);
 
         for (String value : values) {
             TypeSpec.Builder builder = TypeSpec.anonymousClassBuilder("$S", value);
-            build.withTypeListeners().onEnumConstant(builder, typeDeclaration, value);
+            build.withTypeListeners().onEnumConstant(build, builder, typeDeclaration, value);
 
             enumBuilder.addEnumConstant(Names.constantName(value),
                     builder.build());

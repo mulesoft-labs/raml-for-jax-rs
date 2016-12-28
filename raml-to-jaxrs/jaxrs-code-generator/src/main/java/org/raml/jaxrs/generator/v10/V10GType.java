@@ -27,20 +27,17 @@ import java.util.List;
  */
 public class V10GType implements GType {
 
-    private final Resource resource;
-    private final Method method;
-    private final Response response;
     private final TypeDeclaration typeDeclaration;
     private final String name;
     private final String defaultJavatypeName;
+    private final boolean inline;
 
     private List<GProperty> properties;
+    private List<GType> parentTypes;
 
     public V10GType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
 
-        this.resource = resource;
-        this.method = method;
-        this.response = null;
+        this.inline = true;
         this.typeDeclaration = typeDeclaration;
 
         if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
@@ -53,13 +50,18 @@ public class V10GType implements GType {
 
         this.name = Names.ramlTypeName(resource, method, typeDeclaration);
         this.defaultJavatypeName = Names.javaTypeName(resource, method, typeDeclaration);
+        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
+            @Nullable
+            @Override
+            public GType apply(@Nullable TypeDeclaration input) {
+                return new V10GType(input);
+            }
+        });
     }
 
     public V10GType(Resource resource, Method method, Response response, TypeDeclaration typeDeclaration) {
 
-        this.resource = resource;
-        this.method = method;
-        this.response = response;
+        this.inline = true;
         this.typeDeclaration = typeDeclaration;
         this.name = Names.ramlTypeName(resource, method, typeDeclaration);
         this.defaultJavatypeName = Names.javaTypeName(resource, method, response, typeDeclaration);
@@ -71,13 +73,18 @@ public class V10GType implements GType {
 
             properties = new ArrayList<>();
         }
+        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
+            @Nullable
+            @Override
+            public GType apply(@Nullable TypeDeclaration input) {
+                return new V10GType(input);
+            }
+        });
     }
 
     public V10GType(TypeDeclaration typeDeclaration) {
 
-        this.resource = null;
-        this.method = null;
-        this.response = null;
+        this.inline = false;
         this.typeDeclaration = typeDeclaration;
         this.name = typeDeclaration.name();
         this.defaultJavatypeName = Names.typeName(typeDeclaration.name());
@@ -88,12 +95,17 @@ public class V10GType implements GType {
 
             properties = new ArrayList<>();
         }
+        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
+            @Nullable
+            @Override
+            public GType apply(@Nullable TypeDeclaration input) {
+                return new V10GType(input);
+            }
+        });
     }
 
     public V10GType(String s, TypeDeclaration items) {
-        this.resource = null;
-        this.method = null;
-        this.response = null;
+        this.inline = true;
         this.name = s;
         this.typeDeclaration = items;
         this.defaultJavatypeName = Names.typeName(typeDeclaration.name());
@@ -104,6 +116,13 @@ public class V10GType implements GType {
 
             properties = new ArrayList<>();
         }
+        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
+            @Nullable
+            @Override
+            public GType apply(@Nullable TypeDeclaration input) {
+                return new V10GType(input);
+            }
+        });
     }
 
 
@@ -168,7 +187,7 @@ public class V10GType implements GType {
 
     @Override
     public List<GType> parentTypes() {
-        return new ArrayList<>();
+        return parentTypes;
     }
 
     @Override
@@ -226,6 +245,28 @@ public class V10GType implements GType {
     @Override
     public List<String> enumValues() {
         return ((StringTypeDeclaration)typeDeclaration).enumValues();
+    }
+
+    @Override
+    public boolean isInline() {
+        return inline;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        V10GType v10GType = (V10GType) o;
+
+        return name.equals(v10GType.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 
     @Override

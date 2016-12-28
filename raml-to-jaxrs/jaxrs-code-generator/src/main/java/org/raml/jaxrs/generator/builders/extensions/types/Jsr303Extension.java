@@ -3,6 +3,7 @@ package org.raml.jaxrs.generator.builders.extensions.types;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
@@ -22,7 +23,7 @@ import java.math.BigInteger;
 public class Jsr303Extension extends TypeExtensionHelper {
 
     @Override
-    public void onFieldImplementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
 
         addFacetsForAll(typeSpec, typeDeclaration);

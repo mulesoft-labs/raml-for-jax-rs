@@ -4,6 +4,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.util.ArrayList;
@@ -19,87 +20,93 @@ public class TypeExtensionList implements TypeExtension {
 
 
     @Override
-    public void onTypeImplementation(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
-            extension.onTypeImplementation(typeSpec, typeDeclaration);
+            extension.onTypeImplementation(currentBuild, typeSpec, typeDeclaration);
         }
     }
 
     @Override
-    public void onFieldImplementation(FieldSpec.Builder fieldSpec, TypeDeclaration typeDeclaration) {
-
-        for (TypeExtension extension : extensions) {
-            extension.onFieldImplementation(fieldSpec, typeDeclaration);
-        }
-    }
-
-    @Override
-    public void onGetterMethodImplementation(MethodSpec.Builder methodSpec, TypeDeclaration typeDeclaration) {
-
-        for (TypeExtension extension : extensions) {
-            extension.onGetterMethodImplementation(methodSpec, typeDeclaration);
-        }
-    }
-
-
-    @Override
-    public void onSetterMethodImplementation(MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+    public void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder fieldSpec,
             TypeDeclaration typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
-            extension.onSetterMethodImplementation(typeSpec, param, typeDeclaration);
-        }
-
-    }
-
-    @Override
-    public void onTypeDeclaration(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
-
-        for (TypeExtension extension : extensions) {
-            extension.onTypeDeclaration(typeSpec, typeDeclaration);
-        }
-
-    }
-
-    @Override
-    public void onGetterMethodDeclaration(MethodSpec.Builder methodSpec, TypeDeclaration typeDeclaration) {
-
-        for (TypeExtension extension : extensions) {
-            extension.onGetterMethodDeclaration(methodSpec, typeDeclaration);
+            extension.onFieldImplementation(currentBuild, fieldSpec, typeDeclaration);
         }
     }
 
     @Override
-    public void onSetterMethodDeclaration(MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+    public void onGetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder methodSpec,
             TypeDeclaration typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
-            extension.onSetterMethodDeclaration(typeSpec, param, typeDeclaration);
+            extension.onGetterMethodImplementation(currentBuild, methodSpec, typeDeclaration);
+        }
+    }
+
+
+    @Override
+    public void onSetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
+            ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onSetterMethodImplementation(currentBuild, typeSpec, param, typeDeclaration);
+        }
+
+    }
+
+    @Override
+    public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onTypeDeclaration(currentBuild, typeSpec, typeDeclaration);
+        }
+
+    }
+
+    @Override
+    public void onGetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder methodSpec,
+            TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onGetterMethodDeclaration(currentBuild, methodSpec, typeDeclaration);
         }
     }
 
     @Override
-    public void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name) {
+    public void onSetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
+            ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
-            extension.onEnumConstant(builder, typeDeclaration, name);
+            extension.onSetterMethodDeclaration(currentBuild, typeSpec, param, typeDeclaration);
         }
     }
 
     @Override
-    public void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+    public void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration,
+            String name) {
 
         for (TypeExtension extension : extensions) {
-            extension.onEnumerationClass(builder, typeDeclaration);
+            extension.onEnumConstant(currentBuild, builder, typeDeclaration, name);
         }
     }
 
     @Override
-    public void onEnumField(FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
+    public void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
-            extension.onEnumField(field, typeDeclaration);
+            extension.onEnumerationClass(currentBuild, builder, typeDeclaration);
+        }
+    }
+
+    @Override
+    public void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onEnumField(currentBuild, field, typeDeclaration);
         }
     }
 

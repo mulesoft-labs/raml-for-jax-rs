@@ -5,6 +5,7 @@ baseUri: https://api.github.com
 types:
     Person:
         type: Human
+        discriminatorValue: person
         properties:
             name:
                 required: true
@@ -12,8 +13,32 @@ types:
             weight:
                 required: true
                 type: integer
+    Corpse:
+        type: Human
+        discriminatorValue: corpse
+        properties:
+            dateOfDeath:
+                required: true
+                type: date-only
     Human:
         type: object
+        discriminator: humanType
         properties:
+            humanType: string
             male:
                 type: boolean
+/humanity:
+    get:
+        queryParameters:
+            type: string
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: Human
+    put:
+        body:
+            application/json:
+                type: Human
+        responses:
+            200:

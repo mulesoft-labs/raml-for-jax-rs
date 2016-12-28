@@ -88,6 +88,7 @@ public class V10Finder implements GFinder {
         for (TypeDeclaration typeDeclaration : types) {
 
             foundTypes.put(typeDeclaration.name(), typeDeclaration);
+
             V10GType type = new V10GType(typeDeclaration);
             listener.newTypeDeclaration(type);
        }

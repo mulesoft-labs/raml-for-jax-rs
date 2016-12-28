@@ -123,4 +123,9 @@ public class V08GType implements GType {
     public List<String> enumValues() {
         return Collections.emptyList();
     }
+
+    @Override
+    public boolean isInline() {
+        return false;
+    }
 }

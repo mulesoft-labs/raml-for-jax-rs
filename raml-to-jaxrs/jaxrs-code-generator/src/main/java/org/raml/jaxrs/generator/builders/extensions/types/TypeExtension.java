@@ -4,6 +4,7 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
@@ -12,17 +13,19 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  */
 public interface TypeExtension {
 
-    void onTypeImplementation(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
-    void onFieldImplementation(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
-    void onGetterMethodImplementation(MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
-    void onSetterMethodImplementation(MethodSpec.Builder typeSpec, ParameterSpec.Builder param, TypeDeclaration typeDeclaration);
+    void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
+    void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
+    void onGetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
+            TypeDeclaration typeDeclaration);
+    void onSetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration);
 
-    void onTypeDeclaration(TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
-    void onGetterMethodDeclaration(MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
-    void onSetterMethodDeclaration(MethodSpec.Builder typeSpec, ParameterSpec.Builder param, TypeDeclaration typeDeclaration);
+    void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
+    void onGetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
+    void onSetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
+            TypeDeclaration typeDeclaration);
 
-    void onEnumConstant(TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name);
-    void onEnumerationClass(TypeSpec.Builder builder, TypeDeclaration typeDeclaration);
-
-    void onEnumField(FieldSpec.Builder field, TypeDeclaration typeDeclaration);
+    void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name);
+    void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration);
+    void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field, TypeDeclaration typeDeclaration);
 }

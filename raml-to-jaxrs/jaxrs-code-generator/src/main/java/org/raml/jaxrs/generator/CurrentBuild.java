@@ -10,10 +10,6 @@ import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
-import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
@@ -45,6 +41,8 @@ public class CurrentBuild {
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
     private Map<String, GeneratorType> foundTypes = new HashMap<>();
     private final Map<String, JavaPoetTypeGenerator> supportGenerators = new HashMap<>();
+
+    private boolean implementationsOnly;
 
     public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage, String supportPackage) {
 
@@ -280,6 +278,15 @@ public class CurrentBuild {
 
     public String getSupportPackage() {
         return supportPackage;
+    }
+
+    public void implementationsOnly(boolean implOnly) {
+
+        this.implementationsOnly = implOnly;
+    }
+
+    public boolean implementationsOnly() {
+        return implementationsOnly;
     }
 }
 

@@ -132,18 +132,31 @@ public class TypeFactory {
 
         }
 
-        ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
-        ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
+        if ( currentBuild.implementationsOnly() ) {
 
-        RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf, parentTypes, properties, internalTypes, object);
-        RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, object);
-        CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
+            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
 
-        if ( publicType ) {
-            currentBuild.newGenerator(originalType.name(), gen);
+            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, null, parentTypes, properties, internalTypes, object);
+
+            if ( publicType ) {
+                currentBuild.newGenerator(originalType.name(), implg);
+            }
+            return implg;
+        } else {
+
+            ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
+
+            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf, parentTypes, properties, internalTypes, object);
+            RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, object);
+            CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
+
+            if ( publicType ) {
+                currentBuild.newGenerator(originalType.name(), gen);
+            }
+            return gen;
         }
 
-        return gen;
     }
 
 }

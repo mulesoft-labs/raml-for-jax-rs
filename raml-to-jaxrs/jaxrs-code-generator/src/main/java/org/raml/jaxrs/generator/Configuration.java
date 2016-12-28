@@ -21,9 +21,8 @@ public class Configuration {
     public static Configuration createConfiguration(String configString) {
 
         Map<String, String> props = parseString(configString);
-        Configuration config = new Configuration(props);
 
-        return config;
+        return new Configuration(props);
     }
 
     private static Map<String, String> parseString(String configString) {
@@ -81,6 +80,10 @@ public class Configuration {
         if ( props.containsKey("useJavadoc")) {
 
             build.addExtension(new JavadocTypeExtension());
+        }
+
+        if (props.containsKey("implementationsOnly")) {
+            build.implementationsOnly(true);
         }
 
     }

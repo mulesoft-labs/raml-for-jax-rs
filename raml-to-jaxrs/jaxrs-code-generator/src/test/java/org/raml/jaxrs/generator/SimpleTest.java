@@ -73,6 +73,7 @@ public class SimpleTest {
     @Test
     public void typeDependencies() throws IOException, GenerationException {
 
+        System.getProperties().setProperty("ramltojaxrs", "implementationsOnly=true");
         RamlScanner scanner = new RamlScanner(
                 "/home/ebeljea/LocalProjects/raml-for-jax-rs-fork/raml-to-jaxrs/jaxrs-generated-example/src/main/java",
                 "example.helloworld"

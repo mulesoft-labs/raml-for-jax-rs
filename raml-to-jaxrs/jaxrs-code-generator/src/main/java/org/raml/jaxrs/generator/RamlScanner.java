@@ -79,7 +79,7 @@ public class RamlScanner {
 
         GAbstractionFactory factory = new GAbstractionFactory();
         CurrentBuild build = new CurrentBuild(new V10Finder(api, factory), packageName, modelPackageName, supportPackage);
-        Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxb"));
+        Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxrs"));
         configuration.setupBuild(build);
         build.constructClasses(new TypeFactory(build, factory));
 
@@ -101,7 +101,7 @@ public class RamlScanner {
         GAbstractionFactory factory = new GAbstractionFactory();
         V08Finder typeFinder = new V08Finder(api, factory);
         CurrentBuild build = new CurrentBuild(typeFinder, packageName, modelPackageName, supportPackage);
-        Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxb"));
+        Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxrs"));
         configuration.setupBuild(build);
 
         build.constructClasses(new TypeFactory(build, factory));

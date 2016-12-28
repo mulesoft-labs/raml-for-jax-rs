@@ -62,7 +62,9 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
 
         build.withTypeListeners().onTypeImplementation(typeSpec, typeDeclaration);
 
-        typeSpec.addSuperinterface(parentClassName);
+        if ( parentClassName != null ) {
+            typeSpec.addSuperinterface(parentClassName);
+        }
 
 
         for (TypeGenerator internalType : internalTypes.values()) {
@@ -108,15 +110,12 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
             typeSpec.addMethod(setSpec.build());
         }
 
-        // JavaFile.Builder file = JavaFile.builder(build.getResourcePackage());
         container.into(typeSpec);
-
-        //file.build().writeTo(new File(rootDirectory));
     }
 
 
     @Override
     public TypeName getGeneratedJavaType() {
-        return null;
+        return className;
     }
 }

@@ -5,6 +5,8 @@ import example.types.Human;
 import example.types.Humanity;
 import example.types.PersonImpl;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -27,6 +29,9 @@ public class HumanityImpl implements Humanity {
             PersonImpl pi = new PersonImpl();
             pi.setMale(true);
             pi.setWeight(180);
+            CorpseImpl ci = new CorpseImpl();
+            ci.setDateOfDeath(new Date());
+            pi.setSiblings(Collections.<Human>singletonList(ci));
             return GetHumanityResponse.respond200WithApplicationJson(pi);
         } else {
 

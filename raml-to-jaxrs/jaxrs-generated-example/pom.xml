@@ -75,7 +75,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
-<!-- -->
+<!--
                     <execution>
                         <id>exec-hello</id>
                         <phase>generate-sources</phase>
@@ -111,7 +111,7 @@
                             </arguments>
                         </configuration>
                     </execution>
-<!-- -->
+-->
                     <execution>
                         <id>exec-types</id>
                         <phase>generate-sources</phase>
@@ -131,7 +131,7 @@
                             </arguments>
                         </configuration>
                     </execution>
-<!-- -->
+<!--
                     <execution>
                         <id>exec-jsonschema</id>
                         <phase>generate-sources</phase>
@@ -186,7 +186,7 @@
                             </arguments>
                         </configuration>
                     </execution>
-<!-- -->
+-->
 
 <!--
                     <execution>

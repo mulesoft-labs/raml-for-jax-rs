@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -19,6 +20,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.Names;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -152,6 +154,13 @@ public class JacksonExtension extends TypeExtensionHelper {
                     subTypes.build()
             );
 
+        }
+
+        if ( currentBuild.childClasses(typeDeclaration.name()).size() == 0) {
+
+            //GType type = currentBuild.childClasses(typeDeclaration.name()).iterator().next();
+            typeSpec.addAnnotation(AnnotationSpec.builder(JsonDeserialize.class).addMember("as", "$L.class", Names.typeName(
+                    typeDeclaration.name()) + "Impl").build());
         }
     }
 }

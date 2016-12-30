@@ -18,7 +18,7 @@ class V10PGParameter implements GParameter {
     public V10PGParameter(TypeDeclaration input) {
 
         this.input = input;
-        this.type = new V10GType(input.type(), input);
+        this.type = V10GType.createExplicitlyNamedType(input.type(), input);
     }
 
     @Override

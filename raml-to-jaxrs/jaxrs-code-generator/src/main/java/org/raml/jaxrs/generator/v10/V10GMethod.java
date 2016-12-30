@@ -10,7 +10,6 @@ import org.raml.jaxrs.generator.GResponse;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,9 +34,10 @@ class V10GMethod implements GMethod {
             public GRequest apply(@Nullable TypeDeclaration input) {
 
                 if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
-                    return new V10GRequest(input, new V10GType(v10GResource.implementation(), method, input));
+                    return new V10GRequest(input,
+                            V10GType.createRequestBodyType(v10GResource.implementation(), method, input));
                 } else {
-                    return new V10GRequest(input, new V10GType(input.type(), input));
+                    return new V10GRequest(input, V10GType.createExplicitlyNamedType(input.type(), input));
                 }
             }
         });

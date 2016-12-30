@@ -6,7 +6,6 @@ import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.Names;
-import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -19,6 +18,7 @@ import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,108 +35,86 @@ public class V10GType implements GType {
     private List<GProperty> properties;
     private List<GType> parentTypes;
 
-    public V10GType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
+    public static V10GType createRequestBodyType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
 
-        this.inline = true;
+        return new V10GType(
+                typeDeclaration,
+                Names.ramlTypeName(resource, method, typeDeclaration),
+                Names.javaTypeName(resource, method, typeDeclaration),
+                true,
+                getProperties(typeDeclaration),
+                getParents(typeDeclaration));
+    }
+
+    private static List<GType> getParents(TypeDeclaration typeDeclaration) {
+        return Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
+            @Nullable
+            @Override
+            public GType apply(@Nullable TypeDeclaration input) {
+                return createDeclaredType(input);
+            }
+        });
+    }
+
+    public static V10GType createResponseBodyType(Resource resource, Method method, Response response,
+            TypeDeclaration typeDeclaration) {
+        return new V10GType(
+                typeDeclaration,
+                Names.ramlTypeName(resource, method, response, typeDeclaration),
+                Names.javaTypeName(resource, method, response, typeDeclaration),
+                true,
+                getProperties(typeDeclaration),
+                getParents(typeDeclaration));
+    }
+
+    public static V10GType createDeclaredType(TypeDeclaration typeDeclaration) {
+        return new V10GType(
+                typeDeclaration,
+                typeDeclaration.name(),
+                Names.typeName(typeDeclaration.name()),
+                false,
+                getProperties(typeDeclaration),
+                getParents(typeDeclaration));
+    }
+
+    public static V10GType createExplicitlyNamedType(String s, TypeDeclaration typeDeclaration) {
+        return new V10GType(
+                typeDeclaration,
+                s,
+                Names.typeName(typeDeclaration.name()),
+                false,
+                getProperties(typeDeclaration),
+                getParents(typeDeclaration));
+    }
+
+
+    private V10GType(TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName, boolean inline, List<GProperty> properties, List<GType> parentTypes) {
+
         this.typeDeclaration = typeDeclaration;
-
-        if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
-
-            getProperties((ObjectTypeDeclaration)typeDeclaration);
-        } else {
-
-            properties = new ArrayList<>();
-        }
-
-        this.name = Names.ramlTypeName(resource, method, typeDeclaration);
-        this.defaultJavatypeName = Names.javaTypeName(resource, method, typeDeclaration);
-        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
-            @Nullable
-            @Override
-            public GType apply(@Nullable TypeDeclaration input) {
-                return new V10GType(input);
-            }
-        });
+        this.name = realName;
+        this.defaultJavatypeName = defaultJavatypeName;
+        this.inline = inline;
+        this.properties = properties;
+        this.parentTypes = parentTypes;
     }
 
-    public V10GType(Resource resource, Method method, Response response, TypeDeclaration typeDeclaration) {
+    private static List<GProperty> getProperties(final TypeDeclaration input) {
 
-        this.inline = true;
-        this.typeDeclaration = typeDeclaration;
-        this.name = Names.ramlTypeName(resource, method, typeDeclaration);
-        this.defaultJavatypeName = Names.javaTypeName(resource, method, response, typeDeclaration);
+        if ( input instanceof ObjectTypeDeclaration) {
 
-        if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
+            ObjectTypeDeclaration otd = (ObjectTypeDeclaration) input;
+            return Lists.transform(otd.properties(), new Function<TypeDeclaration, GProperty>() {
+                @Nullable
+                @Override
+                public GProperty apply(@Nullable TypeDeclaration declaration) {
 
-            getProperties((ObjectTypeDeclaration)typeDeclaration);
+                    return new V10GProperty(declaration, createExplicitlyNamedType(declaration.type(), declaration));
+                }
+            });
         } else {
 
-            properties = new ArrayList<>();
+            return Collections.emptyList();
         }
-        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
-            @Nullable
-            @Override
-            public GType apply(@Nullable TypeDeclaration input) {
-                return new V10GType(input);
-            }
-        });
-    }
-
-    public V10GType(TypeDeclaration typeDeclaration) {
-
-        this.inline = false;
-        this.typeDeclaration = typeDeclaration;
-        this.name = typeDeclaration.name();
-        this.defaultJavatypeName = Names.typeName(typeDeclaration.name());
-        if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
-
-            getProperties((ObjectTypeDeclaration)typeDeclaration);
-        } else {
-
-            properties = new ArrayList<>();
-        }
-        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
-            @Nullable
-            @Override
-            public GType apply(@Nullable TypeDeclaration input) {
-                return new V10GType(input);
-            }
-        });
-    }
-
-    public V10GType(String s, TypeDeclaration items) {
-        this.inline = true;
-        this.name = s;
-        this.typeDeclaration = items;
-        this.defaultJavatypeName = Names.typeName(typeDeclaration.name());
-        if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
-
-            getProperties((ObjectTypeDeclaration)typeDeclaration);
-        } else {
-
-            properties = new ArrayList<>();
-        }
-        this.parentTypes = Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
-            @Nullable
-            @Override
-            public GType apply(@Nullable TypeDeclaration input) {
-                return new V10GType(input);
-            }
-        });
-    }
-
-
-
-    private void getProperties(final ObjectTypeDeclaration input) {
-
-        properties = Lists.transform(input.properties(), new Function<TypeDeclaration, GProperty>() {
-            @Nullable
-            @Override
-            public GProperty apply(@Nullable TypeDeclaration declaration) {
-
-                return new V10GProperty(declaration, new V10GType(declaration.type(),  declaration));
-            }
-        });
     }
 
     @Override
@@ -228,7 +206,7 @@ public class V10GType implements GType {
     public GType arrayContents() {
 
         ArrayTypeDeclaration d = (ArrayTypeDeclaration) typeDeclaration;
-        return new V10GType(d.items().name().replaceAll("\\[\\]", ""),  d.items());
+        return createExplicitlyNamedType(d.items().name().replaceAll("\\[\\]", ""),  d.items());
     }
 
     @Override

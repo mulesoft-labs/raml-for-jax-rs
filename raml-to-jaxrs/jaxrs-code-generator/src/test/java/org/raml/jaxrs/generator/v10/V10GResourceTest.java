@@ -61,7 +61,7 @@ public class V10GResourceTest {
         GResponseType req = gr.methods().get(0).responses().get(0).body().get(0);
         assertEquals("application/json", req.mediaType());
         assertEquals("ObjectBase", req.type().type());
-        assertEquals("/funputapplication/json", req.type().name());
+        assertEquals("/funput200application/json", req.type().name());
         assertEquals("FunPut200ApplicationJson", req.type().defaultJavaTypeName());
     }
 

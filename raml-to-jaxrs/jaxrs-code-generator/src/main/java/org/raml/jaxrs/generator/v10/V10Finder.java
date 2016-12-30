@@ -3,7 +3,6 @@ package org.raml.jaxrs.generator.v10;
 import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GFinder;
 import org.raml.jaxrs.generator.GFinderListener;
-import org.raml.jaxrs.generator.Names;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -67,7 +66,7 @@ public class V10Finder implements GFinder {
                 continue;
             }
 
-            V10GType type = new V10GType(resource, method, typeDeclaration);
+            V10GType type = V10GType.createRequestBodyType(resource, method, typeDeclaration);
             listener.newTypeDeclaration(type);
         }
         for (Response response : method.responses()) {
@@ -77,7 +76,7 @@ public class V10Finder implements GFinder {
                     continue;
                 }
 
-                V10GType type = new V10GType(resource, method, response, typeDeclaration);
+                V10GType type = V10GType.createResponseBodyType(resource, method, response, typeDeclaration);
                 listener.newTypeDeclaration(type);
             }
         }
@@ -89,7 +88,7 @@ public class V10Finder implements GFinder {
 
             foundTypes.put(typeDeclaration.name(), typeDeclaration);
 
-            V10GType type = new V10GType(typeDeclaration);
+            V10GType type = V10GType.createDeclaredType(typeDeclaration);
             listener.newTypeDeclaration(type);
        }
     }
@@ -108,7 +107,7 @@ public class V10Finder implements GFinder {
             goThroughLibraries(visitedLibraries, library.uses(), listener);
             for (TypeDeclaration typeDeclaration : library.types()) {
 
-                V10GType type = new V10GType(typeDeclaration);
+                V10GType type = V10GType.createDeclaredType(typeDeclaration);
                 listener.newTypeDeclaration(type);
             }
         }

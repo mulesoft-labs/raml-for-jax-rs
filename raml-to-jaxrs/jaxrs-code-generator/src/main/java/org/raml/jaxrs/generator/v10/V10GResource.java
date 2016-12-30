@@ -6,6 +6,7 @@ import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GMethod;
 import org.raml.jaxrs.generator.GParameter;
 import org.raml.jaxrs.generator.GResource;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -25,12 +26,12 @@ public class V10GResource implements GResource {
     private final List<GParameter> uriParameters;
     private final List<GMethod> methods;
 
-    public V10GResource(GAbstractionFactory factory, Resource resource) {
+    public V10GResource(V10TypeRegistry registry, GAbstractionFactory factory, Resource resource) {
 
-        this(factory, null, resource);
+        this(registry, factory, null, resource);
     }
 
-    public V10GResource(final GAbstractionFactory factory, GResource parent, Resource resource) {
+    public V10GResource(final V10TypeRegistry registry, final GAbstractionFactory factory, GResource parent, Resource resource) {
         this.factory = factory;
         this.parent = parent;
         this.resource = resource;
@@ -39,7 +40,7 @@ public class V10GResource implements GResource {
             @Override
             public GResource apply(@Nullable Resource input) {
 
-                return factory.newResource(V10GResource.this, input);
+                return factory.newResource(registry, V10GResource.this, input);
             }
         });
 
@@ -47,7 +48,7 @@ public class V10GResource implements GResource {
             @Nullable
             @Override
             public GParameter apply(@Nullable TypeDeclaration input) {
-                return new V10PGParameter(input);
+                return new V10PGParameter(registry, input);
             }
         });
 
@@ -55,7 +56,7 @@ public class V10GResource implements GResource {
             @Nullable
             @Override
             public GMethod apply(@Nullable Method input) {
-                return new V10GMethod(V10GResource.this, input);
+                return new V10GMethod(registry, V10GResource.this, input);
             }
         });
 

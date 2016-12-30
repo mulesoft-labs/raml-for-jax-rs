@@ -4,6 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.GResponse;
 import org.raml.jaxrs.generator.GResponseType;
+import org.raml.jaxrs.generator.TypeRegistry;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -20,7 +22,7 @@ class V10GResponse implements GResponse {
     private final Response response;
     private final List<GResponseType> bodies;
 
-    public V10GResponse(final V10GResource v10GResource, final Method method, final Response response) {
+    public V10GResponse(final V10TypeRegistry registry, final V10GResource v10GResource, final Method method, final Response response) {
         this.v10GResource = v10GResource;
         this.response = response;
         this.bodies = Lists.transform(this.response.body(), new Function<TypeDeclaration, GResponseType>() {
@@ -29,9 +31,9 @@ class V10GResponse implements GResponse {
             public GResponseType apply(@Nullable TypeDeclaration input) {
                 if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
                     return new V10GResponseType(input,
-                            V10GType.createResponseBodyType(v10GResource.implementation(), method, response, input));
+                            registry.fetchType(v10GResource.implementation(), method, response, input));
                 } else {
-                    return new V10GResponseType(input, V10GType.createExplicitlyNamedType(input.type(), input));
+                    return new V10GResponseType(input, V10GType.createExplicitlyNamedType(registry, input.type(), input));
                 }
             }
         });

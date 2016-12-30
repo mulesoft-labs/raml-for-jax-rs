@@ -14,20 +14,16 @@ import java.util.Set;
  */
 public class GAbstractionFactory {
 
-    public  GResource newResource(final org.raml.v2.api.model.v10.resources.Resource resource) {
+    public  GResource newResource(V10TypeRegistry registry, final org.raml.v2.api.model.v10.resources.Resource resource) {
 
-        return new V10GResource(this, resource);
+        return new V10GResource(registry, this, resource);
     }
 
-    public GResource newResource(final GResource parent, final org.raml.v2.api.model.v10.resources.Resource resource) {
+    public GResource newResource(V10TypeRegistry registry, final GResource parent, final org.raml.v2.api.model.v10.resources.Resource resource) {
 
-        return new V10GResource(this, parent, resource);
+        return new V10GResource(registry, this, parent, resource);
     }
 
-    public GType newType(String internalTypeName, String type, TypeDeclaration implementation) {
-
-        return V10GType.createExplicitlyNamedType(internalTypeName, implementation);
-    }
 
 
     public GResource newResource(Set<String> globalSchemas, Resource resource) {

@@ -29,10 +29,12 @@ public class TypeFactory {
 
     private CurrentBuild currentBuild;
     private final GAbstractionFactory factory;
+    private final V10TypeRegistry registry;
 
-    public TypeFactory(CurrentBuild currentBuild, GAbstractionFactory factory) {
+    public TypeFactory(CurrentBuild currentBuild, GAbstractionFactory factory, V10TypeRegistry registry) {
         this.currentBuild = currentBuild;
         this.factory = factory;
+        this.registry = registry;
     }
 
     public void createType(GeneratorType type) {
@@ -116,7 +118,7 @@ public class TypeFactory {
             if (declaration.isInternal()) {
                 String internalTypeName = Integer.toString(internalTypeCounter);
 
-                GType type = factory.newType(internalTypeName, Names.typeName(declaration.name(), "Type"),
+                GType type = registry.createAnonymousType(internalTypeName, Names.typeName(declaration.name(), "Type"),
                         (TypeDeclaration) declaration.implementation());
                 TypeGenerator internalGenerator = build(GeneratorType.generatorFrom(type),  false);
                 if ( internalGenerator instanceof JavaPoetTypeGenerator ) {

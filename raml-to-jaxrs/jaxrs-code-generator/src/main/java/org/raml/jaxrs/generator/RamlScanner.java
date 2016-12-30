@@ -77,18 +77,19 @@ public class RamlScanner {
 
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
+        V10TypeRegistry registry = new V10TypeRegistry();
         GAbstractionFactory factory = new GAbstractionFactory();
-        CurrentBuild build = new CurrentBuild(new V10Finder(api, factory), packageName, modelPackageName, supportPackage);
+        CurrentBuild build = new CurrentBuild(new V10Finder(api, registry), packageName, modelPackageName, supportPackage);
         Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxrs"));
         configuration.setupBuild(build);
-        build.constructClasses(new TypeFactory(build, factory));
+        build.constructClasses(new TypeFactory(build, factory, registry));
 
         ResourceHandler resourceHandler = new ResourceHandler(build);
 
 
         // handle resources.
         for (Resource resource : api.resources()) {
-            resourceHandler.handle(resource);
+            resourceHandler.handle(registry, resource);
         }
 
 
@@ -104,7 +105,7 @@ public class RamlScanner {
         Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxrs"));
         configuration.setupBuild(build);
 
-        build.constructClasses(new TypeFactory(build, factory));
+        build.constructClasses(new TypeFactory(build, factory, null));
 
         ResourceHandler resourceHandler = new ResourceHandler(build);
 
@@ -113,8 +114,6 @@ public class RamlScanner {
         for (org.raml.v2.api.model.v08.resources.Resource resource : api.resources()) {
             resourceHandler.handle(typeFinder.globalSchemas(), resource);
         }
-
-
 
         build.generate(destDir);
     }

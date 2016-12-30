@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GRequest;
 import org.raml.jaxrs.generator.GResponseType;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.jaxrs.generator.utils.Raml;
 import org.raml.v2.api.model.v10.resources.Resource;
 
@@ -20,7 +21,7 @@ public class V10GResourceTest {
 
         Resource resource = Raml.buildV10(this, "resource-simple.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
-        V10GResource gr = new V10GResource(fac, resource);
+        V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GRequest req = gr.methods().get(0).body().get(0);
         assertEquals("application/json", req.mediaType());
         assertEquals("ObjectBase", req.type().type());
@@ -32,7 +33,7 @@ public class V10GResourceTest {
 
         Resource resource = Raml.buildV10(this, "resource-extending-request.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
-        V10GResource gr = new V10GResource(fac, resource);
+        V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GRequest req = gr.methods().get(0).body().get(0);
         assertEquals("application/json", req.mediaType());
         assertEquals("ObjectBase", req.type().type());
@@ -45,7 +46,7 @@ public class V10GResourceTest {
 
         Resource resource = Raml.buildV10(this, "resource-response-simple.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
-        V10GResource gr = new V10GResource(fac, resource);
+        V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GResponseType resp = gr.methods().get(0).responses().get(0).body().get(0);
         assertEquals("application/json", resp.mediaType());
         assertEquals("ObjectBase", resp.type().type());
@@ -57,7 +58,7 @@ public class V10GResourceTest {
 
         Resource resource = Raml.buildV10(this, "resource-response-extending.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
-        V10GResource gr = new V10GResource(fac, resource);
+        V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GResponseType req = gr.methods().get(0).responses().get(0).body().get(0);
         assertEquals("application/json", req.mediaType());
         assertEquals("ObjectBase", req.type().type());

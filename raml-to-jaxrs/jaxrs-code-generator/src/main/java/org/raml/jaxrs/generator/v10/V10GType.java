@@ -6,6 +6,7 @@ import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -17,7 +18,6 @@ import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,6 +27,7 @@ import java.util.List;
  */
 public class V10GType implements GType {
 
+    private final V10TypeRegistry registry;
     private final TypeDeclaration typeDeclaration;
     private final String name;
     private final String defaultJavatypeName;
@@ -35,61 +36,68 @@ public class V10GType implements GType {
     private List<GProperty> properties;
     private List<GType> parentTypes;
 
-    public static V10GType createRequestBodyType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
+
+    public static V10GType createRequestBodyType(V10TypeRegistry registry, Resource resource, Method method,
+            TypeDeclaration typeDeclaration) {
 
         return new V10GType(
+                registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, typeDeclaration),
                 Names.javaTypeName(resource, method, typeDeclaration),
                 true,
-                getProperties(typeDeclaration),
-                getParents(typeDeclaration));
+                getProperties(typeDeclaration, registry),
+                getParents(typeDeclaration, registry));
     }
 
-    private static List<GType> getParents(TypeDeclaration typeDeclaration) {
+    private static List<GType> getParents(TypeDeclaration typeDeclaration, final V10TypeRegistry registry) {
         return Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
             @Nullable
             @Override
             public GType apply(@Nullable TypeDeclaration input) {
-                return createDeclaredType(input);
+                return registry.fetchType(input);
             }
         });
     }
 
-    public static V10GType createResponseBodyType(Resource resource, Method method, Response response,
+    public static V10GType createResponseBodyType(V10TypeRegistry registry, Resource resource, Method method,
+            Response response,
             TypeDeclaration typeDeclaration) {
         return new V10GType(
+                registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, response, typeDeclaration),
                 Names.javaTypeName(resource, method, response, typeDeclaration),
                 true,
-                getProperties(typeDeclaration),
-                getParents(typeDeclaration));
+                getProperties(typeDeclaration, registry),
+                getParents(typeDeclaration, registry));
     }
 
-    public static V10GType createDeclaredType(TypeDeclaration typeDeclaration) {
+    public static V10GType createExplicitlyNamedType(V10TypeRegistry registry, String s, TypeDeclaration typeDeclaration) {
         return new V10GType(
-                typeDeclaration,
-                typeDeclaration.name(),
-                Names.typeName(typeDeclaration.name()),
-                false,
-                getProperties(typeDeclaration),
-                getParents(typeDeclaration));
-    }
-
-    public static V10GType createExplicitlyNamedType(String s, TypeDeclaration typeDeclaration) {
-        return new V10GType(
+                registry,
                 typeDeclaration,
                 s,
                 Names.typeName(typeDeclaration.name()),
                 false,
-                getProperties(typeDeclaration),
-                getParents(typeDeclaration));
+                getProperties(typeDeclaration, registry),
+                getParents(typeDeclaration, registry));
+    }
+
+    public static V10GType createExplicitlyNamedType(V10TypeRegistry registry, String ramlName, String javaClassName, TypeDeclaration typeDeclaration) {
+        return new V10GType(
+                registry,
+                typeDeclaration,
+                ramlName,
+                javaClassName,
+                false,
+                getProperties(typeDeclaration, registry),
+                getParents(typeDeclaration, registry));
     }
 
 
-    private V10GType(TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName, boolean inline, List<GProperty> properties, List<GType> parentTypes) {
-
+    private V10GType(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName, boolean inline, List<GProperty> properties, List<GType> parentTypes) {
+        this.registry = registry;
         this.typeDeclaration = typeDeclaration;
         this.name = realName;
         this.defaultJavatypeName = defaultJavatypeName;
@@ -98,7 +106,7 @@ public class V10GType implements GType {
         this.parentTypes = parentTypes;
     }
 
-    private static List<GProperty> getProperties(final TypeDeclaration input) {
+    private static List<GProperty> getProperties(final TypeDeclaration input, final V10TypeRegistry registry) {
 
         if ( input instanceof ObjectTypeDeclaration) {
 
@@ -108,7 +116,7 @@ public class V10GType implements GType {
                 @Override
                 public GProperty apply(@Nullable TypeDeclaration declaration) {
 
-                    return new V10GProperty(declaration, createExplicitlyNamedType(declaration.type(), declaration));
+                    return new V10GProperty(declaration, createExplicitlyNamedType(registry, declaration.type(), declaration));
                 }
             });
         } else {
@@ -206,7 +214,7 @@ public class V10GType implements GType {
     public GType arrayContents() {
 
         ArrayTypeDeclaration d = (ArrayTypeDeclaration) typeDeclaration;
-        return createExplicitlyNamedType(d.items().name().replaceAll("\\[\\]", ""),  d.items());
+        return createExplicitlyNamedType(registry, d.items().name().replaceAll("\\[\\]", ""),  d.items());
     }
 
     @Override

@@ -13,7 +13,10 @@ types:
             number:
                 required: true
                 type: integer
-
+            thing:
+                type: object
+                properties:
+                    id: string
 /inventory:
     description: The search resource
     get:

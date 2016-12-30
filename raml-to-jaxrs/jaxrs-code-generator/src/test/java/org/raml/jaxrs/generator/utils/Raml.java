@@ -3,6 +3,7 @@ package org.raml.jaxrs.generator.utils;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstractionFactory;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.v10.V10GResource;
@@ -36,7 +37,7 @@ public class Raml {
 
         Resource resource  = buildV10(test, raml);
         CurrentBuild currentBuild = new CurrentBuild(null, "funk", "funk", "funk");
-        ResourceBuilder builder = new ResourceBuilder(currentBuild, new V10GResource(new GAbstractionFactory(), resource),
+        ResourceBuilder builder = new ResourceBuilder(currentBuild, new V10GResource(new V10TypeRegistry(), new GAbstractionFactory(), resource),
                 name, uri);
         builder.output(container);
     }

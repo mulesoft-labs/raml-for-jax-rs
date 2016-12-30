@@ -3,6 +3,9 @@ package org.raml.jaxrs.generator.v10;
 import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GFinder;
 import org.raml.jaxrs.generator.GFinderListener;
+import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.TypeRegistry;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -23,13 +26,13 @@ import java.util.Set;
 public class V10Finder implements GFinder {
 
     private final Api api;
-    private final GAbstractionFactory factory;
+    private final V10TypeRegistry registry;
 
     private Map<String, TypeDeclaration> foundTypes = new HashMap<>();
 
-    public V10Finder(Api api, GAbstractionFactory factory) {
+    public V10Finder(Api api, V10TypeRegistry registry) {
         this.api = api;
-        this.factory =  factory;
+        this.registry = registry;
     }
 
     @Override
@@ -66,7 +69,7 @@ public class V10Finder implements GFinder {
                 continue;
             }
 
-            V10GType type = V10GType.createRequestBodyType(resource, method, typeDeclaration);
+            V10GType type = registry.fetchType(resource, method, typeDeclaration);
             listener.newTypeDeclaration(type);
         }
         for (Response response : method.responses()) {
@@ -76,7 +79,7 @@ public class V10Finder implements GFinder {
                     continue;
                 }
 
-                V10GType type = V10GType.createResponseBodyType(resource, method, response, typeDeclaration);
+                GType type = registry.fetchType(resource, method, response, typeDeclaration);
                 listener.newTypeDeclaration(type);
             }
         }
@@ -88,7 +91,7 @@ public class V10Finder implements GFinder {
 
             foundTypes.put(typeDeclaration.name(), typeDeclaration);
 
-            V10GType type = V10GType.createDeclaredType(typeDeclaration);
+            GType type = registry.fetchType(typeDeclaration);
             listener.newTypeDeclaration(type);
        }
     }
@@ -107,7 +110,7 @@ public class V10Finder implements GFinder {
             goThroughLibraries(visitedLibraries, library.uses(), listener);
             for (TypeDeclaration typeDeclaration : library.types()) {
 
-                V10GType type = V10GType.createDeclaredType(typeDeclaration);
+                GType type = registry.fetchType(typeDeclaration);
                 listener.newTypeDeclaration(type);
             }
         }

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GFinderListener;
 import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
@@ -99,7 +100,7 @@ public class TypeUtilsTest {
         else
         {
             final Map<String, GType> decls = new HashMap<>();
-            new V10Finder(ramlModelResult.getApiV10(), new GAbstractionFactory()).findTypes(new GFinderListener() {
+            new V10Finder(ramlModelResult.getApiV10(), new V10TypeRegistry()).findTypes(new GFinderListener() {
                 @Override
                 public void newTypeDeclaration(GType type) {
                     decls.put(type.name(), type);

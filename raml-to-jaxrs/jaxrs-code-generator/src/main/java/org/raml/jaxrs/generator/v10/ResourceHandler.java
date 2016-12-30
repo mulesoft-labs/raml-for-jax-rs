@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstractionFactory;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.v2.api.model.v10.resources.Resource;
 
@@ -19,11 +20,11 @@ public class ResourceHandler {
         this.build = build;
     }
 
-    public void handle(final Resource resource) {
+    public void handle(V10TypeRegistry registry, final Resource resource) {
 
         GAbstractionFactory factory = new GAbstractionFactory();
 
-        ResourceBuilder rg = new ResourceBuilder(build, factory.newResource(resource), resource.displayName().value(),
+        ResourceBuilder rg = new ResourceBuilder(build, factory.newResource(registry, resource), resource.displayName().value(),
                 resource.relativeUri().value());
 
         build.newResource(rg);

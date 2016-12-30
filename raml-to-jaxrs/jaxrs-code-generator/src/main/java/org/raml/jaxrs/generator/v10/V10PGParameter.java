@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.GParameter;
 import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -15,10 +16,10 @@ class V10PGParameter implements GParameter {
     private final TypeDeclaration input;
     private final V10GType type;
 
-    public V10PGParameter(TypeDeclaration input) {
+    public V10PGParameter(V10TypeRegistry registry, TypeDeclaration input) {
 
         this.input = input;
-        this.type = V10GType.createExplicitlyNamedType(input.type(), input);
+        this.type = registry.fetchType(input.type(), input);
     }
 
     @Override

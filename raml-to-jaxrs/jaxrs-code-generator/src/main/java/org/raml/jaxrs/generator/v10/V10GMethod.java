@@ -7,6 +7,8 @@ import org.raml.jaxrs.generator.GParameter;
 import org.raml.jaxrs.generator.GRequest;
 import org.raml.jaxrs.generator.GResource;
 import org.raml.jaxrs.generator.GResponse;
+import org.raml.jaxrs.generator.TypeRegistry;
+import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -25,7 +27,7 @@ class V10GMethod implements GMethod {
     private final List<GResponse> responses;
     private List<GRequest> requests;
 
-    public V10GMethod(final V10GResource v10GResource, final Method method) {
+    public V10GMethod(final V10TypeRegistry registry, final V10GResource v10GResource, final Method method) {
         this.v10GResource = v10GResource;
         this.method = method;
         this.requests = Lists.transform(this.method.body(), new Function<TypeDeclaration, GRequest>() {
@@ -35,9 +37,9 @@ class V10GMethod implements GMethod {
 
                 if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
                     return new V10GRequest(input,
-                            V10GType.createRequestBodyType(v10GResource.implementation(), method, input));
+                            registry.fetchType(v10GResource.implementation(), method, input));
                 } else {
-                    return new V10GRequest(input, V10GType.createExplicitlyNamedType(input.type(), input));
+                    return new V10GRequest(input, V10GType.createExplicitlyNamedType(registry, input.type(), input));
                 }
             }
         });
@@ -46,7 +48,7 @@ class V10GMethod implements GMethod {
             @Nullable
             @Override
             public GResponse apply(@Nullable Response input) {
-                return new V10GResponse(v10GResource, method, input);
+                return new V10GResponse(registry, v10GResource, method, input);
             }
         });
 
@@ -55,7 +57,7 @@ class V10GMethod implements GMethod {
             @Override
             public GParameter apply(@Nullable TypeDeclaration input) {
 
-                return new V10PGParameter(input);
+                return new V10PGParameter(registry, input);
             }
         });
     }

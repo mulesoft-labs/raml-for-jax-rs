@@ -6,5 +6,44 @@ package org.raml.jaxrs.generator;
  */
 public enum GObjectType implements GeneratorObjectType {
 
-    PLAIN_OBJECT_TYPE, XML_OBJECT_TYPE, JSON_OBJECT_TYPE, SCALAR, ENUMERATION_TYPE;
+    PLAIN_OBJECT_TYPE {
+        @Override
+        public void dispatch(GObjectTypeDispatcher dispatcher) {
+
+            dispatcher.onPlainObject();
+        }
+    },
+    XML_OBJECT_TYPE {
+        @Override
+        public void dispatch(GObjectTypeDispatcher dispatcher) {
+            dispatcher.onXmlObject();
+        }
+    },
+    JSON_OBJECT_TYPE {
+        @Override
+        public void dispatch(GObjectTypeDispatcher dispatcher) {
+            dispatcher.onJsonObject();
+        }
+    },
+    SCALAR {
+        @Override
+        public void dispatch(GObjectTypeDispatcher dispatcher) {
+            throw new GenerationException("scalar object cannot be handled");
+        }
+    },
+    ENUMERATION_TYPE {
+        @Override
+        public void dispatch(GObjectTypeDispatcher dispatcher) {
+            dispatcher.onEnumeration();
+        }
+    };
+
+    public interface GObjectTypeDispatcher {
+        void onPlainObject();
+        void onXmlObject();
+        void onJsonObject();
+        void onEnumeration();
+    }
+
+    public abstract void dispatch(GObjectTypeDispatcher dispatcher);
 }

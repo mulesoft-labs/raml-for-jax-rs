@@ -1,8 +1,13 @@
 package org.raml.jaxrs.generator.v08;
 
+import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.SchemaTypeFactory;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v08.bodies.Response;
 import org.raml.v2.api.model.v08.methods.Method;
@@ -127,5 +132,33 @@ public class V08GType implements GType {
     @Override
     public boolean isInline() {
         return false;
+    }
+
+    @Override
+    public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
+        objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
+            @Override
+            public void onPlainObject() {
+                throw new GenerationException("no plain objects in v08");
+            }
+
+            @Override
+            public void onXmlObject() {
+
+                SchemaTypeFactory.createXmlType(currentBuild, V08GType.this);
+            }
+
+            @Override
+            public void onJsonObject() {
+
+                SchemaTypeFactory.createJsonType(currentBuild, V08GType.this);
+            }
+
+            @Override
+            public void onEnumeration() {
+
+                throw new GenerationException("no enums objects in v08");
+            }
+        });
     }
 }

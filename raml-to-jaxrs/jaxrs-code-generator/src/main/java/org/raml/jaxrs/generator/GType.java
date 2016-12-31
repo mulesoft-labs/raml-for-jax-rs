@@ -35,4 +35,6 @@ public interface GType extends GAbstraction {
     List<String> enumValues();
 
     boolean isInline();
+
+    void construct(CurrentBuild currentBuild, GObjectType objectType);
 }

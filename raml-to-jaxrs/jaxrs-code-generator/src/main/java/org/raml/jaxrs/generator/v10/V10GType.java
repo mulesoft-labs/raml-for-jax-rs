@@ -2,11 +2,23 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.squareup.javapoet.ClassName;
+import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.EnumerationGenerator;
+import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
+import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.V10TypeRegistry;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.builders.types.CompositeRamlTypeGenerator;
+import org.raml.jaxrs.generator.builders.types.PropertyInfo;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
+import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -18,8 +30,11 @@ import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jean-Philippe Belanger on 12/10/16.
@@ -204,11 +219,6 @@ public class V10GType implements GType {
         return typeDeclaration instanceof ArrayTypeDeclaration;
     }
 
-    public boolean isScalar() {
-
-        return ! isArray() && !isXml() && !isJson() && !isObject();
-    }
-
     @Override
     public GType arrayContents() {
 
@@ -260,6 +270,131 @@ public class V10GType implements GType {
                 "input=" + typeDeclaration.name() + ":" + typeDeclaration.type()+
                 ", name='" + name() + '\'' +
                 '}';
+    }
+
+    @Override
+    public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
+        objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
+
+            @Override
+            public void onPlainObject() {
+
+                createObjectType(currentBuild, V10GType.this, true);
+            }
+
+            @Override
+            public void onXmlObject() {
+
+                SchemaTypeFactory.createXmlType(currentBuild, V10GType.this);
+            }
+
+            @Override
+            public void onJsonObject() {
+
+                SchemaTypeFactory.createJsonType(currentBuild, V10GType.this);
+            }
+
+            @Override
+            public void onEnumeration() {
+
+                createEnumerationType(currentBuild, V10GType.this);
+            }
+        });
+    }
+
+    private TypeGenerator inlineTypeBuild(CurrentBuild currentBuild, GeneratorType type) {
+
+        switch (type.getObjectType()) {
+
+            case ENUMERATION_TYPE:
+                return createEnumerationType(currentBuild, type.getDeclaredType());
+
+            case PLAIN_OBJECT_TYPE:
+                return createObjectType(currentBuild, (V10GType) type.getDeclaredType(),  false);
+
+            case JSON_OBJECT_TYPE:
+                return SchemaTypeFactory.createJsonType(currentBuild, type.getDeclaredType());
+
+            case XML_OBJECT_TYPE:
+                return SchemaTypeFactory.createXmlType(currentBuild, type.getDeclaredType());
+        }
+
+        throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
+    }
+
+    public TypeGenerator createObjectType(CurrentBuild currentBuild, V10GType originalType, boolean publicType) {
+
+        List<GType> parentTypes = originalType.parentTypes();
+        Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
+        int internalTypeCounter = 0;
+        List<PropertyInfo> properties = new ArrayList<>();
+        for (GProperty declaration : originalType.properties()) {
+
+            if (declaration.isInternal()) {
+                String internalTypeName = Integer.toString(internalTypeCounter);
+
+                GType type = registry.createInlineType(internalTypeName, Names.typeName(declaration.name(), "Type"),
+                        (TypeDeclaration) declaration.implementation());
+                TypeGenerator internalGenerator = inlineTypeBuild(currentBuild, GeneratorType.generatorFrom(type));
+                if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
+                    internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
+                    properties.add(new PropertyInfo(declaration.overrideType(type)));
+                    internalTypeCounter ++;
+                } else {
+                    throw new GenerationException("internal type bad");
+                }
+            } else {
+                properties.add(new PropertyInfo(declaration));
+            }
+
+        }
+
+        if ( currentBuild.implementationsOnly() ) {
+
+            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+
+            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, null, properties, internalTypes, originalType);
+
+            if ( publicType ) {
+                currentBuild.newGenerator(originalType.name(), implg);
+            }
+            return implg;
+        } else {
+
+            ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
+
+            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
+                    properties, internalTypes, originalType);
+            RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
+            CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
+
+            if ( publicType ) {
+                currentBuild.newGenerator(originalType.name(), gen);
+            }
+            return gen;
+        }
+    }
+
+    private TypeGenerator createEnumerationType(CurrentBuild currentBuild, GType type) {
+        JavaPoetTypeGenerator generator =  new EnumerationGenerator(
+                currentBuild,
+                ((V10GType)type).implementation(),
+                ClassName.get(currentBuild.getModelPackage(), type.defaultJavaTypeName()),
+                type.enumValues());
+
+        currentBuild.newGenerator(type.name(), generator);
+        return generator;
+    }
+
+    private ClassName buildClassName(String pack, String name, boolean publicType) {
+
+        if ( publicType ) {
+            return ClassName.get(pack, name);
+        } else {
+
+            return ClassName.get("", name);
+        }
     }
 
 

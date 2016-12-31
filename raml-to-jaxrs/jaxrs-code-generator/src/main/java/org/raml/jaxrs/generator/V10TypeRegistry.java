@@ -67,8 +67,7 @@ public class V10TypeRegistry implements TypeRegistry {
         return fetchType(name, typeDeclaration);
     }
 
-
-    public GType createAnonymousType(String internalTypeName, String javaTypeName, TypeDeclaration implementation) {
+    public GType createInlineType(String internalTypeName, String javaTypeName, TypeDeclaration implementation) {
         V10TypeRegistry registry = new V10TypeRegistry();
         registry.types = new HashMap<>();
         types.putAll(registry.types);

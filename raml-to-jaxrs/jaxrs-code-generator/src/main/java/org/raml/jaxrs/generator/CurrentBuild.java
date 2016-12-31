@@ -269,16 +269,14 @@ public class CurrentBuild {
         resources.add(rg);
     }
 
-    public void constructClasses(TypeFactory typeFactory) {
+    public void constructClasses() {
 
         TypeFindingListener listener = new TypeFindingListener(foundTypes, childMap);
         typeFinder.findTypes(listener);
 
         for (GeneratorType type : foundTypes.values()) {
 
-            if ( type.getObjectType() != GObjectType.SCALAR) {
-                typeFactory.createType(type);
-            }
+            type.construct(this);
         }
     }
 

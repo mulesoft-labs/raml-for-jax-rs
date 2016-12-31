@@ -6,11 +6,13 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -27,16 +29,16 @@ import java.util.Map;
  */
 public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.Builder> implements RamlTypeGenerator {
     private final CurrentBuild build;
-    private final List<TypeDeclaration> parentTypes;
+    private final List<GType> parentTypes;
     private final ClassName interf;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
     private Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
-    private final ObjectTypeDeclaration typeDeclaration;
+    private final V10GType typeDeclaration;
 
 
-    public RamlTypeGeneratorInterface(CurrentBuild currentBuild, ClassName interf, List<TypeDeclaration> parentTypes,
-            List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, ObjectTypeDeclaration typeDeclaration) {
+    public RamlTypeGeneratorInterface(CurrentBuild currentBuild, ClassName interf, List<GType> parentTypes,
+            List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, V10GType typeDeclaration) {
 
         this.build = currentBuild;
         this.interf = interf;
@@ -51,11 +53,13 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
     @Override
     public void output(CodeContainer<TypeSpec.Builder> into, TYPE type) throws IOException {
 
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) typeDeclaration.implementation();
+
         final TypeSpec.Builder typeSpec = TypeSpec
                 .interfaceBuilder(interf)
                 .addModifiers(Modifier.PUBLIC);
 
-        build.withTypeListeners().onTypeDeclaration(build, typeSpec, typeDeclaration);
+        build.withTypeListeners().onTypeDeclaration(build, typeSpec, object);
 
         for (JavaPoetTypeGenerator internalType : internalTypes.values()) {
 
@@ -71,7 +75,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
 
 
         List<GeneratorType> propsFromParents = new ArrayList<>();
-        for (TypeDeclaration parentType : parentTypes) {
+        for (GType parentType : parentTypes) {
 
             if ( parentType.name().equals("object") ) {
 
@@ -93,7 +97,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                         getSpec, (TypeDeclaration) propertyInfo.getType().implementation());
                 typeSpec.addMethod(getSpec.build());
 
-                if ( ! propertyInfo.getName().equals(typeDeclaration.discriminator()) ) {
+                if ( ! propertyInfo.getName().equals(object.discriminator()) ) {
                     MethodSpec.Builder setSpec = MethodSpec
                             .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
                             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
@@ -105,7 +109,6 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                             parameterSpec.build());
                     typeSpec.addMethod(setSpec.build());
                 }
-  //          }
         }
 
         into.into(typeSpec);

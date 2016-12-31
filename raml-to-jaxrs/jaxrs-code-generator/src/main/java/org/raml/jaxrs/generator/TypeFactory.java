@@ -12,7 +12,6 @@ import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
 import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
 
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.File;
@@ -60,7 +59,8 @@ public class TypeFactory {
                 return createEnumerationType(type.getDeclaredType(), publicType);
 
             case PLAIN_OBJECT_TYPE:
-                return createObjectType(type.getDeclaredType(),  publicType);
+                // todo casting.
+                return createObjectType((V10GType) type.getDeclaredType(),  publicType);
 
             case JSON_OBJECT_TYPE:
                 return createJsonType(type.getDeclaredType());
@@ -105,11 +105,9 @@ public class TypeFactory {
         return gen;
     }
 
-    private TypeGenerator createObjectType(GType originalType, boolean publicType) {
+    private TypeGenerator createObjectType(V10GType originalType, boolean publicType) {
 
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) originalType.implementation();
-        List<TypeDeclaration> parentTypes = object.parentTypes();
-
+        List<GType> parentTypes = originalType.parentTypes();
         Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
         int internalTypeCounter = 0;
         List<PropertyInfo> properties = new ArrayList<>();
@@ -138,7 +136,7 @@ public class TypeFactory {
 
             ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
 
-            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, null, parentTypes, properties, internalTypes, object);
+            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, null, properties, internalTypes, originalType);
 
             if ( publicType ) {
                 currentBuild.newGenerator(originalType.name(), implg);
@@ -149,8 +147,9 @@ public class TypeFactory {
             ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
             ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
 
-            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf, parentTypes, properties, internalTypes, object);
-            RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, object);
+            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
+                    properties, internalTypes, originalType);
+            RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
             CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
 
             if ( publicType ) {

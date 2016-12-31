@@ -32,9 +32,8 @@ public class V10GType implements GType {
     private final String name;
     private final String defaultJavatypeName;
     private final boolean inline;
-
-    private List<GProperty> properties;
-    private List<GType> parentTypes;
+    private final List<GProperty> properties;
+    private final List<GType> parentTypes;
 
 
     public static V10GType createRequestBodyType(V10TypeRegistry registry, Resource resource, Method method,

@@ -2,9 +2,8 @@ package org.raml.jaxrs.generator;
 
 import org.raml.jaxrs.generator.v08.V08GResource;
 import org.raml.jaxrs.generator.v10.V10GResource;
-import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v08.resources.Resource;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.util.Set;
 

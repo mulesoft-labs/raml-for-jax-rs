@@ -1,11 +1,8 @@
 package org.raml.jaxrs.generator.v10;
 
-import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GFinder;
 import org.raml.jaxrs.generator.GFinderListener;
 import org.raml.jaxrs.generator.GType;
-import org.raml.jaxrs.generator.TypeRegistry;
-import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;

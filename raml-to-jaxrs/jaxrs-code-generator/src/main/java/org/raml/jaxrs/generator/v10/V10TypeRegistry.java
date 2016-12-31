@@ -1,6 +1,6 @@
-package org.raml.jaxrs.generator;
+package org.raml.jaxrs.generator.v10;
 
-import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.Names;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -12,15 +12,12 @@ import java.util.Map;
 /**
  * Created by Jean-Philippe Belanger on 12/30/16.
  * Just potential zeroes and ones
+ * This one just make sure that the Type Classes are created only once...
  */
-public class V10TypeRegistry implements TypeRegistry {
+
+public class V10TypeRegistry {
 
     private Map<String, V10GType> types = new HashMap<>();
-
-    @Override
-    public GType fetchType(String name) {
-        return types.get(name);
-    }
 
     public V10GType fetchType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
 
@@ -67,7 +64,7 @@ public class V10TypeRegistry implements TypeRegistry {
         return fetchType(name, typeDeclaration);
     }
 
-    public GType createInlineType(String internalTypeName, String javaTypeName, TypeDeclaration implementation) {
+    public V10GType createInlineType(String internalTypeName, String javaTypeName, TypeDeclaration implementation) {
         V10TypeRegistry registry = new V10TypeRegistry();
         registry.types = new HashMap<>();
         types.putAll(registry.types);

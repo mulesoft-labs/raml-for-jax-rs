@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GRequest;
 import org.raml.jaxrs.generator.GResponseType;
-import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.jaxrs.generator.utils.Raml;
 import org.raml.v2.api.model.v10.resources.Resource;
 

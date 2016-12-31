@@ -3,7 +3,7 @@ package org.raml.jaxrs.generator.utils;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstractionFactory;
-import org.raml.jaxrs.generator.V10TypeRegistry;
+import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.v10.V10GResource;

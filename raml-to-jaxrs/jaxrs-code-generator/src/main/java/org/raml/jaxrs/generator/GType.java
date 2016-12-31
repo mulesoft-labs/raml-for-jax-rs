@@ -20,8 +20,6 @@ public interface GType extends GAbstraction {
 
     List<GType> parentTypes();
 
-    boolean declaresProperty(String name);
-
     boolean isObject();
 
     List<GProperty> properties();

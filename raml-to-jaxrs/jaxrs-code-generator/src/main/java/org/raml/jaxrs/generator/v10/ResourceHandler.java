@@ -2,7 +2,6 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstractionFactory;
-import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.v2.api.model.v10.resources.Resource;
 

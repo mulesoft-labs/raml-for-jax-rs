@@ -2,7 +2,6 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.GParameter;
 import org.raml.jaxrs.generator.GType;
-import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;

@@ -6,7 +6,6 @@ import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GMethod;
 import org.raml.jaxrs.generator.GParameter;
 import org.raml.jaxrs.generator.GResource;
-import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;

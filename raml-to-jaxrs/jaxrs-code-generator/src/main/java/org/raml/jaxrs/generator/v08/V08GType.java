@@ -7,7 +7,6 @@ import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
-import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v08.bodies.Response;
 import org.raml.v2.api.model.v08.methods.Method;
@@ -92,11 +91,6 @@ public class V08GType implements GType {
     @Override
     public List<GType> parentTypes() {
         return new ArrayList<>();
-    }
-
-    @Override
-    public boolean declaresProperty(String name) {
-        return false;
     }
 
     @Override

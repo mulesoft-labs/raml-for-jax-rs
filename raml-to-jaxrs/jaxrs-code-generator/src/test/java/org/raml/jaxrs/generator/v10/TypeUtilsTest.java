@@ -1,10 +1,8 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.junit.Test;
-import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GFinderListener;
 import org.raml.jaxrs.generator.GType;
-import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;

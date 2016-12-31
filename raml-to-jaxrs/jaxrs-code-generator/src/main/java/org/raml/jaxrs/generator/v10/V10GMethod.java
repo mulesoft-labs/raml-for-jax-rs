@@ -7,8 +7,6 @@ import org.raml.jaxrs.generator.GParameter;
 import org.raml.jaxrs.generator.GRequest;
 import org.raml.jaxrs.generator.GResource;
 import org.raml.jaxrs.generator.GResponse;
-import org.raml.jaxrs.generator.TypeRegistry;
-import org.raml.jaxrs.generator.V10TypeRegistry;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;

@@ -13,14 +13,24 @@ public class Main {
         Path jaxRsResourceFile = Paths.get(args[0]);
         Path ramlOutputFile = Paths.get(args[1]);
 
+        Path jaxRsSourceRoot = null;
+        if (args.length > 2) {
+            jaxRsSourceRoot = Paths.get(args[2]);
+        }
+
         RamlConfiguration ramlConfiguration = DefaultRamlConfiguration.forApplication(jaxRsResourceFile.getFileName().toString());
 
-        OneStopShop oneStopShop =
+        OneStopShop.Builder builder =
                 OneStopShop.builder()
                         .withJaxRsClassesRoot(jaxRsResourceFile)
                         .withRamlOutputFile(ramlOutputFile)
-                        .withRamlConfiguration(ramlConfiguration)
-                        .build();
+                        .withRamlConfiguration(ramlConfiguration);
+
+        if (null != jaxRsSourceRoot) {
+            builder.withSourceCodeRoot(jaxRsSourceRoot);
+        }
+
+        OneStopShop oneStopShop = builder.build();
 
         oneStopShop.parseJaxRsAndOutputRaml();
     }

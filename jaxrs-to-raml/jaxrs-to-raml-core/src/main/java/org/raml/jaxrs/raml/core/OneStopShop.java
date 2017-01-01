@@ -10,10 +10,14 @@ import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.JaxRsParsers;
 import org.raml.jaxrs.parser.JaxRsParsingException;
+import org.raml.jaxrs.parser.source.SourceParser;
+import org.raml.jaxrs.parser.source.SourceParsers;
 import org.raml.utilities.builder.NonNullableField;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.raml.utilities.builder.Preconditions.checkSet;
 import static org.raml.utilities.builder.Preconditions.checkUnset;
@@ -22,17 +26,17 @@ public class OneStopShop {
 
     private final Path jaxRsUrl;
     private final Path ramlOutputFile;
-    private final NonNullableField sourceCodeRoot;
+    private final NonNullableField<Path> sourceCodeRoot;
     private final RamlConfiguration ramlConfiguration;
 
-    private OneStopShop(Path jaxRsUrl, Path ramlOutputFile, NonNullableField sourceCodeRoot, RamlConfiguration ramlConfiguration) {
+    private OneStopShop(Path jaxRsUrl, Path ramlOutputFile, NonNullableField<Path> sourceCodeRoot, RamlConfiguration ramlConfiguration) {
         this.jaxRsUrl = jaxRsUrl;
         this.ramlOutputFile = ramlOutputFile;
         this.sourceCodeRoot = sourceCodeRoot;
         this.ramlConfiguration = ramlConfiguration;
     }
 
-    private static OneStopShop create(Path jaxRsUrl, Path ramlOutputFile, NonNullableField sourceCodeRoot, RamlConfiguration ramlConfiguration) {
+    private static OneStopShop create(Path jaxRsUrl, Path ramlOutputFile, NonNullableField<Path> sourceCodeRoot, RamlConfiguration ramlConfiguration) {
         checkNotNull(jaxRsUrl);
         checkNotNull(ramlOutputFile);
         checkNotNull(sourceCodeRoot);
@@ -43,7 +47,9 @@ public class OneStopShop {
 
     public void parseJaxRsAndOutputRaml() throws JaxRsToRamlConversionException, JaxRsParsingException, RamlEmissionException {
 
-        JaxRsApplication application = JaxRsParsers.usingJerseyForPaths(jaxRsUrl, sourceCodeRoot).parse();
+        SourceParser sourceParser = sourceCodeRoot.isSet() ? SourceParsers.usingRoasterParser(sourceCodeRoot.get()) : SourceParsers.nullParser();
+
+        JaxRsApplication application = JaxRsParsers.usingJerseyWith(jaxRsUrl, sourceParser).parse();
 
         RamlApi ramlApi = JaxRsToRamlConverter.create().convert(ramlConfiguration, application);
 
@@ -62,7 +68,8 @@ public class OneStopShop {
         NonNullableField<Path> ramlOutputFile = NonNullableField.unset();
         NonNullableField<RamlConfiguration> ramlConfiguration = NonNullableField.unset();
 
-        private Builder() {}
+        private Builder() {
+        }
 
         public Builder withJaxRsClassesRoot(Path jaxRsClassesRoot) {
             checkUnset(this.jaxRsClassesRoot, "classes root");
@@ -101,7 +108,16 @@ public class OneStopShop {
             checkSet(this.ramlOutputFile, "raml output file");
             checkSet(this.ramlConfiguration, "raml configuration");
 
-            return OneStopShop.create(this.jaxRsClassesRoot.get(), this.ramlOutputFile.get(), this.sourceCodeRoot, this.ramlConfiguration.get());
+            Path classesRoot = jaxRsClassesRoot.get();
+            checkArgument(Files.isDirectory(classesRoot), "classes root %s is not a valid directory", classesRoot);
+
+            if (sourceCodeRoot.isSet()) {
+                Path path = sourceCodeRoot.get();
+                checkArgument(Files.isDirectory(path), "source code root %s is not a valid directory", path);
+            }
+
+
+            return OneStopShop.create(classesRoot, this.ramlOutputFile.get(), this.sourceCodeRoot, this.ramlConfiguration.get());
         }
 
     }

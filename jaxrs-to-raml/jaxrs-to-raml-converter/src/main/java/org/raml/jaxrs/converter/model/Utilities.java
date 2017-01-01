@@ -6,7 +6,7 @@ import com.google.common.collect.FluentIterable;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsResource;
-import org.raml.jaxrs.model.Method;
+import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlQueryParameter;
@@ -39,11 +39,11 @@ public class Utilities {
         );
     }
 
-    public static FluentIterable<RamlResourceMethod> toRamlMethods(Iterable<Method> methods) {
+    public static FluentIterable<RamlResourceMethod> toRamlMethods(Iterable<JaxRsMethod> methods) {
         return FluentIterable.from(methods).transform(
-                new Function<Method, RamlResourceMethod>() {
+                new Function<JaxRsMethod, RamlResourceMethod>() {
                     @Override
-                    public RamlResourceMethod apply(Method method) {
+                    public RamlResourceMethod apply(JaxRsMethod method) {
                         return JaxRsRamlMethod.create(method);
                     }
                 }

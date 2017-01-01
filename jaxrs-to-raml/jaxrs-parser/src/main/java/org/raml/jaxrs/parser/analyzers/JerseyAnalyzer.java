@@ -7,6 +7,7 @@ import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.RuntimeResource;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.model.JerseyJaxRsApplication;
+import org.raml.jaxrs.parser.source.SourceParser;
 import org.raml.utilities.format.Joiners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +26,20 @@ class JerseyAnalyzer implements Analyzer {
 
     private final ImmutableSet<Class<?>> jaxRsClasses;
     private final JerseyBridge jerseyBridge;
+    private final SourceParser sourceParser;
 
-    private JerseyAnalyzer(ImmutableSet<Class<?>> jaxRsClasses, JerseyBridge jerseyBridge) {
+    private JerseyAnalyzer(ImmutableSet<Class<?>> jaxRsClasses, JerseyBridge jerseyBridge, SourceParser sourceParser) {
         this.jaxRsClasses = jaxRsClasses;
         this.jerseyBridge = jerseyBridge;
+        this.sourceParser = sourceParser;
     }
 
-    static JerseyAnalyzer create(Iterable<Class<?>> classes, JerseyBridge jerseyBridge) {
+    static JerseyAnalyzer create(Iterable<Class<?>> classes, JerseyBridge jerseyBridge, SourceParser sourceParser) {
         checkNotNull(classes);
         checkNotNull(jerseyBridge);
+        checkNotNull(sourceParser);
 
-        return new JerseyAnalyzer(ImmutableSet.copyOf(classes), jerseyBridge);
+        return new JerseyAnalyzer(ImmutableSet.copyOf(classes), jerseyBridge, sourceParser);
     }
 
     @Override
@@ -57,6 +61,6 @@ class JerseyAnalyzer implements Analyzer {
             logger.debug("found runtime resources: \n{}", Joiners.squareBracketsPerLineJoiner().join(runtimeResources));
         }
 
-        return JerseyJaxRsApplication.fromRuntimeResources(runtimeResources);
+        return JerseyJaxRsApplication.fromRuntimeResources(runtimeResources, sourceParser);
     }
 }

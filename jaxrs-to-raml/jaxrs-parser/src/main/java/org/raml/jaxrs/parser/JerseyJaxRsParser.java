@@ -3,6 +3,7 @@ package org.raml.jaxrs.parser;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.analyzers.Analyzers;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
+import org.raml.jaxrs.parser.source.SourceParser;
 import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 import org.raml.utilities.builder.NonNullableField;
 import org.raml.utilities.format.Joiners;
@@ -21,19 +22,19 @@ class JerseyJaxRsParser implements JaxRsParser {
     private static final Logger logger = LoggerFactory.getLogger(JerseyJaxRsParser.class);
 
     private final Path jaxRsResource;
-    private final NonNullableField<Path> sourceRootDirectory;
+    private final SourceParser sourceParser;
 
 
-    private JerseyJaxRsParser(Path jaxRsResource, NonNullableField<Path> sourceRootDirectory) {
+    private JerseyJaxRsParser(Path jaxRsResource, SourceParser sourceParser) {
         this.jaxRsResource = jaxRsResource;
-        this.sourceRootDirectory = sourceRootDirectory;
+        this.sourceParser = sourceParser;
     }
 
-    public static JerseyJaxRsParser create(Path classesPath, NonNullableField<Path> sourceRootDirectory) {
+    public static JerseyJaxRsParser create(Path classesPath, SourceParser sourceParser) {
         checkNotNull(classesPath);
-        checkNotNull(sourceRootDirectory);
+        checkNotNull(sourceParser);
 
-        return new JerseyJaxRsParser(classesPath, sourceRootDirectory);
+        return new JerseyJaxRsParser(classesPath, sourceParser);
     }
 
     @Override
@@ -42,7 +43,7 @@ class JerseyJaxRsParser implements JaxRsParser {
 
         Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);
 
-        return Analyzers.jerserAnalyzerFor(classes).analyze();
+        return Analyzers.jerserAnalyzerFor(classes, sourceParser).analyze();
     }
 
     private static Iterable<Class<?>> getJaxRsClassesFor(Path jaxRsResource) throws JaxRsParsingException {

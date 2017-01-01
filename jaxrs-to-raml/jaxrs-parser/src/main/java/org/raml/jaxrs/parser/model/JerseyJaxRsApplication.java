@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import org.glassfish.jersey.server.model.RuntimeResource;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
+import org.raml.jaxrs.parser.source.SourceParser;
 
 import java.util.List;
 import java.util.Set;
@@ -29,13 +30,13 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
         return new JerseyJaxRsApplication(ImmutableSet.copyOf(resources));
     }
 
-    public static JerseyJaxRsApplication fromRuntimeResources(Iterable<RuntimeResource> runtimeResources) {
+    public static JerseyJaxRsApplication fromRuntimeResources(Iterable<RuntimeResource> runtimeResources, final SourceParser sourceParser) {
         return create(FluentIterable.from(runtimeResources).transform(
                 new Function<RuntimeResource, JaxRsResource>() {
                     @Nullable
                     @Override
                     public JaxRsResource apply(@Nullable RuntimeResource runtimeResource) {
-                        return JerseyJaxRsResource.create(runtimeResource);
+                        return JerseyJaxRsResource.create(runtimeResource, sourceParser);
                     }
                 }
         ));

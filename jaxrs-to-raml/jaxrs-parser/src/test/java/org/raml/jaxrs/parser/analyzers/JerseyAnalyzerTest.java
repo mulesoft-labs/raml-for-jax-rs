@@ -10,13 +10,13 @@ import org.glassfish.jersey.server.model.RuntimeResource;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.parser.model.JerseyJaxRsApplication;
+import org.raml.jaxrs.parser.source.SourceParser;
 import org.raml.utilities.iterables.Iterables;
 
 import java.util.List;
@@ -34,13 +34,16 @@ public class JerseyAnalyzerTest {
     @Mock
     JerseyBridge jerseyBridge;
 
+    @Mock
+    SourceParser sourceParser;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     private JerseyAnalyzer makeAnalyzerFor(Iterable<Class<?>> classes) {
-        return JerseyAnalyzer.create(classes, jerseyBridge);
+        return JerseyAnalyzer.create(classes, jerseyBridge, sourceParser);
     }
 
     private static <T> Supplier<T> mockSupplierFor(final Class<? extends T> clazz) {

@@ -1,5 +1,7 @@
 package org.raml.api;
 
+import com.google.common.base.Optional;
+
 import java.util.List;
 
 public interface RamlResourceMethod {
@@ -8,4 +10,5 @@ public interface RamlResourceMethod {
     List<RamlMediaType> getProducedMediaTypes();
     List<RamlQueryParameter> getQueryParameters();
     List<RamlHeaderParameter> getHeaderParameters();
+    Optional<String> getDescription();
 }

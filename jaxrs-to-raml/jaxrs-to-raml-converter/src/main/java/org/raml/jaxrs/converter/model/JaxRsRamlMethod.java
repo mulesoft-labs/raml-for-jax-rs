@@ -1,7 +1,9 @@
 package org.raml.jaxrs.converter.model;
 
+import com.google.common.base.Optional;
+
 import org.raml.api.RamlHeaderParameter;
-import org.raml.jaxrs.model.Method;
+import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResourceMethod;
@@ -12,13 +14,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JaxRsRamlMethod implements RamlResourceMethod {
 
-    private final Method resourceMethod;
+    private final JaxRsMethod resourceMethod;
 
-    private JaxRsRamlMethod(Method resourceMethod) {
+    private JaxRsRamlMethod(JaxRsMethod resourceMethod) {
         this.resourceMethod = resourceMethod;
     }
 
-    public static JaxRsRamlMethod create(Method resourceMethod) {
+    public static JaxRsRamlMethod create(JaxRsMethod resourceMethod) {
         checkNotNull(resourceMethod);
 
         return new JaxRsRamlMethod(resourceMethod);
@@ -47,5 +49,10 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
     @Override
     public List<RamlHeaderParameter> getHeaderParameters() {
         return Utilities.toRamlHeaderParameters(this.resourceMethod.getHeaderParameters()).toList();
+    }
+
+    @Override
+    public Optional<String> getDescription() {
+        return this.resourceMethod.getDescription();
     }
 }

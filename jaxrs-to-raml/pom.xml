@@ -10,17 +10,10 @@
     </parent>
     <artifactId>jaxrs-to-raml</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>jaxrs-api</module>
-        <module>jaxrs-parser</module>
-        <module>jaxrs-to-raml-core</module>
-        <module>jaxrs-to-raml-converter</module>
-        <module>jaxrs-to-raml-cli</module>
-        <module>jaxrs-to-raml-maven-plugin</module>
-        <module>jaxrs-test-resources</module>
-        <module>raml-api</module>
-        <module>raml-emitter</module>
-    </modules>
+
+    <properties>
+        <roaster.version>2.19.4.Final</roaster.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -36,7 +29,7 @@
             </dependency>
             <dependency>
                 <groupId>org.raml</groupId>
-                <artifactId>jaxrs-to-raml-model</artifactId>
+                <artifactId>jaxrs-to-raml-converter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -54,6 +47,17 @@
                 <artifactId>jaxrs-to-raml-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.forge.roaster</groupId>
+                <artifactId>roaster-api</artifactId>
+                <version>${roaster.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.forge.roaster</groupId>
+                <artifactId>roaster-jdt</artifactId>
+                <version>${roaster.version}</version>
+                <scope>runtime</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -68,6 +72,18 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <modules>
+        <module>jaxrs-api</module>
+        <module>jaxrs-parser</module>
+        <module>jaxrs-to-raml-core</module>
+        <module>jaxrs-to-raml-converter</module>
+        <module>jaxrs-to-raml-cli</module>
+        <module>jaxrs-to-raml-maven-plugin</module>
+        <module>jaxrs-test-resources</module>
+        <module>raml-api</module>
+        <module>raml-emitter</module>
+    </modules>
 
     <distributionManagement>
         <repository>

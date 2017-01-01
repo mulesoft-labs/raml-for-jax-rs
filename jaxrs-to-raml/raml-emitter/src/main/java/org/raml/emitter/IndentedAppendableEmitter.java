@@ -79,6 +79,11 @@ public class IndentedAppendableEmitter implements Emitter {
         writer.appendLine(format("%s:", method.getHttpMethod()));
         writer.indent();
 
+        Optional<String> description = method.getDescription();
+        if (description.isPresent()) {
+            writeDescription(description.get());
+        }
+
         if (!method.getConsumedMediaTypes().isEmpty()) {
             writeBody(method.getConsumedMediaTypes());
         }
@@ -97,6 +102,10 @@ public class IndentedAppendableEmitter implements Emitter {
 
 
         writer.outdent();
+    }
+
+    private void writeDescription(String description) throws IOException {
+        writer.appendLine(String.format("description: %s", description));
     }
 
     private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters) throws IOException {

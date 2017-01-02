@@ -13,6 +13,13 @@ public enum GObjectType implements GeneratorObjectType {
             dispatcher.onPlainObject();
         }
     },
+    UNION_TYPE {
+        @Override
+        public void dispatch(GObjectTypeDispatcher dispatcher) {
+
+            dispatcher.onUnion();
+        }
+    },
     XML_OBJECT_TYPE {
         @Override
         public void dispatch(GObjectTypeDispatcher dispatcher) {
@@ -43,6 +50,7 @@ public enum GObjectType implements GeneratorObjectType {
         void onXmlObject();
         void onJsonObject();
         void onEnumeration();
+        void onUnion();
     }
 
     public abstract void dispatch(GObjectTypeDispatcher dispatcher);

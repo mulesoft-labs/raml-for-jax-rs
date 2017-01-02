@@ -3,6 +3,14 @@ title: Humanity
 version: v1
 baseUri: https://api.github.com
 types:
+    Leg:
+        properties:
+            toes: integer
+    Arm:
+        properties:
+            fingers: integer
+    Limb:
+        Arm | Leg
     Person:
         type: Human
         discriminatorValue: person
@@ -27,6 +35,7 @@ types:
         discriminator: humanType
         properties:
             humanType: string
+            limbs: Limb
             male:
                 type: boolean
 /humanity:

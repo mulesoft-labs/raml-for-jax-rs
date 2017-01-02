@@ -4,6 +4,7 @@ import static org.raml.jaxrs.generator.GObjectType.ENUMERATION_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.JSON_OBJECT_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.PLAIN_OBJECT_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.SCALAR;
+import static org.raml.jaxrs.generator.GObjectType.UNION_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.XML_OBJECT_TYPE;
 
 /**
@@ -23,6 +24,11 @@ public class GeneratorType {
                     typeDeclaration);
         }
 
+        if ( typeDeclaration.isUnion()) {
+
+            return new GeneratorType(UNION_TYPE, typeDeclaration);
+        }
+
         if (typeDeclaration.isXml()) {
 
             return new GeneratorType(XML_OBJECT_TYPE, typeDeclaration);
@@ -37,6 +43,7 @@ public class GeneratorType {
 
             return new GeneratorType(ENUMERATION_TYPE, typeDeclaration);
         }
+
 
         return new GeneratorType(SCALAR, typeDeclaration);
     }

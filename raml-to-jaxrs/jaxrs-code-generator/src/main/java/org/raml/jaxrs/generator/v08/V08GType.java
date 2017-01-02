@@ -129,6 +129,11 @@ public class V08GType implements GType {
     }
 
     @Override
+    public boolean isUnion() {
+        return false;
+    }
+
+    @Override
     public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
         objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
             @Override
@@ -153,6 +158,13 @@ public class V08GType implements GType {
 
                 throw new GenerationException("no enums objects in v08");
             }
+
+            @Override
+            public void onUnion() {
+
+                throw new GenerationException("no enums objects in v08");
+            }
+
         });
     }
 }

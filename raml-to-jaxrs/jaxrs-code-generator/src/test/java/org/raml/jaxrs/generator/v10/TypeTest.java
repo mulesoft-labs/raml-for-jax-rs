@@ -19,15 +19,15 @@ public class TypeTest {
 
 
     @Test
-    public void wha() throws Exception {
+    public void union() throws Exception {
 
         V10TypeRegistry registry = new V10TypeRegistry();
-        CurrentBuild cb = Raml.buildType(this, "extendObject.raml", registry, "foo", ".");
-        JavaPoetTypeGenerator gen = cb.getBuiltType("ObjectOne");
+        CurrentBuild cb = Raml.buildType(this, "simpleUnion.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("UnionType");
         gen.output(new CodeContainer<TypeSpec.Builder>() {
             @Override
             public void into(TypeSpec.Builder g) throws IOException {
-                System.err.println(g);
+                System.err.println(g.build().toString());
             }
         });
     }

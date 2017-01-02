@@ -35,4 +35,6 @@ public interface GType extends GAbstraction {
     boolean isInline();
 
     void construct(CurrentBuild currentBuild, GObjectType objectType);
+
+    boolean isUnion();
 }

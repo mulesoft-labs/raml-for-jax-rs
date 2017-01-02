@@ -2,7 +2,6 @@ package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.ClassName;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.EnumerationGenerator;
 import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
@@ -33,6 +32,8 @@ class V10TypeFactory {
         List<GType> parentTypes = originalType.parentTypes();
         Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
         int internalTypeCounter = 0;
+
+        // this should be in the generator;
         List<PropertyInfo> properties = new ArrayList<>();
         for (GProperty declaration : originalType.properties()) {
 
@@ -109,5 +110,11 @@ class V10TypeFactory {
 
             return ClassName.get("", name);
         }
+    }
+
+    public static void createUnion(CurrentBuild currentBuild, V10GType v10GType) {
+
+        ClassName unionJavaName = buildClassName(currentBuild.getModelPackage(), v10GType.defaultJavaTypeName() + "Union", true);
+        currentBuild.newGenerator(v10GType.name(), new UnionTypeGenerator(v10GType, unionJavaName, currentBuild));
     }
 }

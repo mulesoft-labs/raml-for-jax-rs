@@ -15,6 +15,7 @@ import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -150,6 +151,12 @@ public class V10GType implements GType {
     }
 
     @Override
+    public boolean isUnion() {
+
+        return typeDeclaration instanceof UnionTypeDeclaration;
+    }
+
+    @Override
     public boolean isXml() {
         return typeDeclaration instanceof XMLTypeDeclaration;
     }
@@ -269,6 +276,11 @@ public class V10GType implements GType {
             public void onEnumeration() {
 
                 V10TypeFactory.createEnumerationType(currentBuild, V10GType.this);
+            }
+
+            @Override
+            public void onUnion() {
+                V10TypeFactory.createUnion(currentBuild, V10GType.this);
             }
         });
     }

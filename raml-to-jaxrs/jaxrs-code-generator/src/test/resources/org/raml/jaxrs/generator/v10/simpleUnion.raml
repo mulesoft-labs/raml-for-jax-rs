@@ -1,0 +1,13 @@
+#%RAML 1.0
+title: who cares
+types:
+    TypeOne:
+        type: object
+        properties:
+            time: string
+    TypeTwo:
+        type: object
+        properties:
+            day: string
+    UnionType:
+       type: TypeOne | TypeTwo

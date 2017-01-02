@@ -1,8 +1,10 @@
 package server.humanity.cars;
 
+import example.types.ArmImpl;
 import example.types.CorpseImpl;
 import example.types.Human;
 import example.types.Humanity;
+import example.types.LimbUnion;
 import example.types.PersonImpl;
 
 import java.util.Arrays;
@@ -32,6 +34,7 @@ public class HumanityImpl implements Humanity {
             CorpseImpl ci = new CorpseImpl();
             ci.setDateOfDeath(new Date());
             pi.setSiblings(Collections.<Human>singletonList(ci));
+            pi.setLimbs(new LimbUnion(new ArmImpl()));
             return GetHumanityResponse.respond200WithApplicationJson(pi);
         } else {
 

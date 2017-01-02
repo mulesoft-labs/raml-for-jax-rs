@@ -55,31 +55,19 @@ class V10TypeFactory {
 
         }
 
-        if ( currentBuild.implementationsOnly() ) {
 
-            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+        ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+        ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
 
-            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, null, properties, internalTypes, originalType);
+        RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
+                properties, internalTypes, originalType);
+        RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
+        CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
 
-            if ( publicType ) {
-                currentBuild.newGenerator(originalType.name(), implg);
-            }
-            return implg;
-        } else {
-
-            ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
-            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
-
-            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
-                    properties, internalTypes, originalType);
-            RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
-            CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
-
-            if ( publicType ) {
-                currentBuild.newGenerator(originalType.name(), gen);
-            }
-            return gen;
+        if ( publicType ) {
+            currentBuild.newGenerator(originalType.name(), gen);
         }
+        return gen;
     }
 
     static TypeGenerator createEnumerationType(CurrentBuild currentBuild, GType type) {

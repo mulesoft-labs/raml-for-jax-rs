@@ -32,22 +32,10 @@ import java.util.Map;
  * Created by Jean-Philippe Belanger on 12/15/16.
  * Just potential zeroes and ones
  */
-public class JacksonExtension extends TypeExtensionHelper {
-
-    /*
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "humanType")
-@JsonSubTypes(
-        {
-                @JsonSubTypes.Type(value = PersonImpl.class, name = "person"),
-                @JsonSubTypes.Type(value = CorpseImpl.class, name = "corpse"),
-        }
-)
-
-     */
+public class JacksonBasicExtension extends TypeExtensionHelper {
 
     public static final ParameterizedTypeName ADDITIONAL_PROPERTIES_TYPE = ParameterizedTypeName
             .get(Map.class, String.class, Object.class);
-
 
     @Override
     public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
@@ -123,44 +111,6 @@ public class JacksonExtension extends TypeExtensionHelper {
         typeSpec.addMethod(MethodSpec.methodBuilder("setAdditionalProperties").returns(TypeName.VOID).addParameter(
                 ParameterSpec.builder(ADDITIONAL_PROPERTIES_TYPE, "additionalProperties").build())
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).build());
-
-        ObjectTypeDeclaration otr = (ObjectTypeDeclaration) typeDeclaration;
-
-        buildSubtypeAnnotationIfNecessary(currentBuild, typeSpec, typeDeclaration, otr);
-
     }
 
-    private void buildSubtypeAnnotationIfNecessary(CurrentBuild currentBuild, TypeSpec.Builder typeSpec,
-            TypeDeclaration typeDeclaration, ObjectTypeDeclaration otr) {
-        if ( otr.discriminator() != null  && currentBuild.childClasses(typeDeclaration.name()).size() > 0 ) {
-
-            typeSpec.addAnnotation(
-                    AnnotationSpec.builder(JsonTypeInfo.class)
-                            .addMember("use", "$T.Id.NAME", JsonTypeInfo.class)
-                            .addMember("include", "$T.As.PROPERTY", JsonTypeInfo.class)
-                            .addMember("property", "$S", otr.discriminator())
-                            .build()
-            );
-
-            AnnotationSpec.Builder subTypes = AnnotationSpec.builder(JsonSubTypes.class);
-            for (GType gType : currentBuild.childClasses(typeDeclaration.name())) {
-
-                subTypes.addMember("value", "$L",
-                        AnnotationSpec.builder(JsonSubTypes.Type.class).addMember("value", "$L", gType.defaultJavaTypeName() + "Impl.class").build()
-                );
-            }
-
-            typeSpec.addAnnotation(
-                    subTypes.build()
-            );
-
-        }
-
-        if ( currentBuild.childClasses(typeDeclaration.name()).size() == 0) {
-
-            //GType type = currentBuild.childClasses(typeDeclaration.name()).iterator().next();
-            typeSpec.addAnnotation(AnnotationSpec.builder(JsonDeserialize.class).addMember("as", "$L.class", Names.typeName(
-                    typeDeclaration.name()) + "Impl").build());
-        }
-    }
 }

@@ -10,6 +10,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
+import org.raml.jaxrs.generator.builders.Generator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
@@ -45,7 +46,7 @@ public class CurrentBuild {
     private Map<String, GeneratorType> foundTypes = new HashMap<>();
     private Multimap<String, GType> childMap = ArrayListMultimap.create();
 
-    private final Map<String, JavaPoetTypeGenerator> supportGenerators = new HashMap<>();
+    private final List<JavaPoetTypeGenerator> supportGenerators = new ArrayList<>();
 
     private boolean implementationsOnly;
 
@@ -118,7 +119,7 @@ public class CurrentBuild {
             });
         }
 
-        for (JavaPoetTypeGenerator typeGenerator : supportGenerators.values()) {
+        for (JavaPoetTypeGenerator typeGenerator : supportGenerators) {
 
             typeGenerator.output(new CodeContainer<TypeSpec.Builder>() {
                 @Override
@@ -143,9 +144,9 @@ public class CurrentBuild {
         builtTypes.put(ramlTypeName, generator);
     }
 
-    public void newSupportGenerator(String name, JavaPoetTypeGenerator generator) {
+    public void newSupportGenerator(JavaPoetTypeGenerator generator) {
 
-        supportGenerators.put(name, generator);
+        supportGenerators.add(generator);
     }
 
     public GeneratorType getDeclaredType(String ramlType) {
@@ -157,6 +158,17 @@ public class CurrentBuild {
         }
 
         return type;
+    }
+
+    public <T extends TypeGenerator> T getBuiltType(String ramlType) {
+
+        TypeGenerator type = builtTypes.get(ramlType);
+        if ( type == null ) {
+
+            throw new GenerationException("no such type " + ramlType);
+        }
+
+        return (T) type;
     }
 
     public TypeName getJavaType(GType type) {
@@ -256,8 +268,20 @@ public class CurrentBuild {
                 case "byte":
                     return TypeName.BYTE;
 
+                case "char":
+                    return TypeName.CHAR;
+
+                case "short":
+                    return TypeName.SHORT;
+
+                case "long":
+                    return TypeName.LONG;
+
+                case "void":
+                    return TypeName.VOID; // ?
+
                 default:
-                    throw new GenerationException("JP, finish the list " + scalar);
+                    throw new GenerationException("can't handle type: " + scalar);
             }
         } else {
             return ClassName.get(scalar);
@@ -289,13 +313,5 @@ public class CurrentBuild {
         return supportPackage;
     }
 
-    public void implementationsOnly(boolean implOnly) {
-
-        this.implementationsOnly = implOnly;
-    }
-
-    public boolean implementationsOnly() {
-        return implementationsOnly;
-    }
 }
 

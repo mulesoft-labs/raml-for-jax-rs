@@ -303,7 +303,7 @@ public class ResourceBuilder implements ResourceGenerator {
                        .addMember("value", "{$T.$L}", ElementType.class, "METHOD").build())
                     .addAnnotation(AnnotationSpec.builder(Retention.class).addMember("value", "$T.$L", RetentionPolicy.class, "RUNTIME").build())
                     .addAnnotation(AnnotationSpec.builder(HttpMethod.class).addMember("value", "$S", name).build());
-            build.newSupportGenerator(name, new JavaPoetTypeGeneratorBase(className) {
+            build.newSupportGenerator(new JavaPoetTypeGeneratorBase(className) {
 
                 @Override
                 public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {

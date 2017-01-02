@@ -1,7 +1,8 @@
 package org.raml.jaxrs.generator;
 
 import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.JacksonBasicExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtensions;
 import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
@@ -59,7 +60,7 @@ public class Configuration {
 
         if ( props.containsKey("useJackson")) {
 
-            build.addExtension(new JacksonExtension());
+            build.addExtension(new JacksonExtensions());
         }
 
         if ( props.containsKey("useJsr303")) {
@@ -81,11 +82,6 @@ public class Configuration {
 
             build.addExtension(new JavadocTypeExtension());
         }
-
-        if (props.containsKey("implementationsOnly")) {
-            build.implementationsOnly(true);
-        }
-
     }
 
 }

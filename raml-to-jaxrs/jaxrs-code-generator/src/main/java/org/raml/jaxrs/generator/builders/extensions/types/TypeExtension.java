@@ -10,6 +10,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 /**
  * Created by Jean-Philippe Belanger on 11/30/16.
  * Just potential zeroes and ones
+ * This interface is too big.
  */
 public interface TypeExtension {
 
@@ -28,4 +29,6 @@ public interface TypeExtension {
     void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration, String name);
     void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration);
     void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field, TypeDeclaration typeDeclaration);
+
+    void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration);
 }

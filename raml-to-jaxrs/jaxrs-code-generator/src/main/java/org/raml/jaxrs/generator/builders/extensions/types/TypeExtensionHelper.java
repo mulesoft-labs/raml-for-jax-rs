@@ -68,4 +68,9 @@ public class TypeExtensionHelper implements TypeExtension {
     public void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
 
     }
+
+    @Override
+    public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+
+    }
 }

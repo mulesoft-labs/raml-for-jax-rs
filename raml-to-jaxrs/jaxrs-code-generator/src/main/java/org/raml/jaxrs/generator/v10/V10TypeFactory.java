@@ -10,10 +10,6 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
-import org.raml.jaxrs.generator.builders.types.CompositeRamlTypeGenerator;
-import org.raml.jaxrs.generator.builders.types.PropertyInfo;
-import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorImplementation;
-import org.raml.jaxrs.generator.builders.types.RamlTypeGeneratorInterface;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.util.ArrayList;

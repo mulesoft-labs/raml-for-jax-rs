@@ -10,5 +10,6 @@ public class JacksonExtensions extends TypeExtensionList {
 
         addExtension(new JavadocTypeExtension());
         addExtension(new JacksonDiscriminatorInheritanceTypeExtension());
+        addExtension(new JacksonUnionExtension());
     }
 }

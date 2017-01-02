@@ -9,7 +9,7 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.types.RamlTypeGenerator;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 12/22/16.
  * Just potential zeroes and ones
  */
-public class EnumerationGenerator  extends AbstractTypeGenerator<TypeSpec.Builder> implements RamlTypeGenerator {
+public class EnumerationGenerator  extends AbstractTypeGenerator<TypeSpec.Builder> implements JavaPoetTypeGenerator {
 
     private final CurrentBuild build;
     private final ClassName javaName;

@@ -1,7 +1,6 @@
 package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -12,7 +11,6 @@ import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
@@ -70,10 +68,10 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
                             MethodSpec.methodBuilder(Names.methodName("is", typeDeclaration.name()))
                                 .addStatement("return " +  Names.variableName("is" , typeDeclaration.name()))
                                 .returns(TypeName.BOOLEAN).build()
-                    )
-            ;
+                    );
         }
 
+        currentBuild.withTypeListeners().onUnionType(currentBuild, builder, v10GType.implementation());
         rootDirectory.into(builder);
     }
 

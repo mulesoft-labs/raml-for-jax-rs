@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class HTTPMethods {
 
-    static Map<String, Class<? extends Annotation>> nameToAnnotation = ImmutableMap.of(
+    private static Map<String, Class<? extends Annotation>> nameToAnnotation = ImmutableMap.of(
             "put", PUT.class,
             "get", GET.class,
             "post", POST.class,

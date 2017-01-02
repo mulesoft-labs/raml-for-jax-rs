@@ -1,6 +1,5 @@
 package org.raml.jaxrs.generator.builders;
 
-import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 
 /**

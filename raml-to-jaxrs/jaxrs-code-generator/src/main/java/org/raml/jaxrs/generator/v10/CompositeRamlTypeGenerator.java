@@ -1,10 +1,10 @@
-package org.raml.jaxrs.generator.builders.types;
+package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.Generator;
+import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public class CompositeRamlTypeGenerator extends AbstractTypeGenerator<TypeSpec.Builder> implements RamlTypeGenerator {
+public class CompositeRamlTypeGenerator extends AbstractTypeGenerator<TypeSpec.Builder> implements JavaPoetTypeGenerator {
 
 
     private final RamlTypeGeneratorInterface intf;

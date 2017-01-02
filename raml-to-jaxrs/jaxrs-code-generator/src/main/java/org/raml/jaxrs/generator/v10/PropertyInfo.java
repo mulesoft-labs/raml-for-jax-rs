@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders.types;
+package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;

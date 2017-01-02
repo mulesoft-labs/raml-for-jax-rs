@@ -110,6 +110,14 @@ public class TypeExtensionList implements TypeExtension {
         }
     }
 
+    @Override
+    public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+
+        for (TypeExtension extension : extensions) {
+            extension.onUnionType(currentBuild, builder, typeDeclaration);
+        }
+    }
+
     public void addExtension(TypeExtension typeExtension) {
         extensions.add(typeExtension);
     }

@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders.types;
+package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -7,13 +7,11 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
-import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -27,7 +25,7 @@ import java.util.Map;
  * Created by Jean-Philippe Belanger on 11/13/16.
  * Just potential zeroes and ones
  */
-public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeSpec.Builder> implements RamlTypeGenerator {
+public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeSpec.Builder> implements JavaPoetTypeGenerator {
     private final CurrentBuild build;
     private final ClassName className;
     private final ClassName parentClassName;

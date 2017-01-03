@@ -1,5 +1,8 @@
 package org.raml.jaxrs.generator.v10;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -7,6 +10,7 @@ import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +22,19 @@ import java.util.Map;
 public class V10TypeRegistry {
 
     private Map<String, V10GType> types = new HashMap<>();
+    private final Multimap<String, V10GType> childMap = ArrayListMultimap.create();
+
+    public void addChildToParent(List<V10GType> parents, V10GType child) {
+
+        for (V10GType parent : parents) {
+
+            if ( parent.name().equals("object") ) {
+                continue;
+            }
+            childMap.put(parent.name(), child);
+            addChildToParent(parent.parentTypes(), child);
+        }
+    }
 
     public V10GType fetchType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
 
@@ -72,4 +89,7 @@ public class V10TypeRegistry {
         return V10GType.createExplicitlyNamedType(registry, internalTypeName, javaTypeName, implementation);
     }
 
+    public Multimap<String, V10GType> getChildClasses() {
+        return childMap;
+    }
 }

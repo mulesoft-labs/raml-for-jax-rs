@@ -21,7 +21,9 @@ import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -35,8 +37,8 @@ public class V10GType implements GType {
     private final String name;
     private final String defaultJavatypeName;
     private final boolean inline;
-    private final List<GProperty> properties;
-    private final List<GType> parentTypes;
+    private final List<V10GProperty> properties;
+    private final List<V10GType> parentTypes;
 
 
     static V10GType createRequestBodyType(V10TypeRegistry registry, Resource resource, Method method,
@@ -52,11 +54,11 @@ public class V10GType implements GType {
                 getParents(typeDeclaration, registry));
     }
 
-    private static List<GType> getParents(TypeDeclaration typeDeclaration, final V10TypeRegistry registry) {
-        return Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, GType>() {
+    private static List<V10GType> getParents(TypeDeclaration typeDeclaration, final V10TypeRegistry registry) {
+        return Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, V10GType>() {
             @Nullable
             @Override
-            public GType apply(@Nullable TypeDeclaration input) {
+            public V10GType apply(@Nullable TypeDeclaration input) {
                 return registry.fetchType(input);
             }
         });
@@ -99,7 +101,7 @@ public class V10GType implements GType {
     }
 
 
-    private V10GType(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName, boolean inline, List<GProperty> properties, List<GType> parentTypes) {
+    private V10GType(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName, boolean inline, List<V10GProperty> properties, List<V10GType> parentTypes) {
         this.registry = registry;
         this.typeDeclaration = typeDeclaration;
         this.name = realName;
@@ -107,17 +109,22 @@ public class V10GType implements GType {
         this.inline = inline;
         this.properties = properties;
         this.parentTypes = parentTypes;
+
+        if (! isInline() && isObject() && !name.equals("object") ) {
+
+            registry.addChildToParent(parentTypes(), this);
+        }
     }
 
-    private static List<GProperty> getProperties(final TypeDeclaration input, final V10TypeRegistry registry) {
+    private static List<V10GProperty> getProperties(final TypeDeclaration input, final V10TypeRegistry registry) {
 
         if ( input instanceof ObjectTypeDeclaration) {
 
             ObjectTypeDeclaration otd = (ObjectTypeDeclaration) input;
-            return Lists.transform(otd.properties(), new Function<TypeDeclaration, GProperty>() {
+            return Lists.transform(otd.properties(), new Function<TypeDeclaration, V10GProperty>() {
                 @Nullable
                 @Override
-                public GProperty apply(@Nullable TypeDeclaration declaration) {
+                public V10GProperty apply(@Nullable TypeDeclaration declaration) {
 
                     return new V10GProperty(declaration, createExplicitlyNamedType(registry, declaration.type(), declaration));
                 }
@@ -180,13 +187,11 @@ public class V10GType implements GType {
         throw new GenerationException("type " + this + " has no schema");
     }
 
-    @Override
-    public List<GType> parentTypes() {
+    public List<V10GType> parentTypes() {
         return parentTypes;
     }
 
-    @Override
-    public List<GProperty> properties() {
+    public List<V10GProperty> properties() {
 
         return properties;
     }
@@ -225,9 +230,14 @@ public class V10GType implements GType {
         return ((StringTypeDeclaration)typeDeclaration).enumValues();
     }
 
-    @Override
     public boolean isInline() {
         return inline;
+    }
+
+
+    public Collection<V10GType> childClasses(String typeName) {
+
+        return new HashSet<>(registry.getChildClasses().get(typeName));
     }
 
     @Override

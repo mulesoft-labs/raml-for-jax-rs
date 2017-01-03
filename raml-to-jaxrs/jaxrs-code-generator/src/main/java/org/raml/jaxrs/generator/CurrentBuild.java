@@ -45,11 +45,8 @@ public class CurrentBuild {
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
     private TypeExtensionList typeExtensionList = new TypeExtensionList();
     private Map<String, GeneratorType> foundTypes = new HashMap<>();
-    private Multimap<String, GType> childMap = ArrayListMultimap.create();
 
     private final List<JavaPoetTypeGenerator> supportGenerators = new ArrayList<>();
-
-    private boolean implementationsOnly;
 
     public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage, String supportPackage) {
 
@@ -283,7 +280,7 @@ public class CurrentBuild {
 
     public void constructClasses() {
 
-        TypeFindingListener listener = new TypeFindingListener(foundTypes, childMap);
+        TypeFindingListener listener = new TypeFindingListener(foundTypes);
         typeFinder.findTypes(listener);
 
         for (GeneratorType type : foundTypes.values()) {
@@ -292,10 +289,6 @@ public class CurrentBuild {
         }
     }
 
-    public Collection<GType> childClasses(String typeName) {
-
-        return childMap.get(typeName);
-    }
 
     public String getSupportPackage() {
         return supportPackage;

@@ -26,7 +26,7 @@ class V10TypeFactory {
 
     static TypeGenerator createObjectType(V10TypeRegistry registry, CurrentBuild currentBuild, V10GType originalType, boolean publicType) {
 
-        List<GType> parentTypes = originalType.parentTypes();
+        List<V10GType> parentTypes = originalType.parentTypes();
         Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
         int internalTypeCounter = 0;
 

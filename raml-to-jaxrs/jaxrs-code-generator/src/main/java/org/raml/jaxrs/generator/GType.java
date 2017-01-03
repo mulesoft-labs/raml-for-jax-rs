@@ -10,31 +10,30 @@ public interface GType extends GAbstraction {
 
     String type();
     String name();
+    String defaultJavaTypeName();
 
     boolean isJson();
     boolean isXml();
-
-    String schema();
-
-    boolean isArray();
-
-    List<GType> parentTypes();
-
     boolean isObject();
-
-    List<GProperty> properties();
-
+    boolean isArray();
+    boolean isEnum();
+    boolean isUnion();
+    List<String> enumValues();
+    String schema();
     GType arrayContents();
 
-    String defaultJavaTypeName();
-
-    boolean isEnum();
-
-    List<String> enumValues();
-
+/*
     boolean isInline();
+    List<GType> parentTypes();
+*/
+
+
+/*
+    List<GProperty> properties();
+
+
+*/
 
     void construct(CurrentBuild currentBuild, GObjectType objectType);
 
-    boolean isUnion();
 }

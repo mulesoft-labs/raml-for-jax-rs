@@ -69,6 +69,7 @@ public class V10Finder implements GFinder {
             V10GType type = registry.fetchType(resource, method, typeDeclaration);
             listener.newTypeDeclaration(type);
         }
+
         for (Response response : method.responses()) {
             for (TypeDeclaration typeDeclaration : response.body()) {
                 TypeDeclaration supertype = foundTypes.get(typeDeclaration.type());
@@ -76,7 +77,7 @@ public class V10Finder implements GFinder {
                     continue;
                 }
 
-                GType type = registry.fetchType(resource, method, response, typeDeclaration);
+                V10GType type = registry.fetchType(resource, method, response, typeDeclaration);
                 listener.newTypeDeclaration(type);
             }
         }
@@ -88,7 +89,7 @@ public class V10Finder implements GFinder {
 
             foundTypes.put(typeDeclaration.name(), typeDeclaration);
 
-            GType type = registry.fetchType(typeDeclaration);
+            V10GType type = registry.fetchType(typeDeclaration);
             listener.newTypeDeclaration(type);
        }
     }
@@ -107,7 +108,7 @@ public class V10Finder implements GFinder {
             goThroughLibraries(visitedLibraries, library.uses(), listener);
             for (TypeDeclaration typeDeclaration : library.types()) {
 
-                GType type = registry.fetchType(typeDeclaration);
+                V10GType type = registry.fetchType(typeDeclaration);
                 listener.newTypeDeclaration(type);
             }
         }

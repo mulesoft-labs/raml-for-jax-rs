@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.Builder> implements JavaPoetTypeGenerator {
     private final CurrentBuild build;
-    private final List<GType> parentTypes;
+    private final List<V10GType> parentTypes;
     private final ClassName interf;
 
     private Map<String, PropertyInfo> propertyInfos = new HashMap<>();
@@ -35,7 +35,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
     private final V10GType typeDeclaration;
 
 
-    public RamlTypeGeneratorInterface(CurrentBuild currentBuild, ClassName interf, List<GType> parentTypes,
+    public RamlTypeGeneratorInterface(CurrentBuild currentBuild, ClassName interf, List<V10GType> parentTypes,
             List<PropertyInfo> properties, Map<String, JavaPoetTypeGenerator> internalTypes, V10GType typeDeclaration) {
 
         this.build = currentBuild;

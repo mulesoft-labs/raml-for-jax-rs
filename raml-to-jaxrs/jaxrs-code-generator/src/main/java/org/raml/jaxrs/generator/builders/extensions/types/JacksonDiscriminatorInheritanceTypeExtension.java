@@ -23,7 +23,7 @@ public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionH
 
         ObjectTypeDeclaration otr = (ObjectTypeDeclaration) type.implementation();
 
-        if (otr.discriminator() != null && currentBuild.childClasses(type.name()).size() > 0) {
+        if (otr.discriminator() != null && type.childClasses(type.name()).size() > 0) {
 
             typeSpec.addAnnotation(
                     AnnotationSpec.builder(JsonTypeInfo.class)
@@ -34,7 +34,7 @@ public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionH
             );
 
             AnnotationSpec.Builder subTypes = AnnotationSpec.builder(JsonSubTypes.class);
-            for (GType gType : currentBuild.childClasses(type.name())) {
+            for (V10GType gType : type.childClasses(type.name())) {
 
                 subTypes.addMember("value", "$L",
                         AnnotationSpec.builder(JsonSubTypes.Type.class)
@@ -54,7 +54,7 @@ public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionH
             typeSpec.addAnnotation(
                     AnnotationSpec.builder(JsonTypeName.class).addMember("value", "$S", otr.discriminatorValue()).build());
         }
-        if (currentBuild.childClasses(type.name()).size() == 0) {
+        if (type.childClasses(type.name()).size() == 0) {
 
             typeSpec.addAnnotation(AnnotationSpec.builder(JsonDeserialize.class).addMember("as", "$L.class", type.javaImplementationName()).build());
         }

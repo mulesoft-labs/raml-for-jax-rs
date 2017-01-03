@@ -94,7 +94,6 @@
                             </arguments>
                         </configuration>
                     </execution>
-<!--
                     <execution>
                         <id>exec-hello</id>
                         <phase>generate-sources</phase>
@@ -104,9 +103,9 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>&#45;&#45;directory</argument>
+                                <argument>--directory</argument>
                                 <argument>${generated.sources}</argument>
-                                <argument>&#45;&#45;resource</argument>
+                                <argument>--resource</argument>
                                 <argument>example.helloworld</argument>
                                 <argument>${project.basedir}/src/main/resources/example_simple_types.raml</argument>
                             </arguments>
@@ -122,9 +121,9 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>&#45;&#45;directory</argument>
+                                <argument>--directory</argument>
                                 <argument>${generated.sources}</argument>
-                                <argument>&#45;&#45;resource</argument>
+                                <argument>--resource</argument>
                                 <argument>example.realtypes</argument>
                                 <argument>${project.basedir}/src/main/resources/example_declared_type.raml</argument>
                             </arguments>
@@ -140,9 +139,9 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>&#45;&#45;directory</argument>
+                                <argument>--directory</argument>
                                 <argument>${generated.sources}</argument>
-                                <argument>&#45;&#45;resource</argument>
+                                <argument>--resource</argument>
                                 <argument>example.jsonschema</argument>
                                 <argument>${project.basedir}/src/main/resources/example_json_schema.raml</argument>
                             </arguments>
@@ -158,9 +157,9 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>&#45;&#45;directory</argument>
+                                <argument>--directory</argument>
                                 <argument>${generated.sources}</argument>
-                                <argument>&#45;&#45;resource</argument>
+                                <argument>--resource</argument>
                                 <argument>example.xmlschema</argument>
                                 <argument>${project.basedir}/src/main/resources/example_xml_schema.raml</argument>
                             </arguments>
@@ -176,15 +175,14 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>&#45;&#45;directory</argument>
+                                <argument>--directory</argument>
                                 <argument>${generated.sources}</argument>
-                                <argument>&#45;&#45;resource</argument>
+                                <argument>--resource</argument>
                                 <argument>example.worldmusic</argument>
                                 <argument>${project.basedir}/src/main/resources/world-music-api/api.raml</argument>
                             </arguments>
                         </configuration>
                     </execution>
--->
 <!--
                     <execution>
                         <id>exec-marketing-cloud</id>

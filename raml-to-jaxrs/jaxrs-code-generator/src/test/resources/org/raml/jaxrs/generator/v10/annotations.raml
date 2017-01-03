@@ -1,0 +1,20 @@
+#%RAML 1.0
+title: Nothing
+annotationTypes:
+    types:
+        allowedTargets: TypeDeclaration
+        properties:
+          className?:
+            type: string
+          usePrimitiveType?:
+            type: boolean
+types:
+    Fun:
+        type: object
+        (types):
+            className: Allo
+            usePrimitiveType: true
+    Fun2:
+        type: object
+        (types):
+            className: Allo

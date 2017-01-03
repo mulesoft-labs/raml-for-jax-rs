@@ -3,12 +3,15 @@ title: Hello World API
 version: v1
 baseUri: https://api.github.com
 annotationTypes:
-    javaPrimitiveType:
-        type: boolean
+    ramltojaxrstypes:
         allowedTargets: TypeDeclaration
-    javaClassName:
-        type: string
-        allowedTargets: TypeDeclaration
+        properties:
+            className?:
+                type: string
+            usePrimitiveType?:
+                type: boolean
+            abstract?:
+                type: boolean
 types:
     Person:
         type: Human
@@ -22,7 +25,8 @@ types:
                 required: true
                 type: number
                 format: int16
-                (javaPrimitiveType): false
+                (ramltojaxrstypes):
+                    usePrimitiveType: true
                 minimum: 12
                 maximum: 17
             limbs:

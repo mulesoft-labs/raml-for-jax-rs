@@ -53,13 +53,21 @@ class V10TypeFactory {
         }
 
 
-        ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
-        ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
+        JavaPoetTypeGenerator gen;
+        if ( Annotations.ABSTRACT.get(originalType) ) {
 
-        RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
-                properties, internalTypes, originalType);
-        RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
-        CompositeRamlTypeGenerator gen = new CompositeRamlTypeGenerator(intg, implg);
+            ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+            gen = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
+        } else {
+
+            ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
+
+            RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
+                    properties, internalTypes, originalType);
+            RamlTypeGeneratorInterface intg = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
+            gen = new CompositeRamlTypeGenerator(intg, implg);
+        }
 
         if ( publicType ) {
             currentBuild.newGenerator(originalType.name(), gen);

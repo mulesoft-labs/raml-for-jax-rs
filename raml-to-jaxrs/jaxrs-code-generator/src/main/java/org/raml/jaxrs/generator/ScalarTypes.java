@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.collect.ImmutableMap;
+import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
@@ -8,10 +9,8 @@ import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.FileTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -95,13 +94,14 @@ public class ScalarTypes {
 
     private static boolean shouldUsePrimitiveType(NumberTypeDeclaration type) {
 
-        for (AnnotationRef annotationRef : type.annotations()) {
-            if ( annotationRef.annotation().name().equals("javaPrimitiveType")) {
-                return (boolean) annotationRef.structuredValue().value();
-            }
-        }
+        Boolean shouldUse = Annotations.USE_PRIMITIVE_TYPE.get(type);
+        if (shouldUse != null && shouldUse) {
 
-        return type.required();
+            return true;
+        } else {
+
+            return type.required();
+        }
     }
 
     public static Class<?> scalarToJavaType(String name) {

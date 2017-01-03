@@ -2,6 +2,9 @@
 title: Humanity
 version: v1
 baseUri: https://api.github.com
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+
 types:
     Leg:
         properties:
@@ -32,6 +35,8 @@ types:
                 type: date-only
     Human:
         type: object
+        (ramltojaxrs.types):
+            abstract: true
         discriminator: humanType
         properties:
             humanType: string

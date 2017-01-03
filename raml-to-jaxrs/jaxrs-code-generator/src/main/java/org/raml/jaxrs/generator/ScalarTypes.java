@@ -3,6 +3,7 @@ package org.raml.jaxrs.generator;
 import com.google.common.collect.ImmutableMap;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
@@ -129,4 +130,7 @@ public class ScalarTypes {
         return scalarToJavaType(typeDeclaration.name()) != null;
     }
 
+    public static boolean isArray(TypeDeclaration typeDeclaration) {
+        return typeDeclaration instanceof ArrayTypeDeclaration;
+    }
 }

@@ -27,10 +27,10 @@ import java.io.IOException;
  */
 public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> implements CodeModelTypeGenerator {
     private final String pack;
-    private final String name;
+    private final ClassName name;
     private final String schema;
 
-    public JsonSchemaTypeGenerator(String pack, String name, String schema) {
+    public JsonSchemaTypeGenerator(String pack, ClassName name, String schema) {
         this.pack = pack;
         this.name = name;
         this.schema = schema;
@@ -51,7 +51,7 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
         final JCodeModel codeModel = new JCodeModel();
 
         try {
-            mapper.generate(codeModel, name , pack, schema);
+            mapper.generate(codeModel, name.simpleName() , pack, schema);
         } catch (IOException e) {
             throw new GenerationException(e);
         }
@@ -62,6 +62,6 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
     @Override
     public TypeName getGeneratedJavaType() {
 
-        return ClassName.get(pack, name);
+        return name;
     }
 }

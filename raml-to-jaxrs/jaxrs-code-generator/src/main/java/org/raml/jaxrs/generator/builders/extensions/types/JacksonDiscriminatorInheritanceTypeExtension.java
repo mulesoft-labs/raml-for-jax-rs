@@ -7,8 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GType;
-import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 
@@ -38,7 +37,7 @@ public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionH
 
                 subTypes.addMember("value", "$L",
                         AnnotationSpec.builder(JsonSubTypes.Type.class)
-                                .addMember("value", "$L", gType.defaultJavaTypeName() + ".class").build()
+                                .addMember("value", "$L", gType.defaultJavaTypeName(currentBuild.getModelPackage()) + ".class").build()
                 );
             }
 
@@ -54,9 +53,9 @@ public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionH
             typeSpec.addAnnotation(
                     AnnotationSpec.builder(JsonTypeName.class).addMember("value", "$S", otr.discriminatorValue()).build());
         }
-        if (type.childClasses(type.name()).size() == 0) {
+        if (type.childClasses(type.name()).size() == 0 && ! Annotations.ABSTRACT.get(type)) {
 
-            typeSpec.addAnnotation(AnnotationSpec.builder(JsonDeserialize.class).addMember("as", "$L.class", type.javaImplementationName()).build());
+            typeSpec.addAnnotation(AnnotationSpec.builder(JsonDeserialize.class).addMember("as", "$L.class", type.javaImplementationName(currentBuild.getModelPackage())).build());
         }
     }
 }

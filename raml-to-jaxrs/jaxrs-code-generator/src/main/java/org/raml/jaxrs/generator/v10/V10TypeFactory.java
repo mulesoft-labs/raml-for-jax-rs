@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
@@ -58,12 +59,12 @@ class V10TypeFactory {
         JavaPoetTypeGenerator gen;
         if ( Annotations.ABSTRACT.get(originalType) ) {
 
-            ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
+            ClassName interf = originalType.defaultJavaTypeName(currentBuild.getModelPackage());
             gen = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
         } else {
 
-            ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
-            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.javaImplementationName(), publicType);
+            ClassName interf = originalType.defaultJavaTypeName(currentBuild.getModelPackage());
+            ClassName impl = originalType.javaImplementationName(currentBuild.getModelPackage());
 
             RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
                     properties, internalTypes, originalType);
@@ -81,7 +82,7 @@ class V10TypeFactory {
         JavaPoetTypeGenerator generator =  new EnumerationGenerator(
                 currentBuild,
                 ((V10GType)type).implementation(),
-                ClassName.get(currentBuild.getModelPackage(), type.defaultJavaTypeName()),
+                type.defaultJavaTypeName(currentBuild.getModelPackage()),
                 type.enumValues());
 
         currentBuild.newGenerator(type.name(), generator);
@@ -108,19 +109,9 @@ class V10TypeFactory {
         throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
     }
 
-    private static ClassName buildClassName(String pack, String name, boolean publicType) {
-
-        if ( publicType ) {
-            return ClassName.get(pack, name);
-        } else {
-
-            return ClassName.get("", name);
-        }
-    }
-
     public static void createUnion(CurrentBuild currentBuild, V10GType v10GType) {
 
-        ClassName unionJavaName = buildClassName(currentBuild.getModelPackage(), v10GType.defaultJavaTypeName(), true);
+        ClassName unionJavaName = v10GType.defaultJavaTypeName(currentBuild.getModelPackage());
         currentBuild.newGenerator(v10GType.name(), new UnionTypeGenerator(v10GType, unionJavaName, currentBuild));
     }
 }

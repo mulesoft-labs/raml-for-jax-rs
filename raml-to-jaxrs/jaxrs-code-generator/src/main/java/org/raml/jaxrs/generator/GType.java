@@ -1,5 +1,8 @@
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
+
 import java.util.List;
 
 /**
@@ -10,7 +13,7 @@ public interface GType extends GAbstraction {
 
     String type();
     String name();
-    String defaultJavaTypeName();
+    ClassName defaultJavaTypeName(String pack);
 
     boolean isJson();
     boolean isXml();

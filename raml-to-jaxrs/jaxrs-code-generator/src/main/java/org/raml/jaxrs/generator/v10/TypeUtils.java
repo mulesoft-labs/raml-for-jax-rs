@@ -35,6 +35,11 @@ public class TypeUtils {
             return false;
         }
 
+        if ( extending.type() == null ) {
+
+            return false;
+        }
+
         if ( extending instanceof StringTypeDeclaration && extending.type().equals("string")
                 && ((StringTypeDeclaration) extending).enumValues().size() > 0
                 && extended.length == 1
@@ -47,6 +52,11 @@ public class TypeUtils {
         if ( extending.parentTypes().size() > 1 ) {
 
             return true;
+        }
+
+        if ( extending.name().equals("object") && extending.type() == null ) {
+
+            return false;
         }
 
         if ( extending.type().equals("object")) {

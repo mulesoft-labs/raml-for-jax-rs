@@ -37,7 +37,7 @@ public class V10GResourceTest {
         assertEquals("application/json", req.mediaType());
         assertEquals("ObjectBase", req.type().type());
         assertEquals("/funputapplication/json", req.type().name());
-        assertEquals("FunPutApplicationJson", req.type().defaultJavaTypeName());
+        assertEquals("FunPutApplicationJson", req.type().defaultJavaTypeName(""));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class V10GResourceTest {
         assertEquals("application/json", req.mediaType());
         assertEquals("ObjectBase", req.type().type());
         assertEquals("/funput200application/json", req.type().name());
-        assertEquals("FunPut200ApplicationJson", req.type().defaultJavaTypeName());
+        assertEquals("FunPut200ApplicationJson", req.type().defaultJavaTypeName(""));
     }
 
 }

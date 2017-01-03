@@ -1,7 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -10,7 +8,6 @@ import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
-import org.raml.jaxrs.generator.builders.Generator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
@@ -18,13 +15,10 @@ import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -195,7 +189,7 @@ public class CurrentBuild {
 
             V10GType v10Type = (V10GType) type;
             if ( Annotations.CLASS_NAME.get(v10Type) != null ) {
-                return ClassName.get(getModelPackage(), v10Type.defaultJavaTypeName());
+                return v10Type.defaultJavaTypeName(modelPackage);
             }
         }
 
@@ -231,7 +225,7 @@ public class CurrentBuild {
         } else {
             // it's an extension of an existing class, but a new type nonetheless.
             GeneratorType gen = foundTypes.get(type.name());
-            return ClassName.get(getModelPackage(), gen.getDeclaredType().defaultJavaTypeName());
+            return gen.getDeclaredType().defaultJavaTypeName(modelPackage);
         }
     }
 

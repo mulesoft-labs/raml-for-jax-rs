@@ -20,7 +20,7 @@ public class SchemaTypeFactory {
             final JCodeModel codeModel = new JCodeModel();
 
             Map<String, JClass> generated = JAXBHelper.generateClassesFromXmlSchemas(currentBuild.getModelPackage(), schemaFile, codeModel);
-            XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), type.defaultJavaTypeName(), generated.values().iterator().next());
+            XmlSchemaTypeGenerator gen = new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), type.defaultJavaTypeName(currentBuild.getModelPackage()), generated.values().iterator().next());
             currentBuild.newGenerator(type.name(), gen);
             return gen;
         } catch (Exception e) {
@@ -31,7 +31,7 @@ public class SchemaTypeFactory {
 
     public static TypeGenerator createJsonType(CurrentBuild currentBuild, GType type) {
 
-        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(currentBuild.getModelPackage(), type.defaultJavaTypeName(), type.schema());
+        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(currentBuild.getModelPackage(), type.defaultJavaTypeName(currentBuild.getModelPackage()), type.schema());
         currentBuild.newGenerator(type.name(), gen);
         return gen;
     }

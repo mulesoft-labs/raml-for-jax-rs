@@ -1,5 +1,7 @@
 package org.raml.jaxrs.generator.v08;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.GType;
@@ -98,8 +100,8 @@ public class V08GType implements GType {
     }
 
     @Override
-    public String defaultJavaTypeName() {
-        return defaultJavaName;
+    public ClassName defaultJavaTypeName(String pack) {
+        return ClassName.get(pack, defaultJavaName);
     }
 
     @Override

@@ -2,12 +2,15 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
-import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
@@ -54,15 +57,6 @@ public class V10GType implements GType {
                 getParents(typeDeclaration, registry));
     }
 
-    private static List<V10GType> getParents(TypeDeclaration typeDeclaration, final V10TypeRegistry registry) {
-        return Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, V10GType>() {
-            @Nullable
-            @Override
-            public V10GType apply(@Nullable TypeDeclaration input) {
-                return registry.fetchType(input);
-            }
-        });
-    }
 
     static V10GType createResponseBodyType(V10TypeRegistry registry, Resource resource, Method method,
             Response response,
@@ -86,6 +80,42 @@ public class V10GType implements GType {
                 false,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
+    }
+
+    static V10GType createPropertyType(V10TypeRegistry registry, TypeDeclaration typeDeclaration) {
+
+        if ( ScalarTypes.isArray(typeDeclaration)) {
+
+            return new V10GType(
+                    registry,
+                    typeDeclaration,
+                    typeDeclaration.type(),
+                    Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(typeDeclaration.name())),
+                    false,
+                    getProperties(typeDeclaration, registry),
+                    getParents(typeDeclaration, registry));
+        }
+
+        if (ScalarTypes.scalarToJavaType(typeDeclaration) != null ) {
+
+            return new V10GType(
+                    registry,
+                    typeDeclaration,
+                    typeDeclaration.type(),
+                    Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(typeDeclaration.name())),
+                    false,
+                    getProperties(typeDeclaration, registry),
+                    getParents(typeDeclaration, registry));
+        } else {
+            return new V10GType(
+                    registry,
+                    typeDeclaration,
+                    typeDeclaration.type(),
+                    Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(typeDeclaration.name())),
+                    TypeUtils.shouldCreateNewClass(typeDeclaration, typeDeclaration.parentTypes().toArray(new TypeDeclaration[0])),
+                    getProperties(typeDeclaration, registry),
+                    getParents(typeDeclaration, registry));
+        }
     }
 
     static V10GType createExplicitlyNamedType(V10TypeRegistry registry, String ramlName, String javaClassName,
@@ -116,6 +146,16 @@ public class V10GType implements GType {
         }
     }
 
+    private static List<V10GType> getParents(TypeDeclaration typeDeclaration, final V10TypeRegistry registry) {
+        return Lists.transform(typeDeclaration.parentTypes(), new Function<TypeDeclaration, V10GType>() {
+            @Nullable
+            @Override
+            public V10GType apply(@Nullable TypeDeclaration input) {
+                return registry.fetchType(input);
+            }
+        });
+    }
+
     private static List<V10GProperty> getProperties(final TypeDeclaration input, final V10TypeRegistry registry) {
 
         if ( input instanceof ObjectTypeDeclaration) {
@@ -126,7 +166,7 @@ public class V10GType implements GType {
                 @Override
                 public V10GProperty apply(@Nullable TypeDeclaration declaration) {
 
-                    return new V10GProperty(declaration, createExplicitlyNamedType(registry, declaration.type(), declaration));
+                    return new V10GProperty(declaration, createPropertyType(registry, declaration));
                 }
             });
         } else {
@@ -210,14 +250,32 @@ public class V10GType implements GType {
     }
 
     @Override
-    public String defaultJavaTypeName() {
+    public ClassName defaultJavaTypeName(String pack) {
 
-        return defaultJavatypeName;
+     /*   if ( isArray() ) {
+
+            GType items = arrayContents();
+
+            return ParameterizedTypeName.get(ClassName.get(List.class), items.defaultJavaTypeName(pack));
+        }
+*/
+        if ( isInline() ) {
+            return ClassName.get("", defaultJavatypeName);
+        } else {
+            return ClassName.get(pack, defaultJavatypeName);
+        }
     }
 
-    public String javaImplementationName() {
+    public ClassName javaImplementationName(String pack) {
 
-        return Annotations.IMPLEMENTATION_CLASS_NAME.get(typeDeclaration, defaultJavatypeName + "Impl");
+        if ( isInline() ) {
+
+            return ClassName
+                    .get("", Annotations.IMPLEMENTATION_CLASS_NAME.get(typeDeclaration, defaultJavatypeName + "Impl"));
+        } else {
+            return ClassName
+                    .get(pack, Annotations.IMPLEMENTATION_CLASS_NAME.get(typeDeclaration, defaultJavatypeName + "Impl"));
+        }
     }
 
     @Override
@@ -231,7 +289,7 @@ public class V10GType implements GType {
     }
 
     public boolean isInline() {
-        return inline;
+        return TypeUtils.shouldCreateNewClass(typeDeclaration, typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
     }
 
 

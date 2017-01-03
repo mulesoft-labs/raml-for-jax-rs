@@ -18,6 +18,7 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
@@ -30,10 +31,10 @@ import java.io.IOException;
  */
 public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
     private final CurrentBuild currentBuild;
-    private final UnionTypeDeclaration unionTypeDeclaration;
+    private final V10GType unionTypeDeclaration;
     private final ClassName deserializer;
 
-    public UnionSerializationGenerator(CurrentBuild currentBuild, UnionTypeDeclaration unionTypeDeclaration,
+    public UnionSerializationGenerator(CurrentBuild currentBuild, V10GType unionTypeDeclaration,
             ClassName deserializer) {
         this.currentBuild = currentBuild;
         this.unionTypeDeclaration = unionTypeDeclaration;
@@ -43,8 +44,10 @@ public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
     @Override
     public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
 
+        UnionTypeDeclaration union = (UnionTypeDeclaration) unionTypeDeclaration.implementation();
+
         ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(), Names
-                .typeName(unionTypeDeclaration.name(), "Union"));
+                .typeName(unionTypeDeclaration.name()));
         TypeSpec.Builder builder = TypeSpec.classBuilder(deserializer)
                 .superclass(ParameterizedTypeName.get(ClassName.get(StdSerializer.class), unionTypeName))
                 .addMethod(
@@ -61,7 +64,7 @@ public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
                 .addException(IOException.class)
                 .addException(JsonProcessingException.class);
 
-        for (TypeDeclaration typeDeclaration : unionTypeDeclaration.of()) {
+        for (TypeDeclaration typeDeclaration : union.of()) {
 
             String isMethod = Names.methodName("is", typeDeclaration.name());
             String getMethod = Names.methodName("get", typeDeclaration.name());

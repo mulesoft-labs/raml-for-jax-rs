@@ -10,6 +10,7 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.util.ArrayList;
@@ -36,7 +37,8 @@ class V10TypeFactory {
             if (declaration.isInternal()) {
                 String internalTypeName = Integer.toString(internalTypeCounter);
 
-                V10GType type = registry.createInlineType(internalTypeName, Names.typeName(declaration.name(), "Type"),
+                V10GType type = registry.createInlineType(internalTypeName, Annotations.CLASS_NAME.get(
+                        (Annotable) declaration.implementation(), Names.typeName(declaration.name(), "Type")),
                         (TypeDeclaration) declaration.implementation());
                 TypeGenerator internalGenerator = inlineTypeBuild(registry, currentBuild, GeneratorType.generatorFrom(type));
                 if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
@@ -61,7 +63,7 @@ class V10TypeFactory {
         } else {
 
             ClassName interf = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName(), publicType);
-            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.defaultJavaTypeName() + "Impl", publicType);
+            ClassName impl = buildClassName(currentBuild.getModelPackage(), originalType.javaImplementationName(), publicType);
 
             RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
                     properties, internalTypes, originalType);
@@ -118,7 +120,7 @@ class V10TypeFactory {
 
     public static void createUnion(CurrentBuild currentBuild, V10GType v10GType) {
 
-        ClassName unionJavaName = buildClassName(currentBuild.getModelPackage(), v10GType.defaultJavaTypeName() + "Union", true);
+        ClassName unionJavaName = buildClassName(currentBuild.getModelPackage(), v10GType.defaultJavaTypeName(), true);
         currentBuild.newGenerator(v10GType.name(), new UnionTypeGenerator(v10GType, unionJavaName, currentBuild));
     }
 }

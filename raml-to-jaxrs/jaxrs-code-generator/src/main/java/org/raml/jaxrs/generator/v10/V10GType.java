@@ -46,7 +46,7 @@ public class V10GType implements GType {
                 registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, typeDeclaration),
-                Names.javaTypeName(resource, method, typeDeclaration),
+                Annotations.CLASS_NAME.get(typeDeclaration, Names.javaTypeName(resource, method, typeDeclaration)),
                 true,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -69,7 +69,7 @@ public class V10GType implements GType {
                 registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, response, typeDeclaration),
-                Names.javaTypeName(resource, method, response, typeDeclaration),
+                Annotations.CLASS_NAME.get(typeDeclaration, Names.javaTypeName(resource, method, response, typeDeclaration)),
                 true,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -80,7 +80,7 @@ public class V10GType implements GType {
                 registry,
                 typeDeclaration,
                 s,
-                Names.typeName(typeDeclaration.name()),
+                Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(typeDeclaration.name())),
                 false,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -92,7 +92,7 @@ public class V10GType implements GType {
                 registry,
                 typeDeclaration,
                 ramlName,
-                javaClassName,
+                Annotations.CLASS_NAME.get(typeDeclaration, javaClassName),
                 false,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -208,6 +208,11 @@ public class V10GType implements GType {
     public String defaultJavaTypeName() {
 
         return defaultJavatypeName;
+    }
+
+    public String javaImplementationName() {
+
+        return Annotations.IMPLEMENTATION_CLASS_NAME.get(typeDeclaration, defaultJavatypeName + "Impl");
     }
 
     @Override

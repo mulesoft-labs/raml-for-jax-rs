@@ -9,8 +9,8 @@ import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
  * Created by Jean-Philippe Belanger on 1/1/17.
@@ -19,11 +19,11 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionHelper {
 
     @Override
-    public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, V10GType type) {
 
-        ObjectTypeDeclaration otr = (ObjectTypeDeclaration) typeDeclaration;
+        ObjectTypeDeclaration otr = (ObjectTypeDeclaration) type.implementation();
 
-        if (otr.discriminator() != null && currentBuild.childClasses(typeDeclaration.name()).size() > 0) {
+        if (otr.discriminator() != null && currentBuild.childClasses(type.name()).size() > 0) {
 
             typeSpec.addAnnotation(
                     AnnotationSpec.builder(JsonTypeInfo.class)
@@ -34,7 +34,7 @@ public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionH
             );
 
             AnnotationSpec.Builder subTypes = AnnotationSpec.builder(JsonSubTypes.class);
-            for (GType gType : currentBuild.childClasses(typeDeclaration.name())) {
+            for (GType gType : currentBuild.childClasses(type.name())) {
 
                 subTypes.addMember("value", "$L",
                         AnnotationSpec.builder(JsonSubTypes.Type.class)
@@ -54,10 +54,9 @@ public class JacksonDiscriminatorInheritanceTypeExtension extends TypeExtensionH
             typeSpec.addAnnotation(
                     AnnotationSpec.builder(JsonTypeName.class).addMember("value", "$S", otr.discriminatorValue()).build());
         }
-        if (currentBuild.childClasses(typeDeclaration.name()).size() == 0) {
+        if (currentBuild.childClasses(type.name()).size() == 0) {
 
-            typeSpec.addAnnotation(AnnotationSpec.builder(JsonDeserialize.class).addMember("as", "$L.class", Names.typeName(
-                    typeDeclaration.name()) + "Impl").build());
+            typeSpec.addAnnotation(AnnotationSpec.builder(JsonDeserialize.class).addMember("as", "$L.class", type.javaImplementationName()).build());
         }
     }
 }

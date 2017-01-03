@@ -5,6 +5,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.util.ArrayList;
@@ -58,10 +59,10 @@ public class TypeExtensionList implements TypeExtension {
     }
 
     @Override
-    public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
+    public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, V10GType type) {
 
         for (TypeExtension extension : extensions) {
-            extension.onTypeDeclaration(currentBuild, typeSpec, typeDeclaration);
+            extension.onTypeDeclaration(currentBuild, typeSpec, type);
         }
 
     }
@@ -111,7 +112,7 @@ public class TypeExtensionList implements TypeExtension {
     }
 
     @Override
-    public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+    public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, V10GType typeDeclaration) {
 
         for (TypeExtension extension : extensions) {
             extension.onUnionType(currentBuild, builder, typeDeclaration);

@@ -19,6 +19,8 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.v10.Annotations;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
@@ -36,10 +38,10 @@ import java.util.Map;
  */
 public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
     private final CurrentBuild currentBuild;
-    private final UnionTypeDeclaration unionTypeDeclaration;
+    private final V10GType unionTypeDeclaration;
     private final ClassName name;
 
-    public UnionDeserializationGenerator(CurrentBuild currentBuild, UnionTypeDeclaration unionTypeDeclaration, ClassName name) {
+    public UnionDeserializationGenerator(CurrentBuild currentBuild, V10GType unionTypeDeclaration, ClassName name) {
         this.currentBuild = currentBuild;
         this.unionTypeDeclaration = unionTypeDeclaration;
         this.name = name;
@@ -48,7 +50,10 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
     @Override
     public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
 
-        ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(), Names.typeName(unionTypeDeclaration.name(), "Union"));
+        UnionTypeDeclaration union = (UnionTypeDeclaration) unionTypeDeclaration.implementation();
+
+        ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(),
+                Annotations.CLASS_NAME.get(unionTypeDeclaration, Names.typeName(union.name())));
         TypeSpec.Builder builder = TypeSpec.classBuilder(name)
                 .superclass(ParameterizedTypeName.get(ClassName.get(StdDeserializer.class), unionTypeName))
                 .addMethod(
@@ -68,7 +73,7 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
                 .addStatement("$T mapper  = new $T()", ObjectMapper.class, ObjectMapper.class)
                 .addStatement("$T<String, Object> map = mapper.readValue(jsonParser, Map.class)", Map.class);
 
-        for (TypeDeclaration typeDeclaration : unionTypeDeclaration.of()) {
+        for (TypeDeclaration typeDeclaration : union.of()) {
 
             ClassName unionPossibility = ClassName.get(currentBuild.getModelPackage(), Names.typeName(typeDeclaration.name()));
 

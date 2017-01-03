@@ -71,7 +71,7 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
                     );
         }
 
-        currentBuild.withTypeListeners().onUnionType(currentBuild, builder, v10GType.implementation());
+        currentBuild.withTypeListeners().onUnionType(currentBuild, builder, v10GType);
         rootDirectory.into(builder);
     }
 

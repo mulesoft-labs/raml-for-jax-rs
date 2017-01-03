@@ -7,7 +7,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
 /**
@@ -17,14 +17,14 @@ import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 public class JacksonUnionExtension extends TypeExtensionHelper {
 
     @Override
-    public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
+    public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, V10GType typeDeclaration) {
 
-        if (! (typeDeclaration instanceof UnionTypeDeclaration)) {
+        if (! (typeDeclaration.implementation() instanceof UnionTypeDeclaration)) {
 
             return;
         }
 
-        UnionTypeDeclaration unionTypeDeclaration = (UnionTypeDeclaration) typeDeclaration;
+        UnionTypeDeclaration unionTypeDeclaration = (UnionTypeDeclaration) typeDeclaration.implementation();
         ClassName deserializer = ClassName.get(currentBuild.getSupportPackage(), Names.typeName(unionTypeDeclaration.name(), "deserializer"));
         ClassName serializer = ClassName.get(currentBuild.getSupportPackage(), Names.typeName(unionTypeDeclaration.name(), "serializer"));
         builder.addAnnotation(
@@ -36,8 +36,8 @@ public class JacksonUnionExtension extends TypeExtensionHelper {
                         "using", "$T.class", serializer
                 ).build());
 
-        currentBuild.newSupportGenerator(new UnionDeserializationGenerator(currentBuild, unionTypeDeclaration, deserializer));
-        currentBuild.newSupportGenerator(new UnionSerializationGenerator(currentBuild, unionTypeDeclaration, serializer));
+        currentBuild.newSupportGenerator(new UnionDeserializationGenerator(currentBuild, typeDeclaration, deserializer));
+        currentBuild.newSupportGenerator(new UnionSerializationGenerator(currentBuild, typeDeclaration, serializer));
 
     }
 }

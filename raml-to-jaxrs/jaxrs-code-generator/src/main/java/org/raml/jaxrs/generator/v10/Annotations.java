@@ -19,6 +19,14 @@ public abstract class Annotations<T> {
         }
     };
 
+    public static Annotations<String> IMPLEMENTATION_CLASS_NAME = new Annotations<String>() {
+        @Override
+        public String get(Annotable target) {
+
+            return getWithDefault(target, "types", "implementationClassName", null);
+        }
+    };
+
     public static Annotations<Boolean> USE_PRIMITIVE_TYPE = new Annotations<Boolean>() {
         @Override
         public Boolean get(Annotable target) {
@@ -101,4 +109,10 @@ public abstract class Annotations<T> {
 
         return get(type.implementation());
     }
+
+    public T get(V10GType type, T def ) {
+
+        return get(type.implementation(), def);
+    }
+
 }

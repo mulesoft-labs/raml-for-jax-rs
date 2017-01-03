@@ -16,6 +16,7 @@ import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
+import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
@@ -194,11 +195,10 @@ public class CurrentBuild {
     private TypeName checkJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
 
         if ( type instanceof V10GType) {
-            V10GType v10Type = (V10GType) type;
-            TypeName typename = getJavaTypeNameFromAnnotation(v10Type);
-            if ( typename != null ) {
 
-                return typename;
+            V10GType v10Type = (V10GType) type;
+            if ( Annotations.CLASS_NAME.get(v10Type) != null ) {
+                return ClassName.get(getModelPackage(), v10Type.defaultJavaTypeName());
             }
         }
 
@@ -224,18 +224,6 @@ public class CurrentBuild {
                 }
             }
         }
-    }
-
-    private TypeName getJavaTypeNameFromAnnotation(V10GType v10Type) {
-        TypeDeclaration td = v10Type.implementation();
-        for (AnnotationRef annotationRef : td.annotations()) {
-            if ( "javaClassName".equals(annotationRef.annotation().name())) {
-
-                return ClassName.bestGuess((String) annotationRef.structuredValue().value());
-            }
-        }
-
-        return null;
     }
 
     private TypeName findInCatalogOfTypes(GType type) {

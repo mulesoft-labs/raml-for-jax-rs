@@ -5,6 +5,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
@@ -21,7 +22,7 @@ public interface TypeExtension {
     void onSetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
             TypeDeclaration typeDeclaration);
 
-    void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
+    void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, V10GType type);
     void onGetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
     void onSetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec, ParameterSpec.Builder param,
             TypeDeclaration typeDeclaration);
@@ -30,5 +31,5 @@ public interface TypeExtension {
     void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration);
     void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field, TypeDeclaration typeDeclaration);
 
-    void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration);
+    void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, V10GType typeDeclaration);
 }

@@ -2,8 +2,8 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -44,7 +44,7 @@ public class V10TypeRegistry {
             return types.get(key);
         } else {
 
-            V10GType type = V10GType.createRequestBodyType(this, resource, method, typeDeclaration);
+            V10GType type = V10GTypeFactory.createRequestBodyType(this, resource, method, typeDeclaration);
             types.put(type.name(), type);
             return type;
         }
@@ -57,19 +57,26 @@ public class V10TypeRegistry {
             return types.get(key);
         } else {
 
-            V10GType type = V10GType.createResponseBodyType(this, resource, method, response, typeDeclaration);
+            V10GType type = V10GTypeFactory.createResponseBodyType(this, resource, method, response, typeDeclaration);
             types.put(type.name(), type);
             return type;
         }
     }
 
     public V10GType fetchType(String name, TypeDeclaration typeDeclaration) {
+
+        Class<?> type = ScalarTypes.scalarToJavaType(typeDeclaration);
+        if ( type != null ) {
+
+            return V10GTypeFactory.createScalar(typeDeclaration, type);
+        }
+
         if ( types.containsKey(name)) {
 
             return types.get(name);
         } else {
 
-            V10GType type = V10GType.createExplicitlyNamedType(this, name, typeDeclaration);
+            V10GType type = V10GTypeFactory.createExplicitlyNamedType(this, name, typeDeclaration);
             types.put(type.name(), type);
             return type;
         }
@@ -86,7 +93,7 @@ public class V10TypeRegistry {
         registry.types = new HashMap<>();
         types.putAll(registry.types);
 
-        return V10GType.createExplicitlyNamedType(registry, internalTypeName, javaTypeName, implementation);
+        return V10GTypeFactory.createExplicitlyNamedType(registry, internalTypeName, javaTypeName, implementation);
     }
 
     public Multimap<String, V10GType> getChildClasses() {

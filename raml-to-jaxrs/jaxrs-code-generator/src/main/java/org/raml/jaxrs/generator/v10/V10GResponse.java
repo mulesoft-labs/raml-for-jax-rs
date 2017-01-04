@@ -31,7 +31,8 @@ class V10GResponse implements GResponse {
                     return new V10GResponseType(input,
                             registry.fetchType(v10GResource.implementation(), method, response, input));
                 } else {
-                    return new V10GResponseType(input, V10GType.createExplicitlyNamedType(registry, input.type(), input));
+                    return new V10GResponseType(input, V10GTypeFactory
+                            .createExplicitlyNamedType(registry, input.type(), input));
                 }
             }
         });

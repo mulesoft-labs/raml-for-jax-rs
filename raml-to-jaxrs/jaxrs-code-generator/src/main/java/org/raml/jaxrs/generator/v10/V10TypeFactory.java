@@ -59,11 +59,11 @@ class V10TypeFactory {
         JavaPoetTypeGenerator gen;
         if ( Annotations.ABSTRACT.get(originalType) ) {
 
-            ClassName interf = originalType.defaultJavaTypeName(currentBuild.getModelPackage());
+            ClassName interf = (ClassName) originalType.defaultJavaTypeName(currentBuild.getModelPackage());
             gen = new RamlTypeGeneratorInterface(currentBuild, interf, parentTypes, properties, internalTypes, originalType);
         } else {
 
-            ClassName interf = originalType.defaultJavaTypeName(currentBuild.getModelPackage());
+            ClassName interf = (ClassName) originalType.defaultJavaTypeName(currentBuild.getModelPackage());
             ClassName impl = originalType.javaImplementationName(currentBuild.getModelPackage());
 
             RamlTypeGeneratorImplementation implg = new RamlTypeGeneratorImplementation(currentBuild, impl, interf,
@@ -82,7 +82,7 @@ class V10TypeFactory {
         JavaPoetTypeGenerator generator =  new EnumerationGenerator(
                 currentBuild,
                 ((V10GType)type).implementation(),
-                type.defaultJavaTypeName(currentBuild.getModelPackage()),
+                (ClassName) type.defaultJavaTypeName(currentBuild.getModelPackage()),
                 type.enumValues());
 
         currentBuild.newGenerator(type.name(), generator);
@@ -111,7 +111,7 @@ class V10TypeFactory {
 
     public static void createUnion(CurrentBuild currentBuild, V10GType v10GType) {
 
-        ClassName unionJavaName = v10GType.defaultJavaTypeName(currentBuild.getModelPackage());
+        ClassName unionJavaName = (ClassName) v10GType.defaultJavaTypeName(currentBuild.getModelPackage());
         currentBuild.newGenerator(v10GType.name(), new UnionTypeGenerator(v10GType, unionJavaName, currentBuild));
     }
 }

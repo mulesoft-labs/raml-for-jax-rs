@@ -143,7 +143,7 @@ public class ResourceBuilder implements ResourceGenerator {
     private void createMethodWithBody(TypeSpec.Builder typeSpec, GMethod gMethod,
             Multimap<String, String> ramlTypeToMediaType, String methodName, GRequest gRequest) {
         MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>());
-        TypeName name = build.getJavaType(gRequest.type());
+        TypeName name = gRequest.type().defaultJavaTypeName(build.getModelPackage());
         methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
         handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
         typeSpec.addMethod(methodSpec.build());

@@ -35,12 +35,14 @@ public class TypeUtils {
             return false;
         }
 
+/*
         if ( extending.type() == null ) {
 
             return false;
         }
+*/
 
-        if ( extending instanceof StringTypeDeclaration && extending.type().equals("string")
+        if ( extending instanceof StringTypeDeclaration && extending.type() != null && extending.type().equals("string")
                 && ((StringTypeDeclaration) extending).enumValues().size() > 0
                 && extended.length == 1
                 && extended[0] instanceof StringTypeDeclaration
@@ -54,22 +56,25 @@ public class TypeUtils {
             return true;
         }
 
+/*
         if ( extending.name().equals("object") && extending.type() == null ) {
 
             return false;
         }
+*/
 
-        if ( extending.type().equals("object")) {
+
+        if ( extending.type() != null && extending.type().equals("object")) {
 
             return true;
         }
 
-        if (extended != null && extended[0] instanceof JSONTypeDeclaration && extending instanceof JSONTypeDeclaration) {
+        if (extended != null && extended.length > 0 && extended[0] instanceof JSONTypeDeclaration && extending instanceof JSONTypeDeclaration) {
 
             return false;
         }
 
-        if (extended != null && extended[0] instanceof XMLTypeDeclaration && extending instanceof XMLTypeDeclaration) {
+        if (extended != null && extended.length > 0 && extended[0] instanceof XMLTypeDeclaration && extending instanceof XMLTypeDeclaration) {
             return false;
         }
 

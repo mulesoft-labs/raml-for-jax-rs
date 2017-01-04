@@ -140,7 +140,7 @@ public class V10GType implements GType {
         this.properties = properties;
         this.parentTypes = parentTypes;
 
-        if (! isInline() && isObject() && !name.equals("object") ) {
+        if (!name.equals("object") && ! isInline() && isObject()   ) {
 
             registry.addChildToParent(parentTypes(), this);
         }

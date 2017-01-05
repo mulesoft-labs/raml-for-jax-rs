@@ -194,8 +194,9 @@
                         <configuration>
                             <mainClass>org.raml.jaxrs.generator.Main</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/main/resources/marketing-cloud/api.raml</argument>
-                                <argument>${project.build.sourceDirectory}</argument>
+                                <argument>-directory</argument>
+                                <argument>${generated.sources}</argument>
+                                <argument>-resource</argument>
                                 <argument>example.marketingcloud</argument>
                                 <argument>${project.basedir}/src/main/resources/marketing-cloud/api.raml</argument>
                             </arguments>

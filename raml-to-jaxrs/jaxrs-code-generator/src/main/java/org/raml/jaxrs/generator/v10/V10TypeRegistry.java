@@ -68,7 +68,7 @@ public class V10TypeRegistry {
         Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
         if ( javaType != null ) {
 
-            return V10GTypeFactory.createScalar(typeDeclaration);
+            return V10GTypeFactory.createScalar(name, typeDeclaration);
         }
 
         if ( types.containsKey(name)) {

@@ -178,8 +178,11 @@ public class V10GTypeObject implements V10GType {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+
+        if ( ! (o instanceof V10GType) ) {
+
             return false;
+        }
 
         V10GType v10GType = (V10GType) o;
 

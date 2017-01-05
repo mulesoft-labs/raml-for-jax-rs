@@ -134,7 +134,7 @@ public class V10GTypeFactory {
         }
     }
 
-    public static V10GType createScalar(TypeDeclaration typeDeclaration) {
-        return new V10GTypeScalar(typeDeclaration);
+    public static V10GType createScalar(String name, TypeDeclaration typeDeclaration) {
+        return new V10GTypeScalar(name, typeDeclaration);
     }
 }

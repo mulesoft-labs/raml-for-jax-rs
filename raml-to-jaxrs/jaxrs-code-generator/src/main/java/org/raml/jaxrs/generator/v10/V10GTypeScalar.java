@@ -24,10 +24,11 @@ public class V10GTypeScalar implements V10GType {
     private final String ramlName;
     private final TypeName javaName;
 
-    public V10GTypeScalar(TypeDeclaration scalar) {
+
+    public V10GTypeScalar(String name, TypeDeclaration scalar) {
 
         this.scalar = scalar;
-        this.ramlName = scalar.name();
+        this.ramlName = name;
         this.javaName = classToTypeName(ScalarTypes.scalarToJavaType(scalar));
     }
 
@@ -124,6 +125,26 @@ public class V10GTypeScalar implements V10GType {
     @Override
     public void construct(CurrentBuild currentBuild, GObjectType objectType) {
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if ( ! (o instanceof V10GType) ) {
+
+            return false;
+        }
+
+        V10GType v10GType = (V10GType) o;
+
+        return ramlName.equals(v10GType.name());
+    }
+
+    @Override
+    public int hashCode() {
+        return ramlName.hashCode();
     }
 
     private TypeName classToTypeName(Class scalar) {

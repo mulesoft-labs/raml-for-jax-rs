@@ -78,7 +78,7 @@ public class TypeUtils {
             return false;
         }
 
-        if (extending instanceof ObjectTypeDeclaration && extended[0] instanceof ObjectTypeDeclaration) {
+        if (extending instanceof ObjectTypeDeclaration && extended.length > 0 && extended[0] instanceof ObjectTypeDeclaration) {
 
             ObjectTypeDeclaration extendingObject = (ObjectTypeDeclaration) extending;
             ObjectTypeDeclaration extendedObject = (ObjectTypeDeclaration) extended[0];

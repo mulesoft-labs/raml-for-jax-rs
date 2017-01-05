@@ -19,14 +19,11 @@ import java.util.List;
  * Just potential zeroes and ones
  */
 public class V10GTypeFactory {
-    public static V10GType createScalar(V10TypeRegistry registry, TypeDeclaration typeDeclaration, Class<?> type) {
-        return new V10GType(registry, typeDeclaration);
-    }
 
     static V10GType createRequestBodyType(V10TypeRegistry registry, Resource resource, Method method,
             TypeDeclaration typeDeclaration) {
 
-        return new V10GType(
+        return new V10GTypeObject(
                 registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, typeDeclaration),
@@ -39,7 +36,7 @@ public class V10GTypeFactory {
     static V10GType createResponseBodyType(V10TypeRegistry registry, Resource resource, Method method,
             Response response,
             TypeDeclaration typeDeclaration) {
-        return new V10GType(
+        return new V10GTypeObject(
                 registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, response, typeDeclaration),
@@ -50,7 +47,7 @@ public class V10GTypeFactory {
     }
 
     static V10GType createExplicitlyNamedType(V10TypeRegistry registry, String s, TypeDeclaration typeDeclaration) {
-        return new V10GType(
+        return new V10GTypeObject(
                 registry,
                 typeDeclaration,
                 s,
@@ -64,7 +61,7 @@ public class V10GTypeFactory {
 
         if ( ScalarTypes.isArray(typeDeclaration)) {
 
-            return new V10GType(
+            return new V10GTypeObject(
                     registry,
                     typeDeclaration,
                     typeDeclaration.type(),
@@ -76,7 +73,7 @@ public class V10GTypeFactory {
 
         if (ScalarTypes.scalarToJavaType(typeDeclaration) != null ) {
 
-            return new V10GType(
+            return new V10GTypeObject(
                     registry,
                     typeDeclaration,
                     typeDeclaration.type(),
@@ -85,7 +82,7 @@ public class V10GTypeFactory {
                     getProperties(typeDeclaration, registry),
                     getParents(typeDeclaration, registry));
         } else {
-            return new V10GType(
+            return new V10GTypeObject(
                     registry,
                     typeDeclaration,
                     typeDeclaration.type(),
@@ -98,7 +95,7 @@ public class V10GTypeFactory {
 
     static V10GType createExplicitlyNamedType(V10TypeRegistry registry, String ramlName, String javaClassName,
             TypeDeclaration typeDeclaration) {
-        return new V10GType(
+        return new V10GTypeObject(
                 registry,
                 typeDeclaration,
                 ramlName,
@@ -135,5 +132,9 @@ public class V10GTypeFactory {
 
             return Collections.emptyList();
         }
+    }
+
+    public static V10GType createScalar(TypeDeclaration typeDeclaration) {
+        return new V10GTypeScalar(typeDeclaration);
     }
 }

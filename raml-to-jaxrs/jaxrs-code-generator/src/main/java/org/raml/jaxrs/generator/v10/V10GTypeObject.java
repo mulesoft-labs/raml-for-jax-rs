@@ -23,7 +23,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 1/3/17.
  * Just potential zeroes and ones
  */
-public class V10GTypeObject {
+public class V10GTypeObject implements V10GType {
 
     private final V10TypeRegistry registry;
     private final TypeDeclaration typeDeclaration;
@@ -34,7 +34,7 @@ public class V10GTypeObject {
     private final List<V10GType> parentTypes;
 
 
-    V10GType(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName,
+    V10GTypeObject(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName,
             boolean inline, List<V10GProperty> properties, List<V10GType> parentTypes) {
         this.registry = registry;
         this.typeDeclaration = typeDeclaration;
@@ -183,7 +183,7 @@ public class V10GTypeObject {
 
         V10GType v10GType = (V10GType) o;
 
-        return name.equals(v10GType.name);
+        return name.equals(v10GType.name());
     }
 
     @Override
@@ -206,30 +206,30 @@ public class V10GTypeObject {
             @Override
             public void onPlainObject() {
 
-                V10TypeFactory.createObjectType(registry, currentBuild, V10GType.this, true);
+                V10TypeFactory.createObjectType(registry, currentBuild, V10GTypeObject.this, true);
             }
 
             @Override
             public void onXmlObject() {
 
-                SchemaTypeFactory.createXmlType(currentBuild, V10GType.this);
+                SchemaTypeFactory.createXmlType(currentBuild, V10GTypeObject.this);
             }
 
             @Override
             public void onJsonObject() {
 
-                SchemaTypeFactory.createJsonType(currentBuild, V10GType.this);
+                SchemaTypeFactory.createJsonType(currentBuild, V10GTypeObject.this);
             }
 
             @Override
             public void onEnumeration() {
 
-                V10TypeFactory.createEnumerationType(currentBuild, V10GType.this);
+                V10TypeFactory.createEnumerationType(currentBuild, V10GTypeObject.this);
             }
 
             @Override
             public void onUnion() {
-                V10TypeFactory.createUnion(currentBuild, V10GType.this);
+                V10TypeFactory.createUnion(currentBuild, registry, V10GTypeObject.this);
             }
         });
     }

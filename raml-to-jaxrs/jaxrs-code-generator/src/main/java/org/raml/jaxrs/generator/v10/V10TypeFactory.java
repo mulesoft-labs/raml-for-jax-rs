@@ -109,9 +109,9 @@ class V10TypeFactory {
         throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
     }
 
-    public static void createUnion(CurrentBuild currentBuild, V10GType v10GType) {
+    public static void createUnion(CurrentBuild currentBuild, V10TypeRegistry v10TypeRegistry, V10GType v10GType) {
 
         ClassName unionJavaName = (ClassName) v10GType.defaultJavaTypeName(currentBuild.getModelPackage());
-        currentBuild.newGenerator(v10GType.name(), new UnionTypeGenerator(v10GType, unionJavaName, currentBuild));
+        currentBuild.newGenerator(v10GType.name(), new UnionTypeGenerator(v10TypeRegistry, v10GType, unionJavaName, currentBuild));
     }
 }

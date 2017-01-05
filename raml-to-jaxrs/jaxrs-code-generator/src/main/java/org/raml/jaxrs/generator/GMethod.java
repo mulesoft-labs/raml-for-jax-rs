@@ -1,7 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import org.raml.v2.api.model.v10.resources.Resource;
-import sun.misc.GThreadHelper;
 
 import java.util.List;
 

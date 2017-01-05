@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator;
 
 import org.raml.jaxrs.generator.v08.V08GResource;
+import org.raml.jaxrs.generator.v08.V08TypeRegistry;
 import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v08.resources.Resource;
@@ -25,12 +26,12 @@ public class GAbstractionFactory {
 
 
 
-    public GResource newResource(Set<String> globalSchemas, Resource resource) {
-        return new V08GResource(this, resource, globalSchemas);
+    public GResource newResource(Set<String> globalSchemas, V08TypeRegistry registry, Resource resource) {
+        return new V08GResource(this, resource, globalSchemas, registry);
     }
 
-    public GResource newResource(Set<String> globalSchemas, GResource parent, org.raml.v2.api.model.v08.resources.Resource resource) {
-        return new V08GResource(this, parent, resource, globalSchemas);
+    public GResource newResource(Set<String> globalSchemas, V08TypeRegistry registry, GResource parent, org.raml.v2.api.model.v08.resources.Resource resource) {
+        return new V08GResource(this, parent, resource, globalSchemas, registry);
     }
 
 }

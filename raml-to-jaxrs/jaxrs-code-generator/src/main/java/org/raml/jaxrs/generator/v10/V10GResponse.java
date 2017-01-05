@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.GResponse;
 import org.raml.jaxrs.generator.GResponseType;
+import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -31,8 +32,10 @@ class V10GResponse implements GResponse {
                     return new V10GResponseType(input,
                             registry.fetchType(v10GResource.implementation(), method, response, input));
                 } else {
-                    return new V10GResponseType(input, V10GTypeFactory
-                            .createExplicitlyNamedType(registry, input.type(), input));
+//                    return new V10GResponseType(input, V10GTypeFactory
+//                            .createExplicitlyNamedType(registry, input.type(), input));
+                   return new V10GResponseType(input, registry.fetchType(input.type(), input));
+
                 }
             }
         });

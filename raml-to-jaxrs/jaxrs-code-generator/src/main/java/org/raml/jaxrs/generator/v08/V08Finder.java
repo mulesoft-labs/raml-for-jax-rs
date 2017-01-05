@@ -26,12 +26,14 @@ public class V08Finder implements GFinder {
 
     private final Api api;
     private final GAbstractionFactory factory;
+    private final V08TypeRegistry registry;
     private Set<String> globalSchemas = new HashSet<>();
 
 
-    public V08Finder(Api api, GAbstractionFactory factory) {
+    public V08Finder(Api api, GAbstractionFactory factory, V08TypeRegistry registry) {
         this.api = api;
         this.factory =  factory;
+        this.registry = registry;
     }
 
     @Override
@@ -72,10 +74,13 @@ public class V08Finder implements GFinder {
 
             if ( globalSchemas.contains(typeDeclaration.schema().value()) ) {
                 V08GType type = new V08GType(typeDeclaration.schema().value(), typeDeclaration);
+                registry.addType(type);
                 listener.newTypeDeclaration(type);
             } else {
 
                 V08GType type = new V08GType(resource, method, typeDeclaration);
+                registry.addType(type);
+
                 listener.newTypeDeclaration(type);
             }
         }
@@ -85,10 +90,12 @@ public class V08Finder implements GFinder {
 
                 if ( globalSchemas.contains(typeDeclaration.schema().value()) ) {
                     V08GType type = new V08GType(typeDeclaration.schema().value());
+                    registry.addType(type);
                     listener.newTypeDeclaration(type);
                 } else {
 
                     V08GType type = new V08GType(resource, method, response, typeDeclaration);
+                    registry.addType(type);
                     listener.newTypeDeclaration(type);
                 }
             }

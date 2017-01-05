@@ -220,7 +220,7 @@ public class ResourceBuilder implements ResourceGenerator {
                                 .addStatement("return new $N(responseBuilder.build())", currentClass)
                                 .returns(TypeVariableName.get(currentClass.name))
                                 .build();
-                        TypeName typeName = build.getJavaType(typeDeclaration.type());
+                        TypeName typeName = typeDeclaration.type().defaultJavaTypeName(build.getModelPackage());
                         if (typeName == null) {
                             throw new GenerationException(typeDeclaration + " was not seen before");
                         }
@@ -248,7 +248,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
             methodSpec.addParameter(
                     ParameterSpec.builder(
-                            build.getJavaType(typeDeclaration.type()), Names.methodName(typeDeclaration.name()))
+                            typeDeclaration.type().defaultJavaTypeName(build.getModelPackage()), Names.methodName(typeDeclaration.name()))
                             .addAnnotation(
                                     AnnotationSpec.builder(PathParam.class).addMember("value", "$S", typeDeclaration.name())
                                             .build())
@@ -262,7 +262,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
             methodSpec.addParameter(
                     ParameterSpec.builder(
-                            build.getJavaType(typeDeclaration.type()), Names.methodName(typeDeclaration.name()))
+                            typeDeclaration.type().defaultJavaTypeName(build.getModelPackage()), Names.methodName(typeDeclaration.name()))
                             .addAnnotation(
                                     AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", typeDeclaration.name())
                                             .build())

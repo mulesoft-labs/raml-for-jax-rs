@@ -7,7 +7,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.junit.Test;
 import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.utils.Raml;
+import org.raml.jaxrs.generator.utils.RamlV10;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.Consumes;
@@ -26,12 +26,12 @@ import static org.junit.Assert.assertTrue;
  * More of a function test than a unit test.
  * Shortcut.
  */
-public class ResourceBuilderTest {
+public class ResourceBuilderTestV10 {
 
     @Test
     public void build_simple() throws Exception {
 
-        Raml.buildResource(this, "resource_entity_no_response.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_entity_no_response.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 
@@ -54,7 +54,7 @@ public class ResourceBuilderTest {
     @Test
     public void build_same_type_two_media() throws Exception {
 
-        Raml.buildResource(this, "resource_entity_same_type_two_media.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_entity_same_type_two_media.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 
@@ -78,7 +78,7 @@ public class ResourceBuilderTest {
     @Test
     public void build_two_types_different_media() throws Exception {
 
-        Raml.buildResource(this, "resource_entity_two_types_different_media.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_entity_two_types_different_media.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 
@@ -116,7 +116,7 @@ public class ResourceBuilderTest {
     @Test
     public void build_empty() throws Exception {
 
-        Raml.buildResource(this, "resource_no_entity_no_response.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_no_entity_no_response.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 
@@ -137,7 +137,7 @@ public class ResourceBuilderTest {
     @Test
     public void build_with_path_param() throws Exception {
 
-        Raml.buildResource(this, "resource_no_entity_path_param.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_no_entity_path_param.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 
@@ -169,7 +169,7 @@ public class ResourceBuilderTest {
     @Test
     public void build_with_query_param() throws Exception {
 
-        Raml.buildResource(this, "resource_no_entity_query_param.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_no_entity_query_param.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 
@@ -201,7 +201,7 @@ public class ResourceBuilderTest {
     @Test
     public void build_simple_response() throws Exception {
 
-        Raml.buildResource(this, "resource_simple_response.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_simple_response.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 
@@ -223,6 +223,43 @@ public class ResourceBuilderTest {
                 MethodSpec responseMethod = response.methodSpecs.get(1);
                 assertTrue(response.methodSpecs.get(0).isConstructor());
                 assertEquals("respond200WithApplicationJson", responseMethod.name);
+                assertEquals("int", responseMethod.parameters.get(0).type.toString());
+
+                assertTrue(responseMethod.hasModifier(Modifier.PUBLIC));
+                assertTrue(responseMethod.hasModifier(Modifier.STATIC));
+                assertTrue(responseMethod.code.toString().contains(".header(\"Content-Type\", \"application/json\")"));
+
+            }
+        }, "foo", "/fun");
+    }
+
+
+    @Test
+    public void build_object_response() throws Exception {
+
+        RamlV10.buildResourceV10(this, "resource_object_response.raml", new CodeContainer<TypeSpec>() {
+            @Override
+            public void into(TypeSpec g) throws IOException {
+
+                assertEquals("Foo", g.name);
+                assertEquals(1, g.methodSpecs.size());
+                MethodSpec methodSpec = g.methodSpecs.get(0);
+                assertEquals("getSearch", methodSpec.name);
+                assertEquals(ClassName.get("", "GetSearchResponse"), methodSpec.returnType);
+                assertEquals(1, g.typeSpecs.size());
+                AnnotationSpec mediaTypeSpec = methodSpec.annotations.get(1);
+                assertEquals(ClassName.get(Produces.class), mediaTypeSpec.type);
+                assertEquals(1, mediaTypeSpec.members.get("value").size());
+                assertEquals("\"application/json\"", mediaTypeSpec.members.get("value").get(0).toString());
+
+                TypeSpec response = g.typeSpecs.get(0);
+                assertEquals("GetSearchResponse", response.name);
+                assertEquals(2, response.methodSpecs.size());
+
+                MethodSpec responseMethod = response.methodSpecs.get(1);
+                assertTrue(response.methodSpecs.get(0).isConstructor());
+                assertEquals("respond200WithApplicationJson", responseMethod.name);
+                assertEquals("TypeOne", responseMethod.parameters.get(0).type.toString());
                 assertTrue(responseMethod.hasModifier(Modifier.PUBLIC));
                 assertTrue(responseMethod.hasModifier(Modifier.STATIC));
                 assertTrue(responseMethod.code.toString().contains(".header(\"Content-Type\", \"application/json\")"));
@@ -234,7 +271,7 @@ public class ResourceBuilderTest {
     @Test
     public void build_two_responses() throws Exception {
 
-        Raml.buildResource(this, "resource_two_responses.raml", new CodeContainer<TypeSpec>() {
+        RamlV10.buildResourceV10(this, "resource_two_responses.raml", new CodeContainer<TypeSpec>() {
             @Override
             public void into(TypeSpec g) throws IOException {
 

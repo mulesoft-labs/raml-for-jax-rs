@@ -23,25 +23,27 @@ public class V08GResource implements GResource {
     private final GAbstractionFactory factory;
     private final GResource parent;
     private final Resource resource;
+    private final V08TypeRegistry registry;
     private final List<GResource> subResources;
     private final List<GParameter> uriParameters;
     private final List<GMethod> methods;
 
-    public V08GResource(GAbstractionFactory factory, Resource resource, Set<String> globalSchemas) {
+    public V08GResource(GAbstractionFactory factory, Resource resource, Set<String> globalSchemas, V08TypeRegistry registry) {
 
-        this(factory, null, resource, globalSchemas);
+        this(factory, null, resource, globalSchemas, registry);
     }
 
-    public V08GResource(final GAbstractionFactory factory, GResource parent, Resource resource, final Set<String> globalSchemas) {
+    public V08GResource(final GAbstractionFactory factory, GResource parent, Resource resource, final Set<String> globalSchemas, final V08TypeRegistry registry) {
         this.factory = factory;
         this.parent = parent;
         this.resource = resource;
+        this.registry = registry;
         this.subResources = Lists.transform(resource.resources(), new Function<Resource, GResource>() {
             @Nullable
             @Override
             public GResource apply(@Nullable Resource input) {
 
-                return factory.newResource(globalSchemas, V08GResource.this, input);
+                return factory.newResource(globalSchemas, registry, V08GResource.this, input);
             }
         });
 
@@ -50,7 +52,7 @@ public class V08GResource implements GResource {
             @Nullable
             @Override
             public GParameter apply(@Nullable Parameter input) {
-                return new V08PGParameter(input);
+                return new V08GParameter(input);
             }
         });
 
@@ -58,7 +60,7 @@ public class V08GResource implements GResource {
             @Nullable
             @Override
             public GMethod apply(@Nullable Method input) {
-                return new V08Method(V08GResource.this, input, globalSchemas);
+                return new V08Method(V08GResource.this, input, globalSchemas, registry);
             }
         });
 

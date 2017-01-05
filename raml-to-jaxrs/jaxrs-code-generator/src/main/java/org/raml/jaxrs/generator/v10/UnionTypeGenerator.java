@@ -29,7 +29,7 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
     private final ClassName javaName;
     private final CurrentBuild currentBuild;
 
-    UnionTypeGenerator(V10TypeRegistry registry, V10GType v10GType, ClassName javaName, CurrentBuild currentBuild) {
+    public UnionTypeGenerator(V10TypeRegistry registry, V10GType v10GType, ClassName javaName, CurrentBuild currentBuild) {
 
         this.registry = registry;
         this.v10GType = v10GType;

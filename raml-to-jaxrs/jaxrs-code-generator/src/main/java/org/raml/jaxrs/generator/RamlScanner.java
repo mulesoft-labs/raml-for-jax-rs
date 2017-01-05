@@ -2,6 +2,7 @@ package org.raml.jaxrs.generator;
 
 
 import org.raml.jaxrs.generator.v08.V08Finder;
+import org.raml.jaxrs.generator.v08.V08TypeRegistry;
 import org.raml.jaxrs.generator.v10.ResourceHandler;
 import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
@@ -100,7 +101,8 @@ public class RamlScanner {
     public void handle(org.raml.v2.api.model.v08.api.Api api) throws IOException {
 
         GAbstractionFactory factory = new GAbstractionFactory();
-        V08Finder typeFinder = new V08Finder(api, factory);
+        V08TypeRegistry registry = new V08TypeRegistry();
+        V08Finder typeFinder = new V08Finder(api, factory, registry);
         CurrentBuild build = new CurrentBuild(typeFinder, packageName, modelPackageName, supportPackage);
         Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxrs"));
         configuration.setupBuild(build);
@@ -112,7 +114,7 @@ public class RamlScanner {
 
         // handle resources.
         for (org.raml.v2.api.model.v08.resources.Resource resource : api.resources()) {
-            resourceHandler.handle(typeFinder.globalSchemas(), resource);
+            resourceHandler.handle(typeFinder.globalSchemas(), registry, resource);
         }
 
         build.generate(destDir);

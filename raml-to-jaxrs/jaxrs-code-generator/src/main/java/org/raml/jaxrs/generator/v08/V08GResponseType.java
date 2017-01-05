@@ -17,15 +17,31 @@ public class V08GResponseType implements GResponseType {
     private final BodyLike input;
     private final V08GType type;
 
-    public V08GResponseType(Resource resource, Method method, Response response, BodyLike input, Set<String> globalSchemas) {
+    public V08GResponseType(Resource resource, Method method, Response response, BodyLike input, Set<String> globalSchemas,
+            V08TypeRegistry registry) {
         this.input = input;
 
         if ( globalSchemas.contains(input.schema().value())) {
 
-            this.type = new V08GType(input.schema().value());
+            V08GType t = registry.fetchType(input.schema().value());
+            if ( t == null ) {
+                this.type = new V08GType(input.schema().value());
+                registry.addType(type);
+            } else {
+                this.type = t;
+            }
         } else {
+            // lets be stupid.
 
-            this.type = new V08GType(resource, method, response, input );
+            V08GType t = new V08GType(resource, method, response, input );
+            V08GType check = registry.fetchType(t.name());
+            if (  check != null ) {
+
+                this.type = check;
+            } else {
+                this.type = t;
+                registry.addType(t);
+            }
         }
     }
 

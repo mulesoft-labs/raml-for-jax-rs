@@ -25,18 +25,7 @@ public interface GType extends GAbstraction {
     String schema();
     GType arrayContents();
 
-/*
-    boolean isInline();
-    List<GType> parentTypes();
-*/
-
-
-/*
-    List<GProperty> properties();
-
-
-*/
-
     void construct(CurrentBuild currentBuild, GObjectType objectType);
 
+    void setJavaType(TypeName generatedJavaType);
 }

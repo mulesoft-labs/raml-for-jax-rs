@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.v10;
+package org.raml.jaxrs.generator.v10.types;
 
 import com.squareup.javapoet.ClassName;
 import org.raml.jaxrs.generator.CurrentBuild;
@@ -10,6 +10,15 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.v10.Annotations;
+import org.raml.jaxrs.generator.v10.CompositeRamlTypeGenerator;
+import org.raml.jaxrs.generator.v10.EnumerationGenerator;
+import org.raml.jaxrs.generator.v10.PropertyInfo;
+import org.raml.jaxrs.generator.v10.RamlTypeGeneratorImplementation;
+import org.raml.jaxrs.generator.v10.RamlTypeGeneratorInterface;
+import org.raml.jaxrs.generator.v10.UnionTypeGenerator;
+import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 

@@ -22,7 +22,8 @@ public class V08Response implements GResponse {
     private final Response response;
     private final List<GResponseType> bodies;
 
-    public V08Response(final Resource resource, final Method method, Response input, final Set<String> globalSchemas) {
+    public V08Response(final Resource resource, final Method method, Response input, final Set<String> globalSchemas,
+            final V08TypeRegistry registry) {
 
         this.response = input;
         this.bodies = Lists.transform(input.body(), new Function<BodyLike, GResponseType>() {
@@ -30,7 +31,7 @@ public class V08Response implements GResponse {
             @Override
             public GResponseType apply(@Nullable BodyLike input) {
 
-                return new V08GResponseType(resource, method, response, input, globalSchemas);
+                return new V08GResponseType(resource, method, response, input, globalSchemas, registry);
             }
         });
     }

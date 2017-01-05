@@ -8,11 +8,11 @@ import org.raml.v2.api.model.v08.parameters.Parameter;
  * Created by Jean-Philippe Belanger on 12/11/16.
  * Just potential zeroes and ones
  */
-public class V08PGParameter implements GParameter {
+public class V08GParameter implements GParameter {
     private final Parameter input;
     private final V08GType type;
 
-    public V08PGParameter(org.raml.v2.api.model.v08.parameters.Parameter input) {
+    public V08GParameter(org.raml.v2.api.model.v08.parameters.Parameter input) {
 
         this.input = input;
         this.type = new V08GType(input.type());

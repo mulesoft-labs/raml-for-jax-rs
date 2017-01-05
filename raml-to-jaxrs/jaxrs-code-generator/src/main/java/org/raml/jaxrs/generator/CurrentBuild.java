@@ -141,17 +141,6 @@ public class CurrentBuild {
         supportGenerators.add(generator);
     }
 
-    public GeneratorType getDeclaredType(String ramlType) {
-
-        GeneratorType type = foundTypes.get(ramlType);
-        if ( type == null ) {
-
-            throw new GenerationException("no such type " + ramlType);
-        }
-
-        return type;
-    }
-
     public <T extends TypeGenerator> T getBuiltType(String ramlType) {
 
         TypeGenerator type = builtTypes.get(ramlType);
@@ -163,27 +152,26 @@ public class CurrentBuild {
         return (T) type;
     }
 
-    public TypeName getJavaType(GType type) {
+/*
+    private TypeName getJavaType(GType type) {
 
-        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>(), false);
+        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>());
     }
+*/
 
-    public TypeName getJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes) {
+/*
+    private TypeName getJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes) {
 
-        return getJavaType(type, internalTypes, false);
-    }
-
-
-    private TypeName getJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
-
-        TypeName name = checkJavaType(type, internalTypes, useName);
+        TypeName name = checkJavaType(type, internalTypes);
         if ( name == null ) {
             throw new GenerationException("unknown type " + type.type() + "(" + type.name() + ")");
         }
         return name;
     }
+*/
+/*
 
-    private TypeName checkJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes, boolean useName) {
+    private TypeName checkJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes) {
 
         if ( type instanceof V10GType) {
 
@@ -201,7 +189,7 @@ public class CurrentBuild {
 
             if (type.isArray()) {
 
-                TypeName contained = getJavaType(type.arrayContents(), internalTypes, true);
+                TypeName contained = getJavaType(type.arrayContents(), internalTypes);
                 return ParameterizedTypeName.get(ClassName.get("java.util", "List"), contained);
             } else {
 
@@ -216,8 +204,9 @@ public class CurrentBuild {
             }
         }
     }
+*/
 
-    private TypeName findInCatalogOfTypes(GType type) {
+ /*   private TypeName findInCatalogOfTypes(GType type) {
         // it's not an internal type.  It's a global type.
         if ( builtTypes.get(type.name()) != null ) {
             // it's a built type.  We have a new class for this.
@@ -266,7 +255,7 @@ public class CurrentBuild {
             return ClassName.get(scalar);
         }
     }
-
+*/
     public void newResource(ResourceGenerator rg) {
 
         resources.add(rg);

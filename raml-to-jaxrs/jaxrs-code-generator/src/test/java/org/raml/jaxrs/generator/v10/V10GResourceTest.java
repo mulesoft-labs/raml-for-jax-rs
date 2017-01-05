@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.GRequest;
 import org.raml.jaxrs.generator.GResponseType;
-import org.raml.jaxrs.generator.utils.Raml;
+import org.raml.jaxrs.generator.utils.RamlV10;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import static org.junit.Assert.*;
@@ -18,7 +18,7 @@ public class V10GResourceTest {
     @Test
     public void simpleRequest() throws Exception {
 
-        Resource resource = Raml.buildV10(this, "resource-simple.raml");
+        Resource resource = RamlV10.withV10(this, "resource-simple.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
         V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GRequest req = gr.methods().get(0).body().get(0);
@@ -30,7 +30,7 @@ public class V10GResourceTest {
     @Test
     public void extendingRequest() throws Exception {
 
-        Resource resource = Raml.buildV10(this, "resource-extending-request.raml");
+        Resource resource = RamlV10.withV10(this, "resource-extending-request.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
         V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GRequest req = gr.methods().get(0).body().get(0);
@@ -43,7 +43,7 @@ public class V10GResourceTest {
     @Test
     public void simpleResponse() throws Exception {
 
-        Resource resource = Raml.buildV10(this, "resource-response-simple.raml");
+        Resource resource = RamlV10.withV10(this, "resource-response-simple.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
         V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GResponseType resp = gr.methods().get(0).responses().get(0).body().get(0);
@@ -55,7 +55,7 @@ public class V10GResourceTest {
     @Test
     public void extendingResponse() throws Exception {
 
-        Resource resource = Raml.buildV10(this, "resource-response-extending.raml");
+        Resource resource = RamlV10.withV10(this, "resource-response-extending.raml");
         GAbstractionFactory fac = new GAbstractionFactory();
         V10GResource gr = new V10GResource(new V10TypeRegistry(), fac, resource);
         GResponseType req = gr.methods().get(0).responses().get(0).body().get(0);

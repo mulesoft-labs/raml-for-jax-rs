@@ -1,19 +1,16 @@
-package org.raml.jaxrs.generator.v10;
+package org.raml.jaxrs.generator.v10.types;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
-import org.raml.jaxrs.generator.GType;
-import org.raml.jaxrs.generator.GenerationException;
-import org.raml.jaxrs.generator.SchemaTypeFactory;
-import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
+import org.raml.jaxrs.generator.v10.Annotations;
+import org.raml.jaxrs.generator.v10.TypeUtils;
+import org.raml.jaxrs.generator.v10.V10GProperty;
+import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,7 +20,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 1/3/17.
  * Just potential zeroes and ones
  */
-public class V10GTypeObject implements V10GType {
+public class V10GTypeObject extends V10GTypeHelper {
 
     private final V10TypeRegistry registry;
     private final TypeDeclaration typeDeclaration;
@@ -33,9 +30,12 @@ public class V10GTypeObject implements V10GType {
     private final List<V10GProperty> properties;
     private final List<V10GType> parentTypes;
 
+    private TypeName modelSpecifiedJavaType;
+
 
     V10GTypeObject(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName,
             boolean inline, List<V10GProperty> properties, List<V10GType> parentTypes) {
+        super(realName);
         this.registry = registry;
         this.typeDeclaration = typeDeclaration;
         this.name = realName;
@@ -67,39 +67,8 @@ public class V10GTypeObject implements V10GType {
     }
 
     @Override
-    public boolean isJson() {
-
-        return typeDeclaration instanceof JSONTypeDeclaration;
-    }
-
-    @Override
-    public boolean isUnion() {
-
-        return typeDeclaration instanceof UnionTypeDeclaration;
-    }
-
-    @Override
-    public boolean isXml() {
-        return typeDeclaration instanceof XMLTypeDeclaration;
-    }
-
-    @Override
     public boolean isObject() {
         return typeDeclaration instanceof ObjectTypeDeclaration;
-    }
-
-    @Override
-    public String schema() {
-        if ( typeDeclaration instanceof XMLTypeDeclaration ) {
-            return ((XMLTypeDeclaration) typeDeclaration).schemaContent();
-        }
-
-        if ( typeDeclaration instanceof JSONTypeDeclaration) {
-
-            return ((JSONTypeDeclaration) typeDeclaration).schemaContent();
-        }
-
-        throw new GenerationException("type " + this + " has no schema");
     }
 
     public List<V10GType> parentTypes() {
@@ -111,29 +80,14 @@ public class V10GTypeObject implements V10GType {
         return properties;
     }
 
-
-    @Override
-    public boolean isArray() {
-        return typeDeclaration instanceof ArrayTypeDeclaration;
-    }
-
-    @Override
-    public GType arrayContents() {
-
-        ArrayTypeDeclaration d = (ArrayTypeDeclaration) typeDeclaration;
-        return V10GTypeFactory.createExplicitlyNamedType(registry, d.items().name().replaceAll("\\[\\]", ""),  d.items());
-    }
-
     @Override
     public TypeName defaultJavaTypeName(String pack) {
 
-     /*   if ( isArray() ) {
+        if ( modelSpecifiedJavaType != null ) {
 
-            GType items = arrayContents();
-
-            return ParameterizedTypeName.get(ClassName.get(List.class), items.defaultJavaTypeName(pack));
+            return modelSpecifiedJavaType;
         }
-*/
+
         if ( isInline() ) {
             return ClassName.get("", defaultJavatypeName);
         } else {
@@ -153,17 +107,6 @@ public class V10GTypeObject implements V10GType {
         }
     }
 
-    @Override
-    public boolean isEnum() {
-        return  typeDeclaration instanceof StringTypeDeclaration
-                && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0;
-    }
-
-    @Override
-    public List<String> enumValues() {
-        return ((StringTypeDeclaration)typeDeclaration).enumValues();
-    }
-
     public boolean isInline() {
         return TypeUtils.shouldCreateNewClass(typeDeclaration, typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
     }
@@ -174,25 +117,6 @@ public class V10GTypeObject implements V10GType {
         return new HashSet<>(registry.getChildClasses().get(typeName));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-
-        if ( ! (o instanceof V10GType) ) {
-
-            return false;
-        }
-
-        V10GType v10GType = (V10GType) o;
-
-        return name.equals(v10GType.name());
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
 
     @Override
     public String toString() {
@@ -201,6 +125,7 @@ public class V10GTypeObject implements V10GType {
                 ", name='" + name() + '\'' +
                 '}';
     }
+
 
     @Override
     public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
@@ -215,24 +140,21 @@ public class V10GTypeObject implements V10GType {
             @Override
             public void onXmlObject() {
 
-                SchemaTypeFactory.createXmlType(currentBuild, V10GTypeObject.this);
             }
 
             @Override
             public void onJsonObject() {
 
-                SchemaTypeFactory.createJsonType(currentBuild, V10GTypeObject.this);
             }
 
             @Override
             public void onEnumeration() {
 
-                V10TypeFactory.createEnumerationType(currentBuild, V10GTypeObject.this);
             }
 
             @Override
             public void onUnion() {
-                V10TypeFactory.createUnion(currentBuild, registry, V10GTypeObject.this);
+
             }
         });
     }

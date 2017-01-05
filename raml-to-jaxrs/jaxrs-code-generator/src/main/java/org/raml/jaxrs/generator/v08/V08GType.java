@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator.v08;
 
+import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
@@ -7,14 +8,20 @@ import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.Names;
+import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
+import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v08.bodies.Response;
 import org.raml.v2.api.model.v08.methods.Method;
 import org.raml.v2.api.model.v08.resources.Resource;
 
+import java.io.File;
+import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jean-Philippe Belanger on 12/11/16.
@@ -22,10 +29,20 @@ import java.util.List;
  */
 public class V08GType implements GType {
 
+    private static Map<String, Class<?>> stringScalarToType = ImmutableMap.<String, Class<?>>builder()
+            .put("integer", int.class)
+            .put("boolean", boolean.class)
+            .put("date-time", Date.class)
+            .put("date", Date.class)
+            .put("number", BigDecimal.class)
+            .put("string", String.class)
+            .put("file", File.class).build();
+
 
     private final String ramlName;
     private final String defaultJavaName;
     private final BodyLike typeDeclaration;
+    private TypeName modelSpecifiedJavaType;
 
     public V08GType(Resource resource, Method method, BodyLike typeDeclaration) {
 
@@ -100,8 +117,32 @@ public class V08GType implements GType {
     }
 
     @Override
-    public ClassName defaultJavaTypeName(String pack) {
-        return ClassName.get(pack, defaultJavaName);
+    public TypeName defaultJavaTypeName(String pack) {
+
+        if ( modelSpecifiedJavaType != null ) {
+            return modelSpecifiedJavaType;
+        }
+
+        Class<?> type = scalarToJavaType(defaultJavaName);
+        if ( type == null ) {
+            return ClassName.get(pack, defaultJavaName);
+        } else {
+
+            return ScalarTypes.classToTypeName(type);
+        }
+    }
+
+    public static Class<?> scalarToJavaType(String name) {
+
+        return stringScalarToType.get(name.toLowerCase());
+    }
+
+    @Override
+    public void setJavaType(TypeName generatedJavaType) {
+
+        if ( isXml() ) {
+            this.modelSpecifiedJavaType = generatedJavaType;
+        }
     }
 
     @Override
@@ -153,4 +194,6 @@ public class V08GType implements GType {
 
         });
     }
+
+
 }

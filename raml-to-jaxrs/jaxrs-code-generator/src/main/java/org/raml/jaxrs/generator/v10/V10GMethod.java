@@ -37,7 +37,7 @@ class V10GMethod implements GMethod {
                     return new V10GRequest(input,
                             registry.fetchType(v10GResource.implementation(), method, input));
                 } else {
-                    return new V10GRequest(input, V10GType.createExplicitlyNamedType(registry, input.type(), input));
+                    return new V10GRequest(input, registry.fetchType(input.type(), input));
                 }
             }
         });

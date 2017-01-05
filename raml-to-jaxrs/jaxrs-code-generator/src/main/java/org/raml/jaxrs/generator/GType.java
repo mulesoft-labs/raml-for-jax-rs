@@ -13,7 +13,7 @@ public interface GType extends GAbstraction {
 
     String type();
     String name();
-    ClassName defaultJavaTypeName(String pack);
+    TypeName defaultJavaTypeName(String pack);
 
     boolean isJson();
     boolean isXml();

@@ -24,12 +24,14 @@ import java.io.IOException;
 public class UnionTypeGenerator implements JavaPoetTypeGenerator {
 
 
+    private final V10TypeRegistry registry;
     private final V10GType v10GType;
     private final ClassName javaName;
     private final CurrentBuild currentBuild;
 
-    UnionTypeGenerator(V10GType v10GType, ClassName javaName, CurrentBuild currentBuild) {
+    UnionTypeGenerator(V10TypeRegistry registry, V10GType v10GType, ClassName javaName, CurrentBuild currentBuild) {
 
+        this.registry = registry;
         this.v10GType = v10GType;
         this.javaName = javaName;
         this.currentBuild = currentBuild;
@@ -43,9 +45,9 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
         TypeSpec.Builder builder = TypeSpec.classBuilder(javaName).addModifiers(Modifier.PUBLIC);
         for (TypeDeclaration typeDeclaration : union.of()) {
 
-            GeneratorType generator = currentBuild.getDeclaredType(typeDeclaration.name());
-            TypeName typeName = currentBuild.getJavaType(generator.getDeclaredType());
+            V10GType type = registry.fetchType(typeDeclaration);
 
+            TypeName typeName = type.defaultJavaTypeName(currentBuild.getModelPackage());
             builder
                     .addField(FieldSpec.builder(typeName, typeDeclaration.name(), Modifier.PRIVATE).build())
                     .addField(FieldSpec.builder(TypeName.BOOLEAN, Names.variableName("is" , typeDeclaration.name()), Modifier.PRIVATE).build())

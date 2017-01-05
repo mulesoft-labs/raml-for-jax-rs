@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.ClassName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
@@ -31,7 +32,8 @@ public class SchemaTypeFactory {
 
     public static TypeGenerator createJsonType(CurrentBuild currentBuild, GType type) {
 
-        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(currentBuild.getModelPackage(), type.defaultJavaTypeName(currentBuild.getModelPackage()), type.schema());
+        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(currentBuild.getModelPackage(),
+                (ClassName) type.defaultJavaTypeName(currentBuild.getModelPackage()), type.schema());
         currentBuild.newGenerator(type.name(), gen);
         return gen;
     }

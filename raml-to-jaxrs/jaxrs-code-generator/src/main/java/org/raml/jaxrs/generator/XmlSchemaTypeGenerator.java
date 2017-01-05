@@ -18,10 +18,10 @@ import java.io.IOException;
 public class XmlSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> implements CodeModelTypeGenerator {
     private final JCodeModel codeModel;
     private final String packageName;
-    private final ClassName className;
+    private final TypeName className;
     private final JClass jclass;
 
-    public XmlSchemaTypeGenerator(JCodeModel codeModel, String packageName, ClassName className, JClass jclass) {
+    public XmlSchemaTypeGenerator(JCodeModel codeModel, String packageName, TypeName className, JClass jclass) {
         this.codeModel = codeModel;
         this.packageName = packageName;
         this.className = className;

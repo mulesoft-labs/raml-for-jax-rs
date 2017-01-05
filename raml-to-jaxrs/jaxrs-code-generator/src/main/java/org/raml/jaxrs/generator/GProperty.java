@@ -10,6 +10,6 @@ public interface GProperty extends GAbstraction{
     String name();
     GType type();
 
-    boolean isInternal();
+    boolean isInline();
     GProperty overrideType(GType type);
 }

@@ -80,7 +80,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
 
         for (PropertyInfo propertyInfo : propertyInfos.values()) {
 
-            FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
+            FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(build), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
             build.withTypeListeners().onFieldImplementation(build,
                     fieldSpec, (TypeDeclaration) propertyInfo.getType().implementation());
             if ( propertyInfo.getName().equals(object.discriminator()) ) {
@@ -93,7 +93,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("return this." + Names.variableName(propertyInfo.getName()));
 
-            getSpec.returns(propertyInfo.resolve(build, internalTypes));
+            getSpec.returns(propertyInfo.resolve(build));
             build.withTypeListeners().onGetterMethodImplementation(build,
                     getSpec, (TypeDeclaration) propertyInfo.getType().implementation());
             typeSpec.addMethod(getSpec.build());
@@ -107,7 +107,7 @@ public class RamlTypeGeneratorImplementation extends AbstractTypeGenerator<TypeS
                                 .variableName(propertyInfo.getName()));
 
                 ParameterSpec.Builder parameterSpec = ParameterSpec
-                        .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
+                        .builder(propertyInfo.resolve(build), Names.variableName(propertyInfo.getName()));
                 build.withTypeListeners().onSetterMethodImplementation(build, setSpec,
                         parameterSpec, (TypeDeclaration) propertyInfo.getType().implementation());
 

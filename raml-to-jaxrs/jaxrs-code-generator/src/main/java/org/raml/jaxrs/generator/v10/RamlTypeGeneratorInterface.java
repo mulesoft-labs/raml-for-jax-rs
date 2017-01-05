@@ -7,7 +7,6 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GType;
-import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
@@ -87,7 +86,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                 final MethodSpec.Builder getSpec = MethodSpec
                         .methodBuilder(Names.methodName("get", propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-                getSpec.returns(propertyInfo.resolve(build, internalTypes));
+                getSpec.returns(propertyInfo.resolve(build));
                 build.withTypeListeners().onGetterMethodDeclaration(build,
                         getSpec, (TypeDeclaration) propertyInfo.getType().implementation());
                 typeSpec.addMethod(getSpec.build());
@@ -97,7 +96,7 @@ public class RamlTypeGeneratorInterface extends AbstractTypeGenerator<TypeSpec.B
                             .methodBuilder(Names.methodName("set", propertyInfo.getName()))
                             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
                     ParameterSpec.Builder parameterSpec = ParameterSpec
-                            .builder(propertyInfo.resolve(build, internalTypes), Names.variableName(propertyInfo.getName()));
+                            .builder(propertyInfo.resolve(build), Names.variableName(propertyInfo.getName()));
                     build.withTypeListeners().onSetterMethodDeclaration(build, setSpec,
                             parameterSpec, (TypeDeclaration) propertyInfo.getType().implementation());
                     setSpec.addParameter(

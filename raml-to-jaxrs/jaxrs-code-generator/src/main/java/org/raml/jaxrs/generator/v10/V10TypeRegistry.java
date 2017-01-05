@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class V10TypeRegistry {
 
     private Map<String, V10GType> types = new HashMap<>();
-    private final Multimap<String, V10GType> childMap = ArrayListMultimap.create();
+    private Multimap<String, V10GType> childMap = ArrayListMultimap.create();
 
     public void addChildToParent(List<V10GType> parents, V10GType child) {
 
@@ -71,6 +72,11 @@ public class V10TypeRegistry {
             return V10GTypeFactory.createScalar(name, typeDeclaration);
         }
 
+        if ( typeDeclaration instanceof ArrayTypeDeclaration ) {
+
+            return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration);
+        }
+
         if ( types.containsKey(name)) {
 
             return types.get(name);
@@ -89,14 +95,23 @@ public class V10TypeRegistry {
     }
 
     public V10GType createInlineType(String internalTypeName, String javaTypeName, TypeDeclaration implementation) {
-        V10TypeRegistry registry = new V10TypeRegistry();
-        registry.types = new HashMap<>();
-        types.putAll(registry.types);
 
-        return V10GTypeFactory.createExplicitlyNamedType(registry, internalTypeName, javaTypeName, implementation);
+
+        V10GType type = V10GTypeFactory.createExplicitlyNamedType(this, internalTypeName, javaTypeName, implementation);
+        types.put(type.name(), type);
+        return type;
     }
 
     public Multimap<String, V10GType> getChildClasses() {
         return childMap;
+    }
+
+    public V10TypeRegistry createRegistry() {
+        V10TypeRegistry registry = new V10TypeRegistry();
+        registry.types = new HashMap<>();
+        registry.types.putAll(this.types);
+        registry.childMap = this.childMap;
+
+        return registry;
     }
 }

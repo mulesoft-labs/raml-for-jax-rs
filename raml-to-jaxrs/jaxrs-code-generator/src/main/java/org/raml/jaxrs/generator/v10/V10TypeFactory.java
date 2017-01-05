@@ -1,7 +1,6 @@
 package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GProperty;
 import org.raml.jaxrs.generator.GType;
@@ -33,24 +32,26 @@ class V10TypeFactory {
 
         // this should be in the generator;
         List<PropertyInfo> properties = new ArrayList<>();
+        V10TypeRegistry localRegistry = registry.createRegistry();
         for (GProperty declaration : originalType.properties()) {
 
-            if (declaration.isInternal()) {
+            if (declaration.isInline()) {
                 String internalTypeName = Integer.toString(internalTypeCounter);
 
-                V10GType type = registry.createInlineType(internalTypeName, Annotations.CLASS_NAME.get(
+                V10GType type = localRegistry.createInlineType(internalTypeName, Annotations.CLASS_NAME.get(
                         (Annotable) declaration.implementation(), Names.typeName(declaration.name(), "Type")),
-                        (TypeDeclaration) declaration.implementation());
-                TypeGenerator internalGenerator = inlineTypeBuild(registry, currentBuild, GeneratorType.generatorFrom(type));
+                        (TypeDeclaration) declaration.implementation()
+                );
+                TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild, GeneratorType.generatorFrom(type));
                 if ( internalGenerator instanceof JavaPoetTypeGenerator ) {
                     internalTypes.put(internalTypeName, (JavaPoetTypeGenerator) internalGenerator);
-                    properties.add(new PropertyInfo(declaration.overrideType(type)));
+                    properties.add(new PropertyInfo(localRegistry, declaration.overrideType(type)));
                     internalTypeCounter ++;
                 } else {
                     throw new GenerationException("internal type bad");
                 }
             } else {
-                properties.add(new PropertyInfo(declaration));
+                properties.add(new PropertyInfo(localRegistry, declaration));
             }
 
         }

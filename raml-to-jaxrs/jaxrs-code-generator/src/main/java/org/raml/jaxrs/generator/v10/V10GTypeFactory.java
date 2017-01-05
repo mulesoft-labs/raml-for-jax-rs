@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -125,7 +126,7 @@ public class V10GTypeFactory {
                 @Override
                 public V10GProperty apply(@Nullable TypeDeclaration declaration) {
 
-                    return new V10GProperty(declaration, createPropertyType(registry, declaration));
+                    return new V10GProperty(declaration, registry.fetchType(declaration.type(), declaration));
                 }
             });
         } else {
@@ -136,5 +137,10 @@ public class V10GTypeFactory {
 
     public static V10GType createScalar(String name, TypeDeclaration typeDeclaration) {
         return new V10GTypeScalar(name, typeDeclaration);
+    }
+
+    public static V10GType createArray(V10TypeRegistry registry, String name, ArrayTypeDeclaration typeDeclaration) {
+
+        return new V10GTypeArray(registry, name, typeDeclaration);
     }
 }

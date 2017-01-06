@@ -45,12 +45,12 @@ public enum GObjectType implements GeneratorObjectType {
         }
     };
 
-    public interface GObjectTypeDispatcher {
-        void onPlainObject();
-        void onXmlObject();
-        void onJsonObject();
-        void onEnumeration();
-        void onUnion();
+    public static class GObjectTypeDispatcher {
+        public void onPlainObject() {};
+        public void onXmlObject(){};
+        public void onJsonObject(){};
+        public void onEnumeration(){};
+        public void onUnion(){};
     }
 
     public abstract void dispatch(GObjectTypeDispatcher dispatcher);

@@ -101,29 +101,9 @@ public class V10GTypeXml extends V10GTypeHelper {
         objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
 
             @Override
-            public void onPlainObject() {
-
-            }
-
-            @Override
             public void onXmlObject() {
 
                 SchemaTypeFactory.createXmlType(currentBuild, V10GTypeXml.this);
-            }
-
-            @Override
-            public void onJsonObject() {
-
-            }
-
-            @Override
-            public void onEnumeration() {
-
-            }
-
-            @Override
-            public void onUnion() {
-
             }
         });
     }

@@ -1,9 +1,6 @@
 package org.raml.jaxrs.generator;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.CodeContainer;
@@ -13,8 +10,6 @@ import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
-import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.V10GType;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,110 +147,6 @@ public class CurrentBuild {
         return (T) type;
     }
 
-/*
-    private TypeName getJavaType(GType type) {
-
-        return getJavaType(type, new HashMap<String, JavaPoetTypeGenerator>());
-    }
-*/
-
-/*
-    private TypeName getJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes) {
-
-        TypeName name = checkJavaType(type, internalTypes);
-        if ( name == null ) {
-            throw new GenerationException("unknown type " + type.type() + "(" + type.name() + ")");
-        }
-        return name;
-    }
-*/
-/*
-
-    private TypeName checkJavaType(GType type, Map<String, JavaPoetTypeGenerator> internalTypes) {
-
-        if ( type instanceof V10GType) {
-
-            V10GType v10Type = (V10GType) type;
-            if ( Annotations.CLASS_NAME.get(v10Type) != null ) {
-                return v10Type.defaultJavaTypeName(modelPackage);
-            }
-        }
-
-        Class<?> scalar = ScalarTypes.scalarToJavaType(type);
-        if ( scalar != null ){
-
-            return classToTypeName(scalar);
-        } else {
-
-            if (type.isArray()) {
-
-                TypeName contained = getJavaType(type.arrayContents(), internalTypes);
-                return ParameterizedTypeName.get(ClassName.get("java.util", "List"), contained);
-            } else {
-
-                TypeGenerator builder = internalTypes.get(type.name());
-
-                if (builder == null) {
-                    return findInCatalogOfTypes(type);
-                } else {
-                    // it was an internal class that we built....
-                    return builder.getGeneratedJavaType();
-                }
-            }
-        }
-    }
-*/
-
- /*   private TypeName findInCatalogOfTypes(GType type) {
-        // it's not an internal type.  It's a global type.
-        if ( builtTypes.get(type.name()) != null ) {
-            // it's a built type.  We have a new class for this.
-            return builtTypes.get(type.name()).getGeneratedJavaType();
-        } else {
-            // it's an extension of an existing class, but a new type nonetheless.
-            GeneratorType gen = foundTypes.get(type.name());
-            return gen.getDeclaredType().defaultJavaTypeName(modelPackage);
-        }
-    }
-
-    public TypeName classToTypeName(Class<?> scalar) {
-        if ( scalar.isPrimitive()) {
-            switch(scalar.getSimpleName()) {
-                case "int":
-                    return TypeName.INT;
-
-                case "boolean":
-                    return TypeName.BOOLEAN;
-
-                case "double":
-                    return TypeName.DOUBLE;
-
-                case "float":
-                    return TypeName.FLOAT;
-
-                case "byte":
-                    return TypeName.BYTE;
-
-                case "char":
-                    return TypeName.CHAR;
-
-                case "short":
-                    return TypeName.SHORT;
-
-                case "long":
-                    return TypeName.LONG;
-
-                case "void":
-                    return TypeName.VOID; // ?
-
-                default:
-                    throw new GenerationException("can't handle type: " + scalar);
-            }
-        } else {
-            return ClassName.get(scalar);
-        }
-    }
-*/
     public void newResource(ResourceGenerator rg) {
 
         resources.add(rg);

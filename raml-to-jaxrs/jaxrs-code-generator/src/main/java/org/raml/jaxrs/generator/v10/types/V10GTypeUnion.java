@@ -93,26 +93,6 @@ public class V10GTypeUnion extends V10GTypeHelper {
         objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
 
             @Override
-            public void onPlainObject() {
-
-            }
-
-            @Override
-            public void onXmlObject() {
-
-            }
-
-            @Override
-            public void onJsonObject() {
-
-            }
-
-            @Override
-            public void onEnumeration() {
-
-            }
-
-            @Override
             public void onUnion() {
                 V10TypeFactory.createUnion(currentBuild, registry, V10GTypeUnion.this);
             }

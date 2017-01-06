@@ -136,26 +136,6 @@ public class V10GTypeObject extends V10GTypeHelper {
 
                 V10TypeFactory.createObjectType(registry, currentBuild, V10GTypeObject.this, true);
             }
-
-            @Override
-            public void onXmlObject() {
-
-            }
-
-            @Override
-            public void onJsonObject() {
-
-            }
-
-            @Override
-            public void onEnumeration() {
-
-            }
-
-            @Override
-            public void onUnion() {
-
-            }
         });
     }
 

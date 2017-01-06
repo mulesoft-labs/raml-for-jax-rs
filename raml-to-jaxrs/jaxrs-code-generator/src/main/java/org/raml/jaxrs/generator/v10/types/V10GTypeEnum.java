@@ -4,10 +4,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
-import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.ScalarTypes;
-import org.raml.jaxrs.generator.SchemaTypeFactory;
-import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
@@ -89,26 +85,9 @@ public class V10GTypeEnum extends V10GTypeHelper {
         objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
 
             @Override
-            public void onPlainObject() {
-            }
-
-            @Override
-            public void onXmlObject() {
-            }
-
-            @Override
-            public void onJsonObject() {
-            }
-
-            @Override
             public void onEnumeration() {
 
                 V10TypeFactory.createEnumerationType(currentBuild, V10GTypeEnum.this);
-            }
-
-            @Override
-            public void onUnion() {
-
             }
         });
 

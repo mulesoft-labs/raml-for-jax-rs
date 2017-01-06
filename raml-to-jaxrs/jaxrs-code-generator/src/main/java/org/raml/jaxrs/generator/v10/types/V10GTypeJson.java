@@ -4,22 +4,10 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
-import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
-import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.TypeUtils;
-import org.raml.jaxrs.generator.v10.V10GProperty;
-import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/3/17.
@@ -100,29 +88,9 @@ public class V10GTypeJson extends V10GTypeHelper {
         objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
 
             @Override
-            public void onPlainObject() {
-
-            }
-
-            @Override
-            public void onXmlObject() {
-
-            }
-
-            @Override
             public void onJsonObject() {
 
                 SchemaTypeFactory.createJsonType(currentBuild, V10GTypeJson.this);
-            }
-
-            @Override
-            public void onEnumeration() {
-
-            }
-
-            @Override
-            public void onUnion() {
-
             }
         });
     }

@@ -14,11 +14,8 @@ import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v08.api.Api;
 import org.raml.v2.api.model.v08.resources.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Created by Jean-Philippe Belanger on 12/25/16.
@@ -50,7 +47,7 @@ public class RamlV08 {
         Api api  = buildApiV08(test, raml);
         V08TypeRegistry registry = new V08TypeRegistry();
         V08Finder typeFinder = new V08Finder(api, new GAbstractionFactory(), registry);
-        CurrentBuild currentBuild = new CurrentBuild(typeFinder, "funk", "funk", "funk");
+        CurrentBuild currentBuild = new CurrentBuild(typeFinder);
         currentBuild.constructClasses();
         ResourceBuilder builder = new ResourceBuilder(currentBuild, new V08GResource(new GAbstractionFactory(), api.resources().get(0), typeFinder.globalSchemas(), registry),
                 name, uri);

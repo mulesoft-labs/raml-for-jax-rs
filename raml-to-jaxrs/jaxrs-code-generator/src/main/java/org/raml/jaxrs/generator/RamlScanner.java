@@ -24,33 +24,16 @@ import java.net.URL;
  */
 public class RamlScanner {
 
-    private final String destDir;
-    private final String packageName;
-    private final String modelPackageName;
-    private final String supportPackage;
+    private final Configuration configuration;
 
-    public RamlScanner(String destDir, String packageName, String modelPackageName, String supportPackage) {
-        this.destDir = destDir;
-        this.packageName = packageName;
-        this.modelPackageName = modelPackageName;
-        this.supportPackage = supportPackage;
+    public RamlScanner(Configuration configuration) {
+        this.configuration = configuration;
     }
 
-    public RamlScanner(String destDir, String packageName) {
-        this.destDir = destDir;
-        this.packageName = packageName;
-        this.modelPackageName = packageName;
-        this.supportPackage =  packageName;
-    }
 
     public void handle(String resourceName) throws IOException, GenerationException {
 
-        handle(RamlScanner.class.getResource(resourceName), ".");
-    }
-
-    public void handle(String resourceName, String directory) throws IOException, GenerationException {
-
-        handle(RamlScanner.class.getResource(resourceName), directory);
+        handle(RamlScanner.class.getResource(resourceName));
     }
 
     public void handle(File resource) throws IOException, GenerationException {
@@ -58,9 +41,9 @@ public class RamlScanner {
         handle(new FileInputStream(resource), resource.getParentFile().getAbsolutePath() + "/");
     }
 
-    public void handle(URL resourceName, String directory) throws IOException, GenerationException {
+    public void handle(URL resourceName) throws IOException, GenerationException {
 
-        handle(resourceName.openStream(), directory);
+        handle(resourceName.openStream(), ".");
     }
 
     public void handle(InputStream stream, String directory) throws GenerationException, IOException {
@@ -80,8 +63,7 @@ public class RamlScanner {
     public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
         V10TypeRegistry registry = new V10TypeRegistry();
-        CurrentBuild build = new CurrentBuild(new V10Finder(api, registry), packageName, modelPackageName, supportPackage);
-        Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxrs"));
+        CurrentBuild build = new CurrentBuild(new V10Finder(api, registry));
         configuration.setupBuild(build);
         build.constructClasses();
 
@@ -94,7 +76,7 @@ public class RamlScanner {
         }
 
 
-        build.generate(destDir);
+        build.generate(configuration.getOutputDirectory());
     }
 
 
@@ -103,8 +85,7 @@ public class RamlScanner {
         GAbstractionFactory factory = new GAbstractionFactory();
         V08TypeRegistry registry = new V08TypeRegistry();
         V08Finder typeFinder = new V08Finder(api, factory, registry);
-        CurrentBuild build = new CurrentBuild(typeFinder, packageName, modelPackageName, supportPackage);
-        Configuration configuration = Configuration.createConfiguration(System.getProperty("ramltojaxrs"));
+        CurrentBuild build = new CurrentBuild(typeFinder);
         configuration.setupBuild(build);
 
         build.constructClasses();
@@ -117,7 +98,7 @@ public class RamlScanner {
             resourceHandler.handle(typeFinder.globalSchemas(), registry, resource);
         }
 
-        build.generate(destDir);
+        build.generate(configuration.getOutputDirectory());
     }
 
 }

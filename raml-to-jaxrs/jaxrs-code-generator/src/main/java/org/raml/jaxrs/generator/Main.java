@@ -33,22 +33,21 @@ public class Main {
         String directory = command.getOptionValue("d");
         String extensions = command.getOptionValue("e");
 
-        if ( extensions != null ) {
-            System.getProperties().setProperty("ramltojaxrs", extensions);
-        }
-
-        if ( modelDir == null ) {
-            modelDir = resourceDir;
-        }
-
-        if ( supportDir == null ) {
-
-            supportDir = resourceDir;
-        }
-
         List<String> ramlFiles =  command.getArgList();
 
-        RamlScanner scanner = new RamlScanner(directory, resourceDir, modelDir, supportDir );
+        Configuration configuration = new Configuration();
+        configuration.setModelPackage(modelDir);
+        configuration.setResourcePackage(resourceDir);
+        configuration.setSupportPackage(supportDir);
+        configuration.setOutputDirectory(new File(directory));
+
+        //configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
+        //configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
+        if ( extensions != null ) {
+            configuration.setTypeConfiguration(extensions.split(("\\s*,\\s*")));
+        }
+
+        RamlScanner scanner = new RamlScanner(configuration);
 
         for (String ramlFile : ramlFiles) {
 

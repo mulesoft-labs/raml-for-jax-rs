@@ -1,13 +1,12 @@
 package org.raml.jaxrs.generator;
 
-import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JacksonBasicExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtensions;
-import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.raml.jaxrs.generator.builders.extensions.resources.ResourceExtension;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,71 +16,97 @@ import java.util.Map;
 public class Configuration {
 
 
-    private final Map<String, String> props;
-
-    public static Configuration createConfiguration(String configString) {
-
-        Map<String, String> props = parseString(configString);
-
-        return new Configuration(props);
-    }
-
-    private static Map<String, String> parseString(String configString) {
-
-        Map<String, String> props = new HashMap<>();
-        if ( configString == null ) {
-
-            return props;
-        }
-
-        String[] propArray = configString.split(",");
-        for (String prop : propArray) {
-
-            String[] pair = prop.split("=");
-            if ( pair.length == 1) {
-                props.put(pair[0], "true");
-            } else {
-
-                props.put(pair[0], pair[1]);
-            }
-        }
-
-        return props;
-    }
-
-    public Configuration(Map<String, String> props) {
-
-        this.props = props;
-    }
-
+    private String modelPackage;
+    private File outputDirectory;
+    private AnnotationStyle jsonMapper;
+    private Map<String, String> jsonMapperConfiguration = new HashMap<>();
+    private List<ResourceExtension> resourceExtensions = new ArrayList<>();
+    private String[] typeConfiguration = new String[0];
+    private String resourcePackage;
+    private String supportPackage;
 
 
     public void setupBuild(CurrentBuild build) {
 
-        if ( props.containsKey("useJackson")) {
-
-            build.addExtension(new JacksonExtensions());
-        }
-
-        if ( props.containsKey("useJsr303")) {
-
-            build.addExtension(new Jsr303Extension());
-        }
-
-        if ( props.containsKey("useGson")) {
-
-            build.addExtension(new GsonExtension());
-        }
-
-        if ( props.containsKey("useJaxb")) {
-
-            build.addExtension(new JaxbTypeExtension());
-        }
-
-        if ( props.containsKey("useJavadoc")) {
-
-            build.addExtension(new JavadocTypeExtension());
-        }
+        build.setConfiguration(this);
     }
 
+    public void setJsonMapper(AnnotationStyle jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
+
+    public Map<String, String> getJsonMapperConfiguration() {
+        return jsonMapperConfiguration;
+    }
+
+    public void setJsonMapperConfiguration(Map<String, String> jsonMapperConfiguration) {
+        this.jsonMapperConfiguration = jsonMapperConfiguration;
+    }
+
+    public List<ResourceExtension> getResourceExtensions() {
+        return resourceExtensions;
+    }
+
+    public String getSupportPackage() {
+        if ( supportPackage == null ) {
+            return resourcePackage;
+        }
+        return supportPackage;
+    }
+
+    public void setSupportPackage(String supportPackage) {
+        this.supportPackage = supportPackage;
+    }
+
+    public String getModelPackage() {
+
+        if ( modelPackage == null ) {
+            return resourcePackage;
+        }
+        return modelPackage;
+    }
+
+    public void setModelPackage(String modelPackage) {
+        this.modelPackage = modelPackage;
+    }
+
+    public String getResourcePackage() {
+        return resourcePackage;
+    }
+
+    public void setResourcePackage(String resourcePackage) {
+        this.resourcePackage = resourcePackage;
+    }
+
+    public String[] getTypeConfiguration() {
+        return typeConfiguration;
+    }
+
+    public void setTypeConfiguration(String[] typeConfiguration) {
+
+        this.typeConfiguration = typeConfiguration;
+    }
+
+    public File getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    public void setOutputDirectory(File outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+
+    public static Configuration defaultConfiguration() {
+
+        Configuration configuration = new Configuration();
+        configuration.setModelPackage("model");
+        configuration.setResourcePackage("resource");
+        configuration.setSupportPackage("support");
+        configuration.setOutputDirectory(new File("."));
+//        configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
+//        configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
+        configuration.setTypeConfiguration(new String[] {"jackson"});
+
+        return configuration;
+
+    }
 }

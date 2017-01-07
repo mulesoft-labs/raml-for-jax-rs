@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class ResponseSupport {
 
-    public static void buildSupportClasses(String rootDir, String defaultPackage) throws IOException {
+    public static void buildSupportClasses(File rootDir, String defaultPackage) throws IOException {
 
         TypeSpec.Builder builder = TypeSpec.classBuilder(ClassName.get(defaultPackage, "ResponseDelegate"))
                 .addModifiers(Modifier.PUBLIC)
@@ -69,7 +69,7 @@ public class ResponseSupport {
             builder.addMethod(methodBuilder.build());
 
             JavaFile.Builder file = JavaFile.builder(defaultPackage, builder.build());
-            file.build().writeTo(new File(rootDir));
+            file.build().writeTo(rootDir);
         }
     }
 

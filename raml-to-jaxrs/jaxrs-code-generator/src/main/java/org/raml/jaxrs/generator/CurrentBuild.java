@@ -7,6 +7,11 @@ import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtensions;
+import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
@@ -26,9 +31,6 @@ import java.util.Map;
 public class CurrentBuild {
 
     private final GFinder typeFinder;
-    private final String resourcePackage;
-    private final String modelPackage;
-    private final String supportPackage;
 
     private final List<ResourceGenerator> resources = new ArrayList<>();
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
@@ -36,30 +38,30 @@ public class CurrentBuild {
     private Map<String, GeneratorType> foundTypes = new HashMap<>();
 
     private final List<JavaPoetTypeGenerator> supportGenerators = new ArrayList<>();
+    private Configuration configuration;
 
-    public CurrentBuild(GFinder typeFinder, String resourcePackage, String modelPackage, String supportPackage) {
+    public CurrentBuild(GFinder typeFinder) {
 
         this.typeFinder = typeFinder;
-        this.resourcePackage = resourcePackage;
-        this.modelPackage = modelPackage;
-        this.supportPackage = supportPackage;
+        this.configuration = Configuration.defaultConfiguration();
     }
 
-    public void addExtension(TypeExtension extension) {
-
-        typeExtensionList.addExtension(extension);
-    }
 
     public String getResourcePackage() {
-        return resourcePackage;
+
+        return configuration.getResourcePackage();
     }
 
     public String getModelPackage() {
 
-        return modelPackage;
+        return configuration.getModelPackage();
     }
 
-    public void generate(final String rootDirectory) throws IOException {
+    public String getSupportPackage() {
+        return configuration.getSupportPackage();
+    }
+
+    public void generate(final File rootDirectory) throws IOException {
 
         if (resources.size() > 0) {
             ResponseSupport.buildSupportClasses(rootDirectory, getSupportPackage());
@@ -76,7 +78,7 @@ public class CurrentBuild {
                              public void into(TypeSpec.Builder g) throws IOException {
 
                                  JavaFile.Builder file = JavaFile.builder(getModelPackage(), g.build());
-                                 file.build().writeTo(new File(rootDirectory));
+                                 file.build().writeTo(rootDirectory);
                              }
                          }
                 );
@@ -90,7 +92,7 @@ public class CurrentBuild {
                     @Override
                     public void into(JCodeModel g) throws IOException {
 
-                        g.build(new File(rootDirectory));
+                        g.build(rootDirectory);
                     }
                 });
             }
@@ -101,7 +103,7 @@ public class CurrentBuild {
                 @Override
                 public void into(TypeSpec g) throws IOException {
                     JavaFile.Builder file = JavaFile.builder(getResourcePackage(), g);
-                    file.build().writeTo(new File(rootDirectory));
+                    file.build().writeTo(rootDirectory);
                 }
             });
         }
@@ -113,7 +115,7 @@ public class CurrentBuild {
                 public void into(TypeSpec.Builder g) throws IOException {
 
                     JavaFile.Builder file = JavaFile.builder(getSupportPackage(), g.build());
-                    file.build().writeTo(new File(rootDirectory));
+                    file.build().writeTo(rootDirectory);
                 }
             });
         }
@@ -163,10 +165,35 @@ public class CurrentBuild {
         }
     }
 
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
 
-    public String getSupportPackage() {
-        return supportPackage;
+        for (String s : this.configuration.getTypeConfiguration()){
+
+            if ( s.equals("jackson") ) {
+                typeExtensionList.addExtension(new JacksonExtensions());
+            }
+
+            if ( s.equals("jaxb") ) {
+
+                typeExtensionList.addExtension(new JaxbTypeExtension());
+            }
+
+            if ( s.equals("gson") ) {
+
+                typeExtensionList.addExtension(new GsonExtension());
+            }
+
+            if ( s.equals("javadoc") ) {
+
+                typeExtensionList.addExtension(new JavadocTypeExtension());
+            }
+
+            if ( s.equals("jsr303") ) {
+
+                typeExtensionList.addExtension(new Jsr303Extension());
+            }
+        }
     }
-
 }
 

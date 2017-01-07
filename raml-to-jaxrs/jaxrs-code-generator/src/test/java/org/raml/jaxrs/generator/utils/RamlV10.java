@@ -3,11 +3,11 @@ package org.raml.jaxrs.generator.utils;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstractionFactory;
-import org.raml.jaxrs.generator.v10.V10Finder;
-import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
+import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.jaxrs.generator.v10.V10GResource;
+import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
@@ -47,7 +47,7 @@ public class RamlV10 {
 
         Api api  = buildApiV10(test, raml);
         V10TypeRegistry registry = new V10TypeRegistry();
-        CurrentBuild currentBuild = new CurrentBuild(new V10Finder(api, registry), "funk", "funk", "funk");
+        CurrentBuild currentBuild = new CurrentBuild(new V10Finder(api, registry));
         currentBuild.constructClasses();
         ResourceBuilder builder = new ResourceBuilder(currentBuild, new V10GResource(registry, new GAbstractionFactory(), api.resources().get(0)),
                 name, uri);
@@ -69,7 +69,7 @@ public class RamlV10 {
             }
             throw new AssertionError();
         } else {
-            CurrentBuild currentBuild = new CurrentBuild(new V10Finder(ramlModelResult.getApiV10(), registry), "funk", "funk", "funk");
+            CurrentBuild currentBuild = new CurrentBuild(new V10Finder(ramlModelResult.getApiV10(), registry));
             currentBuild.constructClasses();
             return currentBuild;
         }

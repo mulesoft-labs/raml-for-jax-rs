@@ -2,6 +2,7 @@ package server.humanity;
 
 import example.types.ArmImpl;
 import example.types.CorpseImpl;
+import example.types.Gender;
 import example.types.Human;
 import example.types.Humanity;
 import example.types.Limb;
@@ -28,7 +29,7 @@ public class HumanityImpl implements Humanity {
         if ( "person".equals(type) ) {
 
             PersonImpl pi = new PersonImpl();
-            pi.setMale(true);
+            pi.setGender(Gender.FEMALE);
             pi.setWeight(180);
 
             pi.setDateOfBirth(new Date());
@@ -46,7 +47,7 @@ public class HumanityImpl implements Humanity {
         } else {
 
             CorpseImpl ci = new CorpseImpl();
-            ci.setMale(false);
+            ci.setGender(Gender.OTHER);
             ci.setDateOfDeath(new Date());
             return GetHumanityResponse.respond200WithApplicationJson(ci);
         }

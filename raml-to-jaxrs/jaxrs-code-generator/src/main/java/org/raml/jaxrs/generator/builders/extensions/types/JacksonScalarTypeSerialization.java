@@ -1,8 +1,10 @@
 package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
@@ -62,4 +64,14 @@ public class JacksonScalarTypeSerialization extends TypeExtensionHelper {
         }
     }
 
+    @Override
+    public void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration,
+            String name) {
+
+
+        builder.addAnnotation(
+                AnnotationSpec.builder(JsonProperty.class)
+                        .addMember("value", "$S", name)
+                        .build());
+    }
 }

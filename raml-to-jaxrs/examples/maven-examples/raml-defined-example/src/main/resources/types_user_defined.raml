@@ -6,6 +6,9 @@ uses:
   ramltojaxrs: ramltojaxrs.raml
 
 types:
+
+    Gender:
+        enum: [male, female, other]
     Leg:
         properties:
             toes: integer
@@ -48,9 +51,8 @@ types:
             requestTime:
                 type: datetime
                 format: rfc2616
-
-            male:
-                type: boolean
+            gender:
+                type: Gender
 /humanity:
     get:
         queryParameters:

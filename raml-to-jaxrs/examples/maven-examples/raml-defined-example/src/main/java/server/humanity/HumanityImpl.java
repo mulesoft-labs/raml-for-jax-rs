@@ -1,4 +1,4 @@
-package server;
+package server.humanity;
 
 import example.types.ArmImpl;
 import example.types.CorpseImpl;

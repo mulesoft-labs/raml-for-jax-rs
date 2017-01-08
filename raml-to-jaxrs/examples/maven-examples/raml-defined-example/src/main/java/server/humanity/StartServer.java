@@ -1,4 +1,4 @@
-package server;
+package server.humanity;
 
 import org.eclipse.jetty.server.Server;
 import org.glassfish.jersey.jetty.JettyHttpContainerFactory;

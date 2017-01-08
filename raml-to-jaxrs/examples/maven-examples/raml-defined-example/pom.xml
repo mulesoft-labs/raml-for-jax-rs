@@ -43,6 +43,7 @@
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/types_user_defined.raml</ramlFile>
                     <resourcePackage>example.types</resourcePackage>
+                    <configureTypesFor>jackson</configureTypesFor>
                 </configuration>
             </plugin>
         </plugins>

@@ -44,7 +44,7 @@ public class V10GTypeObject extends V10GTypeHelper {
         this.properties = properties;
         this.parentTypes = parentTypes;
 
-        if (! isInline() && isObject() && !name.equals("object") ) {
+        if ( isObject() && !name.equals("object") ) {
 
             registry.addChildToParent(parentTypes(), this);
         }

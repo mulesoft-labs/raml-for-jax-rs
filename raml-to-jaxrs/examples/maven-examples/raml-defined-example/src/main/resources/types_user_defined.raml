@@ -41,6 +41,14 @@ types:
         properties:
             humanType: string
             limbs: Limb
+            timeOfArrival: datetime-only
+            timeOfBirth: time-only
+            dateOfBirth: date-only
+            instantOfBirth: datetime
+            requestTime:
+                type: datetime
+                format: rfc2616
+
             male:
                 type: boolean
 /humanity:

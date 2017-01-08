@@ -8,7 +8,8 @@ public class JacksonExtensions extends TypeExtensionList {
 
     public JacksonExtensions() {
 
-        addExtension(new JavadocTypeExtension());
+        addExtension(new JacksonBasicExtension());
+        addExtension(new JacksonScalarTypeSerialization());
         addExtension(new JacksonDiscriminatorInheritanceTypeExtension());
         addExtension(new JacksonUnionExtension());
     }

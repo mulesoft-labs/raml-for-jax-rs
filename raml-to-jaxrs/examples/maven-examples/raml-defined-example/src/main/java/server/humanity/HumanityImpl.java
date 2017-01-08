@@ -30,6 +30,14 @@ public class HumanityImpl implements Humanity {
             PersonImpl pi = new PersonImpl();
             pi.setMale(true);
             pi.setWeight(180);
+
+            pi.setDateOfBirth(new Date());
+            pi.setInstantOfBirth(new Date());
+            pi.setTimeOfArrival(new Date());
+            pi.setDateOfBirth(new Date());
+            pi.setTimeOfBirth(new Date());
+            pi.setRequestTime(new Date());
+
             CorpseImpl ci = new CorpseImpl();
             ci.setDateOfDeath(new Date());
             pi.setSiblings(Collections.<Human>singletonList(ci));

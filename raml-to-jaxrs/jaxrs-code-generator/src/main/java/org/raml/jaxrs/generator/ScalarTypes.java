@@ -8,11 +8,13 @@ import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.FileTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.TimeOnlyTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.File;
@@ -31,6 +33,8 @@ public class ScalarTypes {
             .put(IntegerTypeDeclaration.class, int.class)
             .put(BooleanTypeDeclaration.class, boolean.class)
             .put(DateTimeOnlyTypeDeclaration.class, Date.class)
+            .put(TimeOnlyTypeDeclaration.class, Date.class)
+            .put(DateTimeTypeDeclaration.class, Date.class)
             .put(DateTypeDeclaration.class, Date.class)
             .put(NumberTypeDeclaration.class, BigDecimal.class)
             .put(StringTypeDeclaration.class, String.class)

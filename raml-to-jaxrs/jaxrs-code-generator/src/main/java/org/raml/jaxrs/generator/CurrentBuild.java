@@ -3,6 +3,7 @@ package org.raml.jaxrs.generator;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
+import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
@@ -194,6 +195,10 @@ public class CurrentBuild {
                 typeExtensionList.addExtension(new Jsr303Extension());
             }
         }
+    }
+
+    public GenerationConfig getJsonMapperConfig() {
+        return configuration.createJsonSchemaGenerationConfig();
     }
 }
 

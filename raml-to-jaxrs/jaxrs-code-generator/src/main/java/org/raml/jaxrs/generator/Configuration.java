@@ -1,7 +1,9 @@
 package org.raml.jaxrs.generator;
 
 import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class Configuration {
     private String[] typeConfiguration = new String[0];
     private String resourcePackage;
     private String supportPackage;
+    private List<TypeExtension> typeExtensions = new ArrayList<>();
 
 
     public void setupBuild(CurrentBuild build) {
@@ -109,4 +112,14 @@ public class Configuration {
         return configuration;
 
     }
+
+    public List<TypeExtension> getTypeExtensions() {
+        return typeExtensions;
+    }
+
+    public GenerationConfig createJsonSchemaGenerationConfig()
+    {
+        return new RamlToJaxRSGenerationConfig(jsonMapper, jsonMapperConfiguration);
+    }
+
 }

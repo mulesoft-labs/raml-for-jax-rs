@@ -81,6 +81,11 @@ public class ScalarTypes {
             return properType(BigDecimal.class, (NumberTypeDeclaration) type);
         }
 
+        if ( type instanceof BooleanTypeDeclaration ) {
+
+            return shouldUsePrimitiveType((BooleanTypeDeclaration) type) ? boolean.class: Boolean.class;
+        }
+
         return scalarToType.get(type.getClass().getInterfaces()[0]);
     }
 
@@ -100,6 +105,18 @@ public class ScalarTypes {
     }
 
     private static boolean shouldUsePrimitiveType(NumberTypeDeclaration type) {
+
+        Boolean shouldUse = Annotations.USE_PRIMITIVE_TYPE.get(type);
+        if (shouldUse != null && shouldUse) {
+
+            return true;
+        } else {
+
+            return type.required();
+        }
+    }
+
+    private static boolean shouldUsePrimitiveType(BooleanTypeDeclaration type) {
 
         Boolean shouldUse = Annotations.USE_PRIMITIVE_TYPE.get(type);
         if (shouldUse != null && shouldUse) {

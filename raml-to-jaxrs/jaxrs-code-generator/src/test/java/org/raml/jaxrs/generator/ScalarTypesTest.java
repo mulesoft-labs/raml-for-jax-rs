@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeInstance;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
@@ -14,7 +14,7 @@ import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 /**
@@ -56,6 +56,7 @@ public class ScalarTypesTest {
 
         when(integer.required()).thenReturn(true);
         when(number.required()).thenReturn(true);
+        when(bool.required()).thenReturn(true);
 
         assertEquals(int.class, ScalarTypes.scalarToJavaType(integer));
         assertEquals(BigDecimal.class, ScalarTypes.scalarToJavaType(number));

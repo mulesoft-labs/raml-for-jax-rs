@@ -112,7 +112,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 	 * The name of a generator extension class (implements
 	 * org.raml.jaxrs.codegen.core.ext.GeneratorExtension)
 	 */
-	@Parameter(property = "resourceExtensions")
+	//@Parameter(property = "resourceExtensions")
 	private String[] resourceExtensions;
 
     /**
@@ -192,7 +192,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 
                     }
 
-                    configuration.getResourceExtensions().add((ResourceExtension) c.newInstance());
+                    configuration.getTypeExtensions().add((TypeExtension) c.newInstance());
                 }
             }
 

@@ -34,7 +34,7 @@ public class SchemaTypeFactory {
 
     public static TypeGenerator createJsonType(CurrentBuild currentBuild, GType type) {
 
-        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(currentBuild.getModelPackage(),
+        JsonSchemaTypeGenerator gen = new JsonSchemaTypeGenerator(currentBuild, currentBuild.getModelPackage(),
                 (ClassName) type.defaultJavaTypeName(currentBuild.getModelPackage()), type.schema());
         currentBuild.newGenerator(type.name(), gen);
         return gen;

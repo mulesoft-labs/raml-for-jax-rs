@@ -5,7 +5,6 @@ import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
@@ -29,8 +28,6 @@ public class V10GTypeObject extends V10GTypeHelper {
     private final boolean inline;
     private final List<V10GProperty> properties;
     private final List<V10GType> parentTypes;
-
-    private TypeName modelSpecifiedJavaType;
 
 
     V10GTypeObject(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName, String defaultJavatypeName,
@@ -83,11 +80,6 @@ public class V10GTypeObject extends V10GTypeHelper {
     @Override
     public TypeName defaultJavaTypeName(String pack) {
 
-        if ( modelSpecifiedJavaType != null ) {
-
-            return modelSpecifiedJavaType;
-        }
-
         if ( isInline() ) {
             return ClassName.get("", defaultJavatypeName);
         } else {
@@ -108,7 +100,7 @@ public class V10GTypeObject extends V10GTypeHelper {
     }
 
     public boolean isInline() {
-        return TypeUtils.shouldCreateNewClass(typeDeclaration, typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
+        return inline;
     }
 
 

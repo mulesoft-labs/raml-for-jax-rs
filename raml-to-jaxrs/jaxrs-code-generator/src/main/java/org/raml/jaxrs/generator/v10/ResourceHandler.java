@@ -24,7 +24,7 @@ public class ResourceHandler {
 
         GAbstractionFactory factory = new GAbstractionFactory();
 
-        ResourceBuilder rg = new ResourceBuilder(build, factory.newResource(registry, resource), resource.displayName().value(),
+        ResourceBuilder rg = new ResourceBuilder(build, factory.newResource(registry, resource), resource.resourcePath(),
                 resource.relativeUri().value());
 
         build.newResource(rg);

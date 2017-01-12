@@ -148,7 +148,7 @@ public class V10TypeRegistry {
             } else if ( typeDeclaration instanceof UnionTypeDeclaration) {
                 type = V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration, typeDeclaration.name(), javaTypeName);
             } else {
-                type = V10GTypeFactory.createExplicitlyNamedType(this, name, javaTypeName, typeDeclaration);
+                type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration);
             }
             types.put(type.name(), type);
             return type;

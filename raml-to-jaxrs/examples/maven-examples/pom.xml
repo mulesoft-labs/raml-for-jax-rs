@@ -19,6 +19,8 @@
         <module>scalar-types</module>
         <module>type-torture-test</module>
         <module>simple-raml08</module>
+        <module>marketing-example</module>
+
     </modules>
     <build>
         <pluginManagement>

@@ -31,12 +31,12 @@ public class TypeTest {
 
                 TypeSpec spec = g.build();
                 assertEquals(4, spec.fieldSpecs.size());
-                assertEquals("TypeOne", spec.fieldSpecs.get(0).type.toString());
-                assertEquals("TypeOne", spec.fieldSpecs.get(0).name);
+                assertEquals("model.TypeOne", spec.fieldSpecs.get(0).type.toString());
+                assertEquals("typeOne", spec.fieldSpecs.get(0).name);
                 assertEquals("boolean", spec.fieldSpecs.get(1).type.toString());
                 assertEquals("isTypeOne", spec.fieldSpecs.get(1).name);
-                assertEquals("TypeTwo", spec.fieldSpecs.get(2).type.toString());
-                assertEquals("TypeTwo", spec.fieldSpecs.get(2).name);
+                assertEquals("model.TypeTwo", spec.fieldSpecs.get(2).type.toString());
+                assertEquals("typeTwo", spec.fieldSpecs.get(2).name);
                 assertEquals("boolean", spec.fieldSpecs.get(3).type.toString());
                 assertEquals("isTypeTwo", spec.fieldSpecs.get(3).name);
             }
@@ -151,7 +151,7 @@ public class TypeTest {
                 System.err.println(spec);
                 if ( count == 0 ) {
                     assertEquals("getDay", spec.methodSpecs.get(0).name);
-                    assertEquals("ReturnValue", spec.methodSpecs.get(0).returnType.toString());
+                    assertEquals("model.ReturnValue", spec.methodSpecs.get(0).returnType.toString());
                 }
 
                 count ++;
@@ -202,7 +202,7 @@ public class TypeTest {
                 System.err.println(spec);
                 if ( count == 0 ) {
                     assertEquals("getDay", spec.methodSpecs.get(0).name);
-                    assertEquals("java.util.List<ReturnValue>", spec.methodSpecs.get(0).returnType.toString());
+                    assertEquals("java.util.List<model.ReturnValue>", spec.methodSpecs.get(0).returnType.toString());
                 }
 
                 count ++;

@@ -259,7 +259,7 @@ public class ResourceBuilderTestV10 {
                 MethodSpec responseMethod = response.methodSpecs.get(1);
                 assertTrue(response.methodSpecs.get(0).isConstructor());
                 assertEquals("respond200WithApplicationJson", responseMethod.name);
-                assertEquals("TypeOne", responseMethod.parameters.get(0).type.toString());
+                assertEquals("model.TypeOne", responseMethod.parameters.get(0).type.toString());
                 assertTrue(responseMethod.hasModifier(Modifier.PUBLIC));
                 assertTrue(responseMethod.hasModifier(Modifier.STATIC));
                 assertTrue(responseMethod.code.toString().contains(".header(\"Content-Type\", \"application/json\")"));

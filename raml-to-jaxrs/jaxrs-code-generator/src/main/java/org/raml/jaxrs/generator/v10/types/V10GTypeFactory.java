@@ -65,14 +65,14 @@ public class V10GTypeFactory {
                 getParents(typeDeclaration, registry));
     }
 
-    public static V10GType createExplicitlyNamedType(V10TypeRegistry registry, String ramlName, String javaClassName,
+    public static V10GType createInlineType(V10TypeRegistry registry, String ramlName, String javaClassName,
             TypeDeclaration typeDeclaration) {
         return new V10GTypeObject(
                 registry,
                 typeDeclaration,
                 ramlName,
                 Annotations.CLASS_NAME.get(typeDeclaration, javaClassName),
-                false,
+                true,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
     }

@@ -7,7 +7,6 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
@@ -48,14 +47,15 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
             V10GType type = registry.fetchType(typeDeclaration);
 
             TypeName typeName = type.defaultJavaTypeName(currentBuild.getModelPackage());
+            String fieldName = Names.methodName(typeDeclaration.name());
             builder
-                    .addField(FieldSpec.builder(typeName, typeDeclaration.name(), Modifier.PRIVATE).build())
+                    .addField(FieldSpec.builder(typeName, fieldName, Modifier.PRIVATE).build())
                     .addField(FieldSpec.builder(TypeName.BOOLEAN, Names.variableName("is" , typeDeclaration.name()), Modifier.PRIVATE).build())
                     .addMethod(
                             MethodSpec.constructorBuilder()
-                                    .addParameter(ParameterSpec.builder(typeName, typeDeclaration.name()).build())
+                                    .addParameter(ParameterSpec.builder(typeName, fieldName).build())
                                     .addModifiers(Modifier.PUBLIC)
-                                    .addStatement("this.$L = $L", typeDeclaration.name(), typeDeclaration.name())
+                                    .addStatement("this.$L = $L", fieldName, fieldName)
                                     .addStatement("this.is$L = true", typeDeclaration.name())
                                     .build())
                     .addMethod(
@@ -63,7 +63,7 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
                                 .addModifiers(Modifier.PUBLIC)
                                 .returns(typeName)
                                 .addStatement("if ( is$L == false) throw new $T(\"fetching wrong type out of the union: $T\")", typeDeclaration.name(), IllegalStateException.class, typeName)
-                                .addStatement("return $L", typeDeclaration.name())
+                                .addStatement("return $L", fieldName)
                                 .build()
                     )
                     .addMethod(

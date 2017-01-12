@@ -2,12 +2,12 @@ package org.raml.jaxrs.generator.v10;
 
 import org.junit.Test;
 import org.raml.jaxrs.generator.GAbstractionFactory;
-import org.raml.jaxrs.generator.GRequest;
-import org.raml.jaxrs.generator.GResponseType;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.jaxrs.generator.utils.RamlV10;
 import org.raml.v2.api.model.v10.resources.Resource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Jean-Philippe Belanger on 12/11/16.

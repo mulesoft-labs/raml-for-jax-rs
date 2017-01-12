@@ -1,7 +1,7 @@
 package org.raml.jaxrs.generator.v10;
 
-import org.raml.jaxrs.generator.GRequest;
-import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**

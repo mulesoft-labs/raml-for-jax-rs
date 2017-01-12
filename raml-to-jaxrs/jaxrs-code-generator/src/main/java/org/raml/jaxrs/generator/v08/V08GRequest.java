@@ -1,10 +1,8 @@
 package org.raml.jaxrs.generator.v08;
 
-import org.raml.jaxrs.generator.GRequest;
-import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
-import org.raml.v2.api.model.v08.methods.Method;
-import org.raml.v2.api.model.v08.resources.Resource;
 
 import java.util.Set;
 

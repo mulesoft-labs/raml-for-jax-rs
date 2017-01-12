@@ -1,5 +1,8 @@
 package org.raml.jaxrs.generator.v10;
 
+import org.raml.jaxrs.generator.GenerationException;
+import org.raml.jaxrs.generator.extension.MethodExtension;
+import org.raml.jaxrs.generator.extension.ResourceExtension;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
@@ -43,6 +46,52 @@ public abstract class Annotations<T> {
             return getWithDefault(target, "types", "abstract", false);
         }
     };
+
+    public static Annotations<? extends ResourceExtension> ON_RESOURCE_CLASS_CREATION = new Annotations<ResourceExtension>() {
+        @Override
+        public ResourceExtension get(Annotable target) {
+            String className = getWithDefault(target, "resources", "onResourceCreation", null);
+            return createExtension(className, ResourceExtension.NULL_EXTENSION);
+        }
+    };
+
+    public static Annotations<? extends ResourceExtension> ON_RESOURCE_CLASS_FINISH = new Annotations<ResourceExtension>() {
+        @Override
+        public ResourceExtension get(Annotable target) {
+            String className = getWithDefault(target, "resources", "onResourceFinish", null);
+            return createExtension(className, ResourceExtension.NULL_EXTENSION);
+        }
+    };
+
+    public static Annotations<? extends MethodExtension> ON_METHOD_CREATION = new Annotations<MethodExtension>() {
+        @Override
+        public MethodExtension get(Annotable target) {
+            String className = getWithDefault(target, "methods", "onMethodCreation", null);
+            return createExtension(className, MethodExtension.NULL_EXTENSION);
+        }
+    };
+
+    public static Annotations<? extends MethodExtension> ON_METHOD_FINISH = new Annotations<MethodExtension>() {
+        @Override
+        public MethodExtension get(Annotable target) {
+            String className = getWithDefault(target, "methods", "onMethodFinish", null);
+            return createExtension(className, MethodExtension.NULL_EXTENSION);
+        }
+    };
+
+    private static <T> T createExtension(String className, T nullExtension) {
+        if ( className == null ) {
+
+            return nullExtension;
+        } else {
+
+            try {
+                return (T) Class.forName(className).newInstance();
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                throw new GenerationException("Cannot find resource creation extension");
+            }
+        }
+    }
 
     private static<T> T getWithDefault(Annotable target, String annotationName, String propName, T def) {
         T b = Annotations.evaluate(target, annotationName, propName);
@@ -108,6 +157,16 @@ public abstract class Annotations<T> {
     public T get(V10GType type ) {
 
         return get(type.implementation());
+    }
+
+    public T get(V10GResource resource ) {
+
+        return get(resource.implementation());
+    }
+
+    public T get(V10GMethod method ) {
+
+        return get(method.implementation());
     }
 
     public T get(V10GType type, T def ) {

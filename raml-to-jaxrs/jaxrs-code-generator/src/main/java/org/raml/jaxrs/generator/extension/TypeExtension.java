@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator.builders.extensions.types;
+package org.raml.jaxrs.generator.extension;
 
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;

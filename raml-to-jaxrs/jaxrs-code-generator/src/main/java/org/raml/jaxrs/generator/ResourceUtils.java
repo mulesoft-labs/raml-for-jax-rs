@@ -1,10 +1,10 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.collect.Multimap;
-import org.raml.jaxrs.generator.GMethod;
-import org.raml.jaxrs.generator.GRequest;
-import org.raml.jaxrs.generator.GResource;
-import org.raml.jaxrs.generator.GResponse;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
 
 /**
  * Created by Jean-Philippe Belanger on 12/4/16.

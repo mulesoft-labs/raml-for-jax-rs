@@ -2,14 +2,14 @@ package org.raml.jaxrs.generator.v10.types;
 
 import com.squareup.javapoet.ClassName;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GProperty;
-import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.GeneratorType;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.ramltypes.GProperty;
+import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.CompositeRamlTypeGenerator;
 import org.raml.jaxrs.generator.v10.EnumerationGenerator;

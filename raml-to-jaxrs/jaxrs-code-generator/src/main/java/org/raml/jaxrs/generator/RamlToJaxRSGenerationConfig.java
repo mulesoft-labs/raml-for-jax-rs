@@ -1,6 +1,7 @@
 package org.raml.jaxrs.generator;
 
 import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 
@@ -48,13 +49,13 @@ class RamlToJaxRSGenerationConfig extends DefaultGenerationConfig {
     }
 
     @Override
-    public Class getCustomAnnotator() {
+    public Class<? extends Annotator> getCustomAnnotator() {
         String className = getConfiguredValueStr("customAnnotator", null);
         if (className == null) {
             return NoopAnnotator.class;
         } else {
             try {
-                return Class.forName(className);
+                return (Class<? extends Annotator>) Class.forName(className);
             } catch (ClassNotFoundException e) {
 
                 throw new GenerationException(e);

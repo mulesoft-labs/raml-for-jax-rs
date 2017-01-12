@@ -2,11 +2,11 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.raml.jaxrs.generator.GMethod;
-import org.raml.jaxrs.generator.GParameter;
-import org.raml.jaxrs.generator.GRequest;
-import org.raml.jaxrs.generator.GResource;
-import org.raml.jaxrs.generator.GResponse;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GParameter;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
@@ -18,7 +18,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 12/10/16.
  * Just potential zeroes and ones
  */
-class V10GMethod implements GMethod {
+public class V10GMethod implements GMethod {
     private V10GResource v10GResource;
     private final Method method;
     private final List<GParameter> queryParameters;

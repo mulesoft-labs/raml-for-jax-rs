@@ -2,7 +2,7 @@ package org.raml.jaxrs.generator.v10;
 
 import org.junit.Test;
 import org.raml.jaxrs.generator.GFinderListener;
-import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
@@ -13,7 +13,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Jean-Philippe Belanger on 12/6/16.

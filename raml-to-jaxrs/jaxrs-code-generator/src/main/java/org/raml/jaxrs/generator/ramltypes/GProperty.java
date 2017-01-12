@@ -1,12 +1,12 @@
-package org.raml.jaxrs.generator;
+package org.raml.jaxrs.generator.ramltypes;
 
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.jaxrs.generator.GAbstraction;
 
 /**
  * Created by Jean-Philippe Belanger on 12/10/16.
  * Just potential zeroes and ones
  */
-public interface GProperty extends GAbstraction{
+public interface GProperty extends GAbstraction {
     String name();
     GType type();
 

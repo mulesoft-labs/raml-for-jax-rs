@@ -2,11 +2,11 @@ package org.raml.jaxrs.generator.v08;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.raml.jaxrs.generator.GMethod;
-import org.raml.jaxrs.generator.GParameter;
-import org.raml.jaxrs.generator.GRequest;
-import org.raml.jaxrs.generator.GResource;
-import org.raml.jaxrs.generator.GResponse;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GParameter;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
 import org.raml.v2.api.model.v08.bodies.Response;
 import org.raml.v2.api.model.v08.methods.Method;

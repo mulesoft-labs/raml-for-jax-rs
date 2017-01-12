@@ -26,8 +26,8 @@ import org.apache.maven.project.MavenProject;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.RamlScanner;
-import org.raml.jaxrs.generator.builders.extensions.resources.ResourceExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
+import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension;
+import org.raml.jaxrs.generator.extension.TypeExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -166,14 +166,14 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 								+ " cannot be loaded."
 								+ "Have you installed the correct dependency in the plugin configuration?");
 					}
-					if (!((c.newInstance()) instanceof ResourceExtension)) {
+					if (!((c.newInstance()) instanceof TrialResourceExtension)) {
 						throw new MojoExecutionException("resourceExtension " + className
-								+ " does not implement" + ResourceExtension.class.getPackage() + "."
-								+ ResourceExtension.class.getName());
+								+ " does not implement" + TrialResourceExtension.class.getPackage() + "."
+								+ TrialResourceExtension.class.getName());
 
 					}
 
-					configuration.getResourceExtensions().add((ResourceExtension) c.newInstance());
+					configuration.getResourceExtensions().add((TrialResourceExtension) c.newInstance());
 				}
 			}
 
@@ -187,8 +187,8 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
                     }
                     if (!((c.newInstance()) instanceof TypeExtension)) {
                         throw new MojoExecutionException("typeExtension " + className
-                                + " does not implement" + ResourceExtension.class.getPackage() + "."
-                                + ResourceExtension.class.getName());
+                                + " does not implement" + TrialResourceExtension.class.getPackage() + "."
+                                + TrialResourceExtension.class.getName());
 
                     }
 

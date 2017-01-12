@@ -1,10 +1,7 @@
 package org.raml.jaxrs.generator;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import org.raml.jaxrs.generator.ramltypes.GType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 

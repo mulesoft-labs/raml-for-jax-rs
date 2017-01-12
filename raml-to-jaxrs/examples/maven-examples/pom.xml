@@ -13,13 +13,17 @@
     <artifactId>maven-examples</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>raml-defined-example</module>
+<!--
         <module>simple-json-example</module>
         <module>simple-xml-example</module>
-        <module>raml-defined-example</module>
         <module>scalar-types</module>
         <module>type-torture-test</module>
         <module>simple-raml08</module>
+-->
+<!--
         <module>marketing-example</module>
+-->
 
     </modules>
     <build>

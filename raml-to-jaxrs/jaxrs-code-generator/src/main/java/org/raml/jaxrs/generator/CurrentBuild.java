@@ -13,9 +13,9 @@ import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtensions;
 import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
-import org.raml.jaxrs.generator.builders.extensions.types.TypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
+import org.raml.jaxrs.generator.extension.TypeExtension;
 
 import java.io.File;
 import java.io.IOException;

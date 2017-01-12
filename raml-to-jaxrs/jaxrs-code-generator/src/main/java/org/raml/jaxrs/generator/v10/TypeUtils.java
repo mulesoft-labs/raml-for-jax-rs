@@ -1,21 +1,12 @@
 package org.raml.jaxrs.generator.v10;
 
-import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GParameter;
-import org.raml.jaxrs.generator.GProperty;
-import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.ScalarTypes;
-import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.v2.api.model.v10.api.Api;
+import org.raml.jaxrs.generator.ramltypes.GParameter;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 11/28/16.

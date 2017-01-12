@@ -1,7 +1,9 @@
-package org.raml.jaxrs.generator;
+package org.raml.jaxrs.generator.ramltypes;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GAbstraction;
+import org.raml.jaxrs.generator.GObjectType;
 
 import java.util.List;
 

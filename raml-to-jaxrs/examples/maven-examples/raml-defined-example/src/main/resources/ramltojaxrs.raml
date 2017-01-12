@@ -11,3 +11,13 @@ annotationTypes:
                 type: boolean
             abstract?:
                 type: boolean
+    resources:
+        allowedTargets: Resource
+        properties:
+            onResourceClassCreation?: string
+            onResourceClassFinish?: string
+    methods:
+        allowedTargets: Method
+        properties:
+            onMethodCreation?: string
+            onMethodFinish?: string

@@ -12,22 +12,23 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GMethod;
-import org.raml.jaxrs.generator.GParameter;
-import org.raml.jaxrs.generator.GRequest;
-import org.raml.jaxrs.generator.GResource;
-import org.raml.jaxrs.generator.GResponse;
-import org.raml.jaxrs.generator.GResponseType;
-import org.raml.jaxrs.generator.GType;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.HTTPMethods;
 import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.ResourceUtils;
-import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GParameter;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
+import org.raml.jaxrs.generator.ramltypes.GResponseType;
+import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.TypeUtils;
+import org.raml.jaxrs.generator.v10.V10GMethod;
+import org.raml.jaxrs.generator.v10.V10GResource;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -43,12 +44,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -74,14 +71,26 @@ public class ResourceBuilder implements ResourceGenerator {
     public void output(CodeContainer<TypeSpec> container) throws IOException {
 
 
-        final TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
+        TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(AnnotationSpec.builder(Path.class)
                         .addMember("value", "$S", uri).build());
 
+        if ( topResource instanceof V10GResource ) {
+
+            typeSpec = Annotations.ON_RESOURCE_CLASS_CREATION.get((V10GResource) topResource).onResource(build,
+                    (V10GResource) topResource, typeSpec);
+        }
+
         buildResource(typeSpec, topResource);
 
         recurse(typeSpec, topResource);
+
+        if ( topResource instanceof V10GResource ) {
+
+            typeSpec = Annotations.ON_RESOURCE_CLASS_FINISH.get((V10GResource) topResource).onResource(build,
+                    (V10GResource) topResource, typeSpec);
+        }
 
         container.into(typeSpec.build());
     }
@@ -136,7 +145,21 @@ public class ResourceBuilder implements ResourceGenerator {
 
     private void createMethodWithoutBody(TypeSpec.Builder typeSpec, GMethod gMethod, Set<String> mediaTypesForMethod,
             String methodName) {
+
         MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod);
+
+        if ( gMethod instanceof V10GMethod ) {
+
+            methodSpec = Annotations.ON_METHOD_CREATION.get((V10GMethod) gMethod).onMethod(build, (V10GMethod) gMethod, methodSpec);
+        }
+
+        // here I would run my  plugins....
+
+        if ( gMethod instanceof V10GMethod ) {
+
+            methodSpec = Annotations.ON_METHOD_FINISH.get((V10GMethod) gMethod).onMethod(build, (V10GMethod) gMethod, methodSpec);
+        }
+
         typeSpec.addMethod(methodSpec.build());
     }
 

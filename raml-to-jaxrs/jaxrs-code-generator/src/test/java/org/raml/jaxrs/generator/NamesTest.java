@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GParameter;
+import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.v2.api.model.v10.system.types.RelativeUriString;
 
 import java.util.ArrayList;

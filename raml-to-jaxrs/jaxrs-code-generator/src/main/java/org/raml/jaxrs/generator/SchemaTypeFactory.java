@@ -5,6 +5,7 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.ramltypes.GType;
 
 import java.io.File;
 import java.util.Map;

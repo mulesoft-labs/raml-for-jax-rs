@@ -1,4 +1,4 @@
-package org.raml.jaxrs.generator;
+package org.raml.jaxrs.generator.ramltypes;
 
 /**
  * Created by Jean-Philippe Belanger on 12/11/16.

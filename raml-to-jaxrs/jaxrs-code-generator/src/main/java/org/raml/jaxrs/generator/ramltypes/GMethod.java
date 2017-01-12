@@ -1,5 +1,7 @@
-package org.raml.jaxrs.generator;
+package org.raml.jaxrs.generator.ramltypes;
 
+
+import org.raml.jaxrs.generator.GAbstraction;
 
 import java.util.List;
 
@@ -7,7 +9,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 12/10/16.
  * Just potential zeroes and ones
  */
-public interface GMethod extends GAbstraction{
+public interface GMethod extends GAbstraction {
     List<GRequest> body();
     GResource resource();
     String method();

@@ -2,9 +2,8 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.raml.jaxrs.generator.GResponse;
-import org.raml.jaxrs.generator.GResponseType;
-import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
+import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;

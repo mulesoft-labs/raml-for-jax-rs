@@ -2,7 +2,6 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.GFinder;
 import org.raml.jaxrs.generator.GFinderListener;
-import org.raml.jaxrs.generator.GType;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;

@@ -1,6 +1,6 @@
-package org.raml.jaxrs.generator;
+package org.raml.jaxrs.generator.ramltypes;
 
-import org.raml.v2.api.model.v10.resources.Resource;
+import org.raml.jaxrs.generator.GAbstraction;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package org.raml.jaxrs.generator.v08;
 
-import org.raml.jaxrs.generator.GParameter;
-import org.raml.jaxrs.generator.GType;
+import org.raml.jaxrs.generator.ramltypes.GParameter;
+import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.model.v08.parameters.Parameter;
 
 /**

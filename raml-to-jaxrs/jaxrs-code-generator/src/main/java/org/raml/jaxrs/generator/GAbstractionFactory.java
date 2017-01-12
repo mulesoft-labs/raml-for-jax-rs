@@ -1,5 +1,6 @@
 package org.raml.jaxrs.generator;
 
+import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.v08.V08GResource;
 import org.raml.jaxrs.generator.v08.V08TypeRegistry;
 import org.raml.jaxrs.generator.v10.V10GResource;
@@ -14,7 +15,7 @@ import java.util.Set;
  */
 public class GAbstractionFactory {
 
-    public  GResource newResource(V10TypeRegistry registry, final org.raml.v2.api.model.v10.resources.Resource resource) {
+    public GResource newResource(V10TypeRegistry registry, final org.raml.v2.api.model.v10.resources.Resource resource) {
 
         return new V10GResource(registry, this, resource);
     }

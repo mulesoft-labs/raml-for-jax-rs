@@ -17,7 +17,6 @@ import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.left;
-import static org.apache.commons.lang.math.NumberUtils.compare;
 import static org.apache.commons.lang.math.NumberUtils.isDigits;
 
 /**
@@ -199,15 +198,23 @@ public class Names {
     private static String buildJavaFriendlyName(final String source, CaseFormat format)
     {
         final String baseName = source.replaceAll("\\W+", "_").replaceAll("^_+", "").replaceAll("[^\\w_]", "");
+        List<String> friendlyNameBits = new ArrayList<>();
+        for (String s : baseName.split("_") ) {
 
-        String friendlyName = CaseFormat.LOWER_UNDERSCORE.to(format, baseName);
+            if ( s.isEmpty() ) {
+                continue;
+            }
 
-        if (isDigits(left(friendlyName, 1)))
-        {
-            friendlyName = "_" + friendlyName;
+            String friendlyName = CaseFormat.LOWER_CAMEL.to(format, s);
+
+            if (isDigits(left(friendlyName, 1))) {
+                friendlyName = "_" + friendlyName;
+            }
+
+            friendlyNameBits.add(friendlyName);
         }
 
-        return friendlyName;
+        return Strings.join(friendlyNameBits, "");
     }
 
 

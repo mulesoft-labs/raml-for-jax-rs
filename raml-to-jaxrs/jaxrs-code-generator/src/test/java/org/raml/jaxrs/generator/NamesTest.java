@@ -4,9 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 import org.raml.v2.api.model.v10.system.types.RelativeUriString;
 
 import java.util.ArrayList;
@@ -41,6 +38,7 @@ public class NamesTest {
     @Test
     public void buildTypeName() throws Exception {
 
+
         assertEquals("Fun", Names.typeName("/fun"));
         assertEquals("Fun", Names.typeName("/fun"));
         assertEquals("CodeBytes", Names.typeName("//code//bytes"));
@@ -49,9 +47,13 @@ public class NamesTest {
         assertEquals("FunAllo", Names.typeName("fun allo"));
         assertEquals("FunAllo", Names.typeName("funAllo"));
         assertEquals("FunAllo", Names.typeName("FunAllo"));
+
+        assertEquals("FunAllo", Names.typeName("/FunAllo"));
+
         assertEquals("FunAllo", Names.typeName("Fun", "allo"));
         assertEquals("FunAllo", Names.typeName("fun", "_allo"));
         assertEquals("FunAllo", Names.typeName("fun", "allo"));
+
     }
 
     @Test

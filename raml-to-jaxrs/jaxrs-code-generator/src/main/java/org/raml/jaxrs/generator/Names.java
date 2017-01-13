@@ -211,6 +211,7 @@ public class Names {
             String friendlyName = CaseFormat.LOWER_CAMEL.to(format, s);
 
             if (isDigits(left(friendlyName, 1))) {
+
                 friendlyName = "_" + friendlyName;
             }
 

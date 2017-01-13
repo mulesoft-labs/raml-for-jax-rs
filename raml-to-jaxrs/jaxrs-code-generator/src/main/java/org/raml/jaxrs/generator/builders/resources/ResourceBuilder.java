@@ -29,6 +29,7 @@ import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10GMethod;
 import org.raml.jaxrs.generator.v10.V10GResource;
+import org.raml.jaxrs.generator.v10.V10GResponse;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -148,11 +149,6 @@ public class ResourceBuilder implements ResourceGenerator {
 
         MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod);
 
-        if ( gMethod instanceof V10GMethod ) {
-
-            methodSpec = Annotations.ON_METHOD_CREATION.get((V10GMethod) gMethod).onMethod(build, (V10GMethod) gMethod, methodSpec);
-        }
-
         // here I would run my  plugins....
 
         if ( gMethod instanceof V10GMethod ) {
@@ -165,10 +161,17 @@ public class ResourceBuilder implements ResourceGenerator {
 
     private void createMethodWithBody(TypeSpec.Builder typeSpec, GMethod gMethod,
             Multimap<String, String> ramlTypeToMediaType, String methodName, GRequest gRequest) {
+
         MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>());
         TypeName name = gRequest.type().defaultJavaTypeName(build.getModelPackage());
         methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
         handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
+
+        if ( gMethod instanceof V10GMethod ) {
+
+            methodSpec = Annotations.ON_METHOD_FINISH.get((V10GMethod) gMethod).onMethod(build, (V10GMethod) gMethod, methodSpec);
+        }
+
         typeSpec.addMethod(methodSpec.build());
     }
 
@@ -239,9 +242,16 @@ public class ResourceBuilder implements ResourceGenerator {
                     for (GResponseType typeDeclaration : gResponse.body()) {
 
                         String httpCode = gResponse.code();
-                        MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.methodName("respond", httpCode,  "With", typeDeclaration.mediaType() ) );
+                        MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.methodName("respond", httpCode,  "With", typeDeclaration.mediaType() ) )
+                                                        .addModifiers(Modifier.STATIC, Modifier.PUBLIC);
+
+                        if ( gResponse instanceof V10GResponse ) {
+
+                            builder = Annotations.ON_RESPONSE_METHOD_CREATION.get((V10GResponse) gResponse).onMethod(build,
+                                    (V10GResponse) gResponse, builder);
+                        }
+
                         builder
-                                .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
                                 .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ").header(\"Content-Type\", \""
                                         + typeDeclaration.mediaType() + "\")")
                                 .addStatement("responseBuilder.entity(entity)")
@@ -254,6 +264,13 @@ public class ResourceBuilder implements ResourceGenerator {
                         }
 
                         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
+
+                        if ( gResponse instanceof V10GResponse ) {
+
+                            builder = Annotations.ON_RESPONSE_METHOD_FINISH.get((V10GResponse) gResponse).onMethod(build,
+                                    (V10GResponse) gResponse, builder);
+                        }
+
                         responseClass.addMethod(builder.build());
                     }
                 }
@@ -273,6 +290,10 @@ public class ResourceBuilder implements ResourceGenerator {
 
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
+        if ( gMethod instanceof V10GMethod ) {
+
+            methodSpec = Annotations.ON_METHOD_CREATION.get((V10GMethod) gMethod).onMethod(build, (V10GMethod) gMethod, methodSpec);
+        }
 
         for (GParameter typeDeclaration : gMethod.resource().uriParameters()) {
 

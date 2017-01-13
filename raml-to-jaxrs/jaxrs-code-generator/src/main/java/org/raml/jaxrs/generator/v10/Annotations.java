@@ -4,6 +4,7 @@ import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.extension.MethodExtension;
 import org.raml.jaxrs.generator.extension.ResourceExtension;
 import org.raml.jaxrs.generator.extension.ResponseClassExtension;
+import org.raml.jaxrs.generator.extension.ResponseMethodExtension;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
@@ -96,6 +97,22 @@ public abstract class Annotations<T> {
         }
     };
 
+    public static Annotations<? extends ResponseMethodExtension> ON_RESPONSE_METHOD_CREATION = new Annotations<ResponseMethodExtension>() {
+        @Override
+        public ResponseMethodExtension get(Annotable target) {
+            String className = getWithDefault(target, "responses", "onResponseMethodCreation", null);
+            return createExtension(className, ResponseMethodExtension.NULL_EXTENSION);
+        }
+    };
+
+    public static Annotations<? extends ResponseMethodExtension> ON_RESPONSE_METHOD_FINISH = new Annotations<ResponseMethodExtension>() {
+        @Override
+        public ResponseMethodExtension get(Annotable target) {
+            String className = getWithDefault(target, "responses", "onResponseMethodFinish", null);
+            return createExtension(className, ResponseMethodExtension.NULL_EXTENSION);
+        }
+    };
+
     private static <T> T createExtension(String className, T nullExtension) {
         if ( className == null ) {
 
@@ -184,6 +201,11 @@ public abstract class Annotations<T> {
     public T get(V10GMethod method ) {
 
         return get(method.implementation());
+    }
+
+    public T get(V10GResponse response ) {
+
+        return get(response.implementation());
     }
 
     public T get(V10GType type, T def ) {

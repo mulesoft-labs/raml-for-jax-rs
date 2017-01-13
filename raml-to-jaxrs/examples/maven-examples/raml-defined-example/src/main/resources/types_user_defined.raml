@@ -64,6 +64,8 @@ types:
             type: string
         responses:
             200:
+                (ramltojaxrs.responses):
+                    onResponseMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension
                 body:
                     application/json:
                         type: Human

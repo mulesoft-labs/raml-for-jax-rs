@@ -212,6 +212,11 @@ public class ResourceBuilder implements ResourceGenerator {
                                     .addCode("super(Response);\n").build()
                     );
 
+            if ( gMethod instanceof V10GMethod ) {
+
+                responseClass = Annotations.ON_RESPONSE_CLASS_CREATION.get((V10GMethod) gMethod).onMethod(build,
+                        (V10GMethod) gMethod, responseClass);
+            }
 
             TypeSpec currentClass = responseClass.build();
             for (GResponse gResponse : responses.get(gMethod)) {
@@ -252,6 +257,12 @@ public class ResourceBuilder implements ResourceGenerator {
                         responseClass.addMethod(builder.build());
                     }
                 }
+            }
+
+            if ( gMethod instanceof V10GMethod ) {
+
+                responseClass = Annotations.ON_RESPONSE_CLASS_FINISH.get((V10GMethod) gMethod).onMethod(build,
+                        (V10GMethod) gMethod, responseClass);
             }
 
             typeSpec.addType(responseClass.build());

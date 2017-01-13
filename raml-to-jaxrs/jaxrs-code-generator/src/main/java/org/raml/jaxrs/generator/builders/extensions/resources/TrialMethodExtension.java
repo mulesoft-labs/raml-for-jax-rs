@@ -11,7 +11,6 @@ import org.raml.jaxrs.generator.v10.V10GMethod;
  */
 public class TrialMethodExtension implements MethodExtension {
 
-
     @Override
     public MethodSpec.Builder onMethod(CurrentBuild build, V10GMethod method, MethodSpec.Builder methodSpec) {
         return methodSpec;

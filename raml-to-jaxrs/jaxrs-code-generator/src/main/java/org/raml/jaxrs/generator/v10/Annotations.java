@@ -3,6 +3,7 @@ package org.raml.jaxrs.generator.v10;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.extension.MethodExtension;
 import org.raml.jaxrs.generator.extension.ResourceExtension;
+import org.raml.jaxrs.generator.extension.ResponseClassExtension;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
@@ -76,6 +77,22 @@ public abstract class Annotations<T> {
         public MethodExtension get(Annotable target) {
             String className = getWithDefault(target, "methods", "onMethodFinish", null);
             return createExtension(className, MethodExtension.NULL_EXTENSION);
+        }
+    };
+
+    public static Annotations<? extends ResponseClassExtension> ON_RESPONSE_CLASS_CREATION = new Annotations<ResponseClassExtension>() {
+        @Override
+        public ResponseClassExtension get(Annotable target) {
+            String className = getWithDefault(target, "methods", "onResponseClassCreation", null);
+            return createExtension(className, ResponseClassExtension.NULL_EXTENSION);
+        }
+    };
+
+    public static Annotations<? extends ResponseClassExtension> ON_RESPONSE_CLASS_FINISH = new Annotations<ResponseClassExtension>() {
+        @Override
+        public ResponseClassExtension get(Annotable target) {
+            String className = getWithDefault(target, "methods", "onResponseClassFinish", null);
+            return createExtension(className, ResponseClassExtension.NULL_EXTENSION);
         }
     };
 

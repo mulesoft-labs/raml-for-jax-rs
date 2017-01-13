@@ -59,6 +59,7 @@ types:
     get:
         (ramltojaxrs.methods):
             onMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialMethodExtension
+            onResponseClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension
         queryParameters:
             type: string
         responses:

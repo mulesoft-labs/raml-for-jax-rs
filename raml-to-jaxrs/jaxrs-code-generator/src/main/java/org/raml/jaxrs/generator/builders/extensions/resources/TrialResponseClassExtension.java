@@ -1,7 +1,7 @@
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.extension.Context;
 import org.raml.jaxrs.generator.extension.ResponseClassExtension;
 import org.raml.jaxrs.generator.v10.V10GMethod;
 
@@ -12,8 +12,8 @@ import org.raml.jaxrs.generator.v10.V10GMethod;
 public class TrialResponseClassExtension implements ResponseClassExtension {
 
     @Override
-    public TypeSpec.Builder onMethod(CurrentBuild build, V10GMethod response, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onMethod(Context context, V10GMethod response, TypeSpec.Builder typeSpec) {
 
-        return typeSpec;
+        return context.rename(typeSpec, "AnsweringFor" + response.method());
     }
 }

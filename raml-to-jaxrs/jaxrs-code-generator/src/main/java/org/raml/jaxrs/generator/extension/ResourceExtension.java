@@ -1,7 +1,6 @@
 package org.raml.jaxrs.generator.extension;
 
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.v10.V10GResource;
 
 /**
@@ -12,10 +11,10 @@ public interface ResourceExtension {
     ResourceExtension NULL_EXTENSION = new ResourceExtension() {
 
         @Override
-        public TypeSpec.Builder onResource(CurrentBuild build, V10GResource resource, TypeSpec.Builder typeSpec) {
+        public TypeSpec.Builder onResource(Context context, V10GResource resource, TypeSpec.Builder typeSpec) {
             return typeSpec;
         }
     };
 
-    TypeSpec.Builder onResource(CurrentBuild build, V10GResource resource, TypeSpec.Builder typeSpec);
+    TypeSpec.Builder onResource(Context context, V10GResource resource, TypeSpec.Builder typeSpec);
 }

@@ -1,7 +1,6 @@
 package org.raml.jaxrs.generator.extension;
 
 import com.squareup.javapoet.MethodSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.v10.V10GMethod;
 
 /**
@@ -13,11 +12,11 @@ public interface MethodExtension {
     MethodExtension NULL_EXTENSION = new MethodExtension() {
 
         @Override
-        public MethodSpec.Builder onMethod(CurrentBuild build, V10GMethod method, MethodSpec.Builder methodSpec) {
+        public MethodSpec.Builder onMethod(Context context, V10GMethod method, MethodSpec.Builder methodSpec) {
             return methodSpec;
         }
     };
 
-    MethodSpec.Builder onMethod(CurrentBuild build, V10GMethod method, MethodSpec.Builder methodSpec);
+    MethodSpec.Builder onMethod(Context context, V10GMethod method, MethodSpec.Builder methodSpec);
 
 }

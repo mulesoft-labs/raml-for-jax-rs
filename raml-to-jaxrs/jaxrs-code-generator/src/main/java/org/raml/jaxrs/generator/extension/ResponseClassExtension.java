@@ -1,7 +1,6 @@
 package org.raml.jaxrs.generator.extension;
 
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.v10.V10GMethod;
 
 /**
@@ -13,11 +12,11 @@ public interface ResponseClassExtension {
     ResponseClassExtension NULL_EXTENSION = new ResponseClassExtension() {
 
         @Override
-        public TypeSpec.Builder onMethod(CurrentBuild build, V10GMethod method, TypeSpec.Builder typeSpec) {
+        public TypeSpec.Builder onMethod(Context context, V10GMethod method, TypeSpec.Builder typeSpec) {
             return typeSpec;
         }
     };
 
-    TypeSpec.Builder onMethod(CurrentBuild build, V10GMethod method, TypeSpec.Builder typeSpec);
+    TypeSpec.Builder onMethod(Context context, V10GMethod method, TypeSpec.Builder typeSpec);
 
 }

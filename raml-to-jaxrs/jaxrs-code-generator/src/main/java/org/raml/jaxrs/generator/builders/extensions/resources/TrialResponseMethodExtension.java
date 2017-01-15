@@ -1,7 +1,7 @@
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import com.squareup.javapoet.MethodSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.extension.Context;
 import org.raml.jaxrs.generator.extension.ResponseMethodExtension;
 import org.raml.jaxrs.generator.v10.V10GResponse;
 
@@ -12,7 +12,7 @@ import org.raml.jaxrs.generator.v10.V10GResponse;
 public class TrialResponseMethodExtension implements ResponseMethodExtension {
 
     @Override
-    public MethodSpec.Builder onMethod(CurrentBuild build, V10GResponse method, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(Context context, V10GResponse method, MethodSpec.Builder methodSpec) {
 
         return methodSpec;
     }

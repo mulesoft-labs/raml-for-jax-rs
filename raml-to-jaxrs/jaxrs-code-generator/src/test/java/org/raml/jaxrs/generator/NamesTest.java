@@ -71,9 +71,9 @@ public class NamesTest {
 
         assertEquals("fun", Names.variableName("/fun"));
         assertEquals("fun", Names.variableName("/fun"));
-        //assertEquals("funAllo", Names.variableName("//fun//allo"));
-        //assertEquals("funAllo", Names.variableName("fun allo"));
-        //assertEquals("funAllo", Names.variableName("fun_allo"));
+        assertEquals("funAllo", Names.variableName("//fun//allo"));
+        assertEquals("funAllo", Names.variableName("fun allo"));
+        assertEquals("funAllo", Names.variableName("fun_allo"));
 
     }
 

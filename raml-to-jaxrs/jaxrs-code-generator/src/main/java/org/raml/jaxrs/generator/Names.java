@@ -1,7 +1,5 @@
 package org.raml.jaxrs.generator;
 
-import com.google.common.base.Ascii;
-import com.google.common.base.CaseFormat;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import joptsimple.internal.Strings;
@@ -30,6 +28,8 @@ import static org.apache.commons.lang.math.NumberUtils.isDigits;
  */
 public class Names {
 
+    private static final String PATH_REPLACEMENT_TEMPLATE = "\\{[^}]+}";
+
     public static String typeName(String... name)
     {
         if ( name.length == 1 && isBlank(name[0])) {
@@ -38,13 +38,11 @@ public class Names {
         }
 
         List<String> values = new ArrayList<>();
+        int i = 0;
         for (String s : name) {
-            if ( s.matches(".*[^a-zA-Z0-9].*")) {
-
-                values.add(buildJavaFriendlyName(s, CaseFormat.UPPER_CAMEL));
-            } else {
-                values.add(firstCharToUpper(s));
-            }
+            String value = buildPart(i, s, NameFixer.CAMEL_UPPER);
+            values.add(value);
+            i++;
         }
         return Strings.join(values, "");
     }
@@ -64,39 +62,29 @@ public class Names {
         List<String> values = new ArrayList<>();
         for (int i = 0; i < name.length; i ++) {
             String s = name[i];
-            if ( s.matches(".*[^a-zA-Z0-9].*")) {
-
-                if ( i == 0 ) {
-                    values.add(buildJavaFriendlyName(s, CaseFormat.LOWER_CAMEL));
-                } else {
-                    values.add(buildJavaFriendlyName(s, CaseFormat.UPPER_CAMEL));
-                }
-            } else {
-                if ( i == 0) {
-                    values.add(firstCharToLower(s));
-                } else {
-                    values.add(firstCharToUpper(s));
-                }
-            }
+            NameFixer format = NameFixer.CAMEL_LOWER;
+            values.add(buildPart(i, s, format));
         }
+
         return Strings.join(values, "");
     }
 
+
     public static String constantName(String value) {
 
-        return buildJavaFriendlyName(value, CaseFormat.UPPER_UNDERSCORE);
+        return buildJavaFriendlyName(value, NameFixer.ALL_UPPER, 0);
     }
 
     public static String resourceMethodName(GResource resource, GMethod method) {
 
         if ( resource.uriParameters().size() == 0) {
 
-            return Names.methodName(method.method(), resource.resourcePath().replaceAll("\\{[^}]+}", ""));
+            return Names.methodName(method.method(), resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
         } else {
 
             List<String> elements = new ArrayList<>();
             elements.add(method.method());
-            elements.add(resource.resourcePath().replaceAll("\\{[^}]+\\}", ""));
+            elements.add(resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
             elements.add("By");
             List<String> uriparam = Lists.transform(resource.uriParameters(), new Function<GParameter, String>() {
                 @Nullable
@@ -122,7 +110,7 @@ public class Names {
 
         if ( resource.uriParameters().size() == 0) {
 
-            return Names.typeName(method.method(), resource.resourcePath().replaceAll("\\{[^}]+}", ""), "Response");
+            return Names.typeName(method.method(), resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""), "Response");
         } else {
 
             List<String> elements = new ArrayList<>();
@@ -174,41 +162,24 @@ public class Names {
     }
 
 
-    private static String firstCharToUpper(String word) {
-        return (word.isEmpty())
-                ? word
-                : new StringBuilder(word.length())
-                .append(Ascii.toUpperCase(word.charAt(0)))
-                .append(word.substring(1))
-                .toString();
-    }
-
-    private static String firstCharToLower(String word) {
-        return (word.isEmpty())
-                ? word
-                : new StringBuilder(word.length())
-                .append(Ascii.toLowerCase(word.charAt(0)))
-                .append(word.substring(1))
-                .toString();
-    }
-
     /**
      * <p>buildJavaFriendlyName.</p>
      *
      * @param source a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
      */
-    private static String buildJavaFriendlyName(final String source, CaseFormat format)
+    private static String buildJavaFriendlyName(final String source, NameFixer format, int currentIndex)
     {
         final String baseName = source.replaceAll("\\W+", "_").replaceAll("^_+", "").replaceAll("[^\\w_]", "");
         List<String> friendlyNameBits = new ArrayList<>();
+        int i = currentIndex;
         for (String s : baseName.split("_") ) {
 
             if ( s.isEmpty() ) {
                 continue;
             }
 
-            String friendlyName = CaseFormat.LOWER_CAMEL.to(format, s);
+            String friendlyName = firstOrOthers(format, i, s);
 
             if (isDigits(left(friendlyName, 1))) {
 
@@ -216,9 +187,30 @@ public class Names {
             }
 
             friendlyNameBits.add(friendlyName);
+            i++;
         }
 
         return Strings.join(friendlyNameBits, "");
+    }
+
+    private static String buildPart(int i, String s, NameFixer format) {
+        String part;
+        if ( s.matches(".*[^a-zA-Z0-9].*")) {
+
+            part = buildJavaFriendlyName(s, format, i);
+        } else {
+            part = firstOrOthers(format, i, s);
+        }
+        return part;
+    }
+
+    private static String firstOrOthers(NameFixer format, int i, String s) {
+        if ( i == 0 ) {
+            return format.fixFirst(s);
+        } else {
+
+            return  format.fixOthers(s);
+        }
     }
 
 

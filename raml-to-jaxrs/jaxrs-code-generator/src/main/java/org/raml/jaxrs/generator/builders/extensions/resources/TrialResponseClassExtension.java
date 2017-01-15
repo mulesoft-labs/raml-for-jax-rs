@@ -14,6 +14,6 @@ public class TrialResponseClassExtension implements ResponseClassExtension {
     @Override
     public TypeSpec.Builder onMethod(Context context, V10GMethod response, TypeSpec.Builder typeSpec) {
 
-        return context.rename(typeSpec, "AnsweringFor" + response.method());
+        return typeSpec;
     }
 }

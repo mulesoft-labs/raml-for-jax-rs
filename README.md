@@ -11,7 +11,7 @@ or its roundtrip, generate the RAML API definition based on an existing JAVA + J
 
 #Project Modules
 
-There are two projects:  [JAXRS to RAML](/jaxrs-to-raml/README.md) and [RAML to JAXRS](/raml-to-jaxrs/README.MD).
+There are two projects:  [JAXRS to RAML](/jaxrs-to-raml/README.md) and [RAML to JAXRS](/raml-to-jaxrs/README.md).
 
 #Maven artifacts
 Maven artifacts are NOT currently available at:

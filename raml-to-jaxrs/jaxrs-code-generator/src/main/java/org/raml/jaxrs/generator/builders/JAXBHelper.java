@@ -57,7 +57,7 @@ public class JAXBHelper {
         try {
             ArrayList<JDefinedClass> classList = new ArrayList<JDefinedClass>();
 
-            ArrayList<String> argList = new ArrayList<String>();
+            ArrayList<String> argList = new ArrayList<>();
             argList.add("-mark-generated");
             argList.add("-p");
             argList.add(pack);

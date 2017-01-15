@@ -3,32 +3,22 @@
 RAML for JAX-RS
 ===============
 
-**The project was renamed. Please read**: This project was formerly known as JAX-RS to RAML. After a big refactor, we achieved merging it with other related project called "RAML JAX-RS Codegen", so we decided to rename the first one to RAML for JAX-RS.
-This new project includes all the capabilities of both, and will be the one being maintained and improved.
-
-You can still find older versions of JAX-RS to RAML in this repository, and you will also be able to find the RAML JAX-RS Codegen [here](https://github.com/mulesoft/raml-jaxrs-codegen) until we remove it.
-
 
 #Introduction
 
 The goal of RAML for JAX-RS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAX-RS application based on an existing RAML API definition (Code Generation),
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
 
-## Considerations
-RAML for JAX-RS is the result of merging two projects that started individually and at different times. The idea of joining these, pursuits the purpose of providing a better experience to the developers when installing and using it.
-
 #Project Modules
 
-- Eclipse / Anypoint Studio plugin: Perform both ways conversions from your IDE. [Installation instructions/User guide.](/eclipseplugin.md)
-- Maven Plugin: Perform both ways conversions by using Maven. [Installation instructions/User guide.](/maven-plugin.md)
-- Command Line: Perform both ways conversions in command line. [Installation instructions/User guide.](/command-line.md)
+There are two projects:  [JAXRS to RAML](/jaxrs-to-raml/README.md) and [RAML to JAXRS](/raml-to-jaxrs/README.MD).
 
 #Maven artifacts
-Maven artifacts are available at:
+Maven artifacts are NOT currently available at:
  - https://repository-master.mulesoft.org/releases/ - release repository
  - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
 
-as well as at Maven Central (http://search.maven.org/#search|ga|1|org.raml)
+ We are still working on things.
  
 #Design principles
 
@@ -84,23 +74,6 @@ These annotations are interpreted as RAML parameters constrains.
 - Traits and resource type suggestions.
 
 
-## JAX-RS Generation (from RAML)
-All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following ways:
-
-- Interfaces are generated and will be regenerated when the RAML definition changes.
-- One interface is generated per top level resource, sub-resources are defined as different methods in the same interface.
-- A response object wrapper is created for each resource action in order to guide the implementer in producing only results
-that are compatible with the RAML definition.
-- Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification.
-- Objects are generated based on json schemas to represent request/response entities.
-- English is the language used in the interface and method names generation.
-
-###Currently Supported
-- JAX-RS 1.1 and 2.0,
-- JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and javax.validation uses Java ones,
-and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
-- Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
-- Generation of JAXB annotated classes based on XML Schemas
 
 ####JAX-RS Annotations:
 

@@ -12,7 +12,7 @@ All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following
 - A response object wrapper is created for each resource action in order to guide the implementer in producing only results
 that are compatible with the RAML definition.
 - Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification.
-- Objects are generated when taken from RAML 1.0 object types.  These objects are not as flexible as we want right now, but we 
+- Objects defined as RAML 1.0 objects are generated.  These objects are not as flexible as we want right now, but we 
 are hoping to make them more flexible are we figure this out.
 - Objects are also generated based on json schemas to represent request/response entities.
 - English is the language used in the interface and method names generation.
@@ -23,3 +23,7 @@ are hoping to make them more flexible are we figure this out.
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
 - Generation of JAXB annotated classes based on XML Schemas
+
+###Resource and Response generation control.
+It's possible to control the creation of the interfaces and response classes in RAML 1.0. This is done using RAML annotations in your api file.
+For more information see [here](jaxrs-code-generator/GENERATION_README.md)

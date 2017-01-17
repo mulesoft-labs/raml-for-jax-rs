@@ -40,6 +40,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -227,6 +228,12 @@ public class ResourceBuilder implements ResourceGenerator {
                         (V10GMethod) gMethod, responseClass);
             }
 
+            if ( responseClass == null ) {
+
+                map.put(defaultName, null);
+                continue;
+            }
+
             TypeSpec currentClass = responseClass.build();
             for (GResponse gResponse : responses.get(gMethod)) {
 
@@ -342,8 +349,13 @@ public class ResourceBuilder implements ResourceGenerator {
         }
 
         if ( gMethod.responses().size() != 0 ) {
-            String responseClassName = responseSpec.get(Names.responseClassName(gMethod.resource(), gMethod)).build().name;
-            methodSpec.returns(ClassName.get("", responseClassName));
+            TypeSpec.Builder responseSpecForMethod = responseSpec.get(Names.responseClassName(gMethod.resource(), gMethod));
+            if ( responseSpecForMethod == null ) {
+
+                methodSpec.returns(ClassName.get(Response.class));
+            } else {
+                methodSpec.returns(ClassName.get("", responseSpecForMethod.build().name));
+            }
         } else {
             methodSpec.returns(ClassName.VOID);
         }

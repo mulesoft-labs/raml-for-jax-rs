@@ -30,7 +30,7 @@ annotationTypes:
             onResponseMethodCreation?: string
             onResponseMethodFinish?: string
 (resources):
-    onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension
+    onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension
 
 types:
     Fun:
@@ -44,7 +44,7 @@ types:
             className: Allo
 /humanity:
     (resources):
-        onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension
+        onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension
     get:
         (methods):
             onResourceMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension

@@ -8,22 +8,32 @@ We have an experimental feature to allow for controlling the generation process.
 It's possible to modify class/interface/method generation through usage of RAML 1.0 annotations.
 Current annotations are:
 ``` yaml
-#%RAML 1.0 Library
 annotationTypes:
+    types:
+        allowedTargets: TypeDeclaration
+        properties:
+            className?:
+                type: string
+            implementationClassName?:
+                type: string
+            usePrimitiveType?:
+                type: boolean
+            abstract?:
+                type: boolean
     resources:
-        allowedTargets: Resource
+        allowedTargets: [Resource, API]
         properties:
             onResourceClassCreation?: string
             onResourceClassFinish?: string
     methods:
-        allowedTargets: Method
+        allowedTargets: [Method, API]
         properties:
-            onMethodCreation?: string
-            onMethodFinish?: string
+            onResourceMethodCreation?: string
+            onResourceMethodFinish?: string
             onResponseClassCreation?: string
             onResponseClassFinish?: string
-    responses: 
-        allowedTargets: Response
+    responses:
+        allowedTargets: [Response, API]
         properties:
             onResponseMethodCreation?: string
             onResponseMethodFinish?: string

@@ -92,10 +92,10 @@ public class V10GTypeObject extends V10GTypeHelper {
         if ( isInline() ) {
 
             return ClassName
-                    .get("", Annotations.IMPLEMENTATION_CLASS_NAME.get(typeDeclaration, defaultJavatypeName + "Impl"));
+                    .get("", Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
         } else {
             return ClassName
-                    .get(pack, Annotations.IMPLEMENTATION_CLASS_NAME.get(typeDeclaration, defaultJavatypeName + "Impl"));
+                    .get(pack, Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
         }
     }
 

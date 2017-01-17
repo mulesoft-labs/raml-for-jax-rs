@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.squareup.javapoet.ClassName;
@@ -53,7 +52,7 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
         UnionTypeDeclaration union = (UnionTypeDeclaration) unionTypeDeclaration.implementation();
 
         ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(),
-                Annotations.CLASS_NAME.get(unionTypeDeclaration, Names.typeName(union.name())));
+                Annotations.CLASS_NAME.get(Names.typeName(union.name()), unionTypeDeclaration));
         TypeSpec.Builder builder = TypeSpec.classBuilder(name)
                 .superclass(ParameterizedTypeName.get(ClassName.get(StdDeserializer.class), unionTypeName))
                 .addMethod(

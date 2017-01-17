@@ -38,14 +38,22 @@ public class AnnotationsTest {
     }
 
     @Test
-    public void getResponseClass() throws Exception {
+    public void getExtensionClass() throws Exception {
 
-        Api type = buildApi(this, "annotations.raml", 0);
+        Api type = buildApi(this, "annotations.raml");
 
         assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(type.resources().get(0)) instanceof TrialResourceExtension );
         assertTrue(Annotations.ON_METHOD_CREATION.get(type.resources().get(0).methods().get(0)) instanceof TrialResourceMethodExtension);
         assertTrue(Annotations.ON_RESPONSE_CLASS_CREATION.get(type.resources().get(0).methods().get(0)) instanceof TrialResponseClassExtension);
         assertTrue(Annotations.ON_RESPONSE_METHOD_CREATION.get(type.resources().get(0).methods().get(0).responses().get(0)) instanceof TrialResponseMethodExtension);
+    }
+
+    @Test
+    public void getDefaultExtensionClass() throws Exception {
+
+        Api api = buildApi(this, "annotations.raml");
+
+        assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(api, api.resources().get(1)) instanceof TrialResourceExtension );
     }
 
     public static TypeDeclaration buildType(Object test, String raml, int index) {
@@ -61,7 +69,7 @@ public class AnnotationsTest {
         }
     }
 
-    public static Api buildApi(Object test, String raml, int index) {
+    public static Api buildApi(Object test, String raml) {
         RamlModelResult ramlModelResult = new RamlModelBuilder()
                 .buildApi(new InputStreamReader(test.getClass().getResourceAsStream(raml)), ".");
         if (ramlModelResult.hasErrors()) {

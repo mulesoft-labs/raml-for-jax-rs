@@ -20,8 +20,8 @@ annotationTypes:
     methods:
         allowedTargets: [Method, API]
         properties:
-            onMethodCreation?: string
-            onMethodFinish?: string
+            onResourceMethodCreation?: string
+            onResourceMethodFinish?: string
             onResponseClassCreation?: string
             onResponseClassFinish?: string
     responses:
@@ -29,8 +29,8 @@ annotationTypes:
         properties:
             onResponseMethodCreation?: string
             onResponseMethodFinish?: string
-#(responses):
-#    onResponseMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension
+(resources):
+    onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension
 
 types:
     Fun:
@@ -44,10 +44,10 @@ types:
             className: Allo
 /humanity:
     (resources):
-        onResourceCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension
+        onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension
     get:
         (methods):
-            onMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension
+            onResourceMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension
             onResponseClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension
         queryParameters:
             type: string
@@ -58,3 +58,13 @@ types:
                 body:
                     application/json:
                         type: string
+/defaultHumanity:
+    get:
+        queryParameters:
+            type: string
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: string
+

@@ -48,7 +48,7 @@ class V10TypeFactory {
                 String internalTypeName = Integer.toString(internalTypeCounter);
 
                 V10GType type = localRegistry.createInlineType(internalTypeName, Annotations.CLASS_NAME.get(
-                        (Annotable) declaration.implementation(), Names.typeName(declaration.name(), "Type")),
+                        Names.typeName(declaration.name(), "Type"), (Annotable)declaration.implementation()),
                         (TypeDeclaration) declaration.implementation()
                 );
                 TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild, GeneratorType.generatorFrom(type));

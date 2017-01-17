@@ -12,20 +12,19 @@ annotationTypes:
             abstract?:
                 type: boolean
     resources:
-        allowedTargets: Resource
+        allowedTargets: [Resource, API]
         properties:
             onResourceClassCreation?: string
             onResourceClassFinish?: string
     methods:
-        allowedTargets: Method
+        allowedTargets: [Method, API]
         properties:
-            onMethodCreation?: string
-            onMethodFinish?: string
+            onResourceMethodCreation?: string
+            onResourceMethodFinish?: string
             onResponseClassCreation?: string
             onResponseClassFinish?: string
     responses:
-        allowedTargets: Response
+        allowedTargets: [Response, API]
         properties:
             onResponseMethodCreation?: string
             onResponseMethodFinish?: string
-

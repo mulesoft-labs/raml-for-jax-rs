@@ -82,7 +82,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
         if ( topResource instanceof V10GResource ) {
 
-            typeSpec = Annotations.ON_RESOURCE_CLASS_CREATION.get((V10GResource) topResource).onResource(new ContextImpl(build),
+            typeSpec = Annotations.ON_RESOURCE_CLASS_CREATION.get(build.getApi(), ((V10GResource) topResource).implementation()).onResource(new ContextImpl(build),
                     (V10GResource) topResource, typeSpec);
         }
 
@@ -92,7 +92,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
         if ( topResource instanceof V10GResource ) {
 
-            typeSpec = Annotations.ON_RESOURCE_CLASS_FINISH.get((V10GResource) topResource).onResource(new ContextImpl(build),
+            typeSpec = Annotations.ON_RESOURCE_CLASS_FINISH.get(build.getApi(), ((V10GResource) topResource).implementation()).onResource(new ContextImpl(build),
                     (V10GResource) topResource, typeSpec);
         }
 
@@ -156,7 +156,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
         if ( gMethod instanceof V10GMethod ) {
 
-            methodSpec = Annotations.ON_METHOD_FINISH.get((V10GMethod) gMethod).onMethod(new ContextImpl(build), (V10GMethod) gMethod, methodSpec);
+            methodSpec = Annotations.ON_METHOD_FINISH.get(build.getApi(), ((V10GMethod) gMethod).implementation()).onMethod(new ContextImpl(build), (V10GMethod) gMethod, methodSpec);
         }
 
         typeSpec.addMethod(methodSpec.build());
@@ -172,7 +172,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
         if ( gMethod instanceof V10GMethod ) {
 
-            methodSpec = Annotations.ON_METHOD_FINISH.get((V10GMethod) gMethod).onMethod(new ContextImpl(build), (V10GMethod) gMethod, methodSpec);
+            methodSpec = Annotations.ON_METHOD_FINISH.get(build.getApi(), ((V10GMethod) gMethod).implementation()).onMethod(new ContextImpl(build), (V10GMethod) gMethod, methodSpec);
         }
 
         typeSpec.addMethod(methodSpec.build());
@@ -223,7 +223,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
             if ( gMethod instanceof V10GMethod ) {
 
-                responseClass = Annotations.ON_RESPONSE_CLASS_CREATION.get((V10GMethod) gMethod).onMethod(new ContextImpl(build),
+                responseClass = Annotations.ON_RESPONSE_CLASS_CREATION.get(build.getApi(), ((V10GMethod) gMethod).implementation()).onMethod(new ContextImpl(build),
                         (V10GMethod) gMethod, responseClass);
             }
 
@@ -273,7 +273,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
                         if ( gResponse instanceof V10GResponse ) {
 
-                            builder = Annotations.ON_RESPONSE_METHOD_FINISH.get((V10GResponse) gResponse).onMethod(new ContextImpl(build),
+                            builder = Annotations.ON_RESPONSE_METHOD_FINISH.get(build.getApi(), ((V10GResponse) gResponse).implementation()).onMethod(new ContextImpl(build),
                                     (V10GResponse) gResponse, builder);
                         }
 
@@ -284,7 +284,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
             if ( gMethod instanceof V10GMethod ) {
 
-                responseClass = Annotations.ON_RESPONSE_CLASS_FINISH.get((V10GMethod) gMethod).onMethod(new ContextImpl(build),
+                responseClass = Annotations.ON_RESPONSE_CLASS_FINISH.get(build.getApi(), ((V10GMethod) gMethod).implementation()).onMethod(new ContextImpl(build),
                         (V10GMethod) gMethod, responseClass);
             }
             map.put(defaultName, responseClass);
@@ -301,7 +301,7 @@ public class ResourceBuilder implements ResourceGenerator {
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
         if ( gMethod instanceof V10GMethod ) {
 
-            methodSpec = Annotations.ON_METHOD_CREATION.get((V10GMethod) gMethod).onMethod(new ContextImpl(build), (V10GMethod) gMethod, methodSpec);
+            methodSpec = Annotations.ON_METHOD_CREATION.get(build.getApi(), ((V10GMethod) gMethod).implementation()).onMethod(new ContextImpl(build), (V10GMethod) gMethod, methodSpec);
         }
 
         for (GParameter typeDeclaration : gMethod.resource().uriParameters()) {

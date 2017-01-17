@@ -55,10 +55,10 @@ types:
                 type: Gender
 /humanity:
     (ramltojaxrs.resources):
-        onResourceCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension
+        onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension
     get:
         (ramltojaxrs.methods):
-            onMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialMethodExtension
+            onResourceMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension
             onResponseClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension
         queryParameters:
             type: string

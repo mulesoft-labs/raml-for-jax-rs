@@ -35,7 +35,7 @@ public class V10GTypeFactory {
                 registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, typeDeclaration),
-                Annotations.CLASS_NAME.get(typeDeclaration, Names.javaTypeName(resource, method, typeDeclaration)),
+                Annotations.CLASS_NAME.get(Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration),
                 true,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -48,7 +48,7 @@ public class V10GTypeFactory {
                 registry,
                 typeDeclaration,
                 Names.ramlTypeName(resource, method, response, typeDeclaration),
-                Annotations.CLASS_NAME.get(typeDeclaration, Names.javaTypeName(resource, method, response, typeDeclaration)),
+                Annotations.CLASS_NAME.get(Names.javaTypeName(resource, method, response, typeDeclaration), typeDeclaration),
                 true,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -59,7 +59,7 @@ public class V10GTypeFactory {
                 registry,
                 typeDeclaration,
                 s,
-                Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(typeDeclaration.name())),
+                Annotations.CLASS_NAME.get(Names.typeName(typeDeclaration.name()), typeDeclaration),
                 false,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -71,7 +71,7 @@ public class V10GTypeFactory {
                 registry,
                 typeDeclaration,
                 ramlName,
-                Annotations.CLASS_NAME.get(typeDeclaration, javaClassName),
+                Annotations.CLASS_NAME.get(javaClassName, typeDeclaration),
                 true,
                 getProperties(typeDeclaration, registry),
                 getParents(typeDeclaration, registry));
@@ -88,7 +88,7 @@ public class V10GTypeFactory {
     }
 
     public static V10GType createEnum(V10TypeRegistry v10TypeRegistry, String name, StringTypeDeclaration typeDeclaration) {
-        return new V10GTypeEnum(v10TypeRegistry, name, Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(typeDeclaration.name())), typeDeclaration);
+        return new V10GTypeEnum(v10TypeRegistry, name, Annotations.CLASS_NAME.get(Names.typeName(typeDeclaration.name()), typeDeclaration), typeDeclaration);
     }
 
     public static V10GType createEnum(V10TypeRegistry v10TypeRegistry, String name, String javaTypeName, StringTypeDeclaration typeDeclaration) {
@@ -97,7 +97,7 @@ public class V10GTypeFactory {
 
     public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName) {
 
-        return new V10GTypeJson(jsonTypeDeclaration, ramlName, Annotations.CLASS_NAME.get(jsonTypeDeclaration, Names.typeName(ramlName)));
+        return new V10GTypeJson(jsonTypeDeclaration, ramlName, Annotations.CLASS_NAME.get(Names.typeName(ramlName), jsonTypeDeclaration));
     }
 
     public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName,
@@ -107,7 +107,7 @@ public class V10GTypeFactory {
     }
 
     public static V10GType createXml(XMLTypeDeclaration typeDeclaration, String ramlName) {
-        return new V10GTypeXml(typeDeclaration, ramlName, Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(ramlName)));
+        return new V10GTypeXml(typeDeclaration, ramlName, Annotations.CLASS_NAME.get(Names.typeName(ramlName), typeDeclaration));
     }
 
     public static V10GType createXml(XMLTypeDeclaration typeDeclaration, String ramlName, String javaName) {
@@ -115,7 +115,7 @@ public class V10GTypeFactory {
     }
 
     public static V10GType createUnion(V10TypeRegistry registry, UnionTypeDeclaration typeDeclaration, String ramlName) {
-        return new V10GTypeUnion(registry, typeDeclaration, ramlName, Annotations.CLASS_NAME.get(typeDeclaration, Names.typeName(ramlName)));
+        return new V10GTypeUnion(registry, typeDeclaration, ramlName, Annotations.CLASS_NAME.get(Names.typeName(ramlName), typeDeclaration));
     }
 
     public static V10GType createUnion(V10TypeRegistry registry, UnionTypeDeclaration typeDeclaration, String ramlName, String javaName) {

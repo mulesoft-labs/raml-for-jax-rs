@@ -47,7 +47,7 @@ public class RamlV10 {
 
         Api api  = buildApiV10(test, raml);
         V10TypeRegistry registry = new V10TypeRegistry();
-        CurrentBuild currentBuild = new CurrentBuild(new V10Finder(api, registry));
+        CurrentBuild currentBuild = new CurrentBuild(new V10Finder(api, registry), api);
         currentBuild.constructClasses();
         ResourceBuilder builder = new ResourceBuilder(currentBuild, new V10GResource(registry, new GAbstractionFactory(), api.resources().get(0)),
                 name, uri);
@@ -69,7 +69,7 @@ public class RamlV10 {
             }
             throw new AssertionError();
         } else {
-            CurrentBuild currentBuild = new CurrentBuild(new V10Finder(ramlModelResult.getApiV10(), registry));
+            CurrentBuild currentBuild = new CurrentBuild(new V10Finder(ramlModelResult.getApiV10(), registry), ramlModelResult.getApiV10());
             currentBuild.constructClasses();
             return currentBuild;
         }

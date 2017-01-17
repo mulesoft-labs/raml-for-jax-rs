@@ -16,6 +16,7 @@ import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.extension.TypeExtension;
+import org.raml.v2.api.model.v10.api.Api;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.util.Map;
 public class CurrentBuild {
 
     private final GFinder typeFinder;
+    private final Api api;
 
     private final List<ResourceGenerator> resources = new ArrayList<>();
     private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
@@ -41,12 +43,17 @@ public class CurrentBuild {
     private final List<JavaPoetTypeGenerator> supportGenerators = new ArrayList<>();
     private Configuration configuration;
 
-    public CurrentBuild(GFinder typeFinder) {
+    public CurrentBuild(GFinder typeFinder, Api api) {
 
         this.typeFinder = typeFinder;
+        this.api = api;
         this.configuration = Configuration.defaultConfiguration();
     }
 
+
+    public Api getApi() {
+        return api;
+    }
 
     public String getResourcePackage() {
 

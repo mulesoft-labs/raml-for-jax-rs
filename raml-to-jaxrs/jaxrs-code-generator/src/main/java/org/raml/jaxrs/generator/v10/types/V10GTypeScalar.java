@@ -4,7 +4,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
-import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
@@ -44,7 +43,7 @@ public class V10GTypeScalar extends V10GTypeHelper {
     @Override
     public TypeName defaultJavaTypeName(String pack) {
 
-        String annotation = Annotations.CLASS_NAME.get(scalar, null);
+        String annotation = Annotations.CLASS_NAME.get((String)null, scalar);
         if(annotation == null ) {
 
             return ScalarTypes.classToTypeName(ScalarTypes.scalarToJavaType(scalar));

@@ -1,7 +1,7 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.junit.Test;
-import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension;
+import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension;
@@ -42,7 +42,7 @@ public class AnnotationsTest {
 
         Api type = buildApi(this, "annotations.raml");
 
-        assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(type.resources().get(0)) instanceof TrialResourceExtension );
+        assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(type.resources().get(0)) instanceof TrialResourceClassExtension);
         assertTrue(Annotations.ON_METHOD_CREATION.get(type.resources().get(0).methods().get(0)) instanceof TrialResourceMethodExtension);
         assertTrue(Annotations.ON_RESPONSE_CLASS_CREATION.get(type.resources().get(0).methods().get(0)) instanceof TrialResponseClassExtension);
         assertTrue(Annotations.ON_RESPONSE_METHOD_CREATION.get(type.resources().get(0).methods().get(0).responses().get(0)) instanceof TrialResponseMethodExtension);
@@ -53,7 +53,7 @@ public class AnnotationsTest {
 
         Api api = buildApi(this, "annotations.raml");
 
-        assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(api, api.resources().get(1)) instanceof TrialResourceExtension );
+        assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(api, api.resources().get(1)) instanceof TrialResourceClassExtension);
     }
 
     public static TypeDeclaration buildType(Object test, String raml, int index) {

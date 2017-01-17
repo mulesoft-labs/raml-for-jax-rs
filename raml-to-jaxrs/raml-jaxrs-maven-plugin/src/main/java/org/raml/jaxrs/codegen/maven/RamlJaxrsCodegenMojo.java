@@ -26,7 +26,7 @@ import org.apache.maven.project.MavenProject;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.RamlScanner;
-import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceExtension;
+import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension;
 import org.raml.jaxrs.generator.extension.TypeExtension;
 
 import java.io.File;
@@ -166,14 +166,14 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 								+ " cannot be loaded."
 								+ "Have you installed the correct dependency in the plugin configuration?");
 					}
-					if (!((c.newInstance()) instanceof TrialResourceExtension)) {
+					if (!((c.newInstance()) instanceof TrialResourceClassExtension)) {
 						throw new MojoExecutionException("resourceExtension " + className
-								+ " does not implement" + TrialResourceExtension.class.getPackage() + "."
-								+ TrialResourceExtension.class.getName());
+								+ " does not implement" + TrialResourceClassExtension.class.getPackage() + "."
+								+ TrialResourceClassExtension.class.getName());
 
 					}
 
-					configuration.getResourceExtensions().add((TrialResourceExtension) c.newInstance());
+					configuration.getResourceExtensions().add((TrialResourceClassExtension) c.newInstance());
 				}
 			}
 
@@ -187,8 +187,8 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
                     }
                     if (!((c.newInstance()) instanceof TypeExtension)) {
                         throw new MojoExecutionException("typeExtension " + className
-                                + " does not implement" + TrialResourceExtension.class.getPackage() + "."
-                                + TrialResourceExtension.class.getName());
+                                + " does not implement" + TrialResourceClassExtension.class.getPackage() + "."
+                                + TrialResourceClassExtension.class.getName());
 
                     }
 

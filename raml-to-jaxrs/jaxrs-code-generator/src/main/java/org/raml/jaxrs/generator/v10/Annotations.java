@@ -1,7 +1,7 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.GenerationException;
-import org.raml.jaxrs.generator.extension.ResourceExtension;
+import org.raml.jaxrs.generator.extension.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.ResponseMethodExtension;
@@ -53,19 +53,19 @@ public abstract class Annotations<T> {
         }
     };
 
-    public static Annotations<? extends ResourceExtension> ON_RESOURCE_CLASS_CREATION = new Annotations<ResourceExtension>() {
+    public static Annotations<? extends ResourceClassExtension> ON_RESOURCE_CLASS_CREATION = new Annotations<ResourceClassExtension>() {
         @Override
-        public ResourceExtension get(Annotable target, Annotable... others) {
+        public ResourceClassExtension get(Annotable target, Annotable... others) {
             String className = getWithDefault("resources", "onResourceClassCreation", null, target, others);
-            return createExtension(className, ResourceExtension.NULL_EXTENSION);
+            return createExtension(className, ResourceClassExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResourceExtension> ON_RESOURCE_CLASS_FINISH = new Annotations<ResourceExtension>() {
+    public static Annotations<? extends ResourceClassExtension> ON_RESOURCE_CLASS_FINISH = new Annotations<ResourceClassExtension>() {
         @Override
-        public ResourceExtension get(Annotable target, Annotable... others) {
+        public ResourceClassExtension get(Annotable target, Annotable... others) {
             String className = getWithDefault("resources", "onResourceClassFinish", null, target, others);
-            return createExtension(className, ResourceExtension.NULL_EXTENSION);
+            return createExtension(className, ResourceClassExtension.NULL_EXTENSION);
         }
     };
 

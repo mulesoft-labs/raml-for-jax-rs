@@ -2,7 +2,7 @@ package org.raml.jaxrs.generator;
 
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.GenerationConfig;
-import org.raml.jaxrs.generator.extension.ResourceExtension;
+import org.raml.jaxrs.generator.extension.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.TypeExtension;
 
 import java.io.File;
@@ -22,7 +22,7 @@ public class Configuration {
     private File outputDirectory;
     private AnnotationStyle jsonMapper;
     private Map<String, String> jsonMapperConfiguration = new HashMap<>();
-    private List<ResourceExtension> resourceExtensions = new ArrayList<>();
+    private List<ResourceClassExtension> resourceExtensions = new ArrayList<>();
     private String[] typeConfiguration = new String[0];
     private String resourcePackage;
     private String supportPackage;
@@ -46,7 +46,7 @@ public class Configuration {
         this.jsonMapperConfiguration = jsonMapperConfiguration;
     }
 
-    public List<ResourceExtension> getResourceExtensions() {
+    public List<ResourceClassExtension> getResourceExtensions() {
         return resourceExtensions;
     }
 

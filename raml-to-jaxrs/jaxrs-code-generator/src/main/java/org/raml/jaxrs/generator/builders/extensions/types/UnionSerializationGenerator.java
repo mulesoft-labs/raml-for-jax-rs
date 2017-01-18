@@ -1,11 +1,8 @@
 package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
@@ -17,7 +14,6 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
@@ -55,7 +51,7 @@ public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
                                 .addModifiers(Modifier.PUBLIC)
                                 .addCode("super($T.class);", unionTypeName).build()
 
-                );
+                ).addModifiers(Modifier.PUBLIC);
         MethodSpec.Builder serialize = MethodSpec.methodBuilder("serialize")
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ParameterSpec.builder(unionTypeName, "object").build())

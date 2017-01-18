@@ -44,6 +44,10 @@
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/example_json_schema.raml</ramlFile>
                     <resourcePackage>example.jsonschema</resourcePackage>
+                    <jsonMapper>jackson2</jsonMapper>
+                    <jsonMapperConfiguration>
+                        <includeHashcodeAndEquals>true</includeHashcodeAndEquals>
+                    </jsonMapperConfiguration>
                 </configuration>
             </plugin>
         </plugins>

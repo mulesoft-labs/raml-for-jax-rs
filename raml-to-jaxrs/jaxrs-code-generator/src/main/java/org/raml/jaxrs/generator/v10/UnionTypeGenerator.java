@@ -69,6 +69,7 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
                     .addMethod(
                             MethodSpec.methodBuilder(Names.methodName("is", typeDeclaration.name()))
                                 .addStatement("return " +  Names.variableName("is" , typeDeclaration.name()))
+                                .addModifiers(Modifier.PUBLIC)
                                 .returns(TypeName.BOOLEAN).build()
                     );
         }

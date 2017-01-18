@@ -60,7 +60,7 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
                                 .addModifiers(Modifier.PUBLIC)
                                 .addCode("super($T.class);", unionTypeName).build()
 
-                );
+                ).addModifiers(Modifier.PUBLIC);
 
         MethodSpec.Builder deserialize = MethodSpec.methodBuilder("deserialize")
                 .addModifiers(Modifier.PUBLIC)

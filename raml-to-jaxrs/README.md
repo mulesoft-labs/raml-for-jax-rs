@@ -27,3 +27,6 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 ###Resource and Response generation control.
 It's possible to control the creation of the interfaces and response classes in RAML 1.0. This is done using RAML annotations in your api file.
 For more information see [here](jaxrs-code-generator/GENERATION_README.md)
+
+###Maven plugin
+There is a maven plugin that can generate the code.  This is documented [here](examples/maven-examples/maven.rd)

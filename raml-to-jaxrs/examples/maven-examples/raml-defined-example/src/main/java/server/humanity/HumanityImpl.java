@@ -1,12 +1,12 @@
 package server.humanity;
 
-import example.types.ArmImpl;
-import example.types.CorpseImpl;
-import example.types.Gender;
-import example.types.Human;
+import example.model.ArmImpl;
+import example.model.CorpseImpl;
+import example.model.Gender;
+import example.model.Human;
+import example.model.Limb;
+import example.model.PersonImpl;
 import example.types.Humanity;
-import example.types.Limb;
-import example.types.PersonImpl;
 
 import java.util.Collections;
 import java.util.Date;

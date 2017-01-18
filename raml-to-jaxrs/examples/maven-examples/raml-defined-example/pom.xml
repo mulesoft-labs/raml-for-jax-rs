@@ -43,7 +43,10 @@
                 <version>2.0.0-SNAPSHOT</version>
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/types_user_defined.raml</ramlFile>
+                    <resourcePackage>example.resources</resourcePackage>
+                    <modelPackage>example.model</modelPackage>
                     <resourcePackage>example.types</resourcePackage>
+                    <supportPackage>example.support</supportPackage>
                     <configureTypesFor>
                         <value>jackson</value>
                     </configureTypesFor>

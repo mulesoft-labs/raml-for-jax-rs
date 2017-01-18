@@ -38,10 +38,6 @@ public class Configuration {
         this.jsonMapper = jsonMapper;
     }
 
-    public Map<String, String> getJsonMapperConfiguration() {
-        return jsonMapperConfiguration;
-    }
-
     public void setJsonMapperConfiguration(Map<String, String> jsonMapperConfiguration) {
         this.jsonMapperConfiguration = jsonMapperConfiguration;
     }

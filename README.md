@@ -3,23 +3,20 @@
 RAML for JAX-RS
 ===============
 
-
-#Introduction
-
+## Introduction
 The goal of RAML for JAX-RS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAX-RS application based on an existing RAML API definition (Code Generation),
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
 
-#Project Modules
-
+## Project Modules
 There are two projects:  [JAXRS to RAML](/jaxrs-to-raml/README.md) and [RAML to JAXRS](/raml-to-jaxrs/README.md).
 
-#Maven artifacts
+## Maven artifacts
 Maven artifacts are NOT currently available at:
  - https://repository-master.mulesoft.org/releases/ - release repository
  - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
 
  We are still working on things.
- 
+
 #Design principles
 
 ## RAML Generation (from JAX-RS)
@@ -95,7 +92,7 @@ These annotations are interpreted as RAML parameters constrains.
 ####Generating client proxy code:
 
 Currently JAX-RS Generation supports generation of client proxy code as experimental feature. If you would like
-to use this mode you may  use '''generateClientProxy''' parameter in command line and maven plugin or select 'Generate client proxy code' in Eclipse plugin. 
+to use this mode you may  use '''generateClientProxy''' parameter in command line and maven plugin or select 'Generate client proxy code' in Eclipse plugin.
 
 <!---
 ### Not yet supported
@@ -116,7 +113,7 @@ to use this mode you may  use '''generateClientProxy''' parameter in command lin
 # Examples
 
 ### JAX-RS => RAML
-- [JAX-RS->RAML example](/jaxrs-to-raml/examples)  
+- [JAX-RS->RAML example](/jaxrs-to-raml/examples)
 
 ### RAML => JAX-RS [examples](/raml-to-jaxrs/examples)
 - [Jersey example](/raml-to-jaxrs/examples/jersey-example)

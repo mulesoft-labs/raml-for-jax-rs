@@ -1,32 +1,26 @@
-=======
-![](http://raml.org/images/logo.png)
-RAML for JAX-RS
-===============
-
-
 ## JAX-RS Generation (from RAML)
 All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following ways:
 
 - Interfaces are generated and will be regenerated when the RAML definition changes.
-- One interface is generated per top level resource, sub-resources are built from the subresources defined in the RAML parser. 
+- One interface is generated per top level resource, sub-resources are built from the subresources defined in the RAML parser.
 - A response object wrapper is created for each resource action in order to guide the implementer in producing only results
 that are compatible with the RAML definition.
 - Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification.
-- Objects defined as RAML 1.0 objects are generated.  These objects are not as flexible as we want right now, but we 
+- Objects defined as RAML 1.0 objects are generated.  These objects are not as flexible as we want right now, but we
 are hoping to make them more flexible are we figure this out.
 - Objects are also generated based on json schemas to represent request/response entities.
 - English is the language used in the interface and method names generation.
 
-###Currently Supported
+### Currently Supported
 - JAX-RS 2.0,
 - JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and javax.validation uses Java ones,
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
 - Generation of JAXB annotated classes based on XML Schemas
 
-###Resource and Response generation control.
+### Resource and Response generation control
 It's possible to control the creation of the interfaces and response classes in RAML 1.0. This is done using RAML annotations in your api file.
 For more information see [here](jaxrs-code-generator/GENERATION_README.md)
 
-###Maven plugin
+### Maven plugin
 There is a maven plugin that can generate the code.  This is documented [here](examples/maven-examples/maven.rd)

@@ -1,10 +1,10 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.GenerationException;
-import org.raml.jaxrs.generator.extension.ResourceClassExtension;
-import org.raml.jaxrs.generator.extension.ResourceMethodExtension;
-import org.raml.jaxrs.generator.extension.ResponseClassExtension;
-import org.raml.jaxrs.generator.extension.ResponseMethodExtension;
+import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
+import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
+import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;

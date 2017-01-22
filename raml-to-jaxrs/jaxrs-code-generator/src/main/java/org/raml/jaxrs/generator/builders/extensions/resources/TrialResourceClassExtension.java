@@ -2,7 +2,7 @@ package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.Context;
-import org.raml.jaxrs.generator.extension.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.v10.V10GResource;
 
 /**

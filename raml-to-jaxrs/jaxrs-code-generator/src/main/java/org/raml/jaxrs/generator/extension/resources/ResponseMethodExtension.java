@@ -1,6 +1,7 @@
-package org.raml.jaxrs.generator.extension;
+package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.MethodSpec;
+import org.raml.jaxrs.generator.extension.Context;
 import org.raml.jaxrs.generator.v10.V10GResponse;
 
 /**

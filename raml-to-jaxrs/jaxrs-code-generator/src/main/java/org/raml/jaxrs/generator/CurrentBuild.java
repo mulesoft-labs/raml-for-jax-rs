@@ -15,7 +15,7 @@ import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
-import org.raml.jaxrs.generator.extension.TypeExtension;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.v2.api.model.v10.api.Api;
 
 import java.io.File;

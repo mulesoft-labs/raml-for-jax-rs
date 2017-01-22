@@ -27,7 +27,7 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.RamlScanner;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension;
-import org.raml.jaxrs.generator.extension.TypeExtension;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 
 import java.io.File;
 import java.io.IOException;

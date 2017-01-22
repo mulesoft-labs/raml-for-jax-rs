@@ -2,8 +2,8 @@ package org.raml.jaxrs.generator;
 
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.GenerationConfig;
-import org.raml.jaxrs.generator.extension.ResourceClassExtension;
-import org.raml.jaxrs.generator.extension.TypeExtension;
+import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.extension.TypeExtension;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 

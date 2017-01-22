@@ -27,6 +27,7 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.RamlScanner;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 
 import java.io.File;
@@ -110,10 +111,17 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 
 	/**
 	 * The name of a generator extension class (implements
-	 * org.raml.jaxrs.codegen.core.ext.GeneratorExtension)
+	 * org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension)
 	 */
-	//@Parameter(property = "resourceExtensions")
-	private String[] resourceExtensions;
+	@Parameter(property = "resourceCreationExtension")
+	private String resourceCreationExtension;
+
+	/**
+	 * The name of a generator extension class (implements
+	 * org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension)
+	 */
+	@Parameter(property = "resourceCreationExtension")
+	private String resourceFinishExtension;
 
     /**
      * The name of a generator extension class (implements
@@ -158,23 +166,17 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
             configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
 			configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
 			configuration.setTypeConfiguration(configureTypesFor);
-			if (resourceExtensions != null) {
-				for (String className : resourceExtensions) {
-					Class c = Class.forName(className);
-					if (c == null) {
-						throw new MojoExecutionException("resourceExtension " + className
-								+ " cannot be loaded."
-								+ "Have you installed the correct dependency in the plugin configuration?");
-					}
-					if (!((c.newInstance()) instanceof TrialResourceClassExtension)) {
-						throw new MojoExecutionException("resourceExtension " + className
-								+ " does not implement" + TrialResourceClassExtension.class.getPackage() + "."
-								+ TrialResourceClassExtension.class.getName());
+			if ( resourceCreationExtension != null ) {
+
+				Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);
+				configuration.defaultResourceCreationExtension(c);
 
 					}
 
-					configuration.getResourceExtensions().add((TrialResourceClassExtension) c.newInstance());
-				}
+			if ( resourceFinishExtension != null ) {
+
+				Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);
+				configuration.defaultResourceFinishExtension(c);
 			}
 
             if (typeExtensions != null) {

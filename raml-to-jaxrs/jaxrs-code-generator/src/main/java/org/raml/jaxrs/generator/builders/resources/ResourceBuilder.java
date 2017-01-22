@@ -19,10 +19,6 @@ import org.raml.jaxrs.generator.ResourceUtils;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.ContextImpl;
-import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
-import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
-import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
-import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GParameter;
 import org.raml.jaxrs.generator.ramltypes.GRequest;
@@ -32,9 +28,7 @@ import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.TypeUtils;
-import org.raml.jaxrs.generator.v10.V10GMethod;
 import org.raml.jaxrs.generator.v10.V10GResource;
-import org.raml.jaxrs.generator.v10.V10GResponse;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -86,7 +80,7 @@ public class ResourceBuilder implements ResourceGenerator {
                         .addMember("value", "$S", uri).build());
 
 
-        typeSpec = getResourceClassExtension(Annotations.ON_RESOURCE_CLASS_CREATION).onResource(new ContextImpl(build), topResource, typeSpec);
+        typeSpec = build.getResourceClassExtension(Annotations.ON_RESOURCE_CLASS_CREATION, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
 
         buildResource(typeSpec, topResource);
 
@@ -94,7 +88,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
         if ( topResource instanceof V10GResource ) {
 
-            typeSpec = getResourceClassExtension(Annotations.ON_RESOURCE_CLASS_FINISH).onResource(new ContextImpl(build), topResource, typeSpec);
+            typeSpec = build.getResourceClassExtension(Annotations.ON_RESOURCE_CLASS_FINISH, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
         }
 
         container.into(typeSpec.build());
@@ -155,7 +149,7 @@ public class ResourceBuilder implements ResourceGenerator {
         MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
 
         // here I would run my  plugins....
-        methodSpec = getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ContextImpl(build),
+        methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ContextImpl(build),
                 gMethod, methodSpec);
 
         typeSpec.addMethod(methodSpec.build());
@@ -169,7 +163,7 @@ public class ResourceBuilder implements ResourceGenerator {
         methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
         handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
 
-        methodSpec = getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ContextImpl(build),
+        methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ContextImpl(build),
                 gMethod, methodSpec);
 
         typeSpec.addMethod(methodSpec.build());
@@ -219,7 +213,7 @@ public class ResourceBuilder implements ResourceGenerator {
                                     .addCode("super(Response);\n").build()
                     );
 
-            responseClass = getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_CREATION, gMethod).onMethod(new ContextImpl(build),
+            responseClass = build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_CREATION, gMethod).onMethod(new ContextImpl(build),
                     gMethod, responseClass);
 
             if ( responseClass == null ) {
@@ -252,7 +246,7 @@ public class ResourceBuilder implements ResourceGenerator {
                         MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.methodName("respond", httpCode,  "With", typeDeclaration.mediaType() ) )
                                                         .addModifiers(Modifier.STATIC, Modifier.PUBLIC);
 
-                        getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse).onMethod(new ContextImpl(build),
+                        build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse).onMethod(new ContextImpl(build),
                                 gResponse, builder);
 
                         builder
@@ -269,7 +263,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
                         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
 
-                        getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse).onMethod(new ContextImpl(build),
+                        build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse).onMethod(new ContextImpl(build),
                                 gResponse, builder);
 
                         responseClass.addMethod(builder.build());
@@ -278,7 +272,7 @@ public class ResourceBuilder implements ResourceGenerator {
             }
 
 
-            responseClass = getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod).onMethod(new ContextImpl(build),
+            responseClass = build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod).onMethod(new ContextImpl(build),
                     gMethod, responseClass);
 
             map.put(defaultName, responseClass);
@@ -288,42 +282,6 @@ public class ResourceBuilder implements ResourceGenerator {
         return map;
     }
 
-    private ResourceMethodExtension<GMethod> getResourceMethodExtension(
-            Annotations<? extends ResourceMethodExtension> onResourceMethodExtension, GMethod gMethod) {
-        if ( gMethod instanceof V10GMethod ) {
-            return onResourceMethodExtension.get(build.getApi(), ((V10GMethod) gMethod).implementation());
-        }
-
-        return ResourceMethodExtension.NULL_EXTENSION;
-    }
-
-    private ResourceClassExtension<GResource> getResourceClassExtension(
-            Annotations<? extends ResourceClassExtension> onResourceClassCreation) {
-        if ( topResource instanceof V10GResource ) {
-            return onResourceClassCreation.get(build.getApi(), ((V10GResource) topResource).implementation());
-        }
-
-        return ResourceClassExtension.NULL_EXTENSION;
-    }
-
-    private ResponseClassExtension<GMethod> getResponseClassExtension(
-            Annotations<? extends ResponseClassExtension> onResponseClassCreation, GMethod gMethod) {
-        if ( gMethod instanceof V10GMethod ) {
-            return onResponseClassCreation.get(build.getApi(), ((V10GMethod) gMethod).implementation());
-        }
-
-        return ResponseClassExtension.NULL_EXTENSION;
-    }
-
-    private ResponseMethodExtension<GResponse> getResponseMethodExtension(
-            Annotations<? extends ResponseMethodExtension> onResponseMethodExtension, GResponse gResponse) {
-        if ( gResponse instanceof V10GResponse ) {
-            return onResponseMethodExtension.get(build.getApi(), ((V10GResponse) gResponse).implementation());
-        }
-
-        return ResponseMethodExtension.NULL_EXTENSION;
-    }
-
 
     private MethodSpec.Builder createMethodBuilder(GMethod gMethod, String methodName, Set<String> mediaTypesForMethod,
             Map<String, TypeSpec.Builder> responseSpec) {
@@ -331,7 +289,7 @@ public class ResourceBuilder implements ResourceGenerator {
         MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
-        methodSpec = getResourceMethodExtension(Annotations.ON_METHOD_CREATION, gMethod).onMethod(new ContextImpl(build),
+        methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_CREATION, gMethod).onMethod(new ContextImpl(build),
                 gMethod, methodSpec);
 
         for (GParameter typeDeclaration : gMethod.resource().uriParameters()) {

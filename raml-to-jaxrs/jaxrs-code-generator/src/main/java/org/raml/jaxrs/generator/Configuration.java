@@ -2,7 +2,7 @@ package org.raml.jaxrs.generator;
 
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.GenerationConfig;
-import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 
 import java.io.File;
@@ -22,11 +22,13 @@ public class Configuration {
     private File outputDirectory;
     private AnnotationStyle jsonMapper;
     private Map<String, String> jsonMapperConfiguration = new HashMap<>();
-    private List<ResourceClassExtension> resourceExtensions = new ArrayList<>();
     private String[] typeConfiguration = new String[0];
     private String resourcePackage;
     private String supportPackage;
     private List<TypeExtension> typeExtensions = new ArrayList<>();
+
+    private Class<GlobalResourceExtension> defaultCreationExtension;
+    private Class<GlobalResourceExtension> defaultFinishExtension;
 
 
     public void setupBuild(CurrentBuild build) {
@@ -40,10 +42,6 @@ public class Configuration {
 
     public void setJsonMapperConfiguration(Map<String, String> jsonMapperConfiguration) {
         this.jsonMapperConfiguration = jsonMapperConfiguration;
-    }
-
-    public List<ResourceClassExtension> getResourceExtensions() {
-        return resourceExtensions;
     }
 
     public String getSupportPackage() {
@@ -118,4 +116,19 @@ public class Configuration {
         return new RamlToJaxRSGenerationConfig(jsonMapper, jsonMapperConfiguration);
     }
 
+    public void defaultResourceCreationExtension(Class<GlobalResourceExtension> c) {
+        defaultCreationExtension = c;
+    }
+
+    public void defaultResourceFinishExtension(Class<GlobalResourceExtension> c) {
+        defaultFinishExtension = c;
+    }
+
+    public Class<GlobalResourceExtension> getDefaultCreationExtension() {
+        return defaultCreationExtension;
+    }
+
+    public Class<GlobalResourceExtension> getDefaultFinishExtension() {
+        return defaultFinishExtension;
+    }
 }

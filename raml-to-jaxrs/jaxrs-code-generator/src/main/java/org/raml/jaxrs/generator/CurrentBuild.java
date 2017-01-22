@@ -15,7 +15,19 @@ import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
+import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
+import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
+import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
+import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
+import org.raml.jaxrs.generator.v10.Annotations;
+import org.raml.jaxrs.generator.v10.V10GMethod;
+import org.raml.jaxrs.generator.v10.V10GResource;
+import org.raml.jaxrs.generator.v10.V10GResponse;
 import org.raml.v2.api.model.v10.api.Api;
 
 import java.io.File;
@@ -207,5 +219,72 @@ public class CurrentBuild {
     public GenerationConfig getJsonMapperConfig() {
         return configuration.createJsonSchemaGenerationConfig();
     }
+
+    private GlobalResourceExtension buildGlobalForCreate() {
+
+        if ( configuration.getDefaultCreationExtension() != null ) {
+
+            try {
+                return configuration.getDefaultCreationExtension().newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new GenerationException(e);
+            }
+        } else {
+            return GlobalResourceExtension.NULL_EXTENSION;
+        }
+    }
+
+    private GlobalResourceExtension buildGlobalForFinish() {
+
+        if ( configuration.getDefaultCreationExtension() != null ) {
+
+            try {
+                return configuration.getDefaultFinishExtension().newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new GenerationException(e);
+            }
+        } else {
+            return GlobalResourceExtension.NULL_EXTENSION;
+        }
+    }
+
+    public ResourceMethodExtension<GMethod> getResourceMethodExtension(
+            Annotations<? extends ResourceMethodExtension> onResourceMethodExtension, GMethod gMethod) {
+
+        if ( gMethod instanceof V10GMethod) {
+            return onResourceMethodExtension.get(getApi(), ((V10GMethod) gMethod).implementation());
+        }
+
+        return onResourceMethodExtension == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+    }
+
+    public ResourceClassExtension<GResource> getResourceClassExtension(
+            Annotations<? extends ResourceClassExtension> onResourceClassCreation, GResource topResource) {
+        if ( topResource instanceof V10GResource) {
+            return onResourceClassCreation.get(getApi(), ((V10GResource) topResource).implementation());
+        }
+
+        return onResourceClassCreation == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+    }
+
+    public ResponseClassExtension<GMethod> getResponseClassExtension(
+            Annotations<? extends ResponseClassExtension> onResponseClassCreation, GMethod gMethod) {
+        if ( gMethod instanceof V10GMethod ) {
+            return onResponseClassCreation.get(getApi(), ((V10GMethod) gMethod).implementation());
+        }
+
+        return onResponseClassCreation == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+    }
+
+    public ResponseMethodExtension<GResponse> getResponseMethodExtension(
+            Annotations<? extends ResponseMethodExtension> onResponseMethodExtension, GResponse gResponse) {
+        if ( gResponse instanceof V10GResponse) {
+            return onResponseMethodExtension.get(getApi(), ((V10GResponse) gResponse).implementation());
+        }
+
+        return onResponseMethodExtension == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+    }
+
+
 }
 

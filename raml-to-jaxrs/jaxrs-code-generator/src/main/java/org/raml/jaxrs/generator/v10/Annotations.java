@@ -226,5 +226,4 @@ public abstract class Annotations<T> {
 
         return get(def, type.implementation());
     }
-
 }

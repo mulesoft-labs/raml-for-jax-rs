@@ -60,7 +60,7 @@ public abstract class Annotations<T> {
         @Override
         public ResourceClassExtension<GResource> get(Annotable target, Annotable... others) {
             String className = getWithDefault("resources", "onResourceClassCreation", null, target, others);
-            return createExtension(className, ResourceClassExtension.NULL_EXTENSION);
+            return createExtension(className, null);
         }
     };
 

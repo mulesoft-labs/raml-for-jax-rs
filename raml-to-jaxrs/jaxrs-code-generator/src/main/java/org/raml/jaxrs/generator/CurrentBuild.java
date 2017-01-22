@@ -24,9 +24,6 @@ import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
-import org.raml.jaxrs.generator.v08.V08GResource;
-import org.raml.jaxrs.generator.v08.V08Method;
-import org.raml.jaxrs.generator.v08.V08Response;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GMethod;
 import org.raml.jaxrs.generator.v10.V10GResource;
@@ -223,17 +220,17 @@ public class CurrentBuild {
         return configuration.createJsonSchemaGenerationConfig();
     }
 
-    private GlobalResourceExtension<V08Method, V08GResource, V08Response> buildGlobalForCreate() {
+    private <T> T buildGlobalForCreate(T defaultValue) {
 
         if ( configuration.getDefaultCreationExtension() != null ) {
 
             try {
-                return configuration.getDefaultCreationExtension().newInstance();
+                return (T) configuration.getDefaultCreationExtension().newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new GenerationException(e);
             }
         } else {
-            return GlobalResourceExtension.NULL_EXTENSION;
+            return defaultValue;
         }
     }
 
@@ -258,16 +255,16 @@ public class CurrentBuild {
             return onResourceMethodExtension.get(getApi(), ((V10GMethod) gMethod).implementation());
         }
 
-        return onResourceMethodExtension == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+        return onResourceMethodExtension == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION): buildGlobalForFinish();
     }
 
-    public ResourceClassExtension<GResource> getResourceClassExtension(
+    public ResourceClassExtension<GResource> getResourceClassExtension(ResourceClassExtension<GResource> defaultClass,
             Annotations<ResourceClassExtension<GResource>> onResourceClassCreation, GResource topResource) {
         if ( topResource instanceof V10GResource) {
-            return onResourceClassCreation.get(getApi(), ((V10GResource) topResource).implementation());
+            return onResourceClassCreation.get(defaultClass, getApi(), ((V10GResource) topResource).implementation());
         }
 
-        return onResourceClassCreation == Annotations.ON_RESOURCE_CLASS_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+        return onResourceClassCreation == Annotations.ON_RESOURCE_CLASS_CREATION ? buildGlobalForCreate(defaultClass): buildGlobalForFinish();
     }
 
     public ResponseClassExtension<GMethod> getResponseClassExtension(
@@ -276,7 +273,7 @@ public class CurrentBuild {
             return onResponseClassCreation.get(getApi(), ((V10GMethod) gMethod).implementation());
         }
 
-        return onResponseClassCreation == Annotations.ON_RESPONSE_CLASS_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+        return onResponseClassCreation == Annotations.ON_RESPONSE_CLASS_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION): buildGlobalForFinish();
     }
 
     public ResponseMethodExtension<GResponse> getResponseMethodExtension(
@@ -285,7 +282,7 @@ public class CurrentBuild {
             return onResponseMethodExtension.get(getApi(), ((V10GResponse) gResponse).implementation());
         }
 
-        return onResponseMethodExtension == Annotations.ON_RESPONSE_METHOD_CREATION ? buildGlobalForCreate(): buildGlobalForFinish();
+        return onResponseMethodExtension == Annotations.ON_RESPONSE_METHOD_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION): buildGlobalForFinish();
     }
 
 

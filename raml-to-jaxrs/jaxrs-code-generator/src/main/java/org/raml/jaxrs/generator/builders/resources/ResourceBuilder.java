@@ -19,6 +19,8 @@ import org.raml.jaxrs.generator.ResourceUtils;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.ContextImpl;
+import org.raml.jaxrs.generator.extension.Context;
+import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GParameter;
 import org.raml.jaxrs.generator.ramltypes.GRequest;
@@ -73,21 +75,8 @@ public class ResourceBuilder implements ResourceGenerator {
     @Override
     public void output(CodeContainer<TypeSpec> container) throws IOException {
 
-        TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(AnnotationSpec.builder(Path.class)
-                        .addMember("value", "$S", uri).build());
 
-        typeSpec = build.getResourceClassExtension(Annotations.ON_RESOURCE_CLASS_CREATION, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
-
-        buildResource(typeSpec, topResource);
-
-        recurse(typeSpec, topResource);
-
-        if ( topResource instanceof V10GResource ) {
-
-            typeSpec = build.getResourceClassExtension(Annotations.ON_RESOURCE_CLASS_FINISH, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
-        }
+        TypeSpec.Builder typeSpec = build.getResourceClassExtension(new DefaultResourceClassCreator(), Annotations.ON_RESOURCE_CLASS_CREATION, topResource).onResource(new ContextImpl(build), topResource, null);
 
         container.into(typeSpec.build());
     }
@@ -395,5 +384,27 @@ public class ResourceBuilder implements ResourceGenerator {
             ann.addMember("value", "$S", mediaType);
         }
         return ann;
+    }
+
+    private class DefaultResourceClassCreator implements ResourceClassExtension<GResource> {
+        @Override
+        public TypeSpec.Builder onResource(Context context, GResource resource, TypeSpec.Builder nullSpec) {
+
+            TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
+                    .addModifiers(Modifier.PUBLIC)
+                    .addAnnotation(AnnotationSpec.builder(Path.class)
+                            .addMember("value", "$S", uri).build());
+
+            buildResource(typeSpec, topResource);
+
+            recurse(typeSpec, topResource);
+
+            if ( topResource instanceof V10GResource) {
+
+                typeSpec = build.getResourceClassExtension(NULL_EXTENSION, Annotations.ON_RESOURCE_CLASS_FINISH, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
+            }
+
+            return typeSpec;
+        }
     }
 }

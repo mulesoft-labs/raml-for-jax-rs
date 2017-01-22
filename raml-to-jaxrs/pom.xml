@@ -9,12 +9,13 @@
     <packaging>pom</packaging>
     <artifactId>raml-to-jaxrs</artifactId>
     <modules>
-        <module>raml-jaxrs-maven-plugin</module>
         <module>jaxrs-code-generator</module>
         <module>examples</module>
-<!--
-        <module>gradle-plugin</module>
--->
+        <module>raml-jaxrs-maven-plugin</module>
+
+        <!--
+                <module>gradle-plugin</module>
+        -->
     </modules>
     <distributionManagement>
         <repository>

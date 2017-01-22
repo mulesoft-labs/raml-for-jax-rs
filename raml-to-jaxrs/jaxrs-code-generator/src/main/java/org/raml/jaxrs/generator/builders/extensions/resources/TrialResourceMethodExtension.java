@@ -9,7 +9,7 @@ import org.raml.jaxrs.generator.v10.V10GMethod;
  * Created by Jean-Philippe Belanger on 1/6/17.
  * Just potential zeroes and ones
  */
-public class TrialResourceMethodExtension implements ResourceMethodExtension {
+public class TrialResourceMethodExtension implements ResourceMethodExtension<V10GMethod> {
 
     @Override
     public MethodSpec.Builder onMethod(Context context, V10GMethod method, MethodSpec.Builder methodSpec) {

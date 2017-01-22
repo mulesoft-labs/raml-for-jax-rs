@@ -9,7 +9,7 @@ import org.raml.jaxrs.generator.v10.V10GMethod;
  * Created by Jean-Philippe Belanger on 1/12/17.
  * Just potential zeroes and ones
  */
-public class TrialResponseClassExtension implements ResponseClassExtension {
+public class TrialResponseClassExtension implements ResponseClassExtension<V10GMethod> {
 
     @Override
     public TypeSpec.Builder onMethod(Context context, V10GMethod response, TypeSpec.Builder typeSpec) {

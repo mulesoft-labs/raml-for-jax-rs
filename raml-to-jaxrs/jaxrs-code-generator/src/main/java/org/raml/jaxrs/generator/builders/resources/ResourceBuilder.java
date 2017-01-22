@@ -73,12 +73,10 @@ public class ResourceBuilder implements ResourceGenerator {
     @Override
     public void output(CodeContainer<TypeSpec> container) throws IOException {
 
-
         TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(AnnotationSpec.builder(Path.class)
                         .addMember("value", "$S", uri).build());
-
 
         typeSpec = build.getResourceClassExtension(Annotations.ON_RESOURCE_CLASS_CREATION, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
 

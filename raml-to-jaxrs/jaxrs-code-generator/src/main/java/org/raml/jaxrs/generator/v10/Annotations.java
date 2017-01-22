@@ -5,6 +5,9 @@ import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
@@ -53,65 +56,67 @@ public abstract class Annotations<T> {
         }
     };
 
-    public static Annotations<? extends ResourceClassExtension> ON_RESOURCE_CLASS_CREATION = new Annotations<ResourceClassExtension>() {
+    public static Annotations<ResourceClassExtension<GResource>> ON_RESOURCE_CLASS_CREATION = new Annotations<ResourceClassExtension<GResource>>() {
         @Override
-        public ResourceClassExtension get(Annotable target, Annotable... others) {
+        public ResourceClassExtension<GResource> get(Annotable target, Annotable... others) {
             String className = getWithDefault("resources", "onResourceClassCreation", null, target, others);
             return createExtension(className, ResourceClassExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResourceClassExtension> ON_RESOURCE_CLASS_FINISH = new Annotations<ResourceClassExtension>() {
+    public static Annotations<ResourceClassExtension<GResource>> ON_RESOURCE_CLASS_FINISH = new Annotations<ResourceClassExtension<GResource>>() {
         @Override
-        public ResourceClassExtension get(Annotable target, Annotable... others) {
+        public ResourceClassExtension<GResource> get(Annotable target, Annotable... others) {
             String className = getWithDefault("resources", "onResourceClassFinish", null, target, others);
             return createExtension(className, ResourceClassExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResourceMethodExtension> ON_METHOD_CREATION = new Annotations<ResourceMethodExtension>() {
+    public static Annotations<ResourceMethodExtension<GMethod>> ON_METHOD_CREATION = new Annotations<ResourceMethodExtension<GMethod>>() {
+
         @Override
-        public ResourceMethodExtension get(Annotable target, Annotable... others) {
+        public ResourceMethodExtension<GMethod> get(Annotable target, Annotable... others) {
             String className = getWithDefault("methods", "onResourceMethodCreation", null, target, others);
             return createExtension(className, ResourceMethodExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResourceMethodExtension> ON_METHOD_FINISH = new Annotations<ResourceMethodExtension>() {
+    public static Annotations<ResourceMethodExtension<GMethod>> ON_METHOD_FINISH = new Annotations<ResourceMethodExtension<GMethod>>() {
+
         @Override
-        public ResourceMethodExtension get(Annotable target, Annotable... others) {
+        public ResourceMethodExtension<GMethod> get(Annotable target, Annotable... others) {
             String className = getWithDefault("methods", "onResourceMethodFinish", null, target, others);
             return createExtension(className, ResourceMethodExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResponseClassExtension> ON_RESPONSE_CLASS_CREATION = new Annotations<ResponseClassExtension>() {
+    public static Annotations<ResponseClassExtension<GMethod>> ON_RESPONSE_CLASS_CREATION = new Annotations<ResponseClassExtension<GMethod>>() {
         @Override
-        public ResponseClassExtension get(Annotable target, Annotable... others) {
+        public ResponseClassExtension<GMethod> get(Annotable target, Annotable... others) {
             String className = getWithDefault("methods", "onResponseClassCreation", null, target, others);
             return createExtension(className, ResponseClassExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResponseClassExtension> ON_RESPONSE_CLASS_FINISH = new Annotations<ResponseClassExtension>() {
+    public static Annotations<ResponseClassExtension<GMethod>> ON_RESPONSE_CLASS_FINISH = new Annotations<ResponseClassExtension<GMethod>>() {
         @Override
-        public ResponseClassExtension get(Annotable target, Annotable... others) {
+        public ResponseClassExtension<GMethod> get(Annotable target, Annotable... others) {
             String className = getWithDefault("methods", "onResponseClassFinish", null, target, others);
             return createExtension(className, ResponseClassExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResponseMethodExtension> ON_RESPONSE_METHOD_CREATION = new Annotations<ResponseMethodExtension>() {
+    public static Annotations<ResponseMethodExtension<GResponse>> ON_RESPONSE_METHOD_CREATION = new Annotations<ResponseMethodExtension<GResponse>>() {
         @Override
-        public ResponseMethodExtension get(Annotable target, Annotable... others) {
+        public ResponseMethodExtension<GResponse> get(Annotable target, Annotable... others) {
             String className = getWithDefault("responses", "onResponseMethodCreation", null, target, others);
             return createExtension(className, ResponseMethodExtension.NULL_EXTENSION);
         }
     };
 
-    public static Annotations<? extends ResponseMethodExtension> ON_RESPONSE_METHOD_FINISH = new Annotations<ResponseMethodExtension>() {
+    public static Annotations<ResponseMethodExtension<GResponse>> ON_RESPONSE_METHOD_FINISH = new Annotations<ResponseMethodExtension<GResponse>>() {
         @Override
-        public ResponseMethodExtension get(Annotable target, Annotable... others) {
+        public ResponseMethodExtension<GResponse> get(Annotable target, Annotable... others) {
             String className = getWithDefault("responses", "onResponseMethodFinish", null, target, others);
             return createExtension(className, ResponseMethodExtension.NULL_EXTENSION);
         }

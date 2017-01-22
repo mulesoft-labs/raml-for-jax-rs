@@ -9,7 +9,7 @@ import org.raml.jaxrs.generator.ramltypes.GResource;
  * Just potential zeroes and ones
  */
 public interface ResourceClassExtension<T extends GResource> {
-    ResourceClassExtension NULL_EXTENSION = new ResourceClassExtension<GResource>() {
+    ResourceClassExtension<GResource> NULL_EXTENSION = new ResourceClassExtension<GResource>() {
 
         @Override
         public TypeSpec.Builder onResource(Context context, GResource resource, TypeSpec.Builder typeSpec) {

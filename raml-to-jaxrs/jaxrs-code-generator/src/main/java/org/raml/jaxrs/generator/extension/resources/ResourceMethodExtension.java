@@ -10,7 +10,7 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
  */
 public interface ResourceMethodExtension<T extends GMethod> {
 
-    ResourceMethodExtension NULL_EXTENSION = new ResourceMethodExtension() {
+    ResourceMethodExtension<GMethod> NULL_EXTENSION = new ResourceMethodExtension<GMethod>() {
 
         @Override
         public MethodSpec.Builder onMethod(Context context, GMethod method, MethodSpec.Builder methodSpec) {

@@ -10,7 +10,7 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
  */
 public interface ResponseClassExtension<T extends GMethod> {
 
-    ResponseClassExtension NULL_EXTENSION = new ResponseClassExtension() {
+    ResponseClassExtension<GMethod> NULL_EXTENSION = new ResponseClassExtension<GMethod>() {
 
         @Override
         public TypeSpec.Builder onMethod(Context context, GMethod method, TypeSpec.Builder typeSpec) {

@@ -30,7 +30,6 @@ import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.TypeUtils;
-import org.raml.jaxrs.generator.v10.V10GResource;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -78,7 +77,9 @@ public class ResourceBuilder implements ResourceGenerator {
 
         TypeSpec.Builder typeSpec = build.getResourceClassExtension(new DefaultResourceClassCreator(), Annotations.ON_RESOURCE_CLASS_CREATION, topResource).onResource(new ContextImpl(build), topResource, null);
 
-        container.into(typeSpec.build());
+        if ( typeSpec != null ) {
+            container.into(typeSpec.build());
+        }
     }
 
 
@@ -139,7 +140,9 @@ public class ResourceBuilder implements ResourceGenerator {
         methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ContextImpl(build),
                 gMethod, methodSpec);
 
-        typeSpec.addMethod(methodSpec.build());
+        if ( methodSpec != null ) {
+            typeSpec.addMethod(methodSpec.build());
+        }
     }
 
     private void createMethodWithBody(TypeSpec.Builder typeSpec, GMethod gMethod,
@@ -153,7 +156,9 @@ public class ResourceBuilder implements ResourceGenerator {
         methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ContextImpl(build),
                 gMethod, methodSpec);
 
-        typeSpec.addMethod(methodSpec.build());
+        if ( methodSpec != null ) {
+            typeSpec.addMethod(methodSpec.build());
+        }
     }
 
 
@@ -224,6 +229,20 @@ public class ResourceBuilder implements ResourceGenerator {
                             .addStatement("return new $N(responseBuilder.build())", currentClass)
                             .returns(TypeVariableName.get(currentClass.name))
                             .build();
+                    builder = build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse).onMethod(new ContextImpl(build),
+                            gResponse, builder);
+
+                    if ( builder == null ) {
+                        continue;
+                    }
+
+                    builder = build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse).onMethod(new ContextImpl(build),
+                            gResponse, builder);
+
+
+                    if ( builder == null ) {
+                        continue;
+                    }
 
                     responseClass.addMethod(builder.build());
                 } else {
@@ -233,8 +252,12 @@ public class ResourceBuilder implements ResourceGenerator {
                         MethodSpec.Builder builder = MethodSpec.methodBuilder( Names.methodName("respond", httpCode,  "With", typeDeclaration.mediaType() ) )
                                                         .addModifiers(Modifier.STATIC, Modifier.PUBLIC);
 
-                        build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse).onMethod(new ContextImpl(build),
+                        builder = build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse).onMethod(new ContextImpl(build),
                                 gResponse, builder);
+
+                        if ( builder == null ) {
+                            continue;
+                        }
 
                         builder
                                 .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ").header(\"Content-Type\", \""
@@ -250,9 +273,13 @@ public class ResourceBuilder implements ResourceGenerator {
 
                         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
 
-                        build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse).onMethod(new ContextImpl(build),
+                        builder = build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse).onMethod(new ContextImpl(build),
                                 gResponse, builder);
 
+
+                        if ( builder == null ) {
+                            continue;
+                        }
                         responseClass.addMethod(builder.build());
                     }
                 }
@@ -261,6 +288,12 @@ public class ResourceBuilder implements ResourceGenerator {
 
             responseClass = build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod).onMethod(new ContextImpl(build),
                     gMethod, responseClass);
+
+            if ( responseClass == null ) {
+
+                map.put(defaultName, null);
+                continue;
+            }
 
             map.put(defaultName, responseClass);
             typeSpec.addType(responseClass.build());
@@ -399,11 +432,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
             recurse(typeSpec, topResource);
 
-            if ( topResource instanceof V10GResource) {
-
-                typeSpec = build.getResourceClassExtension(NULL_EXTENSION, Annotations.ON_RESOURCE_CLASS_FINISH, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
-            }
-
+            typeSpec = build.getResourceClassExtension(NULL_EXTENSION, Annotations.ON_RESOURCE_CLASS_FINISH, topResource).onResource(new ContextImpl(build), topResource, typeSpec);
             return typeSpec;
         }
     }

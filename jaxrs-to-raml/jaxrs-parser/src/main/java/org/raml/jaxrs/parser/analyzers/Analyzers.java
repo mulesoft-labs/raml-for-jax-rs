@@ -6,7 +6,7 @@ public class Analyzers {
 
     private Analyzers() {}
 
-    public static Analyzer jerserAnalyzerFor(Iterable<Class<?>> classes, SourceParser sourceParser) {
+    public static Analyzer jerseyAnalyzerFor(Iterable<Class<?>> classes, SourceParser sourceParser) {
         return JerseyAnalyzer.create(classes, new JerseyBridgeImpl(), sourceParser);
     }
 }

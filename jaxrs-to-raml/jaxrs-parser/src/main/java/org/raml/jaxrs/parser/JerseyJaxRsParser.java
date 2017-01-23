@@ -5,7 +5,6 @@ import org.raml.jaxrs.parser.analyzers.Analyzers;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
 import org.raml.jaxrs.parser.source.SourceParser;
 import org.raml.jaxrs.parser.util.ClassLoaderUtils;
-import org.raml.utilities.builder.NonNullableField;
 import org.raml.utilities.format.Joiners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,7 @@ class JerseyJaxRsParser implements JaxRsParser {
 
         Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);
 
-        return Analyzers.jerserAnalyzerFor(classes, sourceParser).analyze();
+        return Analyzers.jerseyAnalyzerFor(classes, sourceParser).analyze();
     }
 
     private static Iterable<Class<?>> getJaxRsClassesFor(Path jaxRsResource) throws JaxRsParsingException {

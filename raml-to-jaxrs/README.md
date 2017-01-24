@@ -23,4 +23,4 @@ It's possible to control the creation of the interfaces and response classes in 
 For more information see [here](jaxrs-code-generator/GENERATION_README.md)
 
 ### Maven plugin
-There is a maven plugin that can generate the code.  This is documented [here](examples/maven-examples/maven.rd)
+There is a maven plugin that can generate the code. This is documented [here](examples/maven-examples/README.md).

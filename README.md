@@ -8,16 +8,16 @@ The goal of RAML for JAX-RS is to provide a set of tools to work with these tech
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
 
 ## Project Modules
-There are two projects:  [JAXRS to RAML](/jaxrs-to-raml/README.md) and [RAML to JAXRS](/raml-to-jaxrs/README.md).
+There are two projects: [JAXRS to RAML](/jaxrs-to-raml/README.md) and [RAML to JAXRS](/raml-to-jaxrs/README.md).
 
 ## Maven artifacts
-Maven artifacts are NOT currently available at:
+Maven artifacts are NOT yet available at:
  - https://repository-master.mulesoft.org/releases/ - release repository
  - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
 
- We are still working on things.
+We are still working on things.
 
-#Design principles
+# Design principles
 
 ## RAML Generation (from JAX-RS)
 All distributions (Eclipse plugin, Maven Plugin, and Javac Plugin) works in the following way.

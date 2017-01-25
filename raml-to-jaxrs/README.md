@@ -1,4 +1,4 @@
-## JAX-RS Generation (from RAML)
+## JAX-RS Generation from RAML (raml-to-jaxrs)
 All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following ways:
 
 - Interfaces are generated and will be regenerated when the RAML definition changes.
@@ -22,5 +22,5 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 It's possible to control the creation of the interfaces and response classes in RAML 1.0. This is done using RAML annotations in your api file.
 For more information see [here](jaxrs-code-generator/GENERATION_README.md)
 
-### Maven plugin
+### Using the Maven plugin
 There is a maven plugin that can generate the code. This is documented [here](examples/maven-examples/README.md).

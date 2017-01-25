@@ -1,4 +1,4 @@
-## RAML Generation from JAX-RS
+## RAML Generation from JAX-RS (jaxrs-to-raml)
 This module provides two main artifacts: a command line tool jar and a maven plugin.
 Both of which have the purpose to convert an existing set of compiled JAX-RS Java classes
 into their corresponding RAML model.
@@ -19,15 +19,15 @@ and extract compiled JAX-RS relevant classes.
 NOTE: Not all sorts of types are supported. The current implementation only
 supports Java primitive types.
 
-### Using the maven plugin
-The [jax-rs-test-resources](/jaxrs-test-resources/pom.xml) contains an example usage of how to
+### Using the Maven plugin
+The [jaxrs-test-resources](jaxrs-test-resources/) contains an example usage of how to
 setup the plugin.
 
 This plugin should be run minimally after the compile goal, since it needs the compiled classes of
 the project for RAML generation.
 
 The example provided above shows all the possible configurations. None of them are mandatory however.
-The [jax-rs-test-resources](/jaxrs-test-resources/pom.xml) pom file shows what the default values are.
+The [jaxrs-test-resources](jaxrs-test-resources/pom.xml) pom file shows what the default values are.
 
 For convenience, we list the configurations here:
 - input - The input is the directory where to fetch the target classes.
@@ -42,6 +42,6 @@ For convenience, we list the configurations here:
 
 ### Using the CLI
 The CLI is very simplistic. It provides little less features because less emphasis was put on its development.
-The project [jax-to-raml-cli](/jaxrs-to-raml-cli/pom.xml) contains the cli artifact.
+The project [jaxrs-to-raml-cli](jaxrs-to-raml-cli/) contains the cli artifact.
 The first argument provided on the CLI is the directory where to find the compiled classes and
 the second one is the path to the generated RAML file.

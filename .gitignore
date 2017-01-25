@@ -11,3 +11,4 @@ nogit/
 .metadata
 RemoteSystemsTempFiles
 /.gradle
+.DS_Store

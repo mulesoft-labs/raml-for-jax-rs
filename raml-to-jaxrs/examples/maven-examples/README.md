@@ -1,5 +1,6 @@
+## Maven plugin examples (raml-to-jaxrs)
 The maven plugin has many examples in the subprojects.
-Some examples from the [types](raml-defined-example/pom.xml) example:
+Some examples from the [types](raml-defined-example/) example:
 ```xml
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/types_user_defined.raml</ramlFile>
@@ -23,4 +24,4 @@ The __supportPackage__ configuration parameter determines the package in which J
 (serializers, responses and such)
 will be generated.
 
-There is an example of [json](simple-json-example/maven.md) generation.
+There is an example of [json](simple-json-example/README.md) generation.

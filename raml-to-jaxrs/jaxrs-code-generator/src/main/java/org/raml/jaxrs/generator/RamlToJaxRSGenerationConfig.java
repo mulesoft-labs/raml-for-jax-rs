@@ -4,6 +4,7 @@ import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
 import org.jsonschema2pojo.DefaultGenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.rules.RuleFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,15 +90,6 @@ class RamlToJaxRSGenerationConfig extends DefaultGenerationConfig {
         return getConfiguredValue("includeAccessors", super.isIncludeAccessors());
     }
 
-    private boolean getConfiguredValue(final String key, final boolean def) {
-        if (jsonMapperConfiguration == null || jsonMapperConfiguration.isEmpty()) {
-            return def;
-        }
-
-        final String val = jsonMapperConfiguration.get(key);
-        return val != null ? Boolean.parseBoolean(val) : def;
-    }
-
     @Override
     public boolean isUseJodaDates() {
         return getConfiguredValue("useJodaDates", false);
@@ -128,6 +120,87 @@ class RamlToJaxRSGenerationConfig extends DefaultGenerationConfig {
         return getConfiguredValueStr("timeType", null);
     }
 
+
+
+    @Override
+    public boolean isUsePrimitives() {
+        return getConfiguredValue("usePrimitives", false);
+    }
+
+    @Override
+    public boolean isUseDoubleNumbers() {
+        return getConfiguredValue("useDoubleNumbers", true);
+    }
+
+    @Override
+    public Class<? extends RuleFactory> getCustomRuleFactory() {
+        String factory = getConfiguredValueStr("customRuleFactory", null);
+        if ( factory == null ) {
+            return org.jsonschema2pojo.rules.RuleFactory.class;
+        } else {
+            try {
+                return (Class<? extends RuleFactory>) Class.forName(factory);
+            } catch (ClassNotFoundException e) {
+                throw new GenerationException(e);
+            }
+        }
+    }
+
+    @Override
+    public String getOutputEncoding() {
+        return getConfiguredValueStr("outputEncoding", "UTF-8");
+    }
+
+    @Override
+    public boolean isParcelable() {
+        return getConfiguredValue("parcelable", false);
+    }
+
+    @Override
+    public boolean isSerializable() {
+        return getConfiguredValue("serializable", false);
+    }
+
+    @Override
+    public boolean isInitializeCollections() {
+        return getConfiguredValue("initializeCollections", true);
+    }
+
+    @Override
+    public String getClassNamePrefix() {
+        return getConfiguredValueStr("classNamePrefix", "");
+    }
+
+    @Override
+    public String getClassNameSuffix() {
+        return getConfiguredValueStr("classNameSuffix", "");
+    }
+
+    @Override
+    public boolean isUseBigIntegers() {
+        return getConfiguredValue("useBigIntegers", false);
+    }
+
+    @Override
+    public boolean isUseBigDecimals() {
+        return getConfiguredValue("useBigDecimals", false);
+    }
+
+    @Override
+    public boolean isIncludeAdditionalProperties() {
+        return getConfiguredValue("includeAdditionalProperties", true);
+    }
+
+    @Override
+    public String getTargetVersion() {
+        return getConfiguredValueStr("targetVersion", "1.6");
+    }
+
+    @Override
+    public boolean isIncludeDynamicAccessors() {
+        return getConfiguredValue("includeDynamicAccessors", false);
+    }
+
     private String getConfiguredValueStr(final String key, final String def) {
         if (jsonMapperConfiguration == null || jsonMapperConfiguration.isEmpty()) {
             return def;
@@ -135,4 +208,14 @@ class RamlToJaxRSGenerationConfig extends DefaultGenerationConfig {
         final String val = jsonMapperConfiguration.get(key);
         return val != null ? val : def;
     }
+
+    private boolean getConfiguredValue(final String key, final boolean def) {
+        if (jsonMapperConfiguration == null || jsonMapperConfiguration.isEmpty()) {
+            return def;
+        }
+
+        final String val = jsonMapperConfiguration.get(key);
+        return val != null ? Boolean.parseBoolean(val) : def;
+    }
+
 }

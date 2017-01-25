@@ -52,6 +52,7 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
     @Override
     public TypeName getGeneratedJavaType() {
 
-        return name;
+        // duplicated logic with json2pojo.  Should look in model.
+        return ClassName.get(name.packageName(), build.getJsonMapperConfig().getClassNamePrefix() + name.simpleName() + build.getJsonMapperConfig().getClassNameSuffix());
     }
 }

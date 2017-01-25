@@ -18,6 +18,7 @@ public class V10GTypeJson extends V10GTypeHelper {
     private final JSONTypeDeclaration typeDeclaration;
     private final String name;
     private final String defaultJavatypeName;
+    private TypeName modelSpecifiedJavaType;
 
     V10GTypeJson(JSONTypeDeclaration typeDeclaration, String realName, String defaultJavatypeName) {
         super(realName);
@@ -58,6 +59,11 @@ public class V10GTypeJson extends V10GTypeHelper {
     @Override
     public TypeName defaultJavaTypeName(String pack) {
 
+        if ( modelSpecifiedJavaType != null ) {
+
+            return modelSpecifiedJavaType;
+        }
+
         if ( isInline() ) {
             return ClassName.get("", defaultJavatypeName);
         } else {
@@ -93,6 +99,12 @@ public class V10GTypeJson extends V10GTypeHelper {
                 SchemaTypeFactory.createJsonType(currentBuild, V10GTypeJson.this);
             }
         });
+    }
+
+    @Override
+    public void setJavaType(TypeName generatedJavaType) {
+
+        this.modelSpecifiedJavaType = generatedJavaType;
     }
 
 

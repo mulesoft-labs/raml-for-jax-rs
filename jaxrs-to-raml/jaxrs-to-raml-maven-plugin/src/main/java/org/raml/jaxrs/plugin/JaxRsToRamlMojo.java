@@ -8,6 +8,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 import org.raml.emitter.RamlEmissionException;
 import org.raml.jaxrs.converter.JaxRsToRamlConversionException;
 import org.raml.jaxrs.converter.RamlConfiguration;
@@ -25,22 +26,28 @@ import static java.lang.String.format;
 @Mojo(name = "jaxrstoraml", requiresDependencyResolution = ResolutionScope.COMPILE)
 public class JaxRsToRamlMojo extends AbstractMojo {
 
+    @Parameter(defaultValue = "${project}")
+    private MavenProject project;
+
     @Parameter(property = "jaxrs.to.raml.input", defaultValue = "${project.build.outputDirectory}")
     private File input;
 
     @Parameter(property = "jaxrs.to.raml.sourceDirectory", defaultValue = "${project.build.sourceDirectory}")
     private File sourceDirectory;
 
+    //defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs"
     @Parameter(property = "jaxrs.to.raml.outputFileName", defaultValue = "${project.artifactId}.raml")
     private String outputFileName;
 
-    @Parameter(property = "jaxrs.to.raml.outputDirectory", defaultValue = "${project.build.directory}")
+    @Parameter(property = "jaxrs.to.raml.outputDirectory", defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs")
     private File outputDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         PluginConfiguration configuration = createConfiguration();
         confinedExecute(configuration, getLog());
+
+        project.addCompileSourceRoot(outputDirectory.getPath());
     }
 
     private static void confinedExecute(PluginConfiguration configuration, Log logger) throws MojoExecutionException {
@@ -49,6 +56,9 @@ public class JaxRsToRamlMojo extends AbstractMojo {
 
         Path jaxRsUrl = configuration.getInput();
         Path sourceCodeRoot = configuration.getSourceDirectory();
+
+        configuration.getOutputDirectory().toFile().mkdirs();
+
         Path finalOutputFile = configuration.getOutputDirectory().resolve(configuration.getRamlFileName());
 
         String applicationName = FilenameUtils.removeExtension(configuration.getRamlFileName().getFileName().toString());

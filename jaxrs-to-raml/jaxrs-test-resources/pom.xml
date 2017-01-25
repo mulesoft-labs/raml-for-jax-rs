@@ -31,7 +31,9 @@
                         </goals>
                         <configuration>
                             <input>${project.build.outputDirectory}</input>
+<!--
                             <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+-->
                             <outputFileName>${project.artifactId}.raml</outputFileName>
                             <sourceDirectory>${project.build.directory}</sourceDirectory>
                         </configuration>

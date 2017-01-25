@@ -11,7 +11,7 @@
     <modules>
         <module>jaxrs-code-generator</module>
         <module>examples</module>
-        <module>raml-jaxrs-maven-plugin</module>
+        <module>raml-to-jaxrs-maven-plugin</module>
 
         <!--
                 <module>gradle-plugin</module>

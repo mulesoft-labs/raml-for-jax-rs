@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
 
 import static org.raml.jaxrs.generator.GObjectType.ENUMERATION_TYPE;

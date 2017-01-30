@@ -19,6 +19,7 @@ import org.raml.jaxrs.generator.ramltypes.GProperty;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.PropertyInfo;
+import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.common.Annotable;
@@ -61,34 +62,19 @@ class SimpleInheritanceExtension implements TypeExtension {
 
         ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
 
-        ClassName className = originalType.javaImplementationName(currentBuild.getModelPackage());
+        ClassName className = originalType.javaImplementationName(context.getModelPackage());
 
-        final TypeSpec.Builder typeSpec = TypeSpec
+        TypeSpec.Builder typeSpec = TypeSpec
                 .classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
 
-        currentBuild.withTypeListeners().onTypeImplementation(currentBuild, typeSpec, object);
-        ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(currentBuild.getModelPackage());
+
+        final TypeSpec.Builder newTypeSpec = context.onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
+        ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
 
         if ( parentClassName != null ) {
             typeSpec.addSuperinterface(parentClassName);
         }
-
-
-/*
-        for (TypeGenerator internalType : internalTypes.values()) {
-
-            internalType.output(new CodeContainer<TypeSpec.Builder>() {
-                @Override
-                public void into(TypeSpec.Builder g) throws IOException {
-
-                    g.addModifiers(Modifier.STATIC);
-                    typeSpec.addType(g.build());
-                }
-            }, buildPhase);
-        }
-
-*/
 
         V10TypeRegistry localRegistry = registry.createRegistry();
         List<PropertyInfo> properties = new ArrayList<>();
@@ -117,9 +103,9 @@ class SimpleInheritanceExtension implements TypeExtension {
 
         for (PropertyInfo propertyInfo : properties) {
 
-            FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(currentBuild), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
-            currentBuild.withTypeListeners().onFieldImplementation(currentBuild,
-                    fieldSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+            FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
+            context.onProperty(context,newTypeSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
+
             if ( propertyInfo.getName().equals(object.discriminator()) ) {
                 fieldSpec.initializer("$S", object.discriminatorValue());
             }
@@ -130,9 +116,9 @@ class SimpleInheritanceExtension implements TypeExtension {
                     .addModifiers(Modifier.PUBLIC)
                     .addStatement("return this." + Names.variableName(propertyInfo.getName()));
 
-            getSpec.returns(propertyInfo.resolve(currentBuild));
-            currentBuild.withTypeListeners().onGetterMethodImplementation(currentBuild,
-                    getSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+            getSpec.returns(propertyInfo.resolve(context));
+            context.onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
+
             typeSpec.addMethod(getSpec.build());
 
             if ( ! propertyInfo.getName().equals(object.discriminator()) ) {
@@ -144,9 +130,8 @@ class SimpleInheritanceExtension implements TypeExtension {
                                 .variableName(propertyInfo.getName()));
 
                 ParameterSpec.Builder parameterSpec = ParameterSpec
-                        .builder(propertyInfo.resolve(currentBuild), Names.variableName(propertyInfo.getName()));
-                currentBuild.withTypeListeners().onSetterMethodImplementation(currentBuild, setSpec,
-                        parameterSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+                        .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
+                context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
 
                 setSpec.addParameter(parameterSpec.build());
                 typeSpec.addMethod(setSpec.build());
@@ -160,7 +145,6 @@ class SimpleInheritanceExtension implements TypeExtension {
         ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
 
         List<V10GType> parentTypes = originalType.parentTypes();
-        Map<String, JavaPoetTypeGenerator> internalTypes = new HashMap<>();
         int internalTypeCounter = 0;
 
         // this should be in the generator;
@@ -191,7 +175,7 @@ class SimpleInheritanceExtension implements TypeExtension {
 
         }
 
-        ClassName interf = (ClassName) originalType.defaultJavaTypeName(currentBuild.getModelPackage());
+        ClassName interf = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
 
         final TypeSpec.Builder typeSpec = TypeSpec
                 .interfaceBuilder(interf)
@@ -204,7 +188,7 @@ class SimpleInheritanceExtension implements TypeExtension {
                 continue;
             }
 
-            typeSpec.addSuperinterface(parentType.defaultJavaTypeName(currentBuild.getModelPackage()));
+            typeSpec.addSuperinterface(parentType.defaultJavaTypeName(context.getModelPackage()));
         }
 
         for (PropertyInfo propertyInfo : properties) {
@@ -212,9 +196,9 @@ class SimpleInheritanceExtension implements TypeExtension {
             final MethodSpec.Builder getSpec = MethodSpec
                     .methodBuilder(Names.methodName("get", propertyInfo.getName()))
                     .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-            getSpec.returns(propertyInfo.resolve(currentBuild));
-            currentBuild.withTypeListeners().onGetterMethodDeclaration(currentBuild,
-                    getSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+            getSpec.returns(propertyInfo.resolve(context));
+            context.onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE);
+
             typeSpec.addMethod(getSpec.build());
 
             if (!propertyInfo.getName().equals(object.discriminator())) {
@@ -222,9 +206,11 @@ class SimpleInheritanceExtension implements TypeExtension {
                         .methodBuilder(Names.methodName("set", propertyInfo.getName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
                 ParameterSpec.Builder parameterSpec = ParameterSpec
-                        .builder(propertyInfo.resolve(currentBuild), Names.variableName(propertyInfo.getName()));
-                currentBuild.withTypeListeners().onSetterMethodDeclaration(currentBuild, setSpec,
-                        parameterSpec, (TypeDeclaration) propertyInfo.getType().implementation());
+                        .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
+
+
+                context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE);
+
                 setSpec.addParameter(
                         parameterSpec.build());
                 typeSpec.addMethod(setSpec.build());

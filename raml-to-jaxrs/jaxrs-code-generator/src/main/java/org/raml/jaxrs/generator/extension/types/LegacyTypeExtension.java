@@ -13,7 +13,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  * Just potential zeroes and ones
  * This interface is too big.
  */
-public interface LegacyTypeExtension {
+public interface LegacyTypeExtension extends PropertyExtension, TypeExtension {
 
     void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
     void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration);

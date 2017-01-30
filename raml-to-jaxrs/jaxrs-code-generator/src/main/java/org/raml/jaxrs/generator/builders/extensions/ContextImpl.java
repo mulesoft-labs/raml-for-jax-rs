@@ -179,4 +179,8 @@ public class ContextImpl implements Context {
         return newType;
     }
 
+    public CurrentBuild getBuildContext() {
+
+        return getBuild();
+    }
 }

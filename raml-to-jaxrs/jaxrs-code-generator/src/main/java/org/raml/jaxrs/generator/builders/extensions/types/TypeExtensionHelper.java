@@ -5,7 +5,12 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
+import org.raml.jaxrs.generator.extension.types.PropertyExtension;
+import org.raml.jaxrs.generator.extension.types.TypeContext;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
+import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -13,7 +18,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  * Created by Jean-Philippe Belanger on 12/4/16.
  * Just potential zeroes and ones
  */
-public class TypeExtensionHelper implements LegacyTypeExtension {
+public class TypeExtensionHelper implements LegacyTypeExtension , PropertyExtension, TypeExtension{
     @Override
     public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
@@ -73,6 +78,64 @@ public class TypeExtensionHelper implements LegacyTypeExtension {
 
     @Override
     public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, V10GType typeDeclaration) {
+
+    }
+
+    @Override
+    public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase buildPhase) {
+
+        TypeContextImpl c = (TypeContextImpl) context;
+
+        if ( buildPhase == BuildPhase.INTERFACE ) {
+            this.onTypeDeclaration(c.getBuildContext(), builder, type);
+        } else {
+            this.onTypeImplementation(c.getBuildContext(), builder, type.implementation());
+        }
+
+        return builder;
+    }
+
+    @Override
+    public void onProperty(TypeContext context, TypeSpec.Builder builder, V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+    }
+
+    @Override
+    public void onProperty(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+        TypeContextImpl c = (TypeContextImpl) context;
+
+        this.onFieldImplementation(c.getBuildContext(), builder, property.implementation());
+    }
+
+    @Override
+    public void onPropertyGetter(TypeContext context, MethodSpec.Builder builder, V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+        TypeContextImpl c = (TypeContextImpl) context;
+
+        if ( buildPhase == BuildPhase.INTERFACE ) {
+            this.onGetterMethodDeclaration(c.getBuildContext(), builder, property.implementation());
+        } else {
+            this.onGetterMethodImplementation(c.getBuildContext(), builder, property.implementation());
+        }
+
+    }
+
+    @Override
+    public void onPropertySetter(TypeContext context, MethodSpec.Builder builder, ParameterSpec.Builder parameter,
+            V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+        TypeContextImpl c = (TypeContextImpl) context;
+
+        if ( buildPhase == BuildPhase.INTERFACE ) {
+            this.onSetterMethodDeclaration(c.getBuildContext(), builder, parameter, property.implementation());
+        } else {
+            this.onSetterMethodImplementation(c.getBuildContext(), builder, parameter, property.implementation());
+        }
 
     }
 }

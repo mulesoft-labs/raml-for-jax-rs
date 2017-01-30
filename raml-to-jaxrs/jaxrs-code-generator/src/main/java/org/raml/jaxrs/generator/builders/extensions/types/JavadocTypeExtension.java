@@ -15,26 +15,45 @@
  */
 package org.raml.jaxrs.generator.builders.extensions.types;
 
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.types.PropertyExtension;
+import org.raml.jaxrs.generator.extension.types.TypeContext;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
+import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
- * Created by Jean-Philippe Belanger on 12/4/16. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 1/29/17.
+ * Just potential zeroes and ones
  */
-public class JavadocTypeExtension extends TypeExtensionHelper {
+public class JavadocTypeExtension implements TypeExtension, PropertyExtension {
 
   private interface JavadocAdder {
 
     void addJavadoc(String format, Object... args);
   }
 
-  @Override
-  public void onTypeDeclaration(CurrentBuild currentBuild, final TypeSpec.Builder typeSpec,
-                                V10GType type) {
+    public void javadocExamples(JavadocAdder adder, TypeDeclaration typeDeclaration) {
+        ExampleSpec example = typeDeclaration.example();
+        if ( example != null ) {
+
+            javadoc(adder, example);
+        }
+
+        for (ExampleSpec exampleSpec : typeDeclaration.examples()) {
+            javadoc(adder, exampleSpec);
+        }
+    }
+
+    @Override
+    public TypeSpec.Builder onType(TypeContext context, final TypeSpec.Builder typeSpec, V10GType type, BuildPhase btype) {
+
 
     if (type.implementation().description() != null) {
       typeSpec.addJavadoc("$L\n", type.implementation().description().value());
@@ -45,38 +64,13 @@ public class JavadocTypeExtension extends TypeExtensionHelper {
       @Override
       public void addJavadoc(String format, Object... args) {
 
-        typeSpec.addJavadoc(format, args);
-      }
-    }, type.implementation());
-  }
+                typeSpec.addJavadoc(format, args);
+            }
+        }, type.implementation());
 
-  @Override
-  public void onGetterMethodDeclaration(CurrentBuild currentBuild,
-                                        final MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
-    if (typeDeclaration.description() != null) {
-      typeSpec.addJavadoc("$L\n", typeDeclaration.description().value());
+        return null;
     }
 
-    javadocExamples(new JavadocAdder() {
-
-      @Override
-      public void addJavadoc(String format, Object... args) {
-        typeSpec.addJavadoc(format, args);
-      }
-    }, typeDeclaration);
-  }
-
-  public void javadocExamples(JavadocAdder adder, TypeDeclaration typeDeclaration) {
-    ExampleSpec example = typeDeclaration.example();
-    if (example != null) {
-
-      javadoc(adder, example);
-    }
-
-    for (ExampleSpec exampleSpec : typeDeclaration.examples()) {
-      javadoc(adder, exampleSpec);
-    }
-  }
 
   public void javadoc(JavadocAdder adder, ExampleSpec exampleSpec) {
     adder.addJavadoc("Example:\n");
@@ -85,6 +79,34 @@ public class JavadocTypeExtension extends TypeExtensionHelper {
       adder.addJavadoc(" $L\n", exampleSpec.name());
     }
 
-    adder.addJavadoc(" $L\n", "<pre>\n{@code\n" + exampleSpec.value() + "\n}</pre>");
-  }
+        adder.addJavadoc(" $L\n",  "<pre>\n{@code\n" + exampleSpec.value() + "\n}</pre>");
+    }
+
+    @Override
+    public void onProperty(TypeContext context, TypeSpec.Builder builder, V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+    }
+
+    @Override
+    public void onProperty(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+    }
+
+    @Override
+    public void onPropertyGetter(TypeContext context, MethodSpec.Builder builder, V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+
+    }
+
+    @Override
+    public void onPropertySetter(TypeContext context, MethodSpec.Builder builder, ParameterSpec.Builder parameter,
+            V10GType containingType, V10GProperty property,
+            BuildPhase buildPhase) {
+
+
+    }
+
 }

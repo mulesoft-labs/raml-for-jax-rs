@@ -12,7 +12,7 @@ import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtensions;
-import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeLegacyExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
@@ -41,7 +41,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 /**
  * Created by Jean-Philippe Belanger on 10/26/16.
@@ -263,7 +262,7 @@ public class CurrentBuild {
 
             if ( s.equals("javadoc") ) {
 
-                typeExtensionList.addExtension(new JavadocTypeExtension());
+                typeExtensionList.addExtension(new JavadocTypeLegacyExtension());
             }
 
             if ( s.equals("jsr303") ) {

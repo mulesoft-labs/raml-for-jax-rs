@@ -98,45 +98,4 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
-    <profiles>
-        <profile>
-            <id>sonatype</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-    <name>JAXRS to RAML transformers</name>
-    <description>JAXRS to RAML transformers</description>
-    <scm>
-        <url>https://github.com/mulesoft/raml-for-jax-rs.git</url>
-        <connection>https://github.com/mulesoft/raml-for-jax-rs.git</connection>
-        <developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
-    </scm>
-    <organization>
-        <name>Mulesoft</name>
-        <url>http://mulesoft.com</url>
-    </organization>
-    <url>https://github.com/mulesoft/raml-for-jax-rs</url>
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <name>Pavel Petrochenko</name>
-            <email>petrochenko.pavel.a@gmail.com</email>
-            <organization>Mulesoft</organization>
-            <organizationUrl>http://mulesoft.com</organizationUrl>
-        </developer>
-    </developers>
 </project>

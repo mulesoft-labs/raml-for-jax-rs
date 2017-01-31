@@ -12,3 +12,4 @@ nogit/
 RemoteSystemsTempFiles
 /.gradle
 .DS_Store
+pom.xml.versionsBackup

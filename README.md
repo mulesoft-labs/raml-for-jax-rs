@@ -10,8 +10,10 @@ or its roundtrip, generate the RAML API definition based on an existing JAVA + J
 ### Project Modules
 There are two projects: [JAXRS to RAML](jaxrs-to-raml/README.md) and [RAML to JAXRS](raml-to-jaxrs/README.md).
 
-### Maven artifacts (in progress)
-Maven artifacts are NOT yet available.
+### Maven artifacts
+Maven artifacts are available at:
+ - https://repository-master.mulesoft.org/releases/ - releases repository
+ - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
 
 ### Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.

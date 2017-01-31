@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.raml</groupId>
-    <artifactId>com.mulesoft.jaxrs-raml.all</artifactId>
+    <artifactId>raml-for-jaxrs</artifactId>
     <version>2.0.0-RC1</version>
     <packaging>pom</packaging>
 

@@ -17,53 +17,6 @@
                 <module>gradle-plugin</module>
         -->
     </modules>
-    <distributionManagement>
-        <repository>
-            <id>mule-ee-releases</id>
-            <name>Mule Release Repository</name>
-            <url>https://repository-master.mulesoft.org/nexus/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>mule-snapshots</id>
-            <name>Mule Snapshot Repository</name>
-            <url>https://repository-master.mulesoft.org/nexus/content/repositories/snapshots/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-
-    </distributionManagement>
-    <profiles>
-        <profile>
-            <id>sonatype</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <!--           <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-gpg-plugin</artifactId>
-                                <version>1.5</version>
-                                <executions>
-                                  <execution>
-                                    <id>sign-artifacts</id>
-                                    <phase>verify</phase>
-                                    <goals>
-                                      <goal>sign</goal>
-                                    </goals>
-                                  </execution>
-                                </executions>
-                                </plugin>
-                     -->        </plugins>
-            </build>
-        </profile>
-    </profiles>
     <properties>
         <licensePath>LICENSE_HEADER.txt</licensePath>
     </properties>
@@ -142,50 +95,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <repositories>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Releases Repository</name>
-            <url>https://repository.mulesoft.org/releases/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>mulesoft-snapshots</id>
-            <name>MuleSoft Snapshots Repository</name>
-            <url>https://repository.mulesoft.org/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    <description>RAML JAXRS</description>
-    <scm>
-        <url>https://github.com/mulesoft/raml-for-jax-rs.git</url>
-        <connection>https://github.com/mulesoft/raml-for-jax-rs.git</connection>
-        <developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
-    </scm>
-    <organization>
-        <name>Mulesoft</name>
-        <url>http://mulesoft.com</url>
-    </organization>
-    <url>https://github.com/mulesoft/raml-for-jax-rs</url>
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <name>Pavel Petrochenko</name>
-            <email>petrochenko.pavel.a@gmail.com</email>
-            <organization>Mulesoft</organization>
-            <organizationUrl>http://mulesoft.com</organizationUrl>
-        </developer>
-    </developers>
 </project>

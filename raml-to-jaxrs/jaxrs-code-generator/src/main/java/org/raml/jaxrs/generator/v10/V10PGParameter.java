@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.ramltypes.GParameter;
@@ -8,39 +23,39 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
 /**
- * Created by Jean-Philippe Belanger on 12/10/16.
- * Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones
  */
 class V10PGParameter implements GParameter {
-    private final TypeDeclaration input;
-    private final V10GType type;
 
-    public V10PGParameter(V10TypeRegistry registry, TypeDeclaration input) {
+  private final TypeDeclaration input;
+  private final V10GType type;
 
-        this.input = input;
-        this.type = registry.fetchType(input.type(), input);
-    }
+  public V10PGParameter(V10TypeRegistry registry, TypeDeclaration input) {
 
-    @Override
-    public String name() {
-        return input.name();
-    }
+    this.input = input;
+    this.type = registry.fetchType(input.type(), input);
+  }
 
-    @Override
-    public boolean isComposite() {
-        return input instanceof ObjectTypeDeclaration || input instanceof XMLTypeDeclaration
-                || input instanceof JSONTypeDeclaration;
-    }
+  @Override
+  public String name() {
+    return input.name();
+  }
 
-    @Override
-    public GType type() {
+  @Override
+  public boolean isComposite() {
+    return input instanceof ObjectTypeDeclaration || input instanceof XMLTypeDeclaration
+        || input instanceof JSONTypeDeclaration;
+  }
 
-        return type;
-    }
+  @Override
+  public GType type() {
 
-    @Override
-    public TypeDeclaration implementation() {
+    return type;
+  }
 
-        return input;
-    }
+  @Override
+  public TypeDeclaration implementation() {
+
+    return input;
+  }
 }

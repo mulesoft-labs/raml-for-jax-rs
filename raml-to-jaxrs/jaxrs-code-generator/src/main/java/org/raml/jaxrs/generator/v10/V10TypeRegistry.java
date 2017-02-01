@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.generator.v10;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -20,151 +35,169 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Jean-Philippe Belanger on 12/30/16.
- * Just potential zeroes and ones
- * This one just make sure that the Type Classes are created only once...
+ * Created by Jean-Philippe Belanger on 12/30/16. Just potential zeroes and ones This one just make sure that the Type Classes are
+ * created only once...
  */
 
 public class V10TypeRegistry {
 
-    private Map<String, V10GType> types = new HashMap<>();
-    private Multimap<String, V10GType> childMap = ArrayListMultimap.create();
+  private Map<String, V10GType> types = new HashMap<>();
+  private Multimap<String, V10GType> childMap = ArrayListMultimap.create();
 
-    public void addChildToParent(List<V10GType> parents, V10GType child) {
+  public void addChildToParent(List<V10GType> parents, V10GType child) {
 
-        for (V10GType parent : parents) {
+    for (V10GType parent : parents) {
 
-            if ( parent.name().equals("object") ) {
-                continue;
-            }
-            childMap.put(parent.name(), child);
-            addChildToParent(parent.parentTypes(), child);
-        }
+      if (parent.name().equals("object")) {
+        continue;
+      }
+      childMap.put(parent.name(), child);
+      addChildToParent(parent.parentTypes(), child);
+    }
+  }
+
+  public V10GType fetchType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
+
+    String key = Names.ramlTypeName(resource, method, typeDeclaration);
+    if (types.containsKey(key)) {
+
+      return types.get(key);
+    } else {
+
+      V10GType type =
+          V10GTypeFactory.createRequestBodyType(this, resource, method, typeDeclaration);
+      types.put(type.name(), type);
+      return type;
+    }
+  }
+
+  public V10GType fetchType(Resource resource, Method method, Response response,
+                            TypeDeclaration typeDeclaration) {
+    String key = Names.ramlTypeName(resource, method, response, typeDeclaration);
+    if (types.containsKey(key)) {
+
+      return types.get(key);
+    } else {
+
+      V10GType type =
+          V10GTypeFactory.createResponseBodyType(this, resource, method, response, typeDeclaration);
+      types.put(type.name(), type);
+      return type;
+    }
+  }
+
+  public V10GType fetchType(String name, TypeDeclaration typeDeclaration) {
+
+    Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
+    if (javaType != null) {
+
+      if (typeDeclaration instanceof StringTypeDeclaration
+          && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
+        V10GType type =
+            V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration);
+        types.put(type.name(), type);
+        return type;
+
+      } else {
+        return V10GTypeFactory.createScalar(name, typeDeclaration);
+      }
     }
 
-    public V10GType fetchType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
+    if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-        String key = Names.ramlTypeName(resource, method, typeDeclaration);
-        if ( types.containsKey(key)) {
-
-            return types.get(key);
-        } else {
-
-            V10GType type = V10GTypeFactory.createRequestBodyType(this, resource, method, typeDeclaration);
-            types.put(type.name(), type);
-            return type;
-        }
+      return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration);
     }
 
-    public V10GType fetchType(Resource resource, Method method, Response response, TypeDeclaration typeDeclaration) {
-        String key = Names.ramlTypeName(resource, method, response, typeDeclaration);
-        if ( types.containsKey(key)) {
+    if (types.containsKey(name)) {
 
-            return types.get(key);
-        } else {
+      return types.get(name);
+    } else {
 
-            V10GType type = V10GTypeFactory.createResponseBodyType(this, resource, method, response, typeDeclaration);
-            types.put(type.name(), type);
-            return type;
-        }
+      V10GType type;
+      if (typeDeclaration instanceof JSONTypeDeclaration) {
+        type =
+            V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration,
+                                       typeDeclaration.name());
+      } else if (typeDeclaration instanceof XMLTypeDeclaration) {
+        type =
+            V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name());
+      } else if (typeDeclaration instanceof UnionTypeDeclaration) {
+        type =
+            V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
+                                        typeDeclaration.name());
+      } else {
+        type = V10GTypeFactory.createExplicitlyNamedType(this, name, typeDeclaration);
+      }
+      types.put(type.name(), type);
+      return type;
+    }
+  }
+
+  public V10GType fetchType(TypeDeclaration typeDeclaration) {
+
+    String name = typeDeclaration.name();
+    return fetchType(name, typeDeclaration);
+  }
+
+  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration) {
+
+    Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
+    if (javaType != null) {
+
+      if (typeDeclaration instanceof StringTypeDeclaration
+          && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
+        V10GType type =
+            V10GTypeFactory.createEnum(this, name, javaTypeName,
+                                       (StringTypeDeclaration) typeDeclaration);
+        types.put(type.name(), type);
+        return type;
+
+      } else {
+        return V10GTypeFactory.createScalar(name, typeDeclaration);
+      }
     }
 
-    public V10GType fetchType(String name, TypeDeclaration typeDeclaration) {
+    if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-        Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
-        if ( javaType != null ) {
-
-            if ( typeDeclaration instanceof StringTypeDeclaration && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0 ) {
-                V10GType type = V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration)typeDeclaration);
-                types.put(type.name(), type);
-                return type;
-
-            } else {
-                return V10GTypeFactory.createScalar(name, typeDeclaration);
-            }
-        }
-
-        if ( typeDeclaration instanceof ArrayTypeDeclaration ) {
-
-            return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration);
-        }
-
-        if ( types.containsKey(name)) {
-
-            return types.get(name);
-        } else {
-
-            V10GType type;
-            if ( typeDeclaration instanceof JSONTypeDeclaration ) {
-                type = V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration, typeDeclaration.name());
-            } else if ( typeDeclaration instanceof XMLTypeDeclaration ) {
-                type = V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name());
-            } else if ( typeDeclaration instanceof UnionTypeDeclaration) {
-                type = V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration, typeDeclaration.name());
-            } else {
-                type = V10GTypeFactory.createExplicitlyNamedType(this, name, typeDeclaration);
-            }
-            types.put(type.name(), type);
-            return type;
-        }
+      return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration);
     }
 
-    public V10GType fetchType(TypeDeclaration typeDeclaration) {
+    if (types.containsKey(name)) {
 
-        String name = typeDeclaration.name();
-        return fetchType(name, typeDeclaration);
+      return types.get(name);
+    } else {
+
+      V10GType type;
+      if (typeDeclaration instanceof JSONTypeDeclaration) {
+        type =
+            V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration,
+                                       typeDeclaration.name(), javaTypeName);
+      } else if (typeDeclaration instanceof XMLTypeDeclaration) {
+        type =
+            V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name(),
+                                      javaTypeName);
+      } else if (typeDeclaration instanceof UnionTypeDeclaration) {
+        type =
+            V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
+                                        typeDeclaration.name(), javaTypeName);
+      } else {
+        type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration);
+      }
+      types.put(type.name(), type);
+      return type;
     }
+  }
 
-    public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration) {
+  public Multimap<String, V10GType> getChildClasses() {
+    return childMap;
+  }
 
-        Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
-        if ( javaType != null ) {
+  public V10TypeRegistry createRegistry() {
+    V10TypeRegistry registry = new V10TypeRegistry();
+    registry.types = new HashMap<>();
+    registry.types.putAll(this.types);
+    registry.childMap = this.childMap;
 
-            if ( typeDeclaration instanceof StringTypeDeclaration && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0 ) {
-                V10GType type = V10GTypeFactory.createEnum(this, name, javaTypeName, (StringTypeDeclaration)typeDeclaration);
-                types.put(type.name(), type);
-                return type;
-
-            } else {
-                return V10GTypeFactory.createScalar(name, typeDeclaration);
-            }
-        }
-
-        if ( typeDeclaration instanceof ArrayTypeDeclaration ) {
-
-            return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration);
-        }
-
-        if ( types.containsKey(name)) {
-
-            return types.get(name);
-        } else {
-
-            V10GType type;
-            if ( typeDeclaration instanceof JSONTypeDeclaration ) {
-                type = V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration, typeDeclaration.name(), javaTypeName);
-            }  else if ( typeDeclaration instanceof XMLTypeDeclaration ) {
-                type = V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name(), javaTypeName);
-            } else if ( typeDeclaration instanceof UnionTypeDeclaration) {
-                type = V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration, typeDeclaration.name(), javaTypeName);
-            } else {
-                type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration);
-            }
-            types.put(type.name(), type);
-            return type;
-        }
-    }
-
-    public Multimap<String, V10GType> getChildClasses() {
-        return childMap;
-    }
-
-    public V10TypeRegistry createRegistry() {
-        V10TypeRegistry registry = new V10TypeRegistry();
-        registry.types = new HashMap<>();
-        registry.types.putAll(this.types);
-        registry.childMap = this.childMap;
-
-        return registry;
-    }
+    return registry;
+  }
 }

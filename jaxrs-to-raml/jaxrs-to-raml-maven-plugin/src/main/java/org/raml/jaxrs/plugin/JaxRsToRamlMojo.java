@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.plugin;
 
 import org.apache.commons.io.FilenameUtils;
@@ -26,94 +41,99 @@ import static java.lang.String.format;
 @Mojo(name = "jaxrstoraml", requiresDependencyResolution = ResolutionScope.COMPILE)
 public class JaxRsToRamlMojo extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project}")
-    private MavenProject project;
+  @Parameter(defaultValue = "${project}")
+  private MavenProject project;
 
-    @Parameter(property = "jaxrs.to.raml.input", defaultValue = "${project.build.outputDirectory}")
-    private File input;
+  @Parameter(property = "jaxrs.to.raml.input", defaultValue = "${project.build.outputDirectory}")
+  private File input;
 
-    @Parameter(property = "jaxrs.to.raml.sourceDirectory", defaultValue = "${project.build.sourceDirectory}")
-    private File sourceDirectory;
+  @Parameter(property = "jaxrs.to.raml.sourceDirectory",
+      defaultValue = "${project.build.sourceDirectory}")
+  private File sourceDirectory;
 
-    //defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs"
-    @Parameter(property = "jaxrs.to.raml.outputFileName", defaultValue = "${project.artifactId}.raml")
-    private String outputFileName;
+  // defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs"
+  @Parameter(property = "jaxrs.to.raml.outputFileName", defaultValue = "${project.artifactId}.raml")
+  private String outputFileName;
 
-    @Parameter(property = "jaxrs.to.raml.outputDirectory", defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs")
-    private File outputDirectory;
+  @Parameter(property = "jaxrs.to.raml.outputDirectory",
+      defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs")
+  private File outputDirectory;
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        PluginConfiguration configuration = createConfiguration();
-        confinedExecute(configuration, getLog());
+  @Override
+  public void execute() throws MojoExecutionException, MojoFailureException {
+    PluginConfiguration configuration = createConfiguration();
+    confinedExecute(configuration, getLog());
 
-        project.addCompileSourceRoot(outputDirectory.getPath());
+    project.addCompileSourceRoot(outputDirectory.getPath());
+  }
+
+  private static void confinedExecute(PluginConfiguration configuration, Log logger)
+      throws MojoExecutionException {
+    checkConfiguration(configuration);
+    printConfiguration(configuration, logger);
+
+    Path jaxRsUrl = configuration.getInput();
+    Path sourceCodeRoot = configuration.getSourceDirectory();
+
+    configuration.getOutputDirectory().toFile().mkdirs();
+
+    Path finalOutputFile =
+        configuration.getOutputDirectory().resolve(configuration.getRamlFileName());
+
+    String applicationName =
+        FilenameUtils.removeExtension(configuration.getRamlFileName().getFileName().toString());
+    RamlConfiguration ramlConfiguration = DefaultRamlConfiguration.forApplication(applicationName);
+
+    OneStopShop oneStopShop =
+        OneStopShop.builder().withJaxRsClassesRoot(jaxRsUrl).withSourceCodeRoot(sourceCodeRoot)
+            .withRamlOutputFile(finalOutputFile).withRamlConfiguration(ramlConfiguration).build();
+
+    try {
+      oneStopShop.parseJaxRsAndOutputRaml();
+    } catch (JaxRsToRamlConversionException | JaxRsParsingException | RamlEmissionException e) {
+      throw new MojoExecutionException(format("unable to generate output raml file: %s",
+                                              finalOutputFile), e);
     }
+  }
 
-    private static void confinedExecute(PluginConfiguration configuration, Log logger) throws MojoExecutionException {
-        checkConfiguration(configuration);
-        printConfiguration(configuration, logger);
+  private PluginConfiguration createConfiguration() {
+    return PluginConfiguration.create(getInputPath(), getSourceDirectoryPath(),
+                                      getOutputDirectoryPath(), getRamlFileName());
+  }
 
-        Path jaxRsUrl = configuration.getInput();
-        Path sourceCodeRoot = configuration.getSourceDirectory();
+  private static void printConfiguration(PluginConfiguration configuration, Log logger) {
+    logger.info("Configuration");
+    logger.info(format("input: %s", configuration.getInput()));
+    logger.info(format("source directory: %s", configuration.getSourceDirectory()));
+    logger.info(format("output directory: %s", configuration.getOutputDirectory()));
+    logger.info(format("output file name: %s", configuration.getRamlFileName()));
+  }
 
-        configuration.getOutputDirectory().toFile().mkdirs();
+  private static void checkConfiguration(PluginConfiguration configuration)
+      throws MojoExecutionException {
+    checkInputFile(configuration.getInput());
+  }
 
-        Path finalOutputFile = configuration.getOutputDirectory().resolve(configuration.getRamlFileName());
-
-        String applicationName = FilenameUtils.removeExtension(configuration.getRamlFileName().getFileName().toString());
-        RamlConfiguration ramlConfiguration = DefaultRamlConfiguration.forApplication(applicationName);
-
-        OneStopShop oneStopShop = OneStopShop.builder()
-                .withJaxRsClassesRoot(jaxRsUrl)
-                .withSourceCodeRoot(sourceCodeRoot)
-                .withRamlOutputFile(finalOutputFile)
-                .withRamlConfiguration(ramlConfiguration)
-                .build();
-
-        try {
-            oneStopShop.parseJaxRsAndOutputRaml();
-        } catch (JaxRsToRamlConversionException | JaxRsParsingException | RamlEmissionException e) {
-            throw new MojoExecutionException(format("unable to generate output raml file: %s", finalOutputFile), e);
-        }
+  private static void checkInputFile(Path inputPath) throws MojoExecutionException {
+    // Check that input is an existing file, otherwise fail.
+    if (!Files.isRegularFile(inputPath) && !Files.isDirectory(inputPath)) {
+      throw new MojoExecutionException(format("invalid input file: %s", inputPath));
     }
+  }
 
-    private PluginConfiguration createConfiguration() {
-        return PluginConfiguration.create(getInputPath(), getSourceDirectoryPath(), getOutputDirectoryPath(), getRamlFileName());
-    }
+  private Path getInputPath() {
+    return input.toPath();
+  }
 
-    private static void printConfiguration(PluginConfiguration configuration, Log logger) {
-        logger.info("Configuration");
-        logger.info(format("input: %s", configuration.getInput()));
-        logger.info(format("source directory: %s", configuration.getSourceDirectory()));
-        logger.info(format("output directory: %s", configuration.getOutputDirectory()));
-        logger.info(format("output file name: %s", configuration.getRamlFileName()));
-    }
+  private Path getSourceDirectoryPath() {
+    return sourceDirectory.toPath();
+  }
 
-    private static void checkConfiguration(PluginConfiguration configuration) throws MojoExecutionException {
-        checkInputFile(configuration.getInput());
-    }
+  public Path getOutputDirectoryPath() {
+    return outputDirectory.toPath();
+  }
 
-    private static void checkInputFile(Path inputPath) throws MojoExecutionException {
-        //Check that input is an existing file, otherwise fail.
-        if (!Files.isRegularFile(inputPath) && !Files.isDirectory(inputPath)) {
-            throw new MojoExecutionException(format("invalid input file: %s", inputPath));
-        }
-    }
-
-    private Path getInputPath() {
-        return input.toPath();
-    }
-
-    private Path getSourceDirectoryPath() {
-        return sourceDirectory.toPath();
-    }
-
-    public Path getOutputDirectoryPath() {
-        return outputDirectory.toPath();
-    }
-
-    public Path getRamlFileName() {
-        return Paths.get(outputFileName);
-    }
+  public Path getRamlFileName() {
+    return Paths.get(outputFileName);
+  }
 }

@@ -62,6 +62,32 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>0.5.2</version>
+                <configuration>
+                    <configFile>eclipse/eclipse_formatter.xml</configFile>
+                    <lineEnding>KEEP</lineEnding>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.raml.raml-for-jaxrs</groupId>
+                        <artifactId>build-tools</artifactId>
+                        <version>2.0.0-RC2-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -72,7 +98,6 @@
             </plugins>
         </pluginManagement>
     </build>
-
     <modules>
         <module>jaxrs-api</module>
         <module>jaxrs-parser</module>

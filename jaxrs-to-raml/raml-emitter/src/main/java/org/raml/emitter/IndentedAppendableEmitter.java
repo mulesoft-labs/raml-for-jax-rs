@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.emitter;
 
 import com.google.common.base.Optional;
@@ -21,181 +36,184 @@ import static java.lang.String.format;
 
 public class IndentedAppendableEmitter implements Emitter {
 
-    private static final Logger logger = LoggerFactory.getLogger(IndentedAppendableEmitter.class);
+  private static final Logger logger = LoggerFactory.getLogger(IndentedAppendableEmitter.class);
 
-    private final IndentedAppendable writer;
+  private final IndentedAppendable writer;
 
-    private IndentedAppendableEmitter(IndentedAppendable writer) {
-        this.writer = writer;
+  private IndentedAppendableEmitter(IndentedAppendable writer) {
+    this.writer = writer;
+  }
+
+  public static IndentedAppendableEmitter create(IndentedAppendable appendable) {
+    checkNotNull(appendable);
+
+    return new IndentedAppendableEmitter(appendable);
+  }
+
+  @Override
+  public void emit(RamlApi api) throws RamlEmissionException {
+    try {
+      writeApi(api);
+    } catch (IOException e) {
+      throw new RamlEmissionException(format("unable to emit api: %s", api), e);
+    }
+  }
+
+  private void writeApi(RamlApi api) throws IOException {
+    writeHeader();
+    writeTitle(api.getTitle());
+    writeVersion(api.getVersion());
+    writeBaseUri(api.getBaseUri());
+    writeDefaultMediaType(api.getDefaultMediaType());
+
+    for (RamlResource resource : api.getResources()) {
+      writeResource(resource);
+    }
+  }
+
+  private void writeDefaultMediaType(RamlMediaType defaultMediaType) throws IOException {
+    writer.appendLine(format("mediaType: %s", defaultMediaType.toStringRepresentation()));
+  }
+
+  private void writeResource(RamlResource resource) throws IOException {
+    writer.appendLine(format("%s:", resource.getPath()));
+    writer.indent();
+
+    for (RamlResourceMethod method : resource.getMethods()) {
+      writeMethod(method);
     }
 
-    public static IndentedAppendableEmitter create(IndentedAppendable appendable) {
-        checkNotNull(appendable);
-
-        return new IndentedAppendableEmitter(appendable);
+    for (RamlResource child : resource.getChildren()) {
+      writeResource(child);
     }
 
-    @Override
-    public void emit(RamlApi api) throws RamlEmissionException {
-        try {
-            writeApi(api);
-        } catch (IOException e) {
-            throw new RamlEmissionException(format("unable to emit api: %s", api), e);
-        }
+    writer.outdent();
+  }
+
+  private void writeMethod(RamlResourceMethod method) throws IOException {
+    writer.appendLine(format("%s:", method.getHttpMethod()));
+    writer.indent();
+
+    Optional<String> description = method.getDescription();
+    if (description.isPresent()) {
+      writeDescription(description.get());
     }
 
-    private void writeApi(RamlApi api) throws IOException {
-        writeHeader();
-        writeTitle(api.getTitle());
-        writeVersion(api.getVersion());
-        writeBaseUri(api.getBaseUri());
-        writeDefaultMediaType(api.getDefaultMediaType());
-
-        for (RamlResource resource : api.getResources()) {
-            writeResource(resource);
-        }
+    if (!method.getConsumedMediaTypes().isEmpty()) {
+      writeBody(method.getConsumedMediaTypes());
     }
 
-    private void writeDefaultMediaType(RamlMediaType defaultMediaType) throws IOException {
-        writer.appendLine(format("mediaType: %s", defaultMediaType.toStringRepresentation()));
+    if (!method.getProducedMediaTypes().isEmpty()) {
+      writeResponses(method.getProducedMediaTypes());
     }
 
-    private void writeResource(RamlResource resource) throws IOException {
-        writer.appendLine(format("%s:", resource.getPath()));
-        writer.indent();
-
-        for (RamlResourceMethod method : resource.getMethods()) {
-            writeMethod(method);
-        }
-
-        for (RamlResource child : resource.getChildren()) {
-            writeResource(child);
-        }
-
-        writer.outdent();
+    if (!method.getHeaderParameters().isEmpty()) {
+      writeHeaderParameters(method.getHeaderParameters());
     }
 
-    private void writeMethod(RamlResourceMethod method) throws IOException {
-        writer.appendLine(format("%s:", method.getHttpMethod()));
-        writer.indent();
-
-        Optional<String> description = method.getDescription();
-        if (description.isPresent()) {
-            writeDescription(description.get());
-        }
-
-        if (!method.getConsumedMediaTypes().isEmpty()) {
-            writeBody(method.getConsumedMediaTypes());
-        }
-
-        if (!method.getProducedMediaTypes().isEmpty()) {
-            writeResponses(method.getProducedMediaTypes());
-        }
-
-        if (!method.getHeaderParameters().isEmpty()) {
-            writeHeaderParameters(method.getHeaderParameters());
-        }
-
-        if (!method.getQueryParameters().isEmpty()) {
-            writeQueryParameters(method.getQueryParameters());
-        }
-
-
-        writer.outdent();
+    if (!method.getQueryParameters().isEmpty()) {
+      writeQueryParameters(method.getQueryParameters());
     }
 
-    private void writeDescription(String description) throws IOException {
-        writer.appendLine(String.format("description: %s", description));
+
+    writer.outdent();
+  }
+
+  private void writeDescription(String description) throws IOException {
+    writer.appendLine(String.format("description: %s", description));
+  }
+
+  private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters)
+      throws IOException {
+    writer.appendLine("headers:");
+    writer.indent();
+
+    for (RamlHeaderParameter parameter : headerParameters) {
+      writeHeaderParameter(parameter);
     }
 
-    private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters) throws IOException {
-        writer.appendLine("headers:");
-        writer.indent();
+    writer.outdent();
+  }
 
-        for (RamlHeaderParameter parameter : headerParameters) {
-            writeHeaderParameter(parameter);
-        }
+  // TODO: remove this duplicate code
+  private void writeHeaderParameter(RamlHeaderParameter parameter) throws IOException {
+    writer.appendLine(String.format("%s:", parameter.getName()));
+    writer.indent();
+    writer.appendLine(format("type: %s", RamlTypes.fromType(parameter.getType()).getRamlSyntax()));
 
-        writer.outdent();
+    Optional<String> defaultValue = parameter.getDefaultValue();
+    if (defaultValue.isPresent()) {
+      writer.appendLine(format("default: %s", defaultValue.get()));
+      writer.appendLine("required: false");
     }
 
-    //TODO: remove this duplicate code
-    private void writeHeaderParameter(RamlHeaderParameter parameter) throws IOException {
-        writer.appendLine(String.format("%s:", parameter.getName()));
-        writer.indent();
-        writer.appendLine(format("type: %s", RamlTypes.fromType(parameter.getType()).getRamlSyntax()));
+    writer.outdent();
+  }
 
-        Optional<String> defaultValue = parameter.getDefaultValue();
-        if (defaultValue.isPresent()) {
-            writer.appendLine(format("default: %s", defaultValue.get()));
-            writer.appendLine("required: false");
-        }
+  private void writeQueryParameters(Iterable<RamlQueryParameter> queryParameters)
+      throws IOException {
+    writer.appendLine("queryParameters:");
+    writer.indent();
+    for (RamlQueryParameter queryParameter : queryParameters) {
+      writeQueryParameter(queryParameter);
+    }
+    writer.outdent();
+  }
 
-        writer.outdent();
+  private void writeQueryParameter(RamlQueryParameter queryParameter) throws IOException {
+    writer.appendLine(String.format("%s:", queryParameter.getName()));
+    writer.indent();
+    writer.appendLine(format("type: %s", RamlTypes.fromType(queryParameter.getType())
+        .getRamlSyntax()));
+
+    Optional<String> defaultValue = queryParameter.getDefaultValue();
+    if (defaultValue.isPresent()) {
+      writer.appendLine(format("default: %s", defaultValue.get()));
+      writer.appendLine("required: false");
     }
 
-    private void writeQueryParameters(Iterable<RamlQueryParameter> queryParameters) throws IOException {
-        writer.appendLine("queryParameters:");
-        writer.indent();
-        for (RamlQueryParameter queryParameter : queryParameters) {
-            writeQueryParameter(queryParameter);
-        }
-        writer.outdent();
+    writer.outdent();
+  }
+
+  private void writeResponses(List<RamlMediaType> producedMediaTypes) throws IOException {
+    writer.appendLine("responses:");
+    writer.indent();
+
+    // We have no clue what the error responses are, however, we want to generate
+    // well formed raml, so we pick one.
+    writer.appendLine("200:");
+    writer.indent();
+
+    writeBody(producedMediaTypes);
+
+    writer.outdent();
+    writer.outdent();
+  }
+
+  private void writeBody(List<RamlMediaType> mediaTypes) throws IOException {
+    writer.appendLine("body:");
+    writer.indent();
+
+    for (RamlMediaType mediaType : mediaTypes) {
+      writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
     }
 
-    private void writeQueryParameter(RamlQueryParameter queryParameter) throws IOException {
-        writer.appendLine(String.format("%s:", queryParameter.getName()));
-        writer.indent();
-        writer.appendLine(format("type: %s", RamlTypes.fromType(queryParameter.getType()).getRamlSyntax()));
+    writer.outdent();
+  }
 
-        Optional<String> defaultValue = queryParameter.getDefaultValue();
-        if (defaultValue.isPresent()) {
-            writer.appendLine(format("default: %s", defaultValue.get()));
-            writer.appendLine("required: false");
-        }
+  private void writeHeader() throws IOException {
+    writer.appendLine("#%RAML 1.0");
+  }
 
-        writer.outdent();
-    }
+  private void writeTitle(String title) throws IOException {
+    writer.appendLine(format("title: %s", title));
+  }
 
-    private void writeResponses(List<RamlMediaType> producedMediaTypes) throws IOException {
-        writer.appendLine("responses:");
-        writer.indent();
+  private void writeVersion(String version) throws IOException {
+    writer.appendLine(format("version: %s", version));
+  }
 
-        //We have no clue what the error responses are, however, we want to generate
-        //well formed raml, so we pick one.
-        writer.appendLine("200:");
-        writer.indent();
-
-        writeBody(producedMediaTypes);
-
-        writer.outdent();
-        writer.outdent();
-    }
-
-    private void writeBody(List<RamlMediaType> mediaTypes) throws IOException {
-        writer.appendLine("body:");
-        writer.indent();
-
-        for (RamlMediaType mediaType : mediaTypes) {
-            writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
-        }
-
-        writer.outdent();
-    }
-
-    private void writeHeader() throws IOException {
-        writer.appendLine("#%RAML 1.0");
-    }
-
-    private void writeTitle(String title) throws IOException {
-        writer.appendLine(format("title: %s", title));
-    }
-
-    private void writeVersion(String version) throws IOException {
-        writer.appendLine(format("version: %s", version));
-    }
-
-    private void writeBaseUri(String baseUri) throws IOException {
-        writer.appendLine(format("baseUri: %s", baseUri));
-    }
+  private void writeBaseUri(String baseUri) throws IOException {
+    writer.appendLine(format("baseUri: %s", baseUri));
+  }
 }

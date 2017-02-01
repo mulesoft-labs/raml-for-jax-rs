@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
@@ -14,83 +29,88 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Jean-Philippe Belanger on 12/10/16.
- * Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones
  */
 public class V10GResource implements GResource {
-    private final GAbstractionFactory factory;
-    private final GResource parent;
-    private final Resource resource;
-    private final List<GResource> subResources;
-    private final List<GParameter> uriParameters;
-    private final List<GMethod> methods;
 
-    public V10GResource(V10TypeRegistry registry, GAbstractionFactory factory, Resource resource) {
+  private final GAbstractionFactory factory;
+  private final GResource parent;
+  private final Resource resource;
+  private final List<GResource> subResources;
+  private final List<GParameter> uriParameters;
+  private final List<GMethod> methods;
 
-        this(registry, factory, null, resource);
-    }
+  public V10GResource(V10TypeRegistry registry, GAbstractionFactory factory, Resource resource) {
 
-    public V10GResource(final V10TypeRegistry registry, final GAbstractionFactory factory, GResource parent, Resource resource) {
-        this.factory = factory;
-        this.parent = parent;
-        this.resource = resource;
-        this.subResources = Lists.transform(resource.resources(), new Function<Resource, GResource>() {
-            @Nullable
-            @Override
-            public GResource apply(@Nullable Resource input) {
+    this(registry, factory, null, resource);
+  }
 
-                return factory.newResource(registry, V10GResource.this, input);
-            }
+  public V10GResource(final V10TypeRegistry registry, final GAbstractionFactory factory,
+                      GResource parent, Resource resource) {
+    this.factory = factory;
+    this.parent = parent;
+    this.resource = resource;
+    this.subResources = Lists.transform(resource.resources(), new Function<Resource, GResource>() {
+
+      @Nullable
+      @Override
+      public GResource apply(@Nullable Resource input) {
+
+        return factory.newResource(registry, V10GResource.this, input);
+      }
+    });
+
+    this.uriParameters =
+        Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, GParameter>() {
+
+          @Nullable
+          @Override
+          public GParameter apply(@Nullable TypeDeclaration input) {
+            return new V10PGParameter(registry, input);
+          }
         });
 
-        this.uriParameters = Lists.transform(resource.uriParameters(), new Function<TypeDeclaration, GParameter>() {
-            @Nullable
-            @Override
-            public GParameter apply(@Nullable TypeDeclaration input) {
-                return new V10PGParameter(registry, input);
-            }
-        });
+    this.methods = Lists.transform(resource.methods(), new Function<Method, GMethod>() {
 
-        this.methods = Lists.transform(resource.methods(), new Function<Method, GMethod>() {
-            @Nullable
-            @Override
-            public GMethod apply(@Nullable Method input) {
-                return new V10GMethod(registry, V10GResource.this, input);
-            }
-        });
+      @Nullable
+      @Override
+      public GMethod apply(@Nullable Method input) {
+        return new V10GMethod(registry, V10GResource.this, input);
+      }
+    });
 
-    }
+  }
 
-    @Override
-    public List<GResource> resources() {
+  @Override
+  public List<GResource> resources() {
 
-        return subResources;
-    }
+    return subResources;
+  }
 
-    @Override
-    public List<GMethod> methods() {
-        return methods;
-    }
+  @Override
+  public List<GMethod> methods() {
+    return methods;
+  }
 
-    @Override
-    public List<GParameter> uriParameters() {
-        return uriParameters;
-    }
+  @Override
+  public List<GParameter> uriParameters() {
+    return uriParameters;
+  }
 
-    @Override
-    public String resourcePath() {
-        return resource.resourcePath();
-    }
+  @Override
+  public String resourcePath() {
+    return resource.resourcePath();
+  }
 
-    @Override
-    public GResource parentResource() {
-        return parent;
-    }
+  @Override
+  public GResource parentResource() {
+    return parent;
+  }
 
-    @Override
-    public Resource implementation() {
-        return resource;
-    }
+  @Override
+  public Resource implementation() {
+    return resource;
+  }
 
 
 }

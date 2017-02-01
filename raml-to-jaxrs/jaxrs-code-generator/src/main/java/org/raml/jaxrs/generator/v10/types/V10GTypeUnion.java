@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.generator.v10.types;
 
 import com.squareup.javapoet.ClassName;
@@ -11,93 +26,92 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
 /**
- * Created by Jean-Philippe Belanger on 1/3/17.
- * Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 1/3/17. Just potential zeroes and ones
  */
 public class V10GTypeUnion extends V10GTypeHelper {
 
-    private final V10TypeRegistry registry;
-    private final TypeDeclaration typeDeclaration;
-    private final String name;
-    private final String defaultJavatypeName;
+  private final V10TypeRegistry registry;
+  private final TypeDeclaration typeDeclaration;
+  private final String name;
+  private final String defaultJavatypeName;
 
 
-    V10GTypeUnion(V10TypeRegistry registry, UnionTypeDeclaration typeDeclaration, String realName, String defaultJavatypeName) {
-        super(realName);
-        this.registry = registry;
-        this.typeDeclaration = typeDeclaration;
-        this.name = realName;
-        this.defaultJavatypeName = defaultJavatypeName;
+  V10GTypeUnion(V10TypeRegistry registry, UnionTypeDeclaration typeDeclaration, String realName,
+                String defaultJavatypeName) {
+    super(realName);
+    this.registry = registry;
+    this.typeDeclaration = typeDeclaration;
+    this.name = realName;
+    this.defaultJavatypeName = defaultJavatypeName;
+  }
+
+  @Override
+  public TypeDeclaration implementation() {
+    return typeDeclaration;
+  }
+
+  @Override
+  public String type() {
+    return typeDeclaration.type();
+  }
+
+  @Override
+  public String name() {
+
+    return name;
+  }
+
+  @Override
+  public boolean isUnion() {
+
+    return true;
+  }
+
+  @Override
+  public TypeName defaultJavaTypeName(String pack) {
+
+    if (isInline()) {
+      return ClassName.get("", defaultJavatypeName);
+    } else {
+      return ClassName.get(pack, defaultJavatypeName);
     }
+  }
 
-    @Override
-    public TypeDeclaration implementation() {
-        return typeDeclaration;
+  public ClassName javaImplementationName(String pack) {
+
+    if (isInline()) {
+
+      return ClassName.get("",
+                           Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
+    } else {
+      return ClassName.get(pack,
+                           Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
     }
+  }
 
-    @Override
-    public String type() {
-        return typeDeclaration.type();
-    }
-
-    @Override
-    public String name() {
-
-        return name;
-    }
-
-    @Override
-    public boolean isUnion() {
-
-        return true;
-    }
-
-    @Override
-    public TypeName defaultJavaTypeName(String pack) {
-
-        if ( isInline() ) {
-            return ClassName.get("", defaultJavatypeName);
-        } else {
-            return ClassName.get(pack, defaultJavatypeName);
-        }
-    }
-
-    public ClassName javaImplementationName(String pack) {
-
-        if ( isInline() ) {
-
-            return ClassName
-                    .get("", Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
-        } else {
-            return ClassName
-                    .get(pack, Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
-        }
-    }
-
-    public boolean isInline() {
-        return TypeUtils.shouldCreateNewClass(typeDeclaration, typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
-    }
+  public boolean isInline() {
+    return TypeUtils.shouldCreateNewClass(typeDeclaration,
+                                          typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
+  }
 
 
-    @Override
-    public String toString() {
-        return "V10GTypeUnion{" +
-                "input=" + typeDeclaration.name() + ":" + typeDeclaration.type()+
-                ", name='" + name() + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "V10GTypeUnion{" + "input=" + typeDeclaration.name() + ":" + typeDeclaration.type()
+        + ", name='" + name() + '\'' + '}';
+  }
 
 
-    @Override
-    public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
-        objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
+  @Override
+  public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
+    objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
 
-            @Override
-            public void onUnion() {
-                V10TypeFactory.createUnion(currentBuild, registry, V10GTypeUnion.this);
-            }
-        });
-    }
+      @Override
+      public void onUnion() {
+        V10TypeFactory.createUnion(currentBuild, registry, V10GTypeUnion.this);
+      }
+    });
+  }
 
 
 }

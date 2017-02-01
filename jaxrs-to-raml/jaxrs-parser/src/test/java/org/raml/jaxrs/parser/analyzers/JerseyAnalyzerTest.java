@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.parser.analyzers;
 
 import com.google.common.base.Function;
@@ -31,67 +46,68 @@ import static org.raml.utilities.matchers.Matchers.contentEqualsInAnyOrder;
 
 public class JerseyAnalyzerTest {
 
-    @Mock
-    JerseyBridge jerseyBridge;
+  @Mock
+  JerseyBridge jerseyBridge;
 
-    @Mock
-    SourceParser sourceParser;
+  @Mock
+  SourceParser sourceParser;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+  @Before
+  public void setUp() {
+    MockitoAnnotations.initMocks(this);
+  }
 
-    private JerseyAnalyzer makeAnalyzerFor(Iterable<Class<?>> classes) {
-        return JerseyAnalyzer.create(classes, jerseyBridge, sourceParser);
-    }
+  private JerseyAnalyzer makeAnalyzerFor(Iterable<Class<?>> classes) {
+    return JerseyAnalyzer.create(classes, jerseyBridge, sourceParser);
+  }
 
-    private static <T> Supplier<T> mockSupplierFor(final Class<? extends T> clazz) {
-        return new Supplier<T>() {
-            @Override
-            public T get() {
-                return mock(clazz);
-            }
-        };
-    }
+  private static <T> Supplier<T> mockSupplierFor(final Class<? extends T> clazz) {
+    return new Supplier<T>() {
 
-    private <T> FluentIterable<T> supplyingNTimes(int noItems, Supplier<? extends T> supplier) {
-        return FluentIterable.from(Iterables.suplying(supplier)).limit(noItems);
-    }
+      @Override
+      public T get() {
+        return mock(clazz);
+      }
+    };
+  }
 
-    private Iterable<Class<?>> testClasses() {
-        return Lists.<Class<?>>newArrayList(String.class, Integer.class, Double.class, Byte.class);
-    }
+  private <T> FluentIterable<T> supplyingNTimes(int noItems, Supplier<? extends T> supplier) {
+    return FluentIterable.from(Iterables.suplying(supplier)).limit(noItems);
+  }
 
-    @Test
-    public void testAnalyze() {
-        FluentIterable<Class<?>> classes = FluentIterable.from(testClasses());
+  private Iterable<Class<?>> testClasses() {
+    return Lists.<Class<?>>newArrayList(String.class, Integer.class, Double.class, Byte.class);
+  }
 
-        JerseyAnalyzer analyzer = makeAnalyzerFor(classes);
+  @Test
+  public void testAnalyze() {
+    FluentIterable<Class<?>> classes = FluentIterable.from(testClasses());
 
-        FluentIterable<Resource> resources = classes.transform(
-                new Function<Class<?>, Resource>() {
-                    @Nullable
-                    @Override
-                    public Resource apply(@Nullable Class<?> aClass) {
-                        return mock(Resource.class);
-                    }
-                }
-        );
-        Matcher<Iterable<Class<?>>> classesMatcher = contentEqualsInAnyOrder(classes);
-        when(jerseyBridge.resourcesFrom(argThat(classesMatcher))).thenReturn(resources);
+    JerseyAnalyzer analyzer = makeAnalyzerFor(classes);
 
-        List<RuntimeResource> runtimeResources = supplyingNTimes(3, mockSupplierFor(RuntimeResource.class)).toList();
-        when(jerseyBridge.runtimeResourcesFrom(resources)).thenReturn(runtimeResources);
+    FluentIterable<Resource> resources = classes.transform(new Function<Class<?>, Resource>() {
 
-        JaxRsApplication application = analyzer.analyze();
+      @Nullable
+      @Override
+      public Resource apply(@Nullable Class<?> aClass) {
+        return mock(Resource.class);
+      }
+    });
+    Matcher<Iterable<Class<?>>> classesMatcher = contentEqualsInAnyOrder(classes);
+    when(jerseyBridge.resourcesFrom(argThat(classesMatcher))).thenReturn(resources);
 
-        InOrder inOrder = Mockito.inOrder(jerseyBridge);
-        inOrder.verify(jerseyBridge).resourcesFrom(argThat(classesMatcher));
-        inOrder.verify(jerseyBridge).runtimeResourcesFrom(resources);
+    List<RuntimeResource> runtimeResources =
+        supplyingNTimes(3, mockSupplierFor(RuntimeResource.class)).toList();
+    when(jerseyBridge.runtimeResourcesFrom(resources)).thenReturn(runtimeResources);
 
-        assertTrue(application instanceof JerseyJaxRsApplication);
-    }
+    JaxRsApplication application = analyzer.analyze();
+
+    InOrder inOrder = Mockito.inOrder(jerseyBridge);
+    inOrder.verify(jerseyBridge).resourcesFrom(argThat(classesMatcher));
+    inOrder.verify(jerseyBridge).runtimeResourcesFrom(resources);
+
+    assertTrue(application instanceof JerseyJaxRsApplication);
+  }
 
 
 }

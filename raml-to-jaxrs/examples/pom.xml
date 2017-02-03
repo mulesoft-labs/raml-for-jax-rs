@@ -16,47 +16,6 @@
     </modules>
     <build>
         <plugins>
-            <!--
-                        <plugin>
-                            <groupId>com.mycila.maven-license-plugin</groupId>
-                            <artifactId>maven-license-plugin</artifactId>
-                            <version>1.9.0</version>
-                            <configuration>
-                                <header>${licensePath}</header>
-                                <skip>false</skip>
-                                <excludes>
-                                    <exclude>target/**</exclude>
-                                    <exclude>**/.gitignore</exclude>
-                                    <exclude>.idea/**</exclude>
-                                    <exclude>**/*.yaml</exclude>
-                                    <exclude>**/*.raml</exclude>
-                                    <exclude>**/*.txt</exclude>
-                                    <exclude>**/*.json</exclude>
-                                    <exclude>**/*.xml</exclude>
-                                    <exclude>**/*.xsd</exclude>
-                                    <exclude>**/*.properties</exclude>
-                                    <exclude>**/*.md</exclude>
-                                    <exclude>**/*.template</exclude>
-                                    <exclude>**/*.buildpath</exclude>
-                                    <exclude>**/example-output/**</exclude>
-                                </excludes>
-                                <mapping>
-                                    <java>SLASHSTAR_STYLE</java>
-                                </mapping>
-                                <strictCheck>true</strictCheck>
-                                <properties>
-                                    <licenseYear>2013-2015</licenseYear>
-                                </properties>
-                            </configuration>
-                            <executions>
-                                <execution>
-                                    <goals>
-                                        <goal>check</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-                        -->
         </plugins>
         <pluginManagement>
             <plugins>

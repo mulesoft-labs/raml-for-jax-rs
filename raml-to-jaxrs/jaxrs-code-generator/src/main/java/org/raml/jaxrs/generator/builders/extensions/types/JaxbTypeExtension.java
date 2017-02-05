@@ -20,7 +20,10 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.v10.types.V10GTypeUnion;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -71,5 +74,12 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
                                  TypeDeclaration typeDeclaration) {
 
     builder.addAnnotation(AnnotationSpec.builder(XmlEnum.class).build());
+  }
+
+  @Override
+  public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, V10GType typeDeclaration) {
+
+    V10GTypeUnion union = (V10GTypeUnion) typeDeclaration;
+    UnionTypeDeclaration utd = (UnionTypeDeclaration) union.implementation();
   }
 }

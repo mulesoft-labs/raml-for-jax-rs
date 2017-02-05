@@ -57,6 +57,12 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
     UnionTypeDeclaration union = (UnionTypeDeclaration) v10GType.implementation();
 
     TypeSpec.Builder builder = TypeSpec.classBuilder(javaName).addModifiers(Modifier.PUBLIC);
+    builder
+        .addField(FieldSpec.builder(Object.class, "anyType", Modifier.PRIVATE).build())
+        .addMethod(
+                   MethodSpec.constructorBuilder()
+                       .addModifiers(Modifier.PUBLIC).addStatement("this.$L = null", "anyType").build());
+
     for (TypeDeclaration typeDeclaration : union.of()) {
 
       V10GType type = registry.fetchType(typeDeclaration);
@@ -64,27 +70,22 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
       TypeName typeName = type.defaultJavaTypeName(currentBuild.getModelPackage());
       String fieldName = Names.methodName(typeDeclaration.name());
       builder
-          .addField(FieldSpec.builder(typeName, fieldName, Modifier.PRIVATE).build())
-          .addField(
-                    FieldSpec.builder(TypeName.BOOLEAN, Names.variableName("is", typeDeclaration.name()),
-                                      Modifier.PRIVATE).build())
           .addMethod(
                      MethodSpec.constructorBuilder()
                          .addParameter(ParameterSpec.builder(typeName, fieldName).build())
-                         .addModifiers(Modifier.PUBLIC).addStatement("this.$L = $L", fieldName, fieldName)
-                         .addStatement("this.is$L = true", typeDeclaration.name()).build())
+                         .addModifiers(Modifier.PUBLIC).addStatement("this.anyType = $L", fieldName).build())
           .addMethod(
                      MethodSpec
                          .methodBuilder(Names.methodName("get", typeDeclaration.name()))
                          .addModifiers(Modifier.PUBLIC)
                          .returns(typeName)
                          .addStatement(
-                                       "if ( is$L == false) throw new $T(\"fetching wrong type out of the union: $T\")",
-                                       typeDeclaration.name(), IllegalStateException.class, typeName)
-                         .addStatement("return $L", fieldName).build())
+                                       "if ( !(anyType instanceof  $T)) throw new $T(\"fetching wrong type out of the union: $T\")",
+                                       typeName, IllegalStateException.class, typeName)
+                         .addStatement("return ($T) anyType", typeName).build())
           .addMethod(
                      MethodSpec.methodBuilder(Names.methodName("is", typeDeclaration.name()))
-                         .addStatement("return " + Names.variableName("is", typeDeclaration.name()))
+                         .addStatement("return anyType instanceof $T", typeName)
                          .addModifiers(Modifier.PUBLIC).returns(TypeName.BOOLEAN).build());
     }
 

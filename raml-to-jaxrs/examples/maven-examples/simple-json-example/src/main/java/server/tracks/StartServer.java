@@ -15,19 +15,7 @@
  */
 package server.tracks;
 
-//
-// import jp.fun.Search;
-// import jp.fun.SearchImpl;
-// import org.eclipse.jetty.server.Server;
-// import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
-// import org.glassfish.jersey.server.ResourceConfig;
-// import org.reflections.Reflections;
-//
-// import javax.ws.rs.Path;
-// import javax.ws.rs.core.UriBuilder;
-// import java.net.URI;
-// import java.util.HashSet;
-// import java.util.Set;
+
 
 import org.eclipse.jetty.server.Server;
 import org.glassfish.jersey.jetty.JettyHttpContainerFactory;

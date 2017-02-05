@@ -44,7 +44,7 @@ public class StartServer {
   public static void main(String[] args) throws Exception {
 
     URI baseUri = UriBuilder.fromUri("http://localhost/").port(9998).build();
-    ResourceConfig config = new ResourceConfig(JobsImpl.class);
+    ResourceConfig config = new ResourceConfig(JobsImpl.class, AnimalsImpl.class);
     Server server = JettyHttpContainerFactory.createServer(baseUri, config);
     server.start();
   }

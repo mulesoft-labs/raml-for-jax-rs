@@ -159,6 +159,7 @@
                             <exclude>**/*.md</exclude>
                             <exclude>**/build-number.txt</exclude>
                         </excludes>
+
                         <mapping>
                             <java>SLASHSTAR_STYLE</java>
                         </mapping>

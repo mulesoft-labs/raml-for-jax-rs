@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -23,71 +38,71 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 
 /**
- * Created by Jean-Philippe Belanger on 1/2/17.
- * Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 1/2/17. Just potential zeroes and ones
  */
 public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
-    private final CurrentBuild currentBuild;
-    private final V10GType unionTypeDeclaration;
-    private final ClassName deserializer;
 
-    public UnionSerializationGenerator(CurrentBuild currentBuild, V10GType unionTypeDeclaration,
-            ClassName deserializer) {
-        this.currentBuild = currentBuild;
-        this.unionTypeDeclaration = unionTypeDeclaration;
-        this.deserializer = deserializer;
+  private final CurrentBuild currentBuild;
+  private final V10GType unionTypeDeclaration;
+  private final ClassName deserializer;
+
+  public UnionSerializationGenerator(CurrentBuild currentBuild, V10GType unionTypeDeclaration,
+                                     ClassName deserializer) {
+    this.currentBuild = currentBuild;
+    this.unionTypeDeclaration = unionTypeDeclaration;
+    this.deserializer = deserializer;
+  }
+
+  @Override
+  public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
+
+    UnionTypeDeclaration union = (UnionTypeDeclaration) unionTypeDeclaration.implementation();
+
+    ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(), Names
+        .typeName(unionTypeDeclaration.name()));
+    TypeSpec.Builder builder = TypeSpec.classBuilder(deserializer)
+        .superclass(ParameterizedTypeName.get(ClassName.get(StdSerializer.class), unionTypeName))
+        .addMethod(
+                   MethodSpec.constructorBuilder()
+                       .addModifiers(Modifier.PUBLIC)
+                       .addCode("super($T.class);", unionTypeName).build()
+
+        ).addModifiers(Modifier.PUBLIC);
+    MethodSpec.Builder serialize = MethodSpec.methodBuilder("serialize")
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec.builder(unionTypeName, "object").build())
+        .addParameter(ParameterSpec.builder(ClassName.get(JsonGenerator.class), "jsonGenerator").build())
+        .addParameter(ParameterSpec.builder(ClassName.get(SerializerProvider.class), "jsonSerializerProvider").build())
+        .addException(IOException.class)
+        .addException(JsonProcessingException.class);
+
+    for (TypeDeclaration typeDeclaration : union.of()) {
+
+      String isMethod = Names.methodName("is", typeDeclaration.name());
+      String getMethod = Names.methodName("get", typeDeclaration.name());
+      serialize.beginControlFlow("if ( object." + isMethod + "())");
+      serialize.addStatement("jsonGenerator.writeObject(object." + getMethod + "())");
+      serialize.addStatement("return");
+      serialize.endControlFlow();
     }
 
-    @Override
-    public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
+    serialize.addStatement("throw new $T($S + object)", IOException.class, "Can't figure out type of object");
 
-        UnionTypeDeclaration union = (UnionTypeDeclaration) unionTypeDeclaration.implementation();
-
-        ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(), Names
-                .typeName(unionTypeDeclaration.name()));
-        TypeSpec.Builder builder = TypeSpec.classBuilder(deserializer)
-                .superclass(ParameterizedTypeName.get(ClassName.get(StdSerializer.class), unionTypeName))
-                .addMethod(
-                        MethodSpec.constructorBuilder()
-                                .addModifiers(Modifier.PUBLIC)
-                                .addCode("super($T.class);", unionTypeName).build()
-
-                ).addModifiers(Modifier.PUBLIC);
-        MethodSpec.Builder serialize = MethodSpec.methodBuilder("serialize")
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ParameterSpec.builder(unionTypeName, "object").build())
-                .addParameter(ParameterSpec.builder(ClassName.get(JsonGenerator.class), "jsonGenerator").build())
-                .addParameter(ParameterSpec.builder(ClassName.get(SerializerProvider.class), "jsonSerializerProvider").build())
-                .addException(IOException.class)
-                .addException(JsonProcessingException.class);
-
-        for (TypeDeclaration typeDeclaration : union.of()) {
-
-            String isMethod = Names.methodName("is", typeDeclaration.name());
-            String getMethod = Names.methodName("get", typeDeclaration.name());
-            serialize.beginControlFlow("if ( object." + isMethod + "())"  );
-            serialize.addStatement("jsonGenerator.writeObject(object." + getMethod + "())");
-            serialize.addStatement("return");
-            serialize.endControlFlow();
-        }
-
-        serialize.addStatement("throw new $T($S + object)", IOException.class, "Can't figure out type of object");
-
-        builder.addMethod(serialize.build());
+    builder.addMethod(serialize.build());
 
 
-        rootDirectory.into(builder);
+    rootDirectory.into(builder);
 
-    }
+  }
 
-    @Override
-    public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
+  @Override
+  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
 
-        output(rootDirectory);
-    }
+    output(rootDirectory);
+  }
 
-    @Override
-    public TypeName getGeneratedJavaType() {
-        return deserializer;
-    }
+  @Override
+  public TypeName getGeneratedJavaType() {
+    return deserializer;
+  }
 }

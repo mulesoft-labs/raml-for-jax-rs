@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@ import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
- * Created by Jean-Philippe Belanger on 1/29/17.
- * Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
  */
 public class JavadocTypeExtension implements TypeExtension, PropertyExtension {
 
@@ -39,20 +38,20 @@ public class JavadocTypeExtension implements TypeExtension, PropertyExtension {
     void addJavadoc(String format, Object... args);
   }
 
-    public void javadocExamples(JavadocAdder adder, TypeDeclaration typeDeclaration) {
-        ExampleSpec example = typeDeclaration.example();
-        if ( example != null ) {
+  public void javadocExamples(JavadocAdder adder, TypeDeclaration typeDeclaration) {
+    ExampleSpec example = typeDeclaration.example();
+    if (example != null) {
 
-            javadoc(adder, example);
-        }
-
-        for (ExampleSpec exampleSpec : typeDeclaration.examples()) {
-            javadoc(adder, exampleSpec);
-        }
+      javadoc(adder, example);
     }
 
-    @Override
-    public TypeSpec.Builder onType(TypeContext context, final TypeSpec.Builder typeSpec, V10GType type, BuildPhase btype) {
+    for (ExampleSpec exampleSpec : typeDeclaration.examples()) {
+      javadoc(adder, exampleSpec);
+    }
+  }
+
+  @Override
+  public TypeSpec.Builder onType(TypeContext context, final TypeSpec.Builder typeSpec, V10GType type, BuildPhase btype) {
 
 
     if (type.implementation().description() != null) {
@@ -64,12 +63,12 @@ public class JavadocTypeExtension implements TypeExtension, PropertyExtension {
       @Override
       public void addJavadoc(String format, Object... args) {
 
-                typeSpec.addJavadoc(format, args);
-            }
-        }, type.implementation());
+        typeSpec.addJavadoc(format, args);
+      }
+    }, type.implementation());
 
-        return null;
-    }
+    return null;
+  }
 
 
   public void javadoc(JavadocAdder adder, ExampleSpec exampleSpec) {
@@ -79,34 +78,34 @@ public class JavadocTypeExtension implements TypeExtension, PropertyExtension {
       adder.addJavadoc(" $L\n", exampleSpec.name());
     }
 
-        adder.addJavadoc(" $L\n",  "<pre>\n{@code\n" + exampleSpec.value() + "\n}</pre>");
-    }
+    adder.addJavadoc(" $L\n", "<pre>\n{@code\n" + exampleSpec.value() + "\n}</pre>");
+  }
 
-    @Override
-    public void onProperty(TypeContext context, TypeSpec.Builder builder, V10GType containingType, V10GProperty property,
-            BuildPhase buildPhase) {
+  @Override
+  public void onProperty(TypeContext context, TypeSpec.Builder builder, V10GType containingType, V10GProperty property,
+                         BuildPhase buildPhase) {
 
-    }
+  }
 
-    @Override
-    public void onProperty(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
-            BuildPhase buildPhase) {
+  @Override
+  public void onProperty(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
+                         BuildPhase buildPhase) {
 
-    }
+  }
 
-    @Override
-    public void onPropertyGetter(TypeContext context, MethodSpec.Builder builder, V10GType containingType, V10GProperty property,
-            BuildPhase buildPhase) {
-
-
-    }
-
-    @Override
-    public void onPropertySetter(TypeContext context, MethodSpec.Builder builder, ParameterSpec.Builder parameter,
-            V10GType containingType, V10GProperty property,
-            BuildPhase buildPhase) {
+  @Override
+  public void onPropertyGetter(TypeContext context, MethodSpec.Builder builder, V10GType containingType, V10GProperty property,
+                               BuildPhase buildPhase) {
 
 
-    }
+  }
+
+  @Override
+  public void onPropertySetter(TypeContext context, MethodSpec.Builder builder, ParameterSpec.Builder parameter,
+                               V10GType containingType, V10GProperty property,
+                               BuildPhase buildPhase) {
+
+
+  }
 
 }

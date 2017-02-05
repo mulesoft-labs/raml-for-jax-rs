@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.generator.v10.types;
 
 import com.squareup.javapoet.ClassName;
@@ -33,213 +48,224 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Jean-Philippe Belanger on 1/29/17.
- * Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
  */
 class SimpleInheritanceExtension implements TypeExtension {
-    private final V10GType originalType;
-    private final V10TypeRegistry registry;
-    private final CurrentBuild currentBuild;
 
-    public SimpleInheritanceExtension(V10GType originalType, V10TypeRegistry registry, CurrentBuild currentBuild) {
-        this.originalType = originalType;
-        this.registry = registry;
-        this.currentBuild = currentBuild;
+  private final V10GType originalType;
+  private final V10TypeRegistry registry;
+  private final CurrentBuild currentBuild;
+
+  public SimpleInheritanceExtension(V10GType originalType, V10TypeRegistry registry, CurrentBuild currentBuild) {
+    this.originalType = originalType;
+    this.registry = registry;
+    this.currentBuild = currentBuild;
+  }
+
+  @Override
+  public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType objectType,
+                                 BuildPhase buildPhase) {
+
+    if (buildPhase == BuildPhase.INTERFACE) {
+      return buildType(context, objectType);
+    } else {
+      return buildTypeImplementation(context, objectType);
+    }
+  }
+
+  private TypeSpec.Builder buildTypeImplementation(TypeContext context, V10GType objectType) {
+
+    ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
+
+    ClassName className = originalType.javaImplementationName(context.getModelPackage());
+
+    TypeSpec.Builder typeSpec = TypeSpec
+        .classBuilder(className)
+        .addModifiers(Modifier.PUBLIC);
+
+
+    final TypeSpec.Builder newTypeSpec = context.onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
+    ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
+
+    if (parentClassName != null) {
+      typeSpec.addSuperinterface(parentClassName);
     }
 
-    @Override
-    public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType objectType,
-            BuildPhase buildPhase) {
+    V10TypeRegistry localRegistry = registry.createRegistry();
+    List<PropertyInfo> properties = new ArrayList<>();
+    int internalTypeCounter = 0;
+    for (GProperty declaration : originalType.properties()) {
 
-        if ( buildPhase == BuildPhase.INTERFACE) {
-            return buildType(context, objectType);
+      if (declaration.isInline()) {
+        String internalTypeName = Integer.toString(internalTypeCounter);
+
+        V10GType type =
+            localRegistry.createInlineType(internalTypeName,
+                                           Annotations.CLASS_NAME.get(
+                                                                      Names.typeName(declaration.name(), "Type"),
+                                                                      (Annotable) declaration.implementation()),
+                                           (TypeDeclaration) declaration.implementation()
+                );
+        TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
+                                                          GeneratorType.generatorFrom(type));
+        if (internalGenerator instanceof JavaPoetTypeGenerator) {
+          properties.add(new PropertyInfo(localRegistry, declaration.overrideType(type)));
+          internalTypeCounter++;
         } else {
-            return buildTypeImplementation(context, objectType);
+          throw new GenerationException("internal type bad");
         }
+      } else {
+        properties.add(new PropertyInfo(localRegistry, declaration));
+      }
     }
 
-    private TypeSpec.Builder buildTypeImplementation(TypeContext context, V10GType objectType) {
+    for (PropertyInfo propertyInfo : properties) {
 
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
+      FieldSpec.Builder fieldSpec =
+          FieldSpec.builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()))
+              .addModifiers(Modifier.PRIVATE);
+      context.onProperty(context, newTypeSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
 
-        ClassName className = originalType.javaImplementationName(context.getModelPackage());
+      if (propertyInfo.getName().equals(object.discriminator())) {
+        fieldSpec.initializer("$S", object.discriminatorValue());
+      }
+      typeSpec.addField(fieldSpec.build());
 
-        TypeSpec.Builder typeSpec = TypeSpec
-                .classBuilder(className)
-                .addModifiers(Modifier.PUBLIC);
+      final MethodSpec.Builder getSpec = MethodSpec
+          .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
+          .addModifiers(Modifier.PUBLIC)
+          .addStatement("return this." + Names.variableName(propertyInfo.getName()));
 
+      getSpec.returns(propertyInfo.resolve(context));
+      context
+          .onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
 
-        final TypeSpec.Builder newTypeSpec = context.onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
-        ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
+      typeSpec.addMethod(getSpec.build());
 
-        if ( parentClassName != null ) {
-            typeSpec.addSuperinterface(parentClassName);
-        }
+      if (!propertyInfo.getName().equals(object.discriminator())) {
 
-        V10TypeRegistry localRegistry = registry.createRegistry();
-        List<PropertyInfo> properties = new ArrayList<>();
-        int internalTypeCounter = 0;
-        for (GProperty declaration : originalType.properties()) {
+        MethodSpec.Builder setSpec = MethodSpec
+            .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
+            .addModifiers(Modifier.PUBLIC)
+            .addStatement("this." + Names.variableName(propertyInfo.getName()) + " = " + Names
+                .variableName(propertyInfo.getName()));
 
-            if (declaration.isInline()) {
-                String internalTypeName = Integer.toString(internalTypeCounter);
+        ParameterSpec.Builder parameterSpec = ParameterSpec
+            .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
+        context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(),
+                                 BuildPhase.IMPLEMENTATION);
 
-                V10GType type = localRegistry.createInlineType(internalTypeName, Annotations.CLASS_NAME.get(
-                        Names.typeName(declaration.name(), "Type"), (Annotable) declaration.implementation()),
-                        (TypeDeclaration) declaration.implementation()
-                );
-                TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
-                        GeneratorType.generatorFrom(type));
-                if (internalGenerator instanceof JavaPoetTypeGenerator) {
-                    properties.add(new PropertyInfo(localRegistry, declaration.overrideType(type)));
-                    internalTypeCounter++;
-                } else {
-                    throw new GenerationException("internal type bad");
-                }
-            } else {
-                properties.add(new PropertyInfo(localRegistry, declaration));
-            }
-        }
-
-        for (PropertyInfo propertyInfo : properties) {
-
-            FieldSpec.Builder fieldSpec = FieldSpec.builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName())).addModifiers(Modifier.PRIVATE);
-            context.onProperty(context,newTypeSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
-
-            if ( propertyInfo.getName().equals(object.discriminator()) ) {
-                fieldSpec.initializer("$S", object.discriminatorValue());
-            }
-            typeSpec.addField(fieldSpec.build());
-
-            final MethodSpec.Builder getSpec = MethodSpec
-                    .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
-                    .addModifiers(Modifier.PUBLIC)
-                    .addStatement("return this." + Names.variableName(propertyInfo.getName()));
-
-            getSpec.returns(propertyInfo.resolve(context));
-            context.onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
-
-            typeSpec.addMethod(getSpec.build());
-
-            if ( ! propertyInfo.getName().equals(object.discriminator()) ) {
-
-                MethodSpec.Builder setSpec = MethodSpec
-                        .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
-                        .addModifiers(Modifier.PUBLIC)
-                        .addStatement("this." + Names.variableName(propertyInfo.getName()) + " = " + Names
-                                .variableName(propertyInfo.getName()));
-
-                ParameterSpec.Builder parameterSpec = ParameterSpec
-                        .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
-                context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
-
-                setSpec.addParameter(parameterSpec.build());
-                typeSpec.addMethod(setSpec.build());
-            }
-        }
-
-        return typeSpec;
+        setSpec.addParameter(parameterSpec.build());
+        typeSpec.addMethod(setSpec.build());
+      }
     }
 
-    private TypeSpec.Builder buildType(TypeContext context, V10GType objectType) {
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
+    return typeSpec;
+  }
 
-        List<V10GType> parentTypes = originalType.parentTypes();
-        int internalTypeCounter = 0;
+  private TypeSpec.Builder buildType(TypeContext context, V10GType objectType) {
+    ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
 
-        // this should be in the generator;
-        List<PropertyInfo> properties = new ArrayList<>();
-        V10TypeRegistry localRegistry = registry.createRegistry();
-        for (GProperty declaration : originalType.properties()) {
+    List<V10GType> parentTypes = originalType.parentTypes();
+    int internalTypeCounter = 0;
 
-            if (declaration.isInline()) {
-                String internalTypeName = Integer.toString(internalTypeCounter);
+    // this should be in the generator;
+    List<PropertyInfo> properties = new ArrayList<>();
+    V10TypeRegistry localRegistry = registry.createRegistry();
+    for (GProperty declaration : originalType.properties()) {
 
-                V10GType type = localRegistry.createInlineType(internalTypeName, Annotations.CLASS_NAME.get(
-                        Names.typeName(declaration.name(), "Type"), (Annotable) declaration.implementation()),
-                        (TypeDeclaration) declaration.implementation()
+      if (declaration.isInline()) {
+        String internalTypeName = Integer.toString(internalTypeCounter);
+
+        V10GType type =
+            localRegistry.createInlineType(internalTypeName,
+                                           Annotations.CLASS_NAME.get(
+                                                                      Names.typeName(declaration.name(), "Type"),
+                                                                      (Annotable) declaration.implementation()),
+                                           (TypeDeclaration) declaration.implementation()
                 );
 
-                TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
-                        GeneratorType.generatorFrom(type));
-                if (internalGenerator instanceof JavaPoetTypeGenerator) {
-                    properties.add(new PropertyInfo(localRegistry, declaration.overrideType(type)));
-                    context.createInternalClass((JavaPoetTypeGenerator) internalGenerator);
-                    internalTypeCounter++;
-                } else {
-                    throw new GenerationException("internal type bad");
-                }
-            } else {
-                properties.add(new PropertyInfo(localRegistry, declaration));
-            }
-
+        TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
+                                                          GeneratorType.generatorFrom(type));
+        if (internalGenerator instanceof JavaPoetTypeGenerator) {
+          properties.add(new PropertyInfo(localRegistry, declaration.overrideType(type)));
+          context.createInternalClass((JavaPoetTypeGenerator) internalGenerator);
+          internalTypeCounter++;
+        } else {
+          throw new GenerationException("internal type bad");
         }
+      } else {
+        properties.add(new PropertyInfo(localRegistry, declaration));
+      }
 
-        ClassName interf = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
-
-        final TypeSpec.Builder typeSpec = TypeSpec
-                .interfaceBuilder(interf)
-                .addModifiers(Modifier.PUBLIC);
-
-        for (GType parentType : parentTypes) {
-
-            if (parentType.name().equals("object")) {
-
-                continue;
-            }
-
-            typeSpec.addSuperinterface(parentType.defaultJavaTypeName(context.getModelPackage()));
-        }
-
-        for (PropertyInfo propertyInfo : properties) {
-
-            final MethodSpec.Builder getSpec = MethodSpec
-                    .methodBuilder(Names.methodName("get", propertyInfo.getName()))
-                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-            getSpec.returns(propertyInfo.resolve(context));
-            context.onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE);
-
-            typeSpec.addMethod(getSpec.build());
-
-            if (!propertyInfo.getName().equals(object.discriminator())) {
-                MethodSpec.Builder setSpec = MethodSpec
-                        .methodBuilder(Names.methodName("set", propertyInfo.getName()))
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
-                ParameterSpec.Builder parameterSpec = ParameterSpec
-                        .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
-
-
-                context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE);
-
-                setSpec.addParameter(
-                        parameterSpec.build());
-                typeSpec.addMethod(setSpec.build());
-            }
-        }
-
-        context.addImplementation();
-        return typeSpec;
     }
 
-    private static TypeGenerator inlineTypeBuild(V10TypeRegistry registry, CurrentBuild currentBuild, GeneratorType type) {
+    ClassName interf = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
 
-        switch (type.getObjectType()) {
+    final TypeSpec.Builder typeSpec = TypeSpec
+        .interfaceBuilder(interf)
+        .addModifiers(Modifier.PUBLIC);
 
-            case ENUMERATION_TYPE:
-                return V10TypeFactory.createEnumerationType(currentBuild, type.getDeclaredType());
+    for (GType parentType : parentTypes) {
 
-            case PLAIN_OBJECT_TYPE:
-                return V10TypeFactory.createObjectType(registry, currentBuild, (V10GType) type.getDeclaredType(),  false);
+      if (parentType.name().equals("object")) {
 
-            case JSON_OBJECT_TYPE:
-                return SchemaTypeFactory.createJsonType(currentBuild, type.getDeclaredType());
+        continue;
+      }
 
-            case XML_OBJECT_TYPE:
-                return SchemaTypeFactory.createXmlType(currentBuild, type.getDeclaredType());
-        }
-
-        throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
+      typeSpec.addSuperinterface(parentType.defaultJavaTypeName(context.getModelPackage()));
     }
+
+    for (PropertyInfo propertyInfo : properties) {
+
+      final MethodSpec.Builder getSpec = MethodSpec
+          .methodBuilder(Names.methodName("get", propertyInfo.getName()))
+          .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
+      getSpec.returns(propertyInfo.resolve(context));
+      context.onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE);
+
+      typeSpec.addMethod(getSpec.build());
+
+      if (!propertyInfo.getName().equals(object.discriminator())) {
+        MethodSpec.Builder setSpec = MethodSpec
+            .methodBuilder(Names.methodName("set", propertyInfo.getName()))
+            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
+        ParameterSpec.Builder parameterSpec = ParameterSpec
+            .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
+
+
+        context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(),
+                                 BuildPhase.INTERFACE);
+
+        setSpec.addParameter(
+            parameterSpec.build());
+        typeSpec.addMethod(setSpec.build());
+      }
+    }
+
+    context.addImplementation();
+    return typeSpec;
+  }
+
+  private static TypeGenerator inlineTypeBuild(V10TypeRegistry registry, CurrentBuild currentBuild, GeneratorType type) {
+
+    switch (type.getObjectType()) {
+
+      case ENUMERATION_TYPE:
+        return V10TypeFactory.createEnumerationType(currentBuild, type.getDeclaredType());
+
+      case PLAIN_OBJECT_TYPE:
+        return V10TypeFactory.createObjectType(registry, currentBuild, (V10GType) type.getDeclaredType(), false);
+
+      case JSON_OBJECT_TYPE:
+        return SchemaTypeFactory.createJsonType(currentBuild, type.getDeclaredType());
+
+      case XML_OBJECT_TYPE:
+        return SchemaTypeFactory.createXmlType(currentBuild, type.getDeclaredType());
+    }
+
+    throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
+  }
 
 
 }

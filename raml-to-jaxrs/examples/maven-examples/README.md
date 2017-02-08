@@ -1,5 +1,6 @@
 ## Maven plugin examples (raml-to-jaxrs)
-The maven plugin has many examples in the subprojects.
+The maven plugin has many examples in the subprojects. Each of them comes with a server that can be started using `mvn exec:java`.
+
 Some examples from the [types](raml-defined-example/) example:
 ```xml
                 <configuration>

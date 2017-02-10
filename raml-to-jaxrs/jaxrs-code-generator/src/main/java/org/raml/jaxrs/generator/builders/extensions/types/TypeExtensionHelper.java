@@ -107,12 +107,18 @@ public class TypeExtensionHelper implements LegacyTypeExtension, TypeExtension, 
   public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase buildPhase) {
 
     TypeContextImpl c = (TypeContextImpl) context;
+    if (type.isUnion()) {
 
-    if (buildPhase == BuildPhase.INTERFACE) {
-      this.onTypeDeclaration(c.getBuildContext(), builder, type);
+      onUnionType(c.getBuildContext(), builder, type);
     } else {
-      this.onTypeImplementation(c.getBuildContext(), builder, type.implementation());
+
+      if (buildPhase == BuildPhase.INTERFACE) {
+        this.onTypeDeclaration(c.getBuildContext(), builder, type);
+      } else {
+        this.onTypeImplementation(c.getBuildContext(), builder, type.implementation());
+      }
     }
+
 
     return builder;
   }

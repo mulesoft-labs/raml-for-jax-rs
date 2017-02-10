@@ -20,5 +20,5 @@ package org.raml.jaxrs.generator.extension.types;
  */
 public enum PredefinedFieldType implements FieldType {
 
-  PROPERTY
+  PROPERTY, UNION
 }

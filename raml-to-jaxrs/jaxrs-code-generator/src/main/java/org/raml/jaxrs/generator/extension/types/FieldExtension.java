@@ -26,6 +26,15 @@ import org.raml.jaxrs.generator.v10.V10GType;
  */
 public interface FieldExtension {
 
+  FieldExtension NULL_FIELD_EXTENSION = new FieldExtension() {
+
+    @Override
+    public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+                                     V10GProperty property, BuildPhase buildPhase, FieldType fieldType) {
+      return builder;
+    }
+  };
+
   FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
                             BuildPhase buildPhase, FieldType fieldType);
 }

@@ -20,6 +20,8 @@ import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
+import org.raml.jaxrs.generator.extension.types.FieldExtension;
+import org.raml.jaxrs.generator.extension.types.MethodExtension;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
@@ -180,6 +182,41 @@ public abstract class Annotations<T> {
     }
   };
 
+  public static Annotations<FieldExtension> ON_TYPE_FIELD_CREATION = new Annotations<FieldExtension>() {
+
+    @Override
+    public FieldExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onFieldCreation", null, target, others);
+      return createExtension(className, FieldExtension.NULL_FIELD_EXTENSION);
+    }
+  };
+
+  public static Annotations<FieldExtension> ON_TYPE_FIELD_FINISH = new Annotations<FieldExtension>() {
+
+    @Override
+    public FieldExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onFieldFinish", null, target, others);
+      return createExtension(className, FieldExtension.NULL_FIELD_EXTENSION);
+    }
+  };
+
+  public static Annotations<MethodExtension> ON_TYPE_METHOD_CREATION = new Annotations<MethodExtension>() {
+
+    @Override
+    public MethodExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onMethodCreation", null, target, others);
+      return createExtension(className, MethodExtension.NULL_METHOD_EXTENSION);
+    }
+  };
+
+  public static Annotations<MethodExtension> ON_TYPE_METHOD_FINISH = new Annotations<MethodExtension>() {
+
+    @Override
+    public MethodExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onMethodFinish", null, target, others);
+      return createExtension(className, MethodExtension.NULL_METHOD_EXTENSION);
+    }
+  };
 
 
   private static <T> T createExtension(String className, T nullExtension) {

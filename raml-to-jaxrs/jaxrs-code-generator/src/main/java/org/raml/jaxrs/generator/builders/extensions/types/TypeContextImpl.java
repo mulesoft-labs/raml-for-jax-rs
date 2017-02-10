@@ -22,12 +22,13 @@ import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.extensions.ContextImpl;
-import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
-import org.raml.jaxrs.generator.extension.types.PropertyExtension;
+import org.raml.jaxrs.generator.extension.types.FieldType;
+import org.raml.jaxrs.generator.extension.types.MethodType;
 import org.raml.jaxrs.generator.extension.types.TypeContext;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
+
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
@@ -47,31 +48,17 @@ abstract public class TypeContextImpl extends ContextImpl implements TypeContext
   }
 
   @Override
-  public void onProperty(TypeContext context, TypeSpec.Builder builder, V10GType containingType, V10GProperty property,
-                         BuildPhase buildPhase) {
-
-    getBuildContext().withTypeListeners().onProperty(context, builder, containingType, property, buildPhase);
+  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+                                   V10GProperty property, BuildPhase buildPhase, FieldType fieldType) {
+    return getBuildContext().withTypeListeners().onField(context, builder, containingType, property, buildPhase, fieldType);
   }
 
   @Override
-  public void onProperty(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
-                         BuildPhase buildPhase) {
-
-    getBuildContext().withTypeListeners().onProperty(context, builder, containingType, property, buildPhase);
-
-  }
-
-  @Override
-  public void onPropertyGetter(TypeContext context, MethodSpec.Builder builder, V10GType containingType,
-                               V10GProperty property, BuildPhase buildPhase) {
-
-    getBuildContext().withTypeListeners().onPropertyGetter(context, builder, containingType, property, buildPhase);
-  }
-
-  @Override
-  public void onPropertySetter(TypeContext context, MethodSpec.Builder builder, ParameterSpec.Builder parameter,
-                               V10GType containingType, V10GProperty property, BuildPhase buildPhase) {
-
-    getBuildContext().withTypeListeners().onPropertySetter(context, builder, parameter, containingType, property, buildPhase);
+  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+                                     List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
+                                     BuildPhase buildPhase,
+                                     MethodType methodType) {
+    return getBuildContext().withTypeListeners().onMethod(context, builder, parameters, containingType, property, buildPhase,
+                                                          methodType);
   }
 }

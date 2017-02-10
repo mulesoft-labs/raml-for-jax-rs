@@ -28,6 +28,8 @@ import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.extension.types.PredefinedFieldType;
+import org.raml.jaxrs.generator.extension.types.PredefinedMethodType;
 import org.raml.jaxrs.generator.extension.types.TypeContext;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GProperty;
@@ -43,6 +45,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +88,7 @@ class SimpleInheritanceExtension implements TypeExtension {
 
 
     final TypeSpec.Builder newTypeSpec = context.onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
+
     ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
 
     if (parentClassName != null) {
@@ -124,7 +128,9 @@ class SimpleInheritanceExtension implements TypeExtension {
       FieldSpec.Builder fieldSpec =
           FieldSpec.builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()))
               .addModifiers(Modifier.PRIVATE);
-      context.onProperty(context, newTypeSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
+      fieldSpec =
+          context.onField(context, fieldSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION,
+                          PredefinedFieldType.PROPERTY);
 
       if (propertyInfo.getName().equals(object.discriminator())) {
         fieldSpec.initializer("$S", object.discriminatorValue());
@@ -138,7 +144,9 @@ class SimpleInheritanceExtension implements TypeExtension {
 
       getSpec.returns(propertyInfo.resolve(context));
       context
-          .onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION);
+          .onMethod(context, getSpec, Collections.<ParameterSpec.Builder>emptyList(), objectType,
+                    (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION,
+                    PredefinedMethodType.GETTER);
 
       typeSpec.addMethod(getSpec.build());
 
@@ -152,14 +160,16 @@ class SimpleInheritanceExtension implements TypeExtension {
 
         ParameterSpec.Builder parameterSpec = ParameterSpec
             .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
-        context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(),
-                                 BuildPhase.IMPLEMENTATION);
+        context.onMethod(context, setSpec, Collections.singletonList(parameterSpec), objectType,
+                         (V10GProperty) propertyInfo.getProperty(),
+                         BuildPhase.IMPLEMENTATION, PredefinedMethodType.SETTER);
 
         setSpec.addParameter(parameterSpec.build());
         typeSpec.addMethod(setSpec.build());
       }
     }
 
+    typeSpec = Annotations.ON_TYPE_CLASS_FINISH.get(objectType).onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
     return typeSpec;
   }
 
@@ -202,7 +212,7 @@ class SimpleInheritanceExtension implements TypeExtension {
 
     ClassName interf = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
 
-    final TypeSpec.Builder typeSpec = TypeSpec
+    TypeSpec.Builder typeSpec = TypeSpec
         .interfaceBuilder(interf)
         .addModifiers(Modifier.PUBLIC);
 
@@ -222,7 +232,8 @@ class SimpleInheritanceExtension implements TypeExtension {
           .methodBuilder(Names.methodName("get", propertyInfo.getName()))
           .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
       getSpec.returns(propertyInfo.resolve(context));
-      context.onPropertyGetter(context, getSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE);
+      context.onMethod(context, getSpec, Collections.<ParameterSpec.Builder>emptyList(), objectType,
+                       (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE, PredefinedMethodType.GETTER);
 
       typeSpec.addMethod(getSpec.build());
 
@@ -234,8 +245,9 @@ class SimpleInheritanceExtension implements TypeExtension {
             .builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()));
 
 
-        context.onPropertySetter(context, setSpec, parameterSpec, objectType, (V10GProperty) propertyInfo.getProperty(),
-                                 BuildPhase.INTERFACE);
+        context.onMethod(context, setSpec, Collections.singletonList(parameterSpec), objectType,
+                         (V10GProperty) propertyInfo.getProperty(),
+                         BuildPhase.INTERFACE, PredefinedMethodType.SETTER);
 
         setSpec.addParameter(
             parameterSpec.build());
@@ -244,6 +256,7 @@ class SimpleInheritanceExtension implements TypeExtension {
     }
 
     context.addImplementation();
+    typeSpec = Annotations.ON_TYPE_CLASS_FINISH.get(objectType).onType(context, typeSpec, objectType, BuildPhase.INTERFACE);
     return typeSpec;
   }
 

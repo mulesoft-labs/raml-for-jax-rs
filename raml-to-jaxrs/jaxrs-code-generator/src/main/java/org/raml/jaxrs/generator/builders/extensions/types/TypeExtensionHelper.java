@@ -21,18 +21,25 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.types.FieldExtension;
+import org.raml.jaxrs.generator.extension.types.FieldType;
 import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
-import org.raml.jaxrs.generator.extension.types.PropertyExtension;
+import org.raml.jaxrs.generator.extension.types.MethodExtension;
+import org.raml.jaxrs.generator.extension.types.MethodType;
+import org.raml.jaxrs.generator.extension.types.PredefinedFieldType;
+import org.raml.jaxrs.generator.extension.types.PredefinedMethodType;
 import org.raml.jaxrs.generator.extension.types.TypeContext;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import java.util.List;
+
 /**
  * Created by Jean-Philippe Belanger on 12/4/16. Just potential zeroes and ones
  */
-public class TypeExtensionHelper implements LegacyTypeExtension, PropertyExtension, TypeExtension {
+public class TypeExtensionHelper implements LegacyTypeExtension, TypeExtension, MethodExtension, FieldExtension {
 
   @Override
   public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
@@ -111,46 +118,44 @@ public class TypeExtensionHelper implements LegacyTypeExtension, PropertyExtensi
   }
 
   @Override
-  public void onProperty(TypeContext context, TypeSpec.Builder builder, V10GType containingType, V10GProperty property,
-                         BuildPhase buildPhase) {
+  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+                                   V10GProperty property, BuildPhase buildPhase, FieldType methodType) {
 
-  }
+    if (methodType == PredefinedFieldType.PROPERTY && buildPhase == BuildPhase.IMPLEMENTATION) {
 
-  @Override
-  public void onProperty(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
-                         BuildPhase buildPhase) {
-
-    TypeContextImpl c = (TypeContextImpl) context;
-
-    this.onFieldImplementation(c.getBuildContext(), builder, property.implementation());
-  }
-
-  @Override
-  public void onPropertyGetter(TypeContext context, MethodSpec.Builder builder, V10GType containingType, V10GProperty property,
-                               BuildPhase buildPhase) {
-
-    TypeContextImpl c = (TypeContextImpl) context;
-
-    if (buildPhase == BuildPhase.INTERFACE) {
-      this.onGetterMethodDeclaration(c.getBuildContext(), builder, property.implementation());
-    } else {
-      this.onGetterMethodImplementation(c.getBuildContext(), builder, property.implementation());
+      TypeContextImpl c = (TypeContextImpl) context;
+      this.onFieldImplementation(c.getBuildContext(), builder, property.implementation());
     }
 
+    return builder;
   }
 
+
   @Override
-  public void onPropertySetter(TypeContext context, MethodSpec.Builder builder, ParameterSpec.Builder parameter,
-                               V10GType containingType, V10GProperty property,
-                               BuildPhase buildPhase) {
+  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+                                     List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
+                                     BuildPhase buildPhase,
+                                     MethodType methodType) {
 
     TypeContextImpl c = (TypeContextImpl) context;
+    if (methodType == PredefinedMethodType.GETTER) {
 
-    if (buildPhase == BuildPhase.INTERFACE) {
-      this.onSetterMethodDeclaration(c.getBuildContext(), builder, parameter, property.implementation());
-    } else {
-      this.onSetterMethodImplementation(c.getBuildContext(), builder, parameter, property.implementation());
+      if (buildPhase == BuildPhase.INTERFACE) {
+        this.onGetterMethodDeclaration(c.getBuildContext(), builder, property.implementation());
+      } else {
+        this.onGetterMethodImplementation(c.getBuildContext(), builder, property.implementation());
+      }
     }
 
+    if (methodType == PredefinedMethodType.SETTER) {
+
+      if (buildPhase == BuildPhase.INTERFACE) {
+        this.onSetterMethodDeclaration(c.getBuildContext(), builder, parameters.get(0), property.implementation());
+      } else {
+        this.onSetterMethodImplementation(c.getBuildContext(), builder, parameters.get(0), property.implementation());
+      }
+    }
+
+    return builder;
   }
 }

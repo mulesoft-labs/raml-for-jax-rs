@@ -167,7 +167,7 @@ public abstract class Annotations<T> {
     @Override
     public TypeExtension get(Annotable target, Annotable... others) {
       String className = getWithDefault("types", "onTypeCreation", null, target, others);
-      return createExtension(className, null);
+      return createExtension(className, TypeExtension.NULL_TYPE_EXTENSION);
     }
   };
 
@@ -176,7 +176,7 @@ public abstract class Annotations<T> {
     @Override
     public TypeExtension get(Annotable target, Annotable... others) {
       String className = getWithDefault("types", "onTypeFinish", null, target, others);
-      return createExtension(className, null);
+      return createExtension(className, TypeExtension.NULL_TYPE_EXTENSION);
     }
   };
 

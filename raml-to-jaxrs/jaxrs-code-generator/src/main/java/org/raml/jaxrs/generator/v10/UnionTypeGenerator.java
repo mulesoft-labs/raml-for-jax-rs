@@ -95,10 +95,10 @@ public class UnionTypeGenerator implements JavaPoetTypeGenerator {
     rootDirectory.into(builder);
   }
 
-    @Override
-    public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
+  @Override
+  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
 
-        output(rootDirectory);
+    output(rootDirectory);
   }
 
   @Override

@@ -24,5 +24,14 @@ import org.raml.jaxrs.generator.v10.V10GType;
  */
 public interface TypeExtension {
 
+  TypeExtension NULL_TYPE_EXTENSION = new TypeExtension() {
+
+    @Override
+    public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype) {
+
+      return builder;
+    }
+  };
+
   TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype);
 }

@@ -15,17 +15,20 @@
  */
 package org.raml.jaxrs.generator.extension.types;
 
-import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
-import org.raml.jaxrs.generator.extension.Context;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 
+import java.util.List;
+
 /**
- * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 2/9/17. Just potential zeroes and ones
  */
-public interface TypeContext extends Context, TypeExtension, MethodExtension, FieldExtension {
+public interface MethodExtension {
 
-  void addImplementation();
-
-  void createInternalClass(JavaPoetTypeGenerator internalGenerator);
+  MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder, List<ParameterSpec.Builder> parameters,
+                              V10GType containingType, V10GProperty property,
+                              BuildPhase buildPhase, MethodType methodType);
 }

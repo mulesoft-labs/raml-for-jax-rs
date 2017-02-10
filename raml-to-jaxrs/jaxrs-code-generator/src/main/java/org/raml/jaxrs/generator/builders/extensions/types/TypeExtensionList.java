@@ -21,7 +21,9 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.types.FieldType;
 import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
+import org.raml.jaxrs.generator.extension.types.MethodType;
 import org.raml.jaxrs.generator.extension.types.TypeContext;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
@@ -151,43 +153,27 @@ public class TypeExtensionList implements LegacyTypeExtension {
   }
 
   @Override
-  public void onProperty(TypeContext context, TypeSpec.Builder builder, V10GType containingType, V10GProperty property,
-                         BuildPhase buildPhase) {
+  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+                                   V10GProperty property, BuildPhase buildPhase, FieldType fieldType) {
 
     for (LegacyTypeExtension extension : extensions) {
-      extension.onProperty(context, builder, containingType, property, buildPhase);
+      extension.onField(context, builder, containingType, property, buildPhase, fieldType);
     }
 
+    return builder;
   }
 
   @Override
-  public void onProperty(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
-                         BuildPhase buildPhase) {
+  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+                                     List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
+                                     BuildPhase buildPhase,
+                                     MethodType methodType) {
 
     for (LegacyTypeExtension extension : extensions) {
-      extension.onProperty(context, builder, containingType, property, buildPhase);
+      extension.onMethod(context, builder, parameters, containingType, property, buildPhase, methodType);
     }
 
-  }
-
-  @Override
-  public void onPropertyGetter(TypeContext context, MethodSpec.Builder builder, V10GType containingType,
-                               V10GProperty property, BuildPhase buildPhase) {
-
-    for (LegacyTypeExtension extension : extensions) {
-      extension.onPropertyGetter(context, builder, containingType, property, buildPhase);
-    }
-
-  }
-
-  @Override
-  public void onPropertySetter(TypeContext context, MethodSpec.Builder builder, ParameterSpec.Builder parameter,
-                               V10GType containingType, V10GProperty property, BuildPhase buildPhase) {
-
-    for (LegacyTypeExtension extension : extensions) {
-      extension.onPropertySetter(context, builder, parameter, containingType, property, buildPhase);
-    }
-
+    return builder;
   }
 
   public void addExtension(LegacyTypeExtension legacyTypeExtension) {

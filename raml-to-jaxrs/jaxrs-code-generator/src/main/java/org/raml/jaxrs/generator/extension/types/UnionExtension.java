@@ -15,17 +15,14 @@
  */
 package org.raml.jaxrs.generator.extension.types;
 
-import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
-import org.raml.jaxrs.generator.extension.Context;
-import org.raml.jaxrs.generator.v10.V10GType;
+import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.v10.types.V10GTypeUnion;
 
 /**
- * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 2/8/17. Just potential zeroes and ones
  */
-public interface TypeContext extends Context, TypeExtension, MethodExtension, FieldExtension {
+public interface UnionExtension {
 
-  void addImplementation();
-
-  void createInternalClass(JavaPoetTypeGenerator internalGenerator);
+  TypeSpec.Builder onUnionType(TypeContext context, TypeSpec.Builder builder, V10GTypeUnion type, BuildPhase btype);
 }

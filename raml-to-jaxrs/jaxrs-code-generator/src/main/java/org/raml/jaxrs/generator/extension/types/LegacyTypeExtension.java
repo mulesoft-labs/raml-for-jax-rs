@@ -26,7 +26,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 /**
  * Created by Jean-Philippe Belanger on 11/30/16. Just potential zeroes and ones This interface is too big.
  */
-public interface LegacyTypeExtension extends PropertyExtension, TypeExtension {
+public interface LegacyTypeExtension extends MethodExtension, FieldExtension, TypeExtension {
 
   void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration);
 

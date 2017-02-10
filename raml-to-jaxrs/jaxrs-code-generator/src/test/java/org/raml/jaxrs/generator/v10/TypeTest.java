@@ -46,15 +46,9 @@ public class TypeTest {
         System.err.println(g.build().toString());
 
         TypeSpec spec = g.build();
-        assertEquals(4, spec.fieldSpecs.size());
-        assertEquals("model.TypeOne", spec.fieldSpecs.get(0).type.toString());
-        assertEquals("typeOne", spec.fieldSpecs.get(0).name);
-        assertEquals("boolean", spec.fieldSpecs.get(1).type.toString());
-        assertEquals("isTypeOne", spec.fieldSpecs.get(1).name);
-        assertEquals("model.TypeTwo", spec.fieldSpecs.get(2).type.toString());
-        assertEquals("typeTwo", spec.fieldSpecs.get(2).name);
-        assertEquals("boolean", spec.fieldSpecs.get(3).type.toString());
-        assertEquals("isTypeTwo", spec.fieldSpecs.get(3).name);
+        assertEquals(1, spec.fieldSpecs.size());
+        assertEquals("java.lang.Object", spec.fieldSpecs.get(0).type.toString());
+        assertEquals("anyType", spec.fieldSpecs.get(0).name);
       }
     });
   }

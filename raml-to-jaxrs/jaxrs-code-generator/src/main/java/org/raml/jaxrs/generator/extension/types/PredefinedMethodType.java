@@ -15,17 +15,12 @@
  */
 package org.raml.jaxrs.generator.extension.types;
 
-import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
-import org.raml.jaxrs.generator.extension.Context;
-import org.raml.jaxrs.generator.v10.V10GType;
+import java.lang.invoke.*;
 
 /**
- * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 2/9/17. Just potential zeroes and ones
  */
-public interface TypeContext extends Context, TypeExtension, MethodExtension, FieldExtension {
+public enum PredefinedMethodType implements MethodType {
 
-  void addImplementation();
-
-  void createInternalClass(JavaPoetTypeGenerator internalGenerator);
+  GETTER, SETTER, GENERIC_METHOD
 }

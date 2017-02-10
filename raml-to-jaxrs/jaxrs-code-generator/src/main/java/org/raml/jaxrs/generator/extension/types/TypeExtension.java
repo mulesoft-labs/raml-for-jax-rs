@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,47 +15,23 @@
  */
 package org.raml.jaxrs.generator.extension.types;
 
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
- * Created by Jean-Philippe Belanger on 11/30/16. Just potential zeroes and ones This interface is too big.
+ * Created by Jean-Philippe Belanger on 1/26/17. Just potential zeroes and ones
  */
 public interface TypeExtension {
 
-  void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec,
-                            TypeDeclaration typeDeclaration);
+  TypeExtension NULL_TYPE_EXTENSION = new TypeExtension() {
 
-  void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder typeSpec,
-                             TypeDeclaration typeDeclaration);
+    @Override
+    public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype) {
 
-  void onGetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
-                                    TypeDeclaration typeDeclaration);
+      return builder;
+    }
+  };
 
-  void onSetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
-                                    ParameterSpec.Builder param, TypeDeclaration typeDeclaration);
-
-  void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, V10GType type);
-
-  void onGetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
-                                 TypeDeclaration typeDeclaration);
-
-  void onSetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
-                                 ParameterSpec.Builder param, TypeDeclaration typeDeclaration);
-
-  void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder,
-                      TypeDeclaration typeDeclaration, String name);
-
-  void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder,
-                          TypeDeclaration typeDeclaration);
-
-  void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field,
-                   TypeDeclaration typeDeclaration);
-
-  void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, V10GType typeDeclaration);
+  TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype);
 }

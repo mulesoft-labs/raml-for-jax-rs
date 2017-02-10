@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.raml.jaxrs.generator;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
+import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class Configuration {
   private String[] typeConfiguration = new String[0];
   private String resourcePackage;
   private String supportPackage;
-  private List<TypeExtension> typeExtensions = new ArrayList<>();
+  private List<LegacyTypeExtension> typeExtensions = new ArrayList<>();
 
   private Class<GlobalResourceExtension> defaultCreationExtension;
   private Class<GlobalResourceExtension> defaultFinishExtension;
@@ -121,11 +121,12 @@ public class Configuration {
 
   }
 
-  public List<TypeExtension> getTypeExtensions() {
+  public List<LegacyTypeExtension> getTypeExtensions() {
     return typeExtensions;
   }
 
-  public GenerationConfig createJsonSchemaGenerationConfig() {
+  public GenerationConfig createJsonSchemaGenerationConfig()
+  {
     return new RamlToJaxRSGenerationConfig(jsonMapper, jsonMapperConfiguration);
   }
 

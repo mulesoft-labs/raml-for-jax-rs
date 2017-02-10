@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
@@ -57,29 +58,23 @@ public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
 
     UnionTypeDeclaration union = (UnionTypeDeclaration) unionTypeDeclaration.implementation();
 
-    ClassName unionTypeName =
-        ClassName.get(currentBuild.getModelPackage(), Names.typeName(unionTypeDeclaration.name()));
-    TypeSpec.Builder builder =
-        TypeSpec
-            .classBuilder(deserializer)
-            .superclass(
-                        ParameterizedTypeName.get(ClassName.get(StdSerializer.class), unionTypeName))
-            .addMethod(
-                       MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
-                           .addCode("super($T.class);", unionTypeName).build()
+    ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(), Names
+        .typeName(unionTypeDeclaration.name()));
+    TypeSpec.Builder builder = TypeSpec.classBuilder(deserializer)
+        .superclass(ParameterizedTypeName.get(ClassName.get(StdSerializer.class), unionTypeName))
+        .addMethod(
+                   MethodSpec.constructorBuilder()
+                       .addModifiers(Modifier.PUBLIC)
+                       .addCode("super($T.class);", unionTypeName).build()
 
-            ).addModifiers(Modifier.PUBLIC);
-    MethodSpec.Builder serialize =
-        MethodSpec
-            .methodBuilder("serialize")
-            .addModifiers(Modifier.PUBLIC)
-            .addParameter(ParameterSpec.builder(unionTypeName, "object").build())
-            .addParameter(
-                          ParameterSpec.builder(ClassName.get(JsonGenerator.class), "jsonGenerator").build())
-            .addParameter(
-                          ParameterSpec.builder(ClassName.get(SerializerProvider.class),
-                                                "jsonSerializerProvider").build()).addException(IOException.class)
-            .addException(JsonProcessingException.class);
+        ).addModifiers(Modifier.PUBLIC);
+    MethodSpec.Builder serialize = MethodSpec.methodBuilder("serialize")
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(ParameterSpec.builder(unionTypeName, "object").build())
+        .addParameter(ParameterSpec.builder(ClassName.get(JsonGenerator.class), "jsonGenerator").build())
+        .addParameter(ParameterSpec.builder(ClassName.get(SerializerProvider.class), "jsonSerializerProvider").build())
+        .addException(IOException.class)
+        .addException(JsonProcessingException.class);
 
     for (TypeDeclaration typeDeclaration : union.of()) {
 
@@ -91,8 +86,7 @@ public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
       serialize.endControlFlow();
     }
 
-    serialize.addStatement("throw new $T($S + object)", IOException.class,
-                           "Can't figure out type of object");
+    serialize.addStatement("throw new $T($S + object)", IOException.class, "Can't figure out type of object");
 
     builder.addMethod(serialize.build());
 
@@ -102,7 +96,7 @@ public class UnionSerializationGenerator implements JavaPoetTypeGenerator {
   }
 
   @Override
-  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, TYPE type) throws IOException {
+  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
 
     output(rootDirectory);
   }

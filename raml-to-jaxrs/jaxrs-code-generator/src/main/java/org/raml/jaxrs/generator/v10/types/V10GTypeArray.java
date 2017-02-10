@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
@@ -70,8 +71,9 @@ public class V10GTypeArray extends V10GTypeHelper {
 
   @Override
   public TypeName defaultJavaTypeName(String pack) {
-    return ParameterizedTypeName.get(ClassName.get(List.class), arrayContents()
-        .defaultJavaTypeName(pack));
+    return ParameterizedTypeName.get(
+                                     ClassName.get(List.class),
+                                     arrayContents().defaultJavaTypeName(pack));
   }
 
   @Override
@@ -82,10 +84,5 @@ public class V10GTypeArray extends V10GTypeHelper {
   @Override
   public boolean isInline() {
     return false;
-  }
-
-  @Override
-  public void construct(CurrentBuild currentBuild, GObjectType objectType) {
-
   }
 }

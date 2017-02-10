@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator.v10;
 
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.extension.types.TypeContext;
 import org.raml.jaxrs.generator.ramltypes.GProperty;
 import org.raml.jaxrs.generator.ramltypes.GType;
 
@@ -42,9 +43,12 @@ public class PropertyInfo {
     return property.type();
   }
 
+  public GProperty getProperty() {
+    return property;
+  }
 
-  public TypeName resolve(CurrentBuild currentBuild) {
+  public TypeName resolve(TypeContext typeContext) {
 
-    return property.type().defaultJavaTypeName(currentBuild.getModelPackage());
+    return property.type().defaultJavaTypeName(typeContext.getModelPackage());
   }
 }

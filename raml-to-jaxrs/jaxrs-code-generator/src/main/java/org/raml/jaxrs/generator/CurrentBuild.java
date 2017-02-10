@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,19 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 import org.jsonschema2pojo.GenerationConfig;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtensions;
-import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeExtension;
+import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeLegacyExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
@@ -35,7 +37,7 @@ import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
+import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
@@ -45,12 +47,15 @@ import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.jaxrs.generator.v10.V10GResponse;
 import org.raml.v2.api.model.v10.api.Api;
 
+import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Jean-Philippe Belanger on 10/26/16. The art of building stuff is here. Factory for building root stuff.
@@ -67,6 +72,9 @@ public class CurrentBuild {
 
   private final List<JavaPoetTypeGenerator> supportGenerators = new ArrayList<>();
   private Configuration configuration;
+  private Set<JavaPoetTypeGenerator> implementations = new HashSet<>();
+
+  private ArrayListMultimap<JavaPoetTypeGenerator, JavaPoetTypeGenerator> internalTypesPerClass = ArrayListMultimap.create();
 
   public CurrentBuild(GFinder typeFinder, Api api) {
 
@@ -104,18 +112,7 @@ public class CurrentBuild {
 
       if (typeGenerator instanceof JavaPoetTypeGenerator) {
 
-
-        JavaPoetTypeGenerator b = (JavaPoetTypeGenerator) typeGenerator;
-        b.output(new CodeContainer<TypeSpec.Builder>() {
-
-          @Override
-          public void into(TypeSpec.Builder g) throws IOException {
-
-            JavaFile.Builder file = JavaFile.builder(getModelPackage(), g.build());
-            file.build().writeTo(rootDirectory);
-          }
-        });
-
+        buildTypeTree(rootDirectory, (JavaPoetTypeGenerator) typeGenerator);
         continue;
       }
 
@@ -130,7 +127,9 @@ public class CurrentBuild {
           }
         });
       }
+
     }
+
 
     for (ResourceGenerator resource : resources) {
       resource.output(new CodeContainer<TypeSpec>() {
@@ -157,8 +156,62 @@ public class CurrentBuild {
     }
   }
 
+  private void buildTypeTree(final File rootDirectory, final JavaPoetTypeGenerator typeGenerator) throws IOException {
+    JavaPoetTypeGenerator b = typeGenerator;
 
-  public TypeExtension withTypeListeners() {
+    b.output(new CodeContainer<TypeSpec.Builder>() {
+
+      @Override
+      public void into(final TypeSpec.Builder containing) throws IOException {
+
+        for (final JavaPoetTypeGenerator generator : internalTypesPerClass.get(typeGenerator)) {
+
+          generator.output(new CodeContainer<TypeSpec.Builder>() {
+
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+              g.addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+              containing.addType(g.build());
+            }
+          }, BuildPhase.INTERFACE);
+        }
+
+        JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
+        file.build().writeTo(rootDirectory);
+      }
+    },
+             BuildPhase.INTERFACE
+        );
+
+    if (implementations.contains(b)) {
+
+      b.output(new CodeContainer<TypeSpec.Builder>() {
+
+        @Override
+        public void into(final TypeSpec.Builder containing) throws IOException {
+
+          for (final JavaPoetTypeGenerator generator : internalTypesPerClass.get(typeGenerator)) {
+
+            generator.output(new CodeContainer<TypeSpec.Builder>() {
+
+              @Override
+              public void into(TypeSpec.Builder g) throws IOException {
+                g.addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+                containing.addType(g.build());
+              }
+            }, BuildPhase.IMPLEMENTATION);
+          }
+
+          JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
+          file.build().writeTo(rootDirectory);
+        }
+      },
+               BuildPhase.IMPLEMENTATION);
+    }
+  }
+
+
+  public LegacyTypeExtension withTypeListeners() {
 
     return typeExtensionList;
   }
@@ -201,6 +254,11 @@ public class CurrentBuild {
     }
   }
 
+  public void newImplementation(JavaPoetTypeGenerator objectType) {
+
+    implementations.add(objectType);
+  }
+
   public void setConfiguration(Configuration configuration) {
     this.configuration = configuration;
 
@@ -222,7 +280,7 @@ public class CurrentBuild {
 
       if (s.equals("javadoc")) {
 
-        typeExtensionList.addExtension(new JavadocTypeExtension());
+        typeExtensionList.addExtension(new JavadocTypeLegacyExtension());
       }
 
       if (s.equals("jsr303")) {
@@ -276,13 +334,11 @@ public class CurrentBuild {
         : buildGlobalForFinish();
   }
 
-  public ResourceClassExtension<GResource> getResourceClassExtension(
-                                                                     ResourceClassExtension<GResource> defaultClass,
+  public ResourceClassExtension<GResource> getResourceClassExtension(ResourceClassExtension<GResource> defaultClass,
                                                                      Annotations<ResourceClassExtension<GResource>> onResourceClassCreation,
                                                                      GResource topResource) {
     if (topResource instanceof V10GResource) {
-      return onResourceClassCreation.get(defaultClass, getApi(),
-                                         ((V10GResource) topResource).implementation());
+      return onResourceClassCreation.get(defaultClass, getApi(), ((V10GResource) topResource).implementation());
     }
 
     return onResourceClassCreation == Annotations.ON_RESOURCE_CLASS_CREATION ? buildGlobalForCreate(defaultClass)
@@ -312,4 +368,8 @@ public class CurrentBuild {
   }
 
 
+  public void internalClass(JavaPoetTypeGenerator simpleTypeGenerator, JavaPoetTypeGenerator internalGenerator) {
+
+    internalTypesPerClass.put(simpleTypeGenerator, internalGenerator);
+  }
 }

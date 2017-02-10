@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@ import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
+import org.raml.jaxrs.generator.extension.types.FieldExtension;
+import org.raml.jaxrs.generator.extension.types.MethodExtension;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
@@ -74,13 +77,15 @@ public abstract class Annotations<T> {
     }
   };
 
+  /*
+   * Resources.
+   */
   public static Annotations<ResourceClassExtension<GResource>> ON_RESOURCE_CLASS_CREATION =
       new Annotations<ResourceClassExtension<GResource>>() {
 
         @Override
         public ResourceClassExtension<GResource> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("resources", "onResourceClassCreation", null, target, others);
+          String className = getWithDefault("resources", "onResourceClassCreation", null, target, others);
           return createExtension(className, null);
         }
       };
@@ -90,8 +95,7 @@ public abstract class Annotations<T> {
 
         @Override
         public ResourceClassExtension<GResource> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("resources", "onResourceClassFinish", null, target, others);
+          String className = getWithDefault("resources", "onResourceClassFinish", null, target, others);
           return createExtension(className, ResourceClassExtension.NULL_EXTENSION);
         }
       };
@@ -101,8 +105,7 @@ public abstract class Annotations<T> {
 
         @Override
         public ResourceMethodExtension<GMethod> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("methods", "onResourceMethodCreation", null, target, others);
+          String className = getWithDefault("methods", "onResourceMethodCreation", null, target, others);
           return createExtension(className, ResourceMethodExtension.NULL_EXTENSION);
         }
       };
@@ -112,8 +115,7 @@ public abstract class Annotations<T> {
 
         @Override
         public ResourceMethodExtension<GMethod> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("methods", "onResourceMethodFinish", null, target, others);
+          String className = getWithDefault("methods", "onResourceMethodFinish", null, target, others);
           return createExtension(className, ResourceMethodExtension.NULL_EXTENSION);
         }
       };
@@ -123,8 +125,7 @@ public abstract class Annotations<T> {
 
         @Override
         public ResponseClassExtension<GMethod> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("methods", "onResponseClassCreation", null, target, others);
+          String className = getWithDefault("methods", "onResponseClassCreation", null, target, others);
           return createExtension(className, ResponseClassExtension.NULL_EXTENSION);
         }
       };
@@ -134,8 +135,7 @@ public abstract class Annotations<T> {
 
         @Override
         public ResponseClassExtension<GMethod> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("methods", "onResponseClassFinish", null, target, others);
+          String className = getWithDefault("methods", "onResponseClassFinish", null, target, others);
           return createExtension(className, ResponseClassExtension.NULL_EXTENSION);
         }
       };
@@ -145,8 +145,7 @@ public abstract class Annotations<T> {
 
         @Override
         public ResponseMethodExtension<GResponse> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("responses", "onResponseMethodCreation", null, target, others);
+          String className = getWithDefault("responses", "onResponseMethodCreation", null, target, others);
           return createExtension(className, ResponseMethodExtension.NULL_EXTENSION);
         }
       };
@@ -156,11 +155,69 @@ public abstract class Annotations<T> {
 
         @Override
         public ResponseMethodExtension<GResponse> get(Annotable target, Annotable... others) {
-          String className =
-              getWithDefault("responses", "onResponseMethodFinish", null, target, others);
+          String className = getWithDefault("responses", "onResponseMethodFinish", null, target, others);
           return createExtension(className, ResponseMethodExtension.NULL_EXTENSION);
         }
       };
+
+
+  /*
+   * Types
+   */
+  public static Annotations<TypeExtension> ON_TYPE_CLASS_CREATION = new Annotations<TypeExtension>() {
+
+    @Override
+    public TypeExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onTypeCreation", null, target, others);
+      return createExtension(className, TypeExtension.NULL_TYPE_EXTENSION);
+    }
+  };
+
+  public static Annotations<TypeExtension> ON_TYPE_CLASS_FINISH = new Annotations<TypeExtension>() {
+
+    @Override
+    public TypeExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onTypeFinish", null, target, others);
+      return createExtension(className, TypeExtension.NULL_TYPE_EXTENSION);
+    }
+  };
+
+  public static Annotations<FieldExtension> ON_TYPE_FIELD_CREATION = new Annotations<FieldExtension>() {
+
+    @Override
+    public FieldExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onFieldCreation", null, target, others);
+      return createExtension(className, FieldExtension.NULL_FIELD_EXTENSION);
+    }
+  };
+
+  public static Annotations<FieldExtension> ON_TYPE_FIELD_FINISH = new Annotations<FieldExtension>() {
+
+    @Override
+    public FieldExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onFieldFinish", null, target, others);
+      return createExtension(className, FieldExtension.NULL_FIELD_EXTENSION);
+    }
+  };
+
+  public static Annotations<MethodExtension> ON_TYPE_METHOD_CREATION = new Annotations<MethodExtension>() {
+
+    @Override
+    public MethodExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onMethodCreation", null, target, others);
+      return createExtension(className, MethodExtension.NULL_METHOD_EXTENSION);
+    }
+  };
+
+  public static Annotations<MethodExtension> ON_TYPE_METHOD_FINISH = new Annotations<MethodExtension>() {
+
+    @Override
+    public MethodExtension get(Annotable target, Annotable... others) {
+      String className = getWithDefault("types", "onMethodFinish", null, target, others);
+      return createExtension(className, MethodExtension.NULL_METHOD_EXTENSION);
+    }
+  };
+
 
   private static <T> T createExtension(String className, T nullExtension) {
     if (className == null) {
@@ -176,8 +233,7 @@ public abstract class Annotations<T> {
     }
   }
 
-  private static <T> T getWithDefault(String annotationName, String propName, T def,
-                                      Annotable target, Annotable... others) {
+  private static <T> T getWithDefault(String annotationName, String propName, T def, Annotable target, Annotable... others) {
     T b = Annotations.evaluate(annotationName, propName, target, others);
     if (b == null) {
 
@@ -187,8 +243,7 @@ public abstract class Annotations<T> {
     }
   }
 
-  private static <T> T evaluate(String annotationName, String parameterName, Annotable mandatory,
-                                Annotable... others) {
+  private static <T> T evaluate(String annotationName, String parameterName, Annotable mandatory, Annotable... others) {
 
     T retval = null;
     List<Annotable> targets = new ArrayList<>();

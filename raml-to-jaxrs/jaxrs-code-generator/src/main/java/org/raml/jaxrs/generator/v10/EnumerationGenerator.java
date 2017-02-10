@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
@@ -34,16 +35,14 @@ import java.util.List;
 /**
  * Created by Jean-Philippe Belanger on 12/22/16. Just potential zeroes and ones
  */
-public class EnumerationGenerator extends AbstractTypeGenerator<TypeSpec.Builder> implements
-    JavaPoetTypeGenerator {
+public class EnumerationGenerator extends AbstractTypeGenerator<TypeSpec.Builder> implements JavaPoetTypeGenerator {
 
   private final CurrentBuild build;
   private final ClassName javaName;
   private final List<String> values;
   private TypeDeclaration typeDeclaration;
 
-  public EnumerationGenerator(CurrentBuild build, TypeDeclaration typeDeclaration,
-                              ClassName javaName, List<String> values) {
+  public EnumerationGenerator(CurrentBuild build, TypeDeclaration typeDeclaration, ClassName javaName, List<String> values) {
     this.build = build;
     this.typeDeclaration = typeDeclaration;
     this.javaName = javaName;
@@ -52,27 +51,27 @@ public class EnumerationGenerator extends AbstractTypeGenerator<TypeSpec.Builder
 
 
   @Override
-  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, TYPE type) throws IOException {
+  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
 
-    FieldSpec.Builder field =
-        FieldSpec.builder(ClassName.get(String.class), "name").addModifiers(Modifier.PRIVATE);
+    FieldSpec.Builder field = FieldSpec.builder(ClassName.get(String.class), "name").addModifiers(Modifier.PRIVATE);
     build.withTypeListeners().onEnumField(build, field, typeDeclaration);
 
-    TypeSpec.Builder enumBuilder =
-        TypeSpec
-            .enumBuilder(javaName)
-            .addField(field.build())
-            .addModifiers(Modifier.PUBLIC)
-            .addMethod(
-                       MethodSpec.constructorBuilder().addParameter(ClassName.get(String.class), "name")
-                           .addStatement("this.$N = $N", "name", "name").build());
+    TypeSpec.Builder enumBuilder = TypeSpec.enumBuilder(javaName)
+        .addField(field.build())
+        .addModifiers(Modifier.PUBLIC)
+        .addMethod(
+                   MethodSpec.constructorBuilder().addParameter(ClassName.get(String.class), "name")
+                       .addStatement("this.$N = $N", "name", "name")
+                       .build()
+        );
     build.withTypeListeners().onEnumerationClass(build, enumBuilder, typeDeclaration);
 
     for (String value : values) {
       TypeSpec.Builder builder = TypeSpec.anonymousClassBuilder("$S", value);
       build.withTypeListeners().onEnumConstant(build, builder, typeDeclaration, value);
 
-      enumBuilder.addEnumConstant(Names.constantName(value), builder.build());
+      enumBuilder.addEnumConstant(Names.constantName(value),
+                                  builder.build());
     }
 
     rootDirectory.into(enumBuilder);

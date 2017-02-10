@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 
 import java.io.IOException;
 
 /**
  * Created by Jean-Philippe Belanger on 11/20/16. Just potential zeroes and ones
  */
-public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> implements
-    CodeModelTypeGenerator {
+public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> implements CodeModelTypeGenerator {
 
   private final CurrentBuild build;
   private final String pack;
@@ -49,12 +49,11 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
   }
 
   @Override
-  public void output(CodeContainer<JCodeModel> container, TYPE type) throws IOException {
+  public void output(CodeContainer<JCodeModel> container, BuildPhase buildPhase) throws IOException {
 
     GenerationConfig config = build.getJsonMapperConfig();
-    final SchemaMapper mapper =
-        new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
-                         new SchemaGenerator());
+    final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
+                                                 new SchemaGenerator());
     final JCodeModel codeModel = new JCodeModel();
 
     try {
@@ -70,7 +69,7 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
   public TypeName getGeneratedJavaType() {
 
     // duplicated logic with json2pojo. Should look in model.
-    return ClassName.get(name.packageName(), build.getJsonMapperConfig().getClassNamePrefix()
-        + name.simpleName() + build.getJsonMapperConfig().getClassNameSuffix());
+    return ClassName.get(name.packageName(), build.getJsonMapperConfig().getClassNamePrefix() + name.simpleName()
+        + build.getJsonMapperConfig().getClassNameSuffix());
   }
 }

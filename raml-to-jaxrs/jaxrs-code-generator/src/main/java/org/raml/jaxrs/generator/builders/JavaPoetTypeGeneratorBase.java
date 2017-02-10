@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public abstract class JavaPoetTypeGeneratorBase implements JavaPoetTypeGenerator
   }
 
   @Override
-  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, TYPE type) throws IOException {
+  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
     output(rootDirectory);
   }
 

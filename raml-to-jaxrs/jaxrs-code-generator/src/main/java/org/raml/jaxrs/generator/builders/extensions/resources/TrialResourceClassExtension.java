@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.extension.Context;
 import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.ResourceContext;
 import org.raml.jaxrs.generator.ramltypes.GResource;
-import org.raml.jaxrs.generator.v10.V10GResource;
 
 /**
  * Created by Jean-Philippe Belanger on 1/6/17. Just potential zeroes and ones
@@ -27,7 +26,7 @@ import org.raml.jaxrs.generator.v10.V10GResource;
 public class TrialResourceClassExtension implements ResourceClassExtension<GResource> {
 
   @Override
-  public TypeSpec.Builder onResource(Context context, GResource resource, TypeSpec.Builder typeSpec) {
+  public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder typeSpec) {
 
     return typeSpec;
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
 
 import static org.raml.jaxrs.generator.GObjectType.ENUMERATION_TYPE;

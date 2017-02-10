@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,17 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JDefinedClass;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 
 import java.io.IOException;
 
 /**
  * Created by Jean-Philippe Belanger on 11/20/16. Just potential zeroes and ones
  */
-public class XmlSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> implements
-    CodeModelTypeGenerator {
+public class XmlSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> implements CodeModelTypeGenerator {
 
   private final JCodeModel codeModel;
   private final String packageName;
@@ -43,7 +42,7 @@ public class XmlSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> im
   }
 
   @Override
-  public void output(CodeContainer<JCodeModel> container, TYPE type) throws IOException {
+  public void output(CodeContainer<JCodeModel> container, BuildPhase buildPhase) throws IOException {
 
     container.into(codeModel);
   }

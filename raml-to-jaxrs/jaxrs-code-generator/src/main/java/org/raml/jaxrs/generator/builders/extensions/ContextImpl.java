@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,13 @@ public class ContextImpl implements Context {
 
   private final CurrentBuild build;
 
-  public ContextImpl(CurrentBuild build) {
+  protected ContextImpl(CurrentBuild build) {
 
     this.build = build;
+  }
+
+  protected CurrentBuild getBuild() {
+    return build;
   }
 
   @Override
@@ -189,4 +193,8 @@ public class ContextImpl implements Context {
     return newType;
   }
 
+  public CurrentBuild getBuildContext() {
+
+    return getBuild();
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.MethodSpec;
-import org.raml.jaxrs.generator.extension.Context;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 
 /**
@@ -27,11 +26,10 @@ public interface ResponseMethodExtension<T extends GResponse> {
   ResponseMethodExtension<GResponse> NULL_EXTENSION = new ResponseMethodExtension<GResponse>() {
 
     @Override
-    public MethodSpec.Builder onMethod(Context context, GResponse method,
-                                       MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(ResourceContext context, GResponse method, MethodSpec.Builder methodSpec) {
       return methodSpec;
     }
   };
 
-  MethodSpec.Builder onMethod(Context context, T method, MethodSpec.Builder methodSpec);
+  MethodSpec.Builder onMethod(ResourceContext context, T method, MethodSpec.Builder methodSpec);
 }

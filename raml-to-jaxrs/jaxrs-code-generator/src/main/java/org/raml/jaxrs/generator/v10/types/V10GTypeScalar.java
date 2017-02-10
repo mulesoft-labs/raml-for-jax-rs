@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ScalarTypes;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -74,11 +75,6 @@ public class V10GTypeScalar extends V10GTypeHelper {
   @Override
   public ClassName javaImplementationName(String pack) {
     return ClassName.get(ScalarTypes.scalarToJavaType(scalar));
-  }
-
-  @Override
-  public void construct(CurrentBuild currentBuild, GObjectType objectType) {
-
   }
 
   @Override

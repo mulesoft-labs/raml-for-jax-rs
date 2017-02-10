@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.raml.jaxrs.generator.builders;
 
 import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 
@@ -25,11 +24,7 @@ import java.io.IOException;
  */
 public interface TypeGenerator<T> extends Generator<T> {
 
-  enum TYPE {
-    INTERFACE, IMPLEMENTATION
-  }
-
-  void output(CodeContainer<T> rootDirectory, TYPE type) throws IOException;
+  void output(CodeContainer<T> rootDirectory, BuildPhase buildPhase) throws IOException;
 
   TypeName getGeneratedJavaType();
 }

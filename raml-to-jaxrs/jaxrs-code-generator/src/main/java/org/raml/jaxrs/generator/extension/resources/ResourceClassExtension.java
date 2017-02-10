@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.extension.Context;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 
 /**
@@ -27,11 +26,10 @@ public interface ResourceClassExtension<T extends GResource> {
   ResourceClassExtension<GResource> NULL_EXTENSION = new ResourceClassExtension<GResource>() {
 
     @Override
-    public TypeSpec.Builder onResource(Context context, GResource resource,
-                                       TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder typeSpec) {
       return typeSpec;
     }
   };
 
-  TypeSpec.Builder onResource(Context context, T resource, TypeSpec.Builder typeSpec);
+  TypeSpec.Builder onResource(ResourceContext context, T resource, TypeSpec.Builder typeSpec);
 }

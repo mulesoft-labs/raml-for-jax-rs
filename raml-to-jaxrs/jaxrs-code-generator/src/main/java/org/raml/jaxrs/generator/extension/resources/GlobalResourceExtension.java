@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.extension.Context;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
@@ -30,34 +29,32 @@ import org.raml.jaxrs.generator.v08.V08Response;
  *
  * QUick and dirty
  */
-public interface GlobalResourceExtension<M extends GMethod, R extends GResource, S extends GResponse>
-    extends ResponseClassExtension<M>, ResourceClassExtension<R>, ResponseMethodExtension<S>,
+public interface GlobalResourceExtension<M extends GMethod, R extends GResource, S extends GResponse> extends
+    ResponseClassExtension<M>,
+    ResourceClassExtension<R>,
+    ResponseMethodExtension<S>,
     ResourceMethodExtension<M> {
 
   GlobalResourceExtension<V08Method, V08GResource, V08Response> NULL_EXTENSION =
       new GlobalResourceExtension<V08Method, V08GResource, V08Response>() {
 
         @Override
-        public TypeSpec.Builder onResource(Context context, V08GResource resource,
-                                           TypeSpec.Builder typeSpec) {
+        public TypeSpec.Builder onResource(ResourceContext context, V08GResource resource, TypeSpec.Builder typeSpec) {
           return typeSpec;
         }
 
         @Override
-        public MethodSpec.Builder onMethod(Context context, V08Method method,
-                                           MethodSpec.Builder methodSpec) {
+        public MethodSpec.Builder onMethod(ResourceContext context, V08Method method, MethodSpec.Builder methodSpec) {
           return methodSpec;
         }
 
         @Override
-        public TypeSpec.Builder onMethod(Context context, V08Method method,
-                                         TypeSpec.Builder typeSpec) {
+        public TypeSpec.Builder onMethod(ResourceContext context, V08Method method, TypeSpec.Builder typeSpec) {
           return typeSpec;
         }
 
         @Override
-        public MethodSpec.Builder onMethod(Context context, V08Response method,
-                                           MethodSpec.Builder methodSpec) {
+        public MethodSpec.Builder onMethod(ResourceContext context, V08Response method, MethodSpec.Builder methodSpec) {
           return methodSpec;
         }
       };

@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.RamlScanner;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
+import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 
 import java.io.File;
@@ -36,8 +37,7 @@ import java.util.Map;
 
 import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_RUNTIME;
 
-@Mojo(name = "generate", requiresProject = true, threadSafe = false,
-    requiresDependencyResolution = COMPILE_PLUS_RUNTIME,
+@Mojo(name = "generate", requiresProject = true, threadSafe = false, requiresDependencyResolution = COMPILE_PLUS_RUNTIME,
     defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class RamlJaxrsCodegenMojo extends AbstractMojo {
 
@@ -53,8 +53,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   /**
    * Target directory for generated Java source files.
    */
-  @Parameter(property = "outputDirectory",
-      defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs")
+  @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs")
   private File outputDirectory;
 
   /**
@@ -166,16 +165,14 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
       configuration.setTypeConfiguration(configureTypesFor);
       if (resourceCreationExtension != null) {
 
-        Class<GlobalResourceExtension> c =
-            (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);
+        Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);
         configuration.defaultResourceCreationExtension(c);
 
       }
 
       if (resourceFinishExtension != null) {
 
-        Class<GlobalResourceExtension> c =
-            (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);
+        Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);
         configuration.defaultResourceFinishExtension(c);
       }
 
@@ -183,17 +180,18 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
         for (String className : typeExtensions) {
           Class c = Class.forName(className);
           if (c == null) {
-            throw new MojoExecutionException("typeExtension " + className + " cannot be loaded."
+            throw new MojoExecutionException("typeExtension " + className
+                + " cannot be loaded."
                 + "Have you installed the correct dependency in the plugin configuration?");
           }
           if (!((c.newInstance()) instanceof TypeExtension)) {
-            throw new MojoExecutionException("typeExtension " + className + " does not implement"
-                + TrialResourceClassExtension.class.getPackage() + "."
+            throw new MojoExecutionException("typeExtension " + className
+                + " does not implement" + TrialResourceClassExtension.class.getPackage() + "."
                 + TrialResourceClassExtension.class.getName());
 
           }
 
-          configuration.getTypeExtensions().add((TypeExtension) c.newInstance());
+          configuration.getTypeExtensions().add((LegacyTypeExtension) c.newInstance());
         }
       }
 
@@ -211,8 +209,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
       RamlScanner scanner = new RamlScanner(configuration);
       scanner.handle(ramlFile);
     } catch (final Exception e) {
-      throw new MojoExecutionException("Error generating Java classes from: " + currentSourcePath,
-                                       e);
+      throw new MojoExecutionException("Error generating Java classes from: " + currentSourcePath, e);
     }
   }
 }

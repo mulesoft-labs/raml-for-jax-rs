@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,12 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
+import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.types.FieldType;
+import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
+import org.raml.jaxrs.generator.extension.types.MethodType;
+import org.raml.jaxrs.generator.extension.types.TypeContext;
+import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -30,16 +35,15 @@ import java.util.List;
 /**
  * Created by Jean-Philippe Belanger on 11/30/16. Just potential zeroes and ones
  */
-public class TypeExtensionList implements TypeExtension {
+public class TypeExtensionList implements LegacyTypeExtension {
 
-  private List<TypeExtension> extensions = new ArrayList<>();
+  private List<LegacyTypeExtension> extensions = new ArrayList<>();
 
 
   @Override
-  public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec,
-                                   TypeDeclaration typeDeclaration) {
+  public void onTypeImplementation(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onTypeImplementation(currentBuild, typeSpec, typeDeclaration);
     }
   }
@@ -48,16 +52,16 @@ public class TypeExtensionList implements TypeExtension {
   public void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder fieldSpec,
                                     TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onFieldImplementation(currentBuild, fieldSpec, typeDeclaration);
     }
   }
 
   @Override
-  public void onGetterMethodImplementation(CurrentBuild currentBuild,
-                                           MethodSpec.Builder methodSpec, TypeDeclaration typeDeclaration) {
+  public void onGetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder methodSpec,
+                                           TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onGetterMethodImplementation(currentBuild, methodSpec, typeDeclaration);
     }
   }
@@ -65,9 +69,10 @@ public class TypeExtensionList implements TypeExtension {
 
   @Override
   public void onSetterMethodImplementation(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
-                                           ParameterSpec.Builder param, TypeDeclaration typeDeclaration) {
+                                           ParameterSpec.Builder param,
+                                           TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onSetterMethodImplementation(currentBuild, typeSpec, param, typeDeclaration);
     }
 
@@ -76,7 +81,7 @@ public class TypeExtensionList implements TypeExtension {
   @Override
   public void onTypeDeclaration(CurrentBuild currentBuild, TypeSpec.Builder typeSpec, V10GType type) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onTypeDeclaration(currentBuild, typeSpec, type);
     }
 
@@ -86,57 +91,92 @@ public class TypeExtensionList implements TypeExtension {
   public void onGetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder methodSpec,
                                         TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onGetterMethodDeclaration(currentBuild, methodSpec, typeDeclaration);
     }
   }
 
   @Override
   public void onSetterMethodDeclaration(CurrentBuild currentBuild, MethodSpec.Builder typeSpec,
-                                        ParameterSpec.Builder param, TypeDeclaration typeDeclaration) {
+                                        ParameterSpec.Builder param,
+                                        TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onSetterMethodDeclaration(currentBuild, typeSpec, param, typeDeclaration);
     }
   }
 
   @Override
-  public void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder,
-                             TypeDeclaration typeDeclaration, String name) {
+  public void onEnumConstant(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration,
+                             String name) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onEnumConstant(currentBuild, builder, typeDeclaration, name);
     }
   }
 
   @Override
-  public void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder,
-                                 TypeDeclaration typeDeclaration) {
+  public void onEnumerationClass(CurrentBuild currentBuild, TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onEnumerationClass(currentBuild, builder, typeDeclaration);
     }
   }
 
   @Override
-  public void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field,
-                          TypeDeclaration typeDeclaration) {
+  public void onEnumField(CurrentBuild currentBuild, FieldSpec.Builder field, TypeDeclaration typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onEnumField(currentBuild, field, typeDeclaration);
     }
   }
 
   @Override
-  public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder,
-                          V10GType typeDeclaration) {
+  public void onUnionType(CurrentBuild currentBuild, TypeSpec.Builder builder, V10GType typeDeclaration) {
 
-    for (TypeExtension extension : extensions) {
+    for (LegacyTypeExtension extension : extensions) {
       extension.onUnionType(currentBuild, builder, typeDeclaration);
     }
   }
 
-  public void addExtension(TypeExtension typeExtension) {
-    extensions.add(typeExtension);
+  @Override
+  public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype) {
+    TypeSpec.Builder currentBuilder = builder;
+    for (LegacyTypeExtension extension : extensions) {
+      currentBuilder = extension.onType(context, currentBuilder, type, btype);
+      if (currentBuilder == null) {
+        return null;
+      }
+    }
+
+    return currentBuilder;
+  }
+
+  @Override
+  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+                                   V10GProperty property, BuildPhase buildPhase, FieldType fieldType) {
+
+    for (LegacyTypeExtension extension : extensions) {
+      extension.onField(context, builder, containingType, property, buildPhase, fieldType);
+    }
+
+    return builder;
+  }
+
+  @Override
+  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+                                     List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
+                                     BuildPhase buildPhase,
+                                     MethodType methodType) {
+
+    for (LegacyTypeExtension extension : extensions) {
+      extension.onMethod(context, builder, parameters, containingType, property, buildPhase, methodType);
+    }
+
+    return builder;
+  }
+
+  public void addExtension(LegacyTypeExtension legacyTypeExtension) {
+    extensions.add(legacyTypeExtension);
   }
 }

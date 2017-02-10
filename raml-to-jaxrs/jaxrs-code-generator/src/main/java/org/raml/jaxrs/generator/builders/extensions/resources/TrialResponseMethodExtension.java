@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import com.squareup.javapoet.MethodSpec;
-import org.raml.jaxrs.generator.extension.Context;
+import org.raml.jaxrs.generator.extension.resources.ResourceContext;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
-import org.raml.jaxrs.generator.v10.V10GResponse;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
@@ -27,8 +26,7 @@ import org.raml.jaxrs.generator.v10.V10GResponse;
 public class TrialResponseMethodExtension implements ResponseMethodExtension<GResponse> {
 
   @Override
-  public MethodSpec.Builder onMethod(Context context, GResponse method,
-                                     MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, GResponse method, MethodSpec.Builder methodSpec) {
 
     return methodSpec;
   }

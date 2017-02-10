@@ -1,5 +1,5 @@
 /*
- * Copyright ${licenseYear} (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,55 +15,22 @@
  */
 package org.raml.jaxrs.generator.builders.extensions.types;
 
-import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.types.TypeContext;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
- * Created by Jean-Philippe Belanger on 12/4/16. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
  */
-public class JavadocTypeExtension extends TypeExtensionHelper {
+public class JavadocTypeExtension implements TypeExtension {
 
   private interface JavadocAdder {
 
     void addJavadoc(String format, Object... args);
-  }
-
-  @Override
-  public void onTypeDeclaration(CurrentBuild currentBuild, final TypeSpec.Builder typeSpec,
-                                V10GType type) {
-
-    if (type.implementation().description() != null) {
-      typeSpec.addJavadoc("$L\n", type.implementation().description().value());
-    }
-
-    javadocExamples(new JavadocAdder() {
-
-      @Override
-      public void addJavadoc(String format, Object... args) {
-
-        typeSpec.addJavadoc(format, args);
-      }
-    }, type.implementation());
-  }
-
-  @Override
-  public void onGetterMethodDeclaration(CurrentBuild currentBuild,
-                                        final MethodSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {
-    if (typeDeclaration.description() != null) {
-      typeSpec.addJavadoc("$L\n", typeDeclaration.description().value());
-    }
-
-    javadocExamples(new JavadocAdder() {
-
-      @Override
-      public void addJavadoc(String format, Object... args) {
-        typeSpec.addJavadoc(format, args);
-      }
-    }, typeDeclaration);
   }
 
   public void javadocExamples(JavadocAdder adder, TypeDeclaration typeDeclaration) {
@@ -77,6 +44,27 @@ public class JavadocTypeExtension extends TypeExtensionHelper {
       javadoc(adder, exampleSpec);
     }
   }
+
+  @Override
+  public TypeSpec.Builder onType(TypeContext context, final TypeSpec.Builder typeSpec, V10GType type, BuildPhase btype) {
+
+
+    if (type.implementation().description() != null) {
+      typeSpec.addJavadoc("$L\n", type.implementation().description().value());
+    }
+
+    javadocExamples(new JavadocAdder() {
+
+      @Override
+      public void addJavadoc(String format, Object... args) {
+
+        typeSpec.addJavadoc(format, args);
+      }
+    }, type.implementation());
+
+    return null;
+  }
+
 
   public void javadoc(JavadocAdder adder, ExampleSpec exampleSpec) {
     adder.addJavadoc("Example:\n");

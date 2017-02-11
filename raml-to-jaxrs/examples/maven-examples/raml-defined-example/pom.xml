@@ -49,6 +49,7 @@
                     <supportPackage>example.support</supportPackage>
                     <configureTypesFor>
                         <value>jackson</value>
+                        <value>jaxb</value>
                     </configureTypesFor>
                 </configuration>
             </plugin>

@@ -53,9 +53,7 @@ types:
                 format: rfc2616
             gender:
                 type: Gender
-/humanity:
-#    (ramltojaxrs.resources):
-#        onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension
+/humans:
     get:
         (ramltojaxrs.methods):
             onResourceMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension
@@ -68,10 +66,23 @@ types:
                     onResponseMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension
                 body:
                     application/json:
-                        type: Human
-    put:
-        body:
-            application/json:
-                type: Human
-        responses:
-            200:
+                        type: Human[]
+    /{id}:
+        uriParameters:
+            id: string
+        get:
+            queryParameters:
+                type: string
+            responses:
+                200:
+                    (ramltojaxrs.responses):
+                        onResponseMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension
+                    body:
+                        application/json:
+                            type: Human
+        put:
+            body:
+                application/json:
+                    type: Human
+            responses:
+                200:

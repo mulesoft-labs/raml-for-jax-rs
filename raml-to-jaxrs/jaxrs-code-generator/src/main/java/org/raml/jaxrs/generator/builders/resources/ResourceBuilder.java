@@ -33,7 +33,6 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ResourceUtils;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
-import org.raml.jaxrs.generator.builders.extensions.ContextImpl;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
 import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceContext;
@@ -91,7 +90,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
 
     TypeSpec.Builder typeSpec =
-        build.getResourceClassExtension(new DefaultResourceClassCreator(), Annotations.ON_RESOURCE_CLASS_CREATION, topResource)
+        build.getResourceClassExtension(new DefaultResourceClassCreator(), Annotations.ON_RESOURCE_CLASS_CREATION,
+                                        topResource)
             .onResource(new ResourceContextImpl(build), topResource, null);
 
     if (typeSpec != null) {
@@ -154,8 +154,9 @@ public class ResourceBuilder implements ResourceGenerator {
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
 
     // here I would run my plugins....
-    methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ResourceContextImpl(build),
-                                                                                                  gMethod, methodSpec);
+    methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
+        .onMethod(new ResourceContextImpl(build),
+                  gMethod, methodSpec);
 
     if (methodSpec != null) {
       typeSpec.addMethod(methodSpec.build());
@@ -171,8 +172,9 @@ public class ResourceBuilder implements ResourceGenerator {
     methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
 
-    methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod).onMethod(new ResourceContextImpl(build),
-                                                                                                  gMethod, methodSpec);
+    methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
+        .onMethod(new ResourceContextImpl(build),
+                  gMethod, methodSpec);
 
     if (methodSpec != null) {
       typeSpec.addMethod(methodSpec.build());
@@ -276,7 +278,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
             String httpCode = gResponse.code();
             MethodSpec.Builder builder =
-                MethodSpec.methodBuilder(Names.methodName("respond", httpCode, "With", typeDeclaration.mediaType()))
+                MethodSpec.methodBuilder(
+                                         Names.methodName("respond", httpCode, "With", typeDeclaration.mediaType()))
                     .addModifiers(Modifier.STATIC, Modifier.PUBLIC);
 
             builder =
@@ -319,8 +322,9 @@ public class ResourceBuilder implements ResourceGenerator {
 
 
       responseClass =
-          build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod).onMethod(new ResourceContextImpl(build),
-                                                                                                  gMethod, responseClass);
+          build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod)
+              .onMethod(new ResourceContextImpl(build),
+                        gMethod, responseClass);
 
       if (responseClass == null) {
 
@@ -343,8 +347,9 @@ public class ResourceBuilder implements ResourceGenerator {
         .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
     methodSpec =
-        build.getResourceMethodExtension(Annotations.ON_METHOD_CREATION, gMethod).onMethod(new ResourceContextImpl(build),
-                                                                                           gMethod, methodSpec);
+        build.getResourceMethodExtension(Annotations.ON_METHOD_CREATION, gMethod)
+            .onMethod(new ResourceContextImpl(build),
+                      gMethod, methodSpec);
 
     for (GParameter typeDeclaration : gMethod.resource().uriParameters()) {
 
@@ -384,8 +389,9 @@ public class ResourceBuilder implements ResourceGenerator {
 
     if (gMethod.resource().parentResource() != null) {
 
-      methodSpec.addAnnotation(AnnotationSpec.builder(Path.class).addMember("value", "$S", gMethod.resource().resourcePath())
-          .build());
+      methodSpec.addAnnotation(
+          AnnotationSpec.builder(Path.class).addMember("value", "$S", gMethod.resource().relativePath())
+              .build());
     }
 
     if (gMethod.responses().size() != 0) {
@@ -418,7 +424,8 @@ public class ResourceBuilder implements ResourceGenerator {
           .addModifiers(Modifier.PUBLIC)
           .addAnnotation(AnnotationSpec.builder(Target.class)
               .addMember("value", "{$T.$L}", ElementType.class, "METHOD").build())
-          .addAnnotation(AnnotationSpec.builder(Retention.class).addMember("value", "$T.$L", RetentionPolicy.class, "RUNTIME")
+          .addAnnotation(AnnotationSpec.builder(Retention.class)
+              .addMember("value", "$T.$L", RetentionPolicy.class, "RUNTIME")
               .build())
           .addAnnotation(AnnotationSpec.builder(HttpMethod.class).addMember("value", "$S", name).build());
       build.newSupportGenerator(new JavaPoetTypeGeneratorBase(className) {
@@ -444,7 +451,7 @@ public class ResourceBuilder implements ResourceGenerator {
                                     Multimap<String, String> ramlTypeToMediaType,
                                     GType typeDeclaration) {
 
-    Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration.type());
+    Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration.name());
 
     AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
     methodSpec.addAnnotation(ann.build());

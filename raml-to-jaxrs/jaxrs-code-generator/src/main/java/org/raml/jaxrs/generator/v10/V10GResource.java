@@ -113,4 +113,9 @@ public class V10GResource implements GResource {
   }
 
 
+  @Override
+  public String relativePath() {
+
+    return resource.relativeUri().value();
+  }
 }

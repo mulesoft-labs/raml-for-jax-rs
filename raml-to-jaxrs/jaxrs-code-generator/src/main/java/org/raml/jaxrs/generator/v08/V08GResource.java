@@ -114,4 +114,9 @@ public class V08GResource implements GResource {
   public GResource parentResource() {
     return parent;
   }
+
+  @Override
+  public String relativePath() {
+    return resource.relativeUri().value();
+  }
 }

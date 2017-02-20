@@ -42,6 +42,6 @@ For convenience, we list the configurations here:
 
 ### Using the CLI
 The CLI is very simplistic. It provides little less features because less emphasis was put on its development.
-The project [jaxrs-to-raml-cli](jaxrs-to-raml-cli/) contains the cli artifact.
+The project [jaxrs-to-raml-cli](jaxrs-to-raml-cli/) contains the CLI artifact.
 The first argument provided on the CLI is the directory where to find the compiled classes and
 the second one is the path to the generated RAML file.

@@ -1,5 +1,5 @@
 ## JAX-RS Generation from RAML (raml-to-jaxrs)
-All distributions (Eclipse Plugin, Maven Plugin, and Jar) works in the following ways:
+All distributions works in the following ways:
 
 - Interfaces are generated and will be regenerated when the RAML definition changes.
 - One interface is generated per top level resource, sub-resources are built from the subresources defined in the RAML parser.
@@ -12,7 +12,7 @@ are hoping to make them more flexible are we figure this out.
 - English is the language used in the interface and method names generation.
 
 ### Currently Supported
-- JAX-RS 2.0,
+- JAX-RS 2.0
 - JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and javax.validation uses Java ones,
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
@@ -24,3 +24,15 @@ For more information see [here](jaxrs-code-generator/GENERATION_README.md)
 
 ### Using the Maven plugin
 There is a maven plugin that can generate the code. This is documented [here](examples/maven-examples/README.md).
+
+### Using the CLI
+The project [raml-to-jaxrs-cli](raml-to-jaxrs-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.
+
+E.g.
+```
+$ cd raml-to-jaxrs/raml-to-jaxrs-cli/
+$ mvn clean install
+$ java -jar ./target/raml-to-jaxrs-cli-<version>-jar-with-dependencies.jar -d /tmp -r foo.bar ../examples/maven-examples/raml-defined-example/src/main/resources/types_user_defined.raml
+```
+
+This will generate the source of a `foo.bar` package inside the folder `/tmp` using the RAML file included in the `raml-defined-example` example.

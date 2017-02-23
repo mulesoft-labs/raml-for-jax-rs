@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.raml</groupId>
+        <artifactId>maven-examples</artifactId>
+        <version>2.0.0-RC2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>jaxb-example</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+            <version>2.24</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-jetty-http</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.raml</groupId>
+                <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
+                <version>2.0.0-RC2-SNAPSHOT</version>
+                <configuration>
+                    <ramlFile>${project.build.resources[0].directory}/xml-model.raml</ramlFile>
+                    <resourcePackage>example.resources</resourcePackage>
+                    <modelPackage>example.model</modelPackage>
+                    <resourcePackage>example.resources</resourcePackage>
+                    <supportPackage>example.support</supportPackage>
+                    <configureTypesFor>
+                        <value>jaxb</value>
+                    </configureTypesFor>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>server.humanity.StartServer</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

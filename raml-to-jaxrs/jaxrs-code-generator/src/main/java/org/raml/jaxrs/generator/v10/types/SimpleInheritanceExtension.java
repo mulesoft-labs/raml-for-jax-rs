@@ -86,8 +86,7 @@ class SimpleInheritanceExtension implements TypeExtension {
         .classBuilder(className)
         .addModifiers(Modifier.PUBLIC);
 
-
-    final TypeSpec.Builder newTypeSpec = context.onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
+    typeSpec = context.onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
 
     ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
 
@@ -215,6 +214,8 @@ class SimpleInheritanceExtension implements TypeExtension {
     TypeSpec.Builder typeSpec = TypeSpec
         .interfaceBuilder(interf)
         .addModifiers(Modifier.PUBLIC);
+
+    typeSpec = context.onType(context, typeSpec, objectType, BuildPhase.INTERFACE);
 
     for (GType parentType : parentTypes) {
 

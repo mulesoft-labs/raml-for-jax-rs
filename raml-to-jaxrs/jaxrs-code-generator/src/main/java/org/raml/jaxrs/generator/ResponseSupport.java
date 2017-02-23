@@ -46,11 +46,20 @@ public class ResponseSupport {
             .superclass(Response.class)
             .addField(
                       FieldSpec.builder(Response.class, "delegate", Modifier.PRIVATE, Modifier.FINAL)
-                          .build());
+                          .build())
+            .addField(
+                      FieldSpec.builder(Object.class, "entity", Modifier.PRIVATE, Modifier.FINAL)
+                          .build());;
 
     builder.addMethod(MethodSpec.constructorBuilder()
         .addParameter(ParameterSpec.builder(Response.class, "delegate").build())
-        .addModifiers(Modifier.PROTECTED).addCode("this.delegate = delegate;\n").build());
+        .addParameter(ParameterSpec.builder(Object.class, "entity").build())
+        .addModifiers(Modifier.PROTECTED).addCode("this.delegate = delegate;\n").addCode("this.entity = entity;\n").build());
+
+    builder.addMethod(MethodSpec.constructorBuilder()
+        .addParameter(ParameterSpec.builder(Response.class, "delegate").build())
+        .addModifiers(Modifier.PROTECTED)
+        .addCode("this(delegate, null);\n").build());
 
     for (Method m : Response.class.getDeclaredMethods()) {
 
@@ -58,6 +67,17 @@ public class ResponseSupport {
         continue;
       }
 
+      if (m.getName().equals("getEntity")) {
+
+        MethodSpec.Builder methodBuilder =
+            MethodSpec.methodBuilder("getEntity").addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .returns(Object.class)
+                .addCode("return this.entity;");
+
+        builder.addMethod(methodBuilder.build());
+        continue;
+      }
       MethodSpec.Builder methodBuilder =
           MethodSpec.methodBuilder(m.getName()).addModifiers(Modifier.PUBLIC)
               .addAnnotation(Override.class);

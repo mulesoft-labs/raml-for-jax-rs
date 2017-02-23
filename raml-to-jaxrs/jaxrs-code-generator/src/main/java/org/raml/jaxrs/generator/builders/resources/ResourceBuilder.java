@@ -54,6 +54,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -222,10 +223,16 @@ public class ResourceBuilder implements ResourceGenerator {
           .superclass(ClassName.get(build.getSupportPackage(), "ResponseDelegate"))
           .addMethod(
                      MethodSpec.constructorBuilder()
-                         .addParameter(javax.ws.rs.core.Response.class, "Response")
+                         .addParameter(javax.ws.rs.core.Response.class, "response")
+                         .addParameter(Object.class, "entity")
                          .addModifiers(Modifier.PRIVATE)
-                         .addCode("super(Response);\n").build()
-          );
+                         .addCode("super(response, entity);\n").build()
+          ).addMethod(
+                      MethodSpec.constructorBuilder()
+                          .addParameter(javax.ws.rs.core.Response.class, "response")
+                          .addModifiers(Modifier.PRIVATE)
+                          .addCode("super(response);\n").build()
+          );;
 
       responseClass =
           build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_CREATION, gMethod)
@@ -292,19 +299,32 @@ public class ResourceBuilder implements ResourceGenerator {
             }
 
             builder
-                .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode
-                    + ").header(\"Content-Type\", \""
-                    + typeDeclaration.mediaType() + "\")")
-                .addStatement("responseBuilder.entity(entity)")
-                .addStatement("return new $N(responseBuilder.build())", currentClass)
-                .returns(TypeVariableName.get(currentClass.name))
-                .build();
+                .returns(TypeVariableName.get(currentClass.name));
+
             TypeName typeName = typeDeclaration.type().defaultJavaTypeName(build.getModelPackage());
             if (typeName == null) {
               throw new GenerationException(typeDeclaration + " was not seen before");
             }
 
             builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
+
+            builder.addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode
+                + ").header(\"Content-Type\", \""
+                + typeDeclaration.mediaType() + "\")");
+            if (typeDeclaration.type().isArray() && typeDeclaration.mediaType().contains("xml")) {
+
+              builder
+                  .addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
+                                GenericEntity.class, typeName)
+                  .addStatement("responseBuilder.entity(wrappedEntity)")
+                  .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+            } else {
+
+              builder
+                  .addStatement("responseBuilder.entity(entity)")
+                  .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+            }
+
 
             builder =
                 build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse)
@@ -338,7 +358,6 @@ public class ResourceBuilder implements ResourceGenerator {
 
     return map;
   }
-
 
   private MethodSpec.Builder createMethodBuilder(GMethod gMethod, String methodName, Set<String> mediaTypesForMethod,
                                                  Map<String, TypeSpec.Builder> responseSpec) {

@@ -1,0 +1,59 @@
+#%RAML 1.0
+title: Humanity
+version: v1
+baseUri: https://api.github.com
+
+types:
+    Gender:
+        enum: [male, female, other]
+#    Person:
+#        type: Human
+#        discriminatorValue: person
+#        properties:
+#            name:
+#                required: true
+#                type: string
+#            weight:
+#                required: true
+#                type: integer
+#            siblings:
+#                type: Human[]
+#    Corpse:
+#        type: Human
+#        discriminatorValue: corpse
+#        properties:
+#            dateOfDeath:
+#                required: true
+#                type: date-only
+    Animal:
+        type: object
+#        discriminator: humanType
+        properties:
+            animalType:
+                type: string
+            gender:
+                type: Gender
+/animals:
+    get:
+        queryParameters:
+            type: string
+        responses:
+            200:
+                body:
+                    application/xml:
+                        type: Animal[]
+    /{id}:
+        uriParameters:
+            id: string
+        get:
+            responses:
+                200:
+                    body:
+                        application/xml:
+                            type: Animal
+        put:
+            body:
+                application/xml:
+                    type: Animal
+            responses:
+                200:

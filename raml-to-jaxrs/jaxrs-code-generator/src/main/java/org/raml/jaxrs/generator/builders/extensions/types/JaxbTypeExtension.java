@@ -63,11 +63,16 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
 
     builder.addAnnotation(AnnotationSpec.builder(XmlRootElement.class)
         .addMember("name", "$S", type.name()).build());
-    builder.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class)
-        .addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
+
+    if (buildPhase == BuildPhase.IMPLEMENTATION) {
+      builder.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class)
+          .addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
+    }
 
     return builder;
   }
+
+
 
   @Override
   public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,

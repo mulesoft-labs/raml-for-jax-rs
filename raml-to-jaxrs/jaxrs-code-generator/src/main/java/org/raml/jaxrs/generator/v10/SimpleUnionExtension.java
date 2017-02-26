@@ -58,9 +58,14 @@ class SimpleUnionExtension implements UnionExtension {
     FieldSpec.Builder anyType = FieldSpec.builder(Object.class, "anyType", Modifier.PRIVATE);
     anyType = context.onField(context, anyType, currentType, null, BuildPhase.INTERFACE, UNION);
     anyType =
-        Annotations.ON_TYPE_FIELD_FINISH.get(currentType).onField(context, anyType, currentType, null, BuildPhase.INTERFACE,
-                                                                  UNION);
+        Annotations.ON_TYPE_FIELD_FINISH.get(currentType)
+            .onField(context, anyType, currentType, null, BuildPhase.INTERFACE,
+                     UNION);
     builder.addField(anyType.build());
+    builder.addMethod(
+        MethodSpec.constructorBuilder()
+            .addModifiers(Modifier.PRIVATE).addStatement("this.anyType = null")
+            .build());
 
     for (TypeDeclaration typeDeclaration : union.of()) {
 

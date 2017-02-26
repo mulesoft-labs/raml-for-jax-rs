@@ -25,6 +25,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -39,6 +40,7 @@ public class StartServer {
         .packages("example.model")
         .register(
                   new MoxyXmlFeature(
+                                     new HashMap<String, Object>(), null, true,
                                      Animal.class, AnimalImpl.class // Classes to be bound.
                   )
         );

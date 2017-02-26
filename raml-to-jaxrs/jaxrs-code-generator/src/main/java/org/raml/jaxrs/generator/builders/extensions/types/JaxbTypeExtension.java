@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator.builders.extensions.types;
 
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -61,12 +62,15 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
   @Override
   public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase buildPhase) {
 
-    builder.addAnnotation(AnnotationSpec.builder(XmlRootElement.class)
-        .addMember("name", "$S", type.name()).build());
 
     if (buildPhase == BuildPhase.IMPLEMENTATION) {
       builder.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class)
           .addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
+      builder.addAnnotation(AnnotationSpec.builder(XmlRootElement.class)
+          .addMember("name", "$S", type.name()).build());
+    } else {
+
+      builder.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).build());
     }
 
     return builder;
@@ -91,8 +95,15 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
       AnnotationSpec.Builder elementsAnnotation = AnnotationSpec.builder(XmlElements.class);
       for (TypeDeclaration typeDeclaration : union.of()) {
 
-        elementsAnnotation.addMember("value", "$L",
-                                     AnnotationSpec.builder(XmlElement.class).addMember("name", "$S", typeDeclaration.name())
+        elementsAnnotation.addMember("value",
+                                     "$L",
+                                     AnnotationSpec
+                                         .builder(XmlElement.class)
+                                         .addMember("name", "$S", typeDeclaration.name())
+                                         .addMember("type",
+                                                    "$T.class",
+                                                    ClassName.get(context.getModelPackage(), typeDeclaration.name()
+                                                        + "Impl"))
                                          .build());
       }
 

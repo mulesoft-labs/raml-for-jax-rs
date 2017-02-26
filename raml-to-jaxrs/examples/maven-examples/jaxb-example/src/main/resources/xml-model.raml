@@ -6,33 +6,32 @@ baseUri: https://api.github.com
 types:
     Gender:
         enum: [male, female, other]
-#    Person:
-#        type: Human
-#        discriminatorValue: person
-#        properties:
-#            name:
-#                required: true
-#                type: string
-#            weight:
-#                required: true
-#                type: integer
-#            siblings:
-#                type: Human[]
-#    Corpse:
-#        type: Human
-#        discriminatorValue: corpse
-#        properties:
-#            dateOfDeath:
-#                required: true
-#                type: date-only
     Animal:
         type: object
-#        discriminator: humanType
         properties:
             animalType:
                 type: string
             gender:
                 type: Gender
+            siblings:
+                type: Animal[]
+            mother:
+                type: Animal
+            ancestor:
+                type: Ancestor
+    Insect:
+        type: Animal
+        properties:
+            icky:
+                type: boolean
+    Invertebrate:
+        type: Animal
+        properties:
+            squishy:
+                type: boolean
+    Ancestor:
+        type: Insect | Invertebrate
+
 /animals:
     get:
         queryParameters:

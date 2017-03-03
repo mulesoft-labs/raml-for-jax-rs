@@ -253,10 +253,13 @@ public class ResourceBuilderTestV10 {
 
         TypeSpec response = g.typeSpecs.get(0);
         assertEquals("GetSearchResponse", response.name);
-        assertEquals(2, response.methodSpecs.size());
+        assertEquals(3, response.methodSpecs.size());
 
-        MethodSpec responseMethod = response.methodSpecs.get(1);
         assertTrue(response.methodSpecs.get(0).isConstructor());
+        assertTrue(response.methodSpecs.get(1).isConstructor());
+
+        MethodSpec responseMethod = response.methodSpecs.get(2);
+
         assertEquals("respond200WithApplicationJson", responseMethod.name);
         assertEquals("int", responseMethod.parameters.get(0).type.toString());
 
@@ -291,10 +294,12 @@ public class ResourceBuilderTestV10 {
 
         TypeSpec response = g.typeSpecs.get(0);
         assertEquals("GetSearchResponse", response.name);
-        assertEquals(2, response.methodSpecs.size());
+        assertEquals(3, response.methodSpecs.size());
 
-        MethodSpec responseMethod = response.methodSpecs.get(1);
         assertTrue(response.methodSpecs.get(0).isConstructor());
+        assertTrue(response.methodSpecs.get(1).isConstructor());
+
+        MethodSpec responseMethod = response.methodSpecs.get(2);
         assertEquals("respond200WithApplicationJson", responseMethod.name);
         assertEquals("model.TypeOne", responseMethod.parameters.get(0).type.toString());
         assertTrue(responseMethod.hasModifier(Modifier.PUBLIC));
@@ -328,12 +333,13 @@ public class ResourceBuilderTestV10 {
 
         TypeSpec response = g.typeSpecs.get(0);
         assertEquals("GetSearchResponse", response.name);
-        assertEquals(3, response.methodSpecs.size());
+        assertEquals(4, response.methodSpecs.size());
 
         assertTrue(response.methodSpecs.get(0).isConstructor());
+        assertTrue(response.methodSpecs.get(1).isConstructor());
 
         {
-          MethodSpec responseMethod = response.methodSpecs.get(1);
+          MethodSpec responseMethod = response.methodSpecs.get(2);
           assertEquals("respond200WithApplicationJson", responseMethod.name);
           assertTrue(responseMethod.hasModifier(Modifier.PUBLIC));
           assertTrue(responseMethod.hasModifier(Modifier.STATIC));
@@ -341,7 +347,7 @@ public class ResourceBuilderTestV10 {
                                                              ".header(\"Content-Type\", \"application/json\")"));
         }
         {
-          MethodSpec responseMethod = response.methodSpecs.get(2);
+          MethodSpec responseMethod = response.methodSpecs.get(3);
           assertEquals("respond200WithApplicationXml", responseMethod.name);
           assertTrue(responseMethod.hasModifier(Modifier.PUBLIC));
           assertTrue(responseMethod.hasModifier(Modifier.STATIC));

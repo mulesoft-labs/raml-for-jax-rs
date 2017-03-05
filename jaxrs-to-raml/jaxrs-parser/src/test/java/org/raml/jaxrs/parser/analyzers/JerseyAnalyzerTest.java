@@ -79,7 +79,7 @@ public class JerseyAnalyzerTest {
     return Lists.<Class<?>>newArrayList(String.class, Integer.class, Double.class, Byte.class);
   }
 
- // @Test
+  // @Test
   public void testAnalyze() {
     FluentIterable<Class<?>> classes = FluentIterable.from(testClasses());
 

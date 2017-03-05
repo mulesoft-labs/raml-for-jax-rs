@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.generator.v10;
+package org.raml.jaxrs.generator.v10.typegenerators;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -25,6 +25,9 @@ import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.extension.types.TypeContext;
 import org.raml.jaxrs.generator.extension.types.UnionExtension;
+import org.raml.jaxrs.generator.v10.Annotations;
+import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.jaxrs.generator.v10.types.V10GTypeUnion;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;

@@ -13,7 +13,9 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.generator.builders.extensions.types;
+package org.raml.jaxrs.generator.builders.extensions.types.jackson;
+
+import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 
 /**
  * Created by Jean-Philippe Belanger on 1/1/17. Just potential zeroes and ones

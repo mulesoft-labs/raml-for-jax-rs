@@ -26,7 +26,7 @@ import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JacksonExtensions;
+import org.raml.jaxrs.generator.builders.extensions.types.jackson.JacksonExtensions;
 import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeLegacyExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;

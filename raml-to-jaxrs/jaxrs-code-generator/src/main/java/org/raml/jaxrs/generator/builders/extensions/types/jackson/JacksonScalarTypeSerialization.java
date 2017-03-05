@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.generator.builders.extensions.types;
+package org.raml.jaxrs.generator.builders.extensions.types.jackson;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,6 +21,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionHelper;
 import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;

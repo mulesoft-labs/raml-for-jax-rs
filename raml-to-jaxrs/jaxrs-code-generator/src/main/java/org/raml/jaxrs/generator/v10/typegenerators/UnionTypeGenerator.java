@@ -13,59 +13,67 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.generator.v10.types;
+package org.raml.jaxrs.generator.v10.typegenerators;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeContextImpl;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
+import org.raml.jaxrs.generator.extension.types.UnionExtension;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
+import org.raml.jaxrs.generator.v10.types.V10GTypeUnion;
 
 import java.io.IOException;
 
 /**
- * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 1/1/17. Just potential zeroes and ones
  */
-class SimpleTypeGenerator implements JavaPoetTypeGenerator {
+public class UnionTypeGenerator implements JavaPoetTypeGenerator {
 
-  private final V10GType originalType;
+
   private final V10TypeRegistry registry;
+  private final V10GType v10GType;
+  private final ClassName javaName;
   private final CurrentBuild currentBuild;
 
-  public SimpleTypeGenerator(V10GType originalType, V10TypeRegistry registry, CurrentBuild currentBuild) {
-    this.originalType = originalType;
+  public UnionTypeGenerator(V10TypeRegistry registry, V10GType v10GType, ClassName javaName, CurrentBuild currentBuild) {
+
     this.registry = registry;
+    this.v10GType = v10GType;
+    this.javaName = javaName;
     this.currentBuild = currentBuild;
-  }
-
-  @Override
-  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
-
-    TypeExtension typeExtension = new SimpleInheritanceExtension(originalType, registry, currentBuild);
-    rootDirectory.into(typeExtension.onType(new SimpleTypeContextImpl(currentBuild, this), null, originalType, buildPhase));
-  }
-
-  @Override
-  public TypeName getGeneratedJavaType() {
-    return originalType.defaultJavaTypeName(currentBuild.getModelPackage());
   }
 
   @Override
   public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
 
-    output(rootDirectory, null);
+    UnionExtension ux = new SimpleUnionExtension(javaName, registry);
+
+    rootDirectory.into(ux.onUnionType(new UnionTypeContextImpl(currentBuild, this), null, (V10GTypeUnion) v10GType,
+                                      BuildPhase.INTERFACE));
   }
 
-  private static class SimpleTypeContextImpl extends TypeContextImpl {
+  @Override
+  public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
 
-    private final SimpleTypeGenerator objectType;
+    output(rootDirectory);
+  }
 
-    public SimpleTypeContextImpl(CurrentBuild build, SimpleTypeGenerator objectType) {
+  @Override
+  public TypeName getGeneratedJavaType() {
+    return javaName;
+  }
+
+  private static class UnionTypeContextImpl extends TypeContextImpl {
+
+    private final UnionTypeGenerator objectType;
+
+    public UnionTypeContextImpl(CurrentBuild build, UnionTypeGenerator objectType) {
       super(build);
       this.objectType = objectType;
     }
@@ -81,4 +89,6 @@ class SimpleTypeGenerator implements JavaPoetTypeGenerator {
       getBuild().internalClass(objectType, internalGenerator);
     }
   }
+
+
 }

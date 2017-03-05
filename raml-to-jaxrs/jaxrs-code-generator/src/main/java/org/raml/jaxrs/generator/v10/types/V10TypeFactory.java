@@ -17,22 +17,22 @@ package org.raml.jaxrs.generator.v10.types;
 
 import com.squareup.javapoet.ClassName;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
-import org.raml.jaxrs.generator.v10.EnumerationGenerator;
-import org.raml.jaxrs.generator.v10.UnionTypeGenerator;
+import org.raml.jaxrs.generator.v10.typegenerators.EnumerationGenerator;
+import org.raml.jaxrs.generator.v10.typegenerators.UnionTypeGenerator;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
+import org.raml.jaxrs.generator.v10.typegenerators.SimpleTypeGenerator;
 
 /**
  * Created by Jean-Philippe Belanger on 12/30/16. Just potential zeroes and ones
  */
-class V10TypeFactory {
+public class V10TypeFactory {
 
-  static TypeGenerator createObjectType(final V10TypeRegistry registry, final CurrentBuild currentBuild,
-                                        final V10GType originalType, boolean publicType) {
+  public static TypeGenerator createObjectType(final V10TypeRegistry registry, final CurrentBuild currentBuild,
+                                               final V10GType originalType, boolean publicType) {
 
     TypeGenerator generator = new SimpleTypeGenerator(originalType, registry, currentBuild);
 
@@ -42,7 +42,7 @@ class V10TypeFactory {
     return generator;
   }
 
-  static TypeGenerator createEnumerationType(CurrentBuild currentBuild, GType type) {
+  public static TypeGenerator createEnumerationType(CurrentBuild currentBuild, GType type) {
     JavaPoetTypeGenerator generator =
         new EnumerationGenerator(
                                  currentBuild,

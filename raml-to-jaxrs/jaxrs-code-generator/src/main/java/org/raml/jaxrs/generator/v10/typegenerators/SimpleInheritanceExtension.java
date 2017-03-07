@@ -28,6 +28,7 @@ import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
 import org.raml.jaxrs.generator.extension.types.PredefinedFieldType;
 import org.raml.jaxrs.generator.extension.types.PredefinedMethodType;
 import org.raml.jaxrs.generator.extension.types.TypeContext;
@@ -83,11 +84,15 @@ class SimpleInheritanceExtension implements TypeExtension {
 
     ClassName className = originalType.javaImplementationName(context.getModelPackage());
 
+
     TypeSpec.Builder typeSpec = TypeSpec
         .classBuilder(className)
         .addModifiers(Modifier.PUBLIC);
 
     typeSpec = context.onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
+    typeSpec =
+        currentBuild.getTypeExtension(Annotations.ON_TYPE_CLASS_CREATION, objectType)
+            .onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
 
     ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
 
@@ -169,7 +174,9 @@ class SimpleInheritanceExtension implements TypeExtension {
       }
     }
 
-    typeSpec = Annotations.ON_TYPE_CLASS_FINISH.get(objectType).onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
+    typeSpec =
+            currentBuild.getTypeExtension(Annotations.ON_TYPE_CLASS_FINISH, objectType)
+                    .onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
     return typeSpec;
   }
 

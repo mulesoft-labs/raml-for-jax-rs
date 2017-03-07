@@ -1,0 +1,19 @@
+#%RAML 1.0
+title: Humanity
+version: v1
+baseUri: https://api.github.com
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+
+types:
+    Network:
+        (ramltojaxrs.types):
+            onTypeCreation: org.raml.jaxrs.features.AddAnnotationToTypePlugin
+        type: object
+        properties:
+            name:
+                required: true
+                type: string
+            dns-address:
+                required: true
+                type: string

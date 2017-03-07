@@ -38,6 +38,7 @@ import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
 import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
@@ -45,6 +46,7 @@ import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GMethod;
 import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.jaxrs.generator.v10.V10GResponse;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.api.Api;
 
 import javax.lang.model.element.Modifier;
@@ -321,6 +323,13 @@ public class CurrentBuild {
       return GlobalResourceExtension.NULL_EXTENSION;
     }
   }
+
+  public TypeExtension getTypeExtension(
+                                        Annotations<TypeExtension> typeExtensionAnnotation, V10GType type) {
+
+    return typeExtensionAnnotation.get(getApi(), type.implementation());
+  }
+
 
   public ResourceMethodExtension<GMethod> getResourceMethodExtension(
                                                                      Annotations<ResourceMethodExtension<GMethod>> onResourceMethodExtension,

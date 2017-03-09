@@ -175,8 +175,8 @@ class SimpleInheritanceExtension implements TypeExtension {
     }
 
     typeSpec =
-            currentBuild.getTypeExtension(Annotations.ON_TYPE_CLASS_FINISH, objectType)
-                    .onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
+        currentBuild.getTypeExtension(Annotations.ON_TYPE_CLASS_FINISH, objectType)
+            .onType(context, typeSpec, objectType, BuildPhase.IMPLEMENTATION);
     return typeSpec;
   }
 

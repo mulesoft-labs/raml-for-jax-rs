@@ -16,12 +16,40 @@
 package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
+import org.raml.jaxrs.generator.extension.types.TypeContext;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.GResponse;
+import org.raml.jaxrs.generator.v10.V10GType;
+
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
  */
 public interface ResourceClassExtension<T extends GResource> {
+
+  class Composite extends AbstractCompositeExtension<ResourceClassExtension<GResource>, TypeSpec.Builder> implements
+      ResourceClassExtension<GResource> {
+
+    public Composite(List<ResourceClassExtension<GResource>> extensions) {
+      super(extensions);
+    }
+
+    @Override
+    public TypeSpec.Builder onResource(final ResourceContext context, final GResource resource, TypeSpec.Builder builder) {
+
+      return runList(builder, new ElementJob<ResourceClassExtension<GResource>, TypeSpec.Builder>() {
+
+        @Override
+        public TypeSpec.Builder doElement(ResourceClassExtension<GResource> e, TypeSpec.Builder builder) {
+          return e.onResource(context, resource, builder);
+        }
+      });
+    }
+  }
 
   ResourceClassExtension<GResource> NULL_EXTENSION = new ResourceClassExtension<GResource>() {
 

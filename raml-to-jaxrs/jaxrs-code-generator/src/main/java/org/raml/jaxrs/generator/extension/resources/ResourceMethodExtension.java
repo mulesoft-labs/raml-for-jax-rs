@@ -16,7 +16,12 @@
 package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
+import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GResource;
+
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
@@ -30,6 +35,26 @@ public interface ResourceMethodExtension<T extends GMethod> {
       return methodSpec;
     }
   };
+
+  class Composite extends AbstractCompositeExtension<ResourceMethodExtension<GMethod>, MethodSpec.Builder> implements
+      ResourceMethodExtension<GMethod> {
+
+    public Composite(List<ResourceMethodExtension<GMethod>> extensions) {
+      super(extensions);
+    }
+
+    @Override
+    public MethodSpec.Builder onMethod(final ResourceContext context, final GMethod method, MethodSpec.Builder methodSpec) {
+
+      return runList(methodSpec, new ElementJob<ResourceMethodExtension<GMethod>, MethodSpec.Builder>() {
+
+        @Override
+        public MethodSpec.Builder doElement(ResourceMethodExtension<GMethod> e, MethodSpec.Builder builder) {
+          return e.onMethod(context, method, builder);
+        }
+      });
+    }
+  }
 
   MethodSpec.Builder onMethod(ResourceContext context, T method, MethodSpec.Builder methodSpec);
 

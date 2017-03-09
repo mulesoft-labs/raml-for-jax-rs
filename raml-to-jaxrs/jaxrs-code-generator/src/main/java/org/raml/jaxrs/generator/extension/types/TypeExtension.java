@@ -17,21 +17,36 @@ package org.raml.jaxrs.generator.extension.types;
 
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.jaxrs.generator.v10.V10GType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/26/17. Just potential zeroes and ones
  */
 public interface TypeExtension {
 
-  TypeExtension NULL_TYPE_EXTENSION = new TypeExtension() {
+  class TypeExtensionComposite extends AbstractCompositeExtension<TypeExtension, TypeSpec.Builder> implements TypeExtension {
+
+    public TypeExtensionComposite(List<TypeExtension> extensions) {
+      super(extensions);
+    }
 
     @Override
-    public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype) {
+    public TypeSpec.Builder onType(final TypeContext context, TypeSpec.Builder builder, final V10GType type,
+                                   final BuildPhase btype) {
 
-      return builder;
+      return runList(builder, new ElementJob<TypeExtension, TypeSpec.Builder>() {
+
+        @Override
+        public TypeSpec.Builder doElement(TypeExtension e, TypeSpec.Builder builder) {
+          return e.onType(context, builder, type, btype);
+        }
+      });
     }
-  };
+  }
 
   TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype);
 }

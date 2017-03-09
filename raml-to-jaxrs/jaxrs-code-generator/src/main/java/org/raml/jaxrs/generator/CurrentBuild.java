@@ -347,7 +347,11 @@ public class CurrentBuild {
                                                                      Annotations<ResourceClassExtension<GResource>> onResourceClassCreation,
                                                                      GResource topResource) {
     if (topResource instanceof V10GResource) {
-      return onResourceClassCreation.get(defaultClass, getApi(), ((V10GResource) topResource).implementation());
+      List<ResourceClassExtension<GResource>> list = new ArrayList<>();
+      list.add(defaultClass);
+      list.add(onResourceClassCreation.get(getApi(), ((V10GResource) topResource).implementation()));
+
+      return new ResourceClassExtension.Composite(list);
     }
 
     return onResourceClassCreation == Annotations.ON_RESOURCE_CLASS_CREATION ? buildGlobalForCreate(defaultClass)

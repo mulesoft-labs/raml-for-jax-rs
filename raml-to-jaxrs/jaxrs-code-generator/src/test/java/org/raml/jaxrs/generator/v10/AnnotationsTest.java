@@ -20,13 +20,16 @@ import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClass
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension;
+import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import java.io.File;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -57,11 +60,14 @@ public class AnnotationsTest {
 
     Api type = buildApi(this, "annotations.raml");
 
-    assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(type.resources().get(0)) instanceof TrialResourceClassExtension);
-    assertTrue(Annotations.ON_METHOD_CREATION.get(type.resources().get(0).methods().get(0)) instanceof TrialResourceMethodExtension);
-    assertTrue(Annotations.ON_RESPONSE_CLASS_CREATION.get(type.resources().get(0).methods().get(0)) instanceof TrialResponseClassExtension);
-    assertTrue(Annotations.ON_RESPONSE_METHOD_CREATION.get(type.resources().get(0).methods().get(0)
-        .responses().get(0)) instanceof TrialResponseMethodExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.get(type.resources().get(0))).getElements()
+        .get(0) instanceof TrialResourceClassExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_METHOD_CREATION.get(type.resources().get(0).methods().get(0)))
+        .getElements().get(0) instanceof TrialResourceMethodExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_CLASS_CREATION.get(type.resources().get(0).methods().get(0)))
+        .getElements().get(0) instanceof TrialResponseClassExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_METHOD_CREATION.get(type.resources().get(0).methods().get(0)
+        .responses().get(0))).getElements().get(0) instanceof TrialResponseMethodExtension);
   }
 
   @Test
@@ -69,13 +75,15 @@ public class AnnotationsTest {
 
     Api api = buildApi(this, "annotations.raml");
 
-    assertTrue(Annotations.ON_RESOURCE_CLASS_CREATION.get(api, api.resources().get(1)) instanceof TrialResourceClassExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.get(api, api.resources().get(1)))
+        .getElements().get(0) instanceof TrialResourceClassExtension);
   }
 
-  public static TypeDeclaration buildType(Object test, String raml, int index) {
+  public static TypeDeclaration buildType(Object test, String raml, int index) throws URISyntaxException {
     RamlModelResult ramlModelResult =
         new RamlModelBuilder().buildApi(
-                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)), ".");
+                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)), new File(test
+                                            .getClass().getResource(raml).toURI()).getAbsolutePath());
     if (ramlModelResult.hasErrors()) {
       for (ValidationResult validationResult : ramlModelResult.getValidationResults()) {
         System.out.println(validationResult.getMessage());
@@ -86,10 +94,11 @@ public class AnnotationsTest {
     }
   }
 
-  public static Api buildApi(Object test, String raml) {
+  public static Api buildApi(Object test, String raml) throws URISyntaxException {
     RamlModelResult ramlModelResult =
         new RamlModelBuilder().buildApi(
-                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)), ".");
+                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)), new File(test
+                                            .getClass().getResource(raml).toURI()).getAbsolutePath());
     if (ramlModelResult.hasErrors()) {
       for (ValidationResult validationResult : ramlModelResult.getValidationResults()) {
         System.out.println(validationResult.getMessage());

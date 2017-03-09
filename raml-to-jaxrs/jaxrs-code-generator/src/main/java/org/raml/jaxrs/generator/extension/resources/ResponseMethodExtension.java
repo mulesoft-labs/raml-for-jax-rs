@@ -16,7 +16,11 @@
 package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.MethodSpec;
+import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
+import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
+
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
@@ -30,6 +34,26 @@ public interface ResponseMethodExtension<T extends GResponse> {
       return methodSpec;
     }
   };
+
+  class Composite extends AbstractCompositeExtension<ResponseMethodExtension<GResponse>, MethodSpec.Builder> implements
+      ResponseMethodExtension<GResponse> {
+
+    public Composite(List<ResponseMethodExtension<GResponse>> extensions) {
+      super(extensions);
+    }
+
+    @Override
+    public MethodSpec.Builder onMethod(final ResourceContext context, final GResponse method, MethodSpec.Builder methodSpec) {
+
+      return runList(methodSpec, new ElementJob<ResponseMethodExtension<GResponse>, MethodSpec.Builder>() {
+
+        @Override
+        public MethodSpec.Builder doElement(ResponseMethodExtension<GResponse> e, MethodSpec.Builder builder) {
+          return e.onMethod(context, method, builder);
+        }
+      });
+    }
+  }
 
   MethodSpec.Builder onMethod(ResourceContext context, T method, MethodSpec.Builder methodSpec);
 }

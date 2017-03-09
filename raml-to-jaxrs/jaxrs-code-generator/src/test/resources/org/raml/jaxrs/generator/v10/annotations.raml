@@ -1,60 +1,34 @@
 #%RAML 1.0
 title: Nothing
-annotationTypes:
-    types:
-        allowedTargets: TypeDeclaration
-        properties:
-            className?:
-                type: string
-            implementationClassName?:
-                type: string
-            usePrimitiveType?:
-                type: boolean
-            abstract?:
-                type: boolean
-    resources:
-        allowedTargets: [Resource, API]
-        properties:
-            onResourceClassCreation?: string
-            onResourceClassFinish?: string
-    methods:
-        allowedTargets: [Method, API]
-        properties:
-            onResourceMethodCreation?: string
-            onResourceMethodFinish?: string
-            onResponseClassCreation?: string
-            onResponseClassFinish?: string
-    responses:
-        allowedTargets: [Response, API]
-        properties:
-            onResponseMethodCreation?: string
-            onResponseMethodFinish?: string
-(resources):
-    onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+
+(ramltojaxrs.resources):
+    onResourceClassCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension]
 
 types:
     Fun:
         type: object
-        (types):
+        (ramltojaxrs.types):
             className: Allo
             usePrimitiveType: true
     Fun2:
         type: object
-        (types):
+        (ramltojaxrs.types):
             className: Allo
 /humanity:
-    (resources):
-        onResourceClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension
+    (ramltojaxrs.resources):
+        onResourceClassCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension]
     get:
-        (methods):
-            onResourceMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension
-            onResponseClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension
+        (ramltojaxrs.methods):
+            onResourceMethodCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension]
+            onResponseClassCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension]
         queryParameters:
             type: string
         responses:
             200:
-                (responses):
-                    onResponseMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension
+                (ramltojaxrs.responses):
+                    onResponseMethodCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension]
                 body:
                     application/json:
                         type: string

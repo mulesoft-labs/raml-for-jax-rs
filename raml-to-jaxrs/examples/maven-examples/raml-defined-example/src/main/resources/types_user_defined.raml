@@ -56,14 +56,14 @@ types:
 /humans:
     get:
         (ramltojaxrs.methods):
-            onResourceMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension
-            onResponseClassCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension
+            onResourceMethodCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension ]
+            onResponseClassCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension ]
         queryParameters:
             type: string
         responses:
             200:
                 (ramltojaxrs.responses):
-                    onResponseMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension
+                    onResponseMethodCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension ]
                 body:
                     application/json:
                         type: Human[]
@@ -76,7 +76,7 @@ types:
             responses:
                 200:
                     (ramltojaxrs.responses):
-                        onResponseMethodCreation: org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension
+                        onResponseMethodCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension ]
                     body:
                         application/json:
                             type: Human

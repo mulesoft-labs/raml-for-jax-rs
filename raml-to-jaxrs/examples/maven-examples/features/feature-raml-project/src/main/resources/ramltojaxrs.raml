@@ -1,7 +1,7 @@
 #%RAML 1.0 Library
 annotationTypes:
     types:
-        allowedTargets: [API, TypeDeclaration]
+        allowedTargets: [TypeDeclaration,API]
         properties:
             className?:
                 type: string
@@ -11,22 +11,23 @@ annotationTypes:
                 type: boolean
             abstract?:
                 type: boolean
-            onTypeCreation?: string
+            onTypeCreation?: string[]
+            onTypeFinish?: string[]
 
     resources:
         allowedTargets: [Resource, API]
         properties:
-            onResourceClassCreation?: string
-            onResourceClassFinish?: string
+            onResourceClassCreation?: string[]
+            onResourceClassFinish?: string[]
     methods:
         allowedTargets: [Method, API]
         properties:
-            onResourceMethodCreation?: string
-            onResourceMethodFinish?: string
-            onResponseClassCreation?: string
-            onResponseClassFinish?: string
+            onResourceMethodCreation?: string[]
+            onResourceMethodFinish?: string[]
+            onResponseClassCreation?: string[]
+            onResponseClassFinish?: string[]
     responses:
         allowedTargets: [Response, API]
         properties:
-            onResponseMethodCreation?: string
-            onResponseMethodFinish?: string
+            onResponseMethodCreation?: string[]
+            onResponseMethodFinish?: string[]

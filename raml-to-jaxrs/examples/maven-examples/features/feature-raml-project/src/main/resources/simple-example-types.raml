@@ -8,7 +8,7 @@ uses:
 types:
     Network:
         (ramltojaxrs.types):
-            onTypeCreation: org.raml.jaxrs.features.AddAnnotationToTypePlugin
+            onTypeCreation: [org.raml.jaxrs.features.AddAnnotationToTypePlugin]
         type: object
         properties:
             name:

@@ -79,3 +79,10 @@ types:
                 type: string
 ```
 Both the implementation and declaration will be marked @Deprecated
+
+## I want to suppress a type from being generated.
+
+As a rule, plugins that return null values suppress the generation of that item.
+
+The Switch type in our [raml project](feature-raml-project/src/main/resources/simple-example-types.raml) is suppressed,
+as the org.raml.jaxrs.features.SuppressTypePlugin returns null.

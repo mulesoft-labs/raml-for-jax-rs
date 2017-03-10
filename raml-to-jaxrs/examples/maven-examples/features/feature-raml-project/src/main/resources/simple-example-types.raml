@@ -8,7 +8,7 @@ uses:
 types:
     Network:
         (ramltojaxrs.types):
-            onTypeCreation: [org.raml.jaxrs.features.AddAnnotationToTypePlugin]
+            onTypeCreation: [org.raml.jaxrs.features.AddDeprecatedAnnotationToTypePlugin]
         type: object
         properties:
             name:
@@ -17,3 +17,11 @@ types:
             dns-address:
                 required: true
                 type: string
+    Switch:
+        (ramltojaxrs.types):
+            onTypeCreation: [org.raml.jaxrs.features.SuppressTypePlugin]
+        type: object
+        properties:
+            portcount:
+                required: true
+                type: integer

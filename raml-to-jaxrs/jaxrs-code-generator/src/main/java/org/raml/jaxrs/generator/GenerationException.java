@@ -35,4 +35,9 @@ public class GenerationException extends RuntimeException {
   public GenerationException(String s) {
     super(s);
   }
+
+  public GenerationException(String s, Exception e) {
+    super(s, e);
+  }
+
 }

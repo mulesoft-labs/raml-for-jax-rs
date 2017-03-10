@@ -259,7 +259,7 @@ public abstract class Annotations<T> {
       try {
         return (T) Class.forName(className).newInstance();
       } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-        throw new GenerationException("Cannot find resource creation extension: " + className);
+        throw new GenerationException("Cannot find resource creation extension: " + className, e);
       }
     }
   }
@@ -279,7 +279,7 @@ public abstract class Annotations<T> {
           try {
             return (T) Class.forName(className).newInstance();
           } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            throw new GenerationException("Cannot find resource creation extension: " + className);
+            throw new GenerationException("Cannot find resource creation extension: " + className, e);
           }
         }
       });

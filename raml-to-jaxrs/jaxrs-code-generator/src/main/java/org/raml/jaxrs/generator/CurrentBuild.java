@@ -180,8 +180,11 @@ public class CurrentBuild {
           }, BuildPhase.INTERFACE);
         }
 
-        JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
-        file.build().writeTo(rootDirectory);
+        if (containing != null) {
+
+          JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
+          file.build().writeTo(rootDirectory);
+        }
       }
     },
              BuildPhase.INTERFACE
@@ -206,8 +209,10 @@ public class CurrentBuild {
             }, BuildPhase.IMPLEMENTATION);
           }
 
-          JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
-          file.build().writeTo(rootDirectory);
+          if (containing != null) {
+            JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
+            file.build().writeTo(rootDirectory);
+          }
         }
       },
                BuildPhase.IMPLEMENTATION);

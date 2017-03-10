@@ -37,7 +37,9 @@ import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
+import org.raml.jaxrs.generator.extension.types.FieldExtension;
 import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
+import org.raml.jaxrs.generator.extension.types.MethodExtension;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
@@ -328,6 +330,18 @@ public class CurrentBuild {
                                         Annotations<TypeExtension> typeExtensionAnnotation, V10GType type) {
 
     return typeExtensionAnnotation.get(getApi(), type.implementation());
+  }
+
+  public MethodExtension getMethodExtension(
+                                            Annotations<MethodExtension> methodExtensionAnnotations, V10GType type) {
+
+    return methodExtensionAnnotations.get(getApi(), type.implementation());
+  }
+
+  public FieldExtension getFieldExtension(
+                                          Annotations<FieldExtension> fieldExtensionAnnotations, V10GType type) {
+
+    return fieldExtensionAnnotations.get(getApi(), type.implementation());
   }
 
 

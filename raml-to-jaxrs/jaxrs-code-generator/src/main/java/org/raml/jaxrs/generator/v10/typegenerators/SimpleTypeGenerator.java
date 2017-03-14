@@ -36,17 +36,19 @@ public class SimpleTypeGenerator implements JavaPoetTypeGenerator {
   private final V10GType originalType;
   private final V10TypeRegistry registry;
   private final CurrentBuild currentBuild;
+  private final TypeExtension typeExtension;
 
-  public SimpleTypeGenerator(V10GType originalType, V10TypeRegistry registry, CurrentBuild currentBuild) {
+  public SimpleTypeGenerator(V10GType originalType, V10TypeRegistry registry, CurrentBuild currentBuild,
+          TypeExtension typeExtension) {
     this.originalType = originalType;
     this.registry = registry;
     this.currentBuild = currentBuild;
+    this.typeExtension = typeExtension;
   }
 
   @Override
   public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
 
-    TypeExtension typeExtension = new SimpleInheritanceExtension(originalType, registry, currentBuild);
     rootDirectory.into(typeExtension.onType(new SimpleTypeContextImpl(currentBuild, this), null, originalType, buildPhase));
   }
 

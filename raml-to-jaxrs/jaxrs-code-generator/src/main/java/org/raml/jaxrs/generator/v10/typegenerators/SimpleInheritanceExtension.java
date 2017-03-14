@@ -54,7 +54,7 @@ import java.util.List;
 /**
  * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
  */
-class SimpleInheritanceExtension implements TypeExtension {
+public class SimpleInheritanceExtension implements TypeExtension {
 
   private final V10GType originalType;
   private final V10TypeRegistry registry;

@@ -21,6 +21,7 @@ import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.typegenerators.EnumerationGenerator;
+import org.raml.jaxrs.generator.v10.typegenerators.SimpleInheritanceExtension;
 import org.raml.jaxrs.generator.v10.typegenerators.UnionTypeGenerator;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
@@ -34,7 +35,7 @@ public class V10TypeFactory {
   public static TypeGenerator createObjectType(final V10TypeRegistry registry, final CurrentBuild currentBuild,
                                                final V10GType originalType, boolean publicType) {
 
-    TypeGenerator generator = new SimpleTypeGenerator(originalType, registry, currentBuild);
+    TypeGenerator generator = new SimpleTypeGenerator(originalType, registry, currentBuild, new SimpleInheritanceExtension(originalType, registry, currentBuild));
 
     if (publicType) {
       currentBuild.newGenerator(originalType.name(), generator);

@@ -77,6 +77,9 @@ public interface V10GType extends GType {
 
   boolean isInline();
 
+  String discriminator();
+  String discriminatorValue();
+
 
   Collection<V10GType> childClasses(String typeName);
 

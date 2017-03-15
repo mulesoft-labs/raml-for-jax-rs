@@ -202,7 +202,6 @@ public class SimpleInheritanceExtension implements TypeExtension {
   }
 
   private TypeSpec.Builder buildDeclaration(TypeContext context, V10GType objectType) {
-    ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
 
     List<V10GType> parentTypes = originalType.parentTypes();
     int internalTypeCounter = 0;
@@ -247,7 +246,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
 
     for (GType parentType : parentTypes) {
 
-      if (parentType.name().equals("object")) {
+      if ("object".equals(parentType.name())) {
 
         continue;
       }
@@ -261,14 +260,14 @@ public class SimpleInheritanceExtension implements TypeExtension {
       return null;
     }
 
-    buildPropertiesForInterface(context, objectType, object, properties, typeSpec);
+    buildPropertiesForInterface(context, objectType, properties, typeSpec);
 
     context.addImplementation();
     typeSpec = runClassExtensions(context, objectType, typeSpec, BuildPhase.INTERFACE, Annotations.ON_TYPE_CLASS_FINISH);
     return typeSpec;
   }
 
-  private void buildPropertiesForInterface(TypeContext context, V10GType objectType, ObjectTypeDeclaration object,
+  private void buildPropertiesForInterface(TypeContext context, V10GType objectType,
                                            List<PropertyInfo> properties, TypeSpec.Builder typeSpec) {
     for (PropertyInfo propertyInfo : properties) {
 
@@ -286,7 +285,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
         typeSpec.addMethod(getSpec.build());
       }
 
-      if (!propertyInfo.getName().equals(object.discriminator())) {
+      if (!propertyInfo.getName().equals(objectType.discriminator())) {
         MethodSpec.Builder setSpec = MethodSpec
             .methodBuilder(Names.methodName("set", propertyInfo.getName()))
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
@@ -344,14 +343,14 @@ public class SimpleInheritanceExtension implements TypeExtension {
   }
 
   private TypeSpec.Builder runClassExtensions(TypeContext context, V10GType objectType, TypeSpec.Builder typeSpec,
-                                              BuildPhase implementation, Annotations<TypeExtension> annotation) {
+                                              BuildPhase buildPhase, Annotations<TypeExtension> annotation) {
     if (annotation == Annotations.ON_TYPE_CLASS_CREATION) {
-      typeSpec = context.onType(context, typeSpec, objectType, implementation);
+      typeSpec = context.onType(context, typeSpec, objectType, buildPhase);
     }
 
     typeSpec =
         currentBuild.getTypeExtension(annotation, objectType)
-            .onType(context, typeSpec, objectType, implementation);
+            .onType(context, typeSpec, objectType, buildPhase);
     return typeSpec;
   }
 }

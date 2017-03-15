@@ -119,6 +119,15 @@ public class V10GTypeObject extends V10GTypeHelper {
     return inline;
   }
 
+  @Override
+  public String discriminator() {
+    return ((ObjectTypeDeclaration) typeDeclaration).discriminator();
+  }
+
+  @Override
+  public String discriminatorValue() {
+    return ((ObjectTypeDeclaration) typeDeclaration).discriminatorValue();
+  }
 
   public Collection<V10GType> childClasses(String typeName) {
 

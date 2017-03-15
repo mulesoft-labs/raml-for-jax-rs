@@ -83,6 +83,15 @@ public abstract class V10GTypeHelper implements V10GType {
     return null;
   }
 
+  @Override
+  public String discriminator() {
+    return null;
+  }
+
+  @Override
+  public String discriminatorValue() {
+    return null;
+  }
 
   @Override
   public boolean isEnum() {

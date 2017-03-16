@@ -87,3 +87,10 @@ Plugins that return null values suppress the generation of that item.
 
 The Switch type in our [raml project](feature-raml-project/src/main/resources/simple-example-types.raml) is suppressed,
 as the org.raml.jaxrs.features.SuppressTypePlugin returns null.
+
+## Example #3:  I'd like to have chainable setters ?
+
+The ChainableRouter type uses the ChainSetter extension.  The idea for replacing the method is to use the JavaPoet builders, 
+building the original builder and creating a new builder an copuying the important features, like the parameters and annotations.
+
+

@@ -17,7 +17,9 @@ package org.raml.jaxrs.generator.extension.types;
 
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 
@@ -39,6 +41,29 @@ public interface MethodExtension {
       return builder;
     }
   };
+
+  class Composite extends AbstractCompositeExtension<MethodExtension, MethodSpec.Builder> implements MethodExtension {
+
+    public Composite(List<MethodExtension> extensions) {
+      super(extensions);
+    }
+
+    @Override
+    public MethodSpec.Builder onMethod(final TypeContext context, MethodSpec.Builder builder,
+                                       final List<ParameterSpec.Builder> parameters, final V10GType containingType,
+                                       final V10GProperty property, final BuildPhase buildPhase,
+                                       final MethodType methodType) {
+
+      return runList(builder, new ElementJob<MethodExtension, MethodSpec.Builder>() {
+
+        @Override
+        public MethodSpec.Builder doElement(MethodExtension e, MethodSpec.Builder builder) {
+
+          return e.onMethod(context, builder, parameters, containingType, property, buildPhase, methodType);
+        }
+      });
+    }
+  }
 
   MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder, List<ParameterSpec.Builder> parameters,
                               V10GType containingType, V10GProperty property,

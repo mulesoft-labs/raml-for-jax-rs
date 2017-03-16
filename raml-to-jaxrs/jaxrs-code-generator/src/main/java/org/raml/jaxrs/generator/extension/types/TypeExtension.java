@@ -28,9 +28,9 @@ import java.util.List;
  */
 public interface TypeExtension {
 
-  class TypeExtensionComposite extends AbstractCompositeExtension<TypeExtension, TypeSpec.Builder> implements TypeExtension {
+  class Composite extends AbstractCompositeExtension<TypeExtension, TypeSpec.Builder> implements TypeExtension {
 
-    public TypeExtensionComposite(List<TypeExtension> extensions) {
+    public Composite(List<TypeExtension> extensions) {
       super(extensions);
     }
 

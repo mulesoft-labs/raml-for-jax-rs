@@ -35,7 +35,9 @@ public class V10TypeFactory {
   public static TypeGenerator createObjectType(final V10TypeRegistry registry, final CurrentBuild currentBuild,
                                                final V10GType originalType, boolean publicType) {
 
-    TypeGenerator generator = new SimpleTypeGenerator(originalType, registry, currentBuild, new SimpleInheritanceExtension(originalType, registry, currentBuild));
+    TypeGenerator generator =
+        new SimpleTypeGenerator(originalType, registry, currentBuild, new SimpleInheritanceExtension(originalType, registry,
+                                                                                                     currentBuild));
 
     if (publicType) {
       currentBuild.newGenerator(originalType.name(), generator);

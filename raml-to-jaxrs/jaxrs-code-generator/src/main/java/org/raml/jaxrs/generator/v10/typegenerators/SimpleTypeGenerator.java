@@ -39,7 +39,7 @@ public class SimpleTypeGenerator implements JavaPoetTypeGenerator {
   private final TypeExtension typeExtension;
 
   public SimpleTypeGenerator(V10GType originalType, V10TypeRegistry registry, CurrentBuild currentBuild,
-          TypeExtension typeExtension) {
+                             TypeExtension typeExtension) {
     this.originalType = originalType;
     this.registry = registry;
     this.currentBuild = currentBuild;

@@ -198,7 +198,7 @@ public abstract class Annotations<T> {
       List<String> classNames = getWithDefault("types", "onTypeCreation", null, target, others);
 
       List<TypeExtension> extension = createExtension(classNames);
-      return new TypeExtension.TypeExtensionComposite(extension);
+      return new TypeExtension.Composite(extension);
     }
   };
 
@@ -209,7 +209,7 @@ public abstract class Annotations<T> {
       List<String> classNames = getWithDefault("types", "onTypeFinish", null, target, others);
 
       List<TypeExtension> extension = createExtension(classNames);
-      return new TypeExtension.TypeExtensionComposite(extension);
+      return new TypeExtension.Composite(extension);
     }
   };
 
@@ -235,20 +235,11 @@ public abstract class Annotations<T> {
 
     @Override
     public MethodExtension get(Annotable target, Annotable... others) {
-      String className = getWithDefault("types", "onMethodCreation", null, target, others);
-      return createExtension(className, MethodExtension.NULL_METHOD_EXTENSION);
+      List<String> classNames = getWithDefault("types", "onMethodCreation", null, target, others);
+      List<MethodExtension> extension = createExtension(classNames);
+      return new MethodExtension.Composite(extension);
     }
   };
-
-  public static Annotations<MethodExtension> ON_TYPE_METHOD_FINISH = new Annotations<MethodExtension>() {
-
-    @Override
-    public MethodExtension get(Annotable target, Annotable... others) {
-      String className = getWithDefault("types", "onMethodFinish", null, target, others);
-      return createExtension(className, MethodExtension.NULL_METHOD_EXTENSION);
-    }
-  };
-
 
   private static <T> T createExtension(String className, T nullExtension) {
     if (className == null) {

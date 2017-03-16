@@ -25,3 +25,15 @@ types:
             portcount:
                 required: true
                 type: integer
+
+    ChainableRouter:
+        (ramltojaxrs.types):
+            onMethodCreation: [org.raml.jaxrs.features.ChainSetter]
+        type: object
+        properties:
+            portcount:
+                required: true
+                type: integer
+            routerName:
+                required: true
+                type: string

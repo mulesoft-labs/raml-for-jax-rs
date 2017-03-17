@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator.matchers;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -41,9 +42,9 @@ public class TypeSpecMatchers {
     };
   }
 
-  public static Matcher<TypeSpec> superclasses(Matcher<Iterable<? extends TypeName>> memberMatcher) {
+  public static Matcher<TypeSpec> superInterfaces(Matcher<Iterable<? extends TypeName>> memberMatcher) {
 
-    return new FeatureMatcher<TypeSpec, Iterable<? extends TypeName>>(memberMatcher, "superclass", "superclass") {
+    return new FeatureMatcher<TypeSpec, Iterable<? extends TypeName>>(memberMatcher, "super interfaces", "super interfaces") {
 
       @Override
       protected Iterable<? extends TypeName> featureValueOf(TypeSpec actual) {
@@ -61,6 +62,18 @@ public class TypeSpecMatchers {
       protected Iterable<? extends MethodSpec> featureValueOf(TypeSpec actual) {
 
         return actual.methodSpecs;
+      }
+    };
+  }
+
+  public static Matcher<TypeSpec> fields(Matcher<Iterable<? extends FieldSpec>> memberMatcher) {
+
+    return new FeatureMatcher<TypeSpec, Iterable<? extends FieldSpec>>(memberMatcher, "field", "field") {
+
+      @Override
+      protected Iterable<? extends FieldSpec> featureValueOf(TypeSpec actual) {
+
+        return actual.fieldSpecs;
       }
     };
   }

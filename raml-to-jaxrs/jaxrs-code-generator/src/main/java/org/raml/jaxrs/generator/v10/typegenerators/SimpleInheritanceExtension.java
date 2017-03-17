@@ -43,7 +43,6 @@ import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.jaxrs.generator.v10.types.V10TypeFactory;
 import org.raml.v2.api.model.v10.common.Annotable;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.lang.model.element.Modifier;
@@ -78,8 +77,6 @@ public class SimpleInheritanceExtension implements TypeExtension {
   }
 
   private TypeSpec.Builder buildTypeImplementation(TypeContext context, V10GType objectType) {
-
-    ObjectTypeDeclaration object = (ObjectTypeDeclaration) objectType.implementation();
 
     ClassName className = originalType.javaImplementationName(context.getModelPackage());
 
@@ -130,23 +127,23 @@ public class SimpleInheritanceExtension implements TypeExtension {
       }
     }
 
-    buildPropertiesForImplementation(context, objectType, object, typeSpec, properties);
+    buildPropertiesForImplementation(context, objectType, typeSpec, properties);
 
     typeSpec = runClassExtensions(context, objectType, typeSpec, BuildPhase.IMPLEMENTATION, Annotations.ON_TYPE_CLASS_FINISH);
 
     return typeSpec;
   }
 
-  private void buildPropertiesForImplementation(TypeContext context, V10GType objectType, ObjectTypeDeclaration object,
-                                                TypeSpec.Builder typeSpec, List<PropertyInfo> properties) {
+  private void buildPropertiesForImplementation(TypeContext context, V10GType objectType,
+          TypeSpec.Builder typeSpec, List<PropertyInfo> properties) {
     for (PropertyInfo propertyInfo : properties) {
 
       FieldSpec.Builder fieldSpec =
           FieldSpec.builder(propertyInfo.resolve(context), Names.variableName(propertyInfo.getName()))
               .addModifiers(Modifier.PRIVATE);
 
-      if (propertyInfo.getName().equals(object.discriminator())) {
-        fieldSpec.initializer("$S", object.discriminatorValue());
+      if (propertyInfo.getName().equals(objectType.discriminator())) {
+        fieldSpec.initializer("$S", objectType.discriminatorValue());
       }
 
       fieldSpec =
@@ -176,7 +173,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
 
       typeSpec.addMethod(getSpec.build());
 
-      if (!propertyInfo.getName().equals(object.discriminator())) {
+      if (!propertyInfo.getName().equals(objectType.discriminator())) {
 
         MethodSpec.Builder setSpec = MethodSpec
             .methodBuilder("set" + Names.typeName(propertyInfo.getName()))

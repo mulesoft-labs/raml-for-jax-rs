@@ -30,18 +30,6 @@ import java.util.List;
  */
 public interface MethodExtension {
 
-  MethodExtension NULL_METHOD_EXTENSION = new MethodExtension() {
-
-    @Override
-    public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
-                                       List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
-                                       BuildPhase buildPhase,
-                                       MethodType methodType) {
-
-      return builder;
-    }
-  };
-
   class Composite extends AbstractCompositeExtension<MethodExtension, MethodSpec.Builder> implements MethodExtension {
 
     public Composite(List<MethodExtension> extensions) {

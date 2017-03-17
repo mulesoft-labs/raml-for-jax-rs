@@ -217,17 +217,10 @@ public abstract class Annotations<T> {
 
     @Override
     public FieldExtension get(Annotable target, Annotable... others) {
-      String className = getWithDefault("types", "onFieldCreation", null, target, others);
-      return createExtension(className, FieldExtension.NULL_FIELD_EXTENSION);
-    }
-  };
+      List<String> classNames = getWithDefault("types", "onFieldCreation", null, target, others);
+      List<FieldExtension> extensions = createExtension(classNames);
 
-  public static Annotations<FieldExtension> ON_TYPE_FIELD_FINISH = new Annotations<FieldExtension>() {
-
-    @Override
-    public FieldExtension get(Annotable target, Annotable... others) {
-      String className = getWithDefault("types", "onFieldFinish", null, target, others);
-      return createExtension(className, FieldExtension.NULL_FIELD_EXTENSION);
+      return new FieldExtension.Composite(extensions);
     }
   };
 
@@ -240,20 +233,6 @@ public abstract class Annotations<T> {
       return new MethodExtension.Composite(extension);
     }
   };
-
-  private static <T> T createExtension(String className, T nullExtension) {
-    if (className == null) {
-
-      return nullExtension;
-    } else {
-
-      try {
-        return (T) Class.forName(className).newInstance();
-      } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-        throw new GenerationException("Cannot find resource creation extension: " + className, e);
-      }
-    }
-  }
 
   private static <T> List<T> createExtension(List<String> classNames) {
     if (classNames == null) {

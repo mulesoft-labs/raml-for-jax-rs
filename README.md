@@ -1,13 +1,12 @@
-=======
 ![](http://raml.org/images/logo.png)
-RAML for JAX-RS
-===============
+
+# RAML for JAX-RS
 
 ### Introduction
 The goal of RAML for JAX-RS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAX-RS application based on an existing RAML API definition (Code Generation),
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
 
-### Project Modules
+### Documentation
 There are two projects: [JAXRS to RAML](jaxrs-to-raml/README.md) and [RAML to JAXRS](raml-to-jaxrs/README.md).
 
 ### Maven artifacts

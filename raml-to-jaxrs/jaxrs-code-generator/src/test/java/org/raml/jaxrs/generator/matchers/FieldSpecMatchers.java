@@ -36,13 +36,13 @@ public class FieldSpecMatchers {
     };
   }
 
-  public static Matcher<FieldSpec> fieldType(Matcher<TypeName> match) {
+  public static <T extends TypeName > Matcher<FieldSpec> fieldType(Matcher<T> match) {
 
-    return new FeatureMatcher<FieldSpec, TypeName>(match, "type name", "type name") {
+    return new FeatureMatcher<FieldSpec, T>(match, "type name", "type name") {
 
       @Override
-      protected TypeName featureValueOf(FieldSpec actual) {
-        return actual.type;
+      protected T featureValueOf(FieldSpec actual) {
+        return (T) actual.type;
       }
     };
   }

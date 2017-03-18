@@ -223,7 +223,7 @@ public class SimpleInheritanceExtensionTest {
 
         assertNotNull(builder);
         TypeName type = ClassName.get(String.class);
-        TypeName fieldClass = ClassName.get(String.class);
+
         assertThat(builder.build(),
                 allOf(
                         TypeSpecMatchers.methods(
@@ -240,7 +240,7 @@ public class SimpleInheritanceExtensionTest {
                                 containsInAnyOrder(
                                         allOf(
                                             FieldSpecMatchers.fieldName(equalTo("mimi")),
-                                            FieldSpecMatchers.fieldType(equalTo(fieldClass))
+                                            FieldSpecMatchers.fieldType(equalTo(ClassName.get(String.class)))
                                         )
                                 )
                         )));

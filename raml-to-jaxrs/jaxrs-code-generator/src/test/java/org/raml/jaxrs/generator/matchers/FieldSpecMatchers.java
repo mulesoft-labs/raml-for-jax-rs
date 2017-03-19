@@ -29,6 +29,7 @@ public class FieldSpecMatchers {
   public static Matcher<FieldSpec> fieldName(Matcher<String> match) {
 
     return new FeatureMatcher<FieldSpec, String>(match, "field name", "field name") {
+
       @Override
       protected String featureValueOf(FieldSpec actual) {
         return actual.name;
@@ -36,7 +37,7 @@ public class FieldSpecMatchers {
     };
   }
 
-  public static <T extends TypeName > Matcher<FieldSpec> fieldType(Matcher<T> match) {
+  public static <T extends TypeName> Matcher<FieldSpec> fieldType(Matcher<T> match) {
 
     return new FeatureMatcher<FieldSpec, T>(match, "type name", "type name") {
 

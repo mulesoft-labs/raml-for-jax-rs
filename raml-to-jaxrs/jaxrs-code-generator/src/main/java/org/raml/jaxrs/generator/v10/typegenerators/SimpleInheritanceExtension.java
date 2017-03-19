@@ -135,7 +135,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
   }
 
   private void buildPropertiesForImplementation(TypeContext context, V10GType objectType,
-          TypeSpec.Builder typeSpec, List<PropertyInfo> properties) {
+                                                TypeSpec.Builder typeSpec, List<PropertyInfo> properties) {
     for (PropertyInfo propertyInfo : properties) {
 
       FieldSpec.Builder fieldSpec =

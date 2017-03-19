@@ -31,8 +31,10 @@ public class GsonExtension extends TypeExtensionHelper {
   public void onFieldImplementation(CurrentBuild currentBuild, FieldSpec.Builder fieldSpec,
                                     TypeDeclaration typeDeclaration) {
 
-    fieldSpec.addAnnotation(AnnotationSpec.builder(SerializedName.class)
-        .addMember("value", "$S", typeDeclaration.name()).build());
-    fieldSpec.addAnnotation(AnnotationSpec.builder(Expose.class).build());
+    fieldSpec
+        .addAnnotation(
+                       AnnotationSpec.builder(SerializedName.class)
+                           .addMember("value", "$S", typeDeclaration.name()).build())
+        .addAnnotation(AnnotationSpec.builder(Expose.class).build());
   }
 }

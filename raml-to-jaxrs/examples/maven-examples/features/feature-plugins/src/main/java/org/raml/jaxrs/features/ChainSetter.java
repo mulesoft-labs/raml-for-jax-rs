@@ -19,6 +19,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.extension.types.MethodExtension;
 import org.raml.jaxrs.generator.extension.types.MethodType;
@@ -38,14 +39,14 @@ import static org.raml.jaxrs.generator.Names.typeName;
 public class ChainSetter implements MethodExtension {
 
   @Override
-  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+  public MethodSpec.Builder onMethod(TypeContext context, TypeSpec.Builder typeSpec, MethodSpec.Builder methodSpec,
                                      List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
                                      BuildPhase buildPhase,
                                      MethodType methodType) {
 
     if (methodType == PredefinedMethodType.SETTER) {
 
-      MethodSpec seen = builder.build();
+      MethodSpec seen = methodSpec.build();
       MethodSpec.Builder newBuilder = MethodSpec.methodBuilder(methodName("with", property.name()))
           .addModifiers(seen.modifiers)
           .returns(ClassName.get(context.getModelPackage(), typeName(containingType.name())));
@@ -64,10 +65,10 @@ public class ChainSetter implements MethodExtension {
         return newBuilder;
       }
 
-      return builder;
+      return methodSpec;
     } else {
 
-      return builder;
+      return methodSpec;
     }
   }
 

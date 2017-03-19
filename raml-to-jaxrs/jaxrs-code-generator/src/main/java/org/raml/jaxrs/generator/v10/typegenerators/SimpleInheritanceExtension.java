@@ -147,31 +147,34 @@ public class SimpleInheritanceExtension implements TypeExtension {
       }
 
       fieldSpec =
-          context.onField(context, fieldSpec, objectType, (V10GProperty) propertyInfo.getProperty(),
-                          BuildPhase.IMPLEMENTATION,
-                          PredefinedFieldType.PROPERTY);
+          context.onField(context, typeSpec, fieldSpec, objectType,
+                          (V10GProperty) propertyInfo.getProperty(),
+                          BuildPhase.IMPLEMENTATION, PredefinedFieldType.PROPERTY);
 
       fieldSpec =
           currentBuild.getFieldExtension(Annotations.ON_TYPE_FIELD_CREATION, objectType)
-              .onField(context, fieldSpec, objectType, (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION,
-                       PredefinedFieldType.PROPERTY);
+              .onField(context, typeSpec, fieldSpec, objectType, (V10GProperty) propertyInfo.getProperty(),
+                       BuildPhase.IMPLEMENTATION, PredefinedFieldType.PROPERTY);
 
       if (fieldSpec != null) {
 
         typeSpec.addField(fieldSpec.build());
       }
 
-      final MethodSpec.Builder getSpec = MethodSpec
+      MethodSpec.Builder getSpec = MethodSpec
           .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
           .addModifiers(Modifier.PUBLIC)
           .addStatement("return this." + Names.variableName(propertyInfo.getName()));
 
       getSpec.returns(propertyInfo.resolve(context));
-      runMethodExtensions(context, objectType, getSpec, Collections.<ParameterSpec.Builder>emptyList(),
-                          (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION, PredefinedMethodType.GETTER,
-                          Annotations.ON_TYPE_METHOD_CREATION);
+      getSpec =
+          runMethodExtensions(context, objectType, typeSpec, getSpec, Collections.<ParameterSpec.Builder>emptyList(),
+                              (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION, PredefinedMethodType.GETTER,
+                              Annotations.ON_TYPE_METHOD_CREATION);
 
-      typeSpec.addMethod(getSpec.build());
+      if (getSpec != null) {
+        typeSpec.addMethod(getSpec.build());
+      }
 
       if (!propertyInfo.getName().equals(objectType.discriminator())) {
 
@@ -187,7 +190,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
         setSpec.addParameter(parameterSpec.build());
 
         setSpec =
-            runMethodExtensions(context, objectType, setSpec, Collections.singletonList(parameterSpec),
+            runMethodExtensions(context, objectType, typeSpec, setSpec, Collections.singletonList(parameterSpec),
                                 (V10GProperty) propertyInfo.getProperty(), BuildPhase.IMPLEMENTATION,
                                 PredefinedMethodType.SETTER, Annotations.ON_TYPE_METHOD_CREATION);
 
@@ -274,7 +277,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
       getSpec.returns(propertyInfo.resolve(context));
 
       getSpec =
-          runMethodExtensions(context, objectType, getSpec, Collections.<ParameterSpec.Builder>emptyList(),
+          runMethodExtensions(context, objectType, typeSpec, getSpec, Collections.<ParameterSpec.Builder>emptyList(),
                               (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE, PredefinedMethodType.GETTER,
                               Annotations.ON_TYPE_METHOD_CREATION);
 
@@ -293,7 +296,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
             parameterSpec.build());
 
         setSpec =
-            runMethodExtensions(context, objectType, setSpec, Collections.singletonList(parameterSpec),
+            runMethodExtensions(context, objectType, typeSpec, setSpec, Collections.singletonList(parameterSpec),
                                 (V10GProperty) propertyInfo.getProperty(), BuildPhase.INTERFACE, PredefinedMethodType.SETTER,
                                 Annotations.ON_TYPE_METHOD_CREATION);
 
@@ -325,17 +328,17 @@ public class SimpleInheritanceExtension implements TypeExtension {
     throw new GenerationException("don't know what to do with type " + type.getDeclaredType());
   }
 
-  private MethodSpec.Builder runMethodExtensions(TypeContext context, V10GType objectType,
+  private MethodSpec.Builder runMethodExtensions(TypeContext context, V10GType objectType, TypeSpec.Builder typeSpec,
                                                  MethodSpec.Builder getSpec, List<ParameterSpec.Builder> parameters,
                                                  V10GProperty property,
                                                  BuildPhase phase,
                                                  MethodType methodType, Annotations<MethodExtension> annotations) {
 
-    MethodSpec.Builder builder = context.onMethod(context, getSpec, parameters, objectType,
-                                                  property, phase, methodType);
+    MethodSpec.Builder builder = context.onMethod(context, typeSpec, getSpec, parameters,
+                                                  objectType, property, phase, methodType);
 
     builder = currentBuild.getMethodExtension(annotations, objectType)
-        .onMethod(context, builder, parameters, objectType, property, phase, methodType);
+        .onMethod(context, typeSpec, builder, parameters, objectType, property, phase, methodType);
     return builder;
   }
 

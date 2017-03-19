@@ -37,23 +37,24 @@ public interface MethodExtension {
     }
 
     @Override
-    public MethodSpec.Builder onMethod(final TypeContext context, MethodSpec.Builder builder,
+    public MethodSpec.Builder onMethod(final TypeContext context, final TypeSpec.Builder typeSpec, MethodSpec.Builder methodSpec,
                                        final List<ParameterSpec.Builder> parameters, final V10GType containingType,
                                        final V10GProperty property, final BuildPhase buildPhase,
                                        final MethodType methodType) {
 
-      return runList(builder, new ElementJob<MethodExtension, MethodSpec.Builder>() {
+      return runList(methodSpec, new ElementJob<MethodExtension, MethodSpec.Builder>() {
 
         @Override
         public MethodSpec.Builder doElement(MethodExtension e, MethodSpec.Builder builder) {
 
-          return e.onMethod(context, builder, parameters, containingType, property, buildPhase, methodType);
+          return e.onMethod(context, typeSpec, builder, parameters, containingType, property, buildPhase, methodType);
         }
       });
     }
   }
 
-  MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder, List<ParameterSpec.Builder> parameters,
+  MethodSpec.Builder onMethod(TypeContext context, TypeSpec.Builder typeSpec, MethodSpec.Builder methodSpec,
+                              List<ParameterSpec.Builder> parameters,
                               V10GType containingType, V10GProperty property,
                               BuildPhase buildPhase, MethodType methodType);
 }

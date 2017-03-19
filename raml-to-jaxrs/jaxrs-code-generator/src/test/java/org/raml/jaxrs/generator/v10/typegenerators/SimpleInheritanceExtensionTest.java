@@ -252,73 +252,75 @@ public class SimpleInheritanceExtensionTest {
 
 
     when(typeContext.onMethod(
-                              eq(typeContext), any(MethodSpec.Builder.class), eq(Collections.<ParameterSpec.Builder>emptyList()),
-                              eq(type), eq(property), eq(phase),
-                              eq(PredefinedMethodType.GETTER))).then(new Answer<MethodSpec.Builder>() {
+                              eq(typeContext), any(TypeSpec.Builder.class), any(MethodSpec.Builder.class),
+                              eq(Collections.<ParameterSpec.Builder>emptyList()), eq(type), eq(property),
+                              eq(phase), eq(PredefinedMethodType.GETTER))).then(new Answer<MethodSpec.Builder>() {
 
       @Override
       public MethodSpec.Builder answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArgument(1);
+        return invocation.getArgument(2);
       }
     });
 
     when(
          methodExtension.onMethod(
-                                  eq(typeContext), any(MethodSpec.Builder.class),
-                                  eq(Collections.<ParameterSpec.Builder>emptyList()),
-                                  eq(type), eq(property), eq(phase),
-                                  eq(PredefinedMethodType.GETTER))).then(new Answer<MethodSpec.Builder>() {
+                                  eq(typeContext), any(TypeSpec.Builder.class),
+                                  any(MethodSpec.Builder.class),
+                                  eq(Collections.<ParameterSpec.Builder>emptyList()), eq(type), eq(property),
+                                  eq(phase), eq(PredefinedMethodType.GETTER))).then(new Answer<MethodSpec.Builder>() {
 
       @Override
       public MethodSpec.Builder answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArgument(1);
+        return invocation.getArgument(2);
       }
     });
 
 
 
     when(typeContext.onMethod(
-                              eq(typeContext), any(MethodSpec.Builder.class), any(List.class),
-                              eq(type), eq(property), eq(phase),
-                              eq(PredefinedMethodType.SETTER))).then(new Answer<MethodSpec.Builder>() {
+                              eq(typeContext), any(TypeSpec.Builder.class), any(MethodSpec.Builder.class),
+                              any(List.class), eq(type), eq(property),
+                              eq(phase), eq(PredefinedMethodType.SETTER))).then(new Answer<MethodSpec.Builder>() {
 
       @Override
       public MethodSpec.Builder answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArgument(1);
+        return invocation.getArgument(2);
       }
     });
 
     when(methodExtension.onMethod(
-                                  eq(typeContext), any(MethodSpec.Builder.class), any(List.class),
-                                  eq(type), eq(property), eq(phase),
-                                  eq(PredefinedMethodType.SETTER))).then(new Answer<MethodSpec.Builder>() {
+                                  eq(typeContext), any(TypeSpec.Builder.class), any(MethodSpec.Builder.class),
+                                  any(List.class), eq(type), eq(property),
+                                  eq(phase), eq(PredefinedMethodType.SETTER))).then(new Answer<MethodSpec.Builder>() {
 
       @Override
       public MethodSpec.Builder answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArgument(1);
+        return invocation.getArgument(2);
       }
     });
 
 
 
     when(typeContext.onField(
-                             eq(typeContext), any(FieldSpec.Builder.class),
-                             eq(type), eq(property), eq(phase),
-                             eq(PredefinedFieldType.PROPERTY))).then(new Answer<FieldSpec.Builder>() {
+                             eq(typeContext), any(TypeSpec.Builder.class),
+                             any(FieldSpec.Builder.class), eq(type), eq(property),
+                             eq(phase), eq(PredefinedFieldType.PROPERTY))).then(new Answer<FieldSpec.Builder>() {
 
       @Override
       public FieldSpec.Builder answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArgument(1);
+        return invocation.getArgument(2);
       }
     });
 
-    when(fieldExtension.onField(
-                                eq(typeContext), any(FieldSpec.Builder.class), eq(type), eq(property), eq(phase),
-                                eq(PredefinedFieldType.PROPERTY))).then(new Answer<FieldSpec.Builder>() {
+    when(
+         fieldExtension.onField(
+                                eq(typeContext), any(TypeSpec.Builder.class), any(FieldSpec.Builder.class), eq(type),
+                                eq(property),
+                                eq(phase), eq(PredefinedFieldType.PROPERTY))).then(new Answer<FieldSpec.Builder>() {
 
       @Override
       public FieldSpec.Builder answer(InvocationOnMock invocation) throws Throwable {
-        return invocation.getArgument(1);
+        return invocation.getArgument(2);
       }
     });
   }

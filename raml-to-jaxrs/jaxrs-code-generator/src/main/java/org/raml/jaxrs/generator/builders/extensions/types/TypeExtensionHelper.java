@@ -124,21 +124,22 @@ public class TypeExtensionHelper implements LegacyTypeExtension, TypeExtension, 
   }
 
   @Override
-  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+  public FieldSpec.Builder onField(TypeContext context, TypeSpec.Builder typeSpec, FieldSpec.Builder fieldSpec,
+                                   V10GType containingType,
                                    V10GProperty property, BuildPhase buildPhase, FieldType methodType) {
 
     if (methodType == PredefinedFieldType.PROPERTY && buildPhase == BuildPhase.IMPLEMENTATION) {
 
       TypeContextImpl c = (TypeContextImpl) context;
-      this.onFieldImplementation(c.getBuildContext(), builder, property.implementation());
+      this.onFieldImplementation(c.getBuildContext(), fieldSpec, property.implementation());
     }
 
-    return builder;
+    return fieldSpec;
   }
 
 
   @Override
-  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+  public MethodSpec.Builder onMethod(TypeContext context, TypeSpec.Builder typeSpec, MethodSpec.Builder methodSpec,
                                      List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
                                      BuildPhase buildPhase,
                                      MethodType methodType) {
@@ -147,21 +148,21 @@ public class TypeExtensionHelper implements LegacyTypeExtension, TypeExtension, 
     if (methodType == PredefinedMethodType.GETTER) {
 
       if (buildPhase == BuildPhase.INTERFACE) {
-        this.onGetterMethodDeclaration(c.getBuildContext(), builder, property.implementation());
+        this.onGetterMethodDeclaration(c.getBuildContext(), methodSpec, property.implementation());
       } else {
-        this.onGetterMethodImplementation(c.getBuildContext(), builder, property.implementation());
+        this.onGetterMethodImplementation(c.getBuildContext(), methodSpec, property.implementation());
       }
     }
 
     if (methodType == PredefinedMethodType.SETTER) {
 
       if (buildPhase == BuildPhase.INTERFACE) {
-        this.onSetterMethodDeclaration(c.getBuildContext(), builder, parameters.get(0), property.implementation());
+        this.onSetterMethodDeclaration(c.getBuildContext(), methodSpec, parameters.get(0), property.implementation());
       } else {
-        this.onSetterMethodImplementation(c.getBuildContext(), builder, parameters.get(0), property.implementation());
+        this.onSetterMethodImplementation(c.getBuildContext(), methodSpec, parameters.get(0), property.implementation());
       }
     }
 
-    return builder;
+    return methodSpec;
   }
 }

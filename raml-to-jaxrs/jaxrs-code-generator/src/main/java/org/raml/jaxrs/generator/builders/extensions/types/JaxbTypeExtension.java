@@ -18,7 +18,6 @@ package org.raml.jaxrs.generator.builders.extensions.types;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.BuildPhase;
@@ -27,7 +26,6 @@ import org.raml.jaxrs.generator.extension.types.PredefinedFieldType;
 import org.raml.jaxrs.generator.extension.types.TypeContext;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.jaxrs.generator.v10.types.V10GTypeUnion;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
@@ -79,12 +77,13 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
 
 
   @Override
-  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+  public FieldSpec.Builder onField(TypeContext context, TypeSpec.Builder typeSpec, FieldSpec.Builder fieldSpec,
+                                   V10GType containingType,
                                    V10GProperty property, BuildPhase buildPhase, FieldType fieldType) {
 
     if (fieldType == PredefinedFieldType.PROPERTY && buildPhase == BuildPhase.IMPLEMENTATION) {
 
-      builder.addAnnotation(AnnotationSpec.builder(XmlElement.class)
+      fieldSpec.addAnnotation(AnnotationSpec.builder(XmlElement.class)
           .addMember("name", "$S", property.name()).build());
     }
 
@@ -107,10 +106,10 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
                                          .build());
       }
 
-      builder.addAnnotation(elementsAnnotation.build());
+      fieldSpec.addAnnotation(elementsAnnotation.build());
     }
 
-    return builder;
+    return fieldSpec;
 
   }
 }

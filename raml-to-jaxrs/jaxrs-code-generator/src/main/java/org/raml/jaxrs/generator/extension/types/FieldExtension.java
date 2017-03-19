@@ -16,8 +16,7 @@
 package org.raml.jaxrs.generator.extension.types;
 
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.jaxrs.generator.v10.V10GProperty;
@@ -37,20 +36,22 @@ public interface FieldExtension {
     }
 
     @Override
-    public FieldSpec.Builder onField(final TypeContext context, FieldSpec.Builder builder, final V10GType containingType,
+    public FieldSpec.Builder onField(final TypeContext context, final TypeSpec.Builder typeSpec, FieldSpec.Builder fieldSpec,
+                                     final V10GType containingType,
                                      final V10GProperty property, final BuildPhase buildPhase, final FieldType fieldType) {
 
-      return runList(builder, new ElementJob<FieldExtension, FieldSpec.Builder>() {
+      return runList(fieldSpec, new ElementJob<FieldExtension, FieldSpec.Builder>() {
 
         @Override
         public FieldSpec.Builder doElement(FieldExtension e, FieldSpec.Builder builder) {
 
-          return e.onField(context, builder, containingType, property, buildPhase, fieldType);
+          return e.onField(context, typeSpec, builder, containingType, property, buildPhase, fieldType);
         }
       });
     }
   }
 
-  FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType, V10GProperty property,
+  FieldSpec.Builder onField(TypeContext context, TypeSpec.Builder typeSpec, FieldSpec.Builder fieldSpec,
+                            V10GType containingType, V10GProperty property,
                             BuildPhase buildPhase, FieldType fieldType);
 }

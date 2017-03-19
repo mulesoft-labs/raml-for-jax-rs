@@ -54,18 +54,18 @@ class SimpleUnionExtension implements UnionExtension {
                                       BuildPhase btype) {
     UnionTypeDeclaration union = (UnionTypeDeclaration) currentType.implementation();
 
-    TypeSpec.Builder builder = TypeSpec.classBuilder(javaName).addModifiers(Modifier.PUBLIC);
-    builder = Annotations.ON_TYPE_CLASS_FINISH.get(currentType).onType(context, builder, currentType, btype);
-    context.onType(context, builder, currentType, btype);
+    TypeSpec.Builder typeSpec = TypeSpec.classBuilder(javaName).addModifiers(Modifier.PUBLIC);
+    typeSpec = Annotations.ON_TYPE_CLASS_FINISH.get(currentType).onType(context, typeSpec, currentType, btype);
+    context.onType(context, typeSpec, currentType, btype);
 
     FieldSpec.Builder anyType = FieldSpec.builder(Object.class, "anyType", Modifier.PRIVATE);
-    anyType = context.onField(context, anyType, currentType, null, BuildPhase.INTERFACE, UNION);
+    anyType = context.onField(context, typeSpec, anyType, currentType, null, BuildPhase.INTERFACE, UNION);
     anyType =
         Annotations.ON_TYPE_FIELD_CREATION.get(currentType)
-            .onField(context, anyType, currentType, null, BuildPhase.INTERFACE,
-                     UNION);
-    builder.addField(anyType.build());
-    builder.addMethod(
+            .onField(context, typeSpec, anyType, currentType, null,
+                     BuildPhase.INTERFACE, UNION);
+    typeSpec.addField(anyType.build());
+    typeSpec.addMethod(
         MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PRIVATE).addStatement("this.anyType = null")
             .build());
@@ -76,7 +76,7 @@ class SimpleUnionExtension implements UnionExtension {
 
       TypeName typeName = type.defaultJavaTypeName(context.getModelPackage());
       String fieldName = Names.methodName(typeDeclaration.name());
-      builder
+      typeSpec
           .addMethod(
                      MethodSpec.constructorBuilder()
                          .addParameter(ParameterSpec.builder(typeName, fieldName).build())
@@ -98,6 +98,6 @@ class SimpleUnionExtension implements UnionExtension {
                          .returns(TypeName.BOOLEAN).build()
           );
     }
-    return builder;
+    return typeSpec;
   }
 }

@@ -48,17 +48,19 @@ abstract public class TypeContextImpl extends ContextImpl implements TypeContext
   }
 
   @Override
-  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+  public FieldSpec.Builder onField(TypeContext context, TypeSpec.Builder typeSpec, FieldSpec.Builder fieldSpec,
+                                   V10GType containingType,
                                    V10GProperty property, BuildPhase buildPhase, FieldType fieldType) {
-    return getBuildContext().withTypeListeners().onField(context, builder, containingType, property, buildPhase, fieldType);
+    return getBuildContext().withTypeListeners().onField(context, typeSpec, fieldSpec, containingType, property, buildPhase,
+                                                         fieldType);
   }
 
   @Override
-  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+  public MethodSpec.Builder onMethod(TypeContext context, TypeSpec.Builder typeSpec, MethodSpec.Builder methodSpec,
                                      List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
                                      BuildPhase buildPhase,
                                      MethodType methodType) {
-    return getBuildContext().withTypeListeners().onMethod(context, builder, parameters, containingType, property, buildPhase,
-                                                          methodType);
+    return getBuildContext().withTypeListeners().onMethod(context, typeSpec, methodSpec, parameters, containingType, property,
+                                                          buildPhase, methodType);
   }
 }

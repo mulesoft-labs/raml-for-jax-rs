@@ -153,27 +153,28 @@ public class TypeExtensionList implements LegacyTypeExtension {
   }
 
   @Override
-  public FieldSpec.Builder onField(TypeContext context, FieldSpec.Builder builder, V10GType containingType,
+  public FieldSpec.Builder onField(TypeContext context, TypeSpec.Builder typeSpec, FieldSpec.Builder fieldSpec,
+                                   V10GType containingType,
                                    V10GProperty property, BuildPhase buildPhase, FieldType fieldType) {
 
     for (LegacyTypeExtension extension : extensions) {
-      extension.onField(context, builder, containingType, property, buildPhase, fieldType);
+      extension.onField(context, typeSpec, fieldSpec, containingType, property, buildPhase, fieldType);
     }
 
-    return builder;
+    return fieldSpec;
   }
 
   @Override
-  public MethodSpec.Builder onMethod(TypeContext context, MethodSpec.Builder builder,
+  public MethodSpec.Builder onMethod(TypeContext context, TypeSpec.Builder typeSpec, MethodSpec.Builder methodSpec,
                                      List<ParameterSpec.Builder> parameters, V10GType containingType, V10GProperty property,
                                      BuildPhase buildPhase,
                                      MethodType methodType) {
 
     for (LegacyTypeExtension extension : extensions) {
-      extension.onMethod(context, builder, parameters, containingType, property, buildPhase, methodType);
+      extension.onMethod(context, typeSpec, methodSpec, parameters, containingType, property, buildPhase, methodType);
     }
 
-    return builder;
+    return methodSpec;
   }
 
   public void addExtension(LegacyTypeExtension legacyTypeExtension) {

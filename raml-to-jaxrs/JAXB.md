@@ -1,27 +1,21 @@
-## JAX-RS Generation from RAML (raml-to-jaxrs)
-# JAXB annotations for raml types.
+## JAXB annotations for RAML types
 
 JAXB annotations are pretty simply used. There is an example project [here](examples/maven-examples/jaxb-example).
 
-#Properties
+### Properties
 Annotation | Placement |
 -----------|:----------|
-@XmlAccessorType | The JAXB plugin annotates property fields. |
-@XmlRootElement | Both interface and implementation are annotated as element roots.|
-@XmlElement | All properties are annotated with this.
+`@XmlAccessorType` | The JAXB plugin annotates property fields. |
+`@XmlRootElement` | Both interface and implementation are annotated as element roots. |
+`@XmlElement` | All properties are annotated with this. |
 
-# Inheritance
+### Inheritance
 
-Currently, inheritance is handled through JAXB.  There are no discriminator values.  
-The example used uses MOXy, and requires no special annotation. 
+Currently, inheritance is handled through JAXB.  There are no discriminator values.
+The example used uses MOXy, and requires no special annotation.
 
 
-# Unions
+### Unions
 
-Unions are handled through a union class annotated as a simple JAXB object.  
+Unions are handled through a union class annotated as a simple JAXB object.
 Custom serializers are not necessary.
-
-
-
-
-

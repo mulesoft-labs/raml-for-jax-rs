@@ -19,8 +19,10 @@ import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.jaxrs.generator.v10.NullXMLFacetInfo;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -143,4 +145,11 @@ public abstract class V10GTypeHelper implements V10GType {
     return name.hashCode();
   }
 
+  @Override
+  public XMLFacetInfo xml() {
+    if (implementation().xml() == null) {
+      return new NullXMLFacetInfo();
+    }
+    return implementation().xml();
+  }
 }

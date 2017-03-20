@@ -18,6 +18,7 @@ package org.raml.jaxrs.generator.v10;
 import org.raml.jaxrs.generator.ramltypes.GProperty;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
 
 /**
  * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones
@@ -35,6 +36,14 @@ public class V10GProperty implements GProperty {
   @Override
   public TypeDeclaration implementation() {
     return input;
+  }
+
+  public XMLFacetInfo xml() {
+
+    if (input.xml() == null) {
+      return new NullXMLFacetInfo();
+    }
+    return input.xml();
   }
 
   @Override
@@ -63,4 +72,5 @@ public class V10GProperty implements GProperty {
   public String toString() {
     return "V10GProperty{" + "name=" + input.name() + ", type=" + type + '}';
   }
+
 }

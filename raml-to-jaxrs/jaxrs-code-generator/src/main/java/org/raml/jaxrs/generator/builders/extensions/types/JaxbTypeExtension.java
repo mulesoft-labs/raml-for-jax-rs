@@ -31,7 +31,9 @@ import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -60,15 +62,23 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
   @Override
   public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase buildPhase) {
 
+    String namespace = type.xml().namespace() != null ? type.xml().namespace() : "##default";
+    String name = type.xml().name() != null ? type.xml().name() : type.name();
 
     if (buildPhase == BuildPhase.IMPLEMENTATION) {
       builder.addAnnotation(AnnotationSpec.builder(XmlAccessorType.class)
           .addMember("value", "$T.$L", XmlAccessType.class, "FIELD").build());
-      builder.addAnnotation(AnnotationSpec.builder(XmlRootElement.class)
-          .addMember("name", "$S", type.name()).build());
+
+      AnnotationSpec.Builder annotation = AnnotationSpec.builder(XmlRootElement.class)
+          .addMember("namespace", "$S", namespace)
+          .addMember("name", "$S", name);
+
+      builder.addAnnotation(annotation.build());
     } else {
 
-      builder.addAnnotation(AnnotationSpec.builder(XmlRootElement.class).build());
+      builder.addAnnotation(AnnotationSpec.builder(XmlRootElement.class)
+          .addMember("namespace", "$S", namespace)
+          .addMember("name", "$S", name).build());
     }
 
     return builder;
@@ -83,9 +93,46 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
 
     if (fieldType == PredefinedFieldType.PROPERTY && buildPhase == BuildPhase.IMPLEMENTATION) {
 
-      fieldSpec.addAnnotation(AnnotationSpec.builder(XmlElement.class)
-          .addMember("name", "$S", property.name()).build());
+      String namespace = property.xml().namespace() != null ? property.xml().namespace() : "##default";
+      String name = property.xml().name() != null ? property.xml().name() : property.name();
+
+      if (property.xml().wrapped() != null && property.xml().wrapped() && property.type().isArray()) {
+
+        fieldSpec.addAnnotation(
+            AnnotationSpec.builder(XmlElementWrapper.class).addMember("name", "$S", name).build()
+            );
+
+        if (property.xml().attribute() != null && property.xml().attribute()) {
+          fieldSpec.addAnnotation(
+              AnnotationSpec.builder(XmlAttribute.class)
+                  .addMember("name", "$S", property.type().arrayContents().name())
+                  .addMember("namespace", "$S", namespace)
+                  .build());
+        } else {
+          fieldSpec.addAnnotation(
+              AnnotationSpec.builder(XmlElement.class)
+                  .addMember("name", "$S", property.type().arrayContents().name())
+                  .addMember("namespace", "$S", namespace)
+                  .build());
+        }
+      } else {
+
+        if (property.xml().attribute()) {
+          fieldSpec.addAnnotation(
+              AnnotationSpec.builder(XmlAttribute.class)
+                  .addMember("name", "$S", name)
+                  .addMember("namespace", "$S", namespace)
+                  .build());
+        } else {
+          fieldSpec.addAnnotation(
+              AnnotationSpec.builder(XmlElement.class)
+                  .addMember("name", "$S", name)
+                  .addMember("namespace", "$S", namespace)
+                  .build());
+        }
+      }
     }
+
 
     if (fieldType == PredefinedFieldType.UNION) {
 
@@ -110,6 +157,5 @@ public class JaxbTypeExtension extends TypeExtensionHelper {
     }
 
     return fieldSpec;
-
   }
 }

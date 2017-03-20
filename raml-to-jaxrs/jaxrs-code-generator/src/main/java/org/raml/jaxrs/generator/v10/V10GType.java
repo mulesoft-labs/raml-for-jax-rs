@@ -21,6 +21,7 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
 
 import java.util.Collection;
 import java.util.List;
@@ -88,5 +89,5 @@ public interface V10GType extends GType {
   @Override
   void construct(final CurrentBuild currentBuild, GObjectType objectType);
 
-
+  XMLFacetInfo xml();
 }

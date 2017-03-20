@@ -11,10 +11,17 @@ types:
         properties:
             animalType:
                 type: string
+            specimenName:
+                type: string
+                xml:
+                    attribute: true
+                    namespace: "foo.bar"
             gender:
                 type: Gender
             siblings:
                 type: Animal[]
+                xml:
+                    wrapped: true
             mother:
                 type: Animal
             ancestor:

@@ -52,7 +52,7 @@ public class RamlScanner {
 
   public void handle(File resource) throws IOException, GenerationException {
 
-    handle(new FileInputStream(resource), resource.getParentFile().getAbsolutePath() + "/");
+    handle(new FileInputStream(resource), resource.getAbsoluteFile().getParentFile().getAbsolutePath() + "/");
   }
 
   public void handle(URL resourceName) throws IOException, GenerationException {

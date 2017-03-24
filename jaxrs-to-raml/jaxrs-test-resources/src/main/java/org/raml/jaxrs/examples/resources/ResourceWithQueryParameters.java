@@ -29,7 +29,7 @@ public class ResourceWithQueryParameters {
   public Response postWithQueryParameters(
                                           @DefaultValue("military") @QueryParam("typeOfStep") String typeOfStep,
                                           @DefaultValue("jack") @QueryParam("captainName") String theName,
-                                          @QueryParam("ageOfCaptain") int captainAge) {
+                                          @QueryParam("ageOfCaptain") int captainAge, String foo) {
     return null;
   }
 }

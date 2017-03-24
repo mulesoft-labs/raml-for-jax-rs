@@ -18,6 +18,7 @@ package org.raml.jaxrs.examples.resources;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 @Path("resource/with/doc")
 public class ResourceWithDoc {
@@ -28,7 +29,7 @@ public class ResourceWithDoc {
    * Multiline blablabla.
    */
   @POST
-  public void thePost() {}
+  public void thePost(@QueryParam("foo") String foo, String aaa) {}
 
   /**
    * This get method does even less, can you imagine?

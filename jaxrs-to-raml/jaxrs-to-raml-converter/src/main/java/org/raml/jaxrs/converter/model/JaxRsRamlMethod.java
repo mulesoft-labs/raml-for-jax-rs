@@ -15,14 +15,17 @@
  */
 package org.raml.jaxrs.converter.model;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
 import org.raml.api.RamlHeaderParameter;
+import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResourceMethod;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -64,6 +67,30 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
   @Override
   public List<RamlHeaderParameter> getHeaderParameters() {
     return Utilities.toRamlHeaderParameters(this.resourceMethod.getHeaderParameters()).toList();
+  }
+
+  @Override
+  public Optional<Type> getConsumedType() {
+
+    return this.resourceMethod.getConsumedEntity().transform(new Function<JaxRsEntity, Type>() {
+
+      @Override
+      public Type apply(JaxRsEntity input) {
+        return input.getType();
+      }
+    });
+  }
+
+  @Override
+  public Optional<Type> getProducedType() {
+
+    return this.resourceMethod.getProducedEntity().transform(new Function<JaxRsEntity, Type>() {
+
+      @Override
+      public Type apply(JaxRsEntity input) {
+        return input.getType();
+      }
+    });
   }
 
   @Override

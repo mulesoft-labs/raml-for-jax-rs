@@ -16,11 +16,13 @@
 package org.raml.jaxrs.parser.model;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 
 import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.ResourceMethod;
+import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 
@@ -34,6 +36,15 @@ class Utilities {
         @Override
         public boolean apply(@Nullable Parameter parameter) {
           return parameter.getSource() == Parameter.Source.QUERY;
+        }
+      };
+
+  private static final Predicate<Parameter> IS_CONSUMED_PARAMETER_PREDICATE =
+      new Predicate<Parameter>() {
+
+        @Override
+        public boolean apply(@Nullable Parameter parameter) {
+          return parameter.getSource() == Parameter.Source.ENTITY;
         }
       };
 
@@ -53,6 +64,11 @@ class Utilities {
                                                                                      isQueryParameterPredicate());
   }
 
+  public static FluentIterable<Parameter> getConsumedParameter(ResourceMethod resourceMethod) {
+    return FluentIterable.from(resourceMethod.getInvocable().getParameters()).filter(
+                                                                                     isConsumedParameterPredicate());
+  }
+
   public static FluentIterable<JaxRsQueryParameter> toJaxRsQueryParameters(
                                                                            Iterable<Parameter> parameters) {
     return FluentIterable.from(parameters).transform(
@@ -68,6 +84,10 @@ class Utilities {
 
   public static Predicate<Parameter> isQueryParameterPredicate() {
     return IS_QUERY_PARAMETER_PREDICATE;
+  }
+
+  public static Predicate<Parameter> isConsumedParameterPredicate() {
+    return IS_CONSUMED_PARAMETER_PREDICATE;
   }
 
 
@@ -91,5 +111,22 @@ class Utilities {
                                                                return JerseyJaxRsHeaderParameter.create(parameter);
                                                              }
                                                            });
+  }
+
+  public static Optional<JaxRsEntity> toJaxRsEntityParameters(Iterable<Parameter> consumedParameter) {
+
+    return FluentIterable.from(consumedParameter).transform(new Function<Parameter, JaxRsEntity>() {
+
+      @Nullable
+      @Override
+      public JaxRsEntity apply(@Nullable Parameter input) {
+        return JerseyJaxRsEntity.create(input);
+      }
+    }).first();
+  }
+
+  public static Optional<JaxRsEntity> getReturnValue(ResourceMethod resourceMethod) {
+
+    return JerseyJaxRsEntity.create(resourceMethod.getInvocable().getResponseType());
   }
 }

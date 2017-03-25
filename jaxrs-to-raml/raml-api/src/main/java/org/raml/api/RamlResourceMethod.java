@@ -17,6 +17,7 @@ package org.raml.api;
 
 import com.google.common.base.Optional;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public interface RamlResourceMethod {
@@ -32,4 +33,8 @@ public interface RamlResourceMethod {
   List<RamlHeaderParameter> getHeaderParameters();
 
   Optional<String> getDescription();
+
+  Optional<Type> getConsumedType();
+
+  Optional<Type> getProducedType();
 }

@@ -15,28 +15,12 @@
  */
 package org.raml.jaxrs.model;
 
-import com.google.common.base.Optional;
+import java.lang.reflect.Type;
 
-import java.util.List;
+/**
+ * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
+ */
+public interface JaxRsEntity {
 
-import javax.ws.rs.core.MediaType;
-import javax.xml.crypto.dsig.Transform;
-
-public interface JaxRsMethod {
-
-  HttpVerb getHttpVerb();
-
-  List<MediaType> getConsumedMediaTypes();
-
-  List<MediaType> getProducedMediaTypes();
-
-  List<JaxRsQueryParameter> getQueryParameters();
-
-  List<JaxRsHeaderParameter> getHeaderParameters();
-
-  Optional<String> getDescription();
-
-  Optional<JaxRsEntity> getConsumedEntity();
-
-  Optional<JaxRsEntity> getProducedEntity();
+  Type getType();
 }

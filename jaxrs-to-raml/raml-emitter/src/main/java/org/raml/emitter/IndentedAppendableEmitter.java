@@ -106,7 +106,7 @@ public class IndentedAppendableEmitter implements Emitter {
     }
 
     if (!method.getProducedMediaTypes().isEmpty()) {
-      bodiesAndResponses.writeBody(writer, method);
+      bodiesAndResponses.writeResponses(writer, method);
     }
 
     if (!method.getHeaderParameters().isEmpty()) {

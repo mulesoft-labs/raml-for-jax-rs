@@ -15,12 +15,15 @@
  */
 package org.raml.emitter;
 
+import com.google.common.base.Optional;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.ScalarType;
 import org.raml.emitter.plugins.BodiesAndResponses;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -33,27 +36,43 @@ class DefaultBodiesAndResponses implements BodiesAndResponses {
   @Override
   public void writeBody(IndentedAppendable writer, RamlResourceMethod method) throws IOException {
 
-    writeBody(writer, method.getConsumedMediaTypes());
+    writeBody(writer, method, method.getConsumedMediaTypes(), method.getConsumedType());
   }
 
   @Override
   public void writeResponses(IndentedAppendable writer, RamlResourceMethod method) throws IOException {
 
-    writeResponses(writer, method.getProducedMediaTypes());
+    writeResponses(writer, method, method.getProducedMediaTypes());
   }
 
-  private void writeBody(IndentedAppendable writer, List<RamlMediaType> mediaTypes) throws IOException {
+  private void writeBody(IndentedAppendable writer, RamlResourceMethod method, List<RamlMediaType> mediaTypes,
+                         Optional<Type> bodyType) throws IOException {
     writer.appendLine("body:");
     writer.indent();
 
     for (RamlMediaType mediaType : mediaTypes) {
       writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
+      if (bodyType.isPresent()) {
+
+        Type type = bodyType.get();
+        if (ScalarType.fromType(type).isPresent()) {
+
+          writer.indent();
+          writer.appendLine("type: " + ScalarType.fromType(type).get().getRamlSyntax());
+          writer.outdent();
+        } else {
+
+          throw new IOException(type + " is not a primitive type");
+        }
+
+      }
     }
 
     writer.outdent();
   }
 
-  private void writeResponses(IndentedAppendable writer, List<RamlMediaType> producedMediaTypes) throws IOException {
+  private void writeResponses(IndentedAppendable writer, RamlResourceMethod method,
+                              List<RamlMediaType> producedMediaTypes) throws IOException {
     writer.appendLine("responses:");
     writer.indent();
 
@@ -62,7 +81,7 @@ class DefaultBodiesAndResponses implements BodiesAndResponses {
     writer.appendLine("200:");
     writer.indent();
 
-    writeBody(writer, producedMediaTypes);
+    writeBody(writer, method, producedMediaTypes, method.getProducedType());
 
     writer.outdent();
     writer.outdent();

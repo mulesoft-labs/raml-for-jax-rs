@@ -24,12 +24,12 @@ import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlTypes;
+import org.raml.emitter.plugins.BodiesAndResponses;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -99,12 +99,14 @@ public class IndentedAppendableEmitter implements Emitter {
       writeDescription(description.get());
     }
 
+    BodiesAndResponses bodiesAndResponses = pickBodyAndResponseEmitter();
     if (!method.getConsumedMediaTypes().isEmpty()) {
-      writeBody(method.getConsumedMediaTypes());
+
+      bodiesAndResponses.writeBody(writer, method);
     }
 
     if (!method.getProducedMediaTypes().isEmpty()) {
-      writeResponses(method.getProducedMediaTypes());
+      bodiesAndResponses.writeBody(writer, method);
     }
 
     if (!method.getHeaderParameters().isEmpty()) {
@@ -117,6 +119,11 @@ public class IndentedAppendableEmitter implements Emitter {
 
 
     writer.outdent();
+  }
+
+  private BodiesAndResponses pickBodyAndResponseEmitter() {
+
+    return new DefaultBodiesAndResponses();
   }
 
   private void writeDescription(String description) throws IOException {
@@ -175,32 +182,6 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.outdent();
   }
 
-  private void writeResponses(List<RamlMediaType> producedMediaTypes) throws IOException {
-    writer.appendLine("responses:");
-    writer.indent();
-
-    // We have no clue what the error responses are, however, we want to generate
-    // well formed raml, so we pick one.
-    writer.appendLine("200:");
-    writer.indent();
-
-    writeBody(producedMediaTypes);
-
-    writer.outdent();
-    writer.outdent();
-  }
-
-  private void writeBody(List<RamlMediaType> mediaTypes) throws IOException {
-    writer.appendLine("body:");
-    writer.indent();
-
-    for (RamlMediaType mediaType : mediaTypes) {
-      writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
-    }
-
-    writer.outdent();
-  }
-
   private void writeHeader() throws IOException {
     writer.appendLine("#%RAML 1.0");
   }
@@ -216,4 +197,5 @@ public class IndentedAppendableEmitter implements Emitter {
   private void writeBaseUri(String baseUri) throws IOException {
     writer.appendLine(format("baseUri: %s", baseUri));
   }
+
 }

@@ -13,23 +13,51 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.plugins;
+package org.raml.emitter.types;
 
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
-import org.raml.emitter.types.TypeRegistry;
+import org.raml.api.ScalarType;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-public interface TypeHandler {
 
-  int handlesType(RamlResourceMethod method, Type type);
+public class RamlType {
 
-  void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType, RamlResourceMethod method,
-                 Type type) throws IOException;
+  private final Type name;
+
+  private Map<String, RamlProperty> properties = new HashMap<>();
+
+  public RamlType(Type name) {
+
+    this.name = name;
+  }
+
+  public void addProperty(RamlProperty property) {
+
+    properties.put(property.getName(), property);
+  }
+
+  public void write(IndentedAppendable writer) throws IOException {
+
+    Class c = (Class) name;
+    writer.appendLine(c.getSimpleName() + ":");
+    writer.indent();
+    for (RamlProperty ramlProperty : properties.values()) {
+
+      ramlProperty.write(writer);
+    }
+
+    writer.outdent();
+  }
+
+  public String getName() {
+
+    return ScalarType.fromType(name).get().getRamlSyntax();
+  }
 }

@@ -15,12 +15,11 @@
  */
 package org.raml.emitter.plugins;
 
-import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.emitter.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 /**
  * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
@@ -29,5 +28,6 @@ public interface ResponseHandler {
 
   int handlesResponses(RamlResourceMethod method);
 
-  void writeResponses(IndentedAppendable writer, RamlResourceMethod method, TypeSelector selector) throws IOException;
+  void writeResponses(TypeRegistry typeRegistry, IndentedAppendable writer, RamlResourceMethod method,
+                      TypeSelector selector) throws IOException;
 }

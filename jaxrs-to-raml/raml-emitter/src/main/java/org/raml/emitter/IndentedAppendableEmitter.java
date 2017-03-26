@@ -31,6 +31,7 @@ import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.emitter.plugins.JaxbForRamlToJaxrs;
 import org.raml.emitter.plugins.TypeHandler;
 import org.raml.emitter.plugins.TypeSelector;
+import org.raml.emitter.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,9 +48,12 @@ public class IndentedAppendableEmitter implements Emitter {
 
   private static final Logger logger = LoggerFactory.getLogger(IndentedAppendableEmitter.class);
 
-  private List<TypeHandler> bodyAlternatives = Arrays.asList(
-                                                             new DefaultTypeHandler(), new JaxbForRamlToJaxrs()
-      );
+  private TypeRegistry typeRegistry = new TypeRegistry();
+
+  private List<TypeHandler> bodyAlternatives =
+      Arrays.asList(
+                    new DefaultTypeHandler(), new JaxbForRamlToJaxrs()
+          );
 
   private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
@@ -85,6 +88,15 @@ public class IndentedAppendableEmitter implements Emitter {
     for (RamlResource resource : api.getResources()) {
       writeResource(resource);
     }
+
+    writeTypes();
+  }
+
+  private void writeTypes() throws IOException {
+    writer.appendLine("types:");
+    writer.indent();
+    typeRegistry.writeAll(writer);
+    writer.outdent();
   }
 
   private void writeDefaultMediaType(RamlMediaType defaultMediaType) throws IOException {
@@ -124,7 +136,7 @@ public class IndentedAppendableEmitter implements Emitter {
       for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
 
         TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
-        typeHandler.writeType(writer, ramlMediaType, method, type);
+        typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, type);
       }
     }
 
@@ -141,7 +153,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
       writer.appendLine("responses:");
       writer.indent();
-      handler.writeResponses(writer, method, selector);
+      handler.writeResponses(typeRegistry, writer, method, selector);
     }
 
     if (!method.getHeaderParameters().isEmpty()) {

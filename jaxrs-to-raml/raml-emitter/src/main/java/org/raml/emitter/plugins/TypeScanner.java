@@ -13,21 +13,16 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.resources;
+package org.raml.emitter.plugins;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.raml.emitter.types.RamlType;
+
+import java.lang.reflect.Type;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-@XmlRootElement
-public class ProducedValue {
+public interface TypeScanner {
 
-  @XmlElement
-  private String name;
-
-  @XmlElement
-  private int id;
-
+  void scanType(Type type, RamlType ramlType);
 }

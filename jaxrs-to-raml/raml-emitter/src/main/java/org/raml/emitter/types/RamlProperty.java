@@ -13,21 +13,39 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.resources;
+package org.raml.emitter.types;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.raml.utilities.IndentedAppendable;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-@XmlRootElement
-public class ProducedValue {
+public class RamlProperty {
 
-  @XmlElement
+  private RamlType ramlType;
   private String name;
 
-  @XmlElement
-  private int id;
+  public RamlProperty(String name, RamlType ramlType) {
+    this.ramlType = ramlType;
+    this.name = name;
+  }
 
+  public String getName() {
+    return name;
+  }
+
+  public static RamlProperty createProperty(String name, Type genericType) {
+    return new RamlProperty(name, new RamlType(genericType));
+  }
+
+  public void write(IndentedAppendable writer) throws IOException {
+
+    writer.appendLine(name + ": ");
+    writer.indent();
+    writer.appendLine("type: " + ramlType.getName());
+    writer.outdent();
+  }
 }

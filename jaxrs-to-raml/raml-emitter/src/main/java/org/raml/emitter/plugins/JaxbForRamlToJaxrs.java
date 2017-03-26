@@ -20,10 +20,17 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.emitter.types.RamlProperty;
+import org.raml.emitter.types.RamlType;
+import org.raml.emitter.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -35,14 +42,13 @@ import static java.lang.String.format;
 public class JaxbForRamlToJaxrs implements TypeHandler {
 
   @Override
-  public void writeType(IndentedAppendable writer, RamlMediaType ramlMediaType, RamlResourceMethod method, Type type)
+  public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
+                        RamlResourceMethod method, Type type)
       throws IOException {
 
     List<RamlMediaType> mediaTypes = method.getConsumedMediaTypes();
-    Optional<Type> bodyType = method.getConsumedType();
 
-    writeBody(writer, mediaTypes, bodyType);
-
+    writeBody(registry, writer, mediaTypes, type);
   }
 
   @Override
@@ -77,18 +83,44 @@ public class JaxbForRamlToJaxrs implements TypeHandler {
   }
 
 
-  private void writeBody(IndentedAppendable writer, List<RamlMediaType> mediaTypes, Optional<Type> bodyType)
+  private void writeBody(TypeRegistry registry, IndentedAppendable writer,
+                         List<RamlMediaType> mediaTypes, Type bodyType)
       throws IOException {
+
+    Class type = (Class) bodyType;
 
     for (RamlMediaType mediaType : mediaTypes) {
       writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
-      if (bodyType.isPresent()) {
 
-        Class type = (Class) bodyType.get();
-        writer.indent();
-        writer.appendLine("type: " + type.getSimpleName());
-        writer.outdent();
-      }
+      writer.indent();
+      writer.appendLine("type: " + type.getSimpleName());
+      writer.outdent();
+
+      registry.registerType(type.getSimpleName(), type, new TypeScanner() {
+
+        @Override
+        public void scanType(Type type, RamlType ramlType) {
+
+          Class c = (Class) type;
+          for (Field field : c.getDeclaredFields()) {
+
+            XmlElement elem = field.getAnnotation(XmlElement.class);
+            if (elem != null) {
+
+              String name = elem.name().equals("##default") ? field.getName() : elem.name();
+              ramlType.addProperty(RamlProperty.createProperty(name, field.getGenericType()));
+            } else {
+
+              XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
+              if (attribute != null) {
+
+                String name = elem.name().equals("##default") ? field.getName() : elem.name();
+                ramlType.addProperty(RamlProperty.createProperty(name, field.getGenericType()));
+              }
+            }
+          }
+        }
+      });
     }
 
     writer.outdent();

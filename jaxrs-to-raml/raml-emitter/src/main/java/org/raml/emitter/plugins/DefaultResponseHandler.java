@@ -15,15 +15,13 @@
  */
 package org.raml.emitter.plugins;
 
-import com.google.common.base.Optional;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
-import org.raml.api.ScalarType;
+import org.raml.emitter.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
@@ -37,7 +35,8 @@ public class DefaultResponseHandler implements ResponseHandler {
   }
 
   @Override
-  public void writeResponses(IndentedAppendable writer, RamlResourceMethod method, TypeSelector selector)
+  public void writeResponses(TypeRegistry typeRegistry, IndentedAppendable writer,
+                             RamlResourceMethod method, TypeSelector selector)
       throws IOException {
 
     if (!method.getProducedType().isPresent()) {
@@ -56,7 +55,7 @@ public class DefaultResponseHandler implements ResponseHandler {
       writer.indent();
 
       TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-      typeHandler.writeType(writer, producedMediaType, method, type);
+      typeHandler.writeType(typeRegistry, writer, producedMediaType, method, type);
       writer.outdent();
     }
 

@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.examples.resources;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -22,4 +23,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class ConsumedValue {
+
+  @XmlElement
+  private String name;
+
+  @XmlElement
+  private int id;
+
 }

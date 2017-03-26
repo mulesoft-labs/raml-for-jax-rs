@@ -32,8 +32,8 @@ import static java.lang.String.format;
 public class DefaultTypeHandler implements TypeHandler {
 
   @Override
-  public int handlesType(RamlResourceMethod method, Type type) {
-    return 0;
+  public boolean handlesType(RamlResourceMethod method, Type type) {
+    return true;
   }
 
   @Override

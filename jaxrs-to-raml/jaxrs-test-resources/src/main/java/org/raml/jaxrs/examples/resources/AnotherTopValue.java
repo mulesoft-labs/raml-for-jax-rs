@@ -13,23 +13,12 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.plugins;
-
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
-import org.raml.emitter.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
+package org.raml.jaxrs.examples.resources;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-public interface TypeHandler {
+public interface AnotherTopValue {
 
-  boolean handlesType(RamlResourceMethod method, Type type);
-
-  void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType, RamlResourceMethod method,
-                 Type type) throws IOException;
+  SubType getTopSubType();
 }

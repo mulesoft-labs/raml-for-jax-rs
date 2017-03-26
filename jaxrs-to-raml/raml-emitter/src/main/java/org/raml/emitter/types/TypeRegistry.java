@@ -37,8 +37,9 @@ public class TypeRegistry {
     } else {
 
       RamlType ramlType = new RamlType(type);
-      scanner.scanType(this, type, ramlType);
       types.put(name, ramlType);
+
+      scanner.scanType(this, type, ramlType);
       return ramlType;
     }
   }

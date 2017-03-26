@@ -19,7 +19,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
-import org.raml.api.ScalarType;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
@@ -30,9 +29,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -40,7 +37,7 @@ import static java.lang.String.format;
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-public class JaxbForRamlToJaxrs implements TypeHandler {
+public class SimpleJaxbTypes implements TypeHandler {
 
   @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
@@ -53,11 +50,9 @@ public class JaxbForRamlToJaxrs implements TypeHandler {
   }
 
   @Override
-  public int handlesType(RamlResourceMethod method, Type type) {
+  public boolean handlesType(RamlResourceMethod method, Type type) {
 
-    List<RamlMediaType> consumedMediaTypes = method.getConsumedMediaTypes();
-
-    return handles(type, consumedMediaTypes);
+    return !((Class) type).isInterface();
   }
 
   private int handles(Type type, List<RamlMediaType> mediaTypes) {
@@ -107,7 +102,7 @@ public class JaxbForRamlToJaxrs implements TypeHandler {
 
             Type genericType = field.getGenericType();
             RamlType fieldRamlType;
-            fieldRamlType = getRamlType(c.getSimpleName(), typeRegistry, genericType);
+            fieldRamlType = PluginUtilities.getRamlType(c.getSimpleName(), typeRegistry, genericType, this);
 
             XmlElement elem = field.getAnnotation(XmlElement.class);
             if (elem != null) {
@@ -124,29 +119,6 @@ public class JaxbForRamlToJaxrs implements TypeHandler {
               }
             }
           }
-        }
-
-        private RamlType getRamlType(String simpleName, TypeRegistry typeRegistry, Type genericType) {
-          RamlType fieldRamlType;
-          if (ScalarType.fromType(genericType).isPresent()) {
-            // scalars
-            return new RamlType(genericType);
-          }
-
-          if (genericType instanceof ParameterizedType) {
-
-            ParameterizedType ptype = (ParameterizedType) genericType;
-
-            if (Collection.class.isAssignableFrom((Class<?>) ptype.getRawType())) {
-              RamlType collectionType =
-                  getRamlType(((Class) ptype.getActualTypeArguments()[0]).getSimpleName(), typeRegistry,
-                              ptype.getActualTypeArguments()[0]);
-              return RamlType.collectionOf(collectionType);
-            }
-          }
-
-          fieldRamlType = typeRegistry.registerType(simpleName, genericType, this);
-          return fieldRamlType;
         }
       });
     }

@@ -15,13 +15,17 @@
  */
 package org.raml.emitter.types;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 import org.raml.api.ScalarType;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +39,7 @@ public class RamlType {
   private final boolean collection;
 
   private Map<String, RamlProperty> properties = new HashMap<>();
+  private List<RamlType> superTypes;
 
   public RamlType(Type type) {
 
@@ -48,6 +53,11 @@ public class RamlType {
     this.collection = collection;
   }
 
+  public static RamlType collectionOf(RamlType collectionType) {
+
+    return new RamlType(collectionType.type, true);
+  }
+
   public void addProperty(RamlProperty property) {
 
     properties.put(property.getName(), property);
@@ -58,6 +68,17 @@ public class RamlType {
     Class c = (Class) type;
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
+
+    if (superTypes != null) {
+      writer.appendLine("type: [ " + Joiner.on(", ").join(Collections2.transform(superTypes, new Function<RamlType, String>() {
+
+        @Override
+        public String apply(RamlType input) {
+          return input.getTypeName();
+        }
+      })) + " ]");
+    }
+
     for (RamlProperty ramlProperty : properties.values()) {
 
       ramlProperty.write(writer);
@@ -86,8 +107,8 @@ public class RamlType {
     }
   }
 
-  public static RamlType collectionOf(RamlType collectionType) {
 
-    return new RamlType(collectionType.type, true);
+  public void setSuperTypes(List<RamlType> superTypes) {
+    this.superTypes = superTypes;
   }
 }

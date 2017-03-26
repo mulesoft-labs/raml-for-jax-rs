@@ -17,6 +17,8 @@ package org.raml.emitter;
 
 import com.google.common.base.Optional;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.api.RamlMediaType;
@@ -26,9 +28,10 @@ import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlTypes;
 import org.raml.emitter.plugins.DefaultTypeHandler;
+import org.raml.emitter.plugins.RamlForJaxRSJaxbAndJsonTypes;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.emitter.plugins.DefaultResponseHandler;
-import org.raml.emitter.plugins.JaxbForRamlToJaxrs;
+import org.raml.emitter.plugins.SimpleJaxbTypes;
 import org.raml.emitter.plugins.TypeHandler;
 import org.raml.emitter.plugins.TypeSelector;
 import org.raml.emitter.types.TypeRegistry;
@@ -52,7 +55,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
   private List<TypeHandler> bodyAlternatives =
       Arrays.asList(
-                    new DefaultTypeHandler(), new JaxbForRamlToJaxrs()
+                    new SimpleJaxbTypes(), new RamlForJaxRSJaxbAndJsonTypes(), new DefaultTypeHandler()
           );
 
   private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
@@ -74,7 +77,7 @@ public class IndentedAppendableEmitter implements Emitter {
     try {
       writeApi(api);
     } catch (IOException e) {
-      throw new RamlEmissionException(format("unable to emit api: %s", api), e);
+      throw new RamlEmissionException(format("unable to emit api: %s", api.getBaseUri()), e);
     }
   }
 
@@ -171,16 +174,13 @@ public class IndentedAppendableEmitter implements Emitter {
   private TypeHandler pickTypeHandler(final RamlResourceMethod method, RamlMediaType ramlMediaType,
                                       final Type type) {
 
-
-    Ordering<TypeHandler> bodies = new Ordering<TypeHandler>() {
+    return FluentIterable.from(bodyAlternatives).filter(new Predicate<TypeHandler>() {
 
       @Override
-      public int compare(TypeHandler left, TypeHandler right) {
-        return left.handlesType(method, type) - right.handlesType(method, type);
+      public boolean apply(TypeHandler input) {
+        return input.handlesType(method, type);
       }
-    };
-
-    return bodies.max(this.bodyAlternatives);
+    }).first().get();
   }
 
   private ResponseHandler pickResponseHandler(final RamlResourceMethod method) {

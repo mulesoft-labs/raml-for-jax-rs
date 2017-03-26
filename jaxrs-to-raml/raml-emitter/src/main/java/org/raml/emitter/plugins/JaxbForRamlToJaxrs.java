@@ -15,11 +15,11 @@
  */
 package org.raml.emitter.plugins;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.ScalarType;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
@@ -29,9 +29,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -99,26 +100,53 @@ public class JaxbForRamlToJaxrs implements TypeHandler {
       registry.registerType(type.getSimpleName(), type, new TypeScanner() {
 
         @Override
-        public void scanType(Type type, RamlType ramlType) {
+        public void scanType(TypeRegistry typeRegistry, Type type, RamlType ramlType) {
 
           Class c = (Class) type;
           for (Field field : c.getDeclaredFields()) {
+
+            Type genericType = field.getGenericType();
+            RamlType fieldRamlType;
+            fieldRamlType = getRamlType(c.getSimpleName(), typeRegistry, genericType);
 
             XmlElement elem = field.getAnnotation(XmlElement.class);
             if (elem != null) {
 
               String name = elem.name().equals("##default") ? field.getName() : elem.name();
-              ramlType.addProperty(RamlProperty.createProperty(name, field.getGenericType()));
+              ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
             } else {
 
               XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
               if (attribute != null) {
 
                 String name = elem.name().equals("##default") ? field.getName() : elem.name();
-                ramlType.addProperty(RamlProperty.createProperty(name, field.getGenericType()));
+                ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
               }
             }
           }
+        }
+
+        private RamlType getRamlType(String simpleName, TypeRegistry typeRegistry, Type genericType) {
+          RamlType fieldRamlType;
+          if (ScalarType.fromType(genericType).isPresent()) {
+            // scalars
+            return new RamlType(genericType);
+          }
+
+          if (genericType instanceof ParameterizedType) {
+
+            ParameterizedType ptype = (ParameterizedType) genericType;
+
+            if (Collection.class.isAssignableFrom((Class<?>) ptype.getRawType())) {
+              RamlType collectionType =
+                  getRamlType(((Class) ptype.getActualTypeArguments()[0]).getSimpleName(), typeRegistry,
+                              ptype.getActualTypeArguments()[0]);
+              return RamlType.collectionOf(collectionType);
+            }
+          }
+
+          fieldRamlType = typeRegistry.registerType(simpleName, genericType, this);
+          return fieldRamlType;
         }
       });
     }

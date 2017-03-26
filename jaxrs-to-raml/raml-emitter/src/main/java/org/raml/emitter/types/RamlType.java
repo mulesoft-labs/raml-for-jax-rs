@@ -15,6 +15,7 @@
  */
 package org.raml.emitter.types;
 
+import com.google.common.base.Optional;
 import org.raml.api.ScalarType;
 import org.raml.utilities.IndentedAppendable;
 
@@ -29,13 +30,22 @@ import java.util.Map;
 
 public class RamlType {
 
-  private final Type name;
+  private final Type type;
+
+  private final boolean collection;
 
   private Map<String, RamlProperty> properties = new HashMap<>();
 
-  public RamlType(Type name) {
+  public RamlType(Type type) {
 
-    this.name = name;
+    this.type = type;
+    this.collection = false;
+  }
+
+  public RamlType(Type type, boolean collection) {
+
+    this.type = type;
+    this.collection = collection;
   }
 
   public void addProperty(RamlProperty property) {
@@ -45,7 +55,7 @@ public class RamlType {
 
   public void write(IndentedAppendable writer) throws IOException {
 
-    Class c = (Class) name;
+    Class c = (Class) type;
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
     for (RamlProperty ramlProperty : properties.values()) {
@@ -56,8 +66,28 @@ public class RamlType {
     writer.outdent();
   }
 
-  public String getName() {
+  public String getTypeName() {
 
-    return ScalarType.fromType(name).get().getRamlSyntax();
+    Optional<ScalarType> st = ScalarType.fromType(type);
+    if (st.isPresent()) {
+      if (collection == true) {
+        return st.get().getRamlSyntax() + "[]";
+      } else {
+        return st.get().getRamlSyntax();
+      }
+    } else {
+
+      Class c = (Class) type;
+      if (collection == true) {
+        return c.getSimpleName() + "[]";
+      } else {
+        return c.getSimpleName();
+      }
+    }
+  }
+
+  public static RamlType collectionOf(RamlType collectionType) {
+
+    return new RamlType(collectionType.type, true);
   }
 }

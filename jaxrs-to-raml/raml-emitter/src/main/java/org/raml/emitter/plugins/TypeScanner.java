@@ -16,6 +16,7 @@
 package org.raml.emitter.plugins;
 
 import org.raml.emitter.types.RamlType;
+import org.raml.emitter.types.TypeRegistry;
 
 import java.lang.reflect.Type;
 
@@ -24,5 +25,5 @@ import java.lang.reflect.Type;
  */
 public interface TypeScanner {
 
-  void scanType(Type type, RamlType ramlType);
+  void scanType(TypeRegistry typeRegistry, Type type, RamlType ramlType);
 }

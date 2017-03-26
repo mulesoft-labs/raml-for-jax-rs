@@ -15,7 +15,6 @@
  */
 package org.raml.emitter.types;
 
-import org.raml.api.RamlTypes;
 import org.raml.emitter.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
 
@@ -38,7 +37,7 @@ public class TypeRegistry {
     } else {
 
       RamlType ramlType = new RamlType(type);
-      scanner.scanType(type, ramlType);
+      scanner.scanType(this, type, ramlType);
       types.put(name, ramlType);
       return ramlType;
     }

@@ -17,6 +17,7 @@ package org.raml.jaxrs.examples.resources;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -29,5 +30,8 @@ public class ProducedValue {
 
   @XmlElement
   private int id;
+
+  @XmlElement
+  private List<SubType> subtypes;
 
 }

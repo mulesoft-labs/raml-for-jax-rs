@@ -37,15 +37,15 @@ public class RamlProperty {
     return name;
   }
 
-  public static RamlProperty createProperty(String name, Type genericType) {
-    return new RamlProperty(name, new RamlType(genericType));
+  public static RamlProperty createProperty(String name, RamlType ramlType) {
+    return new RamlProperty(name, ramlType);
   }
 
   public void write(IndentedAppendable writer) throws IOException {
 
     writer.appendLine(name + ": ");
     writer.indent();
-    writer.appendLine("type: " + ramlType.getName());
+    writer.appendLine("type: " + ramlType.getTypeName());
     writer.outdent();
   }
 }

@@ -15,17 +15,19 @@
  */
 package org.raml.emitter.plugins;
 
+import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 /**
  * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
  */
-public interface BodiesAndResponses {
+public interface ResponseHandler {
 
-  void writeBody(IndentedAppendable writer, RamlResourceMethod method) throws IOException;
+  int handlesResponses(RamlResourceMethod method);
 
-  void writeResponses(IndentedAppendable writer, RamlResourceMethod method) throws IOException;
+  void writeResponses(IndentedAppendable writer, RamlResourceMethod method, TypeSelector selector) throws IOException;
 }

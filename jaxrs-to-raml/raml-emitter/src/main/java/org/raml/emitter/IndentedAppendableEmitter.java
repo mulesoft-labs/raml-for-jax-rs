@@ -17,6 +17,7 @@ package org.raml.emitter;
 
 import com.google.common.base.Optional;
 
+import com.google.common.collect.Ordering;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlApi;
@@ -24,12 +25,21 @@ import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlTypes;
-import org.raml.emitter.plugins.BodiesAndResponses;
+import org.raml.emitter.plugins.DefaultTypeHandler;
+import org.raml.emitter.plugins.ResponseHandler;
+import org.raml.emitter.plugins.DefaultResponseHandler;
+import org.raml.emitter.plugins.JaxbForRamlToJaxrs;
+import org.raml.emitter.plugins.TypeHandler;
+import org.raml.emitter.plugins.TypeSelector;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -37,6 +47,12 @@ import static java.lang.String.format;
 public class IndentedAppendableEmitter implements Emitter {
 
   private static final Logger logger = LoggerFactory.getLogger(IndentedAppendableEmitter.class);
+
+  private List<TypeHandler> bodyAlternatives = Arrays.asList(
+                                                             new DefaultTypeHandler(), new JaxbForRamlToJaxrs()
+      );
+
+  private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
   private final IndentedAppendable writer;
 
@@ -99,14 +115,33 @@ public class IndentedAppendableEmitter implements Emitter {
       writeDescription(description.get());
     }
 
-    BodiesAndResponses bodiesAndResponses = pickBodyAndResponseEmitter();
-    if (!method.getConsumedMediaTypes().isEmpty()) {
+    if (!method.getConsumedMediaTypes().isEmpty() && method.getConsumedType().isPresent()) {
 
-      bodiesAndResponses.writeBody(writer, method);
+      Type type = method.getConsumedType().get();
+      writer.appendLine("body:");
+      writer.indent();
+
+      for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
+
+        TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
+        typeHandler.writeType(writer, ramlMediaType, method, type);
+      }
     }
 
+    ResponseHandler handler = pickResponseHandler(method);
+    TypeSelector selector = new TypeSelector() {
+
+      @Override
+      public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) {
+        return pickTypeHandler(method, producedMediaType, method.getProducedType().get());
+      }
+    };
+
     if (!method.getProducedMediaTypes().isEmpty()) {
-      bodiesAndResponses.writeResponses(writer, method);
+
+      writer.appendLine("responses:");
+      writer.indent();
+      handler.writeResponses(writer, method, selector);
     }
 
     if (!method.getHeaderParameters().isEmpty()) {
@@ -121,9 +156,32 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.outdent();
   }
 
-  private BodiesAndResponses pickBodyAndResponseEmitter() {
+  private TypeHandler pickTypeHandler(final RamlResourceMethod method, RamlMediaType ramlMediaType,
+                                      final Type type) {
 
-    return new DefaultBodiesAndResponses();
+
+    Ordering<TypeHandler> bodies = new Ordering<TypeHandler>() {
+
+      @Override
+      public int compare(TypeHandler left, TypeHandler right) {
+        return left.handlesType(method, type) - right.handlesType(method, type);
+      }
+    };
+
+    return bodies.max(this.bodyAlternatives);
+  }
+
+  private ResponseHandler pickResponseHandler(final RamlResourceMethod method) {
+
+    Ordering<ResponseHandler> bodies = new Ordering<ResponseHandler>() {
+
+      @Override
+      public int compare(ResponseHandler left, ResponseHandler right) {
+        return left.handlesResponses(method) - right.handlesResponses(method);
+      }
+    };
+
+    return bodies.max(this.responseHandlerAlternatives);
   }
 
   private void writeDescription(String description) throws IOException {

@@ -12,6 +12,12 @@
 
     <artifactId>feature-raml-project</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-for-jaxrs-common</artifactId>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

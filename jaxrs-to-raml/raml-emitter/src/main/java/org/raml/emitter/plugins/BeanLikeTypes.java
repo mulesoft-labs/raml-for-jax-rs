@@ -22,6 +22,7 @@ import org.raml.api.RamlResourceMethod;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.common.BuildType;
 import org.raml.utilities.IndentedAppendable;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -41,7 +42,7 @@ import static java.lang.String.format;
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-public class RamlForJaxRSJaxbAndJsonTypes implements TypeHandler {
+public class BeanLikeTypes implements TypeHandler {
 
   @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
@@ -56,36 +57,14 @@ public class RamlForJaxRSJaxbAndJsonTypes implements TypeHandler {
   @Override
   public boolean handlesType(RamlResourceMethod method, Type type) {
 
-    return ((Class) type).isInterface();
-  }
-
-  private int handles(Type type, List<RamlMediaType> mediaTypes) {
-    boolean mediaTypeMatches = FluentIterable.from(mediaTypes).anyMatch(new Predicate<RamlMediaType>() {
-
-      @Override
-      public boolean apply(RamlMediaType input) {
-        return input.toStringRepresentation().startsWith("application/xml");
-      }
-    });
-
-    if (mediaTypeMatches &&
-        type instanceof Class &&
-        hasXmlAnnotation((Class) type) &&
-        ((Class) type).isInterface())
-    {
-      return 101;
-    } else {
-
-      return -1;
+    Class<?> c = (Class) type;
+    BuildType t = c.getAnnotation(BuildType.class);
+    if (t != null) {
+      return t.value().equals("ramlforjaxrs-simple");
     }
+
+    return false;
   }
-
-
-  private boolean hasXmlAnnotation(Class type) {
-
-    return type.getAnnotation(XmlRootElement.class) != null;
-  }
-
 
   private void writeBody(final TypeRegistry registry, IndentedAppendable writer,
                          List<RamlMediaType> mediaTypes, final Type bodyType)

@@ -18,6 +18,7 @@
         <module>jaxrs-to-raml</module>
         <module>raml-to-jaxrs</module>
         <module>utilities</module>
+        <module>raml-for-jaxrs-common</module>
     </modules>
 
     <properties>
@@ -37,6 +38,11 @@
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>
                 <version>2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.raml</groupId>
+                <artifactId>raml-for-jaxrs-common</artifactId>
+                <version>2.0.0-RC2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>

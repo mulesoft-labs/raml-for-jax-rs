@@ -28,7 +28,7 @@ import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlTypes;
 import org.raml.emitter.plugins.DefaultTypeHandler;
-import org.raml.emitter.plugins.RamlForJaxRSJaxbAndJsonTypes;
+import org.raml.emitter.plugins.BeanLikeTypes;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.emitter.plugins.SimpleJaxbTypes;
@@ -55,7 +55,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
   private List<TypeHandler> bodyAlternatives =
       Arrays.asList(
-                    new SimpleJaxbTypes(), new RamlForJaxRSJaxbAndJsonTypes(), new DefaultTypeHandler()
+                    new SimpleJaxbTypes(), new BeanLikeTypes(), new DefaultTypeHandler()
           );
 
   private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());

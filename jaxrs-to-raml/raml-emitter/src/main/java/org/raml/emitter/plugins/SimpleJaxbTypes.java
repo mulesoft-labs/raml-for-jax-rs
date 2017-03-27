@@ -22,6 +22,7 @@ import org.raml.api.RamlResourceMethod;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.common.BuildType;
 import org.raml.utilities.IndentedAppendable;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -52,7 +53,21 @@ public class SimpleJaxbTypes implements TypeHandler {
   @Override
   public boolean handlesType(RamlResourceMethod method, Type type) {
 
-    return !((Class) type).isInterface();
+    Class<?> c = (Class<?>) type;
+    BuildType buildType = c.getAnnotation(BuildType.class);
+    if (buildType != null && buildType.value().equals("jaxb-annotations")) {
+      return true;
+    }
+
+    return c.getAnnotation(XmlRootElement.class) != null
+        && FluentIterable.of(c.getDeclaredFields()).anyMatch(new Predicate<Field>() {
+
+          @Override
+          public boolean apply(Field input) {
+            return input.isAnnotationPresent(XmlAttribute.class)
+                || input.isAnnotationPresent(XmlElement.class);
+          }
+        });
   }
 
   private int handles(Type type, List<RamlMediaType> mediaTypes) {

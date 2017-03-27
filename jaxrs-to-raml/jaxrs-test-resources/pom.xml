@@ -16,6 +16,10 @@
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-for-jaxrs-common</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

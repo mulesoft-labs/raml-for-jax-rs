@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.model;
 
+import com.google.common.base.Optional;
+
 import java.lang.reflect.Type;
 
 /**
@@ -23,4 +25,6 @@ import java.lang.reflect.Type;
 public interface JaxRsEntity {
 
   Type getType();
+
+  Optional<String> getDescription();
 }

@@ -77,13 +77,13 @@ class JerseyJaxRsMethod implements JaxRsMethod {
   @Override
   public Optional<JaxRsEntity> getConsumedEntity() {
 
-    return Utilities.toJaxRsEntityParameters(Utilities.getConsumedParameter(resourceMethod));
+    return Utilities.toJaxRsEntityParameters(Utilities.getConsumedParameter(resourceMethod), sourceParser);
   }
 
   @Override
   public Optional<JaxRsEntity> getProducedEntity() {
 
-    return Utilities.getReturnValue(resourceMethod);
+    return Utilities.getReturnValue(resourceMethod, sourceParser);
   }
 
   @Override

@@ -13,35 +13,18 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.parser.source;
+package org.raml.api;
 
 import com.google.common.base.Optional;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.nio.file.Path;
 
-public class SourceParsers {
+/**
+ * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ */
+public interface RamlEntity {
 
-  private static final SourceParser NO_OP_PARSER = new SourceParser() {
+  Type getType();
 
-    @Override
-    public Optional<String> getDocumentationFor(Method method) {
-      return Optional.absent(); // Do nothing on purpose.
-    }
-
-    @Override
-    public Optional<String> getDocumentationFor(Type method) {
-      return Optional.absent();
-    }
-  };
-
-
-  public static SourceParser usingRoasterParser(Path path) {
-    return RoasterSourceParser.create(path);
-  }
-
-  public static SourceParser nullParser() {
-    return NO_OP_PARSER;
-  }
+  Optional<String> getDescription();
 }

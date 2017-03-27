@@ -25,6 +25,7 @@ import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
+import org.raml.jaxrs.parser.source.SourceParser;
 
 import javax.annotation.Nullable;
 
@@ -113,20 +114,20 @@ class Utilities {
                                                            });
   }
 
-  public static Optional<JaxRsEntity> toJaxRsEntityParameters(Iterable<Parameter> consumedParameter) {
+  public static Optional<JaxRsEntity> toJaxRsEntityParameters(Iterable<Parameter> consumedParameter, final SourceParser parser) {
 
     return FluentIterable.from(consumedParameter).transform(new Function<Parameter, JaxRsEntity>() {
 
       @Nullable
       @Override
       public JaxRsEntity apply(@Nullable Parameter input) {
-        return JerseyJaxRsEntity.create(input);
+        return JerseyJaxRsEntity.create(input, parser);
       }
     }).first();
   }
 
-  public static Optional<JaxRsEntity> getReturnValue(ResourceMethod resourceMethod) {
+  public static Optional<JaxRsEntity> getReturnValue(ResourceMethod resourceMethod, SourceParser sourceParser) {
 
-    return JerseyJaxRsEntity.create(resourceMethod.getInvocable().getResponseType());
+    return JerseyJaxRsEntity.create(resourceMethod.getInvocable().getResponseType(), sourceParser);
   }
 }

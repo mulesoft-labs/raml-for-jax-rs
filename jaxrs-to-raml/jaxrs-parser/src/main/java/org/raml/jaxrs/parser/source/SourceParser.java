@@ -18,8 +18,11 @@ package org.raml.jaxrs.parser.source;
 import com.google.common.base.Optional;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public interface SourceParser {
 
   Optional<String> getDocumentationFor(Method method);
+
+  Optional<String> getDocumentationFor(Type method);
 }

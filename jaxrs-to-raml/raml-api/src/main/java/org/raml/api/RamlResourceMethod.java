@@ -17,7 +17,6 @@ package org.raml.api;
 
 import com.google.common.base.Optional;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 public interface RamlResourceMethod {
@@ -34,7 +33,7 @@ public interface RamlResourceMethod {
 
   Optional<String> getDescription();
 
-  Optional<Type> getConsumedType();
+  Optional<RamlEntity> getConsumedType();
 
-  Optional<Type> getProducedType();
+  Optional<RamlEntity> getProducedType();
 }

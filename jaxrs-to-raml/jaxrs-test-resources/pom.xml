@@ -39,7 +39,10 @@
                             <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
 -->
                             <outputFileName>${project.artifactId}.raml</outputFileName>
+<!--
                             <sourceDirectory>${project.build.directory}</sourceDirectory>
+-->
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </configuration>
                     </execution>
                 </executions>

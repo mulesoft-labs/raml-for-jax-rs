@@ -69,7 +69,7 @@ public class RamlType {
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
 
-    if (superTypes != null) {
+    if (superTypes != null && superTypes.size() > 0) {
       writer.appendLine("type: [ " + Joiner.on(", ").join(Collections2.transform(superTypes, new Function<RamlType, String>() {
 
         @Override

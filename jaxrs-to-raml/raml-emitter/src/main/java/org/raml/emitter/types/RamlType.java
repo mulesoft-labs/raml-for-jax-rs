@@ -19,6 +19,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import org.raml.api.RamlEntity;
 import org.raml.api.ScalarType;
 import org.raml.utilities.IndentedAppendable;
 
@@ -34,20 +35,20 @@ import java.util.Map;
 
 public class RamlType {
 
-  private final Type type;
+  private final RamlEntity type;
 
   private final boolean collection;
 
   private Map<String, RamlProperty> properties = new HashMap<>();
   private List<RamlType> superTypes;
 
-  public RamlType(Type type) {
+  public RamlType(RamlEntity type) {
 
     this.type = type;
     this.collection = false;
   }
 
-  public RamlType(Type type, boolean collection) {
+  public RamlType(RamlEntity type, boolean collection) {
 
     this.type = type;
     this.collection = collection;
@@ -65,7 +66,7 @@ public class RamlType {
 
   public void write(IndentedAppendable writer) throws IOException {
 
-    Class c = (Class) type;
+    Class c = (Class) type.getType();
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
 
@@ -79,6 +80,12 @@ public class RamlType {
       })) + " ]");
     }
 
+    if (type.getDescription().isPresent()) {
+      writer.indent();
+      writer.appendLine("description: " + type.getDescription().get());
+      writer.outdent();
+    }
+
     for (RamlProperty ramlProperty : properties.values()) {
 
       ramlProperty.write(writer);
@@ -89,7 +96,7 @@ public class RamlType {
 
   public String getTypeName() {
 
-    Optional<ScalarType> st = ScalarType.fromType(type);
+    Optional<ScalarType> st = ScalarType.fromType(type.getType());
     if (st.isPresent()) {
       if (collection == true) {
         return st.get().getRamlSyntax() + "[]";
@@ -98,7 +105,7 @@ public class RamlType {
       }
     } else {
 
-      Class c = (Class) type;
+      Class c = (Class) type.getType();
       if (collection == true) {
         return c.getSimpleName() + "[]";
       } else {
@@ -111,4 +118,6 @@ public class RamlType {
   public void setSuperTypes(List<RamlType> superTypes) {
     this.superTypes = superTypes;
   }
+
+
 }

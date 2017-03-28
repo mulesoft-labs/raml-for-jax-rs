@@ -24,7 +24,10 @@ import java.lang.reflect.Type;
  */
 public interface JaxRsEntity {
 
+
   Type getType();
 
   Optional<String> getDescription();
+
+  JaxRsEntity createJaxRsEntity(Type entity);
 }

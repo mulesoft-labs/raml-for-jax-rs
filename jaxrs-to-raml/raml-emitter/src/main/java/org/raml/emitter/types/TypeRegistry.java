@@ -15,6 +15,7 @@
  */
 package org.raml.emitter.types;
 
+import org.raml.api.RamlEntity;
 import org.raml.emitter.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
 
@@ -30,7 +31,7 @@ public class TypeRegistry {
 
   private Map<String, RamlType> types = new HashMap<>();
 
-  public RamlType registerType(String name, Type type, TypeScanner scanner) {
+  public RamlType registerType(String name, RamlEntity type, TypeScanner scanner) {
 
     if (types.containsKey(name)) {
       return types.get(name);

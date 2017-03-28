@@ -139,7 +139,7 @@ public class IndentedAppendableEmitter implements Emitter {
       for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
 
         TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
-        typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, method.getConsumedType().get().getType());
+        typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, method.getConsumedType().get());
       }
     }
 
@@ -157,6 +157,7 @@ public class IndentedAppendableEmitter implements Emitter {
       writer.appendLine("responses:");
       writer.indent();
       handler.writeResponses(typeRegistry, writer, method, selector);
+      // writer.outdent();
     }
 
     if (!method.getHeaderParameters().isEmpty()) {

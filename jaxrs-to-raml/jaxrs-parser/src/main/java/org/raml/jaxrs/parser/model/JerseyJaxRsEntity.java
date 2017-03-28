@@ -47,6 +47,11 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
     return sourceParser.getDocumentationFor(input);
   }
 
+  @Override
+  public JaxRsEntity createJaxRsEntity(Type type) {
+    return new JerseyJaxRsEntity(type, sourceParser);
+  }
+
   static JerseyJaxRsEntity create(Parameter input, SourceParser sourceParser) {
 
     return new JerseyJaxRsEntity(input.getType(), sourceParser);
@@ -62,5 +67,4 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
       return Optional.<JaxRsEntity>of(new JerseyJaxRsEntity(input, sourceParser));
     }
   }
-
 }

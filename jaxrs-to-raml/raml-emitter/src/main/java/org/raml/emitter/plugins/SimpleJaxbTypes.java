@@ -17,6 +17,7 @@ package org.raml.emitter.plugins;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
 import org.raml.emitter.types.RamlProperty;
@@ -42,7 +43,7 @@ public class SimpleJaxbTypes implements TypeHandler {
 
   @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, Type type)
+                        RamlResourceMethod method, RamlEntity type)
       throws IOException {
 
     List<RamlMediaType> mediaTypes = method.getConsumedMediaTypes();
@@ -70,35 +71,11 @@ public class SimpleJaxbTypes implements TypeHandler {
         });
   }
 
-  private int handles(Type type, List<RamlMediaType> mediaTypes) {
-    boolean mediaTypeMatches = FluentIterable.from(mediaTypes).anyMatch(new Predicate<RamlMediaType>() {
-
-      @Override
-      public boolean apply(RamlMediaType input) {
-        return input.toStringRepresentation().startsWith("application/xml");
-      }
-    });
-
-    if (mediaTypeMatches && type instanceof Class && hasXmlAnnotation((Class) type)) {
-      return 100;
-    } else {
-
-      return -1;
-    }
-  }
-
-
-  private boolean hasXmlAnnotation(Class type) {
-
-    return type.getAnnotation(XmlRootElement.class) != null;
-  }
-
-
   private void writeBody(TypeRegistry registry, IndentedAppendable writer,
-                         List<RamlMediaType> mediaTypes, Type bodyType)
+                         List<RamlMediaType> mediaTypes, RamlEntity bodyType)
       throws IOException {
 
-    Class type = (Class) bodyType;
+    Class type = (Class) bodyType.getType();
 
     for (RamlMediaType mediaType : mediaTypes) {
       writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
@@ -107,17 +84,17 @@ public class SimpleJaxbTypes implements TypeHandler {
       writer.appendLine("type: " + type.getSimpleName());
       writer.outdent();
 
-      registry.registerType(type.getSimpleName(), type, new TypeScanner() {
+      registry.registerType(type.getSimpleName(), bodyType, new TypeScanner() {
 
         @Override
-        public void scanType(TypeRegistry typeRegistry, Type type, RamlType ramlType) {
+        public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
 
-          Class c = (Class) type;
+          Class c = (Class) type.getType();
           for (Field field : c.getDeclaredFields()) {
 
             Type genericType = field.getGenericType();
             RamlType fieldRamlType;
-            fieldRamlType = PluginUtilities.getRamlType(c.getSimpleName(), typeRegistry, genericType, this);
+            fieldRamlType = PluginUtilities.getRamlType(c.getSimpleName(), typeRegistry, type.createDependent(genericType), this);
 
             XmlElement elem = field.getAnnotation(XmlElement.class);
             if (elem != null) {

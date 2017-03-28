@@ -27,4 +27,7 @@ public interface RamlEntity {
   Type getType();
 
   Optional<String> getDescription();
+
+  // this is a cheap way to get to the source code parser. Should be fixed.
+  RamlEntity createDependent(Type type);
 }

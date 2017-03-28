@@ -34,10 +34,10 @@ public class JaxRsRamlEntity implements RamlEntity {
     this.entity = entity;
   }
 
-  public static JaxRsRamlEntity create(JaxRsEntity resourceMethod) {
-    checkNotNull(resourceMethod);
+  public static JaxRsRamlEntity create(JaxRsEntity entity) {
+    checkNotNull(entity);
 
-    return new JaxRsRamlEntity(resourceMethod);
+    return new JaxRsRamlEntity(entity);
   }
 
   @Override
@@ -48,5 +48,10 @@ public class JaxRsRamlEntity implements RamlEntity {
   @Override
   public Optional<String> getDescription() {
     return entity.getDescription();
+  }
+
+  public RamlEntity createDependent(Type type) {
+
+    return new JaxRsRamlEntity(entity.createJaxRsEntity(type));
   }
 }

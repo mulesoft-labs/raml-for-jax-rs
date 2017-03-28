@@ -81,9 +81,7 @@ public class RamlType {
     }
 
     if (type.getDescription().isPresent()) {
-      writer.indent();
       writer.appendLine("description: " + type.getDescription().get());
-      writer.outdent();
     }
 
     for (RamlProperty ramlProperty : properties.values()) {

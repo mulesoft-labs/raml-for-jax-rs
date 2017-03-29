@@ -103,7 +103,7 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeDefaultMediaType(RamlMediaType defaultMediaType) throws IOException {
-    writer.appendLine(format("mediaType: %s", defaultMediaType.toStringRepresentation()));
+    writer.appendLine(format("mediaType: \"%s\"", defaultMediaType.toStringRepresentation()));
   }
 
   private void writeResource(RamlResource resource) throws IOException {

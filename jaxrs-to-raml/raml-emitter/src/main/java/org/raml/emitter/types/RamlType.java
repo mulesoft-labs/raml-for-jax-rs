@@ -84,11 +84,13 @@ public class RamlType {
       writer.appendLine("description: " + type.getDescription().get());
     }
 
+    writer.appendLine("properties:");
+    writer.indent();
     for (RamlProperty ramlProperty : properties.values()) {
 
       ramlProperty.write(writer);
     }
-
+    writer.outdent();
     writer.outdent();
   }
 

@@ -32,9 +32,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.List;
-
-import static java.lang.String.format;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -46,9 +43,8 @@ public class SimpleJaxbTypes implements TypeHandler {
                         RamlResourceMethod method, RamlEntity type)
       throws IOException {
 
-    List<RamlMediaType> mediaTypes = method.getConsumedMediaTypes();
 
-    writeBody(registry, writer, mediaTypes, type);
+    writeBody(registry, writer, ramlMediaType, type);
   }
 
   @Override
@@ -72,49 +68,44 @@ public class SimpleJaxbTypes implements TypeHandler {
   }
 
   private void writeBody(TypeRegistry registry, IndentedAppendable writer,
-                         List<RamlMediaType> mediaTypes, RamlEntity bodyType)
+                         RamlMediaType mediaTypes, RamlEntity bodyType)
       throws IOException {
 
     Class type = (Class) bodyType.getType();
 
-    for (RamlMediaType mediaType : mediaTypes) {
-      writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
+    writer.appendLine("type: " + type.getSimpleName());
 
-      writer.indent();
-      writer.appendLine("type: " + type.getSimpleName());
-      writer.outdent();
+    registry.registerType(type.getSimpleName(), bodyType, new SimpleJaxbTypeScanner());
+  }
 
-      registry.registerType(type.getSimpleName(), bodyType, new TypeScanner() {
+  private static class SimpleJaxbTypeScanner implements TypeScanner {
 
-        @Override
-        public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
+    @Override
+    public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
 
-          Class c = (Class) type.getType();
-          for (Field field : c.getDeclaredFields()) {
+      Class c = (Class) type.getType();
+      for (Field field : c.getDeclaredFields()) {
 
-            Type genericType = field.getGenericType();
-            RamlType fieldRamlType;
-            fieldRamlType = PluginUtilities.getRamlType(c.getSimpleName(), typeRegistry, type.createDependent(genericType), this);
+        Type genericType = field.getGenericType();
+        RamlType fieldRamlType;
+        fieldRamlType = PluginUtilities
+            .getRamlType(c.getSimpleName(), typeRegistry, type.createDependent(genericType), this);
 
-            XmlElement elem = field.getAnnotation(XmlElement.class);
-            if (elem != null) {
+        XmlElement elem = field.getAnnotation(XmlElement.class);
+        if (elem != null) {
 
-              String name = elem.name().equals("##default") ? field.getName() : elem.name();
-              ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
-            } else {
+          String name = elem.name().equals("##default") ? field.getName() : elem.name();
+          ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
+        } else {
 
-              XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
-              if (attribute != null) {
+          XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
+          if (attribute != null) {
 
-                String name = elem.name().equals("##default") ? field.getName() : elem.name();
-                ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
-              }
-            }
+            String name = elem.name().equals("##default") ? field.getName() : elem.name();
+            ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
           }
         }
-      });
+      }
     }
-
-    writer.outdent();
   }
 }

@@ -42,9 +42,8 @@ public class BeanLikeTypes implements TypeHandler {
                         RamlResourceMethod method, RamlEntity type)
       throws IOException {
 
-    List<RamlMediaType> mediaTypes = method.getConsumedMediaTypes();
 
-    writeBody(registry, writer, mediaTypes, type);
+    writeBody(registry, writer, ramlMediaType, type);
   }
 
   @Override
@@ -60,7 +59,7 @@ public class BeanLikeTypes implements TypeHandler {
   }
 
   private void writeBody(final TypeRegistry registry, IndentedAppendable writer,
-                         List<RamlMediaType> mediaTypes, final RamlEntity bodyType)
+                         RamlMediaType mediaTypes, final RamlEntity bodyType)
       throws IOException {
 
     // find top interface.
@@ -69,8 +68,6 @@ public class BeanLikeTypes implements TypeHandler {
     // find fields
 
     writer.appendLine("type: " + topInterface.getSimpleName());
-
-    writer.outdent();
 
     TypeScanner scanner = new TypeScanner() {
 

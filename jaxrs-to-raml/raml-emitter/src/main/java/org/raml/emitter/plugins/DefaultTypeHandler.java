@@ -42,19 +42,12 @@ public class DefaultTypeHandler implements TypeHandler {
                         RamlResourceMethod method, RamlEntity bodyType)
       throws IOException {
 
-    writer.appendLine(format("%s:", ramlMediaType.toStringRepresentation()));
     if (ScalarType.fromType(bodyType.getType()).isPresent()) {
 
-      writer.indent();
       writer.appendLine("type: " + ScalarType.fromType(bodyType.getType()).get().getRamlSyntax());
-      writer.outdent();
     } else {
 
       throw new IOException(bodyType + " is not a primitive type");
     }
-
-
-    writer.outdent();
-
   }
 }

@@ -7,7 +7,11 @@ The goal of RAML for JAX-RS is to provide a set of tools to work with these tech
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
 
 ## Documentation
-There are two projects: [JAXRS to RAML](jaxrs-to-raml/README.md) and [RAML to JAXRS](raml-to-jaxrs/README.md).
+There are two projects:
+- [jaxrs-to-raml](jaxrs-to-raml/README.md); and
+- [raml-to-jaxrs](raml-to-jaxrs/README.md).
+
+NOTE: `raml-to-jaxrs` supports both RAML 0.8 and 1.0. `jaxrs-to-raml` supports RAML 1.0 only, to generate RAML 0.8, you can use version `1.3.x` of `raml-for-jax-rs`.
 
 ## Maven artifacts
 Maven artifacts are available at:

@@ -1,4 +1,4 @@
-**NOTE: a new [2.0.0 version](https://github.com/mulesoft/raml-for-jax-rs/tree/release/2.0.0) is in the works**
+**NOTE: a new [2.0.0 version](https://github.com/mulesoft/raml-for-jax-rs/tree/release/2.0.0) with RAML 1.0 support is in the works**
 
 ![](http://raml.org/images/logo.png)
 

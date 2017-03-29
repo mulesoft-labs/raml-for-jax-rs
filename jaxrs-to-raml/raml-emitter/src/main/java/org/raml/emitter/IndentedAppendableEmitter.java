@@ -103,7 +103,7 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeDefaultMediaType(RamlMediaType defaultMediaType) throws IOException {
-    writer.appendLine(format("mediaType: %s", defaultMediaType.toStringRepresentation()));
+    writer.appendLine(format("mediaType: %s", quoteIfSpecialCharacter(defaultMediaType.toStringRepresentation())));
   }
 
   private void writeResource(RamlResource resource) throws IOException {
@@ -197,7 +197,7 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeDescription(String description) throws IOException {
-    writer.appendLine(String.format("description: %s", description));
+    writer.appendLine(String.format("description: %s", quoteIfSpecialCharacter(description)));
   }
 
   private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters)
@@ -220,7 +220,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
     Optional<String> defaultValue = parameter.getDefaultValue();
     if (defaultValue.isPresent()) {
-      writer.appendLine(format("default: %s", defaultValue.get()));
+      writer.appendLine(format("default: %s", quoteIfSpecialCharacter(defaultValue.get())));
       writer.appendLine("required: false");
     }
 
@@ -245,7 +245,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
     Optional<String> defaultValue = queryParameter.getDefaultValue();
     if (defaultValue.isPresent()) {
-      writer.appendLine(format("default: %s", defaultValue.get()));
+      writer.appendLine(format("default: %s", quoteIfSpecialCharacter(defaultValue.get())));
       writer.appendLine("required: false");
     }
 
@@ -257,15 +257,23 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeTitle(String title) throws IOException {
-    writer.appendLine(format("title: %s", title));
+    writer.appendLine(format("title: %s", quoteIfSpecialCharacter(title)));
   }
 
   private void writeVersion(String version) throws IOException {
-    writer.appendLine(format("version: %s", version));
+    writer.appendLine(format("version: %s", quoteIfSpecialCharacter(version)));
   }
 
   private void writeBaseUri(String baseUri) throws IOException {
-    writer.appendLine(format("baseUri: %s", baseUri));
+    writer.appendLine(format("baseUri: %s", quoteIfSpecialCharacter(baseUri)));
   }
 
+  private String quoteIfSpecialCharacter(String value) {
+    if (value != null && value.matches("[*|#{}?:,\\[\\]\"].*")) {
+      String result = value.replace("\"", "\\\""); // escape double quotes
+      return "\"" + result + "\"";
+    }
+
+    return value;
+  }
 }

@@ -32,7 +32,7 @@ public class ResourceWithDoc {
   public void thePost(@QueryParam("foo") String foo, String aaa) {}
 
   /**
-   * This get method does even less, can you imagine?
+   * ### This get method does even "less", can you imagine?
    *
    * I can.
    *

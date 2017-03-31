@@ -107,7 +107,7 @@ public class Utils {
 		if(str==null){
 			return null;
 		}
-		String tag = "@"+pName;
+		String tag = (pName.equals("return"))? "@"+pName: "@param "+pName;
 		int ind1 = str.indexOf(tag);
 		if(ind1<0){
 			return null;

@@ -45,7 +45,7 @@ public class RamlProperty {
 
     writer.appendLine(name + ": ");
     writer.indent();
-    writer.appendLine("type: " + ramlType.getTypeName());
+    writer.appendLine("type", ramlType.getTypeName());
     writer.outdent();
   }
 }

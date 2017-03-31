@@ -45,7 +45,7 @@ public class DefaultTypeHandler implements TypeHandler {
     if (ScalarType.fromType(bodyType).isPresent()) {
 
       writer.indent();
-      writer.appendLine("type: " + ScalarType.fromType(bodyType).get().getRamlSyntax());
+      writer.appendLine("type", ScalarType.fromType(bodyType).get().getRamlSyntax());
       writer.outdent();
     } else {
 

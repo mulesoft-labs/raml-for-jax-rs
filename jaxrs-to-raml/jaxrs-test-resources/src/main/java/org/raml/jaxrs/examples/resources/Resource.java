@@ -27,6 +27,7 @@ public class Resource {
 
   @Path("/path/to/get/")
   @GET
+  @Consumes({"text/xml", "application/*"})
   @Produces("application/xml")
   public String getStuff() {
     return "get";

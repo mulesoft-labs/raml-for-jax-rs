@@ -26,7 +26,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 @NotThreadSafe
-public class IndentedAppendable implements Appendable {
+public class IndentedAppendable {
 
   private static final String END_OF_LINE = System.lineSeparator();
 
@@ -66,22 +66,13 @@ public class IndentedAppendable implements Appendable {
     return this;
   }
 
-  @Override
-  public IndentedAppendable append(CharSequence csq) throws IOException {
-    this.appendable.append(csq);
+  public IndentedAppendable appendLine(String tag, String content) throws IOException {
+    this.appendable.append(currentIndent).append(tag).append(": ").append(content).append("\n");
     return this;
   }
 
-  @Override
-  public IndentedAppendable append(CharSequence csq, int start, int end) throws IOException {
-    this.appendable.append(csq, start, end);
-    return this;
-  }
-
-  @Override
-  public IndentedAppendable append(char c) throws IOException {
-    this.appendable.append(c);
-    return this;
+  public IndentedAppendable appendEscapedLine(String tag, String content) throws IOException {
+    return appendLine(tag, quoteIfSpecialCharacter(content));
   }
 
   public IndentedAppendable endOfLine() throws IOException {
@@ -91,5 +82,14 @@ public class IndentedAppendable implements Appendable {
 
   public String toString() {
     return this.appendable.toString();
+  }
+
+  private String quoteIfSpecialCharacter(String value) {
+    if (value != null && value.matches("[*|#{}?:,\\[\\]\"].*")) {
+      String result = value.replace("\"", "\\\""); // escape double quotes
+      return "\"" + result + "\"";
+    }
+
+    return value;
   }
 }

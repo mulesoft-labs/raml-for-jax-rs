@@ -66,7 +66,7 @@ public class JaxRsToRamlConverter {
       appendResource(appendable, resource);
     }
     appendable.outdent();
-    appendable.withIndent().append("}");
+    appendable.withIndent().appendLine("}");
     return appendable;
   }
 

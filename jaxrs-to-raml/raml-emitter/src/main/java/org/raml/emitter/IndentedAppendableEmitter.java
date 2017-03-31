@@ -103,7 +103,7 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeDefaultMediaType(RamlMediaType defaultMediaType) throws IOException {
-    writer.appendLine(format("mediaType: %s", quoteIfSpecialCharacter(defaultMediaType.toStringRepresentation())));
+    writer.appendEscapedLine("mediaType", defaultMediaType.toStringRepresentation());
   }
 
   private void writeResource(RamlResource resource) throws IOException {
@@ -197,7 +197,7 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeDescription(String description) throws IOException {
-    writer.appendLine(String.format("description: %s", quoteIfSpecialCharacter(description)));
+    writer.appendEscapedLine("description", description);
   }
 
   private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters)
@@ -206,22 +206,7 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.indent();
 
     for (RamlHeaderParameter parameter : headerParameters) {
-      writeHeaderParameter(parameter);
-    }
-
-    writer.outdent();
-  }
-
-  // TODO: remove this duplicate code
-  private void writeHeaderParameter(RamlHeaderParameter parameter) throws IOException {
-    writer.appendLine(String.format("%s:", parameter.getName()));
-    writer.indent();
-    writer.appendLine(format("type: %s", RamlTypes.fromType(parameter.getType()).getRamlSyntax()));
-
-    Optional<String> defaultValue = parameter.getDefaultValue();
-    if (defaultValue.isPresent()) {
-      writer.appendLine(format("default: %s", quoteIfSpecialCharacter(defaultValue.get())));
-      writer.appendLine("required: false");
+      writeParameter(parameter.getName(), parameter.getDefaultValue(), parameter.getType());
     }
 
     writer.outdent();
@@ -231,22 +216,20 @@ public class IndentedAppendableEmitter implements Emitter {
       throws IOException {
     writer.appendLine("queryParameters:");
     writer.indent();
-    for (RamlQueryParameter queryParameter : queryParameters) {
-      writeQueryParameter(queryParameter);
+    for (RamlQueryParameter parameter : queryParameters) {
+      writeParameter(parameter.getName(), parameter.getDefaultValue(), parameter.getType());
     }
     writer.outdent();
   }
 
-  private void writeQueryParameter(RamlQueryParameter queryParameter) throws IOException {
-    writer.appendLine(String.format("%s:", queryParameter.getName()));
+  private void writeParameter(String name, Optional<String> defaultValue, Type type) throws IOException {
+    writer.appendLine(String.format("%s:", name));
     writer.indent();
-    writer.appendLine(format("type: %s", RamlTypes.fromType(queryParameter.getType())
-        .getRamlSyntax()));
+    writer.appendLine("type", RamlTypes.fromType(type).getRamlSyntax());
 
-    Optional<String> defaultValue = queryParameter.getDefaultValue();
     if (defaultValue.isPresent()) {
-      writer.appendLine(format("default: %s", quoteIfSpecialCharacter(defaultValue.get())));
-      writer.appendLine("required: false");
+      writer.appendEscapedLine("default", defaultValue.get());
+      writer.appendLine("required", "false");
     }
 
     writer.outdent();
@@ -257,23 +240,15 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeTitle(String title) throws IOException {
-    writer.appendLine(format("title: %s", quoteIfSpecialCharacter(title)));
+    writer.appendEscapedLine("title", title);
   }
 
   private void writeVersion(String version) throws IOException {
-    writer.appendLine(format("version: %s", quoteIfSpecialCharacter(version)));
+    writer.appendEscapedLine("version", version);
   }
 
   private void writeBaseUri(String baseUri) throws IOException {
-    writer.appendLine(format("baseUri: %s", quoteIfSpecialCharacter(baseUri)));
+    writer.appendEscapedLine("baseUri", baseUri);
   }
 
-  private String quoteIfSpecialCharacter(String value) {
-    if (value != null && value.matches("[*|#{}?:,\\[\\]\"].*")) {
-      String result = value.replace("\"", "\\\""); // escape double quotes
-      return "\"" + result + "\"";
-    }
-
-    return value;
-  }
 }

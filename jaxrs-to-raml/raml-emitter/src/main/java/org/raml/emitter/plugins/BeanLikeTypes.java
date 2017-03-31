@@ -76,7 +76,7 @@ public class BeanLikeTypes implements TypeHandler {
     // find fields
 
     writer.indent();
-    writer.appendLine("type: " + topInterface.getSimpleName());
+    writer.appendLine("type", topInterface.getSimpleName());
     writer.outdent();
 
     TypeScanner scanner = new TypeScanner() {

@@ -104,7 +104,7 @@ public class SimpleJaxbTypes implements TypeHandler {
       writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
 
       writer.indent();
-      writer.appendLine("type: " + type.getSimpleName());
+      writer.appendLine("type", type.getSimpleName());
       writer.outdent();
 
       registry.registerType(type.getSimpleName(), type, new TypeScanner() {

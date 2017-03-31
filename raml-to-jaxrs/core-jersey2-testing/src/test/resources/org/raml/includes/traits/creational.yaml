@@ -1,0 +1,12 @@
+  responses:
+    409:
+      description: conflict
+      body:
+        application/json:
+          schema: error.json
+          example: !include ../examples/errorExample.json
+    201:
+      description: resource created
+      headers:
+        Location:
+          description: Location of the new resource in URL format.

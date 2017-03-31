@@ -1,0 +1,26 @@
+#%RAML 0.8
+title: multiple - API
+version: v1
+baseUri: https://{host}/api/{version}
+securedBy: [apisec]
+
+securitySchemes: !include security/apisec.yaml
+
+schemas:
+  - user.json: !include schemas/user.json
+  - error.json: !include schemas/error.json
+
+traits:
+  -  creational: !include traits/creational.yaml
+
+/multiple:
+  displayName: multiple
+  description: longer description
+  post:
+    description: |
+      add new instance
+    is: [creational]
+    body:
+      application/json:
+        schema: user.json
+        example: !include examples/userExample.json

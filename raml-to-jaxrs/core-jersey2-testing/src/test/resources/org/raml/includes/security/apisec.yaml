@@ -1,0 +1,4 @@
+#%RAML 0.8
+  - apisec:
+      description: Basic Authentication over HTTP
+      type: Basic Authentication

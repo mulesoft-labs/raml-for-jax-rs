@@ -10,6 +10,7 @@
         <module>core</module>
         <module>maven-plugin</module>
         <module>gradle-plugin</module>
+        <module>core-jersey2-testing</module>
     </modules>
  <distributionManagement>
        <repository>

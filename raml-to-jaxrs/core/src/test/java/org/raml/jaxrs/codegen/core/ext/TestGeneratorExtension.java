@@ -22,6 +22,7 @@ package org.raml.jaxrs.codegen.core.ext;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 
+import org.raml.jaxrs.codegen.core.Types;
 import org.raml.model.Action;
 import org.raml.model.MimeType;
 import org.raml.model.Raml;
@@ -61,4 +62,7 @@ public class TestGeneratorExtension implements GeneratorExtension {
 
 	@Override
 	public void setCodeModel(JCodeModel codeModel) {}
+
+    @Override
+    public void setTypes(Types types) {}        
 }

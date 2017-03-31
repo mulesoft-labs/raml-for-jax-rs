@@ -11,7 +11,7 @@ This new project includes all the capabilities of both, and will be the one bein
 You can still find older versions of JAX-RS to RAML in this repository, and you will also be able to find the RAML JAX-RS Codegen [here](https://github.com/mulesoft/raml-jaxrs-codegen) until we remove it.
 
 
-#Introduction
+# Introduction
 
 The goal of RAML for JAX-RS is to provide a set of tools to work with these technologies in a way of being able to scaffold a JAVA + JAX-RS application based on an existing RAML API definition (Code Generation),
 or its roundtrip, generate the RAML API definition based on an existing JAVA + JAX-RS application (Documentation).
@@ -19,20 +19,20 @@ or its roundtrip, generate the RAML API definition based on an existing JAVA + J
 ## Considerations
 RAML for JAX-RS is the result of merging two projects that started individually and at different times. The idea of joining these, pursuits the purpose of providing a better experience to the developers when installing and using it.
 
-#Project Modules
+# Project Modules
 
 - Eclipse / Anypoint Studio plugin: Perform both ways conversions from your IDE. [Installation instructions/User guide.](/eclipseplugin.md)
 - Maven Plugin: Perform both ways conversions by using Maven. [Installation instructions/User guide.](/maven-plugin.md)
 - Command Line: Perform both ways conversions in command line. [Installation instructions/User guide.](/command-line.md)
 
-#Maven artifacts
+# Maven artifacts
 Maven artifacts are available at:
  - https://repository-master.mulesoft.org/releases/ - release repository
  - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
 
 as well as at Maven Central (http://search.maven.org/#search|ga|1|org.raml)
  
-#Design principles
+# Design principles
 
 ## RAML Generation (from JAX-RS)
 All distributions (Eclipse plugin, Maven Plugin, and Javac Plugin) works in the following way.
@@ -45,9 +45,9 @@ All distributions (Eclipse plugin, Maven Plugin, and Javac Plugin) works in the 
 - Default values and validations for parameters (using javax.validation annotations).
 - [XML/Json schemas and examples(stubs) generation with JAXB](/jaxrs-to-raml/jaxb.md)
 
-###Currently Supported
+### Currently Supported
 
-####JAX-RS Annotations:
+#### JAX-RS Annotations:
 In JAX-RS-to-RAML, these annotations have exactly the same semantical meaning as in JAX-RS:
 - Path.
 - Consumes, Produces.
@@ -58,11 +58,11 @@ In JAX-RS-to-RAML, these annotations have exactly the same semantical meaning as
 **Note:** CookieParam and MatrixParam annotations are not supported in this version. A deep discussion
 about how these should be represented in RAML must be held in order to have a good implementation. Feel free to [contribute
 with ideas/opinions about it](https://github.com/mulesoft/jaxrs-to-raml/issues?labels=Cookie%26Matrix+params&milestone=&page=1&state=closed).
-###Extended Annotations
+### Extended Annotations
 The following annotations are not part of JAX-RS specification itself. However, these are useful to describe RESTful APIs when working with
 JAVA projects, and so, it was decided to add support for them.
 
-#####Swagger Annotations:
+##### Swagger Annotations:
 Following Swagger annotations are supported:
 - Api
 - ApiOperation
@@ -70,7 +70,7 @@ Following Swagger annotations are supported:
 - ApiResponse
 - ApiResponses
 
-#####Validation Annotations:
+##### Validation Annotations:
 These annotations are interpreted as RAML parameters constrains.
 - NotNull.
 - Pattern.
@@ -97,14 +97,14 @@ that are compatible with the RAML definition.
 - Objects are generated based on json schemas to represent request/response entities.
 - English is the language used in the interface and method names generation.
 
-###Currently Supported
+### Currently Supported
 - JAX-RS 1.1 and 2.0,
 - JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and javax.validation uses Java ones,
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
 - Generation of JAXB annotated classes based on XML Schemas
 
-####JAX-RS Annotations:
+#### JAX-RS Annotations:
 
 - Path.
 - Consumes, Produces.
@@ -112,16 +112,16 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 - DELETE, GET, HEAD, OPTIONS, POST, PUT.
 - DefaultValue.
 
-####Extended Annotations:
+#### Extended Annotations:
 
-#####Validation Annotations:
+##### Validation Annotations:
 - NotNull.
 - Min.
 - DecimalMin.
 - Max.
 - DecimalMax.
 
-####Generating client proxy code:
+#### Generating client proxy code:
 
 Currently JAX-RS Generation supports generation of client proxy code as experimental feature. If you would like
 to use this mode you may  use '''generateClientProxy''' parameter in command line and maven plugin or select 'Generate client proxy code' in Eclipse plugin. 
@@ -130,7 +130,7 @@ to use this mode you may  use '''generateClientProxy''' parameter in command lin
 ### Not yet supported
 -->
 
-#Future Features
+# Future Features
 
 ## For RAML->JAX-RS:
  - Documentation needs a lot of improvements, completion and examples. Most developers will be able to figure the missing gaps by themselves and looking at the Jersey example, but we will enhance documentation soon.

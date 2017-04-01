@@ -59,7 +59,7 @@ public class BeanLikeTypes implements TypeHandler {
   }
 
   private void writeBody(final TypeRegistry registry, IndentedAppendable writer,
-                         RamlMediaType mediaTypes, final RamlEntity bodyType)
+                         RamlMediaType mediaType, final RamlEntity bodyType)
       throws IOException {
 
     // find top interface.

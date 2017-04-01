@@ -26,6 +26,7 @@ import org.raml.api.RamlApi;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.RamlTypes;
 import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.BeanLikeTypes;
@@ -61,9 +62,11 @@ public class IndentedAppendableEmitter implements Emitter {
   private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
   private final IndentedAppendable writer;
+  private final AnnotationTypeEmitter annotationTypeEmitter;
 
   private IndentedAppendableEmitter(IndentedAppendable writer) {
     this.writer = writer;
+    this.annotationTypeEmitter = new AnnotationTypeEmitter(writer);
   }
 
   public static IndentedAppendableEmitter create(IndentedAppendable appendable) {
@@ -87,12 +90,22 @@ public class IndentedAppendableEmitter implements Emitter {
     writeVersion(api.getVersion());
     writeBaseUri(api.getBaseUri());
     writeDefaultMediaType(api.getDefaultMediaType());
+    writeSupportedAnnotations(api.getSupportedAnnotation());
 
     for (RamlResource resource : api.getResources()) {
       writeResource(resource);
     }
 
     writeTypes();
+  }
+
+  private void writeSupportedAnnotations(List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
+
+    if (supportedAnnotation.size() == 0) {
+      return;
+    }
+
+    annotationTypeEmitter.emitAnnotation(supportedAnnotation);
   }
 
   private void writeTypes() throws IOException {

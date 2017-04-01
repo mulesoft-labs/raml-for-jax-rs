@@ -13,13 +13,14 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.model;
+package org.raml.api;
 
-import java.util.Set;
+import java.lang.annotation.Annotation;
 
-public interface JaxRsApplication {
+/**
+ * Created by Jean-Philippe Belanger on 3/29/17. Just potential zeroes and ones
+ */
+public interface RamlSupportedAnnotation {
 
-  Set<JaxRsResource> getResources();
-
-  Set<JaxRsSupportedAnnotation> getSupportedAnnotations();
+  Class<? extends Annotation> getAnnotation();
 }

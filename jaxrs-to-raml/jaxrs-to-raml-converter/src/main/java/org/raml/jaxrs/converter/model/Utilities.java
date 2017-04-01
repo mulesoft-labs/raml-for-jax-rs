@@ -19,6 +19,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 import org.raml.api.RamlHeaderParameter;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.JaxRsMethod;
@@ -27,6 +28,7 @@ import org.raml.api.RamlMediaType;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
+import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 
 import java.util.List;
 
@@ -51,6 +53,18 @@ public class Utilities {
                                                            @Override
                                                            public RamlResource apply(JaxRsResource jaxRsResource) {
                                                              return JaxRsRamlResource.create(jaxRsResource);
+                                                           }
+                                                         });
+  }
+
+  public static FluentIterable<RamlSupportedAnnotation> toRamlSupportedAnnotation(Iterable<JaxRsSupportedAnnotation> jaxRsResources) {
+    return FluentIterable.from(jaxRsResources).transform(
+                                                         new Function<JaxRsSupportedAnnotation, RamlSupportedAnnotation>() {
+
+                                                           @Override
+                                                           public RamlSupportedAnnotation apply(JaxRsSupportedAnnotation annotation) {
+                                                             return new JaxRsRamlSupportedAnnotation(annotation
+                                                                 .getJavaAnnotation());
                                                            }
                                                          });
   }

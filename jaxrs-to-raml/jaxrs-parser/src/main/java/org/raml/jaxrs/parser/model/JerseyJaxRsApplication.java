@@ -22,8 +22,10 @@ import com.google.common.collect.ImmutableSet;
 import org.glassfish.jersey.server.model.RuntimeResource;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
+import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,9 +36,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class JerseyJaxRsApplication implements JaxRsApplication {
 
   private final Set<JaxRsResource> resources;
+  private final Set<JaxRsSupportedAnnotation> supportedAnnotations = new HashSet<>();
 
   private JerseyJaxRsApplication(Set<JaxRsResource> resources) {
     this.resources = resources;
+    supportedAnnotations.add(JerseyJaxRsSupportedAnnotation.createSupportedAnnotation(Deprecated.class));
   }
 
   private static JerseyJaxRsApplication create(Iterable<JaxRsResource> resources) {
@@ -63,5 +67,10 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
   @Override
   public Set<JaxRsResource> getResources() {
     return resources;
+  }
+
+  @Override
+  public Set<JaxRsSupportedAnnotation> getSupportedAnnotations() {
+    return supportedAnnotations;
   }
 }

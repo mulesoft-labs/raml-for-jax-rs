@@ -27,5 +27,7 @@ public interface RamlApi {
 
   List<RamlResource> getResources();
 
+  List<RamlSupportedAnnotation> getSupportedAnnotation();
+
   RamlMediaType getDefaultMediaType();
 }

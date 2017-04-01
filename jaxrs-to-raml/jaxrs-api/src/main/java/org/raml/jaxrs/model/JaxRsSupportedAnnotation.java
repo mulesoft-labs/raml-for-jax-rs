@@ -15,11 +15,12 @@
  */
 package org.raml.jaxrs.model;
 
-import java.util.Set;
+import java.lang.annotation.Annotation;
 
-public interface JaxRsApplication {
+/**
+ * Created by Jean-Philippe Belanger on 3/29/17. Just potential zeroes and ones
+ */
+public interface JaxRsSupportedAnnotation {
 
-  Set<JaxRsResource> getResources();
-
-  Set<JaxRsSupportedAnnotation> getSupportedAnnotations();
+  Class<? extends Annotation> getJavaAnnotation();
 }

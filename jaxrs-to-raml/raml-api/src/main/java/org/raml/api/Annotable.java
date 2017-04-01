@@ -13,32 +13,16 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.resources;
+package org.raml.api;
 
-import org.raml.jaxrs.examples.Secure;
+import com.google.common.base.Optional;
 
-import javax.ws.rs.Path;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.List;
+import java.lang.annotation.Annotation;
 
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 4/1/17. Just potential zeroes and ones
  */
-@XmlRootElement
-@Secure(security = String.class, level = 0)
-public class ConsumedValue {
+public interface Annotable {
 
-  @XmlElement
-  private String name;
-
-  @XmlElement
-  @Secure(security = String.class, level = 1)
-  private int id;
-
-  @XmlElement
-  private SubType subType;
-
-  @XmlElement
-  private List<String> names;
+  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType);
 }

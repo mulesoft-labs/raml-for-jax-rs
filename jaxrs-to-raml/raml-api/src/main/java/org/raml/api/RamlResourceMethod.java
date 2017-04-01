@@ -17,9 +17,10 @@ package org.raml.api;
 
 import com.google.common.base.Optional;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
-public interface RamlResourceMethod {
+public interface RamlResourceMethod extends Annotable {
 
   String getHttpMethod();
 
@@ -36,4 +37,6 @@ public interface RamlResourceMethod {
   Optional<RamlEntity> getConsumedType();
 
   Optional<RamlEntity> getProducedType();
+
+  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
 }

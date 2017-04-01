@@ -26,6 +26,7 @@ import org.raml.api.RamlMediaType;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResourceMethod;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -96,5 +97,10 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
   @Override
   public Optional<String> getDescription() {
     return this.resourceMethod.getDescription();
+  }
+
+  @Override
+  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
+    return this.resourceMethod.getJavaAnnotation(annotation);
   }
 }

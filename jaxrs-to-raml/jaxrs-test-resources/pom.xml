@@ -43,14 +43,11 @@
                         </goals>
                         <configuration>
                             <input>${project.build.outputDirectory}</input>
-<!--
-                            <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
--->
                             <outputFileName>${project.artifactId}.raml</outputFileName>
-<!--
-                            <sourceDirectory>${project.build.directory}</sourceDirectory>
--->
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                            <translatedAnnotations>
+                                <item>org.raml.jaxrs.examples.Secure</item>
+                            </translatedAnnotations>
                         </configuration>
                     </execution>
                 </executions>

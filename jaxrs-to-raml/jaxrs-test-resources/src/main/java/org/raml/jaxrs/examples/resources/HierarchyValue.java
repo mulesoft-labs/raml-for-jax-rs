@@ -16,7 +16,9 @@
 package org.raml.jaxrs.examples.resources;
 
 import org.raml.jaxrs.common.BuildType;
+import org.raml.jaxrs.examples.Secure;
 
+import javax.ws.rs.Path;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -26,10 +28,12 @@ import java.util.List;
  */
 @XmlRootElement
 @BuildType("ramlforjaxrs-simple")
+@Secure(security = String.class, level = 17)
 public interface HierarchyValue extends TopValue, AnotherTopValue {
 
   String getName();
 
+  @Path("alllloooo")
   int getId();
 
   SubType getSubType();

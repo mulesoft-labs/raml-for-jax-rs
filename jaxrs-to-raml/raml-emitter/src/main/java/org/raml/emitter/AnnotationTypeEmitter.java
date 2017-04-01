@@ -31,16 +31,20 @@ import java.util.List;
 public class AnnotationTypeEmitter {
 
   private final IndentedAppendable writer;
+  private final List<RamlSupportedAnnotation> suportedAnnotations;
 
-  public AnnotationTypeEmitter(IndentedAppendable writer) {
+
+  public AnnotationTypeEmitter(IndentedAppendable writer, List<RamlSupportedAnnotation> supportedAnnotation) {
+
     this.writer = writer;
+    this.suportedAnnotations = supportedAnnotation;
   }
 
-  public void emitAnnotation(List<RamlSupportedAnnotation> annotation) throws IOException {
+  public void emitAnnotations() throws IOException {
 
     writer.appendLine("annotationTypes:");
     writer.indent();
-    for (RamlSupportedAnnotation ramlSupportedAnnotation : annotation) {
+    for (RamlSupportedAnnotation ramlSupportedAnnotation : suportedAnnotations) {
       Class<? extends Annotation> javaAnnotation = ramlSupportedAnnotation.getAnnotation();
 
       if (javaAnnotation.getDeclaredMethods().length > 0) {

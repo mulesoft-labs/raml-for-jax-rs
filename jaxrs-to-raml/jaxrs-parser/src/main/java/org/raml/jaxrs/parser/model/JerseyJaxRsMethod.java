@@ -25,6 +25,7 @@ import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.jaxrs.parser.source.SourceParser;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -89,5 +90,10 @@ class JerseyJaxRsMethod implements JaxRsMethod {
   @Override
   public Optional<String> getDescription() {
     return sourceParser.getDocumentationFor(resourceMethod.getInvocable().getDefinitionMethod());
+  }
+
+  @Override
+  public Optional<Annotation> getJavaAnnotation(Class<? extends Annotation> annotation) {
+    return Optional.fromNullable(resourceMethod.getInvocable().getHandlingMethod().getAnnotation(annotation));
   }
 }

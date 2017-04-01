@@ -19,12 +19,15 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import org.raml.api.Annotable;
 import org.raml.api.RamlEntity;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
+import org.raml.emitter.AnnotationInstanceEmitter;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +36,7 @@ import java.util.Map;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 
-public class RamlType {
+public class RamlType implements Annotable {
 
   private final RamlEntity type;
 
@@ -64,7 +67,8 @@ public class RamlType {
     properties.put(property.getName(), property);
   }
 
-  public void write(IndentedAppendable writer) throws IOException {
+  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer,
+                    List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
 
     Class c = (Class) type.getType();
     writer.appendLine(c.getSimpleName() + ":");
@@ -80,6 +84,8 @@ public class RamlType {
       })) + " ]");
     }
 
+    emitter.emitAnnotations(type);
+
     if (type.getDescription().isPresent()) {
       writer.appendLine("description: " + type.getDescription().get());
     }
@@ -88,7 +94,7 @@ public class RamlType {
     writer.indent();
     for (RamlProperty ramlProperty : properties.values()) {
 
-      ramlProperty.write(writer);
+      ramlProperty.write(emitter, writer);
     }
     writer.outdent();
     writer.outdent();
@@ -119,5 +125,8 @@ public class RamlType {
     this.superTypes = superTypes;
   }
 
-
+  @Override
+  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+    return type.getAnnotation(annotationType);
+  }
 }

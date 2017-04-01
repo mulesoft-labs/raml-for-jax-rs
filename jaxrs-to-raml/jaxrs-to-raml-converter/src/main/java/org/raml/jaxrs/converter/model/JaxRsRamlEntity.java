@@ -19,6 +19,7 @@ import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
 import org.raml.jaxrs.model.JaxRsEntity;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -53,5 +54,10 @@ public class JaxRsRamlEntity implements RamlEntity {
   public RamlEntity createDependent(Type type) {
 
     return new JaxRsRamlEntity(entity.createJaxRsEntity(type));
+  }
+
+  @Override
+  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
+    return entity.getAnnotation(annotation);
   }
 }

@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
@@ -62,11 +63,11 @@ public class IndentedAppendableEmitter implements Emitter {
   private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
   private final IndentedAppendable writer;
-  private final AnnotationTypeEmitter annotationTypeEmitter;
+  private AnnotationTypeEmitter annotationTypeEmitter;
+  private AnnotationInstanceEmitter annotationInstanceEmitter;
 
   private IndentedAppendableEmitter(IndentedAppendable writer) {
     this.writer = writer;
-    this.annotationTypeEmitter = new AnnotationTypeEmitter(writer);
   }
 
   public static IndentedAppendableEmitter create(IndentedAppendable appendable) {
@@ -78,6 +79,8 @@ public class IndentedAppendableEmitter implements Emitter {
   @Override
   public void emit(RamlApi api) throws RamlEmissionException {
     try {
+      this.annotationTypeEmitter = new AnnotationTypeEmitter(writer, api.getSupportedAnnotation());
+      this.annotationInstanceEmitter = new AnnotationInstanceEmitter(writer, api.getSupportedAnnotation());
       writeApi(api);
     } catch (IOException e) {
       throw new RamlEmissionException(format("unable to emit api: %s", api.getBaseUri()), e);
@@ -93,10 +96,10 @@ public class IndentedAppendableEmitter implements Emitter {
     writeSupportedAnnotations(api.getSupportedAnnotation());
 
     for (RamlResource resource : api.getResources()) {
-      writeResource(resource);
+      writeResource(resource, api.getSupportedAnnotation());
     }
 
-    writeTypes();
+    writeTypes(api, api.getSupportedAnnotation());
   }
 
   private void writeSupportedAnnotations(List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
@@ -105,13 +108,13 @@ public class IndentedAppendableEmitter implements Emitter {
       return;
     }
 
-    annotationTypeEmitter.emitAnnotation(supportedAnnotation);
+    annotationTypeEmitter.emitAnnotations();
   }
 
-  private void writeTypes() throws IOException {
+  private void writeTypes(RamlApi api, List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
     writer.appendLine("types:");
     writer.indent();
-    typeRegistry.writeAll(writer);
+    typeRegistry.writeAll(annotationInstanceEmitter, writer, supportedAnnotation);
     writer.outdent();
   }
 
@@ -119,24 +122,26 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.appendLine(format("mediaType: \"%s\"", defaultMediaType.toStringRepresentation()));
   }
 
-  private void writeResource(RamlResource resource) throws IOException {
+  private void writeResource(RamlResource resource, List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
     writer.appendLine(format("%s:", resource.getPath()));
     writer.indent();
 
     for (RamlResourceMethod method : resource.getMethods()) {
-      writeMethod(method);
+      writeMethod(method, supportedAnnotation);
     }
 
     for (RamlResource child : resource.getChildren()) {
-      writeResource(child);
+      writeResource(child, supportedAnnotation);
     }
 
     writer.outdent();
   }
 
-  private void writeMethod(RamlResourceMethod method) throws IOException {
+  private void writeMethod(RamlResourceMethod method,
+                           List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
     writer.appendLine(format("%s:", method.getHttpMethod()));
     writer.indent();
+    annotationInstanceEmitter.emitAnnotations(method);
 
     Optional<String> description = method.getDescription();
     if (description.isPresent()) {

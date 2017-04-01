@@ -15,11 +15,13 @@
  */
 package org.raml.emitter.plugins;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.Annotable;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
@@ -30,6 +32,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
@@ -95,16 +98,30 @@ public class SimpleJaxbTypes implements TypeHandler {
         if (elem != null) {
 
           String name = elem.name().equals("##default") ? field.getName() : elem.name();
-          ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
+          ramlType.addProperty(RamlProperty.createProperty(new FieldAnnotable(field), name, fieldRamlType));
         } else {
 
           XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
           if (attribute != null) {
 
             String name = elem.name().equals("##default") ? field.getName() : elem.name();
-            ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
+            ramlType.addProperty(RamlProperty.createProperty(new FieldAnnotable(field), name, fieldRamlType));
           }
         }
+      }
+    }
+
+    private static class FieldAnnotable implements Annotable {
+
+      private final Field field;
+
+      public FieldAnnotable(Field field) {
+        this.field = field;
+      }
+
+      @Override
+      public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+        return Optional.fromNullable(field.getAnnotation(annotationType));
       }
     }
   }

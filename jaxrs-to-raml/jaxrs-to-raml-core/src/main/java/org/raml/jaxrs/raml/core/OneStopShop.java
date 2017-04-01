@@ -29,8 +29,10 @@ import org.raml.jaxrs.parser.source.SourceParser;
 import org.raml.jaxrs.parser.source.SourceParsers;
 import org.raml.utilities.builder.NonNullableField;
 
+import java.lang.annotation.Annotation;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -69,7 +71,8 @@ public class OneStopShop {
         sourceCodeRoot.isSet() ? SourceParsers.usingRoasterParser(sourceCodeRoot.get())
             : SourceParsers.nullParser();
 
-    JaxRsApplication application = JaxRsParsers.usingJerseyWith(jaxRsUrl, sourceParser).parse();
+    JaxRsApplication application =
+        JaxRsParsers.usingJerseyWith(jaxRsUrl, sourceParser, ramlConfiguration.getTranslatedAnnotations()).parse();
 
     RamlApi ramlApi = JaxRsToRamlConverter.create().convert(ramlConfiguration, application);
 
@@ -88,6 +91,7 @@ public class OneStopShop {
     NonNullableField<Path> sourceCodeRoot = NonNullableField.unset(); // Optional field.
     NonNullableField<Path> ramlOutputFile = NonNullableField.unset();
     NonNullableField<RamlConfiguration> ramlConfiguration = NonNullableField.unset();
+    private List<Class<? extends Annotation>> translatedAnnotations;
 
     private Builder() {}
 
@@ -120,6 +124,12 @@ public class OneStopShop {
 
       this.ramlConfiguration = NonNullableField.of(ramlConfiguration);
 
+      return this;
+    }
+
+    public Builder withTranslatedAnnotations(List<Class<? extends Annotation>> translatedAnnotations) {
+
+      this.translatedAnnotations = translatedAnnotations;
       return this;
     }
 

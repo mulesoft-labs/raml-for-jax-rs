@@ -29,6 +29,7 @@ public class ResourceWithRealTypes {
   @POST
   @Consumes("application/xml")
   @Produces("application/xml")
+  @Deprecated
   public ProducedValue postWithQueryParameters(ConsumedValue consumed) {
     return null;
   }

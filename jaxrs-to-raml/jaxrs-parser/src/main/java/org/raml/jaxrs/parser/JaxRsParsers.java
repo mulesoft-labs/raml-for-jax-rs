@@ -17,13 +17,17 @@ package org.raml.jaxrs.parser;
 
 import org.raml.jaxrs.parser.source.SourceParser;
 
+import java.lang.annotation.Annotation;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
 
 public class JaxRsParsers {
 
   private JaxRsParsers() {}
 
-  public static JaxRsParser usingJerseyWith(Path classesPath, SourceParser sourceParser) {
-    return JerseyJaxRsParser.create(classesPath, sourceParser);
+  public static JaxRsParser usingJerseyWith(Path classesPath, SourceParser sourceParser,
+                                            Set<Class<? extends Annotation>> translatedAnnotations) {
+    return JerseyJaxRsParser.create(classesPath, sourceParser, translatedAnnotations);
   }
 }

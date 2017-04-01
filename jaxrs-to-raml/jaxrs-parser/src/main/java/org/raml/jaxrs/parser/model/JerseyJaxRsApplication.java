@@ -25,33 +25,38 @@ import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class JerseyJaxRsApplication implements JaxRsApplication {
 
   private final Set<JaxRsResource> resources;
-  private final Set<JaxRsSupportedAnnotation> supportedAnnotations = new HashSet<>();
+  private final Set<JaxRsSupportedAnnotation> supportedAnnotations;
 
-  private JerseyJaxRsApplication(Set<JaxRsResource> resources) {
+  private JerseyJaxRsApplication(Set<JaxRsResource> resources, Set<JaxRsSupportedAnnotation> supportedAnnotations) {
     this.resources = resources;
-    supportedAnnotations.add(JerseyJaxRsSupportedAnnotation.createSupportedAnnotation(Deprecated.class));
+    this.supportedAnnotations = supportedAnnotations;
   }
 
-  private static JerseyJaxRsApplication create(Iterable<JaxRsResource> resources) {
+  private static JerseyJaxRsApplication create(Iterable<JaxRsResource> resources,
+                                               Set<JaxRsSupportedAnnotation> supportedAnnotations) {
     checkNotNull(resources);
 
-    return new JerseyJaxRsApplication(ImmutableSet.copyOf(resources));
+    return new JerseyJaxRsApplication(ImmutableSet.copyOf(resources), supportedAnnotations);
   }
 
   public static JerseyJaxRsApplication fromRuntimeResources(
                                                             Iterable<RuntimeResource> runtimeResources,
-                                                            final SourceParser sourceParser) {
+                                                            final SourceParser sourceParser,
+                                                            Set<JaxRsSupportedAnnotation> supportedAnnotations) {
     return create(FluentIterable.from(runtimeResources).transform(
                                                                   new Function<RuntimeResource, JaxRsResource>() {
 
@@ -61,7 +66,7 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
                                                                       return JerseyJaxRsResource.create(runtimeResource,
                                                                                                         sourceParser);
                                                                     }
-                                                                  }));
+                                                                  }), supportedAnnotations);
   }
 
   @Override

@@ -15,6 +15,8 @@
  */
 package org.raml.api;
 
+import com.google.common.base.Optional;
+
 import java.lang.annotation.Annotation;
 
 /**
@@ -23,4 +25,6 @@ import java.lang.annotation.Annotation;
 public interface RamlSupportedAnnotation {
 
   Class<? extends Annotation> getAnnotation();
+
+  Optional<Annotation> getAnnotationInstance(Annotable annotable);
 }

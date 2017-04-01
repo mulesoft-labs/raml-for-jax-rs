@@ -17,12 +17,13 @@ package org.raml.api;
 
 import com.google.common.base.Optional;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-public interface RamlEntity {
+public interface RamlEntity extends Annotable {
 
   Type getType();
 
@@ -30,4 +31,6 @@ public interface RamlEntity {
 
   // this is a cheap way to get to the source code parser. Should be fixed.
   RamlEntity createDependent(Type type);
+
+  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
 }

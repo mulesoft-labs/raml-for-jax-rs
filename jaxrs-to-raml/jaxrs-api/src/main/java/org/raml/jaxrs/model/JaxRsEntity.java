@@ -17,6 +17,7 @@ package org.raml.jaxrs.model;
 
 import com.google.common.base.Optional;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
@@ -30,4 +31,6 @@ public interface JaxRsEntity {
   Optional<String> getDescription();
 
   JaxRsEntity createJaxRsEntity(Type entity);
+
+  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
 }

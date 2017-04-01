@@ -15,9 +15,11 @@
  */
 package org.raml.emitter.plugins;
 
+import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.Annotable;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
@@ -25,6 +27,7 @@ import org.raml.jaxrs.common.BuildType;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -101,14 +104,30 @@ public class BeanLikeTypes implements TypeHandler {
 
         String badlyCasedfieldName = method.getName().substring(3);
         String fieldName = Character.toLowerCase(badlyCasedfieldName.charAt(0)) + badlyCasedfieldName.substring(1);
-        rt.addProperty(RamlProperty.createProperty(fieldName, PluginUtilities.getRamlType(method.getReturnType().getSimpleName(),
-                                                                                          registry,
-                                                                                          entity.createDependent(method
-                                                                                              .getGenericReturnType()),
-                                                                                          typeScanner)));
+        rt.addProperty(RamlProperty.createProperty(
+                                                   new MethodAnnotable(method), fieldName,
+                                                   PluginUtilities.getRamlType(method.getReturnType().getSimpleName(),
+                                                                               registry,
+                                                                               entity.createDependent(method
+                                                                                   .getGenericReturnType()),
+                                                                               typeScanner)));
       }
     }
 
     return rt;
+  }
+
+  private static class MethodAnnotable implements Annotable {
+
+    private final Method method;
+
+    public MethodAnnotable(Method method) {
+      this.method = method;
+    }
+
+    @Override
+    public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+      return Optional.fromNullable(method.getAnnotation(annotationType));
+    }
   }
 }

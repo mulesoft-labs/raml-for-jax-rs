@@ -19,8 +19,10 @@ import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.raml.core.DefaultRamlConfiguration;
 import org.raml.jaxrs.raml.core.OneStopShop;
 
+import java.lang.annotation.Annotation;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 public class Main {
 
@@ -34,7 +36,8 @@ public class Main {
     }
 
     RamlConfiguration ramlConfiguration =
-        DefaultRamlConfiguration.forApplication(jaxRsResourceFile.getFileName().toString());
+        DefaultRamlConfiguration.forApplication(jaxRsResourceFile.getFileName().toString(),
+                                                Collections.<Class<? extends Annotation>>emptySet());
 
     OneStopShop.Builder builder =
         OneStopShop.builder().withJaxRsClassesRoot(jaxRsResourceFile)

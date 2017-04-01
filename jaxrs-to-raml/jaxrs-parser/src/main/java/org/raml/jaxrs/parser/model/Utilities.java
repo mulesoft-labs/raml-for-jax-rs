@@ -25,9 +25,13 @@ import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
+import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
 
 import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Set;
 
 class Utilities {
 
@@ -130,4 +134,5 @@ class Utilities {
 
     return JerseyJaxRsEntity.create(resourceMethod.getInvocable().getResponseType(), sourceParser);
   }
+
 }

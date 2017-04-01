@@ -20,6 +20,7 @@ import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.parser.source.SourceParser;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
@@ -66,5 +67,10 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
 
       return Optional.<JaxRsEntity>of(new JerseyJaxRsEntity(input, sourceParser));
     }
+  }
+
+  @Override
+  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
+    return Optional.fromNullable(((Class) input).getAnnotation(annotation));
   }
 }

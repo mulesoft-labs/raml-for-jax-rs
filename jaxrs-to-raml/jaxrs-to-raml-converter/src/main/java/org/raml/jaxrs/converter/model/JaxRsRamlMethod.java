@@ -19,6 +19,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
 import org.raml.api.RamlEntity;
+import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsMethod;
@@ -71,6 +72,11 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
   }
 
   @Override
+  public List<RamlFormParameter> getFormParameters() {
+    return Utilities.toRamlFormParameters(this.resourceMethod.getFormParameters()).toList();
+  }
+
+  @Override
   public Optional<RamlEntity> getConsumedType() {
 
     return this.resourceMethod.getConsumedEntity().transform(new Function<JaxRsEntity, RamlEntity>() {
@@ -103,4 +109,5 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
   public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
     return this.resourceMethod.getJavaAnnotation(annotation);
   }
+
 }

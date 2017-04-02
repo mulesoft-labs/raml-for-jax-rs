@@ -21,7 +21,6 @@ import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -29,7 +28,8 @@ import java.util.Collection;
  */
 public class PluginUtilities {
 
-  static RamlType getRamlType(String simpleName, TypeRegistry typeRegistry, RamlEntity genericType, TypeScanner scanner) {
+  public static RamlType getRamlType(TypeRegistry typeRegistry, TypeScanner scanner, String simpleName,
+                                     RamlEntity genericType) {
     RamlType fieldRamlType;
     if (ScalarType.fromType(genericType.getType()).isPresent()) {
       // scalars
@@ -44,8 +44,9 @@ public class PluginUtilities {
 
         RamlEntity collectionEntityType = genericType.createDependent(ptype.getActualTypeArguments()[0]);
         RamlType collectionType =
-            getRamlType(((Class) ptype.getActualTypeArguments()[0]).getSimpleName(), typeRegistry, collectionEntityType
-                        , scanner);
+            getRamlType(typeRegistry, scanner, ((Class) ptype.getActualTypeArguments()[0]).getSimpleName(),
+                        collectionEntityType
+            );
         return RamlType.collectionOf(collectionType);
       }
     }

@@ -17,31 +17,13 @@ package org.raml.jaxrs.model;
 
 import com.google.common.base.Optional;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
+import java.lang.reflect.Type;
 
-import javax.ws.rs.core.MediaType;
-import javax.xml.crypto.dsig.Transform;
+public interface JaxRsFormParameter {
 
-public interface JaxRsMethod {
+  String getName();
 
-  HttpVerb getHttpVerb();
+  Optional<String> getDefaultValue();
 
-  List<MediaType> getConsumedMediaTypes();
-
-  List<MediaType> getProducedMediaTypes();
-
-  List<JaxRsQueryParameter> getQueryParameters();
-
-  List<JaxRsHeaderParameter> getHeaderParameters();
-
-  List<JaxRsFormParameter> getFormParameters();
-
-  Optional<String> getDescription();
-
-  Optional<JaxRsEntity> getConsumedEntity();
-
-  Optional<JaxRsEntity> getProducedEntity();
-
-  Optional<Annotation> getJavaAnnotation(Class<? extends Annotation> annotation);
+  Type getType();
 }

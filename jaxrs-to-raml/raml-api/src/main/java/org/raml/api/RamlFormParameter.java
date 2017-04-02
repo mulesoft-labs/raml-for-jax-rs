@@ -17,28 +17,16 @@ package org.raml.api;
 
 import com.google.common.base.Optional;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
+import java.lang.reflect.Type;
 
-public interface RamlResourceMethod extends Annotable {
+/**
+ * Created by Jean-Philippe Belanger on 4/2/17. Just potential zeroes and ones
+ */
+public interface RamlFormParameter {
 
-  String getHttpMethod();
+  String getName();
 
-  List<RamlMediaType> getConsumedMediaTypes();
+  Optional<String> getDefaultValue();
 
-  List<RamlMediaType> getProducedMediaTypes();
-
-  List<RamlQueryParameter> getQueryParameters();
-
-  List<RamlHeaderParameter> getHeaderParameters();
-
-  List<RamlFormParameter> getFormParameters();
-
-  Optional<String> getDescription();
-
-  Optional<RamlEntity> getConsumedType();
-
-  Optional<RamlEntity> getProducedType();
-
-  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
+  Type getType();
 }

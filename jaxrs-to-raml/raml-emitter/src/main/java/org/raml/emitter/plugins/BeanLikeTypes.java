@@ -106,11 +106,11 @@ public class BeanLikeTypes implements TypeHandler {
         String fieldName = Character.toLowerCase(badlyCasedfieldName.charAt(0)) + badlyCasedfieldName.substring(1);
         rt.addProperty(RamlProperty.createProperty(
                                                    new MethodAnnotable(method), fieldName,
-                                                   PluginUtilities.getRamlType(method.getReturnType().getSimpleName(),
-                                                                               registry,
+                                                   PluginUtilities.getRamlType(registry, typeScanner, method.getReturnType()
+                                                       .getSimpleName(),
                                                                                entity.createDependent(method
-                                                                                   .getGenericReturnType()),
-                                                                               typeScanner)));
+                                                                                   .getGenericReturnType())
+                                                       )));
       }
     }
 

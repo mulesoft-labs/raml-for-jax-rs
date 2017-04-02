@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.HttpVerb;
 import org.raml.jaxrs.model.JaxRsEntity;
+import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
@@ -72,6 +73,12 @@ class JerseyJaxRsMethod implements JaxRsMethod {
   @Override
   public List<JaxRsHeaderParameter> getHeaderParameters() {
     return Utilities.toJaxRsHeaderParameters(Utilities.getHeaderParameters(resourceMethod))
+        .toList();
+  }
+
+  @Override
+  public List<JaxRsFormParameter> getFormParameters() {
+    return Utilities.toJaxRsFormParameters(Utilities.getFormParameters(resourceMethod))
         .toList();
   }
 

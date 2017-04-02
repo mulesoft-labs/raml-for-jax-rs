@@ -18,8 +18,10 @@ package org.raml.jaxrs.converter.model;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
+import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.api.RamlSupportedAnnotation;
+import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.JaxRsMethod;
@@ -101,6 +103,19 @@ public class Utilities {
                                                                return JaxRsRamlHeaderParameter.create(jaxRsHeaderParameter);
                                                              }
                                                            }
+
+        );
+  }
+
+  public static FluentIterable<RamlFormParameter> toRamlFormParameters(List<JaxRsFormParameter> formParameters) {
+    return FluentIterable.from(formParameters).transform(
+                                                         new Function<JaxRsFormParameter, RamlFormParameter>() {
+
+                                                           @Override
+                                                           public RamlFormParameter apply(JaxRsFormParameter jaxRsFormParameter) {
+                                                             return JaxRsRamlFormParameter.create(jaxRsFormParameter);
+                                                           }
+                                                         }
 
         );
   }

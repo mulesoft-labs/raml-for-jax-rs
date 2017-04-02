@@ -92,7 +92,7 @@ public class SimpleJaxbTypes implements TypeHandler {
         Type genericType = field.getGenericType();
         RamlType fieldRamlType;
         fieldRamlType = PluginUtilities
-            .getRamlType(c.getSimpleName(), typeRegistry, type.createDependent(genericType), this);
+            .getRamlType(typeRegistry, this, c.getSimpleName(), type.createDependent(genericType));
 
         XmlElement elem = field.getAnnotation(XmlElement.class);
         if (elem != null) {

@@ -67,8 +67,7 @@ public class RamlType implements Annotable {
     properties.put(property.getName(), property);
   }
 
-  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer,
-                    List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
+  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
 
     Class c = (Class) type.getType();
     writer.appendLine(c.getSimpleName() + ":");

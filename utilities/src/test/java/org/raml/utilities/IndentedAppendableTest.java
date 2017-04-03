@@ -39,6 +39,20 @@ public class IndentedAppendableTest {
                                    "description: This is a description with lots of characters that are not escaped: *|#{}?:,[]");
     assertStringIsCorrectlyEscaped("description", "{This is a description with control character}",
                                    "description: \"{This is a description with control character}\"");
+    assertStringIsCorrectlyEscaped("description", "[This is a description with control character]",
+                                   "description: \"[This is a description with control character]\"");
+    assertStringIsCorrectlyEscaped("description", "- text", "description: \"- text\"");
+    assertStringIsCorrectlyEscaped("description", "? text", "description: \"? text\"");
+    assertStringIsCorrectlyEscaped("description", "& text", "description: \"& text\"");
+    assertStringIsCorrectlyEscaped("description", "! text", "description: \"! text\"");
+    assertStringIsCorrectlyEscaped("description", "> text", "description: \"> text\"");
+    assertStringIsCorrectlyEscaped("description", "' text", "description: \"' text\"");
+    assertStringIsCorrectlyEscaped("description", ": text", "description: \": text\"");
+    assertStringIsCorrectlyEscaped("description", "% text", "description: \"% text\"");
+    assertStringIsCorrectlyEscaped("description", "@ text", "description: \"@ text\"");
+    assertStringIsCorrectlyEscaped("description", "` text", "description: \"` text\"");
+    assertStringIsCorrectlyEscaped("description", ", text", "description: \", text\"");
+    assertStringIsCorrectlyEscaped("description", "\" text\"", "description: \"\\\" text\\\"\"");
 
   }
 

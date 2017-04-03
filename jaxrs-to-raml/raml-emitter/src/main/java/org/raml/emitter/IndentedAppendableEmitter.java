@@ -20,12 +20,14 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
+import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlApi;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.RamlTypes;
 import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.BeanLikeTypes;
@@ -61,6 +63,8 @@ public class IndentedAppendableEmitter implements Emitter {
   private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
   private final IndentedAppendable writer;
+  private AnnotationTypeEmitter annotationTypeEmitter;
+  private AnnotationInstanceEmitter annotationInstanceEmitter;
 
   private IndentedAppendableEmitter(IndentedAppendable writer) {
     this.writer = writer;
@@ -75,6 +79,8 @@ public class IndentedAppendableEmitter implements Emitter {
   @Override
   public void emit(RamlApi api) throws RamlEmissionException {
     try {
+      this.annotationTypeEmitter = new AnnotationTypeEmitter(writer, api.getSupportedAnnotation());
+      this.annotationInstanceEmitter = new AnnotationInstanceEmitter(writer, api.getSupportedAnnotation());
       writeApi(api);
     } catch (IOException e) {
       throw new RamlEmissionException(format("unable to emit api: %s", api.getBaseUri()), e);
@@ -87,18 +93,28 @@ public class IndentedAppendableEmitter implements Emitter {
     writeVersion(api.getVersion());
     writeBaseUri(api.getBaseUri());
     writeDefaultMediaType(api.getDefaultMediaType());
+    writeSupportedAnnotations(api.getSupportedAnnotation());
 
     for (RamlResource resource : api.getResources()) {
-      writeResource(resource);
+      writeResource(resource, api.getSupportedAnnotation());
     }
 
-    writeTypes();
+    writeTypes(api, api.getSupportedAnnotation());
   }
 
-  private void writeTypes() throws IOException {
+  private void writeSupportedAnnotations(List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
+
+    if (supportedAnnotation.size() == 0) {
+      return;
+    }
+
+    annotationTypeEmitter.emitAnnotations();
+  }
+
+  private void writeTypes(RamlApi api, List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
     writer.appendLine("types:");
     writer.indent();
-    typeRegistry.writeAll(writer);
+    typeRegistry.writeAll(annotationInstanceEmitter, writer);
     writer.outdent();
   }
 
@@ -106,41 +122,56 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.appendEscapedLine("mediaType", defaultMediaType.toStringRepresentation());
   }
 
-  private void writeResource(RamlResource resource) throws IOException {
+  private void writeResource(RamlResource resource, List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
     writer.appendLine(format("%s:", resource.getPath()));
     writer.indent();
 
     for (RamlResourceMethod method : resource.getMethods()) {
-      writeMethod(method);
+      writeMethod(method, supportedAnnotation);
     }
 
     for (RamlResource child : resource.getChildren()) {
-      writeResource(child);
+      writeResource(child, supportedAnnotation);
     }
 
     writer.outdent();
   }
 
-  private void writeMethod(RamlResourceMethod method) throws IOException {
+  private void writeMethod(RamlResourceMethod method,
+                           List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
     writer.appendLine(format("%s:", method.getHttpMethod()));
     writer.indent();
+    annotationInstanceEmitter.emitAnnotations(method);
 
     Optional<String> description = method.getDescription();
-    if (description.isPresent()) {
+    if (description.isPresent() && !description.get().isEmpty()) {
       writeDescription(description.get());
     }
 
-    if (!method.getConsumedMediaTypes().isEmpty() && method.getConsumedType().isPresent()) {
+    if (!method.getConsumedMediaTypes().isEmpty()
+        && (method.getConsumedType().isPresent() || !method.getFormParameters().isEmpty())) {
 
-      Type type = method.getConsumedType().get();
       writer.appendLine("body:");
       writer.indent();
 
       for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
 
-        TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
-        typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, type);
+        if (ramlMediaType.toStringRepresentation().equals("application/x-www-form-urlencoded")) {
+
+          writer.appendLine(ramlMediaType.toStringRepresentation());
+          writer.indent();
+
+          writeFormParam(method);
+
+          writer.outdent();
+        } else {
+          Type type = method.getConsumedType().get().getType();
+
+          TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
+          typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, method.getConsumedType().get());
+        }
       }
+      writer.outdent();
     }
 
     ResponseHandler handler = pickResponseHandler(method);
@@ -148,7 +179,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
       @Override
       public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) {
-        return pickTypeHandler(method, producedMediaType, method.getProducedType().get());
+        return pickTypeHandler(method, producedMediaType, method.getProducedType().get().getType());
       }
     };
 
@@ -157,6 +188,7 @@ public class IndentedAppendableEmitter implements Emitter {
       writer.appendLine("responses:");
       writer.indent();
       handler.writeResponses(typeRegistry, writer, method, selector);
+      writer.outdent();
     }
 
     if (!method.getHeaderParameters().isEmpty()) {
@@ -168,6 +200,22 @@ public class IndentedAppendableEmitter implements Emitter {
     }
 
 
+    writer.outdent();
+  }
+
+  private void writeFormParam(RamlResourceMethod method) throws IOException {
+    writer.appendLine("type: object");
+    writer.indent();
+    writer.appendLine("properties:");
+    writer.indent();
+
+    List<RamlFormParameter> formData = method.getFormParameters();
+    for (RamlFormParameter formDatum : formData) {
+
+      writer.appendLine(formDatum.getName() + ": " + RamlTypes.fromType(formDatum.getType())
+          .getRamlSyntax());
+    }
+    writer.outdent();
     writer.outdent();
   }
 

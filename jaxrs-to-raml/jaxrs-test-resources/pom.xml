@@ -20,6 +20,14 @@
             <groupId>org.raml</groupId>
             <artifactId>raml-for-jaxrs-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-parser-2</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -27,6 +35,13 @@
             <plugin>
                 <groupId>org.raml</groupId>
                 <artifactId>jaxrs-to-raml-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.raml</groupId>
+                        <artifactId>jaxrs-test-resources</artifactId>
+                        <version>2.0.0-RC2-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -35,14 +50,11 @@
                         </goals>
                         <configuration>
                             <input>${project.build.outputDirectory}</input>
-<!--
-                            <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
--->
                             <outputFileName>${project.artifactId}.raml</outputFileName>
-<!--
-                            <sourceDirectory>${project.build.directory}</sourceDirectory>
--->
                             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                            <translatedAnnotations>
+                                <item>org.raml.jaxrs.examples.Secure</item>
+                            </translatedAnnotations>
                         </configuration>
                     </execution>
                 </executions>

@@ -15,6 +15,7 @@
  */
 package org.raml.emitter.plugins;
 
+import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.ScalarType;
@@ -38,22 +39,15 @@ public class DefaultTypeHandler implements TypeHandler {
 
   @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, Type bodyType)
+                        RamlResourceMethod method, RamlEntity bodyType)
       throws IOException {
 
-    writer.appendLine(format("%s:", ramlMediaType.toStringRepresentation()));
-    if (ScalarType.fromType(bodyType).isPresent()) {
+    if (ScalarType.fromType(bodyType.getType()).isPresent()) {
 
-      writer.indent();
-      writer.appendLine("type", ScalarType.fromType(bodyType).get().getRamlSyntax());
-      writer.outdent();
+      writer.appendLine("type", ScalarType.fromType(bodyType.getType()).get().getRamlSyntax());
     } else {
 
       throw new IOException(bodyType + " is not a primitive type");
     }
-
-
-    writer.outdent();
-
   }
 }

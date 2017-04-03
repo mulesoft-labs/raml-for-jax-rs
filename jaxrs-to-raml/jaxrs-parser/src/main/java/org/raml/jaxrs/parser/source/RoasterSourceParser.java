@@ -18,8 +18,10 @@ package org.raml.jaxrs.parser.source;
 import com.google.common.base.Optional;
 
 import org.jboss.forge.roaster.Roaster;
+import org.jboss.forge.roaster.model.JavaDoc;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.MethodHolder;
+import org.jboss.forge.roaster.model.TypeHolder;
 import org.jboss.forge.roaster.model.source.JavaDocSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.raml.utilities.format.Joiners;
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -64,10 +67,23 @@ class RoasterSourceParser implements SourceParser {
     return parseDocumentationFor(method, relativeFromRoot);
   }
 
+  @Override
+  public Optional<String> getDocumentationFor(Type clazz) {
+
+    Path classFileRelativePath = Utilities.getSourceFileRelativePath((Class) clazz);
+    Path relativeFromRoot = sourceRoot.resolve(classFileRelativePath);
+
+    if (!Files.isRegularFile(relativeFromRoot)) {
+      logger.warn("could not find source file {} for class {}", relativeFromRoot, clazz);
+      return Optional.absent();
+    }
+
+    return parseDocumentationFor((Class<?>) clazz, relativeFromRoot);
+  }
+
   private Optional<String> parseDocumentationFor(Method method, Path file) {
     try {
       JavaType<?> parsed = Roaster.parse(file.toFile());
-
       if (!(parsed instanceof MethodHolder)) {
         logger.warn("unexpected type returned from roaster: {}", parsed.getClass());
         return Optional.absent();
@@ -78,6 +94,19 @@ class RoasterSourceParser implements SourceParser {
     } catch (FileNotFoundException e) {
       logger.warn("exception occurred while attempting to parse file {} for method {}", file,
                   method, e);
+      return Optional.absent();
+    }
+  }
+
+  private Optional<String> parseDocumentationFor(Class<?> clazz, Path file) {
+    try {
+      JavaType<?> parsed = Roaster.parse(file.toFile());
+      JavaDoc<?> s = parsed.getJavaDoc();
+      return Optional.of(s.getText());
+
+    } catch (FileNotFoundException e) {
+      logger.warn("exception occurred while attempting to parse file {} for class {}", file,
+                  clazz, e);
       return Optional.absent();
     }
   }
@@ -102,6 +131,7 @@ class RoasterSourceParser implements SourceParser {
         .squareBracketsSameLineJoiner().join(methods));
     return Optional.absent();
   }
+
 
   private static Optional<String> javadocToContent(JavaDocSource javaDoc) {
     return Optional.fromNullable(javaDoc.getText());

@@ -15,37 +15,43 @@
  */
 package org.raml.emitter.types;
 
+import org.raml.api.Annotable;
+import org.raml.emitter.AnnotationInstanceEmitter;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 public class RamlProperty {
 
-  private RamlType ramlType;
-  private String name;
+  private final RamlType ramlType;
+  private final String name;
+  private final Annotable source;
 
-  public RamlProperty(String name, RamlType ramlType) {
+  public RamlProperty(String name, RamlType ramlType, Annotable source) {
     this.ramlType = ramlType;
     this.name = name;
+    this.source = source;
   }
 
   public String getName() {
     return name;
   }
 
-  public static RamlProperty createProperty(String name, RamlType ramlType) {
-    return new RamlProperty(name, ramlType);
+  public static RamlProperty createProperty(Annotable source, String name, RamlType ramlType) {
+    return new RamlProperty(name, ramlType, source);
   }
 
-  public void write(IndentedAppendable writer) throws IOException {
+  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
 
     writer.appendLine(name + ": ");
     writer.indent();
     writer.appendLine("type", ramlType.getTypeName());
+
+    emitter.emitAnnotations(source);
+
     writer.outdent();
   }
 }

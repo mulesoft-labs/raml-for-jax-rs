@@ -16,7 +16,7 @@
 package org.raml.jaxrs.examples.resources;
 
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Simple Docs
  */
 public interface TopValue {
 

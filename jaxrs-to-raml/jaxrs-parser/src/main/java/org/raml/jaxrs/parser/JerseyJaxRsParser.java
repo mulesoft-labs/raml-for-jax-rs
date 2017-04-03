@@ -15,17 +15,24 @@
  */
 package org.raml.jaxrs.parser;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import org.raml.jaxrs.model.JaxRsApplication;
+import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.analyzers.Analyzers;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
+import org.raml.jaxrs.parser.model.JerseyJaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
 import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 import org.raml.utilities.format.Joiners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -37,18 +44,22 @@ class JerseyJaxRsParser implements JaxRsParser {
 
   private final Path jaxRsResource;
   private final SourceParser sourceParser;
+  private final Set<Class<? extends Annotation>> translatedAnnotations;
 
 
-  private JerseyJaxRsParser(Path jaxRsResource, SourceParser sourceParser) {
+  private JerseyJaxRsParser(Path jaxRsResource, SourceParser sourceParser,
+                            Set<Class<? extends Annotation>> translatedAnnotations) {
     this.jaxRsResource = jaxRsResource;
     this.sourceParser = sourceParser;
+    this.translatedAnnotations = translatedAnnotations;
   }
 
-  public static JerseyJaxRsParser create(Path classesPath, SourceParser sourceParser) {
+  public static JerseyJaxRsParser create(Path classesPath, SourceParser sourceParser,
+                                         Set<Class<? extends Annotation>> translatedAnnotations) {
     checkNotNull(classesPath);
     checkNotNull(sourceParser);
 
-    return new JerseyJaxRsParser(classesPath, sourceParser);
+    return new JerseyJaxRsParser(classesPath, sourceParser, translatedAnnotations);
   }
 
   @Override
@@ -57,7 +68,7 @@ class JerseyJaxRsParser implements JaxRsParser {
 
     Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);
 
-    return Analyzers.jerseyAnalyzerFor(classes, sourceParser).analyze();
+    return Analyzers.jerseyAnalyzerFor(classes, sourceParser, Utilities.getSupportedAnnotations(translatedAnnotations)).analyze();
   }
 
   private static Iterable<Class<?>> getJaxRsClassesFor(Path jaxRsResource)

@@ -18,6 +18,7 @@ package org.raml.jaxrs.parser.source;
 import com.google.common.base.Optional;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 
 public class SourceParsers {
@@ -28,7 +29,13 @@ public class SourceParsers {
     public Optional<String> getDocumentationFor(Method method) {
       return Optional.absent(); // Do nothing on purpose.
     }
+
+    @Override
+    public Optional<String> getDocumentationFor(Type method) {
+      return Optional.absent();
+    }
   };
+
 
   public static SourceParser usingRoasterParser(Path path) {
     return RoasterSourceParser.create(path);

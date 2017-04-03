@@ -17,6 +17,10 @@ package org.raml.jaxrs.converter;
 
 import org.raml.api.RamlMediaType;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Set;
+
 public interface RamlConfiguration {
 
   String getTitle();
@@ -26,4 +30,6 @@ public interface RamlConfiguration {
   String getVersion();
 
   RamlMediaType getDefaultMediaType();
+
+  Set<Class<? extends Annotation>> getTranslatedAnnotations();
 }

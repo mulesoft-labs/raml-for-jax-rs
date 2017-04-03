@@ -15,13 +15,18 @@
  */
 package org.raml.jaxrs.parser.analyzers;
 
+import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
+
+import java.util.List;
+import java.util.Set;
 
 public class Analyzers {
 
   private Analyzers() {}
 
-  public static Analyzer jerseyAnalyzerFor(Iterable<Class<?>> classes, SourceParser sourceParser) {
-    return JerseyAnalyzer.create(classes, new JerseyBridgeImpl(), sourceParser);
+  public static Analyzer jerseyAnalyzerFor(Iterable<Class<?>> classes, SourceParser sourceParser,
+                                           Set<JaxRsSupportedAnnotation> supportedAnnotations) {
+    return JerseyAnalyzer.create(classes, new JerseyBridgeImpl(), sourceParser, supportedAnnotations);
   }
 }

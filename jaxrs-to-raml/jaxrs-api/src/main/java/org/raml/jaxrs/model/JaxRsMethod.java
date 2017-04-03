@@ -17,6 +17,7 @@ package org.raml.jaxrs.model;
 
 import com.google.common.base.Optional;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -34,9 +35,13 @@ public interface JaxRsMethod {
 
   List<JaxRsHeaderParameter> getHeaderParameters();
 
+  List<JaxRsFormParameter> getFormParameters();
+
   Optional<String> getDescription();
 
   Optional<JaxRsEntity> getConsumedEntity();
 
   Optional<JaxRsEntity> getProducedEntity();
+
+  Optional<Annotation> getJavaAnnotation(Class<? extends Annotation> annotation);
 }

@@ -15,6 +15,7 @@
  */
 package org.raml.emitter.plugins;
 
+import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
 import org.raml.emitter.types.TypeRegistry;
@@ -31,5 +32,5 @@ public interface TypeHandler {
   boolean handlesType(RamlResourceMethod method, Type type);
 
   void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType, RamlResourceMethod method,
-                 Type type) throws IOException;
+                 RamlEntity type) throws IOException;
 }

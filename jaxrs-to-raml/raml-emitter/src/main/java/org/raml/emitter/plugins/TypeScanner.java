@@ -15,6 +15,7 @@
  */
 package org.raml.emitter.plugins;
 
+import org.raml.api.RamlEntity;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
 
@@ -25,5 +26,5 @@ import java.lang.reflect.Type;
  */
 public interface TypeScanner {
 
-  void scanType(TypeRegistry typeRegistry, Type type, RamlType ramlType);
+  void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType);
 }

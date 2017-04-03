@@ -20,11 +20,13 @@ import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.HttpVerb;
 import org.raml.jaxrs.model.JaxRsEntity;
+import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.jaxrs.parser.source.SourceParser;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -75,19 +77,30 @@ class JerseyJaxRsMethod implements JaxRsMethod {
   }
 
   @Override
+  public List<JaxRsFormParameter> getFormParameters() {
+    return Utilities.toJaxRsFormParameters(Utilities.getFormParameters(resourceMethod))
+        .toList();
+  }
+
+  @Override
   public Optional<JaxRsEntity> getConsumedEntity() {
 
-    return Utilities.toJaxRsEntityParameters(Utilities.getConsumedParameter(resourceMethod));
+    return Utilities.toJaxRsEntityParameters(Utilities.getConsumedParameter(resourceMethod), sourceParser);
   }
 
   @Override
   public Optional<JaxRsEntity> getProducedEntity() {
 
-    return Utilities.getReturnValue(resourceMethod);
+    return Utilities.getReturnValue(resourceMethod, sourceParser);
   }
 
   @Override
   public Optional<String> getDescription() {
     return sourceParser.getDocumentationFor(resourceMethod.getInvocable().getDefinitionMethod());
+  }
+
+  @Override
+  public Optional<Annotation> getJavaAnnotation(Class<? extends Annotation> annotation) {
+    return Optional.fromNullable(resourceMethod.getInvocable().getHandlingMethod().getAnnotation(annotation));
   }
 }

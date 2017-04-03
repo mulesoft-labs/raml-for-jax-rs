@@ -15,27 +15,23 @@
  */
 package org.raml.emitter.plugins;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
+import com.google.common.base.Optional;
+import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.Annotable;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
 import org.raml.jaxrs.common.BuildType;
 import org.raml.utilities.IndentedAppendable;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
-import java.lang.reflect.Field;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -46,12 +42,11 @@ public class BeanLikeTypes implements TypeHandler {
 
   @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, Type type)
+                        RamlResourceMethod method, RamlEntity type)
       throws IOException {
 
-    List<RamlMediaType> mediaTypes = method.getConsumedMediaTypes();
 
-    writeBody(registry, writer, mediaTypes, type);
+    writeBody(registry, writer, ramlMediaType, type);
   }
 
   @Override
@@ -67,42 +62,41 @@ public class BeanLikeTypes implements TypeHandler {
   }
 
   private void writeBody(final TypeRegistry registry, IndentedAppendable writer,
-                         List<RamlMediaType> mediaTypes, final Type bodyType)
+                         RamlMediaType mediaType, final RamlEntity bodyType)
       throws IOException {
 
     // find top interface.
-    final Class topInterface = (Class) bodyType;
+    final Class topInterface = (Class) bodyType.getType();
 
     // find fields
 
-    writer.indent();
     writer.appendLine("type", topInterface.getSimpleName());
-    writer.outdent();
 
     TypeScanner scanner = new TypeScanner() {
 
       @Override
-      public void scanType(TypeRegistry typeRegistry, Type typeClass, RamlType ramlType) {
+      public void scanType(TypeRegistry typeRegistry, RamlEntity typeClass, RamlType ramlType) {
 
         // rebuild types
-        rebuildType(typeRegistry, (Class) typeClass, this);
+        rebuildType(typeRegistry, typeClass, this);
       }
     };
 
-    scanner.scanType(registry, topInterface, null);
+    scanner.scanType(registry, bodyType, null);
   }
 
-  private RamlType rebuildType(TypeRegistry registry, Class currentInterface,
+  private RamlType rebuildType(TypeRegistry registry, RamlEntity entity,
                                TypeScanner typeScanner) {
 
+    Class currentInterface = (Class) entity.getType();
     Class[] interfaces = currentInterface.getInterfaces();
     List<RamlType> superTypes = new ArrayList<>();
     for (Class interf : interfaces) {
-      superTypes.add(rebuildType(registry, interf, typeScanner));
+      superTypes.add(rebuildType(registry, entity.createDependent(interf), typeScanner));
     }
 
     Method[] methods = currentInterface.getDeclaredMethods();
-    RamlType rt = registry.registerType(currentInterface.getSimpleName(), currentInterface, typeScanner);
+    RamlType rt = registry.registerType(currentInterface.getSimpleName(), entity, typeScanner);
     rt.setSuperTypes(superTypes);
     for (Method method : methods) {
 
@@ -110,13 +104,30 @@ public class BeanLikeTypes implements TypeHandler {
 
         String badlyCasedfieldName = method.getName().substring(3);
         String fieldName = Character.toLowerCase(badlyCasedfieldName.charAt(0)) + badlyCasedfieldName.substring(1);
-        rt.addProperty(RamlProperty.createProperty(fieldName, PluginUtilities.getRamlType(method.getReturnType().getSimpleName(),
-                                                                                          registry,
-                                                                                          method.getGenericReturnType(),
-                                                                                          typeScanner)));
+        rt.addProperty(RamlProperty.createProperty(
+                                                   new MethodAnnotable(method), fieldName,
+                                                   PluginUtilities.getRamlType(registry, typeScanner, method.getReturnType()
+                                                       .getSimpleName(),
+                                                                               entity.createDependent(method
+                                                                                   .getGenericReturnType())
+                                                       )));
       }
     }
 
     return rt;
+  }
+
+  private static class MethodAnnotable implements Annotable {
+
+    private final Method method;
+
+    public MethodAnnotable(Method method) {
+      this.method = method;
+    }
+
+    @Override
+    public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+      return Optional.fromNullable(method.getAnnotation(annotationType));
+    }
   }
 }

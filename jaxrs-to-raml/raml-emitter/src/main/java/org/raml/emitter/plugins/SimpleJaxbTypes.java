@@ -15,10 +15,13 @@
  */
 package org.raml.emitter.plugins;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.api.Annotable;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
@@ -29,11 +32,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.List;
-
-import static java.lang.String.format;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -42,12 +43,11 @@ public class SimpleJaxbTypes implements TypeHandler {
 
   @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, Type type)
+                        RamlResourceMethod method, RamlEntity type)
       throws IOException {
 
-    List<RamlMediaType> mediaTypes = method.getConsumedMediaTypes();
 
-    writeBody(registry, writer, mediaTypes, type);
+    writeBody(registry, writer, ramlMediaType, type);
   }
 
   @Override
@@ -70,74 +70,59 @@ public class SimpleJaxbTypes implements TypeHandler {
         });
   }
 
-  private int handles(Type type, List<RamlMediaType> mediaTypes) {
-    boolean mediaTypeMatches = FluentIterable.from(mediaTypes).anyMatch(new Predicate<RamlMediaType>() {
-
-      @Override
-      public boolean apply(RamlMediaType input) {
-        return input.toStringRepresentation().startsWith("application/xml");
-      }
-    });
-
-    if (mediaTypeMatches && type instanceof Class && hasXmlAnnotation((Class) type)) {
-      return 100;
-    } else {
-
-      return -1;
-    }
-  }
-
-
-  private boolean hasXmlAnnotation(Class type) {
-
-    return type.getAnnotation(XmlRootElement.class) != null;
-  }
-
-
   private void writeBody(TypeRegistry registry, IndentedAppendable writer,
-                         List<RamlMediaType> mediaTypes, Type bodyType)
+                         RamlMediaType mediaTypes, RamlEntity bodyType)
       throws IOException {
 
-    Class type = (Class) bodyType;
+    Class type = (Class) bodyType.getType();
 
-    for (RamlMediaType mediaType : mediaTypes) {
-      writer.appendLine(format("%s:", mediaType.toStringRepresentation()));
+    writer.appendLine("type", type.getSimpleName());
 
-      writer.indent();
-      writer.appendLine("type", type.getSimpleName());
-      writer.outdent();
+    registry.registerType(type.getSimpleName(), bodyType, new SimpleJaxbTypeScanner());
+  }
 
-      registry.registerType(type.getSimpleName(), type, new TypeScanner() {
+  private static class SimpleJaxbTypeScanner implements TypeScanner {
 
-        @Override
-        public void scanType(TypeRegistry typeRegistry, Type type, RamlType ramlType) {
+    @Override
+    public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
 
-          Class c = (Class) type;
-          for (Field field : c.getDeclaredFields()) {
+      Class c = (Class) type.getType();
+      for (Field field : c.getDeclaredFields()) {
 
-            Type genericType = field.getGenericType();
-            RamlType fieldRamlType;
-            fieldRamlType = PluginUtilities.getRamlType(c.getSimpleName(), typeRegistry, genericType, this);
+        Type genericType = field.getGenericType();
+        RamlType fieldRamlType;
+        fieldRamlType = PluginUtilities
+            .getRamlType(typeRegistry, this, c.getSimpleName(), type.createDependent(genericType));
 
-            XmlElement elem = field.getAnnotation(XmlElement.class);
-            if (elem != null) {
+        XmlElement elem = field.getAnnotation(XmlElement.class);
+        if (elem != null) {
 
-              String name = elem.name().equals("##default") ? field.getName() : elem.name();
-              ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
-            } else {
+          String name = elem.name().equals("##default") ? field.getName() : elem.name();
+          ramlType.addProperty(RamlProperty.createProperty(new FieldAnnotable(field), name, fieldRamlType));
+        } else {
 
-              XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
-              if (attribute != null) {
+          XmlAttribute attribute = field.getAnnotation(XmlAttribute.class);
+          if (attribute != null) {
 
-                String name = elem.name().equals("##default") ? field.getName() : elem.name();
-                ramlType.addProperty(RamlProperty.createProperty(name, fieldRamlType));
-              }
-            }
+            String name = elem.name().equals("##default") ? field.getName() : elem.name();
+            ramlType.addProperty(RamlProperty.createProperty(new FieldAnnotable(field), name, fieldRamlType));
           }
         }
-      });
+      }
     }
 
-    writer.outdent();
+    private static class FieldAnnotable implements Annotable {
+
+      private final Field field;
+
+      public FieldAnnotable(Field field) {
+        this.field = field;
+      }
+
+      @Override
+      public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+        return Optional.fromNullable(field.getAnnotation(annotationType));
+      }
+    }
   }
 }

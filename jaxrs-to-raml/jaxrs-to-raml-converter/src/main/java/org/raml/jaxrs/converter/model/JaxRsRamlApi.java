@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.converter.model;
 
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.api.RamlMediaType;
@@ -65,5 +66,11 @@ public class JaxRsRamlApi implements RamlApi {
   @Override
   public RamlMediaType getDefaultMediaType() {
     return configuration.getDefaultMediaType();
+  }
+
+  @Override
+  public List<RamlSupportedAnnotation> getSupportedAnnotation() {
+
+    return Utilities.toRamlSupportedAnnotation(application.getSupportedAnnotations()).toList();
   }
 }

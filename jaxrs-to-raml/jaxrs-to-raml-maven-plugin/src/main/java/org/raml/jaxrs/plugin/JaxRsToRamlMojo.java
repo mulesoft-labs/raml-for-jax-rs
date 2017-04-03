@@ -15,11 +15,14 @@
  */
 package org.raml.jaxrs.plugin;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -31,14 +34,19 @@ import org.raml.jaxrs.parser.JaxRsParsingException;
 import org.raml.jaxrs.raml.core.DefaultRamlConfiguration;
 import org.raml.jaxrs.raml.core.OneStopShop;
 
+import javax.annotation.Nullable;
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.String.format;
 
-@Mojo(name = "jaxrstoraml", requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(name = "jaxrstoraml", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+    defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class JaxRsToRamlMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${project}")
@@ -58,6 +66,10 @@ public class JaxRsToRamlMojo extends AbstractMojo {
   @Parameter(property = "jaxrs.to.raml.outputDirectory",
       defaultValue = "${project.build.directory}/generated-sources/raml-jaxrs")
   private File outputDirectory;
+
+  @Parameter(property = "jaxrs.to.raml.translatedAnnotations")
+  private List<String> translatedAnnotations = new ArrayList<>();
+
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -82,11 +94,27 @@ public class JaxRsToRamlMojo extends AbstractMojo {
 
     String applicationName =
         FilenameUtils.removeExtension(configuration.getRamlFileName().getFileName().toString());
-    RamlConfiguration ramlConfiguration = DefaultRamlConfiguration.forApplication(applicationName);
+    RamlConfiguration ramlConfiguration =
+        DefaultRamlConfiguration.forApplication(applicationName, FluentIterable.from(configuration.getTranslatedAnnotations())
+            .transform(new Function<String, Class<? extends Annotation>>() {
+
+              @Nullable
+              @Override
+              public Class<? extends Annotation> apply(@Nullable String input) {
+                try {
+                  return (Class<? extends Annotation>) Class.forName(input);
+                } catch (ClassNotFoundException e) {
+                  throw new IllegalArgumentException("invalid class " + input, e);
+                }
+              }
+            }).toSet());
 
     OneStopShop oneStopShop =
-        OneStopShop.builder().withJaxRsClassesRoot(jaxRsUrl).withSourceCodeRoot(sourceCodeRoot)
-            .withRamlOutputFile(finalOutputFile).withRamlConfiguration(ramlConfiguration).build();
+        OneStopShop.builder()
+            .withJaxRsClassesRoot(jaxRsUrl)
+            .withSourceCodeRoot(sourceCodeRoot)
+            .withRamlOutputFile(finalOutputFile)
+            .withRamlConfiguration(ramlConfiguration).build();
 
     try {
       oneStopShop.parseJaxRsAndOutputRaml();
@@ -98,7 +126,7 @@ public class JaxRsToRamlMojo extends AbstractMojo {
 
   private PluginConfiguration createConfiguration() {
     return PluginConfiguration.create(getInputPath(), getSourceDirectoryPath(),
-                                      getOutputDirectoryPath(), getRamlFileName());
+                                      getOutputDirectoryPath(), getRamlFileName(), this.translatedAnnotations);
   }
 
   private static void printConfiguration(PluginConfiguration configuration, Log logger) {

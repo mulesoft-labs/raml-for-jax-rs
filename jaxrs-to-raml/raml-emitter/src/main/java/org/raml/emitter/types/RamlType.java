@@ -19,11 +19,15 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import org.raml.api.Annotable;
+import org.raml.api.RamlEntity;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
+import org.raml.emitter.AnnotationInstanceEmitter;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,22 +36,22 @@ import java.util.Map;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 
-public class RamlType {
+public class RamlType implements Annotable {
 
-  private final Type type;
+  private final RamlEntity type;
 
   private final boolean collection;
 
   private Map<String, RamlProperty> properties = new HashMap<>();
   private List<RamlType> superTypes;
 
-  public RamlType(Type type) {
+  public RamlType(RamlEntity type) {
 
     this.type = type;
     this.collection = false;
   }
 
-  public RamlType(Type type, boolean collection) {
+  public RamlType(RamlEntity type, boolean collection) {
 
     this.type = type;
     this.collection = collection;
@@ -63,9 +67,9 @@ public class RamlType {
     properties.put(property.getName(), property);
   }
 
-  public void write(IndentedAppendable writer) throws IOException {
+  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
 
-    Class c = (Class) type;
+    Class c = (Class) type.getType();
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
 
@@ -79,17 +83,25 @@ public class RamlType {
       })) + " ]");
     }
 
-    for (RamlProperty ramlProperty : properties.values()) {
+    emitter.emitAnnotations(type);
 
-      ramlProperty.write(writer);
+    if (type.getDescription().isPresent()) {
+      writer.appendLine("description: " + type.getDescription().get());
     }
 
+    writer.appendLine("properties:");
+    writer.indent();
+    for (RamlProperty ramlProperty : properties.values()) {
+
+      ramlProperty.write(emitter, writer);
+    }
+    writer.outdent();
     writer.outdent();
   }
 
   public String getTypeName() {
 
-    Optional<ScalarType> st = ScalarType.fromType(type);
+    Optional<ScalarType> st = ScalarType.fromType(type.getType());
     if (st.isPresent()) {
       if (collection == true) {
         return st.get().getRamlSyntax() + "[]";
@@ -98,7 +110,7 @@ public class RamlType {
       }
     } else {
 
-      Class c = (Class) type;
+      Class c = (Class) type.getType();
       if (collection == true) {
         return c.getSimpleName() + "[]";
       } else {
@@ -110,5 +122,10 @@ public class RamlType {
 
   public void setSuperTypes(List<RamlType> superTypes) {
     this.superTypes = superTypes;
+  }
+
+  @Override
+  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+    return type.getAnnotation(annotationType);
   }
 }

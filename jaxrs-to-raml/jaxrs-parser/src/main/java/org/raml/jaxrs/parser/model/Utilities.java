@@ -23,10 +23,16 @@ import com.google.common.collect.FluentIterable;
 import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.JaxRsEntity;
+import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
+import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
+import org.raml.jaxrs.parser.source.SourceParser;
 
 import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Set;
 
 class Utilities {
 
@@ -36,6 +42,15 @@ class Utilities {
         @Override
         public boolean apply(@Nullable Parameter parameter) {
           return parameter.getSource() == Parameter.Source.QUERY;
+        }
+      };
+
+  private static final Predicate<Parameter> IS_FORM_PARAMETER_PREDICATE =
+      new Predicate<Parameter>() {
+
+        @Override
+        public boolean apply(@Nullable Parameter parameter) {
+          return parameter.getSource() == Parameter.Source.FORM;
         }
       };
 
@@ -69,6 +84,12 @@ class Utilities {
                                                                                      isConsumedParameterPredicate());
   }
 
+  public static FluentIterable<Parameter> getFormParameters(ResourceMethod resourceMethod) {
+
+    return FluentIterable.from(resourceMethod.getInvocable().getParameters()).filter(
+                                                                                     isFormParameterPredicate());
+  }
+
   public static FluentIterable<JaxRsQueryParameter> toJaxRsQueryParameters(
                                                                            Iterable<Parameter> parameters) {
     return FluentIterable.from(parameters).transform(
@@ -84,6 +105,10 @@ class Utilities {
 
   public static Predicate<Parameter> isQueryParameterPredicate() {
     return IS_QUERY_PARAMETER_PREDICATE;
+  }
+
+  public static Predicate<Parameter> isFormParameterPredicate() {
+    return IS_FORM_PARAMETER_PREDICATE;
   }
 
   public static Predicate<Parameter> isConsumedParameterPredicate() {
@@ -113,20 +138,31 @@ class Utilities {
                                                            });
   }
 
-  public static Optional<JaxRsEntity> toJaxRsEntityParameters(Iterable<Parameter> consumedParameter) {
+  public static Optional<JaxRsEntity> toJaxRsEntityParameters(Iterable<Parameter> consumedParameter, final SourceParser parser) {
 
     return FluentIterable.from(consumedParameter).transform(new Function<Parameter, JaxRsEntity>() {
 
       @Nullable
       @Override
       public JaxRsEntity apply(@Nullable Parameter input) {
-        return JerseyJaxRsEntity.create(input);
+        return JerseyJaxRsEntity.create(input, parser);
       }
     }).first();
   }
 
-  public static Optional<JaxRsEntity> getReturnValue(ResourceMethod resourceMethod) {
+  public static Optional<JaxRsEntity> getReturnValue(ResourceMethod resourceMethod, SourceParser sourceParser) {
 
-    return JerseyJaxRsEntity.create(resourceMethod.getInvocable().getResponseType());
+    return JerseyJaxRsEntity.create(resourceMethod.getInvocable().getResponseType(), sourceParser);
+  }
+
+  public static FluentIterable<JaxRsFormParameter> toJaxRsFormParameters(Iterable<Parameter> formParameters) {
+    return FluentIterable.from(formParameters).transform(new Function<Parameter, JaxRsFormParameter>() {
+
+      @Nullable
+      @Override
+      public JaxRsFormParameter apply(@Nullable Parameter input) {
+        return JerseyJaxRsFormParameter.create(input);
+      }
+    });
   }
 }

@@ -15,12 +15,12 @@
  */
 package org.raml.emitter.plugins;
 
+import org.raml.api.RamlEntity;
 import org.raml.api.ScalarType;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -28,21 +28,25 @@ import java.util.Collection;
  */
 public class PluginUtilities {
 
-  static RamlType getRamlType(String simpleName, TypeRegistry typeRegistry, Type genericType, TypeScanner scanner) {
+  public static RamlType getRamlType(TypeRegistry typeRegistry, TypeScanner scanner, String simpleName,
+                                     RamlEntity genericType) {
     RamlType fieldRamlType;
-    if (ScalarType.fromType(genericType).isPresent()) {
+    if (ScalarType.fromType(genericType.getType()).isPresent()) {
       // scalars
       return new RamlType(genericType);
     }
 
-    if (genericType instanceof ParameterizedType) {
+    if (genericType.getType() instanceof ParameterizedType) {
 
-      ParameterizedType ptype = (ParameterizedType) genericType;
+      ParameterizedType ptype = (ParameterizedType) genericType.getType();
 
       if (Collection.class.isAssignableFrom((Class<?>) ptype.getRawType())) {
+
+        RamlEntity collectionEntityType = genericType.createDependent(ptype.getActualTypeArguments()[0]);
         RamlType collectionType =
-            getRamlType(((Class) ptype.getActualTypeArguments()[0]).getSimpleName(), typeRegistry,
-                        ptype.getActualTypeArguments()[0], scanner);
+            getRamlType(typeRegistry, scanner, ((Class) ptype.getActualTypeArguments()[0]).getSimpleName(),
+                        collectionEntityType
+            );
         return RamlType.collectionOf(collectionType);
       }
     }

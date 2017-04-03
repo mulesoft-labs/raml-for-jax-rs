@@ -15,9 +15,17 @@
  */
 package org.raml.jaxrs.raml.core;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+import org.raml.api.Annotable;
 import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.converter.model.JaxRsRamlMediaType;
 import org.raml.api.RamlMediaType;
+
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -26,17 +34,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class DefaultRamlConfiguration implements RamlConfiguration {
 
   private final String application;
+  private final Set<Class<? extends Annotation>> translatedClasses;
 
-  private DefaultRamlConfiguration(String application) {
+  private DefaultRamlConfiguration(String application, Set<Class<? extends Annotation>> translatedClasses) {
     this.application = application;
+    this.translatedClasses = translatedClasses;
   }
 
-  public static DefaultRamlConfiguration forApplication(String application) {
+  public static DefaultRamlConfiguration forApplication(String application, Set<Class<? extends Annotation>> translatedClasses) {
     checkNotNull(application);
     checkArgument(!application.trim().isEmpty(),
                   "application name should contain at least one meaningful character");
 
-    return new DefaultRamlConfiguration(application.trim());
+    return new DefaultRamlConfiguration(application.trim(), translatedClasses);
   }
 
   @Override
@@ -52,6 +62,11 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
   @Override
   public String getVersion() {
     return "1.0";
+  }
+
+  @Override
+  public Set<Class<? extends Annotation>> getTranslatedAnnotations() {
+    return translatedClasses;
   }
 
   @Override

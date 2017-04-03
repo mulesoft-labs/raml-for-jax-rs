@@ -18,7 +18,9 @@ package org.raml.jaxrs.parser.model;
 import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsEntity;
+import org.raml.jaxrs.parser.source.SourceParser;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
@@ -27,10 +29,12 @@ import java.lang.reflect.Type;
 public class JerseyJaxRsEntity implements JaxRsEntity {
 
   private final Type input;
+  private final SourceParser sourceParser;
 
-  public JerseyJaxRsEntity(Type input) {
+  public JerseyJaxRsEntity(Type input, SourceParser sourceParser) {
 
     this.input = input;
+    this.sourceParser = sourceParser;
   }
 
   @Override
@@ -39,19 +43,34 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
     return input;
   }
 
-  static JerseyJaxRsEntity create(Parameter input) {
-
-    return new JerseyJaxRsEntity(input.getType());
+  @Override
+  public Optional<String> getDescription() {
+    return sourceParser.getDocumentationFor(input);
   }
 
-  static Optional<JaxRsEntity> create(Type input) {
+  @Override
+  public JaxRsEntity createJaxRsEntity(Type type) {
+    return new JerseyJaxRsEntity(type, sourceParser);
+  }
+
+  static JerseyJaxRsEntity create(Parameter input, SourceParser sourceParser) {
+
+    return new JerseyJaxRsEntity(input.getType(), sourceParser);
+  }
+
+
+  static Optional<JaxRsEntity> create(Type input, SourceParser sourceParser) {
 
     if (input == null) {
       return Optional.absent();
     } else {
 
-      return Optional.<JaxRsEntity>of(new JerseyJaxRsEntity(input));
+      return Optional.<JaxRsEntity>of(new JerseyJaxRsEntity(input, sourceParser));
     }
   }
 
+  @Override
+  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
+    return Optional.fromNullable(((Class) input).getAnnotation(annotation));
+  }
 }

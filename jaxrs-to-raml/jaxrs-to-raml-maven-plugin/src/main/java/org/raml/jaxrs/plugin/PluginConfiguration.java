@@ -16,6 +16,7 @@
 package org.raml.jaxrs.plugin;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -25,23 +26,25 @@ class PluginConfiguration {
   private final Path sourceDirectory;
   private final Path outputDirectory;
   private final Path ramlFileName;
+  private final List<String> translatedAnnotations;
 
   private PluginConfiguration(Path inputPaths, Path sourceDirectory, Path outputDirectory,
-                              Path ramlFileName) {
+                              Path ramlFileName, List<String> translatedAnnotations) {
     this.inputPaths = inputPaths;
     this.sourceDirectory = sourceDirectory;
     this.outputDirectory = outputDirectory;
     this.ramlFileName = ramlFileName;
+    this.translatedAnnotations = translatedAnnotations;
   }
 
   public static PluginConfiguration create(Path inputPath, Path sourceDirectory,
-                                           Path outputDirectory, Path ramlFileName) {
+                                           Path outputDirectory, Path ramlFileName, List<String> translatedAnnotations) {
     checkNotNull(inputPath);
     checkNotNull(sourceDirectory);
     checkNotNull(outputDirectory);
     checkNotNull(ramlFileName);
 
-    return new PluginConfiguration(inputPath, sourceDirectory, outputDirectory, ramlFileName);
+    return new PluginConfiguration(inputPath, sourceDirectory, outputDirectory, ramlFileName, translatedAnnotations);
   }
 
   public Path getInput() {
@@ -58,5 +61,9 @@ class PluginConfiguration {
 
   public Path getSourceDirectory() {
     return sourceDirectory;
+  }
+
+  public List<String> getTranslatedAnnotations() {
+    return translatedAnnotations;
   }
 }

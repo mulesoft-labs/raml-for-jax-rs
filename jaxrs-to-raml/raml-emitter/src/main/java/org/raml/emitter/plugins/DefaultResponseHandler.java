@@ -42,7 +42,6 @@ public class DefaultResponseHandler implements ResponseHandler {
     if (!method.getProducedType().isPresent()) {
       return;
     }
-    Type type = method.getProducedType().get();
 
     // We have no clue what the error responses are, however, we want to generate
     // well formed raml, so we pick one.
@@ -53,9 +52,12 @@ public class DefaultResponseHandler implements ResponseHandler {
     for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
 
       writer.indent();
+      writer.appendLine(producedMediaType.toStringRepresentation() + ":");
 
+      writer.indent();
       TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-      typeHandler.writeType(typeRegistry, writer, producedMediaType, method, type);
+      typeHandler.writeType(typeRegistry, writer, producedMediaType, method, method.getProducedType().get());
+      writer.outdent();
       writer.outdent();
     }
 

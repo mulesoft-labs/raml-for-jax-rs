@@ -56,6 +56,19 @@ public class IndentedAppendableTest {
 
   }
 
+  @Test
+  public void testAppendList() {
+    StringBuffer buffer = new StringBuffer();
+    IndentedAppendable appendable = IndentedAppendable.forNoSpaces(1, buffer);
+    try {
+      appendable.appendList("test", "text", "text2", "#text");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    Assert.assertEquals("test: [text, text2, \"#text\"]", buffer.toString().trim());
+
+  }
+
   public void assertStringIsCorrectlyEscaped(String tag, String value, String expected) {
     StringBuffer buffer = new StringBuffer();
     IndentedAppendable appendable = IndentedAppendable.forNoSpaces(1, buffer);

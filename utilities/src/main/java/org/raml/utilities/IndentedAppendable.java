@@ -75,6 +75,21 @@ public class IndentedAppendable {
     return appendLine(tag, quoteIfSpecialCharacter(content));
   }
 
+  public IndentedAppendable appendList(String tag, String ... content) throws IOException {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("[");
+    boolean first = true;
+    for (String c : content) {
+      if(!first) {
+        buffer.append(", ");
+      }
+      first = false;
+      buffer.append(quoteIfSpecialCharacter(c));
+    }
+    buffer.append("]");
+    return appendLine(tag, buffer.toString());
+  }
+
   public IndentedAppendable endOfLine() throws IOException {
     this.appendable.append(END_OF_LINE);
     return this;

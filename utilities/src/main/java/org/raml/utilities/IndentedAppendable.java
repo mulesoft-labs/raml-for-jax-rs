@@ -75,12 +75,12 @@ public class IndentedAppendable {
     return appendLine(tag, quoteIfSpecialCharacter(content));
   }
 
-  public IndentedAppendable appendList(String tag, String ... content) throws IOException {
+  public IndentedAppendable appendList(String tag, String... content) throws IOException {
     StringBuffer buffer = new StringBuffer();
     buffer.append("[");
     boolean first = true;
     for (String c : content) {
-      if(!first) {
+      if (!first) {
         buffer.append(", ");
       }
       first = false;

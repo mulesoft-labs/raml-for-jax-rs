@@ -51,12 +51,12 @@ public class IndentedAppendableEmitterTest {
         );
 
 
-//    StringWriter appendable = new StringWriter();
-//    IndentedAppendableEmitter emitter = IndentedAppendableEmitter.create(IndentedAppendable.forNoSpaces(2, appendable));
-     IndentedAppendableEmitter emitter = IndentedAppendableEmitter.create(mockAppendable);
+    // StringWriter appendable = new StringWriter();
+    // IndentedAppendableEmitter emitter = IndentedAppendableEmitter.create(IndentedAppendable.forNoSpaces(2, appendable));
+    IndentedAppendableEmitter emitter = IndentedAppendableEmitter.create(mockAppendable);
 
     emitter.emit(mockRamlApi);
-//    System.out.println(appendable.toString());
+    // System.out.println(appendable.toString());
 
     verify(mockAppendable).appendLine("#%RAML 1.0");
     verify(mockAppendable).appendEscapedLine("title", "This is a test");

@@ -74,13 +74,13 @@ public class RamlType implements Annotable {
     writer.indent();
 
     if (superTypes != null && superTypes.size() > 0) {
-      writer.appendLine("type", "[ " + Joiner.on(", ").join(Collections2.transform(superTypes, new Function<RamlType, String>() {
+      writer.appendList("type", Collections2.transform(superTypes, new Function<RamlType, String>() {
 
         @Override
         public String apply(RamlType input) {
           return input.getTypeName();
         }
-      })) + " ]");
+      }).toArray(new String[] {}));
     }
 
     emitter.emitAnnotations(type);

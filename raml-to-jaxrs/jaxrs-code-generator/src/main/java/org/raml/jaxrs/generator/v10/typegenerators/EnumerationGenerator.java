@@ -32,6 +32,8 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.util.List;
 
+import static org.raml.jaxrs.generator.builders.BuildPhase.INTERFACE;
+
 /**
  * Created by Jean-Philippe Belanger on 12/22/16. Just potential zeroes and ones
  */
@@ -52,6 +54,11 @@ public class EnumerationGenerator extends AbstractTypeGenerator<TypeSpec.Builder
 
   @Override
   public void output(CodeContainer<TypeSpec.Builder> rootDirectory, BuildPhase buildPhase) throws IOException {
+
+    if (buildPhase != INTERFACE) {
+
+      return;
+    }
 
     FieldSpec.Builder field = FieldSpec.builder(ClassName.get(String.class), "name").addModifiers(Modifier.PRIVATE);
     build.withTypeListeners().onEnumField(build, field, typeDeclaration);

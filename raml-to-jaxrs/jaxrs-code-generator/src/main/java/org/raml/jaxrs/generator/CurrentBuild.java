@@ -60,6 +60,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Jean-Philippe Belanger on 10/26/16. The art of building stuff is here. Factory for building root stuff.
@@ -70,7 +71,7 @@ public class CurrentBuild {
   private final Api api;
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
-  private final Map<String, TypeGenerator> builtTypes = new HashMap<>();
+  private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
   private TypeExtensionList typeExtensionList = new TypeExtensionList();
   private Map<String, GeneratorType> foundTypes = new HashMap<>();
 

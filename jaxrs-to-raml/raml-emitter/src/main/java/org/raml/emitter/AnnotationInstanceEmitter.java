@@ -61,8 +61,6 @@ public class AnnotationInstanceEmitter {
 
         writer.appendLine("(" + annotation.annotationType().getSimpleName() + "):");
         writer.indent();
-        writer.appendLine("properties:");
-        writer.indent();
         try {
           for (Method method : annotation.annotationType().getDeclaredMethods()) {
 
@@ -87,7 +85,6 @@ public class AnnotationInstanceEmitter {
             }
           }
 
-          writer.outdent();
           writer.outdent();
         } catch (Exception e) {
           throw new IOException("unable to write property", e);

@@ -158,7 +158,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
         if (ramlMediaType.toStringRepresentation().equals("application/x-www-form-urlencoded")) {
 
-          writer.appendLine(ramlMediaType.toStringRepresentation());
+          writer.appendLine(ramlMediaType.toStringRepresentation() + ":");
           writer.indent();
 
           writeFormParam(method);
@@ -204,7 +204,7 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private void writeFormParam(RamlResourceMethod method) throws IOException {
-    writer.appendLine("type: object");
+    writer.appendLine("type:");
     writer.indent();
     writer.appendLine("properties:");
     writer.indent();

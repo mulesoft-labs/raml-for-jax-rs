@@ -61,7 +61,6 @@ public class AnnotationInstanceEmitterTest {
     emitter.emitAnnotations(new SimpleAnnotable(annotation));
 
     verify(writer).appendLine("(Simple):");
-    verify(writer).appendLine("properties:");
     verify(writer).appendLine("one: hello");
   }
 
@@ -89,7 +88,6 @@ public class AnnotationInstanceEmitterTest {
     emitter.emitAnnotations(wrap(annotation));
 
     verify(writer).appendLine("(Classed):");
-    verify(writer).appendLine("properties:");
     verify(writer).appendLine("one: AnnotationInstanceEmitterTest");
   }
 
@@ -104,7 +102,6 @@ public class AnnotationInstanceEmitterTest {
     emitter.emitAnnotations(wrap(annotation));
 
     verify(writer).appendLine("(Listed):");
-    verify(writer).appendLine("properties:");
     verify(writer).appendLine("one: [1, 2, 3]");
     verify(writer).appendLine("two: [AnnotationInstanceEmitter, AnnotationInstanceEmitterTest]");
     verify(writer).appendLine("three: [a, b, c]");

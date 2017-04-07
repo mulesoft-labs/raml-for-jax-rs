@@ -61,11 +61,11 @@ public class IndentedAppendableTest {
     StringBuffer buffer = new StringBuffer();
     IndentedAppendable appendable = IndentedAppendable.forNoSpaces(1, buffer);
     try {
-      appendable.appendList("test", "text", "text2", "#text");
+      appendable.appendList("test", "text", "text2", "#text", "te,xt");
     } catch (IOException e) {
       e.printStackTrace();
     }
-    Assert.assertEquals("test: [text, text2, \"#text\"]", buffer.toString().trim());
+    Assert.assertEquals("test: [text, text2, \"#text\", \"te,xt\"]", buffer.toString().trim());
 
   }
 

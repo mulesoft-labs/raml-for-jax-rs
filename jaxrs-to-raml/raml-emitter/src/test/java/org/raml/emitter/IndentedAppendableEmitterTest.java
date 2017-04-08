@@ -237,6 +237,11 @@ public class IndentedAppendableEmitterTest {
     }
 
     @Override
+    public List<RamlMultiFormDataParameter> getMultiFormDataParameter() {
+      return new ArrayList<>();
+    }
+
+    @Override
     public Optional<String> getDescription() {
       return description;
     }

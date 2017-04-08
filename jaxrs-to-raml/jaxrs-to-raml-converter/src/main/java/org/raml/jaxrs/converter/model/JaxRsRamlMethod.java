@@ -21,6 +21,7 @@ import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
+import org.raml.api.RamlMultiFormDataParameter;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.api.RamlMediaType;
@@ -86,6 +87,11 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
         return JaxRsRamlEntity.create(input);
       }
     });
+  }
+
+  @Override
+  public List<RamlMultiFormDataParameter> getMultiFormDataParameter() {
+    return Utilities.toRamlMultiPartFormDataParameters(this.resourceMethod.getMultiPartFormDataParameters()).toList();
   }
 
   @Override

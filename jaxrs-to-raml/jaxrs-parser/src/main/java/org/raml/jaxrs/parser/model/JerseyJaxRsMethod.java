@@ -17,12 +17,14 @@ package org.raml.jaxrs.parser.model;
 
 import com.google.common.base.Optional;
 
+import com.google.common.collect.FluentIterable;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.HttpVerb;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsMethod;
+import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.jaxrs.parser.source.SourceParser;
 
@@ -80,6 +82,11 @@ class JerseyJaxRsMethod implements JaxRsMethod {
   public List<JaxRsFormParameter> getFormParameters() {
     return Utilities.toJaxRsFormParameters(Utilities.getFormParameters(resourceMethod))
         .toList();
+  }
+
+  @Override
+  public List<JaxRsMultiPartFormDataParameter> getMultiPartFormDataParameters() {
+    return Utilities.toJaxRsMultiPartFormDataParameter(Utilities.getMultiPartFormDataParameter(resourceMethod)).toList();
   }
 
   @Override

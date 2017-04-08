@@ -45,7 +45,6 @@ public class BeanLikeTypes implements TypeHandler {
                         RamlResourceMethod method, RamlEntity type)
       throws IOException {
 
-
     writeBody(registry, writer, ramlMediaType, type);
   }
 

@@ -34,6 +34,8 @@ public interface RamlResourceMethod extends Annotable {
 
   List<RamlFormParameter> getFormParameters();
 
+  List<RamlMultiFormDataParameter> getMultiFormDataParameter();
+
   Optional<String> getDescription();
 
   Optional<RamlEntity> getConsumedType();

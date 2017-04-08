@@ -37,6 +37,8 @@ public interface JaxRsMethod {
 
   List<JaxRsFormParameter> getFormParameters();
 
+  List<JaxRsMultiPartFormDataParameter> getMultiPartFormDataParameters();
+
   Optional<String> getDescription();
 
   Optional<JaxRsEntity> getConsumedEntity();

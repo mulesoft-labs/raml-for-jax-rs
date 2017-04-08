@@ -20,6 +20,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 import org.raml.api.Annotable;
+import org.raml.api.RamlData;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
@@ -38,20 +39,20 @@ import java.util.Map;
 
 public class RamlType implements Annotable {
 
-  private final RamlEntity type;
+  private final RamlData type;
 
   private final boolean collection;
 
   private Map<String, RamlProperty> properties = new HashMap<>();
   private List<RamlType> superTypes;
 
-  public RamlType(RamlEntity type) {
+  public RamlType(RamlData type) {
 
     this.type = type;
     this.collection = false;
   }
 
-  public RamlType(RamlEntity type, boolean collection) {
+  public RamlType(RamlData type, boolean collection) {
 
     this.type = type;
     this.collection = collection;

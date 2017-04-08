@@ -20,9 +20,11 @@ import com.google.common.collect.FluentIterable;
 
 import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
+import org.raml.api.RamlMultiFormDataParameter;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
+import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.JaxRsMethod;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
@@ -117,6 +119,20 @@ public class Utilities {
                                                            }
                                                          }
 
+        );
+  }
+
+  public static FluentIterable<RamlMultiFormDataParameter> toRamlMultiPartFormDataParameters(
+                                                                                             List<JaxRsMultiPartFormDataParameter> multiPartFormDataParameters) {
+    return FluentIterable.from(multiPartFormDataParameters)
+        .transform(
+                   new Function<JaxRsMultiPartFormDataParameter, RamlMultiFormDataParameter>() {
+
+                     @Override
+                     public RamlMultiFormDataParameter apply(JaxRsMultiPartFormDataParameter input) {
+                       return JaxRsRamlMultiFormDataParameter.create(input);
+                     }
+                   }
         );
   }
 }

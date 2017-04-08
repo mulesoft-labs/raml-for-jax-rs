@@ -20,11 +20,13 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
+import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
@@ -73,6 +75,18 @@ class Utilities {
       };
 
   private Utilities() {}
+
+  public static FluentIterable<Parameter> getMultiPartFormDataParameter(
+                                                                        ResourceMethod resourceMethod) {
+    return FluentIterable.from(resourceMethod.getInvocable().getParameters()).filter(new Predicate<Parameter>() {
+
+      @Override
+      public boolean apply(@Nullable Parameter input) {
+
+        return input.isAnnotationPresent(FormDataParam.class);
+      }
+    });
+  }
 
   public static FluentIterable<Parameter> getQueryParameters(ResourceMethod resourceMethod) {
     return FluentIterable.from(resourceMethod.getInvocable().getParameters()).filter(
@@ -164,5 +178,19 @@ class Utilities {
         return JerseyJaxRsFormParameter.create(input);
       }
     });
+  }
+
+  public static FluentIterable<JaxRsMultiPartFormDataParameter> toJaxRsMultiPartFormDataParameter(
+                                                                                                  Iterable<Parameter> multiPartFormDataParameter) {
+    return FluentIterable.from(multiPartFormDataParameter).transform(
+                                                                     new Function<Parameter, JaxRsMultiPartFormDataParameter>() {
+
+                                                                       @Nullable
+                                                                       @Override
+                                                                       public JaxRsMultiPartFormDataParameter apply(@Nullable Parameter input) {
+                                                                         return JerseyJaxRsMultiPartFormDataParameter
+                                                                             .create(input);
+                                                                       }
+                                                                     });
   }
 }

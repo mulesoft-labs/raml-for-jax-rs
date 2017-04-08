@@ -15,22 +15,8 @@
  */
 package org.raml.api;
 
-import com.google.common.base.Optional;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 4/8/17. Just potential zeroes and ones
  */
-public interface RamlEntity extends RamlData {
-
-  Type getType();
-
-  Optional<String> getDescription();
-
-  // this is a cheap way to get to the source code parser. Should be fixed.
-  RamlEntity createDependent(Type type);
-
-  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
+public interface RamlMultiFormDataParameter {
 }

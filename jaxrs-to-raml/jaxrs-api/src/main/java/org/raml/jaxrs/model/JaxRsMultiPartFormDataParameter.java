@@ -23,5 +23,5 @@ public interface JaxRsMultiPartFormDataParameter {
 
   String getName();
 
-  Type getType();
+  JaxRsEntity getPartEntity();
 }

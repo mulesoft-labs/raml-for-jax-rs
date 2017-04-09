@@ -16,9 +16,9 @@
 package org.raml.jaxrs.parser.model;
 
 import org.glassfish.jersey.server.model.Parameter;
+import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
-
-import java.lang.reflect.Type;
+import org.raml.jaxrs.parser.source.SourceParser;
 
 /**
  * Created by Jean-Philippe Belanger on 4/8/17. Just potential zeroes and ones
@@ -27,9 +27,11 @@ public class JerseyJaxRsMultiPartFormDataParameter implements JaxRsMultiPartForm
 
 
   private final Parameter parameter;
+  private final SourceParser sourceParser;
 
-  public JerseyJaxRsMultiPartFormDataParameter(Parameter input) {
+  public JerseyJaxRsMultiPartFormDataParameter(Parameter input, SourceParser sourceParser) {
     this.parameter = input;
+    this.sourceParser = sourceParser;
   }
 
   @Override
@@ -38,11 +40,11 @@ public class JerseyJaxRsMultiPartFormDataParameter implements JaxRsMultiPartForm
   }
 
   @Override
-  public Type getType() {
-    return parameter.getType();
+  public JaxRsEntity getPartEntity() {
+    return JerseyJaxRsEntity.create(parameter, sourceParser);
   }
 
-  public static JaxRsMultiPartFormDataParameter create(Parameter input) {
-    return new JerseyJaxRsMultiPartFormDataParameter(input);
+  public static JaxRsMultiPartFormDataParameter create(Parameter input, SourceParser sourceParser) {
+    return new JerseyJaxRsMultiPartFormDataParameter(input, sourceParser);
   }
 }

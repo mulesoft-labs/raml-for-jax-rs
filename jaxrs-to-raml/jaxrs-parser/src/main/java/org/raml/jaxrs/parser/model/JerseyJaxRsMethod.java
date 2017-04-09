@@ -86,7 +86,8 @@ class JerseyJaxRsMethod implements JaxRsMethod {
 
   @Override
   public List<JaxRsMultiPartFormDataParameter> getMultiPartFormDataParameters() {
-    return Utilities.toJaxRsMultiPartFormDataParameter(Utilities.getMultiPartFormDataParameter(resourceMethod)).toList();
+    return Utilities.toJaxRsMultiPartFormDataParameter(Utilities.getMultiPartFormDataParameter(resourceMethod), sourceParser)
+        .toList();
   }
 
   @Override

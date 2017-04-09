@@ -22,6 +22,7 @@ import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.api.RamlMultiFormDataParameter;
 import org.raml.api.RamlSupportedAnnotation;
+import org.raml.api.ScalarType;
 import org.raml.jaxrs.model.JaxRsFormParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;

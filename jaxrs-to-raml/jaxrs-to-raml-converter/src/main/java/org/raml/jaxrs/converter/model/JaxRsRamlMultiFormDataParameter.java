@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.converter.model;
 
+import org.raml.api.RamlEntity;
 import org.raml.api.RamlMultiFormDataParameter;
 import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
 
@@ -32,5 +33,16 @@ public class JaxRsRamlMultiFormDataParameter implements RamlMultiFormDataParamet
 
   public static RamlMultiFormDataParameter create(JaxRsMultiPartFormDataParameter input) {
     return new JaxRsRamlMultiFormDataParameter(input);
+  }
+
+  @Override
+  public String getName() {
+    return input.getName();
+  }
+
+  @Override
+  public RamlEntity getPartEntity() {
+
+    return new JaxRsRamlEntity(input.getPartEntity());
   }
 }

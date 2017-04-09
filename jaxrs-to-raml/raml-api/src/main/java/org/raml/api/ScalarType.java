@@ -18,8 +18,12 @@ package org.raml.api;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.util.Map;
 
 public enum ScalarType implements RamlType {
@@ -35,10 +39,10 @@ public enum ScalarType implements RamlType {
       .<Type>of()),
   DATETIME("datetime", ImmutableList.<Type>of()),
   FILE("file", ImmutableList
-      .<Type>of()),
+      .<Type>of(InputStream.class, FileDataBodyPart.class, StreamDataBodyPart.class)),
   // All "integer" types are mapped to raml's "integer". Not sure if that is correct.
   INTEGER("integer", ImmutableList.<Type>of(int.class, Integer.class, byte.class, Byte.class,
-                                            short.class, Short.class, long.class, Long.class)),
+                                            short.class, Short.class, long.class, Long.class, BigInteger.class)),
   NIL("nil", ImmutableList
       .<Type>of());
 

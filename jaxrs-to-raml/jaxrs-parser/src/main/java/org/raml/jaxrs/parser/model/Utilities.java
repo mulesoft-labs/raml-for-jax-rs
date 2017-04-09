@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.ResourceMethod;
@@ -83,7 +84,7 @@ class Utilities {
       @Override
       public boolean apply(@Nullable Parameter input) {
 
-        return input.isAnnotationPresent(FormDataParam.class);
+        return input.isAnnotationPresent(FormDataParam.class) && input.getRawType() != FormDataContentDisposition.class;
       }
     });
   }
@@ -181,7 +182,8 @@ class Utilities {
   }
 
   public static FluentIterable<JaxRsMultiPartFormDataParameter> toJaxRsMultiPartFormDataParameter(
-                                                                                                  Iterable<Parameter> multiPartFormDataParameter) {
+                                                                                                  Iterable<Parameter> multiPartFormDataParameter,
+                                                                                                  final SourceParser sourceParser) {
     return FluentIterable.from(multiPartFormDataParameter).transform(
                                                                      new Function<Parameter, JaxRsMultiPartFormDataParameter>() {
 
@@ -189,7 +191,7 @@ class Utilities {
                                                                        @Override
                                                                        public JaxRsMultiPartFormDataParameter apply(@Nullable Parameter input) {
                                                                          return JerseyJaxRsMultiPartFormDataParameter
-                                                                             .create(input);
+                                                                             .create(input, sourceParser);
                                                                        }
                                                                      });
   }

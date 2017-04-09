@@ -17,5 +17,13 @@ package org.raml.api;
 
 public interface RamlMediaType {
 
+  RamlMediaType UNKNOWN_TYPE = new RamlMediaType() {
+
+    @Override
+    public String toStringRepresentation() {
+      return "*/*";
+    }
+  };
+
   String toStringRepresentation();
 }

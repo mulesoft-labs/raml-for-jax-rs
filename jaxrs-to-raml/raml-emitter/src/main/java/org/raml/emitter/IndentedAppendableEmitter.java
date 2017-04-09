@@ -24,6 +24,7 @@ import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlApi;
+import org.raml.api.RamlMultiFormDataParameter;
 import org.raml.api.RamlQueryParameter;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
@@ -149,26 +150,35 @@ public class IndentedAppendableEmitter implements Emitter {
     }
 
     if (!method.getConsumedMediaTypes().isEmpty()
-        && (method.getConsumedType().isPresent() || !method.getFormParameters().isEmpty())) {
+        && (method.getConsumedType().isPresent() || !method.getMultiFormDataParameter().isEmpty() || !method.getFormParameters()
+            .isEmpty())) {
 
       writer.appendLine("body:");
       writer.indent();
 
       for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
 
-        if (ramlMediaType.toStringRepresentation().equals("application/x-www-form-urlencoded")) {
+        if (ramlMediaType.toStringRepresentation().equals("multipart/form-data")) {
 
           writer.appendLine(ramlMediaType.toStringRepresentation() + ":");
           writer.indent();
-
-          writeFormParam(method);
-
+          writeMultiPartFormData(method);
           writer.outdent();
         } else {
-          Type type = method.getConsumedType().get().getType();
+          if (ramlMediaType.toStringRepresentation().equals("application/x-www-form-urlencoded")) {
 
-          TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
-          typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, method.getConsumedType().get());
+            writer.appendLine(ramlMediaType.toStringRepresentation() + ":");
+            writer.indent();
+
+            writeFormParam(method);
+
+            writer.outdent();
+          } else {
+            Type type = method.getConsumedType().get().getType();
+
+            TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
+            typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, method.getConsumedType().get());
+          }
         }
       }
       writer.outdent();
@@ -200,6 +210,29 @@ public class IndentedAppendableEmitter implements Emitter {
     }
 
 
+    writer.outdent();
+  }
+
+  private void writeMultiPartFormData(RamlResourceMethod method) throws IOException {
+
+    writer.appendLine("type:");
+    writer.indent();
+    writer.appendLine("properties:");
+    writer.indent();
+
+    List<RamlMultiFormDataParameter> formData = method.getMultiFormDataParameter();
+    for (RamlMultiFormDataParameter formDatum : formData) {
+
+      Type type = formDatum.getPartEntity().getType();
+
+      writer.appendLine(formDatum.getName() + ":");
+      writer.indent();
+      TypeHandler typeHandler = pickTypeHandler(method, RamlMediaType.UNKNOWN_TYPE, type);
+      typeHandler.writeType(typeRegistry, writer, RamlMediaType.UNKNOWN_TYPE, method, formDatum.getPartEntity());
+      writer.outdent();
+    }
+
+    writer.outdent();
     writer.outdent();
   }
 

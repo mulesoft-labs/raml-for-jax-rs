@@ -19,4 +19,9 @@ package org.raml.api;
  * Created by Jean-Philippe Belanger on 4/8/17. Just potential zeroes and ones
  */
 public interface RamlMultiFormDataParameter {
+
+
+  String getName();
+
+  RamlEntity getPartEntity();
 }

@@ -15,6 +15,9 @@
  */
 package org.raml.jaxrs.examples.resources;
 
+import org.raml.jaxrs.common.Example;
+import org.raml.jaxrs.common.MethodExamples;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,7 +30,19 @@ public class ResourceWithRamlHierarchies {
   @POST
   @Consumes("application/xml")
   @Produces("application/xml")
-  public HierarchyValue postWithQueryParameters(ConsumedValue consumed) {
+  @MethodExamples(
+      consumed = {
+          @Example(name = "name", value = "David Wallace"),
+          @Example(name = "id", value = "xxx-yyy"),
+          @Example(name = "names", value = "[\"Dave\", \"Davester\"")
+      },
+      produced = {
+
+          @Example(name = "name", value = "David Wallace"),
+          @Example(name = "id", value = "xxx-yyy"),
+      }
+      )
+      public HierarchyValue postWithQueryParameters(ConsumedValue consumed) {
     return null;
   }
 }

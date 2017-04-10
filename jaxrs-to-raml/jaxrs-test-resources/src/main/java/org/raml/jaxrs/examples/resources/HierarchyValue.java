@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.examples.resources;
 
+import org.raml.jaxrs.common.Example;
+import org.raml.jaxrs.common.Examples;
 import org.raml.jaxrs.handlers.BeanLikeTypes;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
@@ -22,6 +24,8 @@ import org.raml.jaxrs.examples.Secure;
 import javax.ws.rs.Path;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
+
+import static org.raml.v2.api.model.v10.declarations.AnnotationTarget.Example;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -31,6 +35,10 @@ import java.util.List;
 @Secure(security = String.class, level = 17)
 public interface HierarchyValue extends TopValue, AnotherTopValue {
 
+  @Examples({
+      @Example("qqchose"),
+      @Example("qqchose d'autre")
+  })
   String getName();
 
   @Path("alllloooo")

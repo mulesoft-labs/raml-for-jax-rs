@@ -13,12 +13,13 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.plugins;
+package org.raml.jaxrs.handlers;
 
 import org.raml.api.RamlEntity;
 import org.raml.api.ScalarType;
-import org.raml.emitter.types.RamlType;
-import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.types.RamlType;
+import org.raml.jaxrs.types.TypeRegistry;
+import org.raml.jaxrs.plugins.TypeScanner;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;

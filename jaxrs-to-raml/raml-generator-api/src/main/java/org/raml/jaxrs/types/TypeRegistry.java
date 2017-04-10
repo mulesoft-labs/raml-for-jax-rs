@@ -13,11 +13,11 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.types;
+package org.raml.jaxrs.types;
 
 import org.raml.api.RamlEntity;
-import org.raml.emitter.AnnotationInstanceEmitter;
-import org.raml.emitter.plugins.TypeScanner;
+import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
+import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;

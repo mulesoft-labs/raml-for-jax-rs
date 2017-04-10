@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.examples.resources;
 
-import org.raml.emitter.plugins.BeanLikeTypes;
+import org.raml.jaxrs.handlers.BeanLikeTypes;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
 

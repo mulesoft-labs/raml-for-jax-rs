@@ -17,8 +17,6 @@ package org.raml.emitter;
 
 import com.google.common.base.Optional;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
 import org.raml.api.RamlFormParameter;
 import org.raml.api.RamlHeaderParameter;
@@ -31,13 +29,13 @@ import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.RamlTypes;
 import org.raml.emitter.plugins.DefaultTypeHandler;
-import org.raml.emitter.plugins.BeanLikeTypes;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.emitter.plugins.DefaultResponseHandler;
-import org.raml.emitter.plugins.SimpleJaxbTypes;
-import org.raml.emitter.plugins.TypeHandler;
-import org.raml.emitter.plugins.TypeSelector;
-import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
+import org.raml.jaxrs.emitters.AnnotationTypeEmitter;
+import org.raml.jaxrs.plugins.TypeHandler;
+import org.raml.jaxrs.plugins.TypeSelector;
+import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
@@ -56,11 +54,6 @@ public class IndentedAppendableEmitter implements Emitter {
   private static final Logger logger = LoggerFactory.getLogger(IndentedAppendableEmitter.class);
 
   private TypeRegistry typeRegistry = new TypeRegistry();
-
-  private List<TypeHandler> bodyAlternatives =
-      Arrays.asList(
-                    new SimpleJaxbTypes(), new BeanLikeTypes(), new DefaultTypeHandler()
-          );
 
   private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
@@ -178,7 +171,7 @@ public class IndentedAppendableEmitter implements Emitter {
           } else {
             Type type = method.getConsumedType().get().getType();
 
-            TypeHandler typeHandler = pickTypeHandler(method, ramlMediaType, type);
+            TypeHandler typeHandler = pickTypeHandler(type);
             typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, method.getConsumedType().get());
           }
         }
@@ -191,7 +184,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
       @Override
       public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) throws IOException {
-        return pickTypeHandler(method, producedMediaType, method.getProducedType().get().getType());
+        return pickTypeHandler(method.getProducedType().get().getType());
       }
     };
 
@@ -229,7 +222,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
       writer.appendLine(formDatum.getName() + ":");
       writer.indent();
-      TypeHandler typeHandler = pickTypeHandler(method, RamlMediaType.UNKNOWN_TYPE, type);
+      TypeHandler typeHandler = pickTypeHandler(type);
       typeHandler.writeType(typeRegistry, writer, RamlMediaType.UNKNOWN_TYPE, method, formDatum.getPartEntity());
       writer.outdent();
     }
@@ -254,16 +247,15 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.outdent();
   }
 
-  private TypeHandler pickTypeHandler(final RamlResourceMethod method, RamlMediaType ramlMediaType,
-                                      final Type type) throws IOException {
+  private TypeHandler pickTypeHandler(final Type type) throws IOException {
 
-    Class c = (Class) type;
-    RamlGenerator generatorAnnotation = (RamlGenerator) c.getAnnotation(RamlGenerator.class);
+    Class<?> c = (Class) type;
+    RamlGenerator generatorAnnotation = c.getAnnotation(RamlGenerator.class);
 
     if (generatorAnnotation != null) {
 
       try {
-        return (TypeHandler) generatorAnnotation.value().newInstance();
+        return generatorAnnotation.value().newInstance();
       } catch (InstantiationException | IllegalAccessException e) {
         logger.error("unable to create generator", e);
         throw new IOException("enable to create generator", e);

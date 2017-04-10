@@ -16,7 +16,8 @@
 package org.raml.emitter.plugins;
 
 import org.raml.api.RamlResourceMethod;
-import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.types.TypeRegistry;
+import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;

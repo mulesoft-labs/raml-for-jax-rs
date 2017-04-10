@@ -13,18 +13,17 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.plugins;
+package org.raml.jaxrs.emitters;
 
-import org.raml.api.RamlEntity;
-import org.raml.emitter.types.RamlType;
-import org.raml.emitter.types.TypeRegistry;
+import java.lang.annotation.Retention;
 
-import java.lang.reflect.Type;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 4/1/17. Just potential zeroes and ones
  */
-public interface TypeScanner {
+@Retention(RUNTIME)
+@interface Classed {
 
-  void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType);
+  Class one();
 }

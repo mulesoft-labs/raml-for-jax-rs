@@ -13,16 +13,18 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.plugins;
+package org.raml.jaxrs.handlers;
 
 import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.Annotable;
-import org.raml.emitter.types.RamlProperty;
-import org.raml.emitter.types.RamlType;
-import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.types.RamlProperty;
+import org.raml.jaxrs.types.RamlType;
+import org.raml.jaxrs.types.TypeRegistry;
+import org.raml.jaxrs.plugins.TypeHandler;
+import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
 
 import javax.xml.bind.annotation.XmlAttribute;

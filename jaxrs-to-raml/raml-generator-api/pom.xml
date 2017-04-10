@@ -11,5 +11,20 @@
     </parent>
 
     <artifactId>raml-generator-api</artifactId>
-    
+    <dependencies>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-api</artifactId>
+            <version>2.0.0-RC2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+
+    </dependencies>
 </project>

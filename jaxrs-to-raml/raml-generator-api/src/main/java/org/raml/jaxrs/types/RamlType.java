@@ -13,7 +13,7 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.types;
+package org.raml.jaxrs.types;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -24,7 +24,7 @@ import org.raml.api.RamlData;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
-import org.raml.emitter.AnnotationInstanceEmitter;
+import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;

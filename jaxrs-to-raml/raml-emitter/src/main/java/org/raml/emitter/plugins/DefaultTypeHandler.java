@@ -19,7 +19,8 @@ import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.ScalarType;
-import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.types.TypeRegistry;
+import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ import static java.lang.String.format;
  */
 public class DefaultTypeHandler implements TypeHandler {
 
-    @Override
+  @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
                         RamlResourceMethod method, RamlEntity bodyType)
       throws IOException {

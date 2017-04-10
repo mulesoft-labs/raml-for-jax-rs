@@ -15,11 +15,10 @@
  */
 package org.raml.jaxrs.examples.resources;
 
-import org.raml.emitter.plugins.SimpleJaxbTypes;
+import org.raml.jaxrs.handlers.SimpleJaxbTypes;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
 
-import javax.ws.rs.Path;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;

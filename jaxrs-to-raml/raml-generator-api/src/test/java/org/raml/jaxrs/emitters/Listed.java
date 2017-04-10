@@ -13,22 +13,21 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter.plugins;
+package org.raml.jaxrs.emitters;
 
-import org.raml.api.RamlEntity;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
-import org.raml.emitter.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
+import java.lang.annotation.Retention;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 4/1/17. Just potential zeroes and ones
  */
-public interface TypeHandler {
+@Retention(RUNTIME)
+@interface Listed {
 
-  void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType, RamlResourceMethod method,
-                 RamlEntity type) throws IOException;
+  int[] one();
+
+  Class[] two();
+
+  String[] three();
 }

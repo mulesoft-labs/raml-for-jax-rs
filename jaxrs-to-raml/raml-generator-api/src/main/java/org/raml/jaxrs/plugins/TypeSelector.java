@@ -13,17 +13,17 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.emitter;
+package org.raml.jaxrs.plugins;
 
-import java.lang.annotation.Retention;
+import org.raml.api.RamlMediaType;
+import org.raml.api.RamlResourceMethod;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.io.IOException;
 
 /**
- * Created by Jean-Philippe Belanger on 4/1/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-@Retention(RUNTIME)
-@interface Classed {
+public interface TypeSelector {
 
-  Class one();
+  TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) throws IOException;
 }

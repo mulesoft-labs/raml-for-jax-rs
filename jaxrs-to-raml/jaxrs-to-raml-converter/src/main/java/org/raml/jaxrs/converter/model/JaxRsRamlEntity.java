@@ -60,4 +60,9 @@ public class JaxRsRamlEntity implements RamlEntity {
   public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
     return entity.getAnnotation(annotation);
   }
+
+  @Override
+  public String toString() {
+    return "[entity of type: " + entity.getType() + "]";
+  }
 }

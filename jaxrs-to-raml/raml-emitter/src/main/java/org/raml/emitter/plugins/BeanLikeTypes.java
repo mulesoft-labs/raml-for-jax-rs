@@ -23,17 +23,14 @@ import org.raml.api.Annotable;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
-import org.raml.jaxrs.common.BuildType;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.format;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -46,18 +43,6 @@ public class BeanLikeTypes implements TypeHandler {
       throws IOException {
 
     writeBody(registry, writer, ramlMediaType, type);
-  }
-
-  @Override
-  public boolean handlesType(RamlResourceMethod method, Type type) {
-
-    Class<?> c = (Class) type;
-    BuildType t = c.getAnnotation(BuildType.class);
-    if (t != null) {
-      return t.value().equals("ramlforjaxrs-simple");
-    }
-
-    return false;
   }
 
   private void writeBody(final TypeRegistry registry, IndentedAppendable writer,

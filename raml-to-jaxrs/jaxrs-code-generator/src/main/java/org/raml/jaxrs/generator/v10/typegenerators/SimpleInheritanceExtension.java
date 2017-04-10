@@ -21,7 +21,6 @@ import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.common.BuildType;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.GeneratorType;
@@ -243,7 +242,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
 
     TypeSpec.Builder typeSpec = TypeSpec
         .interfaceBuilder(interf)
-        .addAnnotation(AnnotationSpec.builder(BuildType.class).addMember("value", "$S", "ramlforjaxrs-simple").build())
+        // .addAnnotation(AnnotationSpec.builder(RamlGenerator.class).addMember("value", "$S", "ramlforjaxrs-simple").build())
         .addModifiers(Modifier.PUBLIC);
 
 

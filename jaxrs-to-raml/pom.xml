@@ -92,5 +92,6 @@
         <module>jaxrs-test-resources</module>
         <module>raml-api</module>
         <module>raml-emitter</module>
+        <module>raml-generator-api</module>
     </modules>
 </project>

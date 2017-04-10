@@ -38,6 +38,7 @@ import org.raml.emitter.plugins.SimpleJaxbTypes;
 import org.raml.emitter.plugins.TypeHandler;
 import org.raml.emitter.plugins.TypeSelector;
 import org.raml.emitter.types.TypeRegistry;
+import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,8 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.appendEscapedLine("mediaType", defaultMediaType.toStringRepresentation());
   }
 
-  private void writeResource(RamlResource resource, List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
+  private void writeResource(RamlResource resource, List<RamlSupportedAnnotation> supportedAnnotation)
+      throws IOException {
     writer.appendLine(format("%s:", resource.getPath()));
     writer.indent();
 
@@ -188,7 +190,7 @@ public class IndentedAppendableEmitter implements Emitter {
     TypeSelector selector = new TypeSelector() {
 
       @Override
-      public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) {
+      public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) throws IOException {
         return pickTypeHandler(method, producedMediaType, method.getProducedType().get().getType());
       }
     };
@@ -253,15 +255,23 @@ public class IndentedAppendableEmitter implements Emitter {
   }
 
   private TypeHandler pickTypeHandler(final RamlResourceMethod method, RamlMediaType ramlMediaType,
-                                      final Type type) {
+                                      final Type type) throws IOException {
 
-    return FluentIterable.from(bodyAlternatives).filter(new Predicate<TypeHandler>() {
+    Class c = (Class) type;
+    RamlGenerator generatorAnnotation = (RamlGenerator) c.getAnnotation(RamlGenerator.class);
 
-      @Override
-      public boolean apply(TypeHandler input) {
-        return input.handlesType(method, type);
+    if (generatorAnnotation != null) {
+
+      try {
+        return (TypeHandler) generatorAnnotation.value().newInstance();
+      } catch (InstantiationException | IllegalAccessException e) {
+        logger.error("unable to create generator", e);
+        throw new IOException("enable to create generator", e);
       }
-    }).first().get();
+    } else {
+
+      return new DefaultTypeHandler();
+    }
   }
 
   private ResponseHandler pickResponseHandler(final RamlResourceMethod method) {

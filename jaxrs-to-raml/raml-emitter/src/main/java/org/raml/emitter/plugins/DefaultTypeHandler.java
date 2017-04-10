@@ -23,7 +23,6 @@ import org.raml.emitter.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 import static java.lang.String.format;
 
@@ -32,12 +31,7 @@ import static java.lang.String.format;
  */
 public class DefaultTypeHandler implements TypeHandler {
 
-  @Override
-  public boolean handlesType(RamlResourceMethod method, Type type) {
-    return true;
-  }
-
-  @Override
+    @Override
   public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
                         RamlResourceMethod method, RamlEntity bodyType)
       throws IOException {

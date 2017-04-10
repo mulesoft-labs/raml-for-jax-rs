@@ -29,8 +29,6 @@ import java.lang.reflect.Type;
  */
 public interface TypeHandler {
 
-  boolean handlesType(RamlResourceMethod method, Type type);
-
   void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType, RamlResourceMethod method,
                  RamlEntity type) throws IOException;
 }

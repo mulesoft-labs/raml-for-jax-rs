@@ -18,7 +18,6 @@
         <module>jaxrs-to-raml</module>
         <module>raml-to-jaxrs</module>
         <module>utilities</module>
-        <module>raml-for-jaxrs-common</module>
     </modules>
 
     <properties>

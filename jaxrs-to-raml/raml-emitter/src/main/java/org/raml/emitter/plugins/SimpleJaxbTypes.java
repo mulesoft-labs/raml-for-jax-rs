@@ -16,8 +16,6 @@
 package org.raml.emitter.plugins;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
@@ -25,12 +23,10 @@ import org.raml.api.Annotable;
 import org.raml.emitter.types.RamlProperty;
 import org.raml.emitter.types.RamlType;
 import org.raml.emitter.types.TypeRegistry;
-import org.raml.jaxrs.common.BuildType;
 import org.raml.utilities.IndentedAppendable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -48,26 +44,6 @@ public class SimpleJaxbTypes implements TypeHandler {
 
 
     writeBody(registry, writer, ramlMediaType, type);
-  }
-
-  @Override
-  public boolean handlesType(RamlResourceMethod method, Type type) {
-
-    Class<?> c = (Class<?>) type;
-    BuildType buildType = c.getAnnotation(BuildType.class);
-    if (buildType != null && buildType.value().equals("jaxb-annotations")) {
-      return true;
-    }
-
-    return c.getAnnotation(XmlRootElement.class) != null
-        && FluentIterable.of(c.getDeclaredFields()).anyMatch(new Predicate<Field>() {
-
-          @Override
-          public boolean apply(Field input) {
-            return input.isAnnotationPresent(XmlAttribute.class)
-                || input.isAnnotationPresent(XmlElement.class);
-          }
-        });
   }
 
   private void writeBody(TypeRegistry registry, IndentedAppendable writer,

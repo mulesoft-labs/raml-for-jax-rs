@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.examples.resources;
 
+import org.raml.emitter.plugins.SimpleJaxbTypes;
+import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
 
 import javax.ws.rs.Path;
@@ -26,6 +28,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @XmlRootElement
+@RamlGenerator(SimpleJaxbTypes.class)
 @Secure(security = String.class, level = 0)
 public class ConsumedValue {
 

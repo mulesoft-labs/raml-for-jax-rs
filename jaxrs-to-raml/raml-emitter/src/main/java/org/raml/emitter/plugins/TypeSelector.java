@@ -18,10 +18,12 @@ package org.raml.emitter.plugins;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
 
+import java.io.IOException;
+
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 public interface TypeSelector {
 
-  TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType);
+  TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) throws IOException;
 }

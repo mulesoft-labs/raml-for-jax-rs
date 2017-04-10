@@ -15,11 +15,11 @@
  */
 package org.raml.jaxrs.examples.resources;
 
-import org.raml.jaxrs.common.BuildType;
+import org.raml.emitter.plugins.BeanLikeTypes;
+import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
 
 import javax.ws.rs.Path;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @XmlRootElement
-@BuildType("ramlforjaxrs-simple")
+@RamlGenerator(BeanLikeTypes.class)
 @Secure(security = String.class, level = 17)
 public interface HierarchyValue extends TopValue, AnotherTopValue {
 

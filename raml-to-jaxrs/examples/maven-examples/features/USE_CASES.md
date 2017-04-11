@@ -1,4 +1,4 @@
-## When to use the RAML type generation plugins
+## When to use the generation plugins
 
 ### Use case #1: adding a @deprecated annotation
 Firstly, write the [code](feature-plugins/src/main/java/org/raml/jaxrs/features/AddDeprecatedAnnotationToTypePlugin.java) that will add the annotation. The code generator uses JavaPoet to generate the java code.

@@ -1,4 +1,4 @@
-## Resource and Response generation control
+## Generation plugins
 This feature provides control over the generation process. It's possible to modify class/interface/method generation using RAML 1.0 annotations.
 
 The available annotations are:

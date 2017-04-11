@@ -17,7 +17,7 @@ are hoping to make them more flexible are we figure this out.
 and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
 - Generation of JAXB-annotated classes based on XML Schemas
-- [Resource and Response generation control](jaxrs-code-generator/README.md): the generation of the interfaces and the response classes can be controlled using a set of RAML annotations in the RAML file
+- [Generation plugins](jaxrs-code-generator/README.md): the generation of the interfaces and the response classes can be controlled using a set of RAML annotations in the source RAML file
 
 ### Using the Maven plugin
 The maven plugin contains several examples and its configuration is documented [here](examples/maven-examples/README.md).
@@ -26,9 +26,9 @@ The maven plugin contains several examples and its configuration is documented [
 - [simple-xml-example](examples/maven-examples/simple-xml-example/): a simple example of XML schema generation
 - [simple-raml08](examples/maven-examples/simple-raml08/): a simple example using a RAML 0.8 definition
 - [scalar-types](examples/maven-examples/scalar-types/): an example using [RAML 1.0 Scalar Types](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#scalar-types)
-- [raml-defined-example](examples/maven-examples/raml-defined-example/): an elaborate example using [RAML 1.0 Type Expressions](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#type-expressions) and [RAML type generation plugins](examples/maven-examples/features/README.md).
+- [raml-defined-example](examples/maven-examples/raml-defined-example/): an elaborate example using [RAML 1.0 Type Expressions](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#type-expressions) and [generation plugins](examples/maven-examples/features/README.md)
 - [jaxb-example](examples/maven-examples/jaxb-example/): an example showing JAXB-annotated class generation based on XML Schemas
-- [features](examples/maven-examples/features/): an example showing how the [RAML type generation plugins](examples/maven-examples/features/README.md) feature works, includes [several use cases](examples/maven-examples/features/USE_CASES.md)
+- [features](examples/maven-examples/features/): an example showing how the [generation plugins](examples/maven-examples/features/README.md) feature works, includes [several use cases](examples/maven-examples/features/USE_CASES.md)
 
 ### Using the CLI
 The project [raml-to-jaxrs-cli](raml-to-jaxrs-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.

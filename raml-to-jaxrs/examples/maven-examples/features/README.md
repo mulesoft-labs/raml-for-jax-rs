@@ -1,4 +1,4 @@
-## Using the RAML type generation plugins
+## Using the generation plugins
 The first thing you will need to do to hook yourself into the code generation features is to build a project with the plugin classes.
 The example project in our case is called [feature-plugins](feature-plugins/). Its [pom.xml](feature-plugins/pom.xml) is a straight
 java jar project. The only required dependency is this:

@@ -29,19 +29,26 @@ the project for RAML generation.
 The example provided above shows all the possible configurations. None of them are mandatory however.
 The [jaxrs-test-resources](jaxrs-test-resources/pom.xml) pom file shows what the default values are.
 
-For convenience, we list the configurations here:
-- input - The input is the directory where to fetch the target classes.
-  it defaults to "${project.build.outputDirectory}"
-- outputDirectory - The output directory is where the generated RAML file will
-  be located. It defaults to "${project.build.sourceDirectory}"
-- outputFileName - The output file name is how the resulting RAML file will be named.
-  This defaults to "${project.artifactId}.raml"
-- sourceDirectory - The source directory corresponds to where the corresponding source
+For convenience, we list the configuration options here:
+- `input` - The input is the directory where to fetch the target classes.
+  it defaults to `${project.build.outputDirectory}`
+- `outputDirectory` - The output directory is where the generated RAML file will
+  be located. It defaults to `${project.build.sourceDirectory}`
+- `outputFileName` - The output file name is how the resulting RAML file will be named.
+  This defaults to `${project.artifactId}.raml`
+- `sourceDirectory` - The source directory corresponds to where the corresponding source
   classes can be found. This is used to extract user provided documentation. It
-  defaults to "${project.build.directory}"
+  defaults to `${project.build.directory}`
 
 ### Using the CLI
-The CLI is very simplistic. It provides little less features because less emphasis was put on its development.
-The project [jaxrs-to-raml-cli](jaxrs-to-raml-cli/) contains the CLI artifact.
-The first argument provided on the CLI is the directory where to find the compiled classes and
+The project [jaxrs-to-raml-cli](jaxrs-to-raml-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.
+
+E.g.
+```
+$ cd jaxrs-to-raml/jaxrs-to-raml-cli/
+$ mvn clean install
+$ java -jar ./target/jaxrs-to-raml-cli-2.0.0-RC2-SNAPSHOT-jar-with-dependencies.jar ../jaxrs-test-resources/target/classes ./test.raml
+```
+
+The first argument is the directory where to find the compiled classes and
 the second one is the path to the generated RAML file.

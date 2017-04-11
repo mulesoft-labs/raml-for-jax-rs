@@ -19,11 +19,11 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 - Generation of JAXB annotated classes based on XML Schemas
 
 ### Resource and Response generation control
-It's possible to control the creation of the interfaces and response classes in RAML 1.0. This is done using RAML annotations in your api file.
-For more information see [here](jaxrs-code-generator/GENERATION_README.md)
+The generation of the interfaces and the response classes can be controlled using a set of RAML annotations in the RAML file.
+You can find more more information [here](jaxrs-code-generator/README.md).
 
 ### Using the Maven plugin
-There is a maven plugin that can generate the code. This is documented [here](examples/maven-examples/README.md).
+The maven plugin is documented [here](examples/maven-examples/README.md).
 
 ### Using the CLI
 The project [raml-to-jaxrs-cli](raml-to-jaxrs-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.
@@ -34,5 +34,4 @@ $ cd raml-to-jaxrs/raml-to-jaxrs-cli/
 $ mvn clean install
 $ java -jar ./target/raml-to-jaxrs-cli-<version>-jar-with-dependencies.jar -d /tmp -r foo.bar ../examples/maven-examples/raml-defined-example/src/main/resources/types_user_defined.raml
 ```
-
 This will generate the source of a `foo.bar` package inside the folder `/tmp` using the RAML file included in the `raml-defined-example` example.

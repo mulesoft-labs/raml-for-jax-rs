@@ -1,5 +1,5 @@
 ## Maven plugin examples
-The maven plugin contains several examples. Each of them comes with a server that can be started with `mvn exec:java`.
+The examples included in this folder all come with a server that can be started using `mvn exec:java`.
 
 Here's an example configuration:
 ```xml

@@ -1,14 +1,14 @@
 ## JAX-RS Generation from RAML (raml-to-jaxrs)
 All distributions works in the following ways:
 
-- Interfaces are generated and will be regenerated when the RAML definition changes.
-- One interface is generated per top level resource, sub-resources are built from the subresources defined in the RAML parser.
+- Interfaces are generated and will be regenerated when the RAML definition changes;
+- One interface is generated per top level resource, sub-resources are built from the subresources defined in the RAML parser;
 - A response object wrapper is created for each resource action in order to guide the implementer in producing only results
-that are compatible with the RAML definition.
-- Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification.
+that are compatible with the RAML definition;
+- Custom annotations are generated for HTTP methods that are not part of the core JAX-RS specification;
 - Objects defined as RAML 1.0 objects are generated.  These objects are not as flexible as we want right now, but we
-are hoping to make them more flexible are we figure this out.
-- Objects are also generated based on JSON schemas to represent request/response entities.
+are hoping to make them more flexible are we figure this out;
+- Objects are also generated based on JSON schemas to represent request/response entities;
 - English is the language used in the interface and method names generation.
 
 ### Currently Supported
@@ -20,7 +20,8 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 - [Generation plugins](jaxrs-code-generator/README.md): the generation of the interfaces and the response classes can be controlled using a set of RAML annotations in the source RAML file
 
 ### Using the Maven plugin
-The maven plugin contains several examples and its configuration is documented [here](examples/maven-examples/README.md).
+There are several examples of projects using the maven plugin.
+The configuration of these projects is documented [here](examples/maven-examples/README.md).
 
 - [simple-json-example](examples/maven-examples/simple-json-example/): a simple example of JSON schema generation
 - [simple-xml-example](examples/maven-examples/simple-xml-example/): a simple example of XML schema generation

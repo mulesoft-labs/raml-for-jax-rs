@@ -45,5 +45,8 @@ Each method should return the `*.Builder` that was passed to it OR
 a new one built by the method (except in the `*Creation` plugins, which should be passed a `null` Builder).
 It should be noted that if a plugin method returns `null`, the class or method will not be generated.
 
-### Example
-An example project that showcases these plugins is [documented](../examples/maven-examples/features/README.md) in the current repository. There are also several use-cases [listed and explained](../examples/maven-examples/features/USE_CASES.MD) in that same folder.
+### Using the generation plugins
+An example project showcasing these plugins is documented [here](../examples/maven-examples/features/README.md).
+
+### When to use the generation plugins
+There are several use-cases listed and explained [here](../examples/maven-examples/features/USE_CASES.MD).

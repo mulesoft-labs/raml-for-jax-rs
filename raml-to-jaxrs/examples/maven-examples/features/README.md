@@ -41,4 +41,4 @@ the plugin with a dependency to our plugin code.
 </build>
 ```
 
-We are now ready to run our project. The several use cases of this example are documented [here](USE_CASES.md).
+We are now ready to run our project. There are several use-cases listed and explained [here](USE_CASES.md).

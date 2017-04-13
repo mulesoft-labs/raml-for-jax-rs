@@ -91,10 +91,10 @@ public class IndentedAppendableEmitter implements Emitter {
     writeSupportedAnnotations(api.getSupportedAnnotation());
 
     for (RamlResource resource : api.getResources()) {
-      writeResource(resource, api.getSupportedAnnotation());
+      writeResource(resource);
     }
 
-    writeTypes(api, api.getSupportedAnnotation());
+    writeTypes();
   }
 
   private void writeSupportedAnnotations(List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
@@ -106,7 +106,7 @@ public class IndentedAppendableEmitter implements Emitter {
     annotationTypeEmitter.emitAnnotations();
   }
 
-  private void writeTypes(RamlApi api, List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
+  private void writeTypes() throws IOException {
     writer.appendLine("types:");
     writer.indent();
     typeRegistry.writeAll(annotationInstanceEmitter, writer);
@@ -117,24 +117,23 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.appendEscapedLine("mediaType", defaultMediaType.toStringRepresentation());
   }
 
-  private void writeResource(RamlResource resource, List<RamlSupportedAnnotation> supportedAnnotation)
+  private void writeResource(RamlResource resource)
       throws IOException {
     writer.appendLine(format("%s:", resource.getPath()));
     writer.indent();
 
     for (RamlResourceMethod method : resource.getMethods()) {
-      writeMethod(method, supportedAnnotation);
+      writeMethod(method);
     }
 
     for (RamlResource child : resource.getChildren()) {
-      writeResource(child, supportedAnnotation);
+      writeResource(child);
     }
 
     writer.outdent();
   }
 
-  private void writeMethod(RamlResourceMethod method,
-                           List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {
+  private void writeMethod(RamlResourceMethod method) throws IOException {
     writer.appendLine(format("%s:", method.getHttpMethod()));
     writer.indent();
     annotationInstanceEmitter.emitAnnotations(method);

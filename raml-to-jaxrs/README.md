@@ -13,11 +13,12 @@ are hoping to make them more flexible are we figure this out;
 
 ### Currently Supported
 - JAX-RS 2.0
-- JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and `javax.validation` uses Java ones,
-and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML.
-- Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations.
-- Generation of JAXB-annotated classes based on XML Schemas
-- [Generation plugins](jaxrs-code-generator/README.md): the generation of the interfaces and the response classes can be controlled using a set of RAML annotations in the source RAML file
+- JSR-303 annotations, except `@Pattern` because RAML uses ECMA 262/Perl 5 patterns and `javax.validation` uses Java ones;
+and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraints defined in RAML;
+- Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations;
+- Generation of JAXB-annotated classes based on XML Schemas;
+- Annotations can be generated using one or a combination of three formats: [Gson](GSON.md), [Jackson](JACKSON.md) and [JAXB](JAXB.md)
+- [Generation plugins](jaxrs-code-generator/README.md): the generation of the interfaces and the response classes can be controlled using a set of RAML annotations in the source RAML file.
 
 ### Using the Maven plugin
 There are several examples of projects using the maven plugin.

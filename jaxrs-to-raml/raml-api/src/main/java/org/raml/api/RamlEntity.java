@@ -32,5 +32,4 @@ public interface RamlEntity extends RamlData {
   // this is a cheap way to get to the source code parser. Should be fixed.
   RamlEntity createDependent(Type type);
 
-  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
 }

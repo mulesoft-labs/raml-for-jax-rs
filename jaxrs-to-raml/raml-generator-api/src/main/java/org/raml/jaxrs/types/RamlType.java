@@ -24,6 +24,7 @@ import org.raml.api.RamlData;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
+import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.utilities.IndentedAppendable;
 
@@ -86,6 +87,8 @@ public class RamlType implements Annotable {
 
     emitter.emitAnnotations(type);
 
+    emitExample(writer);
+
     if (type.getDescription().isPresent()) {
       writer.appendLine("description: " + type.getDescription().get());
     }
@@ -96,6 +99,26 @@ public class RamlType implements Annotable {
 
       ramlProperty.write(emitter, writer);
     }
+    writer.outdent();
+    writer.outdent();
+  }
+
+  private void emitExample(IndentedAppendable writer) throws IOException {
+
+    /*
+     * Optional<Example> e = type.getAnnotation(Example.class); if ( ! e.isPresent() ) { return; }
+     */
+
+    writer.appendLine("example:");
+    writer.indent();
+    writer.appendLine("strict: false");
+    writer.appendLine("value:");
+    writer.indent();
+    for (RamlProperty ramlProperty : properties.values()) {
+
+      ramlProperty.writeExample(writer);
+    }
+
     writer.outdent();
     writer.outdent();
   }
@@ -126,7 +149,7 @@ public class RamlType implements Annotable {
   }
 
   @Override
-  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+  public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
     return type.getAnnotation(annotationType);
   }
 }

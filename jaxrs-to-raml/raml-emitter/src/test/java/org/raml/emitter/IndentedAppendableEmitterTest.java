@@ -257,7 +257,7 @@ public class IndentedAppendableEmitterTest {
     }
 
     @Override
-    public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
+    public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
       return null;
     }
 
@@ -310,8 +310,8 @@ public class IndentedAppendableEmitterTest {
     }
 
     @Override
-    public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
-      return this.annotation;
+    public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+      return (Optional<T>) this.annotation;
     }
   }
 

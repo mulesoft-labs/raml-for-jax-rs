@@ -98,7 +98,7 @@ public class SimpleJaxbTypes implements TypeHandler {
       }
 
       @Override
-      public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
+      public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
         return Optional.fromNullable(field.getAnnotation(annotationType));
       }
     }

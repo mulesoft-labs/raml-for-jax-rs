@@ -70,7 +70,8 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
   }
 
   @Override
-  public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation) {
-    return Optional.fromNullable(((Class) input).getAnnotation(annotation));
+  public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+
+    return (Optional<T>) Optional.fromNullable(((Class) input).getAnnotation(annotationType));
   }
 }

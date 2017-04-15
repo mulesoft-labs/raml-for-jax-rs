@@ -40,8 +40,8 @@ public class JaxRsRamlSupportedAnnotation implements RamlSupportedAnnotation {
   }
 
   @Override
-  public Optional<Annotation> getAnnotationInstance(Annotable annotable) {
+  public <T extends Annotation> Optional<T> getAnnotationInstance(Annotable annotable) {
 
-    return annotable.getAnnotation(annotation);
+    return (Optional<T>) annotable.getAnnotation(annotation);
   }
 }

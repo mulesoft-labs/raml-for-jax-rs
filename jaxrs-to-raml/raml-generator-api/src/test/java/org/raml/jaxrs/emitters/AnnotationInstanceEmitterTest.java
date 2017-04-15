@@ -18,9 +18,7 @@ package org.raml.jaxrs.emitters;
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -31,9 +29,7 @@ import org.raml.utilities.IndentedAppendable;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +54,8 @@ public class AnnotationInstanceEmitterTest {
   @Simple(one = "hello")
   public void simple() throws Exception {
 
-    final Annotation annotation = AnnotationInstanceEmitterTest.class.getDeclaredMethod("simple").getAnnotation(Simple.class);
+    final Annotation annotation = AnnotationInstanceEmitterTest.class.getDeclaredMethod("simple")
+        .getAnnotation(Simple.class);
     ramlAnnotationOfType(Simple.class, annotation);
 
     AnnotationInstanceEmitter emitter = new AnnotationInstanceEmitter(writer, Collections.singletonList(ramlAnnotation));
@@ -72,7 +69,8 @@ public class AnnotationInstanceEmitterTest {
   @Deprecated
   public void noargs() throws Exception {
 
-    Annotation annotation = AnnotationInstanceEmitterTest.class.getDeclaredMethod("noargs").getAnnotation(Deprecated.class);
+    Annotation annotation = AnnotationInstanceEmitterTest.class.getDeclaredMethod("noargs")
+        .getAnnotation(Deprecated.class);
     ramlAnnotationOfType(Deprecated.class, annotation);
 
     AnnotationInstanceEmitter emitter = new AnnotationInstanceEmitter(writer, Collections.singletonList(ramlAnnotation));
@@ -85,7 +83,8 @@ public class AnnotationInstanceEmitterTest {
   @Classed(one = AnnotationInstanceEmitterTest.class)
   public void classed() throws Exception {
 
-    Annotation annotation = AnnotationInstanceEmitterTest.class.getDeclaredMethod("classed").getAnnotation(Classed.class);
+    Annotation annotation = AnnotationInstanceEmitterTest.class.getDeclaredMethod("classed")
+        .getAnnotation(Classed.class);
     ramlAnnotationOfType(Classed.class, annotation);
 
     AnnotationInstanceEmitter emitter = new AnnotationInstanceEmitter(writer, Collections.singletonList(ramlAnnotation));
@@ -96,7 +95,8 @@ public class AnnotationInstanceEmitterTest {
   }
 
   @Test
-  @Listed(one = {1, 2, 3}, two = {AnnotationInstanceEmitter.class, AnnotationInstanceEmitterTest.class}, three = {"a", "b", "c"})
+  @Listed(one = {1, 2, 3}, two = {AnnotationInstanceEmitter.class, AnnotationInstanceEmitterTest.class}, three = {"a", "b",
+      "c"})
   public void listed() throws Exception {
 
     Annotation annotation = AnnotationInstanceEmitterTest.class.getDeclaredMethod("listed").getAnnotation(Listed.class);
@@ -145,8 +145,10 @@ public class AnnotationInstanceEmitterTest {
     }
 
     @Override
-    public Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType) {
-      return Optional.of(annotation);
+    public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+      {
+        return (Optional<T>) Optional.of(annotation);
+      }
     }
   }
 }

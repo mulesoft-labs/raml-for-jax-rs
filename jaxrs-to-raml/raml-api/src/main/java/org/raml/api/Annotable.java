@@ -24,5 +24,5 @@ import java.lang.annotation.Annotation;
  */
 public interface Annotable {
 
-  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType);
+  <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
 }

@@ -45,5 +45,5 @@ public interface JaxRsMethod {
 
   Optional<JaxRsEntity> getProducedEntity();
 
-  Optional<Annotation> getJavaAnnotation(Class<? extends Annotation> annotation);
+  <T extends Annotation> Optional<T> getJavaAnnotation(Class<T> annotationType);
 }

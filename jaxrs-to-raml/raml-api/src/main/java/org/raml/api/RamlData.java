@@ -29,5 +29,4 @@ public interface RamlData extends Annotable {
 
   Optional<String> getDescription();
 
-  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotationType);
 }

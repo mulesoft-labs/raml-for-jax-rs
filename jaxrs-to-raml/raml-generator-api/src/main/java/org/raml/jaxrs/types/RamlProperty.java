@@ -15,7 +15,9 @@
  */
 package org.raml.jaxrs.types;
 
+import com.google.common.base.Optional;
 import org.raml.api.Annotable;
+import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.utilities.IndentedAppendable;
 
@@ -53,5 +55,17 @@ public class RamlProperty {
     emitter.emitAnnotations(source);
 
     writer.outdent();
+  }
+
+  public void writeExample(IndentedAppendable writer) throws IOException {
+
+    Optional<Example> e = source.getAnnotation(Example.class);
+    if (!e.isPresent()) {
+
+      return;
+    }
+
+    writer.appendLine(name + ":" + e.get().value());
+
   }
 }

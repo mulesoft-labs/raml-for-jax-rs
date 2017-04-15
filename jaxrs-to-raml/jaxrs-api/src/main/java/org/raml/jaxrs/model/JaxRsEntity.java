@@ -32,5 +32,5 @@ public interface JaxRsEntity {
 
   JaxRsEntity createJaxRsEntity(Type entity);
 
-  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
+  <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
 }

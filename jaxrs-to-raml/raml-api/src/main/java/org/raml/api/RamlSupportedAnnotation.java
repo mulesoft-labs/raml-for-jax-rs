@@ -26,5 +26,5 @@ public interface RamlSupportedAnnotation {
 
   Class<? extends Annotation> getAnnotation();
 
-  Optional<Annotation> getAnnotationInstance(Annotable annotable);
+  <T extends Annotation> Optional<T> getAnnotationInstance(Annotable annotable);
 }

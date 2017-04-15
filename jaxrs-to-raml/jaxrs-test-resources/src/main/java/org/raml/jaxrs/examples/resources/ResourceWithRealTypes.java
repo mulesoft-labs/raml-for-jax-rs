@@ -19,11 +19,9 @@ import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.common.Examples;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 @Path("/realtypes")
 public class ResourceWithRealTypes {
@@ -34,7 +32,7 @@ public class ResourceWithRealTypes {
   @Produces("application/xml")
   @Deprecated
   @Examples({
-      @Example(name = "xml", value = "<consumed>blah</consumed>")
+      @Example(useCase = "xml", value = "<consumed>blah</consumed>")
   })
   public ProducedValue postWithQueryParameters(ConsumedValue consumed) {
     return null;

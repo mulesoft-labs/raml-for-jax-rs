@@ -108,7 +108,8 @@ class JerseyJaxRsMethod implements JaxRsMethod {
   }
 
   @Override
-  public Optional<Annotation> getJavaAnnotation(Class<? extends Annotation> annotation) {
-    return Optional.fromNullable(resourceMethod.getInvocable().getHandlingMethod().getAnnotation(annotation));
+  public <T extends Annotation> Optional<T> getJavaAnnotation(Class<T> annotationType) {
+
+    return Optional.fromNullable(resourceMethod.getInvocable().getHandlingMethod().getAnnotation(annotationType));
   }
 }

@@ -41,6 +41,4 @@ public interface RamlResourceMethod extends Annotable {
   Optional<RamlEntity> getConsumedType();
 
   Optional<RamlEntity> getProducedType();
-
-  Optional<Annotation> getAnnotation(Class<? extends Annotation> annotation);
 }

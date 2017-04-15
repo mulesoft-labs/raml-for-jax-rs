@@ -32,14 +32,14 @@ public class ResourceWithRamlHierarchies {
   @Produces("application/xml")
   @MethodExamples(
       consumed = {
-          @Example(name = "name", value = "David Wallace"),
-          @Example(name = "id", value = "xxx-yyy"),
-          @Example(name = "names", value = "[\"Dave\", \"Davester\"")
+          @Example(useCase = "name", value = "David Wallace"),
+          @Example(useCase = "id", value = "xxx-yyy"),
+          @Example(useCase = "names", value = "[\"Dave\", \"Davester\"")
       },
       produced = {
 
-          @Example(name = "name", value = "David Wallace"),
-          @Example(name = "id", value = "xxx-yyy"),
+          @Example(useCase = "name", value = "David Wallace"),
+          @Example(useCase = "id", value = "xxx-yyy"),
       }
       )
       public HierarchyValue postWithQueryParameters(ConsumedValue consumed) {

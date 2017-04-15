@@ -37,12 +37,15 @@ public class ConsumedValue {
   private String name;
 
   @XmlElement
+  @Example("1")
   @Secure(security = String.class, level = 1)
   private int id;
 
   @XmlElement
+  @Example("1")
   private SubType subType;
 
   @XmlElement
+  @Example("['1','2','3']")
   private List<String> names;
 }

@@ -22,6 +22,7 @@ import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -59,13 +60,29 @@ public class RamlProperty {
 
   public void writeExample(IndentedAppendable writer) throws IOException {
 
-    Optional<Example> e = source.getAnnotation(Example.class);
-    if (!e.isPresent()) {
+    if (!ramlType.isRamlType()) {
 
-      return;
+      writer.appendLine(name + ":");
+      writer.indent();
+
+      ramlType.writeExample(writer);
+
+      writer.outdent();
+    } else {
+
+      Optional<Example> e = source.getAnnotation(Example.class);
+      if (!e.isPresent()) {
+
+        return;
+      }
+
+      writer.appendLine(name + ": " + e.get().value());
     }
 
-    writer.appendLine(name + ":" + e.get().value());
+  }
 
+  public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+
+    return source.getAnnotation(annotationType);
   }
 }

@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.examples.resources;
 
+import org.raml.jaxrs.common.Example;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -25,5 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SubType {
 
   @XmlElement
+  @Example("11")
   private int anotherId;
 }

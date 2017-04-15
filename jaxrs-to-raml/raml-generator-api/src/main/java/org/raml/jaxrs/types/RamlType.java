@@ -87,7 +87,7 @@ public class RamlType implements Annotable {
 
     emitter.emitAnnotations(type);
 
-    emitExample(writer);
+    writeExample(writer);
 
     if (type.getDescription().isPresent()) {
       writer.appendLine("description: " + type.getDescription().get());
@@ -103,11 +103,16 @@ public class RamlType implements Annotable {
     writer.outdent();
   }
 
-  private void emitExample(IndentedAppendable writer) throws IOException {
+  public void writeExample(IndentedAppendable writer) throws IOException {
 
     /*
      * Optional<Example> e = type.getAnnotation(Example.class); if ( ! e.isPresent() ) { return; }
      */
+
+    if (!hasAnExample()) {
+
+      return;
+    }
 
     writer.appendLine("example:");
     writer.indent();
@@ -121,6 +126,17 @@ public class RamlType implements Annotable {
 
     writer.outdent();
     writer.outdent();
+  }
+
+  private boolean hasAnExample() {
+
+    for (RamlProperty ramlProperty : properties.values()) {
+      if (ramlProperty.getAnnotation(Example.class).isPresent()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public String getTypeName() {
@@ -151,5 +167,11 @@ public class RamlType implements Annotable {
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
     return type.getAnnotation(annotationType);
+  }
+
+  public boolean isRamlType() {
+
+    Optional<ScalarType> st = ScalarType.fromType(type.getType());
+    return st.isPresent();
   }
 }

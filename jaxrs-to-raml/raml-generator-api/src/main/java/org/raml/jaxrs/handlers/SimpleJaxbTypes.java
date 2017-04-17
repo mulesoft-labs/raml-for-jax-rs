@@ -27,11 +27,19 @@ import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 /**
@@ -65,7 +73,104 @@ public class SimpleJaxbTypes implements TypeHandler {
     public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
 
       Class c = (Class) type.getType();
+      XmlAccessorType accessorType = (XmlAccessorType) c.getAnnotation(XmlAccessorType.class);
+      XmlAccessType accessType = XmlAccessType.PUBLIC_MEMBER;
+
+      if (accessorType != null) {
+
+        accessType = accessorType.value();
+      }
+
+      switch (accessType) {
+        case NONE:
+          // only annotated
+          break;
+        case FIELD:
+          // only non transient fields
+          forFields(typeRegistry, type, ramlType, c, false);
+          forProperties(typeRegistry, type, ramlType, c, true, false);
+          break;
+        case PROPERTY:
+          // Only properties
+          forProperties(typeRegistry, type, ramlType, c, false, false);
+          forFields(typeRegistry, type, ramlType, c, true);
+          break;
+        case PUBLIC_MEMBER:
+          forProperties(typeRegistry, type, ramlType, c, false, true);
+          forFields(typeRegistry, type, ramlType, c, true);
+          break;
+      }
+
+    }
+
+    private void forProperties(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType, Class c, boolean explicitOnly,
+                               boolean publicOnly) {
+      for (Method method : c.getDeclaredMethods()) {
+
+        if (!(method.getName().startsWith("get") || method.getName().startsWith("is"))) {
+
+          continue;
+        }
+
+
+        if (publicOnly && !Modifier.isPublic(method.getModifiers())) {
+
+          continue;
+        }
+
+        if (Modifier.isStatic(method.getModifiers())) {
+
+          continue;
+        }
+
+        if (method.isAnnotationPresent(XmlTransient.class)) {
+
+          continue;
+        }
+
+        Type genericType = method.getGenericReturnType();
+        RamlType fieldRamlType;
+        fieldRamlType = PluginUtilities
+            .getRamlType(typeRegistry, this, method.getReturnType().getSimpleName(), type.createDependent(genericType));
+
+        if (explicitOnly && (!method.isAnnotationPresent(XmlAttribute.class) && (!method.isAnnotationPresent(XmlElement.class)))) {
+
+          continue;
+        }
+
+        XmlElement elem = method.getAnnotation(XmlElement.class);
+        if (elem != null) {
+
+          String name = elem.name().equals("##default") ? buildName(method) : elem.name();
+          ramlType.addProperty(RamlProperty.createProperty(new MethodAnnotable(method), name, fieldRamlType));
+        } else {
+
+          XmlAttribute attribute = method.getAnnotation(XmlAttribute.class);
+          if (attribute != null) {
+
+            String name = elem.name().equals("##default") ? buildName(method) : elem.name();
+            ramlType.addProperty(RamlProperty.createProperty(new MethodAnnotable(method), name, fieldRamlType));
+          } else {
+
+            ramlType
+                .addProperty(RamlProperty.createProperty(new MethodAnnotable(method), buildName(method), fieldRamlType));
+          }
+        }
+      }
+    }
+
+    private void forFields(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType, Class c, boolean explicitOnly) {
       for (Field field : c.getDeclaredFields()) {
+
+        if (field.isAnnotationPresent(XmlTransient.class) || Modifier.isTransient(field.getModifiers())) {
+
+          continue;
+        }
+
+        if (explicitOnly && (!field.isAnnotationPresent(XmlAttribute.class) && (!field.isAnnotationPresent(XmlElement.class)))) {
+
+          continue;
+        }
 
         Type genericType = field.getGenericType();
         RamlType fieldRamlType;
@@ -84,9 +189,25 @@ public class SimpleJaxbTypes implements TypeHandler {
 
             String name = elem.name().equals("##default") ? field.getName() : elem.name();
             ramlType.addProperty(RamlProperty.createProperty(new FieldAnnotable(field), name, fieldRamlType));
+          } else {
+
+            ramlType
+                .addProperty(RamlProperty.createProperty(new FieldAnnotable(field), field.getName(), fieldRamlType));
           }
         }
       }
+    }
+
+    private String buildName(Method method) {
+
+      if (method.getName().startsWith("is")) {
+        return Introspector.decapitalize(method.getName().substring(2));
+      } else {
+
+        return Introspector.decapitalize(method.getName().substring(3));
+      }
+
+
     }
 
     private static class FieldAnnotable implements Annotable {

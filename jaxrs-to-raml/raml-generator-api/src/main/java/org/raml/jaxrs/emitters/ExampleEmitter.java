@@ -48,7 +48,7 @@ public class ExampleEmitter implements LocalEmitter {
   public void emit(RamlType ramlType) throws IOException {
 
 
-    if ( seenTypeNames.contains(ramlType.getTypeName())) {
+    if (seenTypeNames.contains(ramlType.getTypeName())) {
 
       return;
     } else {

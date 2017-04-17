@@ -41,7 +41,6 @@ public interface HierarchyValue extends TopValue, AnotherTopValue {
   })
   String getName();
 
-  @Path("alllloooo")
   int getId();
 
   SubType getSubType();

@@ -15,11 +15,9 @@
  */
 package org.raml.jaxrs.handlers;
 
-import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
-import org.raml.api.Annotable;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
@@ -28,7 +26,6 @@ import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,17 +100,4 @@ public class BeanLikeTypes implements TypeHandler {
     return rt;
   }
 
-  private static class MethodAnnotable implements Annotable {
-
-    private final Method method;
-
-    public MethodAnnotable(Method method) {
-      this.method = method;
-    }
-
-    @Override
-    public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
-      return Optional.fromNullable(method.getAnnotation(annotationType));
-    }
-  }
 }

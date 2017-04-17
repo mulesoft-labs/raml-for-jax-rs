@@ -20,6 +20,8 @@ import org.raml.jaxrs.handlers.SimpleJaxbTypes;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @RamlGenerator(SimpleJaxbTypes.class)
 @Secure(security = String.class, level = 0)
 public class ConsumedValue {
@@ -36,16 +39,25 @@ public class ConsumedValue {
   @Example("foo")
   private String name;
 
-  @XmlElement
-  @Example("1")
-  @Secure(security = String.class, level = 1)
   private int id;
 
-  @XmlElement
   @Example("1")
   private SubType subType;
 
-  @XmlElement
   @Example("['1','2','3']")
   private List<String> names;
+
+  @Example("1")
+  @Secure(security = String.class, level = 1)
+  public int getId() {
+    return id;
+  }
+
+  public SubType getSubType() {
+    return subType;
+  }
+
+  public List<String> getNames() {
+    return names;
+  }
 }

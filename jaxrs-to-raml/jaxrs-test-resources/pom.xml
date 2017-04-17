@@ -24,7 +24,6 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-generator-api</artifactId>
-            <version>2.0.0-RC2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
@@ -38,10 +37,38 @@
             <groupId>org.raml</groupId>
             <artifactId>raml-parser-2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>jaxrs-to-raml-cli</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>org.raml.jaxrs.cli.Main</mainClass>
+                    <arguments>
+                        <argument>-a</argument>
+                        <argument>${project.build.outputDirectory}</argument>
+                        <argument>-o</argument>
+                        <argument>${project.artifactId}.raml</argument>
+                        <argument>-s</argument>
+                        <argument>${project.build.sourceDirectory}</argument>
+                        <argument>-t</argument>
+                        <argument>org.raml.jaxrs.examples.Secure</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.raml</groupId>
                 <artifactId>jaxrs-to-raml-maven-plugin</artifactId>
@@ -49,7 +76,7 @@
                     <dependency>
                         <groupId>org.raml</groupId>
                         <artifactId>jaxrs-test-resources</artifactId>
-                        <version>2.0.0-RC2-SNAPSHOT</version>
+                        <version>${project.version}</version>
                     </dependency>
                 </dependencies>
                 <executions>

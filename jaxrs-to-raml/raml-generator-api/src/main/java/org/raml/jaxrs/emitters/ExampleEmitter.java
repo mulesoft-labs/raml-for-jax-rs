@@ -25,6 +25,8 @@ import org.raml.jaxrs.types.RamlType;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Jean-Philippe Belanger on 4/16/17. Just potential zeroes and ones
@@ -36,6 +38,7 @@ public class ExampleEmitter implements LocalEmitter {
   private boolean headerDone = false;
 
   private String currentCaseName;
+  private Set<String> seenTypeNames = new HashSet<>();
 
   public ExampleEmitter(IndentedAppendable writer) {
     this.writer = writer;
@@ -44,6 +47,14 @@ public class ExampleEmitter implements LocalEmitter {
   @Override
   public void emit(RamlType ramlType) throws IOException {
 
+
+    if ( seenTypeNames.contains(ramlType.getTypeName())) {
+
+      return;
+    } else {
+
+      seenTypeNames.add(ramlType.getTypeName());
+    }
 
     if (!headerDone) {
 

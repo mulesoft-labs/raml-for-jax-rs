@@ -18,6 +18,8 @@ package org.raml.jaxrs.emitters;
 import com.google.common.base.Optional;
 import org.raml.api.RamlResourceMethod;
 import org.raml.jaxrs.common.Example;
+import org.raml.jaxrs.common.ExampleCases;
+import org.raml.jaxrs.common.Examples;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.utilities.IndentedAppendable;
@@ -33,6 +35,8 @@ public class ExampleEmitter implements LocalEmitter {
   private final IndentedAppendable writer;
   private boolean headerDone = false;
 
+  private String currentCaseName;
+
   public ExampleEmitter(IndentedAppendable writer) {
     this.writer = writer;
   }
@@ -40,31 +44,73 @@ public class ExampleEmitter implements LocalEmitter {
   @Override
   public void emit(RamlType ramlType) throws IOException {
 
-    if (!hasAnExample(ramlType)) {
 
-      return;
-    }
-
-    boolean currentHeaderDone = headerDone;
     if (!headerDone) {
-      writer.appendLine("example:");
-      writer.indent();
-      writer.appendLine("strict: false");
-      writer.appendLine("value:");
-      writer.indent();
-      headerDone = true;
+
+      Optional<ExampleCases> examplesAnnotation = ramlType.getAnnotation(ExampleCases.class);
+      if (examplesAnnotation.isPresent()) {
+
+        String[] examples = examplesAnnotation.get().value();
+        writer.appendLine("examples:");
+        for (String caseName : examples) {
+          if (caseName.isEmpty()) {
+            throw new IOException("@ExampleCases case on type " + ramlType.getTypeName() + " is empty");
+          }
+
+          currentCaseName = caseName;
+
+          writer.indent();
+          writer.appendLine(caseName + ":");
+          writer.indent();
+          writer.appendLine("strict: false");
+          writer.appendLine("value:");
+          writer.indent();
+
+          if (hasAnExample(ramlType)) {
+
+            emitOneExample(ramlType);
+          }
+
+          writer.outdent();
+          writer.outdent();
+          writer.outdent();
+        }
+      } else {
+
+        currentCaseName = "";
+
+        if (!hasAnExample(ramlType)) {
+
+          return;
+        }
+
+
+        boolean currentHeaderDone = headerDone;
+
+        writer.appendLine("example:");
+        writer.indent();
+        writer.appendLine("strict: false");
+        writer.appendLine("value:");
+        writer.indent();
+        headerDone = true;
+
+        emitOneExample(ramlType);
+        if (!currentHeaderDone) {
+          writer.outdent();
+          writer.outdent();
+        }
+      }
+    } else {
+
+      emitOneExample(ramlType);
     }
+  }
+
+  private void emitOneExample(RamlType ramlType) throws IOException {
 
     for (RamlProperty ramlProperty : ramlType.getProperties()) {
       ramlProperty.emit(this);
     }
-
-    if (!currentHeaderDone) {
-      writer.outdent();
-      writer.outdent();
-      headerDone = true;
-    }
-
   }
 
   @Override
@@ -82,21 +128,41 @@ public class ExampleEmitter implements LocalEmitter {
     } else {
 
       Optional<Example> e = ramlProperty.getAnnotation(Example.class);
-      if (!e.isPresent()) {
+      if (e.isPresent()) {
 
-        return;
+        if (e.get().useCase().equals(currentCaseName)) {
+          writer.appendLine(ramlProperty.getName() + ": " + e.get().value());
+          return;
+        }
       }
 
-      writer.appendLine(ramlProperty.getName() + ": " + e.get().value());
+      Optional<Examples> examplesAnnotation = ramlProperty.getAnnotation(Examples.class);
+      if (examplesAnnotation.isPresent()) {
+        for (Example example : examplesAnnotation.get().value()) {
+          if (example.useCase().equals(currentCaseName)) {
+            writer.appendLine(ramlProperty.getName() + ": " + example.value());
+            return;
+          }
+        }
+      }
     }
-
   }
 
   private boolean hasAnExample(RamlType type) {
 
     for (RamlProperty ramlProperty : type.getProperties()) {
-      if (ramlProperty.getAnnotation(Example.class).isPresent()) {
-        return true;
+      Optional<Example> annotation = ramlProperty.getAnnotation(Example.class);
+      if (annotation.isPresent()) {
+        return annotation.get().useCase().equals(currentCaseName);
+      }
+
+      Optional<Examples> examplesAnnotation = ramlProperty.getAnnotation(Examples.class);
+      if (examplesAnnotation.isPresent()) {
+        for (Example example : examplesAnnotation.get().value()) {
+          if (example.useCase().equals(currentCaseName)) {
+            return true;
+          }
+        }
       }
     }
 

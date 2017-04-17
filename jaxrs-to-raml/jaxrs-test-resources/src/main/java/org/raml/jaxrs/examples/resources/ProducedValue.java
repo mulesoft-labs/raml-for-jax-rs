@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.examples.resources;
 
+import org.raml.jaxrs.common.Example;
+import org.raml.jaxrs.common.ExampleCases;
 import org.raml.jaxrs.handlers.SimpleJaxbTypes;
 import org.raml.jaxrs.common.RamlGenerator;
 
@@ -27,9 +29,11 @@ import java.util.List;
  */
 @XmlRootElement
 @RamlGenerator(SimpleJaxbTypes.class)
+@ExampleCases({"one", "two"})
 public class ProducedValue {
 
   @XmlElement
+  @Example(useCase = "one", value = "hello")
   private String name;
 
   @XmlElement

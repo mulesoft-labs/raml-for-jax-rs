@@ -19,6 +19,7 @@ import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.common.Examples;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -37,4 +38,13 @@ public class ResourceWithRealTypes {
   public ProducedValue postWithQueryParameters(ConsumedValue consumed) {
     return null;
   }
+
+  @Path("json")
+  @GET
+  @Produces("application/json")
+  @Deprecated
+  public ProducedJsonValue getWithQueryParameters(ConsumedValue consumed) {
+    return null;
+  }
+
 }

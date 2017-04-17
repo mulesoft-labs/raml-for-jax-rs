@@ -19,8 +19,11 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
+import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.Annotable;
+import org.raml.jaxrs.types.RamlProperty;
+import org.raml.jaxrs.types.RamlType;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
@@ -33,7 +36,7 @@ import java.util.List;
 /**
  * Created by Jean-Philippe Belanger on 3/29/17. Just potential zeroes and ones
  */
-public class AnnotationInstanceEmitter {
+public class AnnotationInstanceEmitter implements LocalEmitter {
 
   private final IndentedAppendable writer;
   private final List<RamlSupportedAnnotation> suportedAnnotations;
@@ -43,8 +46,25 @@ public class AnnotationInstanceEmitter {
     this.suportedAnnotations = supportedAnnotation;
   }
 
-  public void emitAnnotations(Annotable annotable) throws IOException {
+  @Override
+  public void emit(RamlType ramlType) throws IOException {
 
+    annotate(ramlType);
+  }
+
+  @Override
+  public void emit(RamlProperty ramlProperty) throws IOException {
+
+    annotate(ramlProperty);
+  }
+
+  @Override
+  public void emit(RamlResourceMethod method) throws IOException {
+
+    annotate(method);
+  }
+
+  private void annotate(Annotable annotable) throws IOException {
     for (RamlSupportedAnnotation suportedAnnotation : suportedAnnotations) {
 
       Optional<Annotation> annotationOptional = suportedAnnotation.getAnnotationInstance(annotable);
@@ -90,6 +110,7 @@ public class AnnotationInstanceEmitter {
           throw new IOException("unable to write property", e);
         }
       }
+
     }
   }
 

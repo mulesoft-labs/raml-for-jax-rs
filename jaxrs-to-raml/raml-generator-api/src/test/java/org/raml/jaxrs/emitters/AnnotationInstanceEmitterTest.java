@@ -24,6 +24,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.raml.api.Annotable;
 import org.raml.api.RamlSupportedAnnotation;
+import org.raml.jaxrs.types.RamlType;
 import org.raml.utilities.IndentedAppendable;
 
 import java.lang.annotation.Annotation;
@@ -59,7 +60,7 @@ public class AnnotationInstanceEmitterTest {
     ramlAnnotationOfType(Simple.class, annotation);
 
     AnnotationInstanceEmitter emitter = new AnnotationInstanceEmitter(writer, Collections.singletonList(ramlAnnotation));
-    emitter.emitAnnotations(new SimpleAnnotable(annotation));
+    emitter.emit(wrap(annotation));
 
     verify(writer).appendLine("(Simple):");
     verify(writer).appendLine("one: hello");
@@ -74,7 +75,7 @@ public class AnnotationInstanceEmitterTest {
     ramlAnnotationOfType(Deprecated.class, annotation);
 
     AnnotationInstanceEmitter emitter = new AnnotationInstanceEmitter(writer, Collections.singletonList(ramlAnnotation));
-    emitter.emitAnnotations(wrap(annotation));
+    emitter.emit(wrap(annotation));
 
     verify(writer).appendLine("(Deprecated):");
   }
@@ -88,7 +89,7 @@ public class AnnotationInstanceEmitterTest {
     ramlAnnotationOfType(Classed.class, annotation);
 
     AnnotationInstanceEmitter emitter = new AnnotationInstanceEmitter(writer, Collections.singletonList(ramlAnnotation));
-    emitter.emitAnnotations(wrap(annotation));
+    emitter.emit(wrap(annotation));
 
     verify(writer).appendLine("(Classed):");
     verify(writer).appendLine("one: AnnotationInstanceEmitterTest");
@@ -103,7 +104,7 @@ public class AnnotationInstanceEmitterTest {
     ramlAnnotationOfType(Listed.class, annotation);
 
     AnnotationInstanceEmitter emitter = new AnnotationInstanceEmitter(writer, Collections.singletonList(ramlAnnotation));
-    emitter.emitAnnotations(wrap(annotation));
+    emitter.emit(wrap(annotation));
 
     verify(writer).appendLine("(Listed):");
     verify(writer).appendLine("one: [1, 2, 3]");
@@ -131,9 +132,9 @@ public class AnnotationInstanceEmitterTest {
     });
   }
 
-  public Annotable wrap(Annotation annotation) {
+  public RamlType wrap(Annotation annotation) {
 
-    return new SimpleAnnotable(annotation);
+    return new RamlType(null);
   }
 
   private static class SimpleAnnotable implements Annotable {

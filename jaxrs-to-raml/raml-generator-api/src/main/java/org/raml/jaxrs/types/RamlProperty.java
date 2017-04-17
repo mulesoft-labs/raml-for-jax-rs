@@ -19,6 +19,8 @@ import com.google.common.base.Optional;
 import org.raml.api.Annotable;
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
+import org.raml.jaxrs.emitters.Emittable;
+import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
@@ -27,7 +29,7 @@ import java.lang.annotation.Annotation;
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-public class RamlProperty {
+public class RamlProperty implements Emittable, Annotable {
 
   private final RamlType ramlType;
   private final String name;
@@ -53,14 +55,14 @@ public class RamlProperty {
     writer.indent();
     writer.appendLine("type", ramlType.getTypeName());
 
-    emitter.emitAnnotations(source);
+    emitter.emit(this);
 
     writer.outdent();
   }
 
   public void writeExample(IndentedAppendable writer) throws IOException {
 
-    if (!ramlType.isRamlType()) {
+    if (!ramlType.isRamlScalarType()) {
 
       writer.appendLine(name + ":");
       writer.indent();
@@ -84,5 +86,14 @@ public class RamlProperty {
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
 
     return source.getAnnotation(annotationType);
+  }
+
+  public void emit(LocalEmitter emitter) throws IOException {
+
+    emitter.emit(this);
+  }
+
+  public RamlType getRamlType() {
+    return ramlType;
   }
 }

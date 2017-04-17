@@ -16,20 +16,21 @@
 package org.raml.jaxrs.types;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 import org.raml.api.Annotable;
 import org.raml.api.RamlData;
-import org.raml.api.RamlEntity;
-import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
+import org.raml.jaxrs.emitters.Emittable;
+import org.raml.jaxrs.emitters.ExampleEmitter;
+import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ import java.util.Map;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 
-public class RamlType implements Annotable {
+public class RamlType implements Annotable, Emittable {
 
   private final RamlData type;
 
@@ -85,7 +86,7 @@ public class RamlType implements Annotable {
       }).toArray(new String[] {}));
     }
 
-    emitter.emitAnnotations(type);
+    emitter.emit(this);
 
     writeExample(writer);
 
@@ -105,39 +106,9 @@ public class RamlType implements Annotable {
 
   public void writeExample(IndentedAppendable writer) throws IOException {
 
-    /*
-     * Optional<Example> e = type.getAnnotation(Example.class); if ( ! e.isPresent() ) { return; }
-     */
-
-    if (!hasAnExample()) {
-
-      return;
-    }
-
-    writer.appendLine("example:");
-    writer.indent();
-    writer.appendLine("strict: false");
-    writer.appendLine("value:");
-    writer.indent();
-    for (RamlProperty ramlProperty : properties.values()) {
-
-      ramlProperty.writeExample(writer);
-    }
-
-    writer.outdent();
-    writer.outdent();
+    this.emit(new ExampleEmitter(writer));
   }
 
-  private boolean hasAnExample() {
-
-    for (RamlProperty ramlProperty : properties.values()) {
-      if (ramlProperty.getAnnotation(Example.class).isPresent()) {
-        return true;
-      }
-    }
-
-    return false;
-  }
 
   public String getTypeName() {
 
@@ -169,9 +140,18 @@ public class RamlType implements Annotable {
     return type.getAnnotation(annotationType);
   }
 
-  public boolean isRamlType() {
+  public boolean isRamlScalarType() {
 
     Optional<ScalarType> st = ScalarType.fromType(type.getType());
     return st.isPresent();
+  }
+
+  public void emit(LocalEmitter emitter) throws IOException {
+
+    emitter.emit(this);
+  }
+
+  public Collection<RamlProperty> getProperties() {
+    return properties.values();
   }
 }

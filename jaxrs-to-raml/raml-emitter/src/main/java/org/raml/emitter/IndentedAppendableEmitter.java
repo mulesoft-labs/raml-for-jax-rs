@@ -136,7 +136,7 @@ public class IndentedAppendableEmitter implements Emitter {
   private void writeMethod(RamlResourceMethod method) throws IOException {
     writer.appendLine(format("%s:", method.getHttpMethod()));
     writer.indent();
-    annotationInstanceEmitter.emitAnnotations(method);
+    annotationInstanceEmitter.emit(method);
 
     Optional<String> description = method.getDescription();
     if (description.isPresent() && !description.get().isEmpty()) {

@@ -13,17 +13,10 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.delete;
+package org.raml.jaxrs.examples.path;
 
-import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 
-/**
- *
- */
-@Path("/delete")
-public class ClassWithADelete {
-
-  @DELETE
-  public void delete() {}
+@Path("/path")
+public class DuplicatedRootLevelPath {
 }

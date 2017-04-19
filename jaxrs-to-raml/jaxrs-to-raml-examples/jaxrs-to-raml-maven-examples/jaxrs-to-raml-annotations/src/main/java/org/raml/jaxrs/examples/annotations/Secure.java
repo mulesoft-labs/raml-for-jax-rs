@@ -13,17 +13,18 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.delete;
+package org.raml.jaxrs.examples.annotations;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Path;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- *
+ * Created by Jean-Philippe Belanger on 4/1/17. Just potential zeroes and ones
  */
-@Path("/delete")
-public class ClassWithADelete {
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Secure {
 
-  @DELETE
-  public void delete() {}
+  Class<?> security();
+
+  int level();
 }

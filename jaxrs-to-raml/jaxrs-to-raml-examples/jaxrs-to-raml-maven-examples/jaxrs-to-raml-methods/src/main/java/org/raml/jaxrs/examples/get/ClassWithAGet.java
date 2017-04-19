@@ -13,17 +13,19 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.delete;
+package org.raml.jaxrs.examples.get;
 
-import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 /**
  *
  */
-@Path("/delete")
-public class ClassWithADelete {
+@Path("/get")
+public class ClassWithAGet {
 
-  @DELETE
-  public void delete() {}
+  @GET
+  public String hello() {
+    return "hello";
+  }
 }

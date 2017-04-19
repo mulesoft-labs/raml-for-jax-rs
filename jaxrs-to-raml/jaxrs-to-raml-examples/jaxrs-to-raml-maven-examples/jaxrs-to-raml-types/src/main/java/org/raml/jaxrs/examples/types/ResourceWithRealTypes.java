@@ -13,17 +13,32 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.delete;
+package org.raml.jaxrs.examples.types;
 
-import javax.ws.rs.DELETE;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
-/**
- *
- */
-@Path("/delete")
-public class ClassWithADelete {
+@Path("/realtypes")
+public class ResourceWithRealTypes {
 
-  @DELETE
-  public void delete() {}
+  @Path("xml")
+  @POST
+  @Consumes("application/xml")
+  @Produces("application/xml")
+  @Deprecated
+  public ProducedValue postWithQueryParameters(ConsumedValue consumed) {
+    return null;
+  }
+
+  @Path("json")
+  @GET
+  @Produces("application/json")
+  @Deprecated
+  public ProducedJsonValue getWithQueryParameters(ConsumedValue consumed) {
+    return null;
+  }
+
 }

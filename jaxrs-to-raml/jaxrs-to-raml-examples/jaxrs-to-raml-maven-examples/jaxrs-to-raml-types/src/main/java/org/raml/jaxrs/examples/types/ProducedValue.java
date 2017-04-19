@@ -13,17 +13,29 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.delete;
+package org.raml.jaxrs.examples.types;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Path;
+import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.handlers.SimpleJaxbTypes;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
- *
+ * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
-@Path("/delete")
-public class ClassWithADelete {
+@XmlRootElement
+@RamlGenerator(SimpleJaxbTypes.class)
+public class ProducedValue {
 
-  @DELETE
-  public void delete() {}
+  @XmlElement
+  private String name;
+
+  @XmlElement
+  private int id;
+
+  @XmlElement
+  private List<SubType> subtypes;
+
 }

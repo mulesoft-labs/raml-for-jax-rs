@@ -13,17 +13,23 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.examples.delete;
+package org.raml.jaxrs.examples.annotations;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Path;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.handlers.SimpleJacksonTypes;
 
 /**
- *
+ * Created by Jean-Philippe Belanger on 4/17/17. Just potential zeroes and ones
  */
-@Path("/delete")
-public class ClassWithADelete {
+@RamlGenerator(SimpleJacksonTypes.class)
+public class ProducedJsonValue {
 
-  @DELETE
-  public void delete() {}
+  @JsonProperty
+  int id;
+
+  @JsonProperty
+  public String getName() {
+    return null;
+  }
 }

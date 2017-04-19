@@ -15,15 +15,8 @@
  */
 package org.raml.jaxrs.examples.delete;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.Path;
-
 /**
  *
  */
-@Path("/delete")
-public class ClassWithADelete {
-
-  @DELETE
-  public void delete() {}
+public class ClassWithNone {
 }

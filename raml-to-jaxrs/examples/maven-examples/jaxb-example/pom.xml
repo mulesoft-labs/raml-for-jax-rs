@@ -39,9 +39,9 @@
                     <modelPackage>example.model</modelPackage>
                     <resourcePackage>example.resources</resourcePackage>
                     <supportPackage>example.support</supportPackage>
-                    <configureTypesFor>
+                    <generateTypesWith>
                         <value>jaxb</value>
-                    </configureTypesFor>
+                    </generateTypesWith>
                 </configuration>
             </plugin>
             <plugin>

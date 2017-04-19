@@ -47,9 +47,9 @@
                     <modelPackage>example.model</modelPackage>
                     <resourcePackage>example.types</resourcePackage>
                     <supportPackage>example.support</supportPackage>
-                    <configureTypesFor>
+                    <generateTypesWith>
                         <value>jackson</value>
-                    </configureTypesFor>
+                    </generateTypesWith>
                 </configuration>
             </plugin>
             <plugin>

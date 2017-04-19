@@ -93,8 +93,8 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   /**
    * Annotate raml 1.0 types with either jackson, jaxb or gson
    */
-  @Parameter(property = "configureTypesFor")
-  private String[] configureTypesFor;
+  @Parameter(property = "generateTypesWith")
+  private String[] generateTypesWith;
 
   /**
    * The JSON object mapper to generate annotations to: either "jackson1", "jackson2" or "gson" or "none"
@@ -162,7 +162,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
       configuration.setOutputDirectory(outputDirectory);
       configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
       configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
-      configuration.setTypeConfiguration(configureTypesFor);
+      configuration.setTypeConfiguration(generateTypesWith);
       if (resourceCreationExtension != null) {
 
         Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);

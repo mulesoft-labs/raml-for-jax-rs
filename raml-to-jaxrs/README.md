@@ -42,3 +42,13 @@ $ mvn clean install
 $ java -jar ./target/raml-to-jaxrs-cli-<version>-jar-with-dependencies.jar -d /tmp -r foo.bar ../examples/maven-examples/raml-defined-example/src/main/resources/types_user_defined.raml
 ```
 This will generate the source of a `foo.bar` package inside the folder `/tmp` using the RAML file included in the `raml-defined-example` example.
+The command line has the following options.  They correspond to the maven plugin options:
+```
+usage: ramltojaxrs -d <arg> [-g <arg>] [-m <arg>] [-r <arg>] [-s <arg>]
+ -d,--directory <arg>             generation directory
+ -g,--generate-types-with <arg>   generate types with plugins (jackson,
+                                  gson, jaxb, javadoc, jsr303)
+ -m,--model-package <arg>         model package
+ -r,--resource-package <arg>      resource package
+ -s,--support-package <arg>       support package
+```

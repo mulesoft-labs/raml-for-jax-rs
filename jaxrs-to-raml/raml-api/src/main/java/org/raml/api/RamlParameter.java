@@ -13,14 +13,17 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.model;
+package org.raml.api;
 
 import com.google.common.base.Optional;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.List;
 
-public interface JaxRsHeaderParameter {
+/**
+ * Created by barnabef on 4/12/17.
+ */
+public interface RamlParameter extends Annotable {
 
   String getName();
 
@@ -28,5 +31,4 @@ public interface JaxRsHeaderParameter {
 
   Type getType();
 
-  <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
 }

@@ -19,11 +19,6 @@ import com.google.common.base.Optional;
 
 import java.lang.reflect.Type;
 
-public interface RamlHeaderParameter {
+public interface RamlHeaderParameter extends RamlParameter {
 
-  String getName();
-
-  Optional<String> getDefaultValue();
-
-  Type getType();
 }

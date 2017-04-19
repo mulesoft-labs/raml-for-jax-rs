@@ -18,21 +18,13 @@ package org.raml.emitter;
 import com.google.common.base.Optional;
 
 import com.google.common.collect.Ordering;
-import org.raml.api.RamlFormParameter;
-import org.raml.api.RamlHeaderParameter;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlApi;
-import org.raml.api.RamlMultiFormDataParameter;
-import org.raml.api.RamlQueryParameter;
-import org.raml.api.RamlResource;
-import org.raml.api.RamlResourceMethod;
-import org.raml.api.RamlSupportedAnnotation;
-import org.raml.api.RamlTypes;
+import org.raml.api.*;
 import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.emitters.AnnotationTypeEmitter;
+import org.raml.jaxrs.emitters.ParameterEmitter;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
@@ -60,6 +52,7 @@ public class IndentedAppendableEmitter implements Emitter {
   private final IndentedAppendable writer;
   private AnnotationTypeEmitter annotationTypeEmitter;
   private AnnotationInstanceEmitter annotationInstanceEmitter;
+  private ParameterEmitter parameterEmitter;
 
   private IndentedAppendableEmitter(IndentedAppendable writer) {
     this.writer = writer;
@@ -76,6 +69,7 @@ public class IndentedAppendableEmitter implements Emitter {
     try {
       this.annotationTypeEmitter = new AnnotationTypeEmitter(writer, api.getSupportedAnnotation());
       this.annotationInstanceEmitter = new AnnotationInstanceEmitter(writer, api.getSupportedAnnotation());
+      this.parameterEmitter = new ParameterEmitter(writer);
       writeApi(api);
     } catch (IOException e) {
       throw new RamlEmissionException(format("unable to emit api: %s", api.getBaseUri()), e);
@@ -239,7 +233,7 @@ public class IndentedAppendableEmitter implements Emitter {
     List<RamlFormParameter> formData = method.getFormParameters();
     for (RamlFormParameter formDatum : formData) {
 
-      writer.appendLine(formDatum.getName() + ": " + RamlTypes.fromType(formDatum.getType())
+      writer.appendLine(formDatum.getName(), RamlTypes.fromType(formDatum.getType())
           .getRamlSyntax());
     }
     writer.outdent();
@@ -288,7 +282,8 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.indent();
 
     for (RamlHeaderParameter parameter : headerParameters) {
-      writeParameter(parameter.getName(), parameter.getDefaultValue(), parameter.getType());
+      parameterEmitter.emit(parameter);
+
     }
 
     writer.outdent();
@@ -299,21 +294,9 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.appendLine("queryParameters:");
     writer.indent();
     for (RamlQueryParameter parameter : queryParameters) {
-      writeParameter(parameter.getName(), parameter.getDefaultValue(), parameter.getType());
+      parameterEmitter.emit(parameter);
+
     }
-    writer.outdent();
-  }
-
-  private void writeParameter(String name, Optional<String> defaultValue, Type type) throws IOException {
-    writer.appendLine(String.format("%s:", name));
-    writer.indent();
-    writer.appendLine("type", RamlTypes.fromType(type).getRamlSyntax());
-
-    if (defaultValue.isPresent()) {
-      writer.appendEscapedLine("default", defaultValue.get());
-      writer.appendLine("required", "false");
-    }
-
     writer.outdent();
   }
 

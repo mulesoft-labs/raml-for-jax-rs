@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.api.RamlQueryParameter;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -52,6 +53,12 @@ class JaxRsRamlQueryParameter implements RamlQueryParameter {
   public Type getType() {
     return this.queryParameter.getType();
   }
+
+  @Override
+  public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+    return queryParameter.getAnnotation(annotationType);
+  }
+
 
   @Override
   public String toString() {

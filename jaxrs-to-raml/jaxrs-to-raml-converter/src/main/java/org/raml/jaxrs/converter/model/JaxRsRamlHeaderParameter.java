@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -51,5 +52,10 @@ class JaxRsRamlHeaderParameter implements RamlHeaderParameter {
   @Override
   public Type getType() {
     return parameter.getType();
+  }
+
+  @Override
+  public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+    return parameter.getAnnotation(annotationType);
   }
 }

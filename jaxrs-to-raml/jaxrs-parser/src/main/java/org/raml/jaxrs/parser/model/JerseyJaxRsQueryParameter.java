@@ -20,6 +20,7 @@ import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -54,5 +55,11 @@ class JerseyJaxRsQueryParameter implements JaxRsQueryParameter {
   @Override
   public Type getType() {
     return this.parameter.getType();
+  }
+
+  @Override
+  public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+
+    return (Optional<T>) Optional.fromNullable((parameter).getAnnotation(annotationType));
   }
 }

@@ -15,6 +15,10 @@
  */
 package org.raml.jaxrs.examples.resources;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
@@ -31,9 +35,10 @@ public class ResourceWithQueryParameters {
   @Consumes("application/json")
   @Produces("application/morejson")
   public String postWithQueryParameters(
+                                        @NotNull @QueryParam("version") String version,
                                         @DefaultValue("military") @QueryParam("typeOfStep") String typeOfStep,
-                                        @DefaultValue("jack") @QueryParam("captainName") String theName,
-                                        @QueryParam("ageOfCaptain") int captainAge, String foo) {
+                                        @DefaultValue("jack") @Size(min = 8, max = 32) @QueryParam("captainName") String theName,
+                                        @QueryParam("ageOfCaptain") @Min(25) @Max(100) int captainAge, String foo) {
     return null;
   }
 }

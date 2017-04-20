@@ -41,7 +41,7 @@ public class Main {
   public static void main(String[] args) throws Exception {
 
     Options options = new Options();
-    options.addOption(Option.builder("a").required().longOpt("applicationDirectory").hasArg().desc("application name").build());
+    options.addOption(Option.builder("a").required().longOpt("applicationDirectory").hasArg().desc("application path").build());
     options.addOption(Option.builder("o").required().longOpt("output").hasArg().desc("RAML output file").build());
     options.addOption("s", "sourceRoot", true, "JaxRs source root");
     options.addOption("t", "translatedAnnotations", true, "translated annotation list (comma separated");

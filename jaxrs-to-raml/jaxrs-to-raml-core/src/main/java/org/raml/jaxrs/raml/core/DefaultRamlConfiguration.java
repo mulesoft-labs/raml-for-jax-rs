@@ -44,7 +44,7 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
   public static DefaultRamlConfiguration forApplication(String application, Set<Class<? extends Annotation>> translatedClasses) {
     checkNotNull(application);
     checkArgument(!application.trim().isEmpty(),
-                  "application name should contain at least one meaningful character");
+                  "application path should contain at least one meaningful character");
 
     return new DefaultRamlConfiguration(application.trim(), translatedClasses);
   }

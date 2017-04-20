@@ -9,6 +9,9 @@ Here's an example configuration:
     <modelPackage>example.model</modelPackage>
     <resourcePackage>example.types</resourcePackage>
     <supportPackage>example.support</supportPackage>
+    <generateTypesWith>
+        <value>jackson</value>
+    </generateTypesWith>
 </configuration>
 ```
 
@@ -21,6 +24,8 @@ should they be undefined.  It determines the Java package in which the classes w
 The `modelPackage` configuration parameter determines the package in which Java package the types
 will be generated.
 
-The `supportPackage` configuration parameter determines the package in which Java package the support classes
-(serializers, responses and such)
-will be generated.
+The `supportPackage` configuration parameter determines the package in which Java package
+the support classes (serializers, responses and such) will be generated.
+
+The `generateTypesWith` configuration parameter determines which annotation plugin(s) to use
+to generate types. Available options are: jackson, gson, jaxb, javadoc, jsr303

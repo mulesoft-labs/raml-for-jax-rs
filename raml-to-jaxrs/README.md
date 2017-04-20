@@ -35,14 +35,6 @@ The configuration of these projects is documented [here](examples/maven-examples
 ### Using the CLI
 The project [raml-to-jaxrs-cli](raml-to-jaxrs-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.
 
-E.g.
-```
-$ cd raml-to-jaxrs/raml-to-jaxrs-cli/
-$ mvn clean install
-$ java -jar ./target/raml-to-jaxrs-cli-<version>-jar-with-dependencies.jar -d /tmp -r foo.bar ../examples/maven-examples/raml-defined-example/src/main/resources/types_user_defined.raml
-```
-This will generate the source of a `foo.bar` package inside the folder `/tmp` using the RAML file included in the `raml-defined-example` example.
-The command line has the following options.  They correspond to the maven plugin options:
 ```
 usage: ramltojaxrs -d <arg> [-g <arg>] [-m <arg>] [-r <arg>] [-s <arg>]
  -d,--directory <arg>             generation directory
@@ -52,3 +44,11 @@ usage: ramltojaxrs -d <arg> [-g <arg>] [-m <arg>] [-r <arg>] [-s <arg>]
  -r,--resource-package <arg>      resource package
  -s,--support-package <arg>       support package
 ```
+
+E.g.
+```
+$ cd raml-to-jaxrs/raml-to-jaxrs-cli/
+$ mvn clean install
+$ java -jar ./target/raml-to-jaxrs-cli-<version>-jar-with-dependencies.jar -d /tmp -r foo.bar ../examples/maven-examples/raml-defined-example/src/main/resources/types_user_defined.raml
+```
+This will generate the source of a `foo.bar` package inside the folder `/tmp` using the RAML file included in the `raml-defined-example` example.

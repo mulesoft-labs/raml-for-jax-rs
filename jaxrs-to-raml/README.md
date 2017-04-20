@@ -12,24 +12,20 @@ and extract compiled JAX-RS relevant classes.
 - @Consumes and @Produces media types
 - @QueryParam annotated parameters
 - @PathParam annotated parameters
+- @FormDataParam for multipart files
 - @HeaderParam annotated parameters
 - Javadoc description of methods (when the sources have been provided)
 - Default values for parameters
 
-NOTE: Not all sorts of types are supported. The current implementation only
-supports Java primitive types.
-
 ### Using the Maven plugin
-The [jaxrs-test-resources](jaxrs-test-resources/) contains an example usage of how to
-setup the plugin.
+The [`jaxrs-test-resources` package](jaxrs-test-resources/) contains an example usage of how to
+setup the plugin, its [pom file](jaxrs-test-resources/pom.xml) shows what the default values are.
+There are also several examples [here](jaxrs-to-raml-examples/jaxrs-to-raml-maven-examples/).
 
-This plugin should be run minimally after the compile goal, since it needs the compiled classes of
+This plugin should be run after the `compile` goal, since it needs the compiled classes of
 the project for RAML generation.
 
-The example provided above shows all the possible configurations. None of them are mandatory however.
-The [jaxrs-test-resources](jaxrs-test-resources/pom.xml) pom file shows what the default values are.
-
-For convenience, we list the configuration options here:
+Here are the configuration options:
 - `input` - The input is the directory where to fetch the target classes.
   it defaults to `${project.build.outputDirectory}`
 - `outputDirectory` - The output directory is where the generated RAML file will
@@ -41,14 +37,22 @@ For convenience, we list the configuration options here:
   defaults to `${project.build.directory}`
 
 ### Using the CLI
-The project [jaxrs-to-raml-cli](jaxrs-to-raml-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.
+The project [`jaxrs-to-raml-cli`](jaxrs-to-raml-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.
+
+```
+usage: jaxrstoraml -a <arg> -o <arg> [-s <arg>] [-t <arg>]
+ -a,--applicationDirectory <arg>    application path
+ -o,--output <arg>                  RAML output file
+ -s,--sourceRoot <arg>              JaxRs source root
+ -t,--translatedAnnotations <arg>   translated annotation list (comma
+                                    separated
+```
 
 E.g.
 ```
 $ cd jaxrs-to-raml/jaxrs-to-raml-cli/
 $ mvn clean install
-$ java -jar ./target/jaxrs-to-raml-cli-2.0.0-RC2-SNAPSHOT-jar-with-dependencies.jar ../jaxrs-test-resources/target/classes ./test.raml
+$ java -jar ./target/jaxrs-to-raml-cli-<version>-jar-with-dependencies.jar -a ../jaxrs-test-resources/target/classes -o /tmp/test.raml
 ```
-
-The first argument is the directory where to find the compiled classes and
-the second one is the path to the generated RAML file.
+This will generate the RAML file `/tmp/test.raml` from the compiled classes located at
+`../jaxrs-test-resources/target/classes`.

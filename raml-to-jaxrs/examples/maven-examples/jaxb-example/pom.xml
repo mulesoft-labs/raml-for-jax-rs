@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.raml</groupId>
         <artifactId>maven-examples</artifactId>
-        <version>2.0.0</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>jaxb-example</artifactId>
@@ -32,7 +32,7 @@
             <plugin>
                 <groupId>org.raml</groupId>
                 <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
-                <version>2.0.0</version>
+                <version>2.0.1-SNAPSHOT</version>
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/xml-model.raml</ramlFile>
                     <resourcePackage>example.resources</resourcePackage>

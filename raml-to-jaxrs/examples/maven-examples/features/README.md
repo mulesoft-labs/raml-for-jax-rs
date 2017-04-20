@@ -8,7 +8,7 @@ java jar project. The only required dependency is this:
     <dependency>
         <groupId>org.raml</groupId>
         <artifactId>jaxrs-code-generator</artifactId>
-        <version>2.0.0-RC2-SNAPSHOT</version>
+        <version>2.x.y</version>
     </dependency>
 </dependencies>
 ```
@@ -22,12 +22,12 @@ the plugin with a dependency to our plugin code.
         <plugin>
             <groupId>org.raml</groupId>
             <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
-            <version>2.0.0-RC2-SNAPSHOT</version>
+            <version>2.x.y</version>
             <dependencies>
                 <dependency>
                     <groupId>org.raml</groupId>
                     <artifactId>feature-plugins</artifactId>
-                    <version>2.0.0-RC2-SNAPSHOT</version>
+                    <version>2.x.y</version>
                 </dependency>
             </dependencies>
             <configuration>

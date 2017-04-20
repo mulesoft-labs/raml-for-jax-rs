@@ -1,0 +1,42 @@
+#%RAML 1.0
+title: Hello World API
+version: v1
+baseUri: https://api.github.com
+annotationTypes:
+    ramltojaxrstypes:
+        allowedTargets: TypeDeclaration
+        properties:
+            className?:
+                type: string
+            usePrimitiveType?:
+                type: boolean
+            abstract?:
+                type: boolean
+types:
+    Person:
+        type: Human
+        properties:
+            name:
+                required: true
+                type: string
+                minLength: 4
+                maxLength: 8
+            weight:
+                required: true
+                type: number
+                format: int16
+                (ramltojaxrstypes):
+                    usePrimitiveType: true
+                minimum: 12
+                maximum: 17
+            limbs:
+                type: string[]
+                minItems: 3
+                maxItems: 9
+                required: true
+
+    Human:
+        type: object
+        properties:
+            male:
+                type: boolean

@@ -1,0 +1,40 @@
+#%RAML 1.0
+title: GitHub API
+version: v3
+baseUri: https://api.github.com
+#mediaType:
+#    - application/json
+#    - application/xml
+types:
+   funk:
+     type: object
+     properties:
+        foo: string
+        faa: number
+/more:
+    description: The search resource
+    get:
+        body:
+            application/json:
+                type: funk
+                properties:
+                   oneMore: string
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: funk
+                        properties:
+                           anotherOne: string
+
+    post:
+        body:
+            application/json:
+                type: string
+            application/xml:
+                type: integer
+        responses:
+            201:
+                body:
+                    application/json:
+                        type: string

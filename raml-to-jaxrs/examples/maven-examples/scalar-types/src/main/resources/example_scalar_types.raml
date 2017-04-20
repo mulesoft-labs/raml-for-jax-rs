@@ -1,0 +1,39 @@
+#%RAML 1.0
+title: Hello World API
+version: v1
+baseUri: https://api.github.com
+mediaType: application/json
+/search:
+    description: The search resource
+    get:
+        queryParameters:
+            hello_dude:
+                type: string
+            fink:
+                type: integer
+        body:
+            text/plain:
+                type: string
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: string
+    /{id}:
+        uriParameters:
+            id:
+                type: string
+        get:
+            queryParameters:
+                hello_dude:
+                    type: string
+                fink:
+                    type: integer
+            body:
+                text/plain:
+                    type: string
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: string

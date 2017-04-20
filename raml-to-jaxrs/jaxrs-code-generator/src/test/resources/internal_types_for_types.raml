@@ -1,0 +1,18 @@
+#%RAML 1.0
+title: Hello World API
+version: v1
+baseUri: https://api.github.com
+types:
+    Fun:
+        type: object
+        properties:
+            pleasure: string
+    Human:
+        type: object
+        properties:
+            name: Fun
+            job:
+                type: [Fun,object]
+                properties:
+                    name: string
+                    hours: integer

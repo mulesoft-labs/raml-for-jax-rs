@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.raml</groupId>
+		<artifactId>raml-to-jaxrs</artifactId>
+		<version>2.0.0</version>
+	</parent>
+
+	<artifactId>raml-to-jaxrs-maven-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<name>RAML JAX-RS Maven Plug-in</name>
+
+	<properties>
+		<org.apache.maven.plugin-tools.version>3.2</org.apache.maven.plugin-tools.version>
+		<licensePath>../LICENSE_HEADER.txt</licensePath>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.raml</groupId>
+			<artifactId>jaxrs-code-generator</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-tools-api</artifactId>
+			<version>${org.apache.maven.plugin-tools.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-tools-annotations</artifactId>
+			<version>${org.apache.maven.plugin-tools.version}</version>
+		</dependency>
+		<!--  Test dependencies -->
+		<dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>		
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>${org.apache.maven.plugin-tools.version}</version>
+				<configuration>
+					<goalPrefix>raml</goalPrefix>
+					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+				</configuration>
+				<executions>
+					<execution>
+						<id>mojo-descriptor</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>descriptor</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<description>RAML JAXRS</description>
+    <scm>
+		<url>https://github.com/mulesoft/raml-for-jax-rs.git</url>
+		<connection>https://github.com/mulesoft/raml-for-jax-rs.git</connection>
+		<developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
+	</scm>
+	<organization>
+		<name>Mulesoft</name>
+		<url>http://mulesoft.com</url>
+	</organization>
+	<url>https://github.com/mulesoft/raml-for-jax-rs</url>
+
+</project>

@@ -1,0 +1,100 @@
+#%RAML 1.0
+title: GitHub API
+version: v3
+baseUri: https://api.github.com
+#mediaType:
+#    - application/json
+#    - application/xml
+traits:
+types:
+   funk:
+     type: object
+     properties:
+        foo: string
+        faa: number
+   jazz:
+     type: object
+     properties:
+        foo: string
+        faa: number
+
+resourceTypes:
+ basicType:
+  get:
+  put:
+  post:
+/search:
+    description: The search resource
+    type: basicType
+    get:
+        queryParameters:
+            hello_dude:
+                type: datetime
+            fink:
+                type: integer
+        body:
+            application/json:
+                type: string
+            application/xml:
+                type: string
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: string
+                    application/xml:
+                        type: integer
+    post:
+        body:
+            application/json:
+                type: string
+            application/xml:
+                type: integer
+        responses:
+            201:
+                body:
+                    application/json:
+                        type: string
+    delete:
+        body:
+            application/json:
+                type: string
+        responses:
+            200:
+    put:
+        body:
+            application/json:
+                type: string
+
+    /code:
+        get:
+            queryParameters:
+                hello_man: integer
+                fink: number
+            responses:
+                200:
+            body:
+                application/json:
+    /code/{blah}:
+        uriParameters:
+            blah:
+                type: string
+        get:
+            queryParameters:
+                hello_man: integer
+                fink: number
+            responses:
+                200:
+            body:
+                application/json:
+        delete:
+
+        /bytes:
+            get:
+                queryParameters:
+                    hello_man: integer
+                    fink: number
+                responses:
+                    200:
+                body:
+                    application/json:

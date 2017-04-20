@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.raml</groupId>
+        <artifactId>jaxrs-to-raml-maven-examples</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>jaxrs-to-raml-raml-examples</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>2.24</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-generator-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-emitter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-parser-2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>jaxrs-to-raml-cli</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.raml</groupId>
+                <artifactId>jaxrs-to-raml-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.raml</groupId>
+                        <artifactId>jaxrs-to-raml-methods</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jaxrstoraml</goal>
+                        </goals>
+                        <configuration>
+                            <input>${project.build.outputDirectory}</input>
+                            <outputFileName>${project.artifactId}.raml</outputFileName>
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    
+</project>

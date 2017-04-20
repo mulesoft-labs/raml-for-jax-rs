@@ -1,0 +1,16 @@
+#%RAML 1.0
+title: who cares
+types:
+    ObjectBase:
+        type: object
+        properties:
+            time: string
+/fun:
+    put:
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: ObjectBase
+                        properties:
+                            another: string

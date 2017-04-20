@@ -1,0 +1,33 @@
+#%RAML 1.0 Library
+annotationTypes:
+    types:
+        allowedTargets: [TypeDeclaration,API]
+        properties:
+            className?:
+                type: string
+            implementationClassName?:
+                type: string
+            usePrimitiveType?:
+                type: boolean
+            abstract?:
+                type: boolean
+            onTypeCreation?: string[]
+            onTypeFinish?: string[]
+
+    resources:
+        allowedTargets: [Resource, API]
+        properties:
+            onResourceClassCreation?: string[]
+            onResourceClassFinish?: string[]
+    methods:
+        allowedTargets: [Method, API]
+        properties:
+            onResourceMethodCreation?: string[]
+            onResourceMethodFinish?: string[]
+            onResponseClassCreation?: string[]
+            onResponseClassFinish?: string[]
+    responses:
+        allowedTargets: [Response, API]
+        properties:
+            onResponseMethodCreation?: string[]
+            onResponseMethodFinish?: string[]

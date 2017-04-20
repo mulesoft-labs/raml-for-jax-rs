@@ -1,0 +1,44 @@
+#%RAML 1.0
+title: Nothing
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+
+(ramltojaxrs.resources):
+    onResourceClassCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension]
+
+types:
+    Fun:
+        type: object
+        (ramltojaxrs.types):
+            className: Allo
+            usePrimitiveType: true
+    Fun2:
+        type: object
+        (ramltojaxrs.types):
+            className: Allo
+/humanity:
+    (ramltojaxrs.resources):
+        onResourceClassCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension]
+    get:
+        (ramltojaxrs.methods):
+            onResourceMethodCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension]
+            onResponseClassCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension]
+        queryParameters:
+            type: string
+        responses:
+            200:
+                (ramltojaxrs.responses):
+                    onResponseMethodCreation: [org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension]
+                body:
+                    application/json:
+                        type: string
+/defaultHumanity:
+    get:
+        queryParameters:
+            type: string
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: string
+

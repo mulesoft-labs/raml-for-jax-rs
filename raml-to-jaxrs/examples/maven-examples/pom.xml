@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.raml</groupId>
+        <artifactId>examples</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>maven-examples</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>raml-defined-example</module>
+        <module>jaxb-example</module>
+        <module>simple-json-example</module>
+        <module>simple-xml-example</module>
+        <module>scalar-types</module>
+        <module>type-torture-test</module>
+        <module>simple-raml08</module>
+        <module>features</module>
+<!--
+        <module>marketing-example</module>
+-->
+
+    </modules>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.raml</groupId>
+                    <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
+                    <version>2.0.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.5.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

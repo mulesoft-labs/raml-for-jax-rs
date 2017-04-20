@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: Hello World API
+version: v1
+baseUri: https://api.github.com
+types:
+    Mood:
+        type: string
+        enum: [ happy, sad, just_ok ]
+    Wife:
+        properties:
+            name: string
+            mood: Mood
+            work:
+                enum: [ stay_at_home, professional ]
+

@@ -1,0 +1,13 @@
+#%RAML 1.0
+title: who cares
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+types:
+    TypeOne:
+        type: object
+        properties:
+            day:
+                type: integer
+                (ramltojaxrs.types):
+                    className: java.lang.Long
+

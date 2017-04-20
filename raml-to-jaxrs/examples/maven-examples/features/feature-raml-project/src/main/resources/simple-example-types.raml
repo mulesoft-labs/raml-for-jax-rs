@@ -1,0 +1,39 @@
+#%RAML 1.0
+title: Humanity
+version: v1
+baseUri: https://api.github.com
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+
+types:
+    Network:
+        (ramltojaxrs.types):
+            onTypeCreation: [org.raml.jaxrs.features.AddDeprecatedAnnotationToTypePlugin]
+        type: object
+        properties:
+            name:
+                required: true
+                type: string
+            dns-address:
+                required: true
+                type: string
+    Switch:
+        (ramltojaxrs.types):
+            onTypeCreation: [org.raml.jaxrs.features.SuppressTypePlugin]
+        type: object
+        properties:
+            portcount:
+                required: true
+                type: integer
+
+    ChainableRouter:
+        (ramltojaxrs.types):
+            onMethodCreation: [org.raml.jaxrs.features.ChainSetter]
+        type: object
+        properties:
+            portcount:
+                required: true
+                type: integer
+            routerName:
+                required: true
+                type: string

@@ -1,0 +1,35 @@
+#%RAML 1.0
+title: Hello World API
+version: v1
+baseUri: https://api.github.com
+types:
+    Track:
+        schema: |
+            <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+             <xs:element name="Person">
+              <xs:complexType>
+               <xs:sequence>
+                <xs:element name="Name" type="xs:string" />
+                <xs:element name="DateOfBirth" type="xs:date" />
+                <xs:element minOccurs="0" name="Address">
+                 <xs:complexType>
+                  <xs:sequence>
+                   <xs:element name="HouseNo" type="xs:int" />
+                   <xs:element name="PostCode" type="xs:string" />
+                  </xs:sequence>
+                 </xs:complexType>
+                </xs:element>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="Car">
+                 <xs:complexType>
+                  <xs:sequence>
+                   <xs:element name="Make" type="xs:string" />
+                   <xs:element name="Model" type="xs:string" />
+                  </xs:sequence>
+                 </xs:complexType>
+                </xs:element>
+               </xs:sequence>
+              </xs:complexType>
+             </xs:element>
+            </xs:schema>
+    new:
+        type: Track

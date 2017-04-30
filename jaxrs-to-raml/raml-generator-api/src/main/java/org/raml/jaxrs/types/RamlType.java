@@ -21,7 +21,6 @@ import com.google.common.collect.Collections2;
 import org.raml.api.Annotable;
 import org.raml.api.RamlData;
 import org.raml.api.ScalarType;
-import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.ExampleEmitter;
@@ -30,6 +29,9 @@ import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +73,19 @@ public class RamlType implements Annotable, Emittable {
   }
 
   public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
+    Type ttype = type.getType();
+    if (ttype instanceof ParameterizedType) {
+      ParameterizedType pt = (ParameterizedType) ttype;
+      ttype = pt.getRawType();
+    }
+    if (ttype instanceof TypeVariable) {
+      System.out.println("emitter: " + emitter);
+      System.out.println("type: " + type);
+      System.out.println("ttype: " + ttype);
+      return;
+    }
 
-    Class c = (Class) type.getType();
+    Class c = (Class) ttype;
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
 
@@ -110,6 +123,7 @@ public class RamlType implements Annotable, Emittable {
   }
 
 
+  @SuppressWarnings({"rawtypes"})
   public String getTypeName() {
 
     Optional<ScalarType> st = ScalarType.fromType(type.getType());
@@ -120,12 +134,23 @@ public class RamlType implements Annotable, Emittable {
         return st.get().getRamlSyntax();
       }
     } else {
-
-      Class c = (Class) type.getType();
-      if (collection == true) {
-        return c.getSimpleName() + "[]";
+      Type typeType = type.getType();
+      if (typeType instanceof ParameterizedType) {
+        ParameterizedType pt = (ParameterizedType) typeType;
+        typeType = pt.getRawType();
+      }
+      String name;
+      if (typeType instanceof TypeVariable) {
+        name = ((TypeVariable) typeType).getName();
       } else {
-        return c.getSimpleName();
+        Class c = (Class) typeType;
+        name = c.getSimpleName();
+      }
+
+      if (collection == true) {
+        return name + "[]";
+      } else {
+        return name;
       }
     }
   }

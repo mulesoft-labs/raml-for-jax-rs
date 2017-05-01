@@ -79,9 +79,9 @@ public class RamlType implements Annotable, Emittable {
       ttype = pt.getRawType();
     }
     if (ttype instanceof TypeVariable) {
+      System.out.println("Ignored type: " + type);
       System.out.println("emitter: " + emitter);
-      System.out.println("type: " + type);
-      System.out.println("ttype: " + ttype);
+      System.out.println("type.getType(): " + ttype);
       return;
     }
 

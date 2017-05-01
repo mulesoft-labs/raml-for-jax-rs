@@ -92,6 +92,15 @@ public class NamesTest {
   }
 
   @Test
+  public void buildVariableWithUnderscore() throws Exception {
+
+    assertEquals("_funAllo", Names.variableName("_funAllo"));
+    assertEquals("_funAllo", Names.variableName("_FunAllo"));
+    assertEquals("_funAllo", Names.variableName("_Fun", "allo"));
+    assertEquals("_funAllo", Names.variableName("_fun", "_allo"));
+  }
+
+  @Test
   public void buildResponseClassname() throws Exception {
 
     when(method.resource()).thenReturn(resource);

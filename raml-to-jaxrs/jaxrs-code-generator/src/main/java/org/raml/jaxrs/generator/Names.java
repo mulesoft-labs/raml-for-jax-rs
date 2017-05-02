@@ -30,6 +30,8 @@ import org.raml.v2.api.model.v10.resources.Resource;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.left;
@@ -46,6 +48,7 @@ import static org.apache.commons.lang.math.NumberUtils.isDigits;
 public class Names {
 
   private static final String PATH_REPLACEMENT_TEMPLATE = "\\{[^}]+}";
+  private static Pattern LEADING_UNDERSCORES = Pattern.compile("^_+");
 
   public static String typeName(String... name) {
     if (name.length == 1 && isBlank(name[0])) {
@@ -65,10 +68,6 @@ public class Names {
 
   public static String methodName(String... name) {
 
-    return variableName(name);
-  }
-
-  public static String variableName(String... name) {
     if (name.length == 1 && isBlank(name[0])) {
 
       return "root";
@@ -82,6 +81,18 @@ public class Names {
     }
 
     return Strings.join(values, "");
+  }
+
+  public static String variableName(String... name) {
+
+    Matcher m = LEADING_UNDERSCORES.matcher(name[0]);
+    if (m.find()) {
+
+      return m.group() + methodName(name);
+    } else {
+
+      return methodName(name);
+    }
   }
 
 

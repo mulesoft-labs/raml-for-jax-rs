@@ -92,6 +92,13 @@ public class NamesTest {
   }
 
   @Test
+  public void buildVariableReservedWord() throws Exception {
+
+    assertEquals("ifVariable", Names.variableName("if"));
+    assertEquals("classVariable", Names.variableName("class"));
+  }
+
+  @Test
   public void buildVariableWithUnderscore() throws Exception {
 
     assertEquals("_funAllo", Names.variableName("_funAllo"));

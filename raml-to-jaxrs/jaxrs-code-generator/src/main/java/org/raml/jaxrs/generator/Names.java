@@ -28,6 +28,7 @@ import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
+import javax.lang.model.SourceVersion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -74,7 +75,7 @@ public class Names {
     }
 
     List<String> values = new ArrayList<>();
-    for (int i = 0; i < name.length; i++) {
+    for (int i = 0; i < name.length; i++) {                                           
       String s = name[i];
       NameFixer format = NameFixer.CAMEL_LOWER;
       values.add(buildPart(i, s, format));
@@ -91,7 +92,17 @@ public class Names {
       return m.group() + methodName(name);
     } else {
 
-      return methodName(name);
+      return checkForReservedWord(methodName(name));
+    }
+  }
+
+  private static String checkForReservedWord(String name) {
+
+    if (SourceVersion.isKeyword(name)) {
+      return name + "Variable";
+    } else {
+
+      return name;
     }
   }
 

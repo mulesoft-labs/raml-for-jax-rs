@@ -45,6 +45,7 @@ import static org.apache.commons.lang.math.NumberUtils.isDigits;
  *
  * @author kor
  * @version $Id: $Id
+ *
  */
 public class Names {
 

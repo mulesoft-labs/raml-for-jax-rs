@@ -187,6 +187,14 @@ uses:
     responses:
       200:
         body: AnotherEntry
+/resources:
+     /subresource:
+        get:
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: BizzareType
 /songs:
   displayName: Songs
   description:  Access to all songs inside the music world library.

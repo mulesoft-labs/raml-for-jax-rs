@@ -69,13 +69,31 @@ public class Names {
 
   public static String methodName(String... name) {
 
+    return checkMethodName(smallCamel(name));
+  }
+
+  private static String checkMethodName(String s) {
+
+    if ("getClass".equals(s)) {
+      return "getClazz";
+    }
+
+    if ("setClass".equals(s)) {
+      return "setClazz";
+    }
+
+    return s;
+  }
+
+  private static String smallCamel(String... name) {
+
     if (name.length == 1 && isBlank(name[0])) {
 
       return "root";
     }
 
     List<String> values = new ArrayList<>();
-    for (int i = 0; i < name.length; i++) {                                           
+    for (int i = 0; i < name.length; i++) {
       String s = name[i];
       NameFixer format = NameFixer.CAMEL_LOWER;
       values.add(buildPart(i, s, format));
@@ -89,10 +107,10 @@ public class Names {
     Matcher m = LEADING_UNDERSCORES.matcher(name[0]);
     if (m.find()) {
 
-      return m.group() + methodName(name);
+      return m.group() + smallCamel(name);
     } else {
 
-      return checkForReservedWord(methodName(name));
+      return checkForReservedWord(smallCamel(name));
     }
   }
 
@@ -116,7 +134,7 @@ public class Names {
 
     if (resource.uriParameters().size() == 0) {
 
-      return Names.methodName(method.method(),
+      return Names.smallCamel(method.method(),
                               resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
     } else {
 
@@ -142,7 +160,7 @@ public class Names {
         }
       }
 
-      return Names.methodName(elements.toArray(new String[elements.size()]));
+      return Names.smallCamel(elements.toArray(new String[elements.size()]));
     }
   }
 

@@ -163,7 +163,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
       }
 
       MethodSpec.Builder getSpec = MethodSpec
-          .methodBuilder("get" + Names.typeName(propertyInfo.getName()))
+          .methodBuilder(Names.methodName("get", Names.typeName(propertyInfo.getName())))
           .addModifiers(Modifier.PUBLIC)
           .addStatement("return this." + Names.variableName(propertyInfo.getName()));
 
@@ -180,7 +180,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
       if (!propertyInfo.getName().equals(objectType.discriminator())) {
 
         MethodSpec.Builder setSpec = MethodSpec
-            .methodBuilder("set" + Names.typeName(propertyInfo.getName()))
+            .methodBuilder(Names.methodName("set", Names.typeName(propertyInfo.getName())))
             .addModifiers(Modifier.PUBLIC)
             .addStatement("this." + Names.variableName(propertyInfo.getName()) + " = " + Names
                 .variableName(propertyInfo.getName()));

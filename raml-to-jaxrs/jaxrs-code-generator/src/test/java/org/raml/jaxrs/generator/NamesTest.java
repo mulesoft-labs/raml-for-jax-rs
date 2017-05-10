@@ -73,6 +73,14 @@ public class NamesTest {
 
   }
 
+
+  @Test
+  public void buildMethod() {
+
+    assertEquals("getSomething", Names.methodName("get", "something"));
+    assertEquals("getClazz", Names.methodName("get", "class"));
+  }
+
   @Test
   public void buildVariableName() throws Exception {
 

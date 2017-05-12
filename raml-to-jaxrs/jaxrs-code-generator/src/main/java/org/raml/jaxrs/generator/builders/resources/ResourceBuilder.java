@@ -409,7 +409,12 @@ public class ResourceBuilder implements ResourceGenerator {
     if (gMethod.resource().parentResource() != null) {
 
       methodSpec.addAnnotation(
-          AnnotationSpec.builder(Path.class).addMember("value", "$S", gMethod.resource().relativePath())
+          AnnotationSpec
+              .builder(Path.class)
+              .addMember("value",
+                         "$S",
+                         gMethod.resource().resourcePath()
+                             .substring(findTopResource(gMethod.resource().parentResource()).resourcePath().length()))
               .build());
     }
 
@@ -430,6 +435,16 @@ public class ResourceBuilder implements ResourceGenerator {
       methodSpec.addAnnotation(ann.build());
     }
     return methodSpec;
+  }
+
+  private GResource findTopResource(GResource gResource) {
+
+    if (gResource.parentResource() == null) {
+      return gResource;
+    } else {
+
+      return findTopResource(gResource.parentResource());
+    }
   }
 
   private void buildNewWebMethod(GMethod gMethod, MethodSpec.Builder methodSpec) {

@@ -195,6 +195,31 @@ uses:
                     body:
                         application/json:
                             type: BizzareType
+/ViewingSession:
+  /{viewingSessionId}:
+    /Attachments:
+      uriParameters:
+        viewingSessionId:
+          type: string
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: string
+
+/ViewingSession2:
+  /{viewingSessionId}/Attachments:
+      uriParameters:
+        viewingSessionId:
+          type: string
+      get:
+        responses:
+          200:
+            body:
+              application/json:
+                type: string
+
 /songs:
   displayName: Songs
   description:  Access to all songs inside the music world library.

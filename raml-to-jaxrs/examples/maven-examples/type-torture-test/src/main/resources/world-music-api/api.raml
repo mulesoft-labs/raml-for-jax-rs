@@ -209,16 +209,17 @@ uses:
                 type: string
 
 /ViewingSession2:
-  /{viewingSessionId}/Attachments:
-      uriParameters:
-        viewingSessionId:
-          type: string
-      get:
-        responses:
-          200:
-            body:
-              application/json:
+    /{viewingSessionId}:
+        uriParameters:
+            viewingSessionId:
                 type: string
+        /Attachments:
+            get:
+                responses:
+                    200:
+                        body:
+                          application/json:
+                            type: string
 
 /songs:
   displayName: Songs

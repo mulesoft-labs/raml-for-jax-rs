@@ -201,7 +201,7 @@ public class ResourceBuilderTestV10 {
   @Test
   public void build_with_path_param_with_intermediate() throws Exception {
 
-    //https://github.com/mulesoft-labs/raml-for-jax-rs/issues/252
+    // https://github.com/mulesoft-labs/raml-for-jax-rs/issues/252
     RamlV10.buildResourceV10(this, "resource_entity_no_response_intermediate.raml",
                              new CodeContainer<TypeSpec>() {
 
@@ -226,6 +226,48 @@ public class ResourceBuilderTestV10 {
                                  assertEquals(1, paramOneSpec.annotations.size());
                                  assertEquals(ClassName.get(PathParam.class), paramOneSpec.annotations.get(0).type);
                                  assertEquals("\"viewingSessionId\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+
+                               }
+                             }, "foo", "/fun");
+  }
+
+  @Test
+  public void build_with_intermediate_path_params() throws Exception {
+
+    // https://github.com/mulesoft-labs/raml-for-jax-rs/issues/252
+    RamlV10.buildResourceV10(this, "resource_entity_intermediate_pathparam.raml",
+                             new CodeContainer<TypeSpec>() {
+
+                               @Override
+                               public void into(TypeSpec g) throws IOException {
+
+                                 assertEquals("Foo", g.name);
+                                 assertEquals(1, g.methodSpecs.size());
+                                 MethodSpec methodSpec = g.methodSpecs.get(0);
+                                 assertEquals("putAttachmentsBySomethingAndViewingSessionId", methodSpec.name);
+                                 assertEquals(2, methodSpec.annotations.size());
+                                 assertEquals(ClassName.get(PUT.class), methodSpec.annotations.get(0).type);
+                                 assertEquals(ClassName.get(Path.class), methodSpec.annotations.get(1).type);
+                                 assertEquals("\"/{viewingSessionId}/Attachments\"",
+                                              methodSpec.annotations.get(1).members.get("value").get(0).toString());
+
+                                 assertEquals(2, methodSpec.parameters.size());
+
+                                 ParameterSpec paramOneSpec = methodSpec.parameters.get(0);
+                                 assertEquals("something", paramOneSpec.name);
+                                 assertEquals(ClassName.get(String.class), paramOneSpec.type);
+                                 assertEquals(1, paramOneSpec.annotations.size());
+                                 assertEquals(ClassName.get(PathParam.class), paramOneSpec.annotations.get(0).type);
+                                 assertEquals("\"something\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+
+                                 ParameterSpec paramTwoSpec = methodSpec.parameters.get(1);
+                                 assertEquals("viewingSessionId", paramTwoSpec.name);
+                                 assertEquals(ClassName.get(String.class), paramTwoSpec.type);
+                                 assertEquals(1, paramTwoSpec.annotations.size());
+                                 assertEquals(ClassName.get(PathParam.class), paramTwoSpec.annotations.get(0).type);
+                                 assertEquals("\"viewingSessionId\"", paramTwoSpec.annotations.get(0).members.get("value").get(0)
                                      .toString());
 
                                }

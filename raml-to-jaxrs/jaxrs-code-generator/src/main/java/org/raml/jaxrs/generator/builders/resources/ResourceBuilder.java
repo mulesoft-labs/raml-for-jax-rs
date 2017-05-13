@@ -370,19 +370,19 @@ public class ResourceBuilder implements ResourceGenerator {
             .onMethod(new ResourceContextImpl(build),
                       gMethod, methodSpec);
 
-    for (GParameter typeDeclaration : gMethod.resource().uriParameters()) {
+    for (GParameter parameter : ResourceUtils.accumulateUriParameters(gMethod.resource())) {
 
-      if (TypeUtils.isComposite(typeDeclaration)) {
-        throw new GenerationException("uri parameter is composite: " + typeDeclaration);
+      if (TypeUtils.isComposite(parameter)) {
+        throw new GenerationException("uri parameter is composite: " + parameter);
       }
 
       methodSpec.addParameter(
           ParameterSpec
               .builder(
-                       typeDeclaration.type().defaultJavaTypeName(build.getModelPackage()),
-                       Names.methodName(typeDeclaration.name()))
+                       parameter.type().defaultJavaTypeName(build.getModelPackage()),
+                       Names.methodName(parameter.name()))
               .addAnnotation(
-                             AnnotationSpec.builder(PathParam.class).addMember("value", "$S", typeDeclaration.name())
+                             AnnotationSpec.builder(PathParam.class).addMember("value", "$S", parameter.name())
                                  .build())
               .build());
 

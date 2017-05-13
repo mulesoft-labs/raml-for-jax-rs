@@ -133,7 +133,9 @@ public class Names {
 
   public static String resourceMethodName(GResource resource, GMethod method) {
 
-    if (resource.uriParameters().size() == 0) {
+    List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
+
+    if (parameters.size() == 0) {
 
       return Names.smallCamel(method.method(),
                               resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
@@ -144,7 +146,7 @@ public class Names {
       elements.add(resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
       elements.add("By");
       List<String> uriparam =
-          Lists.transform(resource.uriParameters(), new Function<GParameter, String>() {
+          Lists.transform(parameters, new Function<GParameter, String>() {
 
             @Nullable
             @Override

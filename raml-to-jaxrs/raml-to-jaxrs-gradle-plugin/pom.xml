@@ -5,22 +5,23 @@
     <parent>
         <groupId>org.raml</groupId>
         <artifactId>raml-to-jaxrs</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>raml-gradle-plugin</artifactId>
-    <name>Gradle Plugin</name>
+    <name>RAML JAX-RS Gradle Plugin</name>
     <properties>
         <maven.install.skip>false</maven.install.skip>
         <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <build>
+        <sourceDirectory>src/main/groovy</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.fortasoft</groupId>
                 <artifactId>gradle-maven-plugin</artifactId>
-                <version>1.0.5</version>
+                <version>1.0.8</version>
                 <configuration>
                     <tasks>
                         <task>install</task>

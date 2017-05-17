@@ -21,7 +21,6 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.NoopAnnotator
-import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
 
 /**
  * Custom Gradle configuration extension that is populated by the {@code raml}
@@ -52,13 +51,6 @@ class RamlExtension {
 	 * @see org.raml.jaxrs.codegen.core.Configuration#getBasePackageName()
 	 */
 	String basePackageName
-
-	/**
-	 * The target JAX-RS version for the generated source.  The default is
-	 * {@code JAX-RS 1.1}.
-	 * @see org.raml.jaxrs.codegen.core.Configuration#getJaxrsVersion()
-	 */
-	String jaxrsVersion = JaxrsVersion.JAXRS_1_1.alias
 
 	/**
 	 * The JSON mapper implementation to be during source generation.  The

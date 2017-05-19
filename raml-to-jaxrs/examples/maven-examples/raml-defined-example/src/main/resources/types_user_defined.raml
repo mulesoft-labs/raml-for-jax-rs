@@ -7,6 +7,11 @@ uses:
 
 types:
 
+    HumanId:
+        properties:
+            serial: string
+            type: string
+
     Gender:
         enum: [male, female, other]
     Leg:
@@ -53,6 +58,36 @@ types:
                 format: rfc2616
             gender:
                 type: Gender
+
+/complexhumans:
+    get:
+        (ramltojaxrs.methods):
+            onResourceMethodCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension ]
+            onResponseClassCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension ]
+        queryParameters:
+            id: HumanId
+        responses:
+            200:
+                (ramltojaxrs.responses):
+                    onResponseMethodCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension ]
+                body:
+                    application/json:
+                        type: Human
+    /{id}:
+        uriParameters:
+            id: HumanId
+        get:
+            (ramltojaxrs.methods):
+                onResourceMethodCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension ]
+                onResponseClassCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension ]
+            responses:
+                200:
+                    (ramltojaxrs.responses):
+                        onResponseMethodCreation: [ org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension ]
+                    body:
+                        application/json:
+                            type: Human
+
 /humans:
     get:
         (ramltojaxrs.methods):

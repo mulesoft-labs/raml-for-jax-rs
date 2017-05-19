@@ -53,6 +53,7 @@ public class IndentedAppendableTest {
     assertStringIsCorrectlyEscaped("description", "` text", "description: \"` text\"");
     assertStringIsCorrectlyEscaped("description", ", text", "description: \", text\"");
     assertStringIsCorrectlyEscaped("description", "\" text\"", "description: \"\\\" text\\\"\"");
+    assertStringIsCorrectlyEscaped("description", "something: ", "description: \"something: \"");
 
   }
 

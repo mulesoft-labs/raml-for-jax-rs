@@ -91,7 +91,7 @@ public class RamlType implements Annotable, Emittable {
     writeExample(writer);
 
     if (type.getDescription().isPresent()) {
-      writer.appendLine("description: " + type.getDescription().get());
+      writer.appendEscapedLine("description", type.getDescription().get());
     }
 
     writer.appendLine("properties:");

@@ -71,7 +71,7 @@ public class V10Finder implements GFinder {
           continue;
         }
 
-        V10GType type = registry.fetchType(parameterTypeDeclaration.type(),  parameterTypeDeclaration);
+        V10GType type = registry.fetchType(parameterTypeDeclaration.type(), parameterTypeDeclaration);
         listener.newTypeDeclaration(type);
       }
 

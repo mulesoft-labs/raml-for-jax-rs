@@ -83,12 +83,13 @@ public class IndentedAppendableEmitter implements Emitter {
     writeBaseUri(api.getBaseUri());
     writeDefaultMediaType(api.getDefaultMediaType());
     writeSupportedAnnotations(api.getSupportedAnnotation());
-
+    writer.deferAppends();
     for (RamlResource resource : api.getResources()) {
       writeResource(resource);
     }
-
+    writer.stopDeferAppends();
     writeTypes();
+    writer.flushDeferredContent();
   }
 
   private void writeSupportedAnnotations(List<RamlSupportedAnnotation> supportedAnnotation) throws IOException {

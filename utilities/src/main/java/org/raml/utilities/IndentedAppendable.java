@@ -32,11 +32,15 @@ public class IndentedAppendable {
 
   private final String indent;
   private final Appendable appendable;
+  private StringBuilder deferredContent = new StringBuilder();
+  private Appendable currentAppendable;
+  // private boolean isDeferred = false;
   private String currentIndent = "";
 
   private IndentedAppendable(String indent, Appendable appendable) {
     this.indent = indent;
     this.appendable = appendable;
+    currentAppendable = appendable;
   }
 
   public static IndentedAppendable forNoSpaces(int noSpaces, Appendable appendable) {
@@ -44,6 +48,19 @@ public class IndentedAppendable {
     checkNotNull(appendable);
 
     return new IndentedAppendable(Strings.repeat(" ", noSpaces), appendable);
+  }
+
+  public void deferAppends() {
+    currentAppendable = deferredContent;
+  }
+
+  public void stopDeferAppends() {
+    currentAppendable = appendable;
+  }
+
+  public void flushDeferredContent() throws IOException {
+    appendable.append(deferredContent);
+    deferredContent = new StringBuilder();
   }
 
   public void indent() {
@@ -57,17 +74,17 @@ public class IndentedAppendable {
   }
 
   public IndentedAppendable withIndent() throws IOException {
-    this.appendable.append(currentIndent);
+    this.currentAppendable.append(currentIndent);
     return this;
   }
 
   public IndentedAppendable appendLine(String content) throws IOException {
-    this.appendable.append(currentIndent).append(content).append("\n");
+    this.currentAppendable.append(currentIndent).append(content).append("\n");
     return this;
   }
 
   public IndentedAppendable appendLine(String tag, String content) throws IOException {
-    this.appendable.append(currentIndent).append(tag).append(": ").append(content).append("\n");
+    this.currentAppendable.append(currentIndent).append(tag).append(": ").append(content).append("\n");
     return this;
   }
 
@@ -91,12 +108,12 @@ public class IndentedAppendable {
   }
 
   public IndentedAppendable endOfLine() throws IOException {
-    this.appendable.append(END_OF_LINE);
+    this.currentAppendable.append(END_OF_LINE);
     return this;
   }
 
   public String toString() {
-    return this.appendable.toString();
+    return this.currentAppendable.toString();
   }
 
   private String quoteIfSpecialCharacter(String value) {

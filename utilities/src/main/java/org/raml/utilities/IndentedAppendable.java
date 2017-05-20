@@ -105,7 +105,7 @@ public class IndentedAppendable {
 
   private String quoteIfSpecialCharacter(String value, boolean inList) {
     boolean escape = value != null
-        && (value.matches("[-*|#{}?&!>':%@`,\\[\\]\"].*") || value.matches(".*[:]\\s*"))
+        && (value.matches("[-*|#{}?&!>':%@`,\\[\\]\"].*") || value.matches(".*:.*"))
         || (inList && value.contains(","));
     if (escape) {
       String result = value.replace("\"", "\\\""); // escape double quotes

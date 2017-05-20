@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -208,6 +210,13 @@ public class ScalarTypesTest {
     when(number.format()).thenReturn("double");
     when(number.annotations()).thenReturn(Collections.singletonList(javaTypeAnnotationRef));
     assertEquals(Double.class, ScalarTypes.scalarToJavaType(number));
+  }
+
+  @Test
+  public void classToTypeNameTest() throws Exception {
+
+    assertEquals(TypeName.INT, ScalarTypes.classToTypeName(int.class));
+    assertEquals(TypeName.INT.box(), ScalarTypes.classToTypeName(Integer.class));
   }
 
   public void setupBasic(String format) {

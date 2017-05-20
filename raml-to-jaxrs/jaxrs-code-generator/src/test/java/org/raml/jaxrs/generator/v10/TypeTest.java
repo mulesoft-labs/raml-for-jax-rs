@@ -169,7 +169,6 @@ public class TypeTest {
   @Test
   public void arrayOfScalar() throws Exception {
 
-
     V10TypeRegistry registry = new V10TypeRegistry();
     CurrentBuild cb = RamlV10.buildType(this, "arrayOfScalar.raml", registry, "foo", ".");
     JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
@@ -185,6 +184,31 @@ public class TypeTest {
         if (count == 0) {
           assertEquals("getDay", spec.methodSpecs.get(0).name);
           assertEquals("java.util.List<java.lang.String>", spec.methodSpecs.get(0).returnType.toString());
+        }
+
+        count++;
+      }
+    });
+  }
+
+  @Test
+  public void arrayOfInteger() throws Exception {
+
+    V10TypeRegistry registry = new V10TypeRegistry();
+    CurrentBuild cb = RamlV10.buildType(this, "arrayOfInteger.raml", registry, "foo", ".");
+    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+
+    gen.output(new CodeContainer<TypeSpec.Builder>() {
+
+      int count = 0;
+
+      @Override
+      public void into(TypeSpec.Builder g) throws IOException {
+        TypeSpec spec = g.build();
+
+        if (count == 0) {
+          assertEquals("getDay", spec.methodSpecs.get(0).name);
+          assertEquals("java.util.List<java.lang.Integer>", spec.methodSpecs.get(0).returnType.toString());
         }
 
         count++;

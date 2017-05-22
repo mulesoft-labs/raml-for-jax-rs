@@ -18,10 +18,11 @@ package org.raml.jaxrs.parser.model;
 import com.google.common.base.Optional;
 
 import org.glassfish.jersey.server.model.Parameter;
+import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
+import org.raml.jaxrs.parser.source.SourceParser;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -29,17 +30,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class JerseyJaxRsHeaderParameter implements JaxRsHeaderParameter {
 
   private final Parameter parameter;
+  private final SourceParser sourceParser;
 
-  private JerseyJaxRsHeaderParameter(Parameter parameter) {
+  private JerseyJaxRsHeaderParameter(Parameter parameter, SourceParser sourceParser) {
     this.parameter = parameter;
+    this.sourceParser = sourceParser;
   }
 
-  static JerseyJaxRsHeaderParameter create(Parameter parameter) {
+  static JerseyJaxRsHeaderParameter create(Parameter parameter, SourceParser sourceParser) {
     checkNotNull(parameter);
     checkArgument(Utilities.isHeaderParameterPredicate().apply(parameter),
                   "invalid header parameter %s", parameter);
 
-    return new JerseyJaxRsHeaderParameter(parameter);
+    return new JerseyJaxRsHeaderParameter(parameter, sourceParser);
   }
 
   @Override
@@ -53,13 +56,13 @@ class JerseyJaxRsHeaderParameter implements JaxRsHeaderParameter {
   }
 
   @Override
-  public Type getType() {
-    return this.parameter.getType();
+  public Optional<JaxRsEntity> getEntity() {
+    return JerseyJaxRsEntity.create(this.parameter.getType(), sourceParser);
   }
 
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
 
-    return (Optional<T>) Optional.fromNullable((parameter).getAnnotation(annotationType));
+    return Optional.fromNullable((parameter).getAnnotation(annotationType));
   }
 }

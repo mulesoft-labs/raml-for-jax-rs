@@ -18,7 +18,9 @@ package org.raml.jaxrs.parser.model;
 import com.google.common.base.Optional;
 
 import org.glassfish.jersey.server.model.Parameter;
+import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
+import org.raml.jaxrs.parser.source.SourceParser;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -29,17 +31,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 class JerseyJaxRsQueryParameter implements JaxRsQueryParameter {
 
   private final Parameter parameter;
+  private final SourceParser sourceParser;
 
-  private JerseyJaxRsQueryParameter(Parameter parameter) {
+  private JerseyJaxRsQueryParameter(Parameter parameter, SourceParser sourceParser) {
     this.parameter = parameter;
+    this.sourceParser = sourceParser;
   }
 
-  static JerseyJaxRsQueryParameter create(Parameter parameter) {
+  static JerseyJaxRsQueryParameter create(Parameter parameter, SourceParser sourceParser) {
     checkNotNull(parameter);
     checkArgument(Utilities.isQueryParameterPredicate().apply(parameter),
                   "invalid query parameter %s", parameter);
 
-    return new JerseyJaxRsQueryParameter(parameter);
+    return new JerseyJaxRsQueryParameter(parameter, sourceParser);
   }
 
   @Override
@@ -53,13 +57,13 @@ class JerseyJaxRsQueryParameter implements JaxRsQueryParameter {
   }
 
   @Override
-  public Type getType() {
-    return this.parameter.getType();
+  public Optional<JaxRsEntity> getEntity() {
+    return JerseyJaxRsEntity.create(this.parameter.getType(), sourceParser);
   }
 
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
 
-    return (Optional<T>) Optional.fromNullable((parameter).getAnnotation(annotationType));
+    return Optional.fromNullable((parameter).getAnnotation(annotationType));
   }
 }

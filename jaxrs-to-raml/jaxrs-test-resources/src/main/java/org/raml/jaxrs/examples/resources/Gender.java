@@ -13,19 +13,16 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.model;
+package org.raml.jaxrs.examples.resources;
 
-import com.google.common.base.Optional;
+import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.handlers.SimpleJacksonTypes;
 
-import java.lang.annotation.Annotation;
+/**
+ * Created by Jean-Philippe Belanger on 5/22/17. Just potential zeroes and ones
+ */
+@RamlGenerator(SimpleJacksonTypes.class)
+public enum Gender {
 
-public interface JaxRsHeaderParameter {
-
-  String getName();
-
-  Optional<String> getDefaultValue();
-
-  Optional<JaxRsEntity> getEntity();
-
-  <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
+  MALE, FEMALE
 }

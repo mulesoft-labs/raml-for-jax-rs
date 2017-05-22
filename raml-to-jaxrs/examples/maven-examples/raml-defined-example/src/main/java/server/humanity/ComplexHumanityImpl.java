@@ -39,7 +39,7 @@ public class ComplexHumanityImpl implements Complexhumans {
     if ("person".equals(id.getType())) {
 
       PersonImpl pi = new PersonImpl();
-      pi.setGender(Gender.FEMALE);
+      pi.setActualGender(Gender.FEMALE);
       pi.setWeight(180);
 
       pi.setDateOfBirth(new Date());
@@ -57,7 +57,7 @@ public class ComplexHumanityImpl implements Complexhumans {
     } else {
 
       CorpseImpl ci = new CorpseImpl();
-      ci.setGender(Gender.OTHER);
+      ci.setActualGender(Gender.OTHER);
       ci.setDateOfDeath(new Date());
       return GetComplexhumansByIdResponse.respond200WithApplicationJson(ci);
     }
@@ -69,7 +69,7 @@ public class ComplexHumanityImpl implements Complexhumans {
     if ("person".equals(id.getType())) {
 
       PersonImpl pi = new PersonImpl();
-      pi.setGender(Gender.FEMALE);
+      pi.setActualGender(Gender.FEMALE);
       pi.setWeight(180);
 
       pi.setDateOfBirth(new Date());
@@ -87,7 +87,7 @@ public class ComplexHumanityImpl implements Complexhumans {
     } else {
 
       CorpseImpl ci = new CorpseImpl();
-      ci.setGender(Gender.OTHER);
+      ci.setActualGender(Gender.OTHER);
       ci.setDateOfDeath(new Date());
       return GetComplexhumansResponse.respond200WithApplicationJson(ci);
     }

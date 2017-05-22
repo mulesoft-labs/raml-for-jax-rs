@@ -38,7 +38,7 @@ public class HumanityImpl implements Humans {
   public GetHumansResponse getHumans(String type) {
     List<Human> humans = new ArrayList<>();
     PersonImpl pi = new PersonImpl();
-    pi.setGender(Gender.FEMALE);
+    pi.setActualGender(Gender.FEMALE);
     pi.setWeight(180);
 
     pi.setDateOfBirth(new Date());
@@ -54,7 +54,7 @@ public class HumanityImpl implements Humans {
     pi.setLimbs(new Limb(new ArmImpl()));
 
     CorpseImpl another = new CorpseImpl();
-    another.setGender(Gender.OTHER);
+    another.setActualGender(Gender.OTHER);
     another.setDateOfDeath(new Date());
 
     humans.add(pi);
@@ -68,7 +68,7 @@ public class HumanityImpl implements Humans {
     if ("person".equals(type)) {
 
       PersonImpl pi = new PersonImpl();
-      pi.setGender(Gender.FEMALE);
+      pi.setActualGender(Gender.FEMALE);
       pi.setWeight(180);
 
       pi.setDateOfBirth(new Date());
@@ -86,7 +86,7 @@ public class HumanityImpl implements Humans {
     } else {
 
       CorpseImpl ci = new CorpseImpl();
-      ci.setGender(Gender.OTHER);
+      ci.setActualGender(Gender.OTHER);
       ci.setDateOfDeath(new Date());
       return GetHumansByIdResponse.respond200WithApplicationJson(ci);
     }

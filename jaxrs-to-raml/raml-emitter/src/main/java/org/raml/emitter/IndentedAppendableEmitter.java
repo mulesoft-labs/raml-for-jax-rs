@@ -52,7 +52,6 @@ public class IndentedAppendableEmitter implements Emitter {
   private final IndentedAppendable writer;
   private AnnotationTypeEmitter annotationTypeEmitter;
   private AnnotationInstanceEmitter annotationInstanceEmitter;
-  private ParameterEmitter parameterEmitter;
 
   private IndentedAppendableEmitter(IndentedAppendable writer) {
     this.writer = writer;
@@ -69,7 +68,6 @@ public class IndentedAppendableEmitter implements Emitter {
     try {
       this.annotationTypeEmitter = new AnnotationTypeEmitter(writer, api.getSupportedAnnotation());
       this.annotationInstanceEmitter = new AnnotationInstanceEmitter(writer, api.getSupportedAnnotation());
-      this.parameterEmitter = new ParameterEmitter(writer);
       writeApi(api);
     } catch (IOException e) {
       throw new RamlEmissionException(format("unable to emit api: %s", api.getBaseUri()), e);
@@ -166,7 +164,7 @@ public class IndentedAppendableEmitter implements Emitter {
             Type type = method.getConsumedType().get().getType();
 
             TypeHandler typeHandler = pickTypeHandler(type);
-            typeHandler.writeType(typeRegistry, writer, ramlMediaType, method, method.getConsumedType().get());
+            typeHandler.writeType(typeRegistry, writer, method.getConsumedType().get());
           }
         }
       }
@@ -217,7 +215,7 @@ public class IndentedAppendableEmitter implements Emitter {
       writer.appendLine(formDatum.getName() + ":");
       writer.indent();
       TypeHandler typeHandler = pickTypeHandler(type);
-      typeHandler.writeType(typeRegistry, writer, RamlMediaType.UNKNOWN_TYPE, method, formDatum.getPartEntity());
+      typeHandler.writeType(typeRegistry, writer, formDatum.getPartEntity());
       writer.outdent();
     }
 
@@ -283,8 +281,10 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.indent();
 
     for (RamlHeaderParameter parameter : headerParameters) {
-      parameterEmitter.emit(parameter);
 
+      TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
+      ParameterEmitter parameterEmitter = new ParameterEmitter(writer, typeRegistry, typeHandler);
+      parameterEmitter.emit(parameter);
     }
 
     writer.outdent();
@@ -292,12 +292,18 @@ public class IndentedAppendableEmitter implements Emitter {
 
   private void writeQueryParameters(Iterable<RamlQueryParameter> queryParameters)
       throws IOException {
+
     writer.appendLine("queryParameters:");
     writer.indent();
     for (RamlQueryParameter parameter : queryParameters) {
-      parameterEmitter.emit(parameter);
 
+      TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
+      // typeHandler.writeType(typeRegistry, writer,parameter.getEntity() );
+
+      ParameterEmitter parameterEmitter = new ParameterEmitter(writer, typeRegistry, typeHandler);
+      parameterEmitter.emit(parameter);
     }
+
     writer.outdent();
   }
 

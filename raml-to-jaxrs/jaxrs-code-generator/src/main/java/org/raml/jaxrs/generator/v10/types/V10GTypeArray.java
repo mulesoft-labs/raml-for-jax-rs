@@ -71,9 +71,16 @@ public class V10GTypeArray extends V10GTypeHelper {
 
   @Override
   public TypeName defaultJavaTypeName(String pack) {
+
+    TypeName parameterType = arrayContents().defaultJavaTypeName(pack);
+    if (parameterType.isPrimitive()) {
+
+      parameterType = parameterType.box();
+    }
+
     return ParameterizedTypeName.get(
                                      ClassName.get(List.class),
-                                     arrayContents().defaultJavaTypeName(pack));
+                                     parameterType);
   }
 
   @Override

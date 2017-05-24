@@ -29,6 +29,5 @@ public interface RamlParameter extends Annotable {
 
   Optional<String> getDefaultValue();
 
-  Type getType();
-
+  RamlEntity getEntity();
 }

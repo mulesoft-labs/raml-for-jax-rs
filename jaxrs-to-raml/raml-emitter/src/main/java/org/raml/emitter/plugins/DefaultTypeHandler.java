@@ -16,8 +16,6 @@
 package org.raml.emitter.plugins;
 
 import org.raml.api.RamlEntity;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
 import org.raml.api.ScalarType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeHandler;
@@ -33,8 +31,8 @@ import static java.lang.String.format;
 public class DefaultTypeHandler implements TypeHandler {
 
   @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, RamlEntity bodyType)
+  public void writeType(TypeRegistry registry, IndentedAppendable writer,
+                        RamlEntity bodyType)
       throws IOException {
 
     if (ScalarType.fromType(bodyType.getType()).isPresent()) {
@@ -42,7 +40,7 @@ public class DefaultTypeHandler implements TypeHandler {
       writer.appendLine("type", ScalarType.fromType(bodyType.getType()).get().getRamlSyntax());
     } else {
 
-      throw new IOException(bodyType + " is not a primitive type");
+      writer.appendLine("type", ((Class) bodyType.getType()).getSimpleName());
     }
   }
 }

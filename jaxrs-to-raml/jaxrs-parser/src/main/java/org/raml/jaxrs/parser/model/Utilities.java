@@ -106,14 +106,15 @@ class Utilities {
   }
 
   public static FluentIterable<JaxRsQueryParameter> toJaxRsQueryParameters(
-                                                                           Iterable<Parameter> parameters) {
+                                                                           Iterable<Parameter> parameters,
+                                                                           final SourceParser sourceParser) {
     return FluentIterable.from(parameters).transform(
                                                      new Function<Parameter, JaxRsQueryParameter>() {
 
                                                        @Nullable
                                                        @Override
                                                        public JaxRsQueryParameter apply(@Nullable Parameter parameter) {
-                                                         return JerseyJaxRsQueryParameter.create(parameter);
+                                                         return JerseyJaxRsQueryParameter.create(parameter, sourceParser);
                                                        }
                                                      });
   }
@@ -141,14 +142,15 @@ class Utilities {
   }
 
   public static FluentIterable<JaxRsHeaderParameter> toJaxRsHeaderParameters(
-                                                                             Iterable<Parameter> headerParameters) {
+                                                                             Iterable<Parameter> headerParameters,
+                                                                             final SourceParser sourceParser) {
     return FluentIterable.from(headerParameters).transform(
                                                            new Function<Parameter, JaxRsHeaderParameter>() {
 
                                                              @Nullable
                                                              @Override
                                                              public JaxRsHeaderParameter apply(@Nullable Parameter parameter) {
-                                                               return JerseyJaxRsHeaderParameter.create(parameter);
+                                                               return JerseyJaxRsHeaderParameter.create(parameter, sourceParser);
                                                              }
                                                            });
   }

@@ -13,19 +13,30 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.model;
+package server.humanity;
 
-import com.google.common.base.Optional;
+import example.model.HumanId;
+import example.model.HumanIdImpl;
 
-import java.lang.annotation.Annotation;
+import javax.ws.rs.ext.ParamConverter;
 
-public interface JaxRsHeaderParameter {
+/**
+ * @author JP
+ */
+public class HumanIdParamConverter implements ParamConverter<HumanId> {
 
-  String getName();
+  @Override
+  public HumanId fromString(String value) {
 
-  Optional<String> getDefaultValue();
+    String[] values = value.split("-", 2);
+    HumanId id = new HumanIdImpl();
+    id.setType(values[0]);
+    id.setSerial(values[1]);
+    return id;
+  }
 
-  Optional<JaxRsEntity> getEntity();
-
-  <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
+  @Override
+  public String toString(HumanId value) {
+    return value.getType() + "-" + value.getSerial();
+  }
 }

@@ -38,7 +38,9 @@ public class ResourceWithQueryParameters {
                                         @NotNull @QueryParam("version") String version,
                                         @DefaultValue("military") @QueryParam("typeOfStep") String typeOfStep,
                                         @DefaultValue("jack") @Size(min = 8, max = 32) @QueryParam("captainName") String theName,
-                                        @QueryParam("ageOfCaptain") @Min(25) @Max(100) int captainAge, String foo) {
+                                        @QueryParam("ageOfCaptain") @Min(25) @Max(100) int captainAge,
+                                        @QueryParam("genderOfCaptain") Gender genderOfCaptain,
+                                        String foo) {
     return null;
   }
 }

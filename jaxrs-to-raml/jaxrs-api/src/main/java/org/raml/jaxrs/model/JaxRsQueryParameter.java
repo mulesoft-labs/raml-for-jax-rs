@@ -28,7 +28,7 @@ public interface JaxRsQueryParameter {
 
   Optional<String> getDefaultValue();
 
-  Type getType();
+  Optional<JaxRsEntity> getEntity();
 
   <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
 }

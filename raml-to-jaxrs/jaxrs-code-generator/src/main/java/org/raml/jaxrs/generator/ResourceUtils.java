@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GParameter;
@@ -62,11 +63,12 @@ public class ResourceUtils {
   public static List<GParameter> accumulateUriParameters(GResource resource) {
 
     List<GParameter> parameters = new ArrayList<>();
-    parameters.addAll(resource.uriParameters());
+    parameters.addAll(Lists.reverse(resource.uriParameters()));
+
     while (resource.parentResource() != null) {
 
       resource = resource.parentResource();
-      parameters.addAll(resource.uriParameters());
+      parameters.addAll(Lists.reverse(resource.uriParameters()));
     }
 
     Collections.reverse(parameters);

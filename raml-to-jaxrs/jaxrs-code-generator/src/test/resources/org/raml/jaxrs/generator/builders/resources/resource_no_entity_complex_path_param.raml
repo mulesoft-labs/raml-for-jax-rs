@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: GitHub API
+version: v3
+baseUri: https://api.github.com
+types:
+    Complex:
+        properties:
+            first: string
+            second: string
+/search:
+    /{id}:
+        uriParameters:
+            id: Complex
+        description: The search resource
+        post:

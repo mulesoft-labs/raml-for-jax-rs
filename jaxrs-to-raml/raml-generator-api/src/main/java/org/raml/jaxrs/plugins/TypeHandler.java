@@ -16,19 +16,16 @@
 package org.raml.jaxrs.plugins;
 
 import org.raml.api.RamlEntity;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 public interface TypeHandler {
 
-  void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType, RamlResourceMethod method,
+  void writeType(TypeRegistry registry, IndentedAppendable writer,
                  RamlEntity type) throws IOException;
 }

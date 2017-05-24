@@ -233,6 +233,70 @@ public class ResourceBuilderTestV10 {
   }
 
   @Test
+  public void build_with_query_param_with_complex_types() throws Exception {
+
+    // https://github.com/mulesoft-labs/raml-for-jax-rs/issues/252
+    RamlV10.buildResourceV10(this, "resource_no_entity_complex_query_param.raml",
+                             new CodeContainer<TypeSpec>() {
+
+                               @Override
+                               public void into(TypeSpec g) throws IOException {
+
+                                 assertEquals("Foo", g.name);
+                                 assertEquals(1, g.methodSpecs.size());
+                                 MethodSpec methodSpec = g.methodSpecs.get(0);
+                                 assertEquals("postSearch", methodSpec.name);
+                                 assertEquals(1, methodSpec.annotations.size());
+                                 assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                                 assertEquals(1, methodSpec.parameters.size());
+
+                                 ParameterSpec paramOneSpec = methodSpec.parameters.get(0);
+                                 assertEquals("one", paramOneSpec.name);
+                                 assertEquals(ClassName.bestGuess("model.Complex"), paramOneSpec.type);
+                                 assertEquals(1, paramOneSpec.annotations.size());
+                                 assertEquals(ClassName.get(QueryParam.class), paramOneSpec.annotations.get(0).type);
+                                 assertEquals("\"one\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+
+                               }
+                             }, "foo", "/fun");
+  }
+
+  @Test
+  public void build_with_path_param_with_complex_types() throws Exception {
+
+    // https://github.com/mulesoft-labs/raml-for-jax-rs/issues/252
+    RamlV10.buildResourceV10(this, "resource_no_entity_complex_path_param.raml",
+                             new CodeContainer<TypeSpec>() {
+
+                               @Override
+                               public void into(TypeSpec g) throws IOException {
+
+                                 assertEquals("Foo", g.name);
+                                 assertEquals(1, g.methodSpecs.size());
+                                 MethodSpec methodSpec = g.methodSpecs.get(0);
+                                 assertEquals("postSearchById", methodSpec.name);
+                                 assertEquals(2, methodSpec.annotations.size());
+                                 assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                                 assertEquals(ClassName.get(Path.class), methodSpec.annotations.get(1).type);
+                                 assertEquals("\"/{id}\"",
+                                              methodSpec.annotations.get(1).members.get("value").get(0).toString());
+
+                                 assertEquals(1, methodSpec.parameters.size());
+
+                                 ParameterSpec paramOneSpec = methodSpec.parameters.get(0);
+                                 assertEquals("id", paramOneSpec.name);
+                                 assertEquals(ClassName.bestGuess("model.Complex"), paramOneSpec.type);
+                                 assertEquals(1, paramOneSpec.annotations.size());
+                                 assertEquals(ClassName.get(PathParam.class), paramOneSpec.annotations.get(0).type);
+                                 assertEquals("\"id\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+
+                               }
+                             }, "foo", "/fun");
+  }
+
+  @Test
   public void build_with_intermediate_path_params() throws Exception {
 
     // https://github.com/mulesoft-labs/raml-for-jax-rs/issues/252

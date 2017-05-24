@@ -372,10 +372,6 @@ public class ResourceBuilder implements ResourceGenerator {
 
     for (GParameter parameter : ResourceUtils.accumulateUriParameters(gMethod.resource())) {
 
-      if (TypeUtils.isComposite(parameter)) {
-        throw new GenerationException("uri parameter is composite: " + parameter);
-      }
-
       methodSpec.addParameter(
           ParameterSpec
               .builder(
@@ -388,9 +384,10 @@ public class ResourceBuilder implements ResourceGenerator {
 
     }
     for (GParameter typeDeclaration : gMethod.queryParameters()) {
-      if (TypeUtils.isComposite(typeDeclaration)) {
-        throw new GenerationException("query parameter is composite: " + typeDeclaration);
-      }
+      /*
+       * if (TypeUtils.isComposite(typeDeclaration)) { throw new GenerationException("query parameter is composite: " +
+       * typeDeclaration); }
+       */
 
       methodSpec.addParameter(
           ParameterSpec

@@ -64,6 +64,17 @@ public class V10Finder implements GFinder {
     for (Resource resource : resources) {
 
       resourceTypes(resource.resources(), listener);
+      for (TypeDeclaration parameterTypeDeclaration : resource.uriParameters()) {
+
+        TypeDeclaration supertype = foundTypes.get(parameterTypeDeclaration.type());
+        if (supertype == null || !TypeUtils.shouldCreateNewClass(parameterTypeDeclaration, supertype)) {
+          continue;
+        }
+
+        V10GType type = registry.fetchType(parameterTypeDeclaration.type(), parameterTypeDeclaration);
+        listener.newTypeDeclaration(type);
+      }
+
       for (Method method : resource.methods()) {
 
         typesInBodies(resource, method, method.body(), listener);
@@ -81,6 +92,17 @@ public class V10Finder implements GFinder {
       }
 
       V10GType type = registry.fetchType(resource, method, typeDeclaration);
+      listener.newTypeDeclaration(type);
+    }
+
+    for (TypeDeclaration parameterTypeDeclaration : method.queryParameters()) {
+
+      TypeDeclaration supertype = foundTypes.get(parameterTypeDeclaration.type());
+      if (supertype == null || !TypeUtils.shouldCreateNewClass(parameterTypeDeclaration, supertype)) {
+        continue;
+      }
+
+      V10GType type = registry.fetchType(resource, method, parameterTypeDeclaration);
       listener.newTypeDeclaration(type);
     }
 

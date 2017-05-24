@@ -17,8 +17,6 @@ package org.raml.jaxrs.handlers;
 
 import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
 import org.raml.api.Annotable;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
@@ -32,9 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.beans.BeanInfo;
 import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -48,16 +44,16 @@ import java.lang.reflect.Type;
 public class SimpleJaxbTypes implements TypeHandler {
 
   @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, RamlEntity type)
+  public void writeType(TypeRegistry registry, IndentedAppendable writer,
+                        RamlEntity type)
       throws IOException {
 
 
-    writeBody(registry, writer, ramlMediaType, type);
+    writeBody(registry, writer, type);
   }
 
   private void writeBody(TypeRegistry registry, IndentedAppendable writer,
-                         RamlMediaType mediaTypes, RamlEntity bodyType)
+                         RamlEntity bodyType)
       throws IOException {
 
     Class type = (Class) bodyType.getType();

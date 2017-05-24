@@ -13,19 +13,30 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.model;
+package server.humanity;
 
-import com.google.common.base.Optional;
+import example.model.HumanId;
 
+import javax.ws.rs.ext.ParamConverter;
+import javax.ws.rs.ext.ParamConverterProvider;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
-public interface JaxRsHeaderParameter {
+/**
+ * @author JP
+ */
+public class HumanIdConverterProvider implements ParamConverterProvider {
 
-  String getName();
 
-  Optional<String> getDefaultValue();
+  @Override
+  public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
 
-  Optional<JaxRsEntity> getEntity();
+    if (rawType.equals(HumanId.class)) {
 
-  <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
+      return (ParamConverter<T>) new HumanIdParamConverter();
+    } else {
+
+      return null;
+    }
+  }
 }

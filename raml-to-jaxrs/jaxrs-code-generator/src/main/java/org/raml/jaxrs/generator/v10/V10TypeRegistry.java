@@ -93,11 +93,15 @@ public class V10TypeRegistry {
 
       if (typeDeclaration instanceof StringTypeDeclaration
           && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
-        V10GType type =
-            V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration);
-        types.put(type.name(), type);
-        return type;
 
+        if (types.containsKey(name)) {
+          return types.get(name);
+        } else {
+          V10GType type =
+              V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration);
+          types.put(type.name(), type);
+          return type;
+        }
       } else {
         return V10GTypeFactory.createScalar(name, typeDeclaration);
       }

@@ -19,53 +19,24 @@ import example.model.ArmImpl;
 import example.model.CorpseImpl;
 import example.model.Gender;
 import example.model.Human;
+import example.model.HumanId;
 import example.model.Limb;
-import example.model.Person;
 import example.model.PersonImpl;
+import example.types.Complexhumans;
 import example.types.Humans;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
- * Created by Jean-Philippe Belanger on 11/11/16. Just potential zeroes and ones
+ * @author JP
  */
-public class HumanityImpl implements Humans {
+public class ComplexHumanityImpl implements Complexhumans {
 
   @Override
-  public GetHumansResponse getHumans(String type) {
-    List<Human> humans = new ArrayList<>();
-    PersonImpl pi = new PersonImpl();
-    pi.setActualGender(Gender.FEMALE);
-    pi.setWeight(180);
+  public GetComplexhumansByIdResponse getComplexhumansById(HumanId id) {
 
-    pi.setDateOfBirth(new Date());
-    pi.setInstantOfBirth(new Date());
-    pi.setTimeOfArrival(new Date());
-    pi.setDateOfBirth(new Date());
-    pi.setTimeOfBirth(new Date());
-    pi.setRequestTime(new Date());
-
-    CorpseImpl ci = new CorpseImpl();
-    ci.setDateOfDeath(new Date());
-    pi.setSiblings(Collections.<Human>singletonList(ci));
-    pi.setLimbs(new Limb(new ArmImpl()));
-
-    CorpseImpl another = new CorpseImpl();
-    another.setActualGender(Gender.OTHER);
-    another.setDateOfDeath(new Date());
-
-    humans.add(pi);
-    humans.add(another);
-
-    return GetHumansResponse.respond200WithApplicationJson(humans);
-  }
-
-  @Override
-  public GetHumansByIdResponse getHumansById(String id, String type) {
-    if ("person".equals(type)) {
+    if ("person".equals(id.getType())) {
 
       PersonImpl pi = new PersonImpl();
       pi.setActualGender(Gender.FEMALE);
@@ -82,18 +53,43 @@ public class HumanityImpl implements Humans {
       ci.setDateOfDeath(new Date());
       pi.setSiblings(Collections.<Human>singletonList(ci));
       pi.setLimbs(new Limb(new ArmImpl()));
-      return GetHumansByIdResponse.respond200WithApplicationJson(pi);
+      return GetComplexhumansByIdResponse.respond200WithApplicationJson(pi);
     } else {
 
       CorpseImpl ci = new CorpseImpl();
       ci.setActualGender(Gender.OTHER);
       ci.setDateOfDeath(new Date());
-      return GetHumansByIdResponse.respond200WithApplicationJson(ci);
+      return GetComplexhumansByIdResponse.respond200WithApplicationJson(ci);
     }
   }
 
   @Override
-  public PutHumansByIdResponse putHumansById(String id, Human entity) {
-    return null;
+  public GetComplexhumansResponse getComplexhumans(HumanId id) {
+
+    if ("person".equals(id.getType())) {
+
+      PersonImpl pi = new PersonImpl();
+      pi.setActualGender(Gender.FEMALE);
+      pi.setWeight(180);
+
+      pi.setDateOfBirth(new Date());
+      pi.setInstantOfBirth(new Date());
+      pi.setTimeOfArrival(new Date());
+      pi.setDateOfBirth(new Date());
+      pi.setTimeOfBirth(new Date());
+      pi.setRequestTime(new Date());
+
+      CorpseImpl ci = new CorpseImpl();
+      ci.setDateOfDeath(new Date());
+      pi.setSiblings(Collections.<Human>singletonList(ci));
+      pi.setLimbs(new Limb(new ArmImpl()));
+      return GetComplexhumansResponse.respond200WithApplicationJson(pi);
+    } else {
+
+      CorpseImpl ci = new CorpseImpl();
+      ci.setActualGender(Gender.OTHER);
+      ci.setDateOfDeath(new Date());
+      return GetComplexhumansResponse.respond200WithApplicationJson(ci);
+    }
   }
 }

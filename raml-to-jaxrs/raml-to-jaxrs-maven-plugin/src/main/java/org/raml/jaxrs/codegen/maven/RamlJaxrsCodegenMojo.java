@@ -173,7 +173,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 
       if (resourceFinishExtension != null) {
 
-        Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);
+        Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceFinishExtension);
         configuration.defaultResourceFinishExtension(c);
       }
 

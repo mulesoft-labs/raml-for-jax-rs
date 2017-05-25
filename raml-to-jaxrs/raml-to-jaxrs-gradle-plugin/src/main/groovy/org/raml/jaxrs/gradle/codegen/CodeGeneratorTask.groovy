@@ -18,10 +18,7 @@ package org.raml.jaxrs.gradle.codegen
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*
 import org.jsonschema2pojo.AnnotationStyle
-import org.raml.jaxrs.codegen.core.Configuration
-import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
-import org.raml.jaxrs.codegen.core.Generator
-import org.raml.jaxrs.codegen.core.ext.GeneratorExtension
+import org.raml.jaxrs.generator.Configuration
 import org.raml.jaxrs.gradle.RamlExtension
 
 /**
@@ -33,8 +30,6 @@ import org.raml.jaxrs.gradle.RamlExtension
  * @since 1.0
  */
 class CodeGeneratorTask extends DefaultTask {
-
-	Generator generator = new Generator()
 
 	RamlExtension configuration
 
@@ -137,24 +132,24 @@ class CodeGeneratorTask extends DefaultTask {
 	    ramlConfiguration.setIgnoredParameterNames(getIgnoredParameterNames())
 	    ramlConfiguration.setUseTitlePropertyWhenPossible(isUseTitlePropertyWhenPossible())
 		
-		if (getGeneratorExtensions() != null) {
-			for (String className : getGeneratorExtensions()) {
-				Class c = Class.forName(className);
-				if (c == null) {
-					throw new TaskExecutionException("generatorExtensionClass " + className
-							+ " cannot be loaded."
-							+ "Have you installed the correct dependency in the plugin configuration?");
-				}
-				if (!((c.newInstance()) instanceof GeneratorExtension)) {
-					throw new TaskExecutionException("generatorExtensionClass " + className
-							+ " does not implement" + GeneratorExtension.class.getPackage() + "."
-							+ GeneratorExtension.class.getName());
-
-				}
-        logger.info "Add generator extension: $className"
-				ramlConfiguration.getExtensions().add((GeneratorExtension) c.newInstance());
-			}
-    }
+//		if (getGeneratorExtensions() != null) {
+//			for (String className : getGeneratorExtensions()) {
+//				Class c = Class.forName(className);
+//				if (c == null) {
+//					throw new TaskExecutionException("generatorExtensionClass " + className
+//							+ " cannot be loaded."
+//							+ "Have you installed the correct dependency in the plugin configuration?");
+//				}
+//				if (!((c.newInstance()) instanceof GeneratorExtension)) {
+//					throw new TaskExecutionException("generatorExtensionClass " + className
+//							+ " does not implement" + GeneratorExtension.class.getPackage() + "."
+//							+ GeneratorExtension.class.getName());
+//
+//				}
+//        		logger.info "Add generator extension: $className"
+//				ramlConfiguration.getExtensions().add((GeneratorExtension) c.newInstance());
+//			}
+//    }
 
 		getRamlFiles().each { configurationFile ->
 			ramlConfiguration.sourceDirectory = configurationFile.parentFile

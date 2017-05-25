@@ -65,7 +65,7 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
   @Override
   public void output(CodeContainer<TypeSpec.Builder> rootDirectory) throws IOException {
 
-    UnionTypeDeclaration union = (UnionTypeDeclaration) unionTypeDeclaration.implementation();
+    UnionTypeDeclaration union = getUnionTypeDeclaration();
 
     ClassName unionTypeName = ClassName.get(currentBuild.getModelPackage(),
                                             Annotations.CLASS_NAME.get(Names.typeName(union.name()), unionTypeDeclaration));
@@ -92,9 +92,10 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
 
       ClassName unionPossibility = ClassName.get(currentBuild.getModelPackage(), Names.typeName(typeDeclaration.name()));
 
-      String fieldName = typeDeclaration.name();
-      deserialize.addStatement("if ( looksLike" + fieldName + "(map) ) return new $T(mapper.convertValue(map, $T.class))",
-                               unionTypeName, unionPossibility);
+      String name = Names.methodName("looksLike", typeDeclaration.name());
+      deserialize.addStatement("if ( " + name + "(map) ) return new $T(mapper.convertValue(map, $T.class))",
+              unionTypeName, unionPossibility);
+
       buildLooksLike(builder, typeDeclaration);
     }
 
@@ -102,6 +103,10 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
     builder.addMethod(deserialize.build());
 
     rootDirectory.into(builder);
+  }
+
+  protected UnionTypeDeclaration getUnionTypeDeclaration() {
+    return (UnionTypeDeclaration) unionTypeDeclaration.implementation();
   }
 
   private void buildLooksLike(TypeSpec.Builder builder, TypeDeclaration typeDeclaration) {

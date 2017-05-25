@@ -29,11 +29,22 @@ public class MethodSpecMatchers {
 
   public static Matcher<MethodSpec> methodName(Matcher<String> match) {
 
-    return new FeatureMatcher<MethodSpec, String>(match, "type name", "type name") {
+    return new FeatureMatcher<MethodSpec, String>(match, "method name", "method name") {
 
       @Override
       protected String featureValueOf(MethodSpec actual) {
         return actual.name;
+      }
+    };
+  }
+
+  public static Matcher<MethodSpec> codeContent(Matcher<String> match) {
+
+    return new FeatureMatcher<MethodSpec, String>(match, "method content", "method content") {
+
+      @Override
+      protected String featureValueOf(MethodSpec actual) {
+        return actual.code.toString();
       }
     };
   }

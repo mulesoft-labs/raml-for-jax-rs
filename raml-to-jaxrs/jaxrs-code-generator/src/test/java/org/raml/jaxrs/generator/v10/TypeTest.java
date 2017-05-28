@@ -79,10 +79,10 @@ public class TypeTest {
   private void checkMethodsOfInterface(TypeSpec spec) {
     assertEquals(2, spec.methodSpecs.size());
     assertEquals("getDay", spec.methodSpecs.get(0).name);
-    assertEquals("DayType", spec.methodSpecs.get(0).returnType.toString());
+    assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(0).returnType.toString());
 
     assertEquals("setDay", spec.methodSpecs.get(1).name);
-    assertEquals("DayType", spec.methodSpecs.get(1).parameters.get(0).type.toString());
+    assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(1).parameters.get(0).type.toString());
     // assertEquals(1, spec.typeSpecs.size());
   }
 

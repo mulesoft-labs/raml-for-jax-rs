@@ -94,7 +94,7 @@ public class UnionDeserializationGenerator implements JavaPoetTypeGenerator {
 
       String name = Names.methodName("looksLike", typeDeclaration.name());
       deserialize.addStatement("if ( " + name + "(map) ) return new $T(mapper.convertValue(map, $T.class))",
-              unionTypeName, unionPossibility);
+                               unionTypeName, unionPossibility);
 
       buildLooksLike(builder, typeDeclaration);
     }

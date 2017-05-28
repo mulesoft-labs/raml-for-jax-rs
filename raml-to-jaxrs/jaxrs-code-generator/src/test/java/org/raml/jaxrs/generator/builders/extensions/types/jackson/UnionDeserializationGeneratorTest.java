@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.raml.jaxrs.generator.builders.extensions.types.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -33,85 +48,91 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by Jean-Philippe Belanger on 5/24/17.
- * Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 5/24/17. Just potential zeroes and ones
  */
 public class UnionDeserializationGeneratorTest {
 
-    @Mock
-    private CurrentBuild build;
+  @Mock
+  private CurrentBuild build;
 
-    @Mock
-    private V10GType declaration;
+  @Mock
+  private V10GType declaration;
 
-    @Mock
-    private UnionTypeDeclaration typeDeclaration;
+  @Mock
+  private UnionTypeDeclaration typeDeclaration;
 
-    @Mock
-    private TypeDeclaration unionOfType;
+  @Mock
+  private TypeDeclaration unionOfType;
 
-    @Before
-    public void mockito() {
+  @Before
+  public void mockito() {
 
-        MockitoAnnotations.initMocks(this);
-    }
+    MockitoAnnotations.initMocks(this);
+  }
 
-    @Test
-    public void makeIt() throws Exception {
+  @Test
+  public void makeIt() throws Exception {
 
-        when(declaration.name()).thenReturn("Foo");
-        when(declaration.implementation()).thenReturn(typeDeclaration);
-        when(build.getModelPackage()).thenReturn("model");
+    when(declaration.name()).thenReturn("Foo");
+    when(declaration.implementation()).thenReturn(typeDeclaration);
+    when(build.getModelPackage()).thenReturn("model");
 
-        when(typeDeclaration.of()).thenReturn(Arrays.asList(unionOfType));
-        when(typeDeclaration.name()).thenReturn("Foo");
-        when(unionOfType.name()).thenReturn("UnionOf");
+    when(typeDeclaration.of()).thenReturn(Arrays.asList(unionOfType));
+    when(typeDeclaration.name()).thenReturn("Foo");
+    when(unionOfType.name()).thenReturn("UnionOf");
 
-        UnionDeserializationGenerator generator = new UnionDeserializationGenerator(build, declaration,
-                ClassName.get("foo", "CooGenerator")) {
-            @Override
-            protected UnionTypeDeclaration getUnionTypeDeclaration() {
-                return typeDeclaration;
-            }
-        };
+    UnionDeserializationGenerator generator = new UnionDeserializationGenerator(build, declaration,
+                                                                                ClassName.get("foo", "CooGenerator")) {
 
-        generator.output(new CodeContainer<TypeSpec.Builder>() {
-            @Override
-            public void into(TypeSpec.Builder g) throws IOException {
+      @Override
+      protected UnionTypeDeclaration getUnionTypeDeclaration() {
+        return typeDeclaration;
+      }
+    };
 
-                TypeName looksLikeType = ParameterizedTypeName.get(Map.class, String.class, Object.class);
-                TypeName jsonParser = ClassName.get(JsonParser.class);
-                TypeName context = ClassName.get(DeserializationContext.class);
+    generator.output(new CodeContainer<TypeSpec.Builder>() {
 
-                assertThat(g.build(), TypeSpecMatchers.name(is(equalTo("CooGenerator"))));
-                assertThat(g.build(), TypeSpecMatchers.methods(containsInAnyOrder(
-                        allOf(
-                                MethodSpecMatchers.methodName(is(equalTo("looksLikeUnionOf"))),
-                                MethodSpecMatchers.parameters(
-                                        contains(
-                                                ParameterSpecMatchers.type(is(equalTo(looksLikeType)))
-                                        )
-                                )
-                        ),
-                        allOf(
-                                MethodSpecMatchers.methodName(is(equalTo("deserialize"))),
-                                MethodSpecMatchers.parameters(
-                                        contains(
-                                                ParameterSpecMatchers.type(is(equalTo(jsonParser))),
-                                                ParameterSpecMatchers.type(is(equalTo(context)))
-                                        )
-                                ),
-                                MethodSpecMatchers.codeContent(containsString("looksLikeUnionOf")) // approx
-                        ),
-                        allOf(
-                                MethodSpecMatchers.methodName(is(equalTo("<init>")))
-                        )
+      @Override
+      public void into(TypeSpec.Builder g) throws IOException {
+
+        TypeName looksLikeType = ParameterizedTypeName.get(Map.class, String.class, Object.class);
+        TypeName jsonParser = ClassName.get(JsonParser.class);
+        TypeName context = ClassName.get(DeserializationContext.class);
+
+        assertThat(g.build(), TypeSpecMatchers.name(is(equalTo("CooGenerator"))));
+        assertThat(g.build(),
+                   TypeSpecMatchers.methods(containsInAnyOrder(
+                                                               allOf(
+                                                                     MethodSpecMatchers
+                                                                         .methodName(is(equalTo("looksLikeUnionOf"))),
+                                                                     MethodSpecMatchers.parameters(
+                                                                         contains(
+                                                                         ParameterSpecMatchers.type(is(equalTo(looksLikeType)))
+                                                                         )
+                                                                         )
+                                                               ),
+                                                               allOf(
+                                                                     MethodSpecMatchers.methodName(is(equalTo("deserialize"))),
+                                                                     MethodSpecMatchers.parameters(
+                                                                         contains(
+                                                                                  ParameterSpecMatchers
+                                                                                      .type(is(equalTo(jsonParser))),
+                                                                                  ParameterSpecMatchers
+                                                                                      .type(is(equalTo(context)))
+                                                                         )
+                                                                         ),
+                                                                     MethodSpecMatchers
+                                                                         .codeContent(containsString("looksLikeUnionOf")) // approx
+                                                               ),
+                                                               allOf(
+                                                               MethodSpecMatchers.methodName(is(equalTo("<init>")))
+                                                               )
 
 
-                )));
+                       )));
 
-            }
-        });
-    }
+      }
+    });
+  }
 
 }

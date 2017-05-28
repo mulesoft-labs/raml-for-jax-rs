@@ -15,7 +15,6 @@
  */
 package org.raml.jaxrs.generator.v10.typegenerators;
 
-import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -113,7 +112,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
                                            Annotations.CLASS_NAME.get(
                                                                       Names.typeName(declaration.name(), "Type"),
                                                                       (Annotable) declaration.implementation()),
-                                           (TypeDeclaration) declaration.implementation()
+                                           (TypeDeclaration) declaration.implementation(), originalType
                 );
         TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
                                                           GeneratorType.generatorFrom(type));
@@ -220,8 +219,8 @@ public class SimpleInheritanceExtension implements TypeExtension {
                                            Annotations.CLASS_NAME.get(
                                                                       Names.typeName(declaration.name(), "Type"),
                                                                       (Annotable) declaration.implementation()),
-                                           (TypeDeclaration) declaration.implementation()
-                );
+                                           (TypeDeclaration) declaration.implementation(),
+                                           originalType);
 
         TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
                                                           GeneratorType.generatorFrom(type));
@@ -316,6 +315,9 @@ public class SimpleInheritanceExtension implements TypeExtension {
 
       case ENUMERATION_TYPE:
         return V10TypeFactory.createEnumerationType(currentBuild, type.getDeclaredType());
+
+      case UNION_TYPE:
+        return V10TypeFactory.createUnion(currentBuild, registry, (V10GType) type.getDeclaredType());
 
       case PLAIN_OBJECT_TYPE:
         return V10TypeFactory.createObjectType(registry, currentBuild, (V10GType) type.getDeclaredType(), false);

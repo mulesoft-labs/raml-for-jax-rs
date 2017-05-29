@@ -86,11 +86,10 @@ public class RamlType implements Annotable, Emittable {
       ParameterizedType pt = (ParameterizedType) ttype;
       ttype = pt.getRawType();
     }
+
     if (ttype instanceof TypeVariable) {
-      System.out.println("Ignored type: " + type);
-      System.out.println("emitter: " + emitter);
-      System.out.println("type.getType(): " + ttype);
-      return;
+      throw new IOException("trying to get annotations from type declaration " + type + " from declaration "
+          + ((TypeVariable) type).getGenericDeclaration());
     }
 
     Class c = (Class) ttype;

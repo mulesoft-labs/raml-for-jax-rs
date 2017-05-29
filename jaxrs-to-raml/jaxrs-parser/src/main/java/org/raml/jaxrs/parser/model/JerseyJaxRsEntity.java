@@ -23,6 +23,7 @@ import org.raml.jaxrs.parser.source.SourceParser;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 /**
  * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
@@ -78,7 +79,12 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
       type = pt.getRawType();
     }
 
-    Class c = (Class) type;
+    if (type instanceof TypeVariable) {
+
+      throw new IllegalArgumentException("trying to get annotations from type declaration " + type + " from declaration "
+          + ((TypeVariable) type).getGenericDeclaration());
+    }
+
     return (Optional<T>) Optional.fromNullable(((Class) type).getAnnotation(annotationType));
   }
 }

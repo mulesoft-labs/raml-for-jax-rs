@@ -54,7 +54,7 @@ public class Main {
       String supportDir = command.getOptionValue("s");
       String resourceDir = command.getOptionValue("r");
       String directory = command.getOptionValue("d");
-      String extensions = command.getOptionValue("e");
+      String extensions = command.getOptionValue("g");
 
       List<String> ramlFiles = command.getArgList();
 

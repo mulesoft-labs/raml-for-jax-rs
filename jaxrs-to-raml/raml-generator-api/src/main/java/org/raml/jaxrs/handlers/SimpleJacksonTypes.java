@@ -32,6 +32,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -90,11 +92,19 @@ public class SimpleJacksonTypes implements TypeHandler {
   private static class SimpleJacksonTypeScanner implements TypeScanner {
 
     @Override
-    public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
+    public void scanType(TypeRegistry typeRegistry, RamlEntity ramlEntity, RamlType ramlType) {
+      Type type = ramlEntity.getType();
+      if (type instanceof ParameterizedType) {
+        ParameterizedType pt = (ParameterizedType) type;
+        type = pt.getRawType();
+      };
+      if (type instanceof TypeVariable) {
+        type = (Class) ((TypeVariable) type).getGenericDeclaration();
+      }
 
-      Class c = (Class) type.getType();
-      forFields(typeRegistry, type, ramlType, c);
-      forProperties(typeRegistry, type, ramlType, c);
+      Class c = (Class) type;
+      forFields(typeRegistry, ramlEntity, ramlType, c);
+      forProperties(typeRegistry, ramlEntity, ramlType, c);
     }
 
     private void forProperties(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType, Class c) {

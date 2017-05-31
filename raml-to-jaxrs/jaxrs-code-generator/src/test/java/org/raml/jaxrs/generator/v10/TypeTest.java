@@ -15,17 +15,30 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.junit.Test;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.matchers.MethodSpecMatchers;
+import org.raml.jaxrs.generator.matchers.ParameterSpecMatchers;
+import org.raml.jaxrs.generator.matchers.TypeSpecMatchers;
 import org.raml.jaxrs.generator.utils.RamlV10;
 
 import java.io.IOException;
+import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Jean-Philippe Belanger on 12/31/16. Just potential zeroes and ones
@@ -33,258 +46,287 @@ import static org.junit.Assert.assertEquals;
 public class TypeTest {
 
 
-  @Test
-  public void union() throws Exception {
+    @Test
+    public void union() throws Exception {
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "simpleUnion.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("UnionType");
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "simpleUnion.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("UnionType");
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        System.err.println(g.build().toString());
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                System.err.println(g.build().toString());
 
-        TypeSpec spec = g.build();
-        assertEquals(1, spec.fieldSpecs.size());
-        assertEquals("java.lang.Object", spec.fieldSpecs.get(0).type.toString());
-        assertEquals("anyType", spec.fieldSpecs.get(0).name);
-      }
-    });
-  }
+                TypeSpec spec = g.build();
+                assertEquals(1, spec.fieldSpecs.size());
+                assertEquals("java.lang.Object", spec.fieldSpecs.get(0).type.toString());
+                assertEquals("anyType", spec.fieldSpecs.get(0).name);
+            }
+        });
+    }
 
-  @Test
-  public void inlineObject() throws Exception {
+    @Test
+    public void inlineObject() throws Exception {
 
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "inlineObject.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "inlineObject.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        checkMethodsOfInterface(spec);
-        // assertEquals("DayType", spec.typeSpecs.get(0).name);
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                checkMethodsOfInterface(spec);
+                // assertEquals("DayType", spec.typeSpecs.get(0).name);
 
-      }
-    }, BuildPhase.INTERFACE);
+            }
+        }, BuildPhase.INTERFACE);
 
 
-  }
+    }
 
-  private void checkMethodsOfInterface(TypeSpec spec) {
-    assertEquals(2, spec.methodSpecs.size());
-    assertEquals("getDay", spec.methodSpecs.get(0).name);
-    assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(0).returnType.toString());
+    private void checkMethodsOfInterface(TypeSpec spec) {
+        assertEquals(2, spec.methodSpecs.size());
+        assertEquals("getDay", spec.methodSpecs.get(0).name);
+        assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(0).returnType.toString());
 
-    assertEquals("setDay", spec.methodSpecs.get(1).name);
-    assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(1).parameters.get(0).type.toString());
-    // assertEquals(1, spec.typeSpecs.size());
-  }
+        assertEquals("setDay", spec.methodSpecs.get(1).name);
+        assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(1).parameters.get(0).type.toString());
+        // assertEquals(1, spec.typeSpecs.size());
+    }
 
 
-  @Test
-  public void scalarTypes() throws Exception {
+    @Test
+    public void scalarTypes() throws Exception {
 
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "scalarTypes.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "scalarTypes.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      int count = 0;
+            int count = 0;
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        if (count == 0) {
-          assertEquals("getDay", spec.methodSpecs.get(0).name);
-          assertEquals("java.lang.String", spec.methodSpecs.get(0).returnType.toString());
-        }
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                if (count == 0) {
+                    assertEquals("getDay", spec.methodSpecs.get(0).name);
+                    assertEquals("java.lang.String", spec.methodSpecs.get(0).returnType.toString());
+                }
 
-        count++;
-      }
-    });
-  }
+                count++;
+            }
+        });
+    }
 
-  @Test
-  public void overrideScalarTypes() throws Exception {
+    @Test
+    public void overrideScalarTypes() throws Exception {
 
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "overrideScalarTypes.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "overrideScalarTypes.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      int count = 0;
+            int count = 0;
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        if (count == 0) {
-          assertEquals("getDay", spec.methodSpecs.get(0).name);
-          assertEquals("java.lang.Long", spec.methodSpecs.get(0).returnType.toString());
-        }
-        count++;
-      }
-    });
-  }
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                if (count == 0) {
+                    assertEquals("getDay", spec.methodSpecs.get(0).name);
+                    assertEquals("java.lang.Long", spec.methodSpecs.get(0).returnType.toString());
+                }
+                count++;
+            }
+        });
+    }
 
-  @Test
-  public void objectTypes() throws Exception {
+    @Test
+    public void objectTypes() throws Exception {
 
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "objectTypes.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "objectTypes.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      int count = 0;
+            int count = 0;
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        if (count == 0) {
-          assertEquals("getDay", spec.methodSpecs.get(0).name);
-          assertEquals("model.ReturnValue", spec.methodSpecs.get(0).returnType.toString());
-        }
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                if (count == 0) {
+                    assertEquals("getDay", spec.methodSpecs.get(0).name);
+                    assertEquals("model.ReturnValue", spec.methodSpecs.get(0).returnType.toString());
+                }
 
-        count++;
-      }
-    });
+                count++;
+            }
+        });
 
 
-  }
+    }
 
-  @Test
-  public void arrayOfScalar() throws Exception {
+    @Test
+    public void arrayOfScalar() throws Exception {
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "arrayOfScalar.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "arrayOfScalar.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      int count = 0;
+            int count = 0;
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        if (count == 0) {
-          assertEquals("getDay", spec.methodSpecs.get(0).name);
-          assertEquals("java.util.List<java.lang.String>", spec.methodSpecs.get(0).returnType.toString());
-        }
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                if (count == 0) {
+                    assertEquals("getDay", spec.methodSpecs.get(0).name);
+                    assertEquals("java.util.List<java.lang.String>", spec.methodSpecs.get(0).returnType.toString());
+                }
 
-        count++;
-      }
-    });
-  }
+                count++;
+            }
+        });
+    }
 
-  @Test
-  public void arrayOfInteger() throws Exception {
+    @Test
+    public void arrayOfInteger() throws Exception {
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "arrayOfInteger.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "arrayOfInteger.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      int count = 0;
+            int count = 0;
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
 
-        if (count == 0) {
-          assertEquals("getDay", spec.methodSpecs.get(0).name);
-          assertEquals("java.util.List<java.lang.Integer>", spec.methodSpecs.get(0).returnType.toString());
-        }
+                if (count == 0) {
+                    assertEquals("getDay", spec.methodSpecs.get(0).name);
+                    assertEquals("java.util.List<java.lang.Integer>", spec.methodSpecs.get(0).returnType.toString());
+                }
 
-        count++;
-      }
-    });
-  }
+                count++;
+            }
+        });
+    }
 
-  @Test
-  public void arrayOfObjects() throws Exception {
+    @Test
+    public void arrayOfObjects() throws Exception {
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "arrayOfObjects.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "arrayOfObjects.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      int count = 0;
+            int count = 0;
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        if (count == 0) {
-          assertEquals("getDay", spec.methodSpecs.get(0).name);
-          assertEquals("java.util.List<model.ReturnValue>", spec.methodSpecs.get(0).returnType.toString());
-        }
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                if (count == 0) {
+                    assertEquals("getDay", spec.methodSpecs.get(0).name);
+                    assertEquals("java.util.List<model.ReturnValue>", spec.methodSpecs.get(0).returnType.toString());
+                }
 
-        count++;
-      }
-    });
-  }
+                count++;
+            }
+        });
+    }
 
-  @Test
-  public void enums() throws Exception {
+    @Test
+    public void arrayOfAnything() throws Exception {
 
-    V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild cb = RamlV10.buildType(this, "enums.raml", registry, "foo", ".");
-    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "arrayOfAnything.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-    gen.output(new CodeContainer<TypeSpec.Builder>() {
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      int count = 0;
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        if (count == 0) {
-          assertEquals("getDay", spec.methodSpecs.get(0).name);
-          assertEquals("DayType", spec.methodSpecs.get(0).returnType.toString());
-        }
+                TypeName type = ParameterizedTypeName.get(List.class, Object.class);
+                assertThat(g.build(), TypeSpecMatchers.methods(
+                        containsInAnyOrder(
+                                allOf(
+                                        MethodSpecMatchers.methodName(is(equalTo("setDay"))),
+                                        MethodSpecMatchers.parameters(contains(ParameterSpecMatchers.type(is(equalTo(type)))))
+                                ),
+                                allOf(
+                                        MethodSpecMatchers.methodName(is(equalTo("getDay")))
+                                )
 
-        count++;
-      }
-    }, BuildPhase.INTERFACE);
+                        )
+                ));
+            }
+        });
+    }
 
-    JavaPoetTypeGenerator gen2 = cb.getBuiltType("TypeTwo");
+    @Test
+    public void enums() throws Exception {
 
-    gen2.output(new CodeContainer<TypeSpec.Builder>() {
+        V10TypeRegistry registry = new V10TypeRegistry();
+        CurrentBuild cb = RamlV10.buildType(this, "enums.raml", registry, "foo", ".");
+        JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
 
-      int count = 0;
+        gen.output(new CodeContainer<TypeSpec.Builder>() {
 
-      @Override
-      public void into(TypeSpec.Builder g) throws IOException {
-        TypeSpec spec = g.build();
-        System.err.println(spec);
-        if (count == 0) {
-          assertEquals(2, spec.enumConstants.size());
-          assertEquals("\"either\"", spec.enumConstants.get("EITHER").anonymousTypeArguments.toString());
-          assertEquals("\"or\"", spec.enumConstants.get("OR").anonymousTypeArguments.toString());
-        }
+            int count = 0;
 
-        count++;
-      }
-    });
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                if (count == 0) {
+                    assertEquals("getDay", spec.methodSpecs.get(0).name);
+                    assertEquals("DayType", spec.methodSpecs.get(0).returnType.toString());
+                }
 
-  }
+                count++;
+            }
+        }, BuildPhase.INTERFACE);
+
+        JavaPoetTypeGenerator gen2 = cb.getBuiltType("TypeTwo");
+
+        gen2.output(new CodeContainer<TypeSpec.Builder>() {
+
+            int count = 0;
+
+            @Override
+            public void into(TypeSpec.Builder g) throws IOException {
+                TypeSpec spec = g.build();
+                System.err.println(spec);
+                if (count == 0) {
+                    assertEquals(2, spec.enumConstants.size());
+                    assertEquals("\"either\"", spec.enumConstants.get("EITHER").anonymousTypeArguments.toString());
+                    assertEquals("\"or\"", spec.enumConstants.get("OR").anonymousTypeArguments.toString());
+                }
+
+                count++;
+            }
+        });
+
+    }
 
 }

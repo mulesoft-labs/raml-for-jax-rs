@@ -34,7 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -239,7 +241,18 @@ public class IndentedAppendableEmitter implements Emitter {
     writer.outdent();
   }
 
-  private TypeHandler pickTypeHandler(final Type type) throws IOException {
+  private TypeHandler pickTypeHandler(Type type) throws IOException {
+
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pt = (ParameterizedType) type;
+      type = pt.getRawType();
+    }
+
+    if (type instanceof TypeVariable) {
+
+      throw new IllegalArgumentException("trying to get annotations from type declaration " + type + " from declaration "
+          + ((TypeVariable) type).getGenericDeclaration());
+    }
 
     Class<?> c = (Class) type;
     RamlGenerator generatorAnnotation = c.getAnnotation(RamlGenerator.class);

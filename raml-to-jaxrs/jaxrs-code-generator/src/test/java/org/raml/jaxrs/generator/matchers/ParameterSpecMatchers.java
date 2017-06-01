@@ -27,7 +27,7 @@ import org.hamcrest.Matcher;
  */
 public class ParameterSpecMatchers {
 
-  public static<Q extends TypeName> Matcher<ParameterSpec> type(Matcher<Q> match) {
+  public static <Q extends TypeName> Matcher<ParameterSpec> type(Matcher<Q> match) {
 
     return new FeatureMatcher<ParameterSpec, Q>(match, "type name", "type name") {
 

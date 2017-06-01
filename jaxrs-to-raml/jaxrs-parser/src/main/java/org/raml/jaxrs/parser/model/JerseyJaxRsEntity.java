@@ -18,12 +18,11 @@ package org.raml.jaxrs.parser.model;
 import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsEntity;
+import org.raml.utilities.types.Cast;
 import org.raml.jaxrs.parser.source.SourceParser;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 
 /**
  * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
@@ -73,18 +72,8 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
 
-    Type type = input;
-    if (type instanceof ParameterizedType) {
-      ParameterizedType pt = (ParameterizedType) type;
-      type = pt.getRawType();
-    }
+    Class castClass = Cast.toClass(input);
 
-    if (type instanceof TypeVariable) {
-
-      throw new IllegalArgumentException("trying to get annotations from type declaration " + type + " from declaration "
-          + ((TypeVariable) type).getGenericDeclaration());
-    }
-
-    return (Optional<T>) Optional.fromNullable(((Class) type).getAnnotation(annotationType));
+    return (Optional<T>) Optional.fromNullable(castClass.getAnnotation(annotationType));
   }
 }

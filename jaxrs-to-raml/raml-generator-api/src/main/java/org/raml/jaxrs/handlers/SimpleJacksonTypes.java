@@ -25,6 +25,7 @@ import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.types.Cast;
 
 import java.beans.Introspector;
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class SimpleJacksonTypes implements TypeHandler {
       throws IOException {
 
     Type javaType = type.getType();
-    Class c = (Class) javaType;
+    Class c = Cast.toClass(javaType);
     if (c.isEnum()) {
 
       writeEnum(registry, writer, c, type);
@@ -82,7 +83,7 @@ public class SimpleJacksonTypes implements TypeHandler {
                          RamlEntity bodyType)
       throws IOException {
 
-    Class type = (Class) bodyType.getType();
+    Class type = Cast.toClass(bodyType.getType());
 
     writer.appendLine("type", type.getSimpleName());
 
@@ -94,15 +95,8 @@ public class SimpleJacksonTypes implements TypeHandler {
     @Override
     public void scanType(TypeRegistry typeRegistry, RamlEntity ramlEntity, RamlType ramlType) {
       Type type = ramlEntity.getType();
-      if (type instanceof ParameterizedType) {
-        ParameterizedType pt = (ParameterizedType) type;
-        type = pt.getRawType();
-      };
-      if (type instanceof TypeVariable) {
-        type = (Class) ((TypeVariable) type).getGenericDeclaration();
-      }
+      Class c = Cast.toClass(type);
 
-      Class c = (Class) type;
       forFields(typeRegistry, ramlEntity, ramlType, c);
       forProperties(typeRegistry, ramlEntity, ramlType, c);
     }

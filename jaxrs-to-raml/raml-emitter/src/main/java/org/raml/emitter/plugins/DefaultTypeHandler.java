@@ -20,6 +20,7 @@ import org.raml.api.ScalarType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
 
@@ -40,7 +41,8 @@ public class DefaultTypeHandler implements TypeHandler {
       writer.appendLine("type", ScalarType.fromType(bodyType.getType()).get().getRamlSyntax());
     } else {
 
-      writer.appendLine("type", ((Class) bodyType.getType()).getSimpleName());
+      Class castClass = Cast.toClass(bodyType.getType());
+      writer.appendLine("type", castClass.getSimpleName());
     }
   }
 }

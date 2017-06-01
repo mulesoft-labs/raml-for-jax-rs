@@ -30,6 +30,7 @@ import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.types.Cast;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,19 +244,9 @@ public class IndentedAppendableEmitter implements Emitter {
 
   private TypeHandler pickTypeHandler(Type type) throws IOException {
 
-    if (type instanceof ParameterizedType) {
-      ParameterizedType pt = (ParameterizedType) type;
-      type = pt.getRawType();
-    }
+    Class castClass = Cast.toClass(type);
 
-    if (type instanceof TypeVariable) {
-
-      throw new IllegalArgumentException("trying to get annotations from type declaration " + type + " from declaration "
-          + ((TypeVariable) type).getGenericDeclaration());
-    }
-
-    Class<?> c = (Class) type;
-    RamlGenerator generatorAnnotation = c.getAnnotation(RamlGenerator.class);
+    RamlGenerator generatorAnnotation = ((Class<?>) castClass).getAnnotation(RamlGenerator.class);
 
     if (generatorAnnotation != null) {
 

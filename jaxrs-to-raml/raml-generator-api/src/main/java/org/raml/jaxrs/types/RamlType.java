@@ -28,6 +28,7 @@ import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.format.Joiner;
 import org.raml.utilities.format.Joiners;
+import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -82,17 +83,7 @@ public class RamlType implements Annotable, Emittable {
 
   public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
     Type ttype = type.getType();
-    if (ttype instanceof ParameterizedType) {
-      ParameterizedType pt = (ParameterizedType) ttype;
-      ttype = pt.getRawType();
-    }
-
-    if (ttype instanceof TypeVariable) {
-      throw new IOException("trying to get annotations from type declaration " + type + " from declaration "
-          + ((TypeVariable) type).getGenericDeclaration());
-    }
-
-    Class c = (Class) ttype;
+    Class c = Cast.toClass(ttype);
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
 

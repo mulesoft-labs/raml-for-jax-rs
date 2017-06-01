@@ -266,12 +266,11 @@ public class TypeTest {
             @Override
             public void into(TypeSpec.Builder g) throws IOException {
 
-                TypeName type = ParameterizedTypeName.get(List.class, Object.class);
                 assertThat(g.build(), TypeSpecMatchers.methods(
                         containsInAnyOrder(
                                 allOf(
                                         MethodSpecMatchers.methodName(is(equalTo("setDay"))),
-                                        MethodSpecMatchers.parameters(contains(ParameterSpecMatchers.type(is(equalTo(type)))))
+                                        MethodSpecMatchers.parameters(contains(ParameterSpecMatchers.type(is(equalTo(ParameterizedTypeName.get(List.class, Object.class))))))
                                 ),
                                 allOf(
                                         MethodSpecMatchers.methodName(is(equalTo("getDay")))

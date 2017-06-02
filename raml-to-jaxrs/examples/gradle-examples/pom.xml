@@ -25,7 +25,7 @@
                     <tasks>
                         <task>build</task>
                     </tasks>
-                    <gradleVersion>2.4</gradleVersion>
+                    <gradleVersion>3.5</gradleVersion>
                 </configuration>
                 <executions>
                     <execution>

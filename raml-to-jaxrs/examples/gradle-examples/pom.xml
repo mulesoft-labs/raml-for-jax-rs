@@ -4,19 +4,18 @@
 
     <parent>
         <groupId>org.raml</groupId>
-        <artifactId>raml-to-jaxrs</artifactId>
+        <artifactId>examples</artifactId>
         <version>2.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>raml-gradle-plugin</artifactId>
-    <name>RAML JAX-RS Gradle Plugin</name>
+    <artifactId>raml-to-jaxrs-gradle-examples</artifactId>
+    <name>RAML JAX-RS Gradle Examples</name>
     <properties>
         <maven.install.skip>false</maven.install.skip>
         <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <build>
-        <sourceDirectory>src/main/groovy</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.fortasoft</groupId>
@@ -24,13 +23,13 @@
                 <version>1.0.8</version>
                 <configuration>
                     <tasks>
-                        <task>install</task>
+                        <task>build</task>
                     </tasks>
-                    <gradleVersion>3.5</gradleVersion>
+                    <gradleVersion>2.4</gradleVersion>
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>invoke</goal>
                         </goals>
@@ -39,20 +38,4 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-<!--
-        <dependency>
-            <groupId>org.gradle</groupId>
-            <artifactId>gradle-tooling-api</artifactId>
-            <version>3.5</version>
-            <type>jar</type>
-            &lt;!&ndash;<scope>provided</scope>&ndash;&gt;
-        </dependency>
--->
-        <dependency>
-            <groupId>org.raml</groupId>
-            <artifactId>jaxrs-code-generator</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>

@@ -17,13 +17,18 @@ package org.raml.jaxrs.gradle.codegen
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*
+import org.gradle.api.InvalidUserDataException
+import org.gradle.api.GradleException
 import org.jsonschema2pojo.AnnotationStyle
 import org.raml.jaxrs.generator.Configuration
+import org.raml.jaxrs.generator.RamlScanner
+import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension
+import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension
 import org.raml.jaxrs.gradle.RamlExtension
 
 /**
  * Custom Gradle task that handles the generation of Java code from RAML
- * configuration files.  This task is automatically registered with Gradle
+ * ramlExtension files.  This task is automatically registered with Gradle
  * by the plugin when included in a build script.
  *
  * @author Jonathan Pearlin
@@ -31,129 +36,110 @@ import org.raml.jaxrs.gradle.RamlExtension
  */
 class CodeGeneratorTask extends DefaultTask {
 
-	RamlExtension configuration
+    RamlExtension ramlExtension
 
-	@Input
-	String getBasePackageName() {
-		configuration.getBasePackageName()
-	}
-
-	@InputFiles
-	Collection<File> getRamlFiles() {
-		configuration.getRamlFiles()
-	}
-
-	@Input
-	JaxrsVersion getJaxrsVersion() {
-		JaxrsVersion.fromAlias(configuration.getJaxrsVersion())
-	}
-
-	@Input
-	AnnotationStyle getJsonMapper() {
-		AnnotationStyle.valueOf(configuration.getJsonMapper().toUpperCase())
-	}
-
-	@OutputDirectory
-	File getOutputDirectory() {
-		configuration.getOutputDirectory()
-	}
-
-	@Input
-	boolean useJsr303Annotations() {
-		configuration.useJsr303Annotations
-	}
-	
-	@Input
-	Map<String, String> getJsonMapperConfiguration(){
-		configuration.jsonMapperConfiguration
-	}
-	
-	@Input
-	String getModelPackageName(){
-		configuration.modelPackageName
-	}
-	
-	@Input
-    Class getMethodThrowException(){
-    	configuration.methodThrowException
-    }
-    
     @Input
-    String getAsyncResourceTrait(){
-    	configuration.asyncResourceTrait
+    AnnotationStyle getJsonMapper() {
+        AnnotationStyle.valueOf(ramlExtension.getJsonMapper().toUpperCase())
     }
-    
-    @Input
-	boolean isEmptyResponseReturnVoid(){
-		configuration.emptyResponseReturnVoid
-    }
-	
-	@Input
-	boolean isGenerateClientInterface(){
-		configuration.generateClientInterface
-    }
-	
-	@Input
-    Class getCustomAnnotator(){
-    	configuration.customAnnotator
-    }
-    
-    @Input
-    ArrayList<String> getIgnoredParameterNames(){
-    	configuration.ignoredParameterNames
-    }
-    
-    @Input
-    boolean isUseTitlePropertyWhenPossible(){
-    	configuration.useTitlePropertyWhenPossible
-    }
-    
-    @Input
-	List<String> getGeneratorExtensions(){
-		configuration.generatorExtensions
-	}
 
-	@TaskAction
-	void generate() {
-		Configuration ramlConfiguration = new Configuration()
-		ramlConfiguration.setBasePackageName(getBasePackageName())
-		ramlConfiguration.setJaxrsVersion(getJaxrsVersion())
-		ramlConfiguration.setJsonMapper(getJsonMapper())
-		ramlConfiguration.setOutputDirectory(getOutputDirectory())
-		ramlConfiguration.setUseJsr303Annotations(useJsr303Annotations())
-		ramlConfiguration.setJsonMapperConfiguration(getJsonMapperConfiguration())
+    @OutputDirectory
+    File getOutputDirectory() {
+        ramlExtension.getOutputDirectory()
+    }
 
-		ramlConfiguration.setModelPackageName(getModelPackageName())
-	    ramlConfiguration.setMethodThrowException(getMethodThrowException())
-	    ramlConfiguration.setAsyncResourceTrait(getAsyncResourceTrait())
-		ramlConfiguration.setEmptyResponseReturnVoid(isEmptyResponseReturnVoid())
-		ramlConfiguration.setGenerateClientInterface(isGenerateClientInterface())
-	    ramlConfiguration.setCustomAnnotator(getCustomAnnotator())
-	    ramlConfiguration.setIgnoredParameterNames(getIgnoredParameterNames())
-	    ramlConfiguration.setUseTitlePropertyWhenPossible(isUseTitlePropertyWhenPossible())
-		
-//		if (getGeneratorExtensions() != null) {
-//			for (String className : getGeneratorExtensions()) {
-//				Class c = Class.forName(className);
-//				if (c == null) {
-//					throw new TaskExecutionException("generatorExtensionClass " + className
-//							+ " cannot be loaded."
-//							+ "Have you installed the correct dependency in the plugin configuration?");
-//				}
-//				if (!((c.newInstance()) instanceof GeneratorExtension)) {
-//					throw new TaskExecutionException("generatorExtensionClass " + className
-//							+ " does not implement" + GeneratorExtension.class.getPackage() + "."
-//							+ GeneratorExtension.class.getName());
-//
-//				}
-//        		logger.info "Add generator extension: $className"
-//				ramlConfiguration.getExtensions().add((GeneratorExtension) c.newInstance());
-//			}
-//    }
+    @Input
+    @Optional
+    Map<String, String> getJsonMapperConfiguration() {
+        ramlExtension.jsonMapperConfiguration
+    }
 
-		getRamlFiles().each { configurationFile ->
-			ramlConfiguration.sourceDirectory = configurationFile.parentFile
-			generator.run(new FileReader(configurationFile), ramlConfiguration, configurationFile.absolutePath)
-		}
-	}
+    @Input
+    String getModelPackageName() {
+        ramlExtension.modelPackageName
+    }
+
+    @Input
+    String getResourcePackageName() {
+        ramlExtension.resourcePackageName
+    }
+
+    @Input
+    String getSupportPackageName() {
+        ramlExtension.supportPackageName
+    }
+
+    @Input
+    String[] getGenerateTypesWith() {
+        ramlExtension.generateTypeWith
+    }
+
+    @Input
+    @Optional
+    String getResourceCreationExtension() {
+        ramlExtension.resourceCreationExtension
+    }
+
+    @Input
+    @Optional
+    String[] getTypeExtensions() {
+        ramlExtension.typeExtensions
+    }
+
+    @Input
+    @Optional
+    String getResourceFinishExtension() {
+        ramlExtension.resourceFinishExtension
+    }
+
+    @TaskAction
+    void generate() {
+        Configuration ramlConfiguration = new Configuration()
+        try {
+            ramlConfiguration.setModelPackage modelPackageName
+            ramlConfiguration.setResourcePackage resourcePackageName
+            ramlConfiguration.setSupportPackage supportPackageName
+            ramlConfiguration.setOutputDirectory outputDirectory
+            ramlConfiguration.setJsonMapper jsonMapper
+            ramlConfiguration.setJsonMapperConfiguration jsonMapperConfiguration
+            ramlConfiguration.setTypeConfiguration generateTypesWith
+
+            if (resourceCreationExtension != null) {
+
+                Class<GlobalResourceExtension> c = Class.forName(resourceCreationExtension) as Class<GlobalResourceExtension>
+                ramlConfiguration.defaultResourceCreationExtension(c)
+
+            }
+
+            if (resourceFinishExtension != null) {
+
+                Class<GlobalResourceExtension> c = Class.forName(resourceFinishExtension) as Class<GlobalResourceExtension>
+                ramlConfiguration.defaultResourceFinishExtension(c)
+            }
+
+            if (getTypeExtensions() != null) {
+                typeExtensions.each { String className ->
+                    Class<LegacyTypeExtension> c = Class.forName(className) as Class<LegacyTypeExtension>
+                    ramlConfiguration.typeExtensions.add c.newInstance() as LegacyTypeExtension
+                }
+            }
+
+        } catch (final Exception e) {
+            throw new InvalidUserDataException("Failed to configure plug-in", e)
+        }
+
+
+        File currentSourcePath = null
+
+        try {
+
+            RamlScanner scanner = new RamlScanner(ramlConfiguration)
+            ramlExtension.ramlFiles.each { File ramlFile ->
+                scanner.handle(ramlFile)
+            }
+        } catch (final Exception e) {
+            throw new GradleException("Error generating Java classes from: " + currentSourcePath, e)
+        }
+    }
+
 }

@@ -19,7 +19,6 @@ import org.gradle.api.Project
 import org.jsonschema2pojo.AnnotationStyle
 import org.junit.ClassRule
 import org.junit.rules.TemporaryFolder
-import org.raml.jaxrs.codegen.core.Configuration.JaxrsVersion
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -44,7 +43,6 @@ class RamlExtensionSpec extends Specification {
         then:
             extension != null
             extension.basePackageName == null
-            extension.jaxrsVersion == JaxrsVersion.JAXRS_1_1.alias
             extension.jsonMapper == AnnotationStyle.JACKSON1.name()
             extension.outputDirectory == new File(project.getBuildDir(), RamlExtension.DEFAULT_OUTPUT_DIRECTORY)
             extension.ramlFiles.size() == 0

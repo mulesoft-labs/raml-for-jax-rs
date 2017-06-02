@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'raml'
+
+
+group 'org.raml'
+version '2.0.1-SNAPSHOT'
+
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'https://repository.mulesoft.org/snapshots/' }
+        maven { url 'https://repository.mulesoft.org/releases/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.raml:raml-gradle-plugin:2.0.1-SNAPSHOT"
+    }
+}
+
+repositories {
+    mavenLocal()
+    //if(additionalRepoUrl) {
+    //    maven { url additionalRepoUrl }
+    //}
+    maven { url 'https://repository.mulesoft.org/snapshots/' }
+    maven { url 'https://repository.mulesoft.org/releases/' }
+    mavenCentral()
+}
+
+project(':jaxb-example') {
+    raml {
+        sourceDirectory = file('src/main/resources')
+        outputDirectory = buildDir
+        supportPackageName = 'org.raml.test.gen'
+        resourcePackageName = 'org.raml.test.res'
+    }
+}
+
+clean {
+    subprojects
+}

@@ -38,7 +38,7 @@ class RamlPlugin implements Plugin<Project> {
 		// This plugin requires the Java plugin, so make sure that is is applied to the project.
 		project.plugins.apply(JavaPlugin)
 
-		// Register the custom configuration extension so that the DSL can parse the configuration.
+		// Register the custom ramlExtension extension so that the DSL can parse the ramlExtension.
 		RamlExtension extension = project.extensions.create('raml', RamlExtension, project)
 		if (!project.configurations.asMap['raml']) {
 			project.configurations.create('raml')
@@ -46,10 +46,10 @@ class RamlPlugin implements Plugin<Project> {
 
 		// Create the JAX-RS code generate task and register it with the project.
 		project.tasks.create(name: 'raml-generate', type: CodeGeneratorTask, {
-			configuration = project.extensions.raml
+			ramlExtension = extension
 		})
 		Task generateTask = project.tasks.getByName('raml-generate')
 		generateTask.setGroup('Source Generation')
-		generateTask.setDescription('Generates JAX-RS annotated Java classes from the provided RAML configuration file(s).')
+		generateTask.setDescription('Generates JAX-RS annotated Java classes from the provided RAML ramlExtension file(s).')
 	}
 }

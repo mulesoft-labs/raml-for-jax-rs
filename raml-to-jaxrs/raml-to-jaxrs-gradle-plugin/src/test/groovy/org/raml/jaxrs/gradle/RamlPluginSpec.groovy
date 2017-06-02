@@ -35,7 +35,7 @@ class RamlPluginSpec extends Specification {
 
     def "test applying the plugin changes to the Gradle project"() {
         when:
-            project.plugins.apply(RamlPlugin)
+            project.pluginManager.apply(RamlPlugin)
         then:
             project.tasks.getByName('raml-generate') != null
     }
@@ -44,7 +44,7 @@ class RamlPluginSpec extends Specification {
         setup:
             project.configurations.create('raml')
         when:
-            project.plugins.apply(RamlPlugin)
+            project.pluginManager.apply(RamlPlugin)
         then:
             project.tasks.getByName('raml-generate') != null
     }

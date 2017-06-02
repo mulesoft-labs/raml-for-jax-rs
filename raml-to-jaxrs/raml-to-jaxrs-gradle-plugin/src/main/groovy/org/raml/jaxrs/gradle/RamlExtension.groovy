@@ -23,8 +23,8 @@ import org.jsonschema2pojo.AnnotationStyle
 import org.jsonschema2pojo.NoopAnnotator
 
 /**
- * Custom Gradle configuration extension that is populated by the {@code raml}
- * configuration DSL in a Gradle build script.
+ * Custom Gradle ramlExtension extension that is populated by the {@code raml}
+ * ramlExtension DSL in a Gradle build script.
  *
  * @author Jonathan Pearlin
  * @since 1.0
@@ -32,12 +32,12 @@ import org.jsonschema2pojo.NoopAnnotator
 class RamlExtension {
 
 	/**
-	 * The default location to look for RAML configuration files.
+	 * The default location to look for RAML ramlExtension files.
 	 */
 	static String DEFAULT_CONFIGURATION_FILES_DIRECTORY = 'src/main/raml'
 
 	/**
-	 * The default extensions to use when searching for RAML configuration files.
+	 * The default extensions to use when searching for RAML ramlExtension files.
 	 */
 	static String[] DEFAULT_CONFIGURATION_FILE_TYPES = ['raml', 'yaml'] as String[]
 
@@ -73,13 +73,13 @@ class RamlExtension {
 	File outputDirectory
 
 	/**
-	 * The path to the directory that contains RAML configuration files.
+	 * The path to the directory that contains RAML ramlExtension files.
 	 * The default is {@code $projectRootDir/src/main/raml}.
 	 */
 	File sourceDirectory
 
 	/**
-	 * The set of RAML configuration files that are the input to the source
+	 * The set of RAML ramlExtension files that are the input to the source
 	 * generation process.
 	 */
 	FileCollection sourcePaths
@@ -95,35 +95,23 @@ class RamlExtension {
 	 * Name of package containing model classes
 	 * @see org.raml.jaxrs.codegen.core.Configuration#isUseJsr303Annotations()
 	 */
-	String modelPackageName = "model";
+	String modelPackageName = "model"
 	
-    Class methodThrowException = Exception.class;
-    
-    String asyncResourceTrait;
-    
-	boolean emptyResponseReturnVoid;
-	
-	boolean generateClientInterface;
-	
-    Class customAnnotator = NoopAnnotator.class;
-    
-    ArrayList<String>ignoredParameterNames=new ArrayList<String>();
-    
-    boolean useTitlePropertyWhenPossible;
-    
-	List<String> extensions = new ArrayList<String>();
+	String resourcePackageName
 
-	List<String> getGeneratorExtensions() {
-		extensions
-	} 
+	String supportPackageName
 
-	void setGeneratorExtensions(List<String> ex) {
-		extensions = ex
-	} 
+	String[] generateTypeWith = new String[0]
+
+	String resourceCreationExtension
+
+	String[] typeExtensions = new String[0]
+
+	String resourceFinishExtension
 
 
 	/**
-	 * Constructs a new configuration extension for the RAML properties.
+	 * Constructs a new ramlExtension extension for the RAML properties.
 	 * @param project The Gradle {@link Project} for the currently executing build.
 	 */
 	RamlExtension(Project project) {
@@ -133,8 +121,8 @@ class RamlExtension {
 	}
 
 	/**
-	 * Returns the set of RAML configuration files.  This method checks the values of the
-	 * following configuration properties in the order listed:
+	 * Returns the set of RAML ramlExtension files.  This method checks the values of the
+	 * following ramlExtension properties in the order listed:
 	 * <br />
 	 * <ol>
 	 *   <li>sourceDirectory</li>
@@ -142,8 +130,8 @@ class RamlExtension {
 	 * </ol>
 	 * <br />
 	 * Note that if the {@code sourceDirectory} is not set, the default value of
-	 * {@code $projectRootDir/src/main/raml} will be scanned for RAML configuration files.
-	 * @return The set of valid RAML configuration files.
+	 * {@code $projectRootDir/src/main/raml} will be scanned for RAML ramlExtension files.
+	 * @return The set of valid RAML ramlExtension files.
 	 */
 	Collection<File> getRamlFiles() {
 		Set<File> ramlFiles = [] as Set

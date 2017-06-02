@@ -143,7 +143,7 @@ public class V10TypeRegistry {
     return fetchType(name, typeDeclaration);
   }
 
-  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration) {
+  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration, V10GType containingType) {
 
     Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
     if (javaType != null) {
@@ -185,7 +185,7 @@ public class V10TypeRegistry {
             V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
                                         typeDeclaration.name(), javaTypeName);
       } else {
-        type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration);
+        type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration, containingType);
       }
       types.put(type.name(), type);
       return type;

@@ -25,6 +25,7 @@ import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.types.Cast;
 
 import java.beans.Introspector;
 import java.io.IOException;
@@ -32,6 +33,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -44,7 +47,7 @@ public class SimpleJacksonTypes implements TypeHandler {
       throws IOException {
 
     Type javaType = type.getType();
-    Class c = (Class) javaType;
+    Class c = Cast.toClass(javaType);
     if (c.isEnum()) {
 
       writeEnum(registry, writer, c, type);
@@ -80,7 +83,7 @@ public class SimpleJacksonTypes implements TypeHandler {
                          RamlEntity bodyType)
       throws IOException {
 
-    Class type = (Class) bodyType.getType();
+    Class type = Cast.toClass(bodyType.getType());
 
     writer.appendLine("type", type.getSimpleName());
 
@@ -90,11 +93,12 @@ public class SimpleJacksonTypes implements TypeHandler {
   private static class SimpleJacksonTypeScanner implements TypeScanner {
 
     @Override
-    public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
+    public void scanType(TypeRegistry typeRegistry, RamlEntity ramlEntity, RamlType ramlType) {
+      Type type = ramlEntity.getType();
+      Class c = Cast.toClass(type);
 
-      Class c = (Class) type.getType();
-      forFields(typeRegistry, type, ramlType, c);
-      forProperties(typeRegistry, type, ramlType, c);
+      forFields(typeRegistry, ramlEntity, ramlType, c);
+      forProperties(typeRegistry, ramlEntity, ramlType, c);
     }
 
     private void forProperties(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType, Class c) {

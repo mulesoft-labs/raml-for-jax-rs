@@ -50,7 +50,7 @@ public class V10GTypeFactory {
                               Annotations.CLASS_NAME.get(
                                                          Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration),
                               true,
-                              getProperties(typeDeclaration, registry), getParents(typeDeclaration, registry));
+                              getProperties(typeDeclaration, registry), getParents(typeDeclaration, registry), null);
   }
 
   public static V10GType createResponseBodyType(V10TypeRegistry registry, Resource resource,
@@ -60,7 +60,7 @@ public class V10GTypeFactory {
                               Annotations.CLASS_NAME.get(
                                                          Names.javaTypeName(resource, method, response, typeDeclaration),
                                                          typeDeclaration), true,
-                              getProperties(typeDeclaration, registry), getParents(typeDeclaration, registry));
+                              getProperties(typeDeclaration, registry), getParents(typeDeclaration, registry), null);
   }
 
   public static V10GType createExplicitlyNamedType(V10TypeRegistry registry, String s,
@@ -69,15 +69,15 @@ public class V10GTypeFactory {
                                                                                        Names.typeName(typeDeclaration.name()),
                                                                                        typeDeclaration), false,
                               getProperties(
-                                            typeDeclaration, registry), getParents(typeDeclaration, registry));
+                                            typeDeclaration, registry), getParents(typeDeclaration, registry), null);
   }
 
   public static V10GType createInlineType(V10TypeRegistry registry, String ramlName,
-                                          String javaClassName, TypeDeclaration typeDeclaration) {
+                                          String javaClassName, TypeDeclaration typeDeclaration, V10GType containingType) {
     return new V10GTypeObject(registry, typeDeclaration, ramlName, Annotations.CLASS_NAME.get(
                                                                                               javaClassName, typeDeclaration),
                               true, getProperties(typeDeclaration, registry),
-                              getParents(typeDeclaration, registry));
+                              getParents(typeDeclaration, registry), containingType);
   }
 
   public static V10GType createScalar(String name, TypeDeclaration typeDeclaration) {

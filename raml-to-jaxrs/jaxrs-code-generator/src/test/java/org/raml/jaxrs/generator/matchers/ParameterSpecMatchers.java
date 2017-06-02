@@ -27,13 +27,13 @@ import org.hamcrest.Matcher;
  */
 public class ParameterSpecMatchers {
 
-  public static Matcher<ParameterSpec> type(Matcher<TypeName> match) {
+  public static <Q extends TypeName> Matcher<ParameterSpec> type(Matcher<Q> match) {
 
-    return new FeatureMatcher<ParameterSpec, TypeName>(match, "type name", "type name") {
+    return new FeatureMatcher<ParameterSpec, Q>(match, "type name", "type name") {
 
       @Override
-      protected TypeName featureValueOf(ParameterSpec actual) {
-        return actual.type;
+      protected Q featureValueOf(ParameterSpec actual) {
+        return (Q) actual.type;
       }
     };
   }

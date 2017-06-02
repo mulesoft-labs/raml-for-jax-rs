@@ -15,17 +15,30 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.junit.Test;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
+import org.raml.jaxrs.generator.matchers.MethodSpecMatchers;
+import org.raml.jaxrs.generator.matchers.ParameterSpecMatchers;
+import org.raml.jaxrs.generator.matchers.TypeSpecMatchers;
 import org.raml.jaxrs.generator.utils.RamlV10;
 
 import java.io.IOException;
+import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Jean-Philippe Belanger on 12/31/16. Just potential zeroes and ones
@@ -79,10 +92,10 @@ public class TypeTest {
   private void checkMethodsOfInterface(TypeSpec spec) {
     assertEquals(2, spec.methodSpecs.size());
     assertEquals("getDay", spec.methodSpecs.get(0).name);
-    assertEquals("DayType", spec.methodSpecs.get(0).returnType.toString());
+    assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(0).returnType.toString());
 
     assertEquals("setDay", spec.methodSpecs.get(1).name);
-    assertEquals("DayType", spec.methodSpecs.get(1).parameters.get(0).type.toString());
+    assertEquals("model.TypeOne.DayType", spec.methodSpecs.get(1).parameters.get(0).type.toString());
     // assertEquals(1, spec.typeSpecs.size());
   }
 
@@ -237,6 +250,35 @@ public class TypeTest {
         }
 
         count++;
+      }
+    });
+  }
+
+  @Test
+  public void arrayOfAnything() throws Exception {
+
+    V10TypeRegistry registry = new V10TypeRegistry();
+    CurrentBuild cb = RamlV10.buildType(this, "arrayOfAnything.raml", registry, "foo", ".");
+    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+
+    gen.output(new CodeContainer<TypeSpec.Builder>() {
+
+      @Override
+      public void into(TypeSpec.Builder g) throws IOException {
+
+        assertThat(g.build(), TypeSpecMatchers.methods(
+            containsInAnyOrder(
+                               allOf(
+                                     MethodSpecMatchers.methodName(is(equalTo("setDay"))),
+                                     MethodSpecMatchers.parameters(contains(ParameterSpecMatchers
+                                         .type(is(equalTo(ParameterizedTypeName.get(List.class, Object.class))))))
+                               ),
+                               allOf(
+                               MethodSpecMatchers.methodName(is(equalTo("getDay")))
+                               )
+
+            )
+            ));
       }
     });
   }

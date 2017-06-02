@@ -58,10 +58,13 @@ public class V10TypeFactory {
   }
 
 
-  public static void createUnion(CurrentBuild currentBuild, V10TypeRegistry v10TypeRegistry, V10GType v10GType) {
+  public static TypeGenerator createUnion(CurrentBuild currentBuild, V10TypeRegistry v10TypeRegistry, V10GType v10GType) {
 
     ClassName unionJavaName = (ClassName) v10GType.defaultJavaTypeName(currentBuild.getModelPackage());
-    currentBuild.newGenerator(v10GType.name(), new UnionTypeGenerator(v10TypeRegistry, v10GType, unionJavaName, currentBuild));
+    UnionTypeGenerator generator = new UnionTypeGenerator(v10TypeRegistry, v10GType, unionJavaName, currentBuild);
+    currentBuild.newGenerator(v10GType.name(), generator);
+
+    return generator;
   }
 
 }

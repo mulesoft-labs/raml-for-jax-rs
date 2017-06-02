@@ -24,6 +24,7 @@ import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.types.Cast;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -56,7 +57,7 @@ public class SimpleJaxbTypes implements TypeHandler {
                          RamlEntity bodyType)
       throws IOException {
 
-    Class type = (Class) bodyType.getType();
+    Class type = Cast.toClass(bodyType.getType());
 
     writer.appendLine("type", type.getSimpleName());
 
@@ -68,7 +69,7 @@ public class SimpleJaxbTypes implements TypeHandler {
     @Override
     public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
 
-      Class c = (Class) type.getType();
+      Class c = Cast.toClass(type.getType());
       XmlAccessorType accessorType = (XmlAccessorType) c.getAnnotation(XmlAccessorType.class);
       XmlAccessType accessType = XmlAccessType.PUBLIC_MEMBER;
 

@@ -1,4 +1,4 @@
-include "jaxb-example"
+include "gradle-jaxb-example"
 
 rootProject.name = 'gradle-examples'
 

@@ -32,7 +32,7 @@ buildscript {
 }
 
 dependencies {
-    compile project(":jaxb-example")
+    compile project(":gradle-jaxb-example")
 }
 
 repositories {

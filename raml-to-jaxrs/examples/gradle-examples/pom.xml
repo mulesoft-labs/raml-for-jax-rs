@@ -21,19 +21,33 @@
                 <groupId>org.fortasoft</groupId>
                 <artifactId>gradle-maven-plugin</artifactId>
                 <version>1.0.8</version>
-                <configuration>
-                    <tasks>
-                        <task>ramltojaxrs</task>
-                        <task>compileJava</task>
-                    </tasks>
-                    <gradleVersion>3.5</gradleVersion>
-                </configuration>
                 <executions>
                     <execution>
+                        <id>compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>invoke</goal>
                         </goals>
+                        <configuration>
+                            <tasks>
+                                <task>ramltojaxrs</task>
+                                <task>compileJava</task>
+                            </tasks>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <task>clean</task>
+                            </tasks>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

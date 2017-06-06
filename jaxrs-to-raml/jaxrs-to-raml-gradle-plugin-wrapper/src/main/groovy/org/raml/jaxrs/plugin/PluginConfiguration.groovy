@@ -24,10 +24,10 @@ import static com.google.common.base.Preconditions.checkNotNull
 
 class PluginConfiguration {
 
-  Path inputPath
-  Path sourceDirectory
-  Path outputDirectory
-  Path ramlFileName
+  File inputPath
+  File sourceDirectory
+  File outputDirectory
+  File ramlFileName
   List<String> translatedAnnotations
 
   /**

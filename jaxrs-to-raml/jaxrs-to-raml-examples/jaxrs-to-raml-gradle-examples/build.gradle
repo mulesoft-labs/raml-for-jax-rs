@@ -20,21 +20,20 @@ buildscript {
 
 repositories {
     mavenLocal()
-    //if(additionalRepoUrl) {
-    //    maven { url additionalRepoUrl }
-    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
 }
 
 project(':jaxrs-to-raml-annotations-annotations') {
-    jaxrstoraml {
-        sourceDirectory = file('src/main/resources')
-        outputDirectory = buildDir
-        supportPackageName = 'org.raml.test.gen'
-        resourcePackageName = 'org.raml.test.res'
+
+/*
+    raml {
+        inputPath = file(buildDir)
+        outputDirectory = file(buildDir)
+        sourceDirectory = file(sourceSets.main.java.srcDir)
     }
+*/
 }
 
 clean {

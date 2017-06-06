@@ -42,22 +42,17 @@ class RamlGeneratorTask extends DefaultTask {
 
     @OutputDirectory
     File getOutputDirectory() {
-        pluginConfiguration.getOutputDirectory().toFile()
-    }
-
-    @Input
-    File getResourceCreationExtension() {
-        return pluginConfiguration.getOutputDirectory().resolve(pluginConfiguration.ramlFileName).toFile()
+        pluginConfiguration.getOutputDirectory()
     }
 
     @InputDirectory
     File getSourceDirectory() {
-        return pluginConfiguration.getSourceDirectory().toFile()
+        return pluginConfiguration.getSourceDirectory()
     }
 
     @InputDirectory
     File getInputPath() {
-        return pluginConfiguration.getInputPath().toFile()
+        return pluginConfiguration.getInputPath()
     }
 
     @Input

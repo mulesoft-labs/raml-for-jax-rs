@@ -17,7 +17,7 @@
         <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
-  <!--  <build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.fortasoft</groupId>
@@ -39,6 +39,5 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>-->
-
+    </build>
 </project>

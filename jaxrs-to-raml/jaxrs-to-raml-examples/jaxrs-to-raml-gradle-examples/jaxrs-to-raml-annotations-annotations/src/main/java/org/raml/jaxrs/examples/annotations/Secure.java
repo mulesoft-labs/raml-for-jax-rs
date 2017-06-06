@@ -1,5 +1,5 @@
-/**
- * Copyright 2013-2015 (c) MuleSoft, Inc.
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,4 +13,18 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-rootProject.name = 'raml-to-jaxrs-gradle-plugin'
+package org.raml.jaxrs.examples.annotations;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+/**
+ * Created by Jean-Philippe Belanger on 4/1/17. Just potential zeroes and ones
+ */
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Secure {
+
+  Class<?> security();
+
+  int level();
+}

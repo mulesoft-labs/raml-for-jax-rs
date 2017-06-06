@@ -1,5 +1,5 @@
-/**
- * Copyright 2013-2015 (c) MuleSoft, Inc.
+/*
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,4 +13,19 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-rootProject.name = 'raml-to-jaxrs-gradle-plugin'
+package org.raml.jaxrs.examples.annotations;
+
+import org.raml.jaxrs.common.Example;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ */
+@XmlRootElement
+public class SubType {
+
+  @XmlElement
+  private int anotherId;
+}

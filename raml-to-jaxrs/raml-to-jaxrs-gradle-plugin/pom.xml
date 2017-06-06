@@ -8,7 +8,7 @@
         <version>2.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>raml-gradle-plugin</artifactId>
+    <artifactId>raml-to-jaxrs-gradle-plugin-wrapper</artifactId>
     <name>RAML JAX-RS Gradle Plugin</name>
     <properties>
         <maven.install.skip>false</maven.install.skip>

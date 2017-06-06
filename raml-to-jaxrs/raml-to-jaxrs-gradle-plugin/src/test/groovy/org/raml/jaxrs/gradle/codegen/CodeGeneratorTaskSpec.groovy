@@ -21,7 +21,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.raml.jaxrs.gradle.RamlExtension
-import org.raml.jaxrs.gradle.RamlPlugin
+import org.raml.jaxrs.gradle.RamlToJaxrsPlugin
 import spock.lang.Specification
 
 class CodeGeneratorTaskSpec extends Specification {
@@ -34,7 +34,7 @@ class CodeGeneratorTaskSpec extends Specification {
     def setup() {
         new File(projectDirectory.root, 'src/main/raml').mkdirs()
         project = ProjectBuilder.builder().withProjectDir(projectDirectory.root).build()
-        project.plugins.apply(RamlPlugin)
+        project.plugins.apply(RamlToJaxrsPlugin)
     }
 
     def "test the generation of JAX-RS annotated resources from a .raml file"() {

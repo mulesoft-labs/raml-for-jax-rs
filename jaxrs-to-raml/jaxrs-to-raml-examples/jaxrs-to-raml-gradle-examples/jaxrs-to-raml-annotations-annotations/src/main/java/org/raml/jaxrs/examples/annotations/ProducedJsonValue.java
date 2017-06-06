@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 (c) MuleSoft, Inc.
+ * Copyright 2013-2017 (c) MuleSoft, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,23 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-apply plugin: 'cobertura'
+package org.raml.jaxrs.examples.annotations;
 
-cobertura {
-    coverageFormats = ['html', 'xml']
-    coverageIgnoreTrivial = true
-    coverageIgnores = ['org.slf4j.Logger.*']
-    coverageReportDir = new File("$buildDir/reports/cobertura")
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.handlers.SimpleJacksonTypes;
+
+/**
+ * Created by Jean-Philippe Belanger on 4/17/17. Just potential zeroes and ones
+ */
+@RamlGenerator(SimpleJacksonTypes.class)
+public class ProducedJsonValue {
+
+  @JsonProperty
+  int id;
+
+  @JsonProperty
+  public String getName() {
+    return null;
+  }
 }
-
-test.finalizedBy(project.tasks.cobertura)

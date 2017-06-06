@@ -38,6 +38,7 @@ class CodeGeneratorTask extends DefaultTask {
 
     RamlExtension ramlExtension
 
+
     @Input
     AnnotationStyle getJsonMapper() {
         AnnotationStyle.valueOf(ramlExtension.getJsonMapper().toUpperCase())

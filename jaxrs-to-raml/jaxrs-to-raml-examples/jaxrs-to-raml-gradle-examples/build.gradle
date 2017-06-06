@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'ramltojaxrs'
+apply plugin: 'jaxrstoraml'
 
 
 group 'org.raml'
@@ -14,7 +14,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.raml:raml-to-jaxrs-gradle-plugin:2.0.1-SNAPSHOT"
+        classpath "org.raml:jaxrs-to-raml-gradle-plugin:2.0.1-SNAPSHOT"
     }
 }
 
@@ -28,8 +28,8 @@ repositories {
     mavenCentral()
 }
 
-project(':jaxb-example') {
-    raml {
+project(':jaxrs-to-raml-annotations-annotations') {
+    jaxrstoraml {
         sourceDirectory = file('src/main/resources')
         outputDirectory = buildDir
         supportPackageName = 'org.raml.test.gen'

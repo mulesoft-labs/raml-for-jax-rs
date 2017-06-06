@@ -13,13 +13,12 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.gradle
+package org.raml.jaxrs.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPlugin
-import org.raml.jaxrs.gradle.codegen.CodeGeneratorTask
 
 /**
  * Gradle plugin implementation class that configures all custom tasks
@@ -30,26 +29,26 @@ import org.raml.jaxrs.gradle.codegen.CodeGeneratorTask
  * @author Jonathan Pearlin
  * @since 1.0
  */
-class RamlPlugin implements Plugin<Project> {
+class JaxRsToRamlPlugin implements Plugin<Project> {
 
 	@Override
-	public void apply(Project project) {
+	void apply(Project project) {
 		project.logger?.info("Applying RAML JAX-RS codegen plugin to ${project.name}...")
 		// This plugin requires the Java plugin, so make sure that is is applied to the project.
 		project.plugins.apply(JavaPlugin)
 
-		// Register the custom ramlExtension extension so that the DSL can parse the ramlExtension.
-		RamlExtension extension = project.extensions.create('raml', RamlExtension, project)
+		// Register the custom pluginConfiguration extension so that the DSL can parse the pluginConfiguration.
+		PluginConfiguration extension = project.extensions.create('raml', PluginConfiguration, project)
 		if (!project.configurations.asMap['raml']) {
 			project.configurations.create('raml')
 		}
 
 		// Create the JAX-RS code generate task and register it with the project.
-		project.tasks.create(name: 'raml-generate', type: CodeGeneratorTask, {
-			ramlExtension = extension
+		project.tasks.create(name: 'raml-generate', type: RamlGeneratorTask, {
+			pluginConfiguration = extension
 		})
 		Task generateTask = project.tasks.getByName('raml-generate')
 		generateTask.setGroup('Source Generation')
-		generateTask.setDescription('Generates JAX-RS annotated Java classes from the provided RAML ramlExtension file(s).')
+		generateTask.setDescription('Generates RAML from a JAX-RS project.')
 	}
 }

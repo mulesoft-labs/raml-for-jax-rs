@@ -154,6 +154,6 @@ class RamlExtension {
 			}
 		}
 
-		ramlFiles
+		return ramlFiles
 	}
 }

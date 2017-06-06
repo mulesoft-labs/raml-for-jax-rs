@@ -15,12 +15,9 @@
  */
 package server.zoo;
 
-import example.model.Ancestor;
-import example.model.Animal;
-import example.model.AnimalImpl;
-import example.model.Gender;
-import example.model.InsectImpl;
-import example.resources.Animals;
+
+import org.raml.test.model.*;
+import org.raml.test.res.Animals;
 
 import javax.ws.rs.core.GenericEntity;
 import java.util.ArrayList;

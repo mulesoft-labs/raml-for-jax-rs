@@ -15,13 +15,12 @@
  */
 package server.zoo;
 
-import example.model.Animal;
-import example.model.AnimalImpl;
-import example.resources.Animals;
 import org.eclipse.jetty.server.Server;
 import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
 import org.glassfish.jersey.moxy.xml.MoxyXmlFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.raml.test.model.Animal;
+import org.raml.test.model.AnimalImpl;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;

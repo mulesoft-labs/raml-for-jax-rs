@@ -97,6 +97,7 @@ class CodeGeneratorTask extends DefaultTask {
     void generate() {
         Configuration ramlConfiguration = new Configuration()
         try {
+
             ramlConfiguration.setModelPackage modelPackageName
             ramlConfiguration.setResourcePackage resourcePackageName
             ramlConfiguration.setSupportPackage supportPackageName

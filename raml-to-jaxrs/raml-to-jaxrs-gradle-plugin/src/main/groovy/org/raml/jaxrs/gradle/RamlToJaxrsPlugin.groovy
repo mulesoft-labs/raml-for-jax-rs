@@ -39,16 +39,16 @@ class RamlToJaxrsPlugin implements Plugin<Project> {
 		project.plugins.apply(JavaPlugin)
 
 		// Register the custom ramlExtension extension so that the DSL can parse the ramlExtension.
-		RamlExtension extension = project.extensions.create('raml', RamlExtension, project)
-		if (!project.configurations.asMap['raml']) {
-			project.configurations.create('raml')
+		RamlExtension extension = project.extensions.create('ramltojaxrs', RamlExtension, project)
+		if (!project.configurations.asMap['ramltojaxrs']) {
+			project.configurations.create('ramltojaxrs')
 		}
 
 		// Create the JAX-RS code generate task and register it with the project.
-		project.tasks.create(name: 'raml-generate', type: CodeGeneratorTask, {
+		project.tasks.create(name: 'ramltojaxrs', type: CodeGeneratorTask, {
 			ramlExtension = extension
 		})
-		Task generateTask = project.tasks.getByName('raml-generate')
+		Task generateTask = project.tasks.getByName('ramltojaxrs')
 		generateTask.setGroup('Source Generation')
 		generateTask.setDescription('Generates JAX-RS annotated Java classes from the provided RAML ramlExtension file(s).')
 	}

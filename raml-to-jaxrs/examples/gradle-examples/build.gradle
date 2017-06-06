@@ -10,6 +10,7 @@ allprojects {
         maven { url 'https://repository.mulesoft.org/releases/' }
         mavenCentral()
     }
+    sourceCompatibility = 1.7
 }
 
 subprojects {
@@ -41,16 +42,6 @@ repositories {
     mavenCentral()
 }
 
-/*
-project(':jaxb-example') {
-    raml {
-        sourceDirectory = file('src/main/resources')
-        outputDirectory = buildDir
-        supportPackageName = 'org.raml.test.gen'
-        resourcePackageName = 'org.raml.test.res'
-    }
-}
-*/
 
 clean {
     subprojects

@@ -1,0 +1,18 @@
+
+sourceCompatibility = 1.5
+
+dependencies {
+    compile 'org.raml:jaxrs-code-generator:2.0.1-SNAPSHOT'
+    compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
+    compile "org.glassfish.jersey.media:jersey-media-moxy:2.24"
+    compile "org.glassfish.jersey.containers:jersey-container-jetty-http:2.24"
+}
+
+raml {
+    sourceDirectory = file('src/main/resources')
+    outputDirectory = buildDir
+    supportPackageName = 'org.raml.test.gen'
+    resourcePackageName = 'org.raml.test.res'
+    modelPackageName = 'org.raml.test.model'
+}
+

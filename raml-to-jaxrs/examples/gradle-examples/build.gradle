@@ -1,9 +1,21 @@
+
 apply plugin: 'java'
-apply plugin: 'ramltojaxrs'
 
+allprojects {
+    group 'org.raml'
+    version '2.0.1-SNAPSHOT'
+    repositories {
+        mavenLocal()
+        maven { url 'https://repository.mulesoft.org/snapshots/' }
+        maven { url 'https://repository.mulesoft.org/releases/' }
+        mavenCentral()
+    }
+}
 
-group 'org.raml'
-version '2.0.1-SNAPSHOT'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'ramltojaxrs'
+}
 
 
 buildscript {
@@ -18,16 +30,18 @@ buildscript {
     }
 }
 
+dependencies {
+    compile project(":jaxb-example")
+}
+
 repositories {
     mavenLocal()
-    //if(additionalRepoUrl) {
-    //    maven { url additionalRepoUrl }
-    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
 }
 
+/*
 project(':jaxb-example') {
     raml {
         sourceDirectory = file('src/main/resources')
@@ -36,6 +50,7 @@ project(':jaxb-example') {
         resourcePackageName = 'org.raml.test.res'
     }
 }
+*/
 
 clean {
     subprojects

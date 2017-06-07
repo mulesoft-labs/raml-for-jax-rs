@@ -33,21 +33,21 @@ class JaxRsToRamlPlugin implements Plugin<Project> {
 
 	@Override
 	void apply(Project project) {
-		project.logger?.info("Applying RAML JAX-RS codegen plugin to ${project.name}...")
+		project.logger?.info("Applying RAML JAX-RS jaxrstoraml plugin to ${project.name}...")
 		// This plugin requires the Java plugin, so make sure that is is applied to the project.
 		project.plugins.apply(JavaPlugin)
 
 		// Register the custom pluginConfiguration extension so that the DSL can parse the pluginConfiguration.
-		PluginConfiguration extension = project.extensions.create('raml', PluginConfiguration, project)
-		if (!project.configurations.asMap['raml']) {
-			project.configurations.create('raml')
+		PluginConfiguration extension = project.extensions.create('jaxrstoraml', PluginConfiguration, project)
+		if (!project.configurations.asMap['jaxrstoraml']) {
+			project.configurations.create('jaxrstoraml')
 		}
 
 		// Create the JAX-RS code generate task and register it with the project.
-		project.tasks.create(name: 'raml-generate', type: RamlGeneratorTask, {
+		project.tasks.create(name: 'jaxrstoraml', type: RamlGeneratorTask, {
 			pluginConfiguration = extension
 		})
-		Task generateTask = project.tasks.getByName('raml-generate')
+		Task generateTask = project.tasks.getByName('jaxrstoraml')
 		generateTask.setGroup('Source Generation')
 		generateTask.setDescription('Generates RAML from a JAX-RS project.')
 	}

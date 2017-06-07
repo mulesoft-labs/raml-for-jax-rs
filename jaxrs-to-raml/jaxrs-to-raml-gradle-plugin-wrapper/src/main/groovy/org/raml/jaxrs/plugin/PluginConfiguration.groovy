@@ -37,4 +37,11 @@ class PluginConfiguration {
   PluginConfiguration(Project project) {
     project.logger?.info "Creating RAML file generation extension for project ${project.name}..."
   }
+
+  List<String> getTranslatedAnnotations() {
+    if ( translatedAnnotations == null ) {
+      return Collections.emptyList()
+    }
+    return translatedAnnotations
+  }
 }

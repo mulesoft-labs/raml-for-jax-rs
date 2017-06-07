@@ -64,16 +64,20 @@ class RamlGeneratorTask extends DefaultTask {
     @TaskAction
     void generate() {
 
-        Path jaxRsUrl = pluginConfiguration.getInput()
-        Path sourceCodeRoot = pluginConfiguration.getSourceDirectory()
+        File jaxRsUrl = pluginConfiguration.getInputPath()
+        File sourceCodeRoot = pluginConfiguration.getSourceDirectory()
 
-        pluginConfiguration.getOutputDirectory().toFile().mkdirs()
+        pluginConfiguration.getOutputDirectory().mkdirs()
 
         Path finalOutputFile =
-                pluginConfiguration.getOutputDirectory().resolve(pluginConfiguration.getRamlFileName())
+                pluginConfiguration.getOutputDirectory().toPath().resolve(pluginConfiguration.getRamlFileName().toPath())
+
+        println "argh!!! $finalOutputFile"
 
         String applicationName =
-                FilenameUtils.removeExtension(pluginConfiguration.getRamlFileName().getFileName().toString())
+                FilenameUtils.removeExtension(pluginConfiguration.getRamlFileName().toPath().getFileName().toString())
+
+        println "argh1!!! $applicationName"
 
         RamlConfiguration ramlConfiguration =
                 DefaultRamlConfiguration.forApplication(applicationName, FluentIterable.from(pluginConfiguration.getTranslatedAnnotations())
@@ -92,8 +96,8 @@ class RamlGeneratorTask extends DefaultTask {
 
         OneStopShop oneStopShop =
                 OneStopShop.builder()
-                        .withJaxRsClassesRoot(jaxRsUrl)
-                        .withSourceCodeRoot(sourceCodeRoot)
+                        .withJaxRsClassesRoot(jaxRsUrl.toPath())
+                        .withSourceCodeRoot(sourceCodeRoot.toPath())
                         .withRamlOutputFile(finalOutputFile)
                         .withRamlConfiguration(ramlConfiguration).build()
 

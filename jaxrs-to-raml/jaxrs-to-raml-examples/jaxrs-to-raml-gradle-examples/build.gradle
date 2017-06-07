@@ -1,10 +1,22 @@
-apply plugin: 'java'
-apply plugin: 'jaxrstoraml'
 
 
-group 'org.raml'
-version '2.0.1-SNAPSHOT'
 
+allprojects {
+    apply plugin: 'java'
+    group 'org.raml'
+    version '2.0.1-SNAPSHOT'
+    repositories {
+        mavenLocal()
+        maven { url 'https://repository.mulesoft.org/snapshots/' }
+        maven { url 'https://repository.mulesoft.org/releases/' }
+        mavenCentral()
+    }
+    sourceCompatibility = 1.7
+}
+
+subprojects {
+    apply plugin: 'jaxrstoraml'
+}
 
 buildscript {
     repositories {
@@ -25,16 +37,6 @@ repositories {
     mavenCentral()
 }
 
-project(':jaxrs-to-raml-annotations-annotations') {
-
-/*
-    raml {
-        inputPath = file(buildDir)
-        outputDirectory = file(buildDir)
-        sourceDirectory = file(sourceSets.main.java.srcDir)
-    }
-*/
-}
 
 clean {
     subprojects

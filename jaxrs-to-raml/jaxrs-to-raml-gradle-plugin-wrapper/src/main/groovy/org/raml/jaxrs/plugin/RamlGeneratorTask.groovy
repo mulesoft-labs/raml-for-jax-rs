@@ -61,6 +61,12 @@ class RamlGeneratorTask extends DefaultTask {
         return pluginConfiguration.getTranslatedAnnotations()
     }
 
+    @Input
+    String getRamlFileName() {
+
+        return pluginConfiguration.getRamlFileName();
+    }
+
     @TaskAction
     void generate() {
 
@@ -70,14 +76,11 @@ class RamlGeneratorTask extends DefaultTask {
         pluginConfiguration.getOutputDirectory().mkdirs()
 
         Path finalOutputFile =
-                pluginConfiguration.getOutputDirectory().toPath().resolve(pluginConfiguration.getRamlFileName().toPath())
+                pluginConfiguration.getOutputDirectory().toPath().resolve(pluginConfiguration.getRamlFileName())
 
-        println "argh!!! $finalOutputFile"
 
         String applicationName =
-                FilenameUtils.removeExtension(pluginConfiguration.getRamlFileName().toPath().getFileName().toString())
-
-        println "argh1!!! $applicationName"
+                FilenameUtils.removeExtension(pluginConfiguration.getRamlFileName())
 
         RamlConfiguration ramlConfiguration =
                 DefaultRamlConfiguration.forApplication(applicationName, FluentIterable.from(pluginConfiguration.getTranslatedAnnotations())

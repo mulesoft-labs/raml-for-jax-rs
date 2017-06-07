@@ -1,4 +1,4 @@
 rootProject.name = 'jaxrs-to-raml-gradle-examples'
 
-include "jaxrs-to-raml-annotations-annotations"
+include "gradle-jaxrs-to-raml-annotations"
 

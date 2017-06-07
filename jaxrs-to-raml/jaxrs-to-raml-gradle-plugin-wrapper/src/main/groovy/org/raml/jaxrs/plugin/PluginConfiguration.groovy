@@ -27,7 +27,7 @@ class PluginConfiguration {
   File inputPath
   File sourceDirectory
   File outputDirectory
-  File ramlFileName
+  String ramlFileName
   List<String> translatedAnnotations
 
   /**

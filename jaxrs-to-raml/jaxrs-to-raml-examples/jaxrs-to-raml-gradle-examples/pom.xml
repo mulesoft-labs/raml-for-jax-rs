@@ -38,6 +38,19 @@
                             <gradleVersion>3.5</gradleVersion>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <task>clean</task>
+                            </tasks>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

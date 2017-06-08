@@ -1,6 +1,4 @@
-
 dependencies {
-    compile 'org.raml:jaxrs-code-generator:2.0.1-SNAPSHOT'
     compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
     compile "org.raml:raml-generator-api:2.0.1-SNAPSHOT"
     compile "org.raml:raml-emitter:2.0.1-SNAPSHOT"
@@ -13,4 +11,3 @@ jaxrstoraml {
     sourceDirectory = file('src/main/java')
     ramlFileName = file("build/api.raml")
 }
-

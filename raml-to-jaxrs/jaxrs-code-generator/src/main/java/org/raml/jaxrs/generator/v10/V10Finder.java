@@ -20,6 +20,7 @@ import org.raml.jaxrs.generator.GFinderListener;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -66,7 +67,7 @@ public class V10Finder implements GFinder {
       resourceTypes(resource.resources(), listener);
       for (TypeDeclaration parameterTypeDeclaration : resource.uriParameters()) {
 
-        TypeDeclaration supertype = foundTypes.get(parameterTypeDeclaration.type());
+        TypeDeclaration supertype = pullSupertype(parameterTypeDeclaration);
         if (supertype == null || !TypeUtils.shouldCreateNewClass(parameterTypeDeclaration, supertype)) {
           continue;
         }
@@ -86,7 +87,7 @@ public class V10Finder implements GFinder {
                              GFinderListener listener) {
     for (TypeDeclaration typeDeclaration : body) {
 
-      TypeDeclaration supertype = foundTypes.get(typeDeclaration.type());
+      TypeDeclaration supertype = pullSupertype(typeDeclaration);
       if (supertype == null || !TypeUtils.shouldCreateNewClass(typeDeclaration, supertype)) {
         continue;
       }
@@ -97,7 +98,7 @@ public class V10Finder implements GFinder {
 
     for (TypeDeclaration parameterTypeDeclaration : method.queryParameters()) {
 
-      TypeDeclaration supertype = foundTypes.get(parameterTypeDeclaration.type());
+      TypeDeclaration supertype = pullSupertype(parameterTypeDeclaration);
       if (supertype == null || !TypeUtils.shouldCreateNewClass(parameterTypeDeclaration, supertype)) {
         continue;
       }
@@ -108,7 +109,7 @@ public class V10Finder implements GFinder {
 
     for (Response response : method.responses()) {
       for (TypeDeclaration typeDeclaration : response.body()) {
-        TypeDeclaration supertype = foundTypes.get(typeDeclaration.type());
+        TypeDeclaration supertype = pullSupertype(typeDeclaration);
         if (supertype == null || !TypeUtils.shouldCreateNewClass(typeDeclaration, supertype)) {
           continue;
         }
@@ -118,6 +119,20 @@ public class V10Finder implements GFinder {
       }
     }
   }
+
+  private TypeDeclaration pullSupertype(TypeDeclaration typeDeclaration) {
+
+    // This allows us to find enumerations.
+    if (typeDeclaration instanceof StringTypeDeclaration && typeDeclaration.type() != null
+        && typeDeclaration.type().equals("string")
+        && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
+
+      return typeDeclaration.parentTypes().get(0);
+    }
+
+    return foundTypes.get(typeDeclaration.type());
+  }
+
 
   private void localTypes(List<TypeDeclaration> types, GFinderListener listener) {
 

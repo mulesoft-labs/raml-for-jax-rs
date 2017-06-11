@@ -94,9 +94,4 @@ public class TypeUtils {
   }
 
 
-  public static boolean isComposite(GParameter declaration) {
-
-    return declaration.isComposite();
-  }
-
 }

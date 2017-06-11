@@ -203,12 +203,20 @@ public class Names {
   }
 
 
+  public static String javaTypeName(Resource resource, TypeDeclaration declaration) {
+    return typeName(resource.resourcePath(), declaration.name());
+  }
+
   public static String javaTypeName(Resource resource, Method method, TypeDeclaration declaration) {
     return typeName(resource.resourcePath(), method.method(), declaration.name());
   }
 
   public static String ramlTypeName(Resource resource, Method method, TypeDeclaration declaration) {
     return resource.resourcePath() + method.method() + declaration.name();
+  }
+
+  public static String ramlTypeName(Resource resource, TypeDeclaration declaration) {
+    return resource.resourcePath() + declaration.name();
   }
 
   public static String javaTypeName(Resource resource, Method method, Response response,

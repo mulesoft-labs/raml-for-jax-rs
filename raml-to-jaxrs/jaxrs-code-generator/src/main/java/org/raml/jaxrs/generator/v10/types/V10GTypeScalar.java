@@ -56,6 +56,11 @@ public class V10GTypeScalar extends V10GTypeHelper {
   }
 
   @Override
+  public boolean isScalar() {
+    return true;
+  }
+
+  @Override
   public TypeName defaultJavaTypeName(String pack) {
 
     String annotation = Annotations.CLASS_NAME.get((String) null, scalar);

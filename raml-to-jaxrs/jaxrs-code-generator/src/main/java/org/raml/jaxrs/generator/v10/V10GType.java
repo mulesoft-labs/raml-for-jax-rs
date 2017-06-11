@@ -48,6 +48,8 @@ public interface V10GType extends GType {
   @Override
   boolean isXml();
 
+  boolean isScalar();
+
   @Override
   boolean isObject();
 
@@ -84,6 +86,7 @@ public interface V10GType extends GType {
 
 
   Collection<V10GType> childClasses(String typeName);
+
 
 
   @Override

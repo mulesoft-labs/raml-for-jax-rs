@@ -165,6 +165,35 @@ uses:
   SongsLib: libraries/songs-library.raml
   ApiLib: libraries/api-library.raml
 
+/mappings:
+  description: Maps stuff
+  post:
+    description: Create a mapping
+    body:
+      application/json:
+        type: string
+    responses:
+      201:
+        body:
+         application/json:
+           type: string
+  get:
+    description: Retrieve a mapping
+    queryParameters:
+      source_system:
+        enum: [SYS1, SYS2]
+      source_system_id:
+        type: string
+      destination_system:
+        enum: [SYS1, SYS2]
+    responses:
+      200:
+        description: Returns a single mapping that matches the criteria
+        body:
+          application/json:
+            type: string
+      404:
+        description: No mappings were found with the given search criteria
 /api:
   get:
     queryString:

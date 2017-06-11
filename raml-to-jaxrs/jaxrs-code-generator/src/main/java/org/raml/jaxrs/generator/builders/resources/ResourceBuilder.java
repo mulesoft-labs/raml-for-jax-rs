@@ -383,7 +383,7 @@ public class ResourceBuilder implements ResourceGenerator {
               .build());
 
     }
-    for (GParameter typeDeclaration : gMethod.queryParameters()) {
+    for (GParameter gParameter : gMethod.queryParameters()) {
       /*
        * if (TypeUtils.isComposite(typeDeclaration)) { throw new GenerationException("query parameter is composite: " +
        * typeDeclaration); }
@@ -392,10 +392,10 @@ public class ResourceBuilder implements ResourceGenerator {
       methodSpec.addParameter(
           ParameterSpec
               .builder(
-                       typeDeclaration.type().defaultJavaTypeName(build.getModelPackage()),
-                       Names.methodName(typeDeclaration.name()))
+                       gParameter.type().defaultJavaTypeName(build.getModelPackage()),
+                       Names.methodName(gParameter.name()))
               .addAnnotation(
-                             AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", typeDeclaration.name())
+                             AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
                                  .build())
               .build());
     }

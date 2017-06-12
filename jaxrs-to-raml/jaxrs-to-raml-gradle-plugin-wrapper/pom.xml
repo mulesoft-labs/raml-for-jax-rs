@@ -56,6 +56,10 @@
                                     <directory>.gradle</directory>
                                     <followSymlinks>false</followSymlinks>
                                 </fileset>
+                                <fileset>
+                                    <directory>build</directory>
+                                    <followSymlinks>false</followSymlinks>
+                                </fileset>
                             </filesets>
                         </configuration>
                     </execution>

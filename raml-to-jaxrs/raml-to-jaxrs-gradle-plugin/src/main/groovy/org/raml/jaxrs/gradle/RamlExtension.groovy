@@ -95,7 +95,7 @@ class RamlExtension {
 	/**
 	 * Annotate raml 1.0 types with either jackson, jaxb or gson
 	 */
-	String[] generateTypeWith = new String[0]
+	String[] generateTypesWith = new String[0]
 
 	/**
 	 * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension)

@@ -101,7 +101,7 @@ class RamlExtension {
 
 	String supportPackageName
 
-	String[] generateTypeWith = new String[0]
+	String[] generateTypesWith = new String[0]
 
 	String resourceCreationExtension
 

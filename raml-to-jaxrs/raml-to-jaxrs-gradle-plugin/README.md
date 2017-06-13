@@ -10,7 +10,7 @@ To use it, simply include the required plugin dependency via `buildscript {}` an
 
 ```groovy
 apply plugin: 'java'
-apply plugin: 'raml'
+apply plugin: 'ramltojaxrs'
 
 group = 'example'
 version = '0.1'
@@ -23,7 +23,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath "org.raml:raml-gradle-plugin:1.0-SNAPSHOT"
+    classpath "org.raml:raml-to-jaxrs-gradle-plugin:2.0.1-SNAPSHOT"
   }
 }
 
@@ -38,53 +38,35 @@ dependencies {
     // Your project's dependencies here
 }
 
-raml {
-    basePackageName = 'example.resources'
+ramltojaxrs {
+    sourceDirectory = file('src/main/resources')
+    outputDirectory = new File(buildDir,'generated')
+    supportPackageName = 'org.raml.test.gen'
+    resourcePackageName = 'org.raml.test.res'
+    modelPackageName = 'org.raml.test.model'
 }
 ```
 
 ## Configuration
 
-The Gradle plugin supports the following configuration options, defined via the `raml` closure:
+The Gradle plugin supports the following configuration options, defined via the `ramltojaxrs` closure:
 
-|Property|Description|Default Value|Required|
-|:-------|:----------|:------------|--------|
-|**basePackageName**|The base Java package name used for the generated JAX-RS resource files.|**Yes**|
-|**jaxrsVersion**|The JAX-RS target version|*1.1*|No|
-|**jsonMapper**|The JSON mapper target version|*JACKSON1*|No|
-|**outputDirectory**|The output directory for the generated JAX-RS resource source files.|*$project.buildDir/generated-sources/raml-jaxrs*|No|
-|**sourceDirectory**|The path to the directory containing source .raml and .yaml files.|*$project.rootDir/src/main/raml*|No|
-|**sourcePaths**|The set of source .raml and .yaml files in addition to those found in the source directory.||No|
-|**useJsr303Annotations**|Determines whether or not JSR-303 annotations will be used in the generated source|*false*|No|
+|Property|Description|Required|
+|:-------|:----------|--------|
+|**sourceDirectory**|The path to the directory containing source .raml files|**Yes**|
+|**outputDirectory**|The output directory for the generated JAX-RS resource source files.|**Yes**|
+|**supportPackageName**|The package used for support classes.|**Yes**|
+|**resourcePackageName**|The package used for resource classes.|**Yes**|
+|**modelPackageName**|The package used for type classes.|**Yes**|
+|**jsonMapper**|The annotation style used for jsonschema objects (jsonschema2pojo)|No|
+|**jsonMapperConfiguration**|Options for jsonschema objects (jsonschema2pojo)|No|
+|**generateTypesWith**|options for annotating RAML types|No, but honestly if you put nothing in here...|
 
-For example:
-
-```groovy
-raml {
-    basePackageName = 'example.resources'
-    jaxrsVersion = '2.0'
-    jsonMapper = 'JACKSON2'
-    outputDirectory = 'src/main/gen-src'
-    sourceDirectory = 'src/main/resources/other'
-    useJsr303Annotations = true
-}
-```
-
-or
-
-```groovy
-raml {
-    basePackageName = 'example.resources'
-    jaxrsVersion = '2.0'
-    jsonMapper = 'JACKSON2'
-    outputDirectory = 'src/main/gen-src'
-    sourcePaths = files('src/main/resources/other/my.raml', 'src/main/resources/base.yaml')
-    useJsr303Annotations = true
-}
-```
 
 ## Code Generation
 
-Once the plugin has been applied and configured, execute the `raml-generate` task to generated the JAX-RS resources:
+Once the plugin has been applied and configured, execute the `ramltojaxrs` task to generated the JAX-RS resources:
 
-    ./gradlew raml-generate
+    ./gradlew compileJava ramltojaxrs
+
+There is an example [here](../examples/gradle-examples/gradle-jaxb-example)

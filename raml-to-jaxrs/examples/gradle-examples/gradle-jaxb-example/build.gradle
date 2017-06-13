@@ -14,5 +14,6 @@ ramltojaxrs {
     supportPackageName = 'org.raml.test.gen'
     resourcePackageName = 'org.raml.test.res'
     modelPackageName = 'org.raml.test.model'
+    generateTypesWith = ['jaxb']
 }
 

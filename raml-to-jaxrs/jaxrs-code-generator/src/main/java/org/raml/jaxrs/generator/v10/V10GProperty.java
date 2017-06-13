@@ -25,52 +25,56 @@ import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
  */
 public class V10GProperty implements GProperty {
 
-  private final TypeDeclaration input;
-  private final GType type;
+    private final TypeDeclaration input;
+    private final GType type;
 
-  public V10GProperty(TypeDeclaration input, GType type) {
-    this.input = input;
-    this.type = type;
-  }
-
-  @Override
-  public TypeDeclaration implementation() {
-    return input;
-  }
-
-  public XMLFacetInfo xml() {
-
-    if (input.xml() == null) {
-      return new NullXMLFacetInfo();
+    public V10GProperty(TypeDeclaration input, GType type) {
+        this.input = input;
+        this.type = type;
     }
-    return input.xml();
-  }
 
-  @Override
-  public String name() {
-    return input.name();
-  }
+    @Override
+    public TypeDeclaration implementation() {
+        return input;
+    }
 
-  @Override
-  public GType type() {
-    return type;
-  }
+    public XMLFacetInfo xml() {
 
-  @Override
-  public boolean isInline() {
-    return TypeUtils.shouldCreateNewClass(input, input.parentTypes()
-        .toArray(new TypeDeclaration[0]));
-  }
+        if (input.xml() == null) {
+            return new NullXMLFacetInfo();
+        }
+        return input.xml();
+    }
 
-  @Override
-  public GProperty overrideType(GType type) {
+    @Override
+    public String name() {
+        return input.name();
+    }
 
-    return new V10GProperty(input, type);
-  }
+    @Override
+    public GType type() {
+        return type;
+    }
 
-  @Override
-  public String toString() {
-    return "V10GProperty{" + "name=" + input.name() + ", type=" + type + '}';
-  }
+    @Override
+    public boolean isInline() {
+        return TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]));
+    }
+
+    @Override
+    public GProperty overrideType(GType type) {
+
+        return new V10GProperty(input, type);
+    }
+
+    @Override
+    public String getDefaultValue() {
+        return input.defaultValue();
+    }
+
+    @Override
+    public String toString() {
+        return "V10GProperty{" + "name=" + input.name() + ", type=" + type + '}';
+    }
 
 }

@@ -20,7 +20,6 @@ import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.jsonschema2pojo.AnnotationStyle
-import org.jsonschema2pojo.NoopAnnotator
 
 /**
  * Custom Gradle ramlExtension extension that is populated by the {@code raml}
@@ -47,28 +46,22 @@ class RamlExtension {
 	static String DEFAULT_OUTPUT_DIRECTORY = 'generated-sources/raml-jaxrs'
 
 	/**
-	 * The base package name of the generated source.
-	 * @see org.raml.jaxrs.codegen.core.Configuration#getBasePackageName()
-	 */
-	String basePackageName
-
-	/**
 	 * The JSON mapper implementation to be during source generation.  The
 	 * default is {@code Jackson 1}.
-	 * @see org.raml.jaxrs.codegen.core.Configuration#getJsonMapper()
+	 * @see org.raml.jaxrs.generator.Configuration#jsonMapper
 	 */
 	String jsonMapper = AnnotationStyle.JACKSON1.name()
 	
 	/**
 	 * Configuration parameters for JSON mapper
-	 * @see org.raml.jaxrs.codegen.core.Configuration#getJsonMapperConfiguration()
+	 * @see org.raml.jaxrs.generator.Configuration#jsonMapperConfiguration
 	 */	
 	Map<String, String> jsonMapperConfiguration
 
 	/**
 	 * The output directory that will be the target of the generated source.  The default is
 	 * {@code $projectBuildDir/generated-sources/raml}.
-	 * @see org.raml.jaxrs.codegen.core.Configuration#getOutputDirectory()
+	 * @see org.raml.jaxrs.generator.Configuration#getOutputDirectory()
 	 */
 	File outputDirectory
 
@@ -85,28 +78,38 @@ class RamlExtension {
 	FileCollection sourcePaths
 
 	/**
-	 * Determines whether or not JSR-303 annotations should be used in the generated source.
-	 * Defaults to {@code false}.
-	 * @see org.raml.jaxrs.codegen.core.Configuration#isUseJsr303Annotations()
-	 */
-	boolean useJsr303Annotations = false
-	
-	/**
-	 * Name of package containing model classes
-	 * @see org.raml.jaxrs.codegen.core.Configuration#isUseJsr303Annotations()
+	 * Name of package containing generated model classes
 	 */
 	String modelPackageName = "model"
-	
+
+	/**
+	 * Name of package containing generated model resources
+	 */
 	String resourcePackageName
 
+	/**
+	 * Name of package containing generated support classes
+	 */
 	String supportPackageName
 
-	String[] generateTypesWith = new String[0]
+	/**
+	 * Annotate raml 1.0 types with either jackson, jaxb or gson
+	 */
+	String[] generateTypeWith = new String[0]
 
+	/**
+	 * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension)
+	 */
 	String resourceCreationExtension
 
+	/**
+	 * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension)
+	 */
 	String[] typeExtensions = new String[0]
 
+	/**
+	 * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.LegacyTypeExtension)
+	 */
 	String resourceFinishExtension
 
 

@@ -46,7 +46,7 @@ public class V10GResource implements GResource {
   }
 
   public V10GResource(final V10TypeRegistry registry, final GAbstractionFactory factory,
-                      GResource parent, Resource resource) {
+                      final GResource parent, final Resource resource) {
     this.factory = factory;
     this.parent = parent;
     this.resource = resource;
@@ -66,7 +66,13 @@ public class V10GResource implements GResource {
           @Nullable
           @Override
           public GParameter apply(@Nullable TypeDeclaration input) {
-            return new V10PGParameter(registry, input);
+
+            if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
+              return new V10PGParameter(input, registry.fetchType(resource, input));
+            } else {
+
+              return new V10PGParameter(input, registry.fetchType(input.type(), input));
+            }
           }
         });
 

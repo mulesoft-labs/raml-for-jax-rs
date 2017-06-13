@@ -19,7 +19,6 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
@@ -43,11 +42,12 @@ public class V10GTypeObject extends V10GTypeHelper {
   private final boolean inline;
   private final List<V10GProperty> properties;
   private final List<V10GType> parentTypes;
+  private V10GType containingType;
 
 
   V10GTypeObject(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName,
                  String defaultJavatypeName, boolean inline, List<V10GProperty> properties,
-                 List<V10GType> parentTypes) {
+                 List<V10GType> parentTypes, V10GType containingType) {
     super(realName);
     this.registry = registry;
     this.typeDeclaration = typeDeclaration;
@@ -56,6 +56,7 @@ public class V10GTypeObject extends V10GTypeHelper {
     this.inline = inline;
     this.properties = properties;
     this.parentTypes = parentTypes;
+    this.containingType = containingType;
 
     if (isObject() && !name.equals("object")) {
 
@@ -97,7 +98,16 @@ public class V10GTypeObject extends V10GTypeHelper {
   public TypeName defaultJavaTypeName(String pack) {
 
     if (isInline()) {
-      return ClassName.get("", defaultJavatypeName);
+      if (containingType != null) {
+
+
+        String fullContainer = containingType.defaultJavaTypeName(pack).toString();
+        String classNames = fullContainer.substring(pack.length() + 1);
+
+        return ClassName.get(pack, classNames, defaultJavatypeName);
+      } else {
+        return ClassName.get("", defaultJavatypeName);
+      }
     } else {
       return ClassName.get(pack, defaultJavatypeName);
     }
@@ -106,14 +116,22 @@ public class V10GTypeObject extends V10GTypeHelper {
   public ClassName javaImplementationName(String pack) {
 
     if (isInline()) {
+      if (containingType != null) {
+        String fullContainer = containingType.javaImplementationName(pack).toString();
+        String classNames = fullContainer.substring(pack.length() + 1);
 
-      return ClassName.get("",
-                           Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
+        return ClassName.get(pack, classNames,
+                             Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
+      } else {
+        return ClassName.get("",
+                             Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
+      }
     } else {
       return ClassName.get(pack,
                            Annotations.IMPLEMENTATION_CLASS_NAME.get(defaultJavatypeName + "Impl", typeDeclaration));
     }
   }
+
 
   public boolean isInline() {
     return inline;

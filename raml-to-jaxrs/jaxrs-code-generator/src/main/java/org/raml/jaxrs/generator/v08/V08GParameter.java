@@ -44,11 +44,6 @@ public class V08GParameter implements GParameter {
   }
 
   @Override
-  public boolean isComposite() {
-    return false;
-  }
-
-  @Override
   public GType type() {
     return type;
   }

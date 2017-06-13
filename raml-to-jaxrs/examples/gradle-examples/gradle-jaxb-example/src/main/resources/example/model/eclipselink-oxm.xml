@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<xml-bindings
+        xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm"
+        package-name="example.model">
+
+    <java-types>
+        <java-type name="example.model.AnimalImpl" super-type="example.model.Animal" />
+        <java-type name="example.model.InsectImpl" super-type="example.model.Insect" />
+    </java-types>
+</xml-bindings>

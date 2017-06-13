@@ -18,6 +18,7 @@ package org.raml.jaxrs.parser.model;
 import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsEntity;
+import org.raml.utilities.types.Cast;
 import org.raml.jaxrs.parser.source.SourceParser;
 
 import java.lang.annotation.Annotation;
@@ -58,7 +59,6 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
     return new JerseyJaxRsEntity(input.getType(), sourceParser);
   }
 
-
   static Optional<JaxRsEntity> create(Type input, SourceParser sourceParser) {
 
     if (input == null) {
@@ -72,6 +72,8 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
 
-    return (Optional<T>) Optional.fromNullable(((Class) input).getAnnotation(annotationType));
+    Class castClass = Cast.toClass(input);
+
+    return (Optional<T>) Optional.fromNullable(castClass.getAnnotation(annotationType));
   }
 }

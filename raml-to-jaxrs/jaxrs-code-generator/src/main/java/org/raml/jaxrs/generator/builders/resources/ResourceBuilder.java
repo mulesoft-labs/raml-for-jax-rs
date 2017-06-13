@@ -370,35 +370,32 @@ public class ResourceBuilder implements ResourceGenerator {
             .onMethod(new ResourceContextImpl(build),
                       gMethod, methodSpec);
 
-    for (GParameter typeDeclaration : gMethod.resource().uriParameters()) {
-
-      if (TypeUtils.isComposite(typeDeclaration)) {
-        throw new GenerationException("uri parameter is composite: " + typeDeclaration);
-      }
+    for (GParameter parameter : ResourceUtils.accumulateUriParameters(gMethod.resource())) {
 
       methodSpec.addParameter(
           ParameterSpec
               .builder(
-                       typeDeclaration.type().defaultJavaTypeName(build.getModelPackage()),
-                       Names.methodName(typeDeclaration.name()))
+                       parameter.type().defaultJavaTypeName(build.getModelPackage()),
+                       Names.methodName(parameter.name()))
               .addAnnotation(
-                             AnnotationSpec.builder(PathParam.class).addMember("value", "$S", typeDeclaration.name())
+                             AnnotationSpec.builder(PathParam.class).addMember("value", "$S", parameter.name())
                                  .build())
               .build());
 
     }
-    for (GParameter typeDeclaration : gMethod.queryParameters()) {
-      if (TypeUtils.isComposite(typeDeclaration)) {
-        throw new GenerationException("query parameter is composite: " + typeDeclaration);
-      }
+    for (GParameter gParameter : gMethod.queryParameters()) {
+      /*
+       * if (TypeUtils.isComposite(typeDeclaration)) { throw new GenerationException("query parameter is composite: " +
+       * typeDeclaration); }
+       */
 
       methodSpec.addParameter(
           ParameterSpec
               .builder(
-                       typeDeclaration.type().defaultJavaTypeName(build.getModelPackage()),
-                       Names.methodName(typeDeclaration.name()))
+                       gParameter.type().defaultJavaTypeName(build.getModelPackage()),
+                       Names.methodName(gParameter.name()))
               .addAnnotation(
-                             AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", typeDeclaration.name())
+                             AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
                                  .build())
               .build());
     }
@@ -409,7 +406,12 @@ public class ResourceBuilder implements ResourceGenerator {
     if (gMethod.resource().parentResource() != null) {
 
       methodSpec.addAnnotation(
-          AnnotationSpec.builder(Path.class).addMember("value", "$S", gMethod.resource().relativePath())
+          AnnotationSpec
+              .builder(Path.class)
+              .addMember("value",
+                         "$S",
+                         gMethod.resource().resourcePath()
+                             .substring(findTopResource(gMethod.resource().parentResource()).resourcePath().length()))
               .build());
     }
 
@@ -430,6 +432,16 @@ public class ResourceBuilder implements ResourceGenerator {
       methodSpec.addAnnotation(ann.build());
     }
     return methodSpec;
+  }
+
+  private GResource findTopResource(GResource gResource) {
+
+    if (gResource.parentResource() == null) {
+      return gResource;
+    } else {
+
+      return findTopResource(gResource.parentResource());
+    }
   }
 
   private void buildNewWebMethod(GMethod gMethod, MethodSpec.Builder methodSpec) {

@@ -37,7 +37,7 @@ class JerseyBridgeImpl implements JerseyBridge {
       public Resource apply(@Nullable Class<?> aClass) {
         return Resource.from(aClass);
       }
-    });
+    }).filter(Resource.class); // remove nulls from list
   }
 
   @Override

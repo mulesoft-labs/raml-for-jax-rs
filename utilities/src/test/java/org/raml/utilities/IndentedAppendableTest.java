@@ -30,13 +30,13 @@ public class IndentedAppendableTest {
     assertStringIsCorrectlyEscaped("title", "[This is a test]", "title: \"[This is a test]\"");
     assertStringIsCorrectlyEscaped("version", "#1.0", "version: \"#1.0\"");
     assertStringIsCorrectlyEscaped("baseUri", "http://www.test.com/test?test=true#hash",
-                                   "baseUri: http://www.test.com/test?test=true#hash"); // No quotes if not first character
+                                   "baseUri: \"http://www.test.com/test?test=true#hash\""); // No quotes if not first character
     assertStringIsCorrectlyEscaped("mediaType", "*/*", "mediaType: \"*/*\"");
     assertStringIsCorrectlyEscaped("description", "|This is a description with \"double quotes\" but with control character",
                                    "description: \"|This is a description with \\\"double quotes\\\" but with control character\"");
     assertStringIsCorrectlyEscaped("description",
-                                   "This is a description with lots of characters that are not escaped: *|#{}?:,[]",
-                                   "description: This is a description with lots of characters that are not escaped: *|#{}?:,[]");
+                                   "This is a description with lots of characters that are not escaped *|#{}?,[]",
+                                   "description: This is a description with lots of characters that are not escaped *|#{}?,[]");
     assertStringIsCorrectlyEscaped("description", "{This is a description with control character}",
                                    "description: \"{This is a description with control character}\"");
     assertStringIsCorrectlyEscaped("description", "[This is a description with control character]",
@@ -53,6 +53,7 @@ public class IndentedAppendableTest {
     assertStringIsCorrectlyEscaped("description", "` text", "description: \"` text\"");
     assertStringIsCorrectlyEscaped("description", ", text", "description: \", text\"");
     assertStringIsCorrectlyEscaped("description", "\" text\"", "description: \"\\\" text\\\"\"");
+    assertStringIsCorrectlyEscaped("description", "something: xxx", "description: \"something: xxx\"");
 
   }
 

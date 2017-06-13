@@ -28,6 +28,7 @@ import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
+import javax.lang.model.SourceVersion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -44,6 +45,7 @@ import static org.apache.commons.lang.math.NumberUtils.isDigits;
  *
  * @author kor
  * @version $Id: $Id
+ *
  */
 public class Names {
 
@@ -68,6 +70,24 @@ public class Names {
 
   public static String methodName(String... name) {
 
+    return checkMethodName(smallCamel(name));
+  }
+
+  private static String checkMethodName(String s) {
+
+    if ("getClass".equals(s)) {
+      return "getClazz";
+    }
+
+    if ("setClass".equals(s)) {
+      return "setClazz";
+    }
+
+    return s;
+  }
+
+  private static String smallCamel(String... name) {
+
     if (name.length == 1 && isBlank(name[0])) {
 
       return "root";
@@ -88,10 +108,20 @@ public class Names {
     Matcher m = LEADING_UNDERSCORES.matcher(name[0]);
     if (m.find()) {
 
-      return m.group() + methodName(name);
+      return m.group() + smallCamel(name);
     } else {
 
-      return methodName(name);
+      return checkForReservedWord(smallCamel(name));
+    }
+  }
+
+  private static String checkForReservedWord(String name) {
+
+    if (SourceVersion.isKeyword(name)) {
+      return name + "Variable";
+    } else {
+
+      return name;
     }
   }
 
@@ -103,9 +133,11 @@ public class Names {
 
   public static String resourceMethodName(GResource resource, GMethod method) {
 
-    if (resource.uriParameters().size() == 0) {
+    List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
 
-      return Names.methodName(method.method(),
+    if (parameters.size() == 0) {
+
+      return Names.smallCamel(method.method(),
                               resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
     } else {
 
@@ -114,7 +146,7 @@ public class Names {
       elements.add(resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
       elements.add("By");
       List<String> uriparam =
-          Lists.transform(resource.uriParameters(), new Function<GParameter, String>() {
+          Lists.transform(parameters, new Function<GParameter, String>() {
 
             @Nullable
             @Override
@@ -131,7 +163,7 @@ public class Names {
         }
       }
 
-      return Names.methodName(elements.toArray(new String[elements.size()]));
+      return Names.smallCamel(elements.toArray(new String[elements.size()]));
     }
   }
 
@@ -171,12 +203,20 @@ public class Names {
   }
 
 
+  public static String javaTypeName(Resource resource, TypeDeclaration declaration) {
+    return typeName(resource.resourcePath(), declaration.name());
+  }
+
   public static String javaTypeName(Resource resource, Method method, TypeDeclaration declaration) {
     return typeName(resource.resourcePath(), method.method(), declaration.name());
   }
 
   public static String ramlTypeName(Resource resource, Method method, TypeDeclaration declaration) {
     return resource.resourcePath() + method.method() + declaration.name();
+  }
+
+  public static String ramlTypeName(Resource resource, TypeDeclaration declaration) {
+    return resource.resourcePath() + declaration.name();
   }
 
   public static String javaTypeName(Resource resource, Method method, Response response,

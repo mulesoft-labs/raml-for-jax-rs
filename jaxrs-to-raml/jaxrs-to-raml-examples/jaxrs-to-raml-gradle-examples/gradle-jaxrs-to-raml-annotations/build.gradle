@@ -1,0 +1,13 @@
+dependencies {
+    compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
+    compile "org.raml:raml-generator-api:2.0.1-SNAPSHOT"
+    compile "org.raml:raml-emitter:2.0.1-SNAPSHOT"
+    compile "org.glassfish.jersey.containers:jersey-container-jetty-http:2.24"
+}
+
+jaxrstoraml {
+    inputPath = file("build/classes/main")
+    outputDirectory = file("build")
+    sourceDirectory = file('src/main/java')
+    ramlFileName = file("build/api.raml")
+}

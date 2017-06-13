@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones:
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)

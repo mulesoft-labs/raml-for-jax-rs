@@ -17,11 +17,11 @@ package org.raml.jaxrs.converter.model;
 
 import com.google.common.base.Optional;
 
+import org.raml.api.RamlEntity;
 import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.api.RamlQueryParameter;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -50,8 +50,8 @@ class JaxRsRamlQueryParameter implements RamlQueryParameter {
   }
 
   @Override
-  public Type getType() {
-    return this.queryParameter.getType();
+  public RamlEntity getEntity() {
+    return JaxRsRamlEntity.create(this.queryParameter.getEntity().get());
   }
 
   @Override

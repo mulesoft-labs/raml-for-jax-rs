@@ -57,7 +57,7 @@ public class DefaultResponseHandler implements ResponseHandler {
 
       writer.indent();
       TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-      typeHandler.writeType(typeRegistry, writer, producedMediaType, method, method.getProducedType().get());
+      typeHandler.writeType(typeRegistry, writer, method.getProducedType().get());
       writer.outdent();
       writer.outdent();
     }

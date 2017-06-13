@@ -1,0 +1,11 @@
+#%RAML 1.0
+title: GitHub API
+version: v3
+baseUri: https://api.github.com
+/ViewingSession:
+  /{viewingSessionId}:
+    /Attachments:
+      uriParameters:
+        viewingSessionId:
+          type: string
+      put:

@@ -20,6 +20,7 @@ import org.raml.api.ScalarType;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeScanner;
+import org.raml.utilities.types.Cast;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
@@ -45,7 +46,7 @@ public class PluginUtilities {
 
         RamlEntity collectionEntityType = genericType.createDependent(ptype.getActualTypeArguments()[0]);
         RamlType collectionType =
-            getRamlType(typeRegistry, scanner, ((Class) ptype.getActualTypeArguments()[0]).getSimpleName(),
+            getRamlType(typeRegistry, scanner, Cast.toClass(ptype.getActualTypeArguments()[0]).getSimpleName(),
                         collectionEntityType
             );
         return RamlType.collectionOf(collectionType);

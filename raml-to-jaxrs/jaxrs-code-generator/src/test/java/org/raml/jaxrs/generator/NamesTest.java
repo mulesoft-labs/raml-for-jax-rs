@@ -73,6 +73,14 @@ public class NamesTest {
 
   }
 
+
+  @Test
+  public void buildMethod() {
+
+    assertEquals("getSomething", Names.methodName("get", "something"));
+    assertEquals("getClazz", Names.methodName("get", "class"));
+  }
+
   @Test
   public void buildVariableName() throws Exception {
 
@@ -89,6 +97,13 @@ public class NamesTest {
     assertEquals("funAllo", Names.variableName("fun allo"));
     assertEquals("funAllo", Names.variableName("fun_allo"));
 
+  }
+
+  @Test
+  public void buildVariableReservedWord() throws Exception {
+
+    assertEquals("ifVariable", Names.variableName("if"));
+    assertEquals("classVariable", Names.variableName("class"));
   }
 
   @Test

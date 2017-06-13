@@ -30,21 +30,15 @@ class V10PGParameter implements GParameter {
   private final TypeDeclaration input;
   private final V10GType type;
 
-  public V10PGParameter(V10TypeRegistry registry, TypeDeclaration input) {
+  public V10PGParameter(TypeDeclaration input, V10GType type) {
 
     this.input = input;
-    this.type = registry.fetchType(input.type(), input);
+    this.type = type;
   }
 
   @Override
   public String name() {
     return input.name();
-  }
-
-  @Override
-  public boolean isComposite() {
-    return input instanceof ObjectTypeDeclaration || input instanceof XMLTypeDeclaration
-        || input instanceof JSONTypeDeclaration;
   }
 
   @Override

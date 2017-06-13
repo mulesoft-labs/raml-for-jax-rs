@@ -16,14 +16,13 @@
 package org.raml.jaxrs.handlers;
 
 import org.raml.api.RamlEntity;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -37,22 +36,21 @@ import java.util.List;
 public class BeanLikeTypes implements TypeHandler {
 
   @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, RamlEntity type)
+  public void writeType(TypeRegistry registry, IndentedAppendable writer,
+                        RamlEntity type)
       throws IOException {
 
-    writeBody(registry, writer, ramlMediaType, type);
+    writeBody(registry, writer, type);
   }
 
   private void writeBody(final TypeRegistry registry, IndentedAppendable writer,
-                         RamlMediaType mediaType, final RamlEntity bodyType)
+                         final RamlEntity bodyType)
       throws IOException {
 
     // find top interface.
-    final Class topInterface = (Class) bodyType.getType();
+    final Class topInterface = Cast.toClass(bodyType.getType());
 
     // find fields
-
     writer.appendLine("type", topInterface.getSimpleName());
 
     TypeScanner scanner = new TypeScanner() {
@@ -71,7 +69,7 @@ public class BeanLikeTypes implements TypeHandler {
   private RamlType rebuildType(TypeRegistry registry, RamlEntity entity,
                                TypeScanner typeScanner) {
 
-    Class currentInterface = (Class) entity.getType();
+    Class currentInterface = Cast.toClass(entity.getType());
     Class[] interfaces = currentInterface.getInterfaces();
     List<RamlType> superTypes = new ArrayList<>();
     for (Class interf : interfaces) {

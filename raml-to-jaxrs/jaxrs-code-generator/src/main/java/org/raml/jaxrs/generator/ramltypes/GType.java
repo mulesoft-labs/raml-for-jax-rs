@@ -45,6 +45,8 @@ public interface GType extends GAbstraction {
 
   boolean isUnion();
 
+  boolean isScalar();
+
   List<String> enumValues();
 
   String schema();

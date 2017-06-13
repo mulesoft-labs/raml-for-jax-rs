@@ -16,15 +16,16 @@
 package org.raml.jaxrs.handlers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import org.raml.api.RamlEntity;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlResourceMethod;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.types.Cast;
 
 import java.beans.Introspector;
 import java.io.IOException;
@@ -32,6 +33,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -39,33 +42,63 @@ import java.lang.reflect.Type;
 public class SimpleJacksonTypes implements TypeHandler {
 
   @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer, RamlMediaType ramlMediaType,
-                        RamlResourceMethod method, RamlEntity type)
+  public void writeType(TypeRegistry registry, IndentedAppendable writer,
+                        RamlEntity type)
+      throws IOException {
+
+    Type javaType = type.getType();
+    Class c = Cast.toClass(javaType);
+    if (c.isEnum()) {
+
+      writeEnum(registry, writer, c, type);
+    } else {
+
+      writeBody(registry, writer, type);
+    }
+  }
+
+  private void writeEnum(TypeRegistry registry, IndentedAppendable writer,
+                         final Class enumType, RamlEntity entity)
       throws IOException {
 
 
-    writeBody(registry, writer, ramlMediaType, type);
+    writer.appendLine("type", enumType.getSimpleName());
+    registry.registerType(enumType.getSimpleName(), entity, new TypeScanner() {
+
+      @Override
+      public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
+
+        ramlType.setEnumValues(FluentIterable.of(enumType.getEnumConstants()).transform(new Function<Object, String>() {
+
+          @Override
+          public String apply(Object input) {
+            return ((Enum) input).name().toLowerCase();
+          }
+        }).toList());
+      }
+    });
   }
 
   private void writeBody(TypeRegistry registry, IndentedAppendable writer,
-                         RamlMediaType mediaTypes, RamlEntity bodyType)
+                         RamlEntity bodyType)
       throws IOException {
 
-    Class type = (Class) bodyType.getType();
+    Class type = Cast.toClass(bodyType.getType());
 
     writer.appendLine("type", type.getSimpleName());
 
-    registry.registerType(type.getSimpleName(), bodyType, new SimpleJaxbTypeScanner());
+    registry.registerType(type.getSimpleName(), bodyType, new SimpleJacksonTypeScanner());
   }
 
-  private static class SimpleJaxbTypeScanner implements TypeScanner {
+  private static class SimpleJacksonTypeScanner implements TypeScanner {
 
     @Override
-    public void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType) {
+    public void scanType(TypeRegistry typeRegistry, RamlEntity ramlEntity, RamlType ramlType) {
+      Type type = ramlEntity.getType();
+      Class c = Cast.toClass(type);
 
-      Class c = (Class) type.getType();
-      forFields(typeRegistry, type, ramlType, c);
-      forProperties(typeRegistry, type, ramlType, c);
+      forFields(typeRegistry, ramlEntity, ramlType, c);
+      forProperties(typeRegistry, ramlEntity, ramlType, c);
     }
 
     private void forProperties(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType, Class c) {
@@ -101,8 +134,7 @@ public class SimpleJacksonTypes implements TypeHandler {
 
 
         Type genericType = field.getGenericType();
-        RamlType fieldRamlType;
-        fieldRamlType = PluginUtilities
+        RamlType fieldRamlType = PluginUtilities
             .getRamlType(typeRegistry, this, field.getType().getSimpleName(), type.createDependent(genericType));
 
         JsonProperty elem = field.getAnnotation(JsonProperty.class);

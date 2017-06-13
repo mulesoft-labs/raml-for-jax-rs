@@ -21,17 +21,7 @@ import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.BooleanTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.DateTimeOnlyTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.DateTimeTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.DateTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.FileTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.IntegerTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TimeOnlyTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.*;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -52,6 +42,7 @@ public class ScalarTypes {
       .put(DateTimeTypeDeclaration.class, Date.class).put(DateTypeDeclaration.class, Date.class)
       .put(NumberTypeDeclaration.class, BigDecimal.class)
       .put(StringTypeDeclaration.class, String.class).put(FileTypeDeclaration.class, File.class)
+      .put(AnyTypeDeclaration.class, Object.class)
       .build();
 
   private static Map<String, Class<?>> stringScalarToType = ImmutableMap

@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.raml</groupId>
+        <artifactId>raml-to-jaxrs</artifactId>
+        <version>2.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>raml-to-jaxrs-gradle-plugin-wrapper</artifactId>
+    <name>RAML JAX-RS Gradle Plugin</name>
+    <properties>
+        <maven.install.skip>false</maven.install.skip>
+        <maven.deploy.skip>false</maven.deploy.skip>
+    </properties>
+
+    <build>
+        <sourceDirectory>src/main/groovy</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.fortasoft</groupId>
+                <artifactId>gradle-maven-plugin</artifactId>
+                <version>1.0.8</version>
+                <configuration>
+                    <tasks>
+                        <task>install</task>
+                    </tasks>
+                    <gradleVersion>3.5</gradleVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+<!--
+        <dependency>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-tooling-api</artifactId>
+            <version>3.5</version>
+            <type>jar</type>
+            &lt;!&ndash;<scope>provided</scope>&ndash;&gt;
+        </dependency>
+-->
+        <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>jaxrs-code-generator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>

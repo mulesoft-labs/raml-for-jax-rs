@@ -21,15 +21,20 @@ import com.google.common.collect.Collections2;
 import org.raml.api.Annotable;
 import org.raml.api.RamlData;
 import org.raml.api.ScalarType;
-import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.ExampleEmitter;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.utilities.IndentedAppendable;
+import org.raml.utilities.format.Joiner;
+import org.raml.utilities.format.Joiners;
+import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +52,7 @@ public class RamlType implements Annotable, Emittable {
 
   private Map<String, RamlProperty> properties = new HashMap<>();
   private List<RamlType> superTypes;
+  private Collection<String> enumValues;
 
   public RamlType(RamlData type) {
 
@@ -70,9 +76,14 @@ public class RamlType implements Annotable, Emittable {
     properties.put(property.getName(), property);
   }
 
-  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
+  public void setEnumValues(Collection<String> values) {
 
-    Class c = (Class) type.getType();
+    this.enumValues = values;
+  }
+
+  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
+    Type ttype = type.getType();
+    Class c = Cast.toClass(ttype);
     writer.appendLine(c.getSimpleName() + ":");
     writer.indent();
 
@@ -91,16 +102,22 @@ public class RamlType implements Annotable, Emittable {
     writeExample(writer);
 
     if (type.getDescription().isPresent()) {
-      writer.appendLine("description: " + type.getDescription().get());
+      writer.appendEscapedLine("description", type.getDescription().get());
     }
 
-    writer.appendLine("properties:");
-    writer.indent();
-    for (RamlProperty ramlProperty : properties.values()) {
-
-      ramlProperty.write(emitter, writer);
+    if (enumValues != null) {
+      writer.appendLine("enum", Joiner.on(",").withPrefix("[").withSuffix("]").join(enumValues));
     }
-    writer.outdent();
+
+    if (properties.values().size() > 0) {
+      writer.appendLine("properties:");
+      writer.indent();
+      for (RamlProperty ramlProperty : properties.values()) {
+
+        ramlProperty.write(emitter, writer);
+      }
+      writer.outdent();
+    }
     writer.outdent();
   }
 
@@ -110,6 +127,7 @@ public class RamlType implements Annotable, Emittable {
   }
 
 
+  @SuppressWarnings({"rawtypes"})
   public String getTypeName() {
 
     Optional<ScalarType> st = ScalarType.fromType(type.getType());
@@ -120,12 +138,23 @@ public class RamlType implements Annotable, Emittable {
         return st.get().getRamlSyntax();
       }
     } else {
-
-      Class c = (Class) type.getType();
-      if (collection == true) {
-        return c.getSimpleName() + "[]";
+      Type typeType = type.getType();
+      if (typeType instanceof ParameterizedType) {
+        ParameterizedType pt = (ParameterizedType) typeType;
+        typeType = pt.getRawType();
+      }
+      String name;
+      if (typeType instanceof TypeVariable) {
+        name = ((TypeVariable) typeType).getName();
       } else {
-        return c.getSimpleName();
+        Class c = (Class) typeType;
+        name = c.getSimpleName();
+      }
+
+      if (collection == true) {
+        return name + "[]";
+      } else {
+        return name;
       }
     }
   }

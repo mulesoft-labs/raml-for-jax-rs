@@ -22,11 +22,13 @@ import org.raml.jaxrs.generator.GAbstraction;
  */
 public interface GProperty extends GAbstraction {
 
-  String name();
+    String name();
 
-  GType type();
+    GType type();
 
-  boolean isInline();
+    boolean isInline();
 
-  GProperty overrideType(GType type);
+    GProperty overrideType(GType type);
+
+    String getDefaultValue();
 }

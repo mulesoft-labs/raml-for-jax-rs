@@ -69,12 +69,12 @@ class JerseyJaxRsMethod implements JaxRsMethod {
 
   @Override
   public List<JaxRsQueryParameter> getQueryParameters() {
-    return Utilities.toJaxRsQueryParameters(Utilities.getQueryParameters(resourceMethod)).toList();
+    return Utilities.toJaxRsQueryParameters(Utilities.getQueryParameters(resourceMethod), sourceParser).toList();
   }
 
   @Override
   public List<JaxRsHeaderParameter> getHeaderParameters() {
-    return Utilities.toJaxRsHeaderParameters(Utilities.getHeaderParameters(resourceMethod))
+    return Utilities.toJaxRsHeaderParameters(Utilities.getHeaderParameters(resourceMethod), sourceParser)
         .toList();
   }
 

@@ -17,11 +17,11 @@ package org.raml.jaxrs.converter.model;
 
 import com.google.common.base.Optional;
 
+import org.raml.api.RamlEntity;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -50,8 +50,8 @@ class JaxRsRamlHeaderParameter implements RamlHeaderParameter {
   }
 
   @Override
-  public Type getType() {
-    return parameter.getType();
+  public RamlEntity getEntity() {
+    return JaxRsRamlEntity.create(parameter.getEntity().get());
   }
 
   @Override

@@ -18,7 +18,6 @@ package org.raml.jaxrs.model;
 import com.google.common.base.Optional;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 
 public interface JaxRsHeaderParameter {
 
@@ -26,7 +25,7 @@ public interface JaxRsHeaderParameter {
 
   Optional<String> getDefaultValue();
 
-  Type getType();
+  Optional<JaxRsEntity> getEntity();
 
   <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType);
 }

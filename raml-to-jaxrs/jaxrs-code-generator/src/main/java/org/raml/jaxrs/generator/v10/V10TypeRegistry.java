@@ -56,6 +56,22 @@ public class V10TypeRegistry {
     }
   }
 
+  public V10GType fetchType(Resource resource, TypeDeclaration typeDeclaration) {
+
+    String key = Names.ramlTypeName(resource, typeDeclaration);
+    if (types.containsKey(key)) {
+
+      return types.get(key);
+    } else {
+
+      V10GType type =
+          createInlineType(key, Names.javaTypeName(resource, typeDeclaration), typeDeclaration, null);
+
+      storeNewType(type);
+      return type;
+    }
+  }
+
   public V10GType fetchType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
 
     String key = Names.ramlTypeName(resource, method, typeDeclaration);
@@ -65,9 +81,16 @@ public class V10TypeRegistry {
     } else {
 
       V10GType type =
-          V10GTypeFactory.createRequestBodyType(this, resource, method, typeDeclaration);
-      types.put(type.name(), type);
+          createInlineType(key, Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration, null);
+
+      storeNewType(type);
       return type;
+    }
+  }
+
+  private void storeNewType(V10GType type) {
+    if (!type.isScalar()) {
+      types.put(type.name(), type);
     }
   }
 
@@ -81,7 +104,7 @@ public class V10TypeRegistry {
 
       V10GType type =
           V10GTypeFactory.createResponseBodyType(this, resource, method, response, typeDeclaration);
-      types.put(type.name(), type);
+      storeNewType(type);
       return type;
     }
   }
@@ -93,11 +116,15 @@ public class V10TypeRegistry {
 
       if (typeDeclaration instanceof StringTypeDeclaration
           && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
-        V10GType type =
-            V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration);
-        types.put(type.name(), type);
-        return type;
 
+        if (types.containsKey(name)) {
+          return types.get(name);
+        } else {
+          V10GType type =
+              V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration);
+          storeNewType(type);
+          return type;
+        }
       } else {
         return V10GTypeFactory.createScalar(name, typeDeclaration);
       }
@@ -128,7 +155,7 @@ public class V10TypeRegistry {
       } else {
         type = V10GTypeFactory.createExplicitlyNamedType(this, name, typeDeclaration);
       }
-      types.put(type.name(), type);
+      storeNewType(type);
       return type;
     }
   }
@@ -139,7 +166,7 @@ public class V10TypeRegistry {
     return fetchType(name, typeDeclaration);
   }
 
-  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration) {
+  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration, V10GType containingType) {
 
     Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
     if (javaType != null) {
@@ -149,7 +176,7 @@ public class V10TypeRegistry {
         V10GType type =
             V10GTypeFactory.createEnum(this, name, javaTypeName,
                                        (StringTypeDeclaration) typeDeclaration);
-        types.put(type.name(), type);
+        storeNewType(type);
         return type;
 
       } else {
@@ -181,9 +208,9 @@ public class V10TypeRegistry {
             V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
                                         typeDeclaration.name(), javaTypeName);
       } else {
-        type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration);
+        type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration, containingType);
       }
-      types.put(type.name(), type);
+      storeNewType(type);
       return type;
     }
   }

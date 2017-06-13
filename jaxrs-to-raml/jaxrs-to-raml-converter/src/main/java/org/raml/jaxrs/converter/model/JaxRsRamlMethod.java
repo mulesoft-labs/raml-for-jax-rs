@@ -113,7 +113,7 @@ public class JaxRsRamlMethod implements RamlResourceMethod {
 
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
-    return (Optional<T>) this.resourceMethod.getJavaAnnotation(annotationType);
+    return this.resourceMethod.getJavaAnnotation(annotationType);
   }
 
 }

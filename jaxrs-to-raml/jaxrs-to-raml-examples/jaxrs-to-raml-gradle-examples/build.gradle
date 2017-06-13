@@ -1,0 +1,43 @@
+
+
+
+allprojects {
+    apply plugin: 'java'
+    group 'org.raml'
+    version '2.0.1-SNAPSHOT'
+    repositories {
+        mavenLocal()
+        maven { url 'https://repository.mulesoft.org/snapshots/' }
+        maven { url 'https://repository.mulesoft.org/releases/' }
+        mavenCentral()
+    }
+    sourceCompatibility = 1.7
+}
+
+subprojects {
+    apply plugin: 'jaxrstoraml'
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'https://repository.mulesoft.org/snapshots/' }
+        maven { url 'https://repository.mulesoft.org/releases/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.raml:jaxrs-to-raml-gradle-plugin:2.0.1-SNAPSHOT"
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven { url 'https://repository.mulesoft.org/snapshots/' }
+    maven { url 'https://repository.mulesoft.org/releases/' }
+    mavenCentral()
+}
+
+
+clean {
+    subprojects
+}

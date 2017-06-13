@@ -76,7 +76,11 @@ public class V10GMethod implements GMethod {
           @Override
           public GParameter apply(@Nullable TypeDeclaration input) {
 
-            return new V10PGParameter(registry, input);
+            if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
+              return new V10PGParameter(input, registry.fetchType(v10GResource.implementation(), method, input));
+            } else {
+              return new V10PGParameter(input, registry.fetchType(input.type(), input));
+            }
           }
         });
   }

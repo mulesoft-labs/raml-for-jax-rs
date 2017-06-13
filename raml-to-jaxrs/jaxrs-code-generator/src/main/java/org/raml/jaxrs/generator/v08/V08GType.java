@@ -84,6 +84,12 @@ public class V08GType implements GType {
     return typeDeclaration;
   }
 
+
+  @Override
+  public boolean isScalar() {
+    return !isJson() && !isXml();
+  }
+
   @Override
   public String type() {
     return ramlName;

@@ -56,6 +56,11 @@ public abstract class V10GTypeHelper implements V10GType {
   }
 
   @Override
+  public boolean isScalar() {
+    return false;
+  }
+
+  @Override
   public boolean isObject() {
     return false;
   }

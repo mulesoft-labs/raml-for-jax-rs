@@ -27,6 +27,15 @@ and documentation of these classes soon.
 
 ## RAML examples
 
-Incoming.
+RAML examples are a feature in RAML 1.0 that allow the spec writer to provide example values elements of the specification.
+Normally, examples in RAML are parsed and verified against their containing spec:  if you give an example  in a spec, it should 
+be correct:  you can't add or omit properties, or use the wrong types.  You can prevent this parsing of examples by specifying 
+that the examples are not strict by specifying that the examples are not `strict` (see raml spec ?)
 
+In our case, the examples need to be specified in Java.  Type properties can be annotated with the
+[Example](src/main/java/org/raml/jaxrs/common/Example.java) annotation in which you provide an example value.  You can have 
+multiple examples per type, specified with the [ExampleCases](src/main/java/org/raml/jaxrs/common/ExampleCases.java) annotation, where
+you specify examples for use cases.  `jaxrstoraml` will the aggregate the examples values with regards to each use case name.
 
+There are examples of this in the 
+[example](../jaxrs-to-raml-examples/jaxrs-to-raml-maven-examples/jaxrs-to-raml-raml-examples) project.

@@ -10,10 +10,10 @@ nogit/
 /.project
 .metadata
 RemoteSystemsTempFiles
-/.gradle
+.gradle
 .DS_Store
 .classpath
 .settings
 .project
 bin
-.gitignore
+build

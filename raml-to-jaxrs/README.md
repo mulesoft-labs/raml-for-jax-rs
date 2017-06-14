@@ -32,6 +32,10 @@ The configuration of these projects is documented [here](examples/maven-examples
 - [jaxb-example](examples/maven-examples/jaxb-example/): an example showing JAXB-annotated class generation based on XML Schemas
 - [features](examples/maven-examples/features/): an example showing how the [generation plugins](examples/maven-examples/features/README.md) feature works, includes [several use cases](examples/maven-examples/features/USE_CASES.md)
 
+### Using the Gradle plugin
+The documentation of the Gradle plugin can be found [here](raml-to-jaxrs-gradle-plugin/README.md).
+There are also some examples [here](examples/gradle-examples/).
+
 ### Using the CLI
 The project [raml-to-jaxrs-cli](raml-to-jaxrs-cli/) contains the CLI artifact. It is setup to build a JAR with dependencies which can then be used in the command line.
 

@@ -1,11 +1,7 @@
-![](http://raml.org/images/logo.png)
+## Gradle Plugin
+This plugin provides RAML code generation support to a Gradle project.
 
-# JAX-RS to RAML - Gradle Plug-in
-
-This plugin provides RAML code generation support to a Gradl project.
-
-## Usage
-
+### Usage
 To use it, simply include the required plugin dependency via `buildscript {}` and 'apply' the plugin:
 
 ```groovy
@@ -47,7 +43,6 @@ jaxrstoraml {
 ```
 
 ## Configuration
-
 The Gradle plugin supports the following configuration options, defined via the `jaxrsraml` closure:
 
 |Property|Description|Required|
@@ -58,11 +53,11 @@ The Gradle plugin supports the following configuration options, defined via the 
 |**ramlFileName**|Generated RAML file.|**Yes**|
 |**translatedAnnotations**|List of translated annotations that should be translated|No|
 
-
 ## RAML Generation
-
 Once the plugin has been applied and configured, execute the `ramltojaxrs` task to generated the JAX-RS resources:
 
+```sh
     ./gradlew compileJava jaxrstoraml
+```
 
-There is an example [here](../jaxrs-to-raml-examples/jaxrs-to-raml-gradle-examples/gradle-jaxrs-to-raml-annotations)
+There is an example [here](../jaxrs-to-raml-examples/jaxrs-to-raml-gradle-examples/gradle-jaxrs-to-raml-annotations).

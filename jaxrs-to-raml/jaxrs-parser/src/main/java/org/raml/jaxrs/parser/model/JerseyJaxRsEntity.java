@@ -21,6 +21,7 @@ import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.parser.source.SourceParser;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
@@ -58,7 +59,6 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
     return new JerseyJaxRsEntity(input.getType(), sourceParser);
   }
 
-
   static Optional<JaxRsEntity> create(Type input, SourceParser sourceParser) {
 
     if (input == null) {
@@ -72,6 +72,13 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
 
-    return (Optional<T>) Optional.fromNullable(((Class) input).getAnnotation(annotationType));
+    Type type = input;
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pt = (ParameterizedType) type;
+      type = pt.getRawType();
+    }
+
+    Class c = (Class) type;
+    return (Optional<T>) Optional.fromNullable(((Class) type).getAnnotation(annotationType));
   }
 }

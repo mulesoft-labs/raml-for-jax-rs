@@ -39,11 +39,11 @@ import java.util.List;
 public class AnnotationInstanceEmitter implements LocalEmitter {
 
   private final IndentedAppendable writer;
-  private final List<RamlSupportedAnnotation> suportedAnnotations;
+  private final List<RamlSupportedAnnotation> supportedAnnotations;
 
   public AnnotationInstanceEmitter(IndentedAppendable writer, List<RamlSupportedAnnotation> supportedAnnotation) {
     this.writer = writer;
-    this.suportedAnnotations = supportedAnnotation;
+    this.supportedAnnotations = supportedAnnotation;
   }
 
   @Override
@@ -65,7 +65,7 @@ public class AnnotationInstanceEmitter implements LocalEmitter {
   }
 
   private void annotate(Annotable annotable) throws IOException {
-    for (RamlSupportedAnnotation suportedAnnotation : suportedAnnotations) {
+    for (RamlSupportedAnnotation suportedAnnotation : supportedAnnotations) {
 
       Optional<Annotation> annotationOptional = suportedAnnotation.getAnnotationInstance(annotable);
       if (annotationOptional.isPresent() == false) {

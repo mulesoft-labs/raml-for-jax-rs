@@ -60,3 +60,7 @@ $ java -jar ./target/jaxrs-to-raml-cli-<version>-jar-with-dependencies.jar -a ..
 ```
 This will generate the RAML file `/tmp/test.raml` from the compiled classes located at
 `../jaxrs-test-resources/target/classes`.
+
+### Turning Java types into RAML types
+
+The way that Java types are turned into RAML types are discussed [here](raml-generator-api/README.md)

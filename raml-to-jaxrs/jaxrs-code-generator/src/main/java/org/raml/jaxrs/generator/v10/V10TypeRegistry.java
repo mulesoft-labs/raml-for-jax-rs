@@ -133,7 +133,7 @@ public class V10TypeRegistry {
 
     if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-      return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration);
+      return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration, CreationModel.NEVER_INLINE);
     }
 
     if (types.containsKey(name)) {
@@ -145,14 +145,15 @@ public class V10TypeRegistry {
       if (typeDeclaration instanceof JSONTypeDeclaration) {
         type =
             V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration,
-                                       typeDeclaration.name());
+                                       typeDeclaration.name(), CreationModel.INLINE_FROM_TYPE);
       } else if (typeDeclaration instanceof XMLTypeDeclaration) {
         type =
-            V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name());
+            V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name(),
+                                      CreationModel.INLINE_FROM_TYPE);
       } else if (typeDeclaration instanceof UnionTypeDeclaration) {
         type =
             V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
-                                        typeDeclaration.name());
+                                        typeDeclaration.name(), CreationModel.INLINE_FROM_TYPE);
       } else {
         type = V10GTypeFactory.createExplicitlyNamedType(this, name, typeDeclaration);
       }
@@ -188,7 +189,7 @@ public class V10TypeRegistry {
 
     if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-      return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration);
+      return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration, CreationModel.NEVER_INLINE);
     }
 
     if (types.containsKey(name)) {
@@ -200,15 +201,15 @@ public class V10TypeRegistry {
       if (typeDeclaration instanceof JSONTypeDeclaration) {
         type =
             V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration,
-                                       typeDeclaration.name(), javaTypeName);
+                                       typeDeclaration.name(), javaTypeName, model);
       } else if (typeDeclaration instanceof XMLTypeDeclaration) {
         type =
             V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name(),
-                                      javaTypeName);
+                                      javaTypeName, model);
       } else if (typeDeclaration instanceof UnionTypeDeclaration) {
         type =
             V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
-                                        typeDeclaration.name(), javaTypeName);
+                                        typeDeclaration.name(), javaTypeName, model);
       } else {
         type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration, containingType);
       }

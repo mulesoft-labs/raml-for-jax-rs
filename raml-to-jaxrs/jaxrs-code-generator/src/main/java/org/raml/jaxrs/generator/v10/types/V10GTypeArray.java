@@ -38,8 +38,8 @@ public class V10GTypeArray extends V10GTypeHelper {
   private final String name;
   private final ArrayTypeDeclaration typeDeclaration;
 
-  public V10GTypeArray(V10TypeRegistry registry, String name, ArrayTypeDeclaration typeDeclaration) {
-    super(name, typeDeclaration, CreationModel.NEVER_INLINE);
+  public V10GTypeArray(V10TypeRegistry registry, String name, ArrayTypeDeclaration typeDeclaration, CreationModel model) {
+    super(name, typeDeclaration, model);
     this.registry = registry;
     this.name = name;
     this.typeDeclaration = typeDeclaration;

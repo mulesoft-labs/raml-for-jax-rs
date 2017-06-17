@@ -35,8 +35,8 @@ public class V10GTypeJson extends V10GTypeHelper {
   private final String defaultJavatypeName;
   private TypeName modelSpecifiedJavaType;
 
-  V10GTypeJson(JSONTypeDeclaration typeDeclaration, String realName, String defaultJavatypeName) {
-    super(realName, typeDeclaration, CreationModel.INLINE_FROM_TYPE);
+  V10GTypeJson(JSONTypeDeclaration typeDeclaration, String realName, String defaultJavatypeName, CreationModel model) {
+    super(realName, typeDeclaration, model);
     this.typeDeclaration = typeDeclaration;
     this.name = realName;
     this.defaultJavatypeName = defaultJavatypeName;

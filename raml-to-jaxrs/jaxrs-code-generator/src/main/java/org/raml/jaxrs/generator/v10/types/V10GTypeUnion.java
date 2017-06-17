@@ -38,8 +38,8 @@ public class V10GTypeUnion extends V10GTypeHelper {
 
 
   V10GTypeUnion(V10TypeRegistry registry, UnionTypeDeclaration typeDeclaration, String realName,
-                String defaultJavatypeName) {
-    super(realName, typeDeclaration, CreationModel.INLINE_FROM_TYPE);
+                String defaultJavatypeName, CreationModel model) {
+    super(realName, typeDeclaration, model);
     this.registry = registry;
     this.typeDeclaration = typeDeclaration;
     this.name = realName;

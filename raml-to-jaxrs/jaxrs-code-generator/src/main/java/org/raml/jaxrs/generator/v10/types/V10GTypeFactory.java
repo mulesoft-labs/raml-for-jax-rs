@@ -18,10 +18,7 @@ package org.raml.jaxrs.generator.v10.types;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.V10GProperty;
-import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.jaxrs.generator.v10.V10TypeRegistry;
+import org.raml.jaxrs.generator.v10.*;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -92,15 +89,15 @@ public class V10GTypeFactory {
   }
 
   public static V10GType createEnum(V10TypeRegistry v10TypeRegistry, String name,
-                                    StringTypeDeclaration typeDeclaration) {
+                                    StringTypeDeclaration typeDeclaration, CreationModel model) {
     return new V10GTypeEnum(v10TypeRegistry, name, Annotations.CLASS_NAME.get(
                                                                               Names.typeName(typeDeclaration.name()),
-                                                                              typeDeclaration), typeDeclaration);
+                                                                              typeDeclaration), typeDeclaration, model);
   }
 
   public static V10GType createEnum(V10TypeRegistry v10TypeRegistry, String name,
-                                    String javaTypeName, StringTypeDeclaration typeDeclaration) {
-    return new V10GTypeEnum(v10TypeRegistry, name, javaTypeName, typeDeclaration);
+                                    String javaTypeName, StringTypeDeclaration typeDeclaration, CreationModel model) {
+    return new V10GTypeEnum(v10TypeRegistry, name, javaTypeName, typeDeclaration, model);
   }
 
   public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName) {

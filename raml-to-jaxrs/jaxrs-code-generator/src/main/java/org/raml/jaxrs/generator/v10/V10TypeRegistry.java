@@ -65,7 +65,7 @@ public class V10TypeRegistry {
     } else {
 
       V10GType type =
-          createInlineType(key, Names.javaTypeName(resource, typeDeclaration), typeDeclaration, null);
+          createInlineType(key, Names.javaTypeName(resource, typeDeclaration), typeDeclaration, null, CreationModel.NEVER_INLINE);
 
       storeNewType(type);
       return type;
@@ -81,7 +81,8 @@ public class V10TypeRegistry {
     } else {
 
       V10GType type =
-          createInlineType(key, Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration, null);
+          createInlineType(key, Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration, null,
+                           CreationModel.NEVER_INLINE);
 
       storeNewType(type);
       return type;
@@ -121,7 +122,7 @@ public class V10TypeRegistry {
           return types.get(name);
         } else {
           V10GType type =
-              V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration);
+              V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration, CreationModel.INLINE_FROM_TYPE);
           storeNewType(type);
           return type;
         }
@@ -166,7 +167,8 @@ public class V10TypeRegistry {
     return fetchType(name, typeDeclaration);
   }
 
-  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration, V10GType containingType) {
+  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration, V10GType containingType,
+                                   CreationModel model) {
 
     Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
     if (javaType != null) {
@@ -175,7 +177,7 @@ public class V10TypeRegistry {
           && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
         V10GType type =
             V10GTypeFactory.createEnum(this, name, javaTypeName,
-                                       (StringTypeDeclaration) typeDeclaration);
+                                       (StringTypeDeclaration) typeDeclaration, model);
         storeNewType(type);
         return type;
 

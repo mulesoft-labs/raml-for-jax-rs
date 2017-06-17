@@ -39,8 +39,8 @@ public class V10GTypeEnum extends V10GTypeHelper {
   private final StringTypeDeclaration typeDeclaration;
 
   public V10GTypeEnum(V10TypeRegistry v10TypeRegistry, String name, String javaTypeName,
-                      StringTypeDeclaration typeDeclaration) {
-    super(name, typeDeclaration, CreationModel.INLINE_FROM_TYPE);
+                      StringTypeDeclaration typeDeclaration, CreationModel model) {
+    super(name, typeDeclaration, model);
 
     this.v10TypeRegistry = v10TypeRegistry;
     this.name = name;

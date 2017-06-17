@@ -36,11 +36,7 @@ import org.raml.jaxrs.generator.extension.types.TypeContext;
 import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GProperty;
 import org.raml.jaxrs.generator.ramltypes.GType;
-import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.PropertyInfo;
-import org.raml.jaxrs.generator.v10.V10GProperty;
-import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.jaxrs.generator.v10.V10TypeRegistry;
+import org.raml.jaxrs.generator.v10.*;
 import org.raml.jaxrs.generator.v10.types.V10TypeFactory;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -112,7 +108,8 @@ public class SimpleInheritanceExtension implements TypeExtension {
                                            Annotations.CLASS_NAME.get(
                                                                       Names.typeName(declaration.name(), "Type"),
                                                                       (Annotable) declaration.implementation()),
-                                           (TypeDeclaration) declaration.implementation(), originalType
+                                           (TypeDeclaration) declaration.implementation(), originalType,
+                                           CreationModel.INLINE_FROM_TYPE
                 );
         TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
                                                           GeneratorType.generatorFrom(type));
@@ -220,7 +217,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
                                                                       Names.typeName(declaration.name(), "Type"),
                                                                       (Annotable) declaration.implementation()),
                                            (TypeDeclaration) declaration.implementation(),
-                                           originalType);
+                                           originalType, CreationModel.INLINE_FROM_TYPE);
 
         TypeGenerator internalGenerator = inlineTypeBuild(localRegistry, currentBuild,
                                                           GeneratorType.generatorFrom(type));

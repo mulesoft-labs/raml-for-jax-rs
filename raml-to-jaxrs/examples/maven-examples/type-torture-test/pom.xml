@@ -44,6 +44,8 @@
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/world-music-api/api.raml</ramlFile>
                     <resourcePackage>example.torture</resourcePackage>
+                    <supportPackage>example.support</supportPackage>
+                    <modelPackage>example.model</modelPackage>
                 </configuration>
             </plugin>
         </plugins>

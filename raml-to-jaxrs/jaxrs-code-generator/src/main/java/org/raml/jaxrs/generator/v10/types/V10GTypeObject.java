@@ -48,7 +48,7 @@ public class V10GTypeObject extends V10GTypeHelper {
   V10GTypeObject(V10TypeRegistry registry, TypeDeclaration typeDeclaration, String realName,
                  String defaultJavatypeName, boolean inline, List<V10GProperty> properties,
                  List<V10GType> parentTypes, V10GType containingType) {
-    super(realName);
+    super(realName, typeDeclaration);
     this.registry = registry;
     this.typeDeclaration = typeDeclaration;
     this.name = realName;

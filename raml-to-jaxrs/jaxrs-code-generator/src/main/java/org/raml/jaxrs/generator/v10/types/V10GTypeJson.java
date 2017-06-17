@@ -20,6 +20,7 @@ import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
+import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -35,7 +36,7 @@ public class V10GTypeJson extends V10GTypeHelper {
   private TypeName modelSpecifiedJavaType;
 
   V10GTypeJson(JSONTypeDeclaration typeDeclaration, String realName, String defaultJavatypeName) {
-    super(realName);
+    super(realName, typeDeclaration, CreationModel.INLINE_FROM_TYPE);
     this.typeDeclaration = typeDeclaration;
     this.name = realName;
     this.defaultJavatypeName = defaultJavatypeName;
@@ -88,11 +89,6 @@ public class V10GTypeJson extends V10GTypeHelper {
   public ClassName javaImplementationName(String pack) {
 
     return null;
-  }
-
-  public boolean isInline() {
-    return TypeUtils.shouldCreateNewClass(typeDeclaration,
-                                          typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
   }
 
   @Override

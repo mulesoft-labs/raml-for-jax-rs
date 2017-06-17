@@ -22,6 +22,7 @@ import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.v10.Annotations;
+import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -35,7 +36,7 @@ public class V10GTypeScalar extends V10GTypeHelper {
 
 
   public V10GTypeScalar(String name, TypeDeclaration scalar) {
-    super(name);
+    super(name, scalar, CreationModel.NEVER_INLINE);
     this.scalar = scalar;
     this.ramlName = name;
   }

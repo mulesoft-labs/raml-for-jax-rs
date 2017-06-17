@@ -19,6 +19,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
+import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
@@ -39,7 +40,7 @@ public class V10GTypeEnum extends V10GTypeHelper {
 
   public V10GTypeEnum(V10TypeRegistry v10TypeRegistry, String name, String javaTypeName,
                       StringTypeDeclaration typeDeclaration) {
-    super(name);
+    super(name, typeDeclaration, CreationModel.INLINE_FROM_TYPE);
 
     this.v10TypeRegistry = v10TypeRegistry;
     this.name = name;
@@ -84,11 +85,6 @@ public class V10GTypeEnum extends V10GTypeHelper {
   @Override
   public boolean isEnum() {
     return true;
-  }
-
-  public boolean isInline() {
-    return TypeUtils.shouldCreateNewClass(typeDeclaration,
-                                          typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
   }
 
   @Override

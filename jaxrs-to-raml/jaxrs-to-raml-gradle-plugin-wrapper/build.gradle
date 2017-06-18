@@ -14,8 +14,6 @@
  * language governing permissions and limitations under the License.
  */
 apply plugin: 'groovy'
-// apply plugin: 'license'
-// apply from: 'gradle/publish.gradle'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
@@ -79,22 +77,6 @@ test {
         includeTestsMatching "*Spec"
     }
 }
-/*
-
-license {
-    ext.licenseYear = '2013-'+Calendar.getInstance().get(Calendar.YEAR)
-    header rootProject.file('../LICENSE_HEADER.txt')
-    // false for now until we can exclude *.properties without causing it to be excluded from the generated jar
-    // If you add a sourceSet to exclude the properties file as the documentation suggets, it also ends up
-    // excluding the properties file from the packaged JAR.  This is an issue, as the raml.properties file is
-    // what Gradle uses to declare the plugin.
-    strictCheck false
-    mapping {
-        java='SLASHSTAR_STYLE'
-        groovy='SLASHSTAR_STYLE'
-    }
-}
-*/
 
 // publishing
 
@@ -125,13 +107,13 @@ uploadArchives {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
       }
 
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
+        repository(url: "https://repository-master.mulesoft.org/releases/") {
+            authentication(userName: ossrhUsername, password: ossrhPassword)
+        }
 
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
+        snapshotRepository(url: "https://repository-master.mulesoft.org/snapshots/") {
+            authentication(userName: ossrhUsername, password: ossrhPassword)
+        }
 
       pom.project {
         name project.name

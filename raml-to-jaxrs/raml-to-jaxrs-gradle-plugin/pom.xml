@@ -22,33 +22,38 @@
                 <groupId>org.fortasoft</groupId>
                 <artifactId>gradle-maven-plugin</artifactId>
                 <version>1.0.8</version>
-                <configuration>
-                    <tasks>
-                        <task>install</task>
-                    </tasks>
-                    <gradleVersion>3.5</gradleVersion>
-                </configuration>
                 <executions>
                     <execution>
+                        <id>install</id>
                         <phase>install</phase>
                         <goals>
                             <goal>invoke</goal>
                         </goals>
+                        <configuration>
+                            <tasks>
+                                <task>install</task>
+                            </tasks>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy</id>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <task>uploadArchives</task>
+                            </tasks>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
     <dependencies>
-<!--
-        <dependency>
-            <groupId>org.gradle</groupId>
-            <artifactId>gradle-tooling-api</artifactId>
-            <version>3.5</version>
-            <type>jar</type>
-            &lt;!&ndash;<scope>provided</scope>&ndash;&gt;
-        </dependency>
--->
+
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>jaxrs-code-generator</artifactId>

@@ -18,10 +18,7 @@ package org.raml.jaxrs.generator.v10.types;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.V10GProperty;
-import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.jaxrs.generator.v10.V10TypeRegistry;
+import org.raml.jaxrs.generator.v10.*;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -42,16 +39,6 @@ import java.util.List;
  */
 public class V10GTypeFactory {
 
-  public static V10GType createRequestBodyType(V10TypeRegistry registry, Resource resource,
-                                               Method method, TypeDeclaration typeDeclaration) {
-
-    return new V10GTypeObject(registry, typeDeclaration, Names.ramlTypeName(resource, method,
-                                                                            typeDeclaration),
-                              Annotations.CLASS_NAME.get(
-                                                         Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration),
-                              true,
-                              getProperties(typeDeclaration, registry), getParents(typeDeclaration, registry), null);
-  }
 
   public static V10GType createResponseBodyType(V10TypeRegistry registry, Resource resource,
                                                 Method method, Response response, TypeDeclaration typeDeclaration) {
@@ -86,56 +73,57 @@ public class V10GTypeFactory {
   }
 
   public static V10GType createArray(V10TypeRegistry registry, String name,
-                                     ArrayTypeDeclaration typeDeclaration) {
+                                     ArrayTypeDeclaration typeDeclaration, CreationModel model) {
 
-    return new V10GTypeArray(registry, name, typeDeclaration);
+    return new V10GTypeArray(registry, name, typeDeclaration, model);
   }
 
   public static V10GType createEnum(V10TypeRegistry v10TypeRegistry, String name,
-                                    StringTypeDeclaration typeDeclaration) {
+                                    StringTypeDeclaration typeDeclaration, CreationModel model) {
     return new V10GTypeEnum(v10TypeRegistry, name, Annotations.CLASS_NAME.get(
                                                                               Names.typeName(typeDeclaration.name()),
-                                                                              typeDeclaration), typeDeclaration);
+                                                                              typeDeclaration), typeDeclaration, model);
   }
 
   public static V10GType createEnum(V10TypeRegistry v10TypeRegistry, String name,
-                                    String javaTypeName, StringTypeDeclaration typeDeclaration) {
-    return new V10GTypeEnum(v10TypeRegistry, name, javaTypeName, typeDeclaration);
+                                    String javaTypeName, StringTypeDeclaration typeDeclaration, CreationModel model) {
+    return new V10GTypeEnum(v10TypeRegistry, name, javaTypeName, typeDeclaration, model);
   }
 
-  public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName) {
+  public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName, CreationModel model) {
 
     return new V10GTypeJson(jsonTypeDeclaration, ramlName, Annotations.CLASS_NAME.get(
                                                                                       Names.typeName(ramlName),
-                                                                                      jsonTypeDeclaration));
+                                                                                      jsonTypeDeclaration), model);
   }
 
   public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName,
-                                    String javaTypeName) {
+                                    String javaTypeName, CreationModel model) {
 
-    return new V10GTypeJson(jsonTypeDeclaration, ramlName, javaTypeName);
+    return new V10GTypeJson(jsonTypeDeclaration, ramlName, javaTypeName, model);
   }
 
-  public static V10GType createXml(XMLTypeDeclaration typeDeclaration, String ramlName) {
+  public static V10GType createXml(XMLTypeDeclaration typeDeclaration, String ramlName, CreationModel model) {
     return new V10GTypeXml(typeDeclaration, ramlName, Annotations.CLASS_NAME.get(
-                                                                                 Names.typeName(ramlName), typeDeclaration));
+                                                                                 Names.typeName(ramlName), typeDeclaration),
+                           model);
   }
 
   public static V10GType createXml(XMLTypeDeclaration typeDeclaration, String ramlName,
-                                   String javaName) {
-    return new V10GTypeXml(typeDeclaration, ramlName, javaName);
+                                   String javaName, CreationModel model) {
+    return new V10GTypeXml(typeDeclaration, ramlName, javaName, model);
   }
 
   public static V10GType createUnion(V10TypeRegistry registry,
-                                     UnionTypeDeclaration typeDeclaration, String ramlName) {
+                                     UnionTypeDeclaration typeDeclaration, String ramlName, CreationModel model) {
     return new V10GTypeUnion(registry, typeDeclaration, ramlName, Annotations.CLASS_NAME.get(
                                                                                              Names.typeName(ramlName),
-                                                                                             typeDeclaration));
+                                                                                             typeDeclaration), model);
   }
 
   public static V10GType createUnion(V10TypeRegistry registry,
-                                     UnionTypeDeclaration typeDeclaration, String ramlName, String javaName) {
-    return new V10GTypeUnion(registry, typeDeclaration, ramlName, javaName);
+                                     UnionTypeDeclaration typeDeclaration, String ramlName, String javaName, CreationModel model) {
+    return new V10GTypeUnion(registry, typeDeclaration, ramlName, javaName, model);
   }
 
   private static List<V10GType> getParents(TypeDeclaration typeDeclaration,

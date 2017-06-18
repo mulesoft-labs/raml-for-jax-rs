@@ -22,6 +22,7 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -37,8 +38,8 @@ public class V10GTypeArray extends V10GTypeHelper {
   private final String name;
   private final ArrayTypeDeclaration typeDeclaration;
 
-  public V10GTypeArray(V10TypeRegistry registry, String name, ArrayTypeDeclaration typeDeclaration) {
-    super(name);
+  public V10GTypeArray(V10TypeRegistry registry, String name, ArrayTypeDeclaration typeDeclaration, CreationModel model) {
+    super(name, typeDeclaration, model);
     this.registry = registry;
     this.name = name;
     this.typeDeclaration = typeDeclaration;
@@ -86,10 +87,5 @@ public class V10GTypeArray extends V10GTypeHelper {
   @Override
   public ClassName javaImplementationName(String pack) {
     return null;
-  }
-
-  @Override
-  public boolean isInline() {
-    return false;
   }
 }

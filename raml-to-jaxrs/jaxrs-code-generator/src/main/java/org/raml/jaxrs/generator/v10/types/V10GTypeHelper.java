@@ -19,9 +19,11 @@ import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.NullXMLFacetInfo;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
 
 import java.util.Collection;
@@ -34,10 +36,18 @@ import java.util.List;
 public abstract class V10GTypeHelper implements V10GType {
 
 
-  private String name;
+  private final String name;
+  private final TypeDeclaration typeDeclaration;
+  private final CreationModel creationModel;
 
-  public V10GTypeHelper(String name) {
+  public V10GTypeHelper(String name, TypeDeclaration typeDeclaration) {
+    this(name, typeDeclaration, CreationModel.NEVER_INLINE);
+  }
+
+  public V10GTypeHelper(String name, TypeDeclaration typeDeclaration, CreationModel creationModel) {
     this.name = name;
+    this.typeDeclaration = typeDeclaration;
+    this.creationModel = creationModel;
   }
 
   @Override
@@ -112,7 +122,7 @@ public abstract class V10GTypeHelper implements V10GType {
 
   @Override
   public boolean isInline() {
-    return false;
+    return creationModel.isInline(typeDeclaration);
   }
 
   @Override

@@ -106,7 +106,6 @@ class CodeGeneratorTask extends DefaultTask {
             ramlConfiguration.setJsonMapperConfiguration jsonMapperConfiguration
             ramlConfiguration.setTypeConfiguration generateTypesWith
 
-            println "GAAAAH " + ramlConfiguration.typeConfiguration
             if (resourceCreationExtension != null) {
 
                 Class<GlobalResourceExtension> c = Class.forName(resourceCreationExtension) as Class<GlobalResourceExtension>

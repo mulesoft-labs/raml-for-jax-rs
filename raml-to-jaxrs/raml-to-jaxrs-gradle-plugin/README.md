@@ -13,7 +13,7 @@ version = '0.1'
 
 buildscript {
   repositories {
-      mavenLocal()
+    mavenLocal()
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
@@ -62,7 +62,8 @@ The Gradle plugin supports the following configuration options, defined via the 
 Once the plugin has been applied and configured, execute the `ramltojaxrs` task to generated the JAX-RS resources:
 
 ```sh
-    ./gradlew compileJava ramltojaxrs
+  $ gradle wrapper --gradle-version 3.3
+  $ ./gradlew compileJava ramltojaxrs
 ```
 
 There is an example [here](../examples/gradle-examples/gradle-jaxb-example).

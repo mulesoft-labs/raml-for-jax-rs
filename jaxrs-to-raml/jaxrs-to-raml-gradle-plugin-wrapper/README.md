@@ -57,7 +57,8 @@ The Gradle plugin supports the following configuration options, defined via the 
 Once the plugin has been applied and configured, execute the `jaxrstoraml` task to generated the JAX-RS resources:
 
 ```sh
-    ./gradlew compileJava jaxrstoraml
+  $ gradle wrapper --gradle-version 3.3
+  $ ./gradlew compileJava jaxrstoraml
 ```
 
 There is an example [here](../jaxrs-to-raml-examples/jaxrs-to-raml-gradle-examples/gradle-jaxrs-to-raml-annotations).

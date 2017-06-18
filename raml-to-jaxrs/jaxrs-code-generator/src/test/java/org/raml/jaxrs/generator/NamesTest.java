@@ -174,6 +174,17 @@ public class NamesTest {
   }
 
   @Test
+  public void buildResourceMethodNameWithCurlyBracesAndWithoutParameter() throws Exception {
+
+    when(method.resource()).thenReturn(resource);
+    when(resource.resourcePath()).thenReturn("/songs/foo/{songId}");
+    when(uriParameter.name()).thenReturn("songId");
+    when(method.method()).thenReturn("get");
+
+    assertEquals("getSongsFoo", Names.resourceMethodName(resource, method));
+  }
+
+  @Test
   public void buildResourceMethodNameWithTwoURIParam() throws Exception {
 
     when(method.resource()).thenReturn(resource);

@@ -98,8 +98,3 @@ if(signingEnabled) {
     sign configurations.archives
   }
 }
-
-
-
-
-

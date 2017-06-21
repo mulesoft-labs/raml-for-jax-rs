@@ -33,21 +33,9 @@
                             <goal>invoke</goal>
                         </goals>
                         <configuration>
+                            <jvmArgs>-DartifactVersion=${project.version}</jvmArgs>
                             <tasks>
                                 <task>install</task>
-                            </tasks>
-                            <gradleVersion>3.5</gradleVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>invoke</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <task>uploadArchives</task>
                             </tasks>
                             <gradleVersion>3.5</gradleVersion>
                         </configuration>
@@ -79,12 +67,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <file>./build/jaxrs-to-raml-gradle-plugin-${project.version}.jar/</file>
+                            <sources>./build/jaxrs-to-raml-gradle-plugin-${project.version}-sources.jar</sources>
+                            <javadoc>./build/jaxrs-to-raml-gradle-plugin-${project.version}-javadoc.jar</javadoc>
+                            <pomFile>./build/poms/pom-default.xml</pomFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.raml</groupId>
-            <artifactId>jaxrs-to-raml-core</artifactId>
-        </dependency>
-    </dependencies>
 </project>

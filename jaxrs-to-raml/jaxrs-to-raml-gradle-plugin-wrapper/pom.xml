@@ -33,7 +33,9 @@
                             <goal>invoke</goal>
                         </goals>
                         <configuration>
-                            <jvmArgs>-DartifactVersion=${project.version}</jvmArgs>
+                            <jvmArgs>
+                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                            </jvmArgs>
                             <tasks>
                                 <task>install</task>
                             </tasks>

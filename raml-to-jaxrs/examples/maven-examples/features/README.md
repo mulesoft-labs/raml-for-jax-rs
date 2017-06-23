@@ -6,7 +6,7 @@ java jar project. The only required dependency is this:
 ```xml
 <dependencies>
     <dependency>
-        <groupId>org.raml</groupId>
+        <groupId>org.raml.jaxrs</groupId>
         <artifactId>jaxrs-code-generator</artifactId>
         <version>2.x.y</version>
     </dependency>
@@ -20,12 +20,12 @@ the plugin with a dependency to our plugin code.
 <build>
     <plugins>
         <plugin>
-            <groupId>org.raml</groupId>
+            <groupId>org.raml.jaxrs</groupId>
             <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
             <version>2.x.y</version>
             <dependencies>
                 <dependency>
-                    <groupId>org.raml</groupId>
+                    <groupId>org.raml.jaxrs</groupId>
                     <artifactId>feature-plugins</artifactId>
                     <version>2.x.y</version>
                 </dependency>

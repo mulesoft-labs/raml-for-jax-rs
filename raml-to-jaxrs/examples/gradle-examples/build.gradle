@@ -3,7 +3,7 @@
 allprojects {
     apply plugin: 'java'
 
-    group 'org.raml'
+    group 'org.raml.jaxrs'
     version '2.1.0-SNAPSHOT'
     repositories {
         mavenLocal()
@@ -27,7 +27,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.raml:raml-to-jaxrs-gradle-plugin:2.1.0-SNAPSHOT"
+        classpath "org.raml.jaxrs:raml-to-jaxrs-gradle-plugin:2.1.0-SNAPSHOT"
     }
 }
 

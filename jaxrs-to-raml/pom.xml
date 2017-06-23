@@ -3,11 +3,13 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>org.raml</groupId>
+        <groupId>org.raml.jaxrs</groupId>
         <artifactId>raml-for-jaxrs</artifactId>
         <version>2.1.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>jaxrs-to-raml</artifactId>
     <packaging>pom</packaging>
 
@@ -18,32 +20,32 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>jaxrs-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>raml-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>jaxrs-to-raml-converter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>raml-emitter</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>jaxrs-parser</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>jaxrs-to-raml-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -59,19 +61,19 @@
                 <scope>runtime</scope>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>jaxrs-to-raml-cli</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>jaxrs-test-resources</artifactId>
-                <version>2.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.raml</groupId>
+                <groupId>org.raml.jaxrs</groupId>
                 <artifactId>raml-generator-api</artifactId>
-                <version>2.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -90,7 +92,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.raml</groupId>
+                    <groupId>org.raml.jaxrs</groupId>
                     <artifactId>jaxrs-to-raml-maven-plugin</artifactId>
                     <version>${project.version}</version>
                 </plugin>

@@ -17,7 +17,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-group = 'org.raml'
+group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
 description '''RAML JAX-RS Gradle Plug-in'''
 
@@ -59,7 +59,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile "org.raml:jaxrs-code-generator:" + version
+    compile "org.raml.jaxrs:jaxrs-code-generator:" + version
     compile 'commons-io:commons-io:2.4'
 
     testCompile("org.spockframework:spock-core:$spockVersion") {

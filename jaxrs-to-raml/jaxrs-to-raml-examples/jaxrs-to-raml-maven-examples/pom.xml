@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.raml</groupId>
+        <groupId>org.raml.jaxrs</groupId>
         <artifactId>jaxrs-to-raml-examples</artifactId>
         <version>2.1.0-SNAPSHOT</version>
     </parent>
@@ -19,6 +19,5 @@
         <module>jaxrs-to-raml-raml-examples</module>
         <module>jaxrs-to-raml-annotations</module>
         <module>jaxrs-to-raml-multipart</module>
-
     </modules>
 </project>

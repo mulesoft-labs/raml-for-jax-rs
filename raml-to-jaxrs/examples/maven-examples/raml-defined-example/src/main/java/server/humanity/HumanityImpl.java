@@ -60,7 +60,8 @@ public class HumanityImpl implements Humans {
     humans.add(pi);
     humans.add(another);
 
-    return GetHumansResponse.respond200WithApplicationJson(humans);
+    return GetHumansResponse.respond200WithApplicationJson(humans,
+                                                           GetHumansResponse.HeadersFor200.headersFor200().withBoo("MyBoo"));
   }
 
   @Override
@@ -94,6 +95,7 @@ public class HumanityImpl implements Humans {
 
   @Override
   public PutHumansByIdResponse putHumansById(String id, Human entity) {
-    return null;
+
+    return PutHumansByIdResponse.respond200(PutHumansByIdResponse.HeadersFor200.headersFor200().withSomeOtherHeader("Blah"));
   }
 }

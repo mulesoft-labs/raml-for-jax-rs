@@ -62,11 +62,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Jean-Philippe Belanger on 10/27/16. Abstraction of creation.
@@ -251,15 +247,33 @@ public class ResourceBuilder implements ResourceGenerator {
         if (gResponse == null) {
           continue;
         }
+
+        TypeSpec spec = null;
+        if (!gResponse.headers().isEmpty()) {
+
+          spec = buildHeadersForResponse(responseClass, gResponse.headers(), gResponse.code());
+        }
+
         if (gResponse.body().size() == 0) {
           String httpCode = gResponse.code();
           MethodSpec.Builder builder = MethodSpec.methodBuilder("respond" + httpCode);
           builder
               .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-              .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
-              .addStatement("return new $N(responseBuilder.build())", currentClass)
-              .returns(TypeVariableName.get(currentClass.name))
-              .build();
+              .returns(TypeVariableName.get(currentClass.name));
+
+          if (spec == null) {
+
+            builder.addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
+                .addStatement("return new $N(responseBuilder.build())", currentClass);
+
+          } else {
+
+            builder.addParameter(ParameterSpec.builder(ClassName.get("", spec.name), "headers").build())
+                .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
+                .addStatement("responseBuilder = headers.toResponseBuilder(responseBuilder)")
+                .addStatement("return new $N(responseBuilder.build())", currentClass);
+          }
+
           builder =
               build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse)
                   .onMethod(new ResourceContextImpl(build),
@@ -308,21 +322,43 @@ public class ResourceBuilder implements ResourceGenerator {
 
             builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
 
+            if (spec != null) {
+
+              builder.addParameter(ParameterSpec.builder(ClassName.get("", spec.name), "headers").build());
+            }
+
             builder.addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode
                 + ").header(\"Content-Type\", \""
                 + typeDeclaration.mediaType() + "\")");
             if (typeDeclaration.type().isArray() && typeDeclaration.mediaType().contains("xml")) {
 
-              builder
-                  .addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
-                                GenericEntity.class, typeName)
-                  .addStatement("responseBuilder.entity(wrappedEntity)")
-                  .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+              if (spec == null) {
+                builder
+                    .addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
+                                  GenericEntity.class, typeName)
+                    .addStatement("responseBuilder.entity(wrappedEntity)")
+                    .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+              } else {
+
+                builder.addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
+                                     GenericEntity.class, typeName)
+                    .addStatement("headers.toResponseBuilder(responseBuilder)")
+                    .addStatement("responseBuilder.entity(wrappedEntity)")
+                    .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+              }
             } else {
 
-              builder
-                  .addStatement("responseBuilder.entity(entity)")
-                  .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+              if (spec == null) {
+                builder
+                    .addStatement("responseBuilder.entity(entity)")
+                    .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+              } else {
+
+                builder
+                    .addStatement("responseBuilder.entity(entity)")
+                    .addStatement("headers.toResponseBuilder(responseBuilder)")
+                    .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+              }
             }
 
 
@@ -357,6 +393,37 @@ public class ResourceBuilder implements ResourceGenerator {
     }
 
     return map;
+  }
+
+  private TypeSpec buildHeadersForResponse(TypeSpec.Builder responseClass, List<GParameter> headers, String code) {
+
+    TypeSpec.Builder headerForCode = TypeSpec.classBuilder("HeadersFor" + code).addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+        .superclass(ClassName.get("", "HeaderBuilderBase"))
+        .addMethod(
+                   MethodSpec.methodBuilder(Names.methodName("headersFor" + code))
+                       .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+                       .returns(ClassName.get("", "HeadersFor" + code))
+                       .addStatement("return new HeadersFor" + code + "()")
+                       .build()
+        )
+        .addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
+
+    for (GParameter header : headers) {
+      MethodSpec spec = MethodSpec
+          .methodBuilder(Names.methodName("with", header.name()))
+          .addModifiers(Modifier.PUBLIC)
+          .returns(ClassName.get("", "HeadersFor" + code))
+          .addParameter(ParameterSpec.builder(header.type().defaultJavaTypeName(build.getModelPackage()), "p", Modifier.FINAL)
+              .build())
+          .addStatement("headerMap.put($S, p.toString())", header.name())
+          .addStatement("return this")
+          .build();
+      headerForCode.addMethod(spec);
+    }
+
+    TypeSpec build = headerForCode.build();
+    responseClass.addType(build);
+    return build;
   }
 
   private MethodSpec.Builder createMethodBuilder(GMethod gMethod, String methodName, Set<String> mediaTypesForMethod,

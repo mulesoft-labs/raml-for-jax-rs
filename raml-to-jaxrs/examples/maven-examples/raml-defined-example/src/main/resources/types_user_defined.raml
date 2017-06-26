@@ -107,6 +107,9 @@ types:
                 body:
                     application/json:
                         type: Human[]
+                headers:
+                  boo:
+                  somethingElse:
     /{id}:
         uriParameters:
             id: string
@@ -126,3 +129,5 @@ types:
                     type: Human
             responses:
                 200:
+                  headers:
+                    someOtherHeader:

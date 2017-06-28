@@ -397,15 +397,15 @@ public class ResourceBuilder implements ResourceGenerator {
 
   private TypeSpec buildHeadersForResponse(TypeSpec.Builder responseClass, List<GParameter> headers, String code) {
 
+    responseClass.addMethod(MethodSpec.methodBuilder(Names.methodName("headersFor" + code))
+        .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
+        .returns(ClassName.get("", "HeadersFor" + code))
+        .addStatement("return new HeadersFor" + code + "()")
+        .build()
+        );
+
     TypeSpec.Builder headerForCode = TypeSpec.classBuilder("HeadersFor" + code).addModifiers(Modifier.STATIC, Modifier.PUBLIC)
         .superclass(ClassName.get("", "HeaderBuilderBase"))
-        .addMethod(
-                   MethodSpec.methodBuilder(Names.methodName("headersFor" + code))
-                       .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
-                       .returns(ClassName.get("", "HeadersFor" + code))
-                       .addStatement("return new HeadersFor" + code + "()")
-                       .build()
-        )
         .addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
 
     for (GParameter header : headers) {

@@ -55,6 +55,7 @@ public class Main {
       String resourceDir = command.getOptionValue("r");
       String directory = command.getOptionValue("d");
       String extensions = command.getOptionValue("e");
+      String[] generateTypesWith = command.getOptionValues("g");
 
       List<String> ramlFiles = command.getArgList();
 
@@ -63,6 +64,7 @@ public class Main {
       configuration.setResourcePackage(resourceDir);
       configuration.setSupportPackage(supportDir);
       configuration.setOutputDirectory(new File(directory));
+      configuration.setTypeConfiguration(generateTypesWith);
 
       if (extensions != null) {
         configuration.setTypeConfiguration(extensions.split(("\\s*,\\s*")));

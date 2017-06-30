@@ -1,5 +1,5 @@
 ## Gradle Plugin
-This plugin provides RAML code generation support to a Gradl project.
+This plugin provides RAML code generation support to a Gradle project.
 
 ### Usage
 To use it, simply include the required plugin dependency via `buildscript {}` and 'apply' the plugin:

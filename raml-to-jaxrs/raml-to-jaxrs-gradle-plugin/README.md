@@ -1,5 +1,5 @@
 ## Gradle Plugin
-This plugin provides RAML code generation support to a Gradl project.
+This plugin provides RAML code generation support to a Gradle project.
 
 ### Usage
 To use it, simply include the required plugin dependency via `buildscript {}` and 'apply' the plugin:
@@ -19,7 +19,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath "org.raml.jaxrs:raml-to-jaxrs-gradle-plugin:2.1.0-SNAPSHOT"
+    classpath "org.raml.jaxrs:raml-to-jaxrs-gradle-plugin:2.1.1-SNAPSHOT"
   }
 }
 

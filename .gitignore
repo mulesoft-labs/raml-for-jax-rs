@@ -17,3 +17,4 @@ RemoteSystemsTempFiles
 .project
 bin
 build
+*.xml.versionsBackup

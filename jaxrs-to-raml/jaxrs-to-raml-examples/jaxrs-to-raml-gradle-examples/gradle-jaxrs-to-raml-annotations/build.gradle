@@ -1,7 +1,7 @@
 dependencies {
     compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
-    compile "org.raml.jaxrs:raml-generator-api:2.1.0-SNAPSHOT"
-    compile "org.raml.jaxrs:raml-emitter:2.1.0-SNAPSHOT"
+    compile "org.raml.jaxrs:raml-generator-api:2.1.0"
+    compile "org.raml.jaxrs:raml-emitter:2.1.0"
     compile "org.glassfish.jersey.containers:jersey-container-jetty-http:2.24"
 }
 

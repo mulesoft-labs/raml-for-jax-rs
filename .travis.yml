@@ -1,4 +1,5 @@
 language: java
 sudo: false
 after_success:
-    - "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [[ $TRAVIS_BRANCH =~ (master|^release/[0-9]+.[0-9]+.[0-9]+) ]] && mvn -Dusername='$NEXUS_USER' -Dpassword='$NEXUS_PASSWORD' deploy"
+    - echo "<settings><servers><server><id>mulesoft-releases</id><username>\${env.NEXUS_USER}</username><password>\${env.NEXUS_PASSWORD}</password></server><server><id>mulesoft-snapshots</id><username>\${env.NEXUS_USER}</username><password>\${env.NEXUS_PASSWORD}</password></server></servers></settings>" > ~/settings.xml
+    - "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [[ $TRAVIS_BRANCH =~ (master|^release/[0-9]+.[0-9]+.[0-9]+) ]] && mvn deploy -Dusername='$NEXUS_USER' -Dpassword='$NEXUS_PASSWORD' -DskipTests"

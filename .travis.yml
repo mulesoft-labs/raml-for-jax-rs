@@ -1,1 +1,4 @@
 language: java
+sudo: false
+after_success:
+    - "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [[ $TRAVIS_BRANCH =~ (master|^release/[0-9]+.[0-9]+.[0-9]+) ]] && mvn -Dusername=${env.NEXUS_USER} -Dpassword=${env.NEXUS_PASSWORD} deploy"

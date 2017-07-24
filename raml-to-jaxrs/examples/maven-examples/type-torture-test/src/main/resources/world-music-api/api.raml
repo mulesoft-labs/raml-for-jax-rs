@@ -256,6 +256,8 @@ uses:
   (ready):
   is: [ secured ]
   get:
+    headers:
+      HelloMore: string
     securedBy: [ oauth_2_0, null ]
     (monitoringInterval): 30
     queryParameters:

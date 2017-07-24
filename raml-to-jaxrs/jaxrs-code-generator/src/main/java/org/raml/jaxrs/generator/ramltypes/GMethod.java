@@ -33,5 +33,7 @@ public interface GMethod extends GAbstraction {
 
   List<GParameter> queryParameters();
 
+  List<GParameter> headers();
+
   List<GResponse> responses();
 }

@@ -40,6 +40,8 @@ public class V08Method implements GMethod {
   private final List<GParameter> queryParameters;
   private final List<GResponse> responses;
   private final Method input;
+  private final List<GParameter> headers;
+
   private List<GRequest> requests;
 
   public V08Method(final V08GResource v08GResource, final Method input,
@@ -55,6 +57,17 @@ public class V08Method implements GMethod {
             return new V08GParameter(input);
           }
         });
+
+    this.headers =
+        Lists.transform(input.headers(), new Function<Parameter, GParameter>() {
+
+          @Nullable
+          @Override
+          public GParameter apply(@Nullable Parameter input) {
+            return new V08GParameter(input);
+          }
+        });
+
     this.requests = Lists.transform(input.body(), new Function<BodyLike, GRequest>() {
 
       @Nullable
@@ -105,6 +118,12 @@ public class V08Method implements GMethod {
   @Override
   public List<GResponse> responses() {
     return responses;
+  }
+
+
+  @Override
+  public List<GParameter> headers() {
+    return headers;
   }
 
   @Override

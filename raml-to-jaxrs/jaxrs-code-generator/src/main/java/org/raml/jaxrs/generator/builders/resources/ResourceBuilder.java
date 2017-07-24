@@ -48,12 +48,7 @@ import org.raml.jaxrs.generator.v10.TypeUtils;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -383,11 +378,8 @@ public class ResourceBuilder implements ResourceGenerator {
               .build());
 
     }
+
     for (GParameter gParameter : gMethod.queryParameters()) {
-      /*
-       * if (TypeUtils.isComposite(typeDeclaration)) { throw new GenerationException("query parameter is composite: " +
-       * typeDeclaration); }
-       */
 
       methodSpec.addParameter(
           ParameterSpec
@@ -396,6 +388,19 @@ public class ResourceBuilder implements ResourceGenerator {
                        Names.methodName(gParameter.name()))
               .addAnnotation(
                              AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
+                                 .build())
+              .build());
+    }
+
+    for (GParameter gParameter : gMethod.headers()) {
+
+      methodSpec.addParameter(
+          ParameterSpec
+              .builder(
+                       gParameter.type().defaultJavaTypeName(build.getModelPackage()),
+                       Names.methodName(gParameter.name()))
+              .addAnnotation(
+                             AnnotationSpec.builder(HeaderParam.class).addMember("value", "$S", gParameter.name())
                                  .build())
               .build());
     }

@@ -336,7 +336,7 @@ public class ResourceBuilder implements ResourceGenerator {
             builder.addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode
                 + ").header(\"Content-Type\", \""
                 + responseType.mediaType() + "\")");
-            if (responseType.type().isArray() && responseType.mediaType().contains("xml")) {
+            if (responseType.type().isArray()) {
 
               if (spec == null) {
                 builder

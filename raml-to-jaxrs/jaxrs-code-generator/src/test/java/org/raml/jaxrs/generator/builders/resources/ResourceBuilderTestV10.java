@@ -27,6 +27,7 @@ import org.raml.jaxrs.generator.utils.RamlV10;
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.*;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -129,6 +130,34 @@ public class ResourceBuilderTestV10 {
                                    assertEquals(ClassName.INT, methodSpec.parameters.get(0).type);
                                  }
 
+                               }
+                             }, "foo", "/fun");
+  }
+
+  @Test
+  public void build_octet_stream_media() throws Exception {
+
+    RamlV10.buildResourceV10(this, "resource_entity_octet_stream.raml",
+                             new CodeContainer<TypeSpec>() {
+
+                               @Override
+                               public void into(TypeSpec g) throws IOException {
+
+                                 assertEquals("Foo", g.name);
+                                 assertEquals(1, g.methodSpecs.size());
+                                 {
+                                   MethodSpec methodSpec = g.methodSpecs.get(0);
+                                   assertEquals("postSearch", methodSpec.name);
+                                   assertEquals(2, methodSpec.annotations.size());
+                                   assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                                   AnnotationSpec mediaTypeSpec = methodSpec.annotations.get(1);
+                                   assertEquals(ClassName.get(Consumes.class), mediaTypeSpec.type);
+                                   assertEquals(1, mediaTypeSpec.members.get("value").size());
+                                   assertEquals("\"application/octet-stream\"", mediaTypeSpec.members.get("value").get(0)
+                                       .toString());
+                                   assertEquals(1, methodSpec.parameters.size());
+                                   assertEquals(ClassName.get(InputStream.class), methodSpec.parameters.get(0).type);
+                                 }
                                }
                              }, "foo", "/fun");
   }
@@ -479,6 +508,44 @@ public class ResourceBuilderTestV10 {
         assertTrue(responseMethod.hasModifier(Modifier.STATIC));
         assertTrue(responseMethod.code.toString().contains(
                                                            ".header(\"Content-Type\", \"application/json\")"));
+
+      }
+    }, "foo", "/fun");
+  }
+
+  @Test
+  public void build_stream_response() throws Exception {
+
+    RamlV10.buildResourceV10(this, "resource_stream_response.raml", new CodeContainer<TypeSpec>() {
+
+      @Override
+      public void into(TypeSpec g) throws IOException {
+
+        assertEquals("Foo", g.name);
+        assertEquals(1, g.methodSpecs.size());
+        MethodSpec methodSpec = g.methodSpecs.get(0);
+        assertEquals("getSearch", methodSpec.name);
+        assertEquals(ClassName.get("", "GetSearchResponse"), methodSpec.returnType);
+        assertEquals(1, g.typeSpecs.size());
+        AnnotationSpec mediaTypeSpec = methodSpec.annotations.get(1);
+        assertEquals(ClassName.get(Produces.class), mediaTypeSpec.type);
+        assertEquals(1, mediaTypeSpec.members.get("value").size());
+        assertEquals("\"application/octet-stream\"", mediaTypeSpec.members.get("value").get(0).toString());
+
+        TypeSpec response = g.typeSpecs.get(0);
+        assertEquals("GetSearchResponse", response.name);
+        assertEquals(3, response.methodSpecs.size());
+
+        assertTrue(response.methodSpecs.get(0).isConstructor());
+        assertTrue(response.methodSpecs.get(1).isConstructor());
+
+        MethodSpec responseMethod = response.methodSpecs.get(2);
+        assertEquals("respond200WithApplicationOctetStream", responseMethod.name);
+        assertEquals("javax.ws.rs.core.StreamingOutput", responseMethod.parameters.get(0).type.toString());
+        assertTrue(responseMethod.hasModifier(Modifier.PUBLIC));
+        assertTrue(responseMethod.hasModifier(Modifier.STATIC));
+        assertTrue(responseMethod.code.toString().contains(
+                                                           ".header(\"Content-Type\", \"application/octet-stream\")"));
 
       }
     }, "foo", "/fun");

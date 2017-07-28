@@ -51,7 +51,10 @@ import javax.lang.model.element.Modifier;
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -160,8 +163,8 @@ public class ResourceBuilder implements ResourceGenerator {
                                     Map<String, TypeSpec.Builder> responseSpec) {
 
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>(), responseSpec);
-    TypeName name = gRequest.type().defaultJavaTypeName(build.getModelPackage());
-    methodSpec.addParameter(ParameterSpec.builder(name, "entity").build());
+    ParameterSpec parameterSpec = createParamteter(gRequest);
+    methodSpec.addParameter(parameterSpec);
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
 
     methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
@@ -170,6 +173,19 @@ public class ResourceBuilder implements ResourceGenerator {
 
     if (methodSpec != null) {
       typeSpec.addMethod(methodSpec.build());
+    }
+  }
+
+  private ParameterSpec createParamteter(GRequest gRequest) {
+
+    if (gRequest.type().name().equals("any") && "application/octet-stream".equals(gRequest.mediaType())) {
+
+      TypeName typeName = ClassName.get(InputStream.class);
+      return ParameterSpec.builder(typeName, "entity").build();
+    } else {
+
+      TypeName typeName = gRequest.type().defaultJavaTypeName(build.getModelPackage());
+      return ParameterSpec.builder(typeName, "entity").build();
     }
   }
 
@@ -290,12 +306,12 @@ public class ResourceBuilder implements ResourceGenerator {
 
           responseClass.addMethod(builder.build());
         } else {
-          for (GResponseType typeDeclaration : gResponse.body()) {
+          for (GResponseType responseType : gResponse.body()) {
 
             String httpCode = gResponse.code();
             MethodSpec.Builder builder =
                 MethodSpec.methodBuilder(
-                                         Names.methodName("respond", httpCode, "With", typeDeclaration.mediaType()))
+                                         Names.methodName("respond", httpCode, "With", responseType.mediaType()))
                     .addModifiers(Modifier.STATIC, Modifier.PUBLIC);
 
             builder =
@@ -310,12 +326,7 @@ public class ResourceBuilder implements ResourceGenerator {
             builder
                 .returns(TypeVariableName.get(currentClass.name));
 
-            TypeName typeName = typeDeclaration.type().defaultJavaTypeName(build.getModelPackage());
-            if (typeName == null) {
-              throw new GenerationException(typeDeclaration + " was not seen before");
-            }
-
-            builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
+            TypeName typeName = createResponseParameter(responseType, builder);
 
             if (spec != null) {
 
@@ -324,8 +335,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
             builder.addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode
                 + ").header(\"Content-Type\", \""
-                + typeDeclaration.mediaType() + "\")");
-            if (typeDeclaration.type().isArray() && typeDeclaration.mediaType().contains("xml")) {
+                + responseType.mediaType() + "\")");
+            if (responseType.type().isArray() && responseType.mediaType().contains("xml")) {
 
               if (spec == null) {
                 builder
@@ -388,6 +399,26 @@ public class ResourceBuilder implements ResourceGenerator {
     }
 
     return map;
+  }
+
+  private TypeName createResponseParameter(GResponseType responseType, MethodSpec.Builder builder) {
+
+    if ("application/octet-stream".equals(responseType.mediaType()) && "any".equals(responseType.type().name())) {
+
+      TypeName typeName = ClassName.get(StreamingOutput.class);
+      builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
+
+      return typeName;
+    } else {
+      TypeName typeName = responseType.type().defaultJavaTypeName(build.getModelPackage());
+      if (typeName == null) {
+        throw new GenerationException(responseType + " was not seen before");
+      }
+
+      builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
+
+      return typeName;
+    }
   }
 
   private TypeSpec buildHeadersForResponse(TypeSpec.Builder responseClass, List<GParameter> headers, String code) {

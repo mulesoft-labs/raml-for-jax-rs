@@ -1,0 +1,17 @@
+#%RAML 1.0
+title: GitHub API
+version: v3
+baseUri: https://api.github.com
+types:
+    TypeOne:
+        type: object
+        properties:
+            day: string
+
+/search:
+    description: The search resource
+    get:
+        responses:
+            200:
+                body:
+                    application/octet-stream:

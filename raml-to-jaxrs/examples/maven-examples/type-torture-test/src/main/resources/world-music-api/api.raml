@@ -249,6 +249,14 @@ uses:
                         body:
                           application/json:
                             type: string
+/streamMe:
+  post:
+    body:
+      application/octet-stream:
+    responses:
+      200:
+        body:
+          application/octet-stream:
 
 /songs:
   displayName: Songs

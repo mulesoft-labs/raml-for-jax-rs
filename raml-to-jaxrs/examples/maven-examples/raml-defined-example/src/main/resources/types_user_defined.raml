@@ -4,7 +4,8 @@ version: v1
 baseUri: https://api.github.com
 uses:
   ramltojaxrs: ramltojaxrs.raml
-
+#(ramltojaxrs.types):
+#  onTypeCreation: [ org.raml.jaxrs.generator.builders.extensions.SupressAdditionalProperties ]
 types:
     ObjectOne:
         type: object
@@ -20,8 +21,10 @@ types:
     Gender:
         enum: [male, female, other]
     Leg:
-        properties:
-            toes: integer
+      (ramltojaxrs.types):
+        onTypeCreation: [ org.raml.jaxrs.generator.builders.extensions.SupressAdditionalProperties ]
+      properties:
+          toes: integer
     Arm:
         properties:
             fingers: integer

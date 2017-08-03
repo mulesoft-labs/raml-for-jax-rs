@@ -25,13 +25,7 @@ import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.utils.RamlV10;
 
 import javax.lang.model.element.Modifier;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -373,6 +367,43 @@ public class ResourceBuilderTestV10 {
                                }
                              }, "foo", "/fun");
   }
+
+  @Test
+  public void build_with_header_param() throws Exception {
+
+    RamlV10.buildResourceV10(this, "resource_no_entity_headers.raml",
+                             new CodeContainer<TypeSpec>() {
+
+                               @Override
+                               public void into(TypeSpec g) throws IOException {
+
+                                 assertEquals("Foo", g.name);
+                                 assertEquals(1, g.methodSpecs.size());
+                                 MethodSpec methodSpec = g.methodSpecs.get(0);
+                                 assertEquals("postSearch", methodSpec.name);
+                                 assertEquals(1, methodSpec.annotations.size());
+                                 assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                                 assertEquals(2, methodSpec.parameters.size());
+
+                                 ParameterSpec paramOneSpec = methodSpec.parameters.get(0);
+                                 assertEquals("xFun", paramOneSpec.name);
+                                 assertEquals(ClassName.get(String.class), paramOneSpec.type);
+                                 assertEquals(1, paramOneSpec.annotations.size());
+                                 assertEquals(ClassName.get(HeaderParam.class), paramOneSpec.annotations.get(0).type);
+                                 assertEquals("\"X-Fun\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+
+                                 ParameterSpec paramTwoSpec = methodSpec.parameters.get(1);
+                                 assertEquals("xDigitalFun", paramTwoSpec.name);
+                                 assertEquals(ClassName.INT, paramTwoSpec.type);
+                                 assertEquals(1, paramTwoSpec.annotations.size());
+                                 assertEquals(ClassName.get(HeaderParam.class), paramTwoSpec.annotations.get(0).type);
+                                 assertEquals("\"X-DigitalFun\"", paramTwoSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+                               }
+                             }, "foo", "/fun");
+  }
+
 
   @Test
   public void build_simple_response() throws Exception {

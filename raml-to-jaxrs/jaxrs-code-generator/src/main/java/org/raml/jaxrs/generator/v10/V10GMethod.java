@@ -37,6 +37,7 @@ public class V10GMethod implements GMethod {
   private V10GResource v10GResource;
   private final Method method;
   private final List<GParameter> queryParameters;
+  private final List<GParameter> headers;
   private final List<GResponse> responses;
   private List<GRequest> requests;
 
@@ -83,6 +84,22 @@ public class V10GMethod implements GMethod {
             }
           }
         });
+
+    this.headers =
+        Lists.transform(this.method.headers(), new Function<TypeDeclaration, GParameter>() {
+
+          @Nullable
+          @Override
+          public GParameter apply(@Nullable TypeDeclaration input) {
+
+            if (TypeUtils.shouldCreateNewClass(input, input.parentTypes().toArray(new TypeDeclaration[0]))) {
+              return new V10PGParameter(input, registry.fetchType(v10GResource.implementation(), method, input));
+            } else {
+              return new V10PGParameter(input, registry.fetchType(input.type(), input));
+            }
+          }
+        });
+
   }
 
   @Override
@@ -108,6 +125,11 @@ public class V10GMethod implements GMethod {
   @Override
   public List<GParameter> queryParameters() {
     return queryParameters;
+  }
+
+  @Override
+  public List<GParameter> headers() {
+    return headers;
   }
 
   @Override

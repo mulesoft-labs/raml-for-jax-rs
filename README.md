@@ -1,5 +1,3 @@
-![](http://raml.org/images/logo.png)
-
 # RAML for JAX-RS
 
 ## Introduction

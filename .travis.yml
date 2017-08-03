@@ -18,7 +18,7 @@ deploy:
         on:
             repo: mulesoft-labs/raml-for-jax-rs
             all_branches: true
-            condition: '"$TRAVIS_BRANCH" =~ "(master|^release/[0-9]+.[0-9]+.[0-9]+)"'
+            condition: $TRAVIS_BRANCH =~ ^(master|release/[0-9]+.[0-9]+.[0-9]+)$
     -
         provider: script
         script:

@@ -20,6 +20,7 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
+import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
@@ -65,7 +66,7 @@ public class RamlV10 {
 
     Api api = buildApiV10(test, raml);
     V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild currentBuild = new CurrentBuild(new V10Finder(api, registry), api);
+    CurrentBuild currentBuild = new CurrentBuild(new V10Finder(api, registry), api, ExtensionManager.createExtensionManager());
     currentBuild.constructClasses();
     ResourceBuilder builder =
         new ResourceBuilder(currentBuild, new V10GResource(registry, new GAbstractionFactory(), api
@@ -92,7 +93,7 @@ public class RamlV10 {
     } else {
       CurrentBuild currentBuild =
           new CurrentBuild(new V10Finder(ramlModelResult.getApiV10(), registry),
-                           ramlModelResult.getApiV10());
+                           ramlModelResult.getApiV10(), ExtensionManager.createExtensionManager());
       currentBuild.constructClasses();
       return currentBuild;
     }

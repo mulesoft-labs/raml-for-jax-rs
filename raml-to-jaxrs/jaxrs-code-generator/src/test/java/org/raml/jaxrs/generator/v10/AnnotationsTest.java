@@ -15,7 +15,11 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension;
 import org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension;
@@ -30,14 +34,26 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.Collections;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Jean-Philippe Belanger on 1/2/17. Just potential zeroes and ones
  */
 public class AnnotationsTest {
+
+  @Mock
+  CurrentBuild currentBuild;
+
+  @Before
+  public void setup() {
+
+    MockitoAnnotations.initMocks(this);
+  }
 
   @Test
   public void get() throws Exception {
@@ -60,14 +76,27 @@ public class AnnotationsTest {
 
     Api type = buildApi(this, "annotations.raml");
 
-    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.get(type.resources().get(0))).getElements()
-        .get(0) instanceof TrialResourceClassExtension);
-    assertTrue(((AbstractCompositeExtension) Annotations.ON_METHOD_CREATION.get(type.resources().get(0).methods().get(0)))
-        .getElements().get(0) instanceof TrialResourceMethodExtension);
-    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_CLASS_CREATION.get(type.resources().get(0).methods().get(0)))
-        .getElements().get(0) instanceof TrialResponseClassExtension);
-    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_METHOD_CREATION.get(type.resources().get(0).methods().get(0)
-        .responses().get(0))).getElements().get(0) instanceof TrialResponseMethodExtension);
+    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension"))
+        .thenReturn(Collections.<Object>singletonList(new TrialResourceClassExtension()));
+    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension"))
+        .thenReturn(Collections.<Object>singletonList(new TrialResourceMethodExtension()));
+    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension"))
+        .thenReturn(Collections.<Object>singletonList(new TrialResponseClassExtension()));
+    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension"))
+        .thenReturn(Collections.<Object>singletonList(new TrialResponseMethodExtension()));
+
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.getWithContext(currentBuild, type.resources()
+        .get(0))).getElements().get(0) instanceof TrialResourceClassExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_METHOD_CREATION.getWithContext(currentBuild, type.resources().get(0)
+        .methods().get(0))).getElements().get(0) instanceof TrialResourceMethodExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_CLASS_CREATION.getWithContext(currentBuild, type.resources()
+        .get(0).methods().get(0))).getElements().get(0) instanceof TrialResponseClassExtension);
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_METHOD_CREATION.getWithContext(currentBuild,
+                                                                                                    type.resources().get(0)
+                                                                                                        .methods()
+                                                                                                        .get(0)
+                                                                                                        .responses().get(0)))
+        .getElements().get(0) instanceof TrialResponseMethodExtension);
   }
 
   @Test
@@ -75,7 +104,12 @@ public class AnnotationsTest {
 
     Api api = buildApi(this, "annotations.raml");
 
-    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.get(api, api.resources().get(1)))
+    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension"))
+        .thenReturn(Collections.<Object>singletonList(new TrialResourceClassExtension()));
+
+    assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.getWithContext(currentBuild, api, api
+        .resources()
+        .get(1)))
         .getElements().get(0) instanceof TrialResourceClassExtension);
   }
 

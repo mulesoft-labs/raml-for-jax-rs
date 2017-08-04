@@ -18,6 +18,7 @@ package org.raml.jaxrs.generator;
 
 import org.raml.jaxrs.generator.v08.V08Finder;
 import org.raml.jaxrs.generator.v08.V08TypeRegistry;
+import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.ResourceHandler;
 import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
@@ -78,7 +79,7 @@ public class RamlScanner {
   public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
 
     V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild build = new CurrentBuild(new V10Finder(api, registry), api);
+    CurrentBuild build = new CurrentBuild(new V10Finder(api, registry), api, ExtensionManager.createExtensionManager());
     configuration.setupBuild(build);
     build.constructClasses();
 
@@ -100,7 +101,7 @@ public class RamlScanner {
     GAbstractionFactory factory = new GAbstractionFactory();
     V08TypeRegistry registry = new V08TypeRegistry();
     V08Finder typeFinder = new V08Finder(api, factory, registry);
-    CurrentBuild build = new CurrentBuild(typeFinder, null);
+    CurrentBuild build = new CurrentBuild(typeFinder, null, ExtensionManager.createExtensionManager());
     configuration.setupBuild(build);
 
     build.constructClasses();

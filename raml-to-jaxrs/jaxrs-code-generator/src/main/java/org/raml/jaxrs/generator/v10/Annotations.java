@@ -16,7 +16,9 @@
 package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
@@ -34,10 +36,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Jean-Philippe Belanger on 1/2/17. Just potential zeroes and ones
@@ -48,7 +47,7 @@ public abstract class Annotations<T> {
   public static Annotations<String> CLASS_NAME = new Annotations<String>() {
 
     @Override
-    public String get(Annotable target, Annotable... others) {
+    public String getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
 
       return getWithDefault("types", "classname", null, target, others);
     }
@@ -57,7 +56,7 @@ public abstract class Annotations<T> {
   public static Annotations<String> IMPLEMENTATION_CLASS_NAME = new Annotations<String>() {
 
     @Override
-    public String get(Annotable target, Annotable... others) {
+    public String getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
 
       return getWithDefault("types", "implementationClassName", null, target, others);
     }
@@ -66,7 +65,7 @@ public abstract class Annotations<T> {
   public static Annotations<Boolean> USE_PRIMITIVE_TYPE = new Annotations<Boolean>() {
 
     @Override
-    public Boolean get(Annotable target, Annotable... others) {
+    public Boolean getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
 
       return getWithDefault("types", "usePrimitiveType", false, target, others);
     }
@@ -76,7 +75,7 @@ public abstract class Annotations<T> {
   public static Annotations<Boolean> ABSTRACT = new Annotations<Boolean>() {
 
     @Override
-    public Boolean get(Annotable target, Annotable... others) {
+    public Boolean getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
 
       return getWithDefault("types", "abstract", false, target, others);
     }
@@ -89,10 +88,10 @@ public abstract class Annotations<T> {
       new Annotations<ResourceClassExtension<GResource>>() {
 
         @Override
-        public ResourceClassExtension<GResource> get(Annotable target, Annotable... others) {
+        public ResourceClassExtension<GResource> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
           List<String> classNames = getWithDefault("resources", "onResourceClassCreation", null, target, others);
 
-          List<ResourceClassExtension<GResource>> extension = createExtension(classNames);
+          List<ResourceClassExtension<GResource>> extension = createExtension(currentBuild, classNames);
           return new ResourceClassExtension.Composite(extension);
         }
       };
@@ -101,10 +100,10 @@ public abstract class Annotations<T> {
       new Annotations<ResourceClassExtension<GResource>>() {
 
         @Override
-        public ResourceClassExtension<GResource> get(Annotable target, Annotable... others) {
+        public ResourceClassExtension<GResource> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
           List<String> classNames = getWithDefault("resources", "onResourceClassFinish", null, target, others);
 
-          List<ResourceClassExtension<GResource>> extension = createExtension(classNames);
+          List<ResourceClassExtension<GResource>> extension = createExtension(currentBuild, classNames);
           return new ResourceClassExtension.Composite(extension);
         }
       };
@@ -113,11 +112,11 @@ public abstract class Annotations<T> {
       new Annotations<ResourceMethodExtension<GMethod>>() {
 
         @Override
-        public ResourceMethodExtension<GMethod> get(Annotable target, Annotable... others) {
+        public ResourceMethodExtension<GMethod> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
 
           List<String> classNames = getWithDefault("methods", "onResourceMethodCreation", null, target, others);
 
-          List<ResourceMethodExtension<GMethod>> extension = createExtension(classNames);
+          List<ResourceMethodExtension<GMethod>> extension = createExtension(currentBuild, classNames);
           return new ResourceMethodExtension.Composite(extension);
         }
       };
@@ -126,10 +125,10 @@ public abstract class Annotations<T> {
       new Annotations<ResourceMethodExtension<GMethod>>() {
 
         @Override
-        public ResourceMethodExtension<GMethod> get(Annotable target, Annotable... others) {
+        public ResourceMethodExtension<GMethod> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
           List<String> classNames = getWithDefault("methods", "onResourceMethodFinish", null, target, others);
 
-          List<ResourceMethodExtension<GMethod>> extension = createExtension(classNames);
+          List<ResourceMethodExtension<GMethod>> extension = createExtension(currentBuild, classNames);
           return new ResourceMethodExtension.Composite(extension);
         }
       };
@@ -140,10 +139,10 @@ public abstract class Annotations<T> {
       new Annotations<ResponseClassExtension<GMethod>>() {
 
         @Override
-        public ResponseClassExtension<GMethod> get(Annotable target, Annotable... others) {
+        public ResponseClassExtension<GMethod> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
           List<String> classNames = getWithDefault("methods", "onResponseClassCreation", null, target, others);
 
-          List<ResponseClassExtension<GMethod>> extension = createExtension(classNames);
+          List<ResponseClassExtension<GMethod>> extension = createExtension(currentBuild, classNames);
           return new ResponseClassExtension.Composite(extension);
         }
       };
@@ -152,10 +151,10 @@ public abstract class Annotations<T> {
       new Annotations<ResponseClassExtension<GMethod>>() {
 
         @Override
-        public ResponseClassExtension<GMethod> get(Annotable target, Annotable... others) {
+        public ResponseClassExtension<GMethod> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
           List<String> classNames = getWithDefault("methods", "onResponseClassFinish", null, target, others);
 
-          List<ResponseClassExtension<GMethod>> extension = createExtension(classNames);
+          List<ResponseClassExtension<GMethod>> extension = createExtension(currentBuild, classNames);
           return new ResponseClassExtension.Composite(extension);
         }
       };
@@ -166,11 +165,11 @@ public abstract class Annotations<T> {
       new Annotations<ResponseMethodExtension<GResponse>>() {
 
         @Override
-        public ResponseMethodExtension<GResponse> get(Annotable target, Annotable... others) {
+        public ResponseMethodExtension<GResponse> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
 
           List<String> classNames = getWithDefault("responses", "onResponseMethodCreation", null, target, others);
 
-          List<ResponseMethodExtension<GResponse>> extension = createExtension(classNames);
+          List<ResponseMethodExtension<GResponse>> extension = createExtension(currentBuild, classNames);
           return new ResponseMethodExtension.Composite(extension);
         }
       };
@@ -179,10 +178,10 @@ public abstract class Annotations<T> {
       new Annotations<ResponseMethodExtension<GResponse>>() {
 
         @Override
-        public ResponseMethodExtension<GResponse> get(Annotable target, Annotable... others) {
+        public ResponseMethodExtension<GResponse> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
           List<String> classNames = getWithDefault("responses", "onResponseMethodFinish", null, target, others);
 
-          List<ResponseMethodExtension<GResponse>> extension = createExtension(classNames);
+          List<ResponseMethodExtension<GResponse>> extension = createExtension(currentBuild, classNames);
           return new ResponseMethodExtension.Composite(extension);
         }
       };
@@ -194,10 +193,10 @@ public abstract class Annotations<T> {
   public static Annotations<TypeExtension> ON_TYPE_CLASS_CREATION = new Annotations<TypeExtension>() {
 
     @Override
-    public TypeExtension get(Annotable target, Annotable... others) {
+    public TypeExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
       List<String> classNames = getWithDefault("types", "onTypeCreation", null, target, others);
 
-      List<TypeExtension> extension = createExtension(classNames);
+      List<TypeExtension> extension = createExtension(currentBuild, classNames);
       return new TypeExtension.Composite(extension);
     }
   };
@@ -205,10 +204,10 @@ public abstract class Annotations<T> {
   public static Annotations<TypeExtension> ON_TYPE_CLASS_FINISH = new Annotations<TypeExtension>() {
 
     @Override
-    public TypeExtension get(Annotable target, Annotable... others) {
+    public TypeExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
       List<String> classNames = getWithDefault("types", "onTypeFinish", null, target, others);
 
-      List<TypeExtension> extension = createExtension(classNames);
+      List<TypeExtension> extension = createExtension(currentBuild, classNames);
       return new TypeExtension.Composite(extension);
     }
   };
@@ -216,9 +215,9 @@ public abstract class Annotations<T> {
   public static Annotations<FieldExtension> ON_TYPE_FIELD_CREATION = new Annotations<FieldExtension>() {
 
     @Override
-    public FieldExtension get(Annotable target, Annotable... others) {
+    public FieldExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
       List<String> classNames = getWithDefault("types", "onFieldCreation", null, target, others);
-      List<FieldExtension> extensions = createExtension(classNames);
+      List<FieldExtension> extensions = createExtension(currentBuild, classNames);
 
       return new FieldExtension.Composite(extensions);
     }
@@ -227,32 +226,27 @@ public abstract class Annotations<T> {
   public static Annotations<MethodExtension> ON_TYPE_METHOD_CREATION = new Annotations<MethodExtension>() {
 
     @Override
-    public MethodExtension get(Annotable target, Annotable... others) {
+    public MethodExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
       List<String> classNames = getWithDefault("types", "onMethodCreation", null, target, others);
-      List<MethodExtension> extension = createExtension(classNames);
+      List<MethodExtension> extension = createExtension(currentBuild, classNames);
       return new MethodExtension.Composite(extension);
     }
   };
 
-  private static <T> List<T> createExtension(List<String> classNames) {
+  private static <T> List<T> createExtension(final CurrentBuild currentBuild, List<String> classNames) {
     if (classNames == null) {
 
       return Collections.emptyList();
     } else {
 
-      return Lists.transform(classNames, new Function<String, T>() {
+      return FluentIterable.from(classNames).transformAndConcat(new Function<String, Iterable<T>>() {
 
         @Nullable
         @Override
-        public T apply(@Nullable String className) {
-
-          try {
-            return (T) Class.forName(className).newInstance();
-          } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            throw new GenerationException("Cannot find resource creation extension: " + className, e);
-          }
+        public Iterable<T> apply(@Nullable String input) {
+          return (Iterable<T>) currentBuild.createExtensions(input);
         }
-      });
+      }).toList();
     }
   }
 
@@ -333,11 +327,11 @@ public abstract class Annotations<T> {
     return null;
   }
 
-  public abstract T get(Annotable target, Annotable... others);
+  public abstract T getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others);
 
-  public T get(T def, Annotable annotable, Annotable... others) {
+  public T getValueWithDefault(T def, Annotable annotable, Annotable... others) {
 
-    T t = get(annotable, others);
+    T t = getWithContext(null, annotable, others);
     if (t == null) {
 
       return def;
@@ -348,26 +342,42 @@ public abstract class Annotations<T> {
 
   public T get(V10GType type) {
 
-    return get(type.implementation());
+    return getWithContext(null, type.implementation());
   }
 
   public T get(V10GResource resource) {
 
-    return get(resource.implementation());
+    return getWithContext(null, resource.implementation());
   }
 
   public T get(V10GMethod method) {
 
-    return get(method.implementation());
+    return getWithContext(null, method.implementation());
   }
 
   public T get(V10GResponse response) {
 
-    return get(response.implementation());
+    return getWithContext(null, response.implementation());
   }
 
   public T get(T def, V10GType type) {
 
     return get(def, type.implementation());
   }
+
+  public T get(T def, Annotable type) {
+
+    return getValueWithDefault(def, type);
+  }
+
+  public T get(Annotable type) {
+
+    return getValueWithDefault(null, type);
+  }
+
+  public T get(T def, Annotable type, Annotable others) {
+
+    return getValueWithDefault(def, type, others);
+  }
+
 }

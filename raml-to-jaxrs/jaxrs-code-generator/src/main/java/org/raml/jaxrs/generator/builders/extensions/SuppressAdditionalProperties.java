@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Created. There, you have it.
  */
-public class SupressAdditionalProperties implements TypeExtension {
+public class SuppressAdditionalProperties implements TypeExtension {
 
   @Override
   public TypeSpec.Builder onType(TypeContext context, TypeSpec.Builder builder, V10GType type, BuildPhase btype) {

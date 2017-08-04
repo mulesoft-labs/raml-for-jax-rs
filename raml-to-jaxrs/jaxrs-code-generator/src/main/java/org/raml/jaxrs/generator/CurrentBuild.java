@@ -15,7 +15,9 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.FluentIterable;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
@@ -44,13 +46,10 @@ import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
-import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.V10GMethod;
-import org.raml.jaxrs.generator.v10.V10GResource;
-import org.raml.jaxrs.generator.v10.V10GResponse;
-import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.v10.*;
 import org.raml.v2.api.model.v10.api.Api;
 
+import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
@@ -62,6 +61,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Collections.singletonList;
+
 /**
  * Created by Jean-Philippe Belanger on 10/26/16. The art of building stuff is here. Factory for building root stuff.
  */
@@ -69,6 +70,7 @@ public class CurrentBuild {
 
   private final GFinder typeFinder;
   private final Api api;
+  private ExtensionManager extensionManager;
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
@@ -81,10 +83,11 @@ public class CurrentBuild {
 
   private ArrayListMultimap<JavaPoetTypeGenerator, JavaPoetTypeGenerator> internalTypesPerClass = ArrayListMultimap.create();
 
-  public CurrentBuild(GFinder typeFinder, Api api) {
+  public CurrentBuild(GFinder typeFinder, Api api, ExtensionManager extensionManager) {
 
     this.typeFinder = typeFinder;
     this.api = api;
+    this.extensionManager = extensionManager;
     this.configuration = Configuration.defaultConfiguration();
   }
 
@@ -335,19 +338,19 @@ public class CurrentBuild {
   public TypeExtension getTypeExtension(
                                         Annotations<TypeExtension> typeExtensionAnnotation, V10GType type) {
 
-    return typeExtensionAnnotation.get(getApi(), type.implementation());
+    return typeExtensionAnnotation.getWithContext(this, getApi(), type.implementation());
   }
 
   public MethodExtension getMethodExtension(
                                             Annotations<MethodExtension> methodExtensionAnnotations, V10GType type) {
 
-    return methodExtensionAnnotations.get(getApi(), type.implementation());
+    return methodExtensionAnnotations.getWithContext(this, getApi(), type.implementation());
   }
 
   public FieldExtension getFieldExtension(
                                           Annotations<FieldExtension> fieldExtensionAnnotations, V10GType type) {
 
-    return fieldExtensionAnnotations.get(getApi(), type.implementation());
+    return fieldExtensionAnnotations.getWithContext(this, getApi(), type.implementation());
   }
 
 
@@ -356,7 +359,7 @@ public class CurrentBuild {
                                                                      GMethod gMethod) {
 
     if (gMethod instanceof V10GMethod) {
-      return onResourceMethodExtension.get(getApi(), ((V10GMethod) gMethod).implementation());
+      return onResourceMethodExtension.getWithContext(this, getApi(), ((V10GMethod) gMethod).implementation());
     }
 
     return onResourceMethodExtension == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION)
@@ -369,7 +372,7 @@ public class CurrentBuild {
     if (topResource instanceof V10GResource) {
       List<ResourceClassExtension<GResource>> list = new ArrayList<>();
       list.add(defaultClass);
-      list.add(onResourceClassCreation.get(getApi(), ((V10GResource) topResource).implementation()));
+      list.add(onResourceClassCreation.getWithContext(this, getApi(), ((V10GResource) topResource).implementation()));
 
       return new ResourceClassExtension.Composite(list);
     }
@@ -382,7 +385,7 @@ public class CurrentBuild {
                                                                    Annotations<ResponseClassExtension<GMethod>> onResponseClassCreation,
                                                                    GMethod gMethod) {
     if (gMethod instanceof V10GMethod) {
-      return onResponseClassCreation.get(getApi(), ((V10GMethod) gMethod).implementation());
+      return onResponseClassCreation.getWithContext(this, getApi(), ((V10GMethod) gMethod).implementation());
     }
 
     return onResponseClassCreation == Annotations.ON_RESPONSE_CLASS_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION)
@@ -393,7 +396,7 @@ public class CurrentBuild {
                                                                        Annotations<ResponseMethodExtension<GResponse>> onResponseMethodExtension,
                                                                        GResponse gResponse) {
     if (gResponse instanceof V10GResponse) {
-      return onResponseMethodExtension.get(getApi(), ((V10GResponse) gResponse).implementation());
+      return onResponseMethodExtension.getWithContext(this, getApi(), ((V10GResponse) gResponse).implementation());
     }
 
     return onResponseMethodExtension == Annotations.ON_RESPONSE_METHOD_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION)
@@ -404,5 +407,31 @@ public class CurrentBuild {
   public void internalClass(JavaPoetTypeGenerator simpleTypeGenerator, JavaPoetTypeGenerator internalGenerator) {
 
     internalTypesPerClass.put(simpleTypeGenerator, internalGenerator);
+  }
+
+  public <T> Iterable<T> createExtensions(String className) {
+
+    try {
+      Class c = Class.forName(className);
+      return (Iterable<T>) singletonList(c.newInstance());
+    } catch (ClassNotFoundException e) {
+
+
+      return FluentIterable.from(extensionManager.getClassesForName(className)).transform(new Function<Class, T>() {
+
+        @Nullable
+        @Override
+        public T apply(@Nullable Class input) {
+          try {
+            return (T) input.newInstance();
+          } catch (InstantiationException | IllegalAccessException e1) {
+
+            throw new GenerationException(e1);
+          }
+        }
+      });
+    } catch (IllegalAccessException | InstantiationException e) {
+      throw new GenerationException(e);
+    }
   }
 }

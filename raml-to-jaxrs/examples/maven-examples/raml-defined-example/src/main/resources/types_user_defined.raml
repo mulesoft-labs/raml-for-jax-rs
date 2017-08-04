@@ -5,7 +5,7 @@ baseUri: https://api.github.com
 uses:
   ramltojaxrs: ramltojaxrs.raml
 (ramltojaxrs.types):
-  onTypeCreation: [ org.raml.jaxrs.generator.builders.extensions.SupressAdditionalProperties ]
+  onTypeCreation: [ core.suppress-additional-properties ]
 types:
     ObjectOne:
         type: object

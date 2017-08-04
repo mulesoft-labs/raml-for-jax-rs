@@ -148,7 +148,6 @@ public class ResourceBuilder implements ResourceGenerator {
 
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
 
-    // here I would run my plugins....
     methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
         .onMethod(new ResourceContextImpl(build),
                   gMethod, methodSpec);

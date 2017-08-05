@@ -50,9 +50,9 @@
                         <id>deploy</id>
                         <phase>deploy</phase>
                         <configuration>
-                            <file>./build/raml-to-jaxrs-gradle-plugin-${project.version}.jar/</file>
-                            <sources>./build/raml-to-jaxrs-gradle-plugin-${project.version}-sources.jar</sources>
-                            <javadoc>./build/raml-to-jaxrs-gradle-plugin-${project.version}-javadoc.jar</javadoc>
+                            <file>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}.jar/</file>
+                            <sources>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}-sources.jar</sources>
+                            <javadoc>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}-javadoc.jar</javadoc>
                             <pomFile>./build/poms/pom-default.xml</pomFile>
                         </configuration>
                     </execution>

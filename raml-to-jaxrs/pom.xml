@@ -8,12 +8,26 @@
     </parent>
     <packaging>pom</packaging>
     <artifactId>raml-to-jaxrs</artifactId>
+    <profiles>
+        <profile>
+            <id>with-examples</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>jaxrs-code-generator</module>
+                <module>raml-to-jaxrs-maven-plugin</module>
+                <module>raml-to-jaxrs-cli</module>
+                <module>raml-to-jaxrs-gradle-plugin</module>
+                <module>examples</module>
+            </modules>
+        </profile>
+    </profiles>
     <modules>
         <module>jaxrs-code-generator</module>
         <module>raml-to-jaxrs-maven-plugin</module>
         <module>raml-to-jaxrs-cli</module>
         <module>raml-to-jaxrs-gradle-plugin</module>
-        <module>examples</module>
     </modules>
     <properties>
         <licensePath>LICENSE_HEADER.txt</licensePath>

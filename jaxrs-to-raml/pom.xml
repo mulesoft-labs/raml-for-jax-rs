@@ -99,6 +99,29 @@
             </plugins>
         </pluginManagement>
     </build>
+    <profiles>
+        <profile>
+            <id>with-examples</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>jaxrs-api</module>
+                <module>jaxrs-parser</module>
+                <module>jaxrs-to-raml-core</module>
+                <module>jaxrs-to-raml-converter</module>
+                <module>jaxrs-to-raml-cli</module>
+                <module>jaxrs-to-raml-maven-plugin</module>
+                <module>jaxrs-to-raml-gradle-plugin-wrapper</module>
+                <module>jaxrs-test-resources</module>
+                <module>raml-api</module>
+                <module>raml-emitter</module>
+                <module>raml-generator-api</module>
+                <module>jaxrs-to-raml-examples</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <modules>
         <module>jaxrs-api</module>
         <module>jaxrs-parser</module>
@@ -111,6 +134,5 @@
         <module>raml-api</module>
         <module>raml-emitter</module>
         <module>raml-generator-api</module>
-        <module>jaxrs-to-raml-examples</module>
     </modules>
 </project>

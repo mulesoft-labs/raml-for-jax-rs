@@ -37,6 +37,17 @@ public class FieldSpecMatchers {
     };
   }
 
+  public static Matcher<FieldSpec> initializer(Matcher<String> match) {
+
+    return new FeatureMatcher<FieldSpec, String>(match, "field initializer", "field initializer") {
+
+      @Override
+      protected String featureValueOf(FieldSpec actual) {
+        return actual.initializer.toString();
+      }
+    };
+  }
+
   public static <T extends TypeName> Matcher<FieldSpec> fieldType(Matcher<T> match) {
 
     return new FeatureMatcher<FieldSpec, T>(match, "type name", "type name") {

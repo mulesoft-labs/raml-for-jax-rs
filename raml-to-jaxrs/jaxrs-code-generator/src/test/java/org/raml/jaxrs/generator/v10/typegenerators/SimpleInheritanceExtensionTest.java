@@ -15,12 +15,14 @@
  */
 package org.raml.jaxrs.generator.v10.typegenerators;
 
+import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,6 +30,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.raml.jaxrs.generator.CurrentBuild;
+import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.extension.types.FieldExtension;
 import org.raml.jaxrs.generator.extension.types.MethodExtension;
@@ -48,9 +51,7 @@ import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -172,6 +173,72 @@ public class SimpleInheritanceExtensionTest {
   }
 
   @Test
+  public void withParentTypeImplementationAndDiscriminatorNoValue() throws Exception {
+
+    setupMocking(BuildPhase.IMPLEMENTATION);
+
+    when(type.parentTypes()).thenReturn(Collections.singletonList(parentType));
+
+    when(type.properties()).thenReturn(Collections.singletonList(property));
+    when(property.name()).thenReturn("Mimi");
+    when(property.type()).thenReturn(parameterType);
+    when(parameterType.defaultJavaTypeName("pack")).thenReturn(ClassName.get(String.class));
+    when(currentBuild.getMethodExtension(Annotations.ON_TYPE_METHOD_CREATION, type)).thenReturn(methodExtension);
+    when(currentBuild.getFieldExtension(Annotations.ON_TYPE_FIELD_CREATION, type)).thenReturn(fieldExtension);
+    mockMethodCreation(BuildPhase.IMPLEMENTATION);
+
+    when(type.discriminator()).thenReturn("Mimi");
+    when(type.discriminatorValue()).thenReturn(Optional.<String>absent());
+
+    when(parentType.defaultJavaTypeName("pack")).thenReturn(ClassName.bestGuess("pack.Daddy"));
+
+    SimpleInheritanceExtension ext = new SimpleInheritanceExtension(type, registry, currentBuild);
+    TypeSpec.Builder builder = ext.onType(typeContext, null, type, BuildPhase.IMPLEMENTATION);
+
+    assertNotNull(builder);
+    assertThat(builder.build(),
+               allOf(
+                     TypeSpecMatchers.methods(
+                         contains(
+                         MethodSpecMatchers.methodName(equalTo("getMimi"))
+                         )
+                         ),
+                     TypeSpecMatchers.fields(
+                         containsInAnyOrder(
+                         allOf(
+                               FieldSpecMatchers.fieldName(equalTo("mimi")),
+                               FieldSpecMatchers.fieldType(equalTo(ClassName.get(String.class))),
+                               FieldSpecMatchers.initializer(equalTo("\"Foo\""))
+                         )
+                         )
+                         )));
+  }
+
+    @Test(expected = GenerationException.class)
+    public void withParentTypeImplementationAndDiscriminatorNoValueBadType() throws Exception {
+
+        setupMocking(BuildPhase.IMPLEMENTATION);
+
+        when(type.parentTypes()).thenReturn(Collections.singletonList(parentType));
+
+        when(type.properties()).thenReturn(Collections.singletonList(property));
+        when(property.name()).thenReturn("Mimi");
+        when(property.type()).thenReturn(parameterType);
+        when(parameterType.defaultJavaTypeName("pack")).thenReturn(ClassName.get(Integer.class));
+        when(currentBuild.getMethodExtension(Annotations.ON_TYPE_METHOD_CREATION, type)).thenReturn(methodExtension);
+        when(currentBuild.getFieldExtension(Annotations.ON_TYPE_FIELD_CREATION, type)).thenReturn(fieldExtension);
+        mockMethodCreation(BuildPhase.IMPLEMENTATION);
+
+        when(type.discriminator()).thenReturn("Mimi");
+        when(type.discriminatorValue()).thenReturn(Optional.<String>absent());
+
+        when(parentType.defaultJavaTypeName("pack")).thenReturn(ClassName.bestGuess("pack.Daddy"));
+
+        SimpleInheritanceExtension ext = new SimpleInheritanceExtension(type, registry, currentBuild);
+        TypeSpec.Builder builder = ext.onType(typeContext, null, type, BuildPhase.IMPLEMENTATION);
+    }
+
+    @Test
   public void withProperty() throws Exception {
 
     setupMocking(BuildPhase.INTERFACE);

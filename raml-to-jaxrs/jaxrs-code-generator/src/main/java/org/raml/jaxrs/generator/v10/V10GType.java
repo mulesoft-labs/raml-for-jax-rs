@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
@@ -82,7 +83,7 @@ public interface V10GType extends GType {
 
   String discriminator();
 
-  String discriminatorValue();
+  Optional<String> discriminatorValue();
 
 
   Collection<V10GType> childClasses(String typeName);

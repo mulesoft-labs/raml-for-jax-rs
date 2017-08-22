@@ -76,7 +76,6 @@ public class SimpleInheritanceExtension implements TypeExtension {
 
     ClassName className = originalType.javaImplementationName(context.getModelPackage());
 
-
     TypeSpec.Builder typeSpec = TypeSpec
         .classBuilder(className)
         .addModifiers(Modifier.PUBLIC);
@@ -140,7 +139,8 @@ public class SimpleInheritanceExtension implements TypeExtension {
               .addModifiers(Modifier.PRIVATE);
 
       if (propertyInfo.getName().equals(objectType.discriminator())) {
-        fieldSpec.initializer("$S", objectType.discriminatorValue().or(calculateValue(context, objectType, typeSpec, propertyInfo)));
+        fieldSpec.initializer("$S",
+                              objectType.discriminatorValue().or(calculateValue(context, objectType, typeSpec, propertyInfo)));
       }
 
       fieldSpec =
@@ -198,14 +198,17 @@ public class SimpleInheritanceExtension implements TypeExtension {
     }
   }
 
-  private Supplier<String> calculateValue(final TypeContext context, final V10GType objectType, final TypeSpec.Builder typeSpec, final PropertyInfo propertyInfo) {
+  private Supplier<String> calculateValue(final TypeContext context, final V10GType objectType, final TypeSpec.Builder typeSpec,
+                                          final PropertyInfo propertyInfo) {
     return new Supplier<String>() {
+
       @Override
       public String get() {
         if (propertyInfo.resolve(context).toString().equals("java.lang.String")) {
-          return typeSpec.build().name;
+          return originalType.defaultJavaTypeName(context.getModelPackage()).toString();
         } else {
-          throw new GenerationException("while generating type " + objectType.name() + " discriminatorValue not defined and not of type string ( can't map java type name to anything but string )" );
+          throw new GenerationException("while generating type " + objectType.name()
+              + " discriminatorValue not defined and not of type string ( can't map java type name to anything but string )");
         }
       }
     };

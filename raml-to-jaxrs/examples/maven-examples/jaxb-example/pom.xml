@@ -37,7 +37,6 @@
                     <ramlFile>${project.build.resources[0].directory}/xml-model.raml</ramlFile>
                     <resourcePackage>example.resources</resourcePackage>
                     <modelPackage>example.model</modelPackage>
-                    <resourcePackage>example.resources</resourcePackage>
                     <supportPackage>example.support</supportPackage>
                     <generateTypesWith>
                         <value>jaxb</value>

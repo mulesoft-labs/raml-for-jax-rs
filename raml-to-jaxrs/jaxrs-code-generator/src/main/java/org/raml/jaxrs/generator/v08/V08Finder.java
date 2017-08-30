@@ -87,6 +87,11 @@ public class V08Finder implements GFinder {
                              GFinderListener listener) {
     for (BodyLike typeDeclaration : body) {
 
+      if (typeDeclaration.schema() == null) {
+
+        continue;
+      }
+
       if (globalSchemas.contains(typeDeclaration.schema().value())) {
         V08GType type = new V08GType(typeDeclaration.schema().value(), typeDeclaration);
         registry.addType(type);
@@ -103,17 +108,18 @@ public class V08Finder implements GFinder {
     for (Response response : method.responses()) {
       for (BodyLike typeDeclaration : response.body()) {
 
-        if (typeDeclaration.schema() != null) {
-          if (globalSchemas.contains(typeDeclaration.schema().value())) {
-            V08GType type = new V08GType(typeDeclaration.schema().value(), typeDeclaration);
-            registry.addType(type);
-            listener.newTypeDeclaration(type);
-          } else {
+        if (typeDeclaration.schema() == null) {
+          continue;
+        }
+        if (globalSchemas.contains(typeDeclaration.schema().value())) {
+          V08GType type = new V08GType(typeDeclaration.schema().value(), typeDeclaration);
+          registry.addType(type);
+          listener.newTypeDeclaration(type);
+        } else {
 
-            V08GType type = new V08GType(resource, method, response, typeDeclaration);
-            registry.addType(type);
-            listener.newTypeDeclaration(type);
-          }
+          V08GType type = new V08GType(resource, method, response, typeDeclaration);
+          registry.addType(type);
+          listener.newTypeDeclaration(type);
         }
       }
     }

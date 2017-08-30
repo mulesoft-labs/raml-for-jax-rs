@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator.builders.resources;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.squareup.javapoet.AnnotationSpec;
@@ -44,7 +45,6 @@ import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.TypeUtils;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -54,7 +54,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -118,10 +117,17 @@ public class ResourceBuilder implements ResourceGenerator {
       Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(gMethod);
       if (gMethod.body().size() == 0) {
 
-        createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, methodName, responseSpecs);
+        createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, HashMultimap.<String, String>create(), methodName,
+                                responseSpecs);
       } else {
         Multimap<String, String> ramlTypeToMediaType = accumulateMediaTypesPerType(incomingBodies, gMethod);
         for (GRequest gRequest : gMethod.body()) {
+
+          if (gRequest.type() == null) {
+
+            createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, ramlTypeToMediaType, methodName, responseSpecs);
+            continue;
+          }
 
           if (ramlTypeToMediaType.containsKey(gRequest.type().name())) {
             createMethodWithBody(typeSpec, gMethod, ramlTypeToMediaType, methodName, gRequest, responseSpecs);
@@ -137,20 +143,26 @@ public class ResourceBuilder implements ResourceGenerator {
     Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
     for (GRequest request : incomingBodies.get(gMethod)) {
       if (request != null) {
-        ramlTypeToMediaType.put(request.type().name(), request.mediaType());
+        if (request.type() == null) {
+          ramlTypeToMediaType.put(null, request.mediaType());
+        } else {
+          ramlTypeToMediaType.put(request.type().name(), request.mediaType());
+        }
       }
     }
     return ramlTypeToMediaType;
   }
 
   private void createMethodWithoutBody(TypeSpec.Builder typeSpec, GMethod gMethod, Set<String> mediaTypesForMethod,
-                                       String methodName, Map<String, TypeSpec.Builder> responseSpecs) {
+                                       Multimap<String, String> ramlTypeToMediaType, String methodName,
+                                       Map<String, TypeSpec.Builder> responseSpecs) {
 
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
 
     methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
         .onMethod(new ResourceContextImpl(build),
                   gMethod, methodSpec);
+    handleMethodConsumer(methodSpec, ramlTypeToMediaType, null);
 
     if (methodSpec != null) {
       typeSpec.addMethod(methodSpec.build());
@@ -604,7 +616,7 @@ public class ResourceBuilder implements ResourceGenerator {
                                     Multimap<String, String> ramlTypeToMediaType,
                                     GType typeDeclaration) {
 
-    Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration.name());
+    Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration == null ? null : typeDeclaration.name());
 
     AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
     methodSpec.addAnnotation(ann.build());

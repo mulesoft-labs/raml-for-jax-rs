@@ -32,6 +32,12 @@ public class V08GRequest implements GRequest {
   public V08GRequest(V08GResource v08GResource, V08Method v08Method, BodyLike input,
                      Set<String> globalSchemas, V08TypeRegistry registry) {
     this.input = input;
+    if (input.schema() == null) {
+
+      type = null;
+      return;
+    }
+
     if (globalSchemas.contains(input.schema().value())) {
 
       V08GType t = registry.fetchType(input.schema().value());

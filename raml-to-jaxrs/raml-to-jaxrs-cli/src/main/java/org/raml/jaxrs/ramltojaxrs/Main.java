@@ -42,8 +42,8 @@ public class Main {
     Options options = new Options();
     options.addOption("m", "model-package", true, "model package");
     options.addOption("s", "support-package", true, "support package");
-    options.addOption(Option.builder("r").longOpt("resource-package").hasArg().desc("resource package").build());
     options.addOption("g", "generate-types-with", true, "generate types with plugins (jackson, gson, jaxb, javadoc, jsr303)");
+    options.addOption(Option.builder("r").required().longOpt("resource-package").hasArg().desc("resource package").build());
     options.addOption(Option.builder("d").required().longOpt("directory").hasArg().desc("generation directory").build());
 
     try {

@@ -258,10 +258,10 @@ public class ResourceBuilder implements ResourceGenerator {
           continue;
         }
 
-        TypeSpec spec = null;
+        TypeSpec internalClassForHeaders = null;
         if (!gResponse.headers().isEmpty()) {
 
-          spec = buildHeadersForResponse(responseClass, gResponse.headers(), gResponse.code());
+          internalClassForHeaders = buildHeadersForResponse(responseClass, gResponse.headers(), gResponse.code());
         }
 
         if (gResponse.body().size() == 0) {
@@ -271,14 +271,14 @@ public class ResourceBuilder implements ResourceGenerator {
               .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
               .returns(TypeVariableName.get(currentClass.name));
 
-          if (spec == null) {
+          if (internalClassForHeaders == null) {
 
             builder.addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
                 .addStatement("return new $N(responseBuilder.build())", currentClass);
 
           } else {
 
-            builder.addParameter(ParameterSpec.builder(ClassName.get("", spec.name), "headers").build())
+            builder.addParameter(ParameterSpec.builder(ClassName.get("", internalClassForHeaders.name), "headers").build())
                 .addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode + ")")
                 .addStatement("responseBuilder = headers.toResponseBuilder(responseBuilder)")
                 .addStatement("return new $N(responseBuilder.build())", currentClass);
@@ -327,45 +327,61 @@ public class ResourceBuilder implements ResourceGenerator {
 
             TypeName typeName = createResponseParameter(responseType, builder);
 
-            if (spec != null) {
+            if (internalClassForHeaders != null) {
 
-              builder.addParameter(ParameterSpec.builder(ClassName.get("", spec.name), "headers").build());
+              builder.addParameter(ParameterSpec.builder(ClassName.get("", internalClassForHeaders.name), "headers").build());
             }
 
             builder.addStatement("Response.ResponseBuilder responseBuilder = Response.status(" + httpCode
                 + ").header(\"Content-Type\", \""
                 + responseType.mediaType() + "\")");
-            if (responseType.type().isArray()) {
 
-              if (spec == null) {
+            if (responseType.type() == null) {
+
+              if (internalClassForHeaders == null) {
                 builder
-                    .addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
-                                  GenericEntity.class, typeName)
-                    .addStatement("responseBuilder.entity(wrappedEntity)")
-                    .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+                    .addStatement("responseBuilder.entity(null)")
+                    .addStatement("return new $N(responseBuilder.build(), null)", currentClass);
               } else {
 
-                builder.addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
-                                     GenericEntity.class, typeName)
+                builder
+                    .addStatement("responseBuilder.entity(null)")
                     .addStatement("headers.toResponseBuilder(responseBuilder)")
-                    .addStatement("responseBuilder.entity(wrappedEntity)")
-                    .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+                    .addStatement("return new $N(responseBuilder.build(), null)", currentClass);
               }
             } else {
 
-              if (spec == null) {
-                builder
-                    .addStatement("responseBuilder.entity(entity)")
-                    .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+              if (responseType.type().isArray()) {
+
+                if (internalClassForHeaders == null) {
+                  builder
+                      .addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
+                                    GenericEntity.class, typeName)
+                      .addStatement("responseBuilder.entity(wrappedEntity)")
+                      .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+                } else {
+
+                  builder.addStatement("$T<$T> wrappedEntity = new $T<$T>(entity){}", GenericEntity.class, typeName,
+                                       GenericEntity.class, typeName)
+                      .addStatement("headers.toResponseBuilder(responseBuilder)")
+                      .addStatement("responseBuilder.entity(wrappedEntity)")
+                      .addStatement("return new $N(responseBuilder.build(), wrappedEntity)", currentClass);
+                }
               } else {
 
-                builder
-                    .addStatement("responseBuilder.entity(entity)")
-                    .addStatement("headers.toResponseBuilder(responseBuilder)")
-                    .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+                if (internalClassForHeaders == null) {
+                  builder
+                      .addStatement("responseBuilder.entity(entity)")
+                      .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+                } else {
+
+                  builder
+                      .addStatement("responseBuilder.entity(entity)")
+                      .addStatement("headers.toResponseBuilder(responseBuilder)")
+                      .addStatement("return new $N(responseBuilder.build(), entity)", currentClass);
+                }
               }
             }
-
 
             builder =
                 build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse)
@@ -409,14 +425,18 @@ public class ResourceBuilder implements ResourceGenerator {
 
       return typeName;
     } else {
-      TypeName typeName = responseType.type().defaultJavaTypeName(build.getModelPackage());
-      if (typeName == null) {
-        throw new GenerationException(responseType + " was not seen before");
+      if (responseType.type() != null) {
+        TypeName typeName = responseType.type().defaultJavaTypeName(build.getModelPackage());
+        if (typeName == null) {
+          throw new GenerationException(responseType + " was not seen before");
+        }
+
+        builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
+        return typeName;
+      } else {
+
+        return null;
       }
-
-      builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
-
-      return typeName;
     }
   }
 

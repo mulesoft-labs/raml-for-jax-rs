@@ -40,18 +40,26 @@ public class BeanLikeTypes implements TypeHandler {
                         RamlEntity type)
       throws IOException {
 
-    writeBody(registry, writer, type);
+    String name = writeBody(registry, writer, type);
+
+    // find fields
+    writer.appendLine("type", name);
+
   }
 
-  private void writeBody(final TypeRegistry registry, IndentedAppendable writer,
-                         final RamlEntity bodyType)
+  @Override
+  public String writeType(TypeRegistry registry, RamlEntity type) throws IOException {
+
+    return writeBody(registry, null, type);
+  }
+
+  private String writeBody(final TypeRegistry registry, IndentedAppendable writer,
+                           final RamlEntity bodyType)
       throws IOException {
 
     // find top interface.
     final Class topInterface = Cast.toClass(bodyType.getType());
 
-    // find fields
-    writer.appendLine("type", topInterface.getSimpleName());
 
     TypeScanner scanner = new TypeScanner() {
 
@@ -64,6 +72,7 @@ public class BeanLikeTypes implements TypeHandler {
     };
 
     scanner.scanType(registry, bodyType, null);
+    return topInterface.getSimpleName();
   }
 
   private RamlType rebuildType(TypeRegistry registry, RamlEntity entity,

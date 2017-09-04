@@ -45,4 +45,17 @@ public class DefaultTypeHandler implements TypeHandler {
       writer.appendLine("type", castClass.getSimpleName());
     }
   }
+
+  @Override
+  public String writeType(TypeRegistry registry, RamlEntity bodyType) throws IOException {
+
+    if (ScalarType.fromType(bodyType.getType()).isPresent()) {
+
+      return ScalarType.fromType(bodyType.getType()).get().getRamlSyntax();
+    } else {
+
+      Class castClass = Cast.toClass(bodyType.getType());
+      return castClass.getSimpleName();
+    }
+  }
 }

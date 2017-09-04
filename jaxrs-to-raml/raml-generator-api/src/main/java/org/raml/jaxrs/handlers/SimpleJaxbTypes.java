@@ -49,19 +49,26 @@ public class SimpleJaxbTypes implements TypeHandler {
                         RamlEntity type)
       throws IOException {
 
+    String name = writeBody(registry, type);
+    writer.appendLine("type", name);
 
-    writeBody(registry, writer, type);
   }
 
-  private void writeBody(TypeRegistry registry, IndentedAppendable writer,
-                         RamlEntity bodyType)
+  @Override
+  public String writeType(TypeRegistry registry, RamlEntity type) throws IOException {
+    return writeBody(registry, type);
+
+  }
+
+  private String writeBody(TypeRegistry registry,
+                           RamlEntity bodyType)
       throws IOException {
 
     Class type = Cast.toClass(bodyType.getType());
 
-    writer.appendLine("type", type.getSimpleName());
 
     registry.registerType(type.getSimpleName(), bodyType, new SimpleJaxbTypeScanner());
+    return type.getSimpleName();
   }
 
   private static class SimpleJaxbTypeScanner implements TypeScanner {

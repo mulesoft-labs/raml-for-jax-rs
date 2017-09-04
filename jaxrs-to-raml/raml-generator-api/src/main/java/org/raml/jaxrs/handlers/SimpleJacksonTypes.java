@@ -33,8 +33,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.ParameterizedType;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -50,19 +48,33 @@ public class SimpleJacksonTypes implements TypeHandler {
     Class c = Cast.toClass(javaType);
     if (c.isEnum()) {
 
-      writeEnum(registry, writer, c, type);
+      String name = writeEnum(registry, c, type);
+      writer.appendLine("type", name);
     } else {
 
-      writeBody(registry, writer, type);
+      String name = writeBody(registry, type);
+      writer.appendLine("type", name);
     }
   }
 
-  private void writeEnum(TypeRegistry registry, IndentedAppendable writer,
-                         final Class enumType, RamlEntity entity)
+  @Override
+  public String writeType(TypeRegistry registry, RamlEntity type) throws IOException {
+
+    Type javaType = type.getType();
+    Class c = Cast.toClass(javaType);
+    if (c.isEnum()) {
+
+      return writeEnum(registry, c, type);
+    } else {
+
+      return writeBody(registry, type);
+    }
+  }
+
+  private String writeEnum(TypeRegistry registry,
+                           final Class enumType, RamlEntity entity)
       throws IOException {
 
-
-    writer.appendLine("type", enumType.getSimpleName());
     registry.registerType(enumType.getSimpleName(), entity, new TypeScanner() {
 
       @Override
@@ -77,17 +89,20 @@ public class SimpleJacksonTypes implements TypeHandler {
         }).toList());
       }
     });
+
+    return enumType.getSimpleName();
   }
 
-  private void writeBody(TypeRegistry registry, IndentedAppendable writer,
-                         RamlEntity bodyType)
+  private String writeBody(TypeRegistry registry,
+                           RamlEntity bodyType)
       throws IOException {
 
     Class type = Cast.toClass(bodyType.getType());
 
-    writer.appendLine("type", type.getSimpleName());
 
     registry.registerType(type.getSimpleName(), bodyType, new SimpleJacksonTypeScanner());
+
+    return type.getSimpleName();
   }
 
   private static class SimpleJacksonTypeScanner implements TypeScanner {

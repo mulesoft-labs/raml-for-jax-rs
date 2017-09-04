@@ -28,4 +28,7 @@ public interface TypeHandler {
 
   void writeType(TypeRegistry registry, IndentedAppendable writer,
                  RamlEntity type) throws IOException;
+
+  String writeType(TypeRegistry registry, RamlEntity type) throws IOException;
+
 }

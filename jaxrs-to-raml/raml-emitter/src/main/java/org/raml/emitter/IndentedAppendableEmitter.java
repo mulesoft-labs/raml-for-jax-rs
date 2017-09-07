@@ -50,7 +50,7 @@ public class IndentedAppendableEmitter implements Emitter {
 
   private TypeRegistry typeRegistry = new TypeRegistry();
 
-  private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
+  final private List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
   private final IndentedAppendable writer;
   private AnnotationTypeEmitter annotationTypeEmitter;

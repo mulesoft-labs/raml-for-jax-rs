@@ -17,6 +17,10 @@ package org.raml.emitter.plugins;
 
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.builder.BodyBuilder;
+import org.raml.builder.MethodBuilder;
+import org.raml.builder.ResponseBuilder;
+import org.raml.builder.TypeBuilder;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
@@ -64,4 +68,29 @@ public class DefaultResponseHandler implements ResponseHandler {
 
     writer.outdent();
   }
+
+  @Override
+  public void writeResponses(TypeRegistry typeRegistry, RamlResourceMethod method, TypeSelector selector,
+                             MethodBuilder methodBuilder)
+      throws IOException {
+
+    if (!method.getProducedType().isPresent()) {
+      return;
+    }
+
+    // We have no clue what the error responses are, however, we want to generate
+    // well formed raml, so we pick one.
+    ResponseBuilder responseBuilder = ResponseBuilder.response(200);
+
+    for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
+
+      BodyBuilder body = BodyBuilder.body(producedMediaType.toStringRepresentation());
+      responseBuilder.withBodies(body);
+
+      TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
+      String type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
+      body.withTypes(TypeBuilder.type(type));
+    }
+  }
+
 }

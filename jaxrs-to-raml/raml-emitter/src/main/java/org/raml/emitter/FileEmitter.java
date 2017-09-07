@@ -54,6 +54,7 @@ public class FileEmitter implements Emitter {
     try (PrintWriter writer = printWriterOf(filePath)) {
       IndentedAppendable appendable = IndentedAppendable.forNoSpaces(4, writer);
 
+      // IndentedAppendableEmitter innerEmitter = IndentedAppendableEmitter.create(appendable);
       Emitter innerEmitter = new ModelEmitter(writer);
 
       innerEmitter.emit(api);

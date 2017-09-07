@@ -16,8 +16,10 @@
 package org.raml.emitter;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Ordering;
 import org.raml.api.*;
 import org.raml.builder.*;
+import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.jaxrs.common.RamlGenerator;
@@ -37,6 +39,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -53,6 +56,8 @@ import static org.raml.v2.internal.impl.commons.RamlVersion.RAML_10;
 public class ModelEmitter implements Emitter {
 
   private TypeRegistry typeRegistry = new TypeRegistry();
+
+  private final List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
 
   private PrintWriter writer;
 
@@ -155,28 +160,44 @@ public class ModelEmitter implements Emitter {
             typeHandler.writeType(typeRegistry, method.getConsumedType().get());
           }
         }
-
-        resourceBuilder.with(methodBuilder);
       }
     }
+
+    ResponseHandler handler = pickResponseHandler(method);
+
+    TypeSelector selector = new TypeSelector() {
+
+      @Override
+      public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) throws IOException {
+        return pickTypeHandler(method.getProducedType().get().getType());
+      }
+    };
+
+
+    if (!method.getProducedMediaTypes().isEmpty()) {
+
+      handler.writeResponses(typeRegistry, method, selector, methodBuilder);
+    }
     /*
-     * ResponseHandler handler = pickResponseHandler(method); TypeSelector selector = new TypeSelector() {
-     * 
-     * @Override public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) throws IOException
-     * { return pickTypeHandler(method.getProducedType().get().getType()); } };
-     * 
-     * if (!method.getProducedMediaTypes().isEmpty()) {
-     * 
-     * writer.appendLine("responses:"); writer.indent(); handler.writeResponses(typeRegistry, writer, method, selector);
-     * writer.outdent(); }
-     * 
      * if (!method.getHeaderParameters().isEmpty()) { writeHeaderParameters(method.getHeaderParameters()); }
      * 
      * if (!method.getQueryParameters().isEmpty()) { writeQueryParameters(method.getQueryParameters()); }
-     * 
-     * 
-     * writer.outdent();
      */
+
+    resourceBuilder.with(methodBuilder);
+  }
+
+  private ResponseHandler pickResponseHandler(final RamlResourceMethod method) {
+
+    Ordering<ResponseHandler> bodies = new Ordering<ResponseHandler>() {
+
+      @Override
+      public int compare(ResponseHandler left, ResponseHandler right) {
+        return left.handlesResponses(method) - right.handlesResponses(method);
+      }
+    };
+
+    return bodies.max(this.responseHandlerAlternatives);
   }
 
   private void writeFormParam(RamlResourceMethod method, BodyBuilder body) throws IOException {

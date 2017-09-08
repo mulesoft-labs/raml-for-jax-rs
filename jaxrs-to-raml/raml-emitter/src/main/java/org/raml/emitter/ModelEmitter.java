@@ -118,11 +118,25 @@ public class ModelEmitter implements Emitter {
       }
 
       for (RamlResource child : ramlResource.getChildren()) {
-        // writeResource(resourceBuilder, child);
+        resources(resourceBuilder, child);
       }
 
       builder.with(resourceBuilder);
     }
+  }
+
+  private void resources(ResourceBuilder builder, RamlResource ramlResource) throws IOException {
+
+    ResourceBuilder resourceBuilder = ResourceBuilder.resource(ramlResource.getPath());
+    for (RamlResourceMethod method : ramlResource.getMethods()) {
+      writeMethod(resourceBuilder, method);
+    }
+
+    for (RamlResource child : ramlResource.getChildren()) {
+      resources(resourceBuilder, child);
+    }
+
+    builder.with(resourceBuilder);
   }
 
   private void writeMethod(ResourceBuilder resourceBuilder, RamlResourceMethod method) throws IOException {

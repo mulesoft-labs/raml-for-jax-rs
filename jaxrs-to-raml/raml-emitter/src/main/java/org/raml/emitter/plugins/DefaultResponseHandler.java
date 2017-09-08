@@ -91,6 +91,8 @@ public class DefaultResponseHandler implements ResponseHandler {
       String type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
       body.ofType(TypeBuilder.type(type));
     }
+
+    methodBuilder.withResponses(responseBuilder);
   }
 
 }

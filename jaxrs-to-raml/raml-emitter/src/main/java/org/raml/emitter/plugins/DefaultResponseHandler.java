@@ -89,7 +89,7 @@ public class DefaultResponseHandler implements ResponseHandler {
 
       TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
       String type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
-      body.withTypes(TypeBuilder.type(type));
+      body.ofType(TypeBuilder.type(type));
     }
   }
 

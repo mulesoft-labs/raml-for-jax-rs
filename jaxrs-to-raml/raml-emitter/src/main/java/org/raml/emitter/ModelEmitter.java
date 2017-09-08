@@ -145,6 +145,7 @@ public class ModelEmitter implements Emitter {
 
         BodyBuilder body = body(ramlMediaType.toStringRepresentation());
         methodBuilder.withBodies(body);
+
         if (ramlMediaType.toStringRepresentation().equals("multipart/form-data")) {
 
 
@@ -160,6 +161,7 @@ public class ModelEmitter implements Emitter {
             typeHandler.writeType(typeRegistry, method.getConsumedType().get());
           }
         }
+
       }
     }
 
@@ -202,7 +204,7 @@ public class ModelEmitter implements Emitter {
 
   private void writeFormParam(RamlResourceMethod method, BodyBuilder body) throws IOException {
 
-    TypeBuilder typeBuilder = TypeBuilder.type("");
+    TypeBuilder typeBuilder = TypeBuilder.type("object");
 
     List<RamlFormParameter> formData = method.getFormParameters();
     for (RamlFormParameter formDatum : formData) {
@@ -211,12 +213,12 @@ public class ModelEmitter implements Emitter {
           .getRamlSyntax()));
     }
 
-    body.withTypes(typeBuilder);
+    body.ofType(typeBuilder);
   }
 
   private void writeMultiPartFormData(RamlResourceMethod method, BodyBuilder body) throws IOException {
 
-    TypeBuilder typeBuilder = TypeBuilder.type("");
+    TypeBuilder typeBuilder = TypeBuilder.type("object");
 
     List<RamlMultiFormDataParameter> formData = method.getMultiFormDataParameter();
     for (RamlMultiFormDataParameter formDatum : formData) {
@@ -227,7 +229,7 @@ public class ModelEmitter implements Emitter {
       typeBuilder.withProperty(property(formDatum.getName(), typeHandler.writeType(typeRegistry, formDatum.getPartEntity())));
     }
 
-    body.withTypes(typeBuilder);
+    body.ofType(typeBuilder);
   }
 
   private TypeHandler pickTypeHandler(Type type) throws IOException {

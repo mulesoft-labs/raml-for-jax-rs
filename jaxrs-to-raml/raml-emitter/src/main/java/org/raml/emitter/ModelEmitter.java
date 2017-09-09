@@ -15,7 +15,10 @@
  */
 package org.raml.emitter;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
 import org.raml.api.*;
 import org.raml.builder.*;
@@ -23,6 +26,7 @@ import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
@@ -37,8 +41,10 @@ import org.raml.yagi.framework.phase.GrammarPhase;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,6 +64,7 @@ public class ModelEmitter implements Emitter {
   private TypeRegistry typeRegistry = new TypeRegistry();
 
   private final List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
+  private List<RamlSupportedAnnotation> supportedAnnotations;
 
   private PrintWriter writer;
 
@@ -68,6 +75,8 @@ public class ModelEmitter implements Emitter {
 
   @Override
   public void emit(RamlApi modelApi) throws RamlEmissionException {
+
+    supportedAnnotations = modelApi.getSupportedAnnotation();
 
     org.raml.simpleemitter.Emitter emitter = new org.raml.simpleemitter.Emitter();
 
@@ -145,7 +154,7 @@ public class ModelEmitter implements Emitter {
 
     MethodBuilder methodBuilder = MethodBuilder.method(method.getHttpMethod());
 
-    // annotationInstanceEmitter.emit(method);
+    annotate(method, methodBuilder);
 
     Optional<String> description = method.getDescription();
     if (description.isPresent() && !description.get().isEmpty()) {
@@ -292,7 +301,66 @@ public class ModelEmitter implements Emitter {
     }
   }
 
-  public String calculateRamlType(Class<?> type) throws IOException {
+  private void annotate(Annotable annotable, AnnotableBuilder annotableModel) throws IOException {
+    for (RamlSupportedAnnotation suportedAnnotation : supportedAnnotations) {
+
+      Optional<Annotation> annotationOptional = suportedAnnotation.getAnnotationInstance(annotable);
+      if (!annotationOptional.isPresent()) {
+        continue;
+      }
+
+      Annotation annotation = annotationOptional.get();
+
+      AnnotationBuilder builder = AnnotationBuilder.annotation(annotation.annotationType().getSimpleName());
+
+      if (annotation.annotationType().getDeclaredMethods().length > 0) {
+
+        try {
+          for (Method method : annotation.annotationType().getDeclaredMethods()) {
+
+            Object value = method.invoke(annotation);
+            if (value.getClass().isArray()) {
+              List<Object> list = new ArrayList<>();
+              for (int i = 0; i < Array.getLength(value); i++) {
+                list.add(Array.get(value, i));
+              }
+
+              String[] listString = FluentIterable.from(list).transform(new Function<Object, String>() {
+
+                @Override
+                public String apply(Object input) {
+                  return toValue(input);
+                }
+              }).toArray(String.class);
+
+              builder.withProperties(AnnotationPropertyBuilder.property(method.getName(), listString));
+            } else {
+
+              builder.withProperties(AnnotationPropertyBuilder.property(method.getName(), toValue(value)));
+            }
+          }
+        } catch (Exception e) {
+          throw new IOException("unable to write property", e);
+        }
+      }
+
+      annotableModel.withAnnotations(builder);
+
+    }
+  }
+
+  private String toValue(Object value) {
+
+    if (Class.class.isAssignableFrom(value.getClass())) {
+
+      return ((Class) value).getSimpleName();
+    } else {
+
+      return value.toString();
+    }
+  }
+
+  private String calculateRamlType(Class<?> type) throws IOException {
 
     if (Class.class.equals(type)) {
 

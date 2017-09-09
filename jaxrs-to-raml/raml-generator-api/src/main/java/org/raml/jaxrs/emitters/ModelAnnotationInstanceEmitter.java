@@ -19,9 +19,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
+import org.raml.api.Annotable;
 import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlSupportedAnnotation;
-import org.raml.api.Annotable;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.utilities.IndentedAppendable;
@@ -36,12 +36,12 @@ import java.util.List;
 /**
  * Created by Jean-Philippe Belanger on 3/29/17. Just potential zeroes and ones
  */
-public class AnnotationInstanceEmitter implements LocalEmitter {
+public class ModelAnnotationInstanceEmitter implements LocalEmitter {
 
   private final IndentedAppendable writer;
   private final List<RamlSupportedAnnotation> supportedAnnotations;
 
-  public AnnotationInstanceEmitter(IndentedAppendable writer, List<RamlSupportedAnnotation> supportedAnnotation) {
+  public ModelAnnotationInstanceEmitter(IndentedAppendable writer, List<RamlSupportedAnnotation> supportedAnnotation) {
     this.writer = writer;
     this.supportedAnnotations = supportedAnnotation;
   }
@@ -68,7 +68,7 @@ public class AnnotationInstanceEmitter implements LocalEmitter {
     for (RamlSupportedAnnotation suportedAnnotation : supportedAnnotations) {
 
       Optional<Annotation> annotationOptional = suportedAnnotation.getAnnotationInstance(annotable);
-      if (!annotationOptional.isPresent()) {
+      if (annotationOptional.isPresent() == false) {
         continue;
       }
 

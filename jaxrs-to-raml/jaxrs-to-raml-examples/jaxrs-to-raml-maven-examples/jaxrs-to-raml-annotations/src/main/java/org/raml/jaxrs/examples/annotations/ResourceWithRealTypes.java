@@ -40,6 +40,7 @@ public class ResourceWithRealTypes {
   @GET
   @Produces("application/json")
   @Deprecated
+  @Secure(security = ResourceWithRealTypes.class, level = 4)
   public ProducedJsonValue getWithQueryParameters(ConsumedValue consumed) {
     return null;
   }

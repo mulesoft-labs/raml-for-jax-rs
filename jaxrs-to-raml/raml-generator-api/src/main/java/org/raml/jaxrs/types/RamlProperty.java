@@ -17,15 +17,19 @@ package org.raml.jaxrs.types;
 
 import com.google.common.base.Optional;
 import org.raml.api.Annotable;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.builder.TypeBuilder;
+import org.raml.builder.TypePropertyBuilder;
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.LocalEmitter;
+import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 import static org.raml.builder.NodeBuilders.property;
 
@@ -63,9 +67,11 @@ public class RamlProperty implements Emittable, Annotable {
     writer.outdent();
   }
 
-  public void write(AnnotationInstanceEmitter emitter, TypeBuilder typeBuilder) throws IOException {
+  public void write(Collection<RamlSupportedAnnotation> supportedAnnotations, TypeBuilder typeBuilder) throws IOException {
 
-    typeBuilder.withProperty(property(name, ramlType.getTypeName()));
+    TypePropertyBuilder property = TypePropertyBuilder.property(name, ramlType.getTypeName());
+    ModelEmitterAnnotations.annotate(supportedAnnotations, this, property);
+    typeBuilder.withProperty(property);
   }
 
   public void writeExample(IndentedAppendable writer) throws IOException {

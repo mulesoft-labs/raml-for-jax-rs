@@ -15,10 +15,7 @@
  */
 package org.raml.emitter;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
 import org.raml.api.*;
 import org.raml.builder.*;
@@ -26,7 +23,7 @@ import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.jaxrs.common.RamlGenerator;
-import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
+import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
@@ -41,18 +38,14 @@ import org.raml.yagi.framework.phase.GrammarPhase;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.format;
 import static org.raml.builder.BodyBuilder.body;
-import static org.raml.builder.NodeBuilders.key;
 import static org.raml.builder.NodeBuilders.property;
-import static org.raml.builder.ResourceBuilder.resource;
 import static org.raml.v2.api.model.v10.RamlFragment.Default;
 import static org.raml.v2.internal.impl.commons.RamlVersion.RAML_10;
 
@@ -93,7 +86,7 @@ public class ModelEmitter implements Emitter {
       annotationTypes(documentBuilder, modelApi);
       resources(documentBuilder, modelApi);
 
-      typeRegistry.writeAll(null, documentBuilder);
+      typeRegistry.writeAll(supportedAnnotations, documentBuilder);
 
     } catch (IOException e) {
 
@@ -154,7 +147,7 @@ public class ModelEmitter implements Emitter {
 
     MethodBuilder methodBuilder = MethodBuilder.method(method.getHttpMethod());
 
-    annotate(method, methodBuilder);
+    ModelEmitterAnnotations.annotate(supportedAnnotations, method, methodBuilder);
 
     Optional<String> description = method.getDescription();
     if (description.isPresent() && !description.get().isEmpty()) {
@@ -234,7 +227,7 @@ public class ModelEmitter implements Emitter {
     List<RamlFormParameter> formData = method.getFormParameters();
     for (RamlFormParameter formDatum : formData) {
 
-      typeBuilder.withProperty(property(formDatum.getName(), RamlTypes.fromType(formDatum.getType())
+      typeBuilder.withProperty(TypePropertyBuilder.property(formDatum.getName(), RamlTypes.fromType(formDatum.getType())
           .getRamlSyntax()));
     }
 
@@ -251,7 +244,8 @@ public class ModelEmitter implements Emitter {
       Type type = formDatum.getPartEntity().getType();
       TypeHandler typeHandler = pickTypeHandler(type);
 
-      typeBuilder.withProperty(property(formDatum.getName(), typeHandler.writeType(typeRegistry, formDatum.getPartEntity())));
+      typeBuilder.withProperty(TypePropertyBuilder.property(formDatum.getName(),
+                                                            typeHandler.writeType(typeRegistry, formDatum.getPartEntity())));
     }
 
     body.ofType(typeBuilder);
@@ -301,64 +295,6 @@ public class ModelEmitter implements Emitter {
     }
   }
 
-  private void annotate(Annotable annotable, AnnotableBuilder annotableModel) throws IOException {
-    for (RamlSupportedAnnotation suportedAnnotation : supportedAnnotations) {
-
-      Optional<Annotation> annotationOptional = suportedAnnotation.getAnnotationInstance(annotable);
-      if (!annotationOptional.isPresent()) {
-        continue;
-      }
-
-      Annotation annotation = annotationOptional.get();
-
-      AnnotationBuilder builder = AnnotationBuilder.annotation(annotation.annotationType().getSimpleName());
-
-      if (annotation.annotationType().getDeclaredMethods().length > 0) {
-
-        try {
-          for (Method method : annotation.annotationType().getDeclaredMethods()) {
-
-            Object value = method.invoke(annotation);
-            if (value.getClass().isArray()) {
-              List<Object> list = new ArrayList<>();
-              for (int i = 0; i < Array.getLength(value); i++) {
-                list.add(Array.get(value, i));
-              }
-
-              String[] listString = FluentIterable.from(list).transform(new Function<Object, String>() {
-
-                @Override
-                public String apply(Object input) {
-                  return toValue(input);
-                }
-              }).toArray(String.class);
-
-              builder.withProperties(AnnotationPropertyBuilder.property(method.getName(), listString));
-            } else {
-
-              builder.withProperties(AnnotationPropertyBuilder.property(method.getName(), toValue(value)));
-            }
-          }
-        } catch (Exception e) {
-          throw new IOException("unable to write property", e);
-        }
-      }
-
-      annotableModel.withAnnotations(builder);
-
-    }
-  }
-
-  private String toValue(Object value) {
-
-    if (Class.class.isAssignableFrom(value.getClass())) {
-
-      return ((Class) value).getSimpleName();
-    } else {
-
-      return value.toString();
-    }
-  }
 
   private String calculateRamlType(Class<?> type) throws IOException {
 

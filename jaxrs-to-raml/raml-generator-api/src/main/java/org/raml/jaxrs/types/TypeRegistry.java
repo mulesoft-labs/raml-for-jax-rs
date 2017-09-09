@@ -16,6 +16,7 @@
 package org.raml.jaxrs.types;
 
 import org.raml.api.RamlEntity;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.builder.RamlDocumentBuilder;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.plugins.TypeScanner;
@@ -23,6 +24,7 @@ import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,11 +55,11 @@ public class TypeRegistry {
     }
   }
 
-  public void writeAll(AnnotationInstanceEmitter annotationInstanceEmitter, RamlDocumentBuilder documentBuilder)
+  public void writeAll(List<RamlSupportedAnnotation> supportedAnnotations, RamlDocumentBuilder documentBuilder)
       throws IOException {
     for (RamlType ramlType : types.values()) {
 
-      ramlType.write(annotationInstanceEmitter, documentBuilder);
+      ramlType.write(supportedAnnotations, documentBuilder);
     }
   }
 

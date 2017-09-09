@@ -20,14 +20,12 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 import org.raml.api.Annotable;
 import org.raml.api.RamlData;
+import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
 import org.raml.builder.RamlDocumentBuilder;
 import org.raml.builder.TypeBuilder;
 import org.raml.builder.TypeDeclarationBuilder;
-import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
-import org.raml.jaxrs.emitters.Emittable;
-import org.raml.jaxrs.emitters.ExampleEmitter;
-import org.raml.jaxrs.emitters.LocalEmitter;
+import org.raml.jaxrs.emitters.*;
 import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.format.Joiner;
 import org.raml.utilities.format.Joiners;
@@ -126,7 +124,7 @@ public class RamlType implements Annotable, Emittable {
     writer.outdent();
   }
 
-  public void write(AnnotationInstanceEmitter emitter, RamlDocumentBuilder documentBuilder) throws IOException {
+  public void write(List<RamlSupportedAnnotation> supportedAnnotations, RamlDocumentBuilder documentBuilder) throws IOException {
 
     Type ttype = type.getType();
     Class c = Cast.toClass(ttype);
@@ -148,7 +146,7 @@ public class RamlType implements Annotable, Emittable {
       typeBuilder = TypeBuilder.type();
     }
 
-    // emitter.emit(this);
+    ModelEmitterAnnotations.annotate(supportedAnnotations, this, typeBuilder);
     // writeExample(writer);
 
     if (type.getDescription().isPresent()) {
@@ -164,8 +162,8 @@ public class RamlType implements Annotable, Emittable {
     if (properties.values().size() > 0) {
       for (RamlProperty ramlProperty : properties.values()) {
 
-        ramlProperty.write(null, typeBuilder);
-        // emitter.emit(this);
+        ramlProperty.write(supportedAnnotations, typeBuilder);
+        // annotations emitter.emit(this);
       }
     }
 

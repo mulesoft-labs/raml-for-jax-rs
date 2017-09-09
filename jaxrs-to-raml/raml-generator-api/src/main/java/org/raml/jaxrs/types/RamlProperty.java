@@ -17,6 +17,7 @@ package org.raml.jaxrs.types;
 
 import com.google.common.base.Optional;
 import org.raml.api.Annotable;
+import org.raml.builder.TypeBuilder;
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.emitters.Emittable;
@@ -25,6 +26,8 @@ import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+
+import static org.raml.builder.NodeBuilders.property;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -58,6 +61,11 @@ public class RamlProperty implements Emittable, Annotable {
     emitter.emit(this);
 
     writer.outdent();
+  }
+
+  public void write(AnnotationInstanceEmitter emitter, TypeBuilder typeBuilder) throws IOException {
+
+    typeBuilder.withProperty(property(name, ramlType.getTypeName()));
   }
 
   public void writeExample(IndentedAppendable writer) throws IOException {

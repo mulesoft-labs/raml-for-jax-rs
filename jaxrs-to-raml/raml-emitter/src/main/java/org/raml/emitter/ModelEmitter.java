@@ -71,9 +71,9 @@ public class ModelEmitter implements Emitter {
 
     org.raml.simpleemitter.Emitter emitter = new org.raml.simpleemitter.Emitter();
 
-    RamlDocumentBuilder builder = RamlDocumentBuilder.document();
+    RamlDocumentBuilder documentBuilder = RamlDocumentBuilder.document();
     try {
-      builder
+      documentBuilder
           .with(
 
                 property("title", modelApi.getTitle()),
@@ -81,14 +81,17 @@ public class ModelEmitter implements Emitter {
                 property("version", modelApi.getVersion()),
                 property("mediaType", modelApi.getDefaultMediaType().toStringRepresentation())
           );
-      annotationTypes(builder, modelApi);
-      resources(builder, modelApi);
+      annotationTypes(documentBuilder, modelApi);
+      resources(documentBuilder, modelApi);
+
+      typeRegistry.writeAll(null, documentBuilder);
+
     } catch (IOException e) {
 
       throw new RamlEmissionException("trying to emit", e);
     }
 
-    Api api = builder.build();
+    Api api = documentBuilder.buildModel();
     final GrammarPhase grammarPhase =
         new GrammarPhase(RamlHeader.getFragmentRule(new RamlHeader(RAML_10, Default).getFragment()));
     Node node = ((NodeModel) api).getNode();
@@ -105,7 +108,6 @@ public class ModelEmitter implements Emitter {
         throw new RamlEmissionException("trying to emit", e);
       }
     }
-
   }
 
   private void resources(RamlDocumentBuilder builder, RamlApi modelApi) throws IOException {

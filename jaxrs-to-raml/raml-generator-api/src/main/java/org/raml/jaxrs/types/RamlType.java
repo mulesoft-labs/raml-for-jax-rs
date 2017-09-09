@@ -21,6 +21,9 @@ import com.google.common.collect.Collections2;
 import org.raml.api.Annotable;
 import org.raml.api.RamlData;
 import org.raml.api.ScalarType;
+import org.raml.builder.RamlDocumentBuilder;
+import org.raml.builder.TypeBuilder;
+import org.raml.builder.TypeDeclarationBuilder;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.ExampleEmitter;
@@ -39,6 +42,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.raml.builder.NodeBuilders.property;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -119,6 +124,53 @@ public class RamlType implements Annotable, Emittable {
       writer.outdent();
     }
     writer.outdent();
+  }
+
+  public void write(AnnotationInstanceEmitter emitter, RamlDocumentBuilder documentBuilder) throws IOException {
+
+    Type ttype = type.getType();
+    Class c = Cast.toClass(ttype);
+
+    TypeBuilder typeBuilder;
+
+    if (superTypes != null && superTypes.size() > 0) {
+      String[] superTypeList = Collections2.transform(superTypes, new Function<RamlType, String>() {
+
+        @Override
+        public String apply(RamlType input) {
+          return input.getTypeName();
+        }
+      }).toArray(new String[] {});
+
+      typeBuilder = TypeBuilder.type(superTypeList);
+    } else {
+
+      typeBuilder = TypeBuilder.type();
+    }
+
+    // emitter.emit(this);
+    // writeExample(writer);
+
+    if (type.getDescription().isPresent()) {
+
+      typeBuilder.description(type.getDescription().get());
+    }
+
+    if (enumValues != null) {
+
+      typeBuilder.enumValues(enumValues.toArray(new String[0]));
+    }
+
+    if (properties.values().size() > 0) {
+      for (RamlProperty ramlProperty : properties.values()) {
+
+        ramlProperty.write(null, typeBuilder);
+        // emitter.emit(this);
+      }
+    }
+
+    documentBuilder.withTypes(TypeDeclarationBuilder.typeDeclaration(c.getSimpleName()).ofType(typeBuilder));
+
   }
 
   public void writeExample(IndentedAppendable writer) throws IOException {

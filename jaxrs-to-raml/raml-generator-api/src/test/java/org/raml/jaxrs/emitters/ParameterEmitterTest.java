@@ -17,7 +17,6 @@ package org.raml.jaxrs.emitters;
 
 import com.google.common.base.Optional;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

@@ -24,6 +24,7 @@ import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
+import org.raml.jaxrs.emitters.ParameterEmitter;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
@@ -198,13 +199,41 @@ public class ModelEmitter implements Emitter {
 
       handler.writeResponses(typeRegistry, method, selector, methodBuilder);
     }
-    /*
-     * if (!method.getHeaderParameters().isEmpty()) { writeHeaderParameters(method.getHeaderParameters()); }
-     * 
-     * if (!method.getQueryParameters().isEmpty()) { writeQueryParameters(method.getQueryParameters()); }
-     */
+
+    if (!method.getHeaderParameters().isEmpty()) {
+      writeHeaderParameters(method.getHeaderParameters(), methodBuilder);
+    }
+
+    if (!method.getQueryParameters().isEmpty()) {
+      writeQueryParameters(method.getQueryParameters(), methodBuilder);
+    }
+
 
     resourceBuilder.with(methodBuilder);
+  }
+
+
+  private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters, MethodBuilder builder) throws IOException {
+    for (RamlHeaderParameter parameter : headerParameters) {
+
+      TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
+      ParameterEmitter parameterEmitter = new ParameterEmitter(null, typeRegistry, typeHandler);
+      ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter, builder);
+      builder.withHeaderParameters(parameterBuilder);
+    }
+  }
+
+  private void writeQueryParameters(Iterable<RamlQueryParameter> queryParameters, MethodBuilder builder)
+      throws IOException {
+
+    for (RamlQueryParameter parameter : queryParameters) {
+
+      TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
+      ParameterEmitter parameterEmitter = new ParameterEmitter(null, typeRegistry, typeHandler);
+      ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter, builder);
+      builder.withQueryParameter(parameterBuilder);
+    }
+
   }
 
   private ResponseHandler pickResponseHandler(final RamlResourceMethod method) {

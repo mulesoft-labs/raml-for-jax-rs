@@ -17,9 +17,10 @@ package org.raml.jaxrs.emitters;
 
 import com.google.common.base.Optional;
 import org.raml.api.RamlParameter;
-import org.raml.api.RamlType;
-import org.raml.api.RamlTypes;
 import org.raml.api.ScalarType;
+import org.raml.builder.FacetBuilder;
+import org.raml.builder.MethodBuilder;
+import org.raml.builder.ParameterBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.utilities.IndentedAppendable;
@@ -44,6 +45,53 @@ public class ParameterEmitter {
     this.writer = writer;
     this.typeRegistry = typeRegistry;
     this.typeHandler = typeHandler;
+  }
+
+  public ParameterBuilder emit(RamlParameter parameter, MethodBuilder builder) throws IOException {
+
+    ParameterBuilder parameterBuilder =
+        ParameterBuilder.parameter(parameter.getName()).ofType(typeHandler.writeType(typeRegistry, parameter.getEntity()));
+
+    if (parameter.getDefaultValue().isPresent()) {
+      parameterBuilder.withFacets(
+                                  FacetBuilder.facet("default").value(parameter.getDefaultValue().get()),
+                                  FacetBuilder.facet("required").value("false")
+          );
+    } else if (parameter.getAnnotation(NotNull.class).isPresent()) {
+      parameterBuilder.withFacets(
+          FacetBuilder.facet("required").value("true")
+          );
+    }
+
+    Optional<ScalarType> ramlType = ScalarType.fromType(parameter.getEntity().getType());
+    if (ramlType.isPresent()) {
+      if (ramlType.get() == ScalarType.INTEGER || ramlType.get() == ScalarType.NUMBER) {
+        if (parameter.getAnnotation(Min.class).isPresent()) {
+
+          parameterBuilder.withFacets(
+              FacetBuilder.facet("minimum").value(String.valueOf(parameter.getAnnotation(Min.class).get().value()))
+              );
+        }
+        if (parameter.getAnnotation(Max.class).isPresent()) {
+          parameterBuilder.withFacets(
+              FacetBuilder.facet("maximum").value(String.valueOf(parameter.getAnnotation(Max.class).get().value()))
+              );
+        }
+      }
+      if (parameter.getAnnotation(Size.class).isPresent()) {
+        if (ramlType.get() == ScalarType.STRING) {
+          parameterBuilder.withFacets(
+                                      FacetBuilder.facet("minLength").value(String.valueOf(parameter.getAnnotation(Size.class)
+                                          .get().min())),
+                                      FacetBuilder.facet("maxLength").value(String.valueOf(parameter.getAnnotation(Size.class)
+                                          .get().max()))
+
+              );
+        }
+      }
+    }
+
+    return parameterBuilder;
   }
 
   public void emit(RamlParameter parameter) throws IOException {

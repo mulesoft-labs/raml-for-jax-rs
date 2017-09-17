@@ -22,7 +22,7 @@ import org.raml.api.Annotable;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.builder.AnnotableBuilder;
 import org.raml.builder.AnnotationBuilder;
-import org.raml.builder.AnnotationPropertyBuilder;
+import org.raml.builder.PropertyValueBuilder;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -70,10 +70,10 @@ public class ModelEmitterAnnotations {
                 }
               }).toArray(String.class);
 
-              builder.withProperties(AnnotationPropertyBuilder.property(method.getName(), listString));
+              builder.withProperties(PropertyValueBuilder.property(method.getName(), listString));
             } else {
 
-              builder.withProperties(AnnotationPropertyBuilder.property(method.getName(), toValue(value)));
+              builder.withProperties(PropertyValueBuilder.property(method.getName(), toValue(value)));
             }
           }
         } catch (Exception e) {

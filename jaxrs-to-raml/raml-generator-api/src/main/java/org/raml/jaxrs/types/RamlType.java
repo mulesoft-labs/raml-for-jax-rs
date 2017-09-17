@@ -147,7 +147,7 @@ public class RamlType implements Annotable, Emittable {
     }
 
     ModelEmitterAnnotations.annotate(supportedAnnotations, this, typeBuilder);
-    // writeExample(writer);
+    new ExampleModelEmitter(typeBuilder).emit(this);
 
     if (type.getDescription().isPresent()) {
 

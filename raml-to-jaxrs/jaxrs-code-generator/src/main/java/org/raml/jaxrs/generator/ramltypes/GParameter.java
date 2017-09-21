@@ -22,6 +22,8 @@ import org.raml.jaxrs.generator.GAbstraction;
  */
 public interface GParameter extends GAbstraction {
 
+  String defaultValue();
+
   String name();
 
   GType type();

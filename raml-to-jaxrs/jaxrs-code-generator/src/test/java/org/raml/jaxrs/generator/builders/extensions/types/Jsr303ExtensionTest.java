@@ -108,7 +108,7 @@ public class Jsr303ExtensionTest {
     setupNumberFacets();
     Jsr303Extension ext = new Jsr303Extension();
     FieldSpec.Builder builder =
-            FieldSpec.builder(ClassName.get(Double.class), "champ", Modifier.PUBLIC);
+        FieldSpec.builder(ClassName.get(Double.class), "champ", Modifier.PUBLIC);
 
     ext.onFieldImplementation(null, builder, object);
 

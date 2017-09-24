@@ -25,18 +25,11 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 4/17/17. Just potential zeroes and ones
  */
 @RamlGenerator(SimpleJacksonTypes.class)
-public class ProducedJsonValue {
+public class ProducedJsonSubValue {
 
   @JsonProperty
-  int id;
+  String subId;
 
   @JsonProperty
-  private ProducedJsonSubValue userInfo;
-  @JsonProperty
-  private List<ProducedJsonSubValue> accounts;
-
-  @JsonProperty
-  public String getName() {
-    return null;
-  }
+  List<String> names;
 }

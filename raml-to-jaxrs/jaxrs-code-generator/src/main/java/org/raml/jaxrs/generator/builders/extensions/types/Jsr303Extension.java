@@ -57,7 +57,7 @@ public class Jsr303Extension extends TypeExtensionHelper {
       addFacetsForArray(typeSpec, (ArrayTypeDeclaration) typeDeclaration);
     }
 
-    if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
+    if (typeDeclaration instanceof ObjectTypeDeclaration) {
 
       addFacetsForObject(typeSpec);
     }
@@ -65,7 +65,7 @@ public class Jsr303Extension extends TypeExtensionHelper {
 
   private void addFacetsForObject(FieldSpec.Builder typeSpec) {
 
-      typeSpec.addAnnotation(Valid.class);
+    typeSpec.addAnnotation(Valid.class);
   }
 
   private void addFacetsForAll(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {

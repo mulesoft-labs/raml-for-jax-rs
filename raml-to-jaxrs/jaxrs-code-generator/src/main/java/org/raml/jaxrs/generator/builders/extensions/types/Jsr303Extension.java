@@ -19,11 +19,9 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -58,6 +56,16 @@ public class Jsr303Extension extends TypeExtensionHelper {
 
       addFacetsForArray(typeSpec, (ArrayTypeDeclaration) typeDeclaration);
     }
+
+    if ( typeDeclaration instanceof ObjectTypeDeclaration ) {
+
+      addFacetsForObject(typeSpec);
+    }
+  }
+
+  private void addFacetsForObject(FieldSpec.Builder typeSpec) {
+
+      typeSpec.addAnnotation(Valid.class);
   }
 
   private void addFacetsForAll(FieldSpec.Builder typeSpec, TypeDeclaration typeDeclaration) {

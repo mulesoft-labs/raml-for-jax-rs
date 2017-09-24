@@ -34,7 +34,9 @@ public class V08GParameter implements GParameter {
   }
 
   @Override
-  public String defaultValue() { return input.defaultValue(); }
+  public String defaultValue() {
+    return input.defaultValue();
+  }
 
   @Override
   public Parameter implementation() {

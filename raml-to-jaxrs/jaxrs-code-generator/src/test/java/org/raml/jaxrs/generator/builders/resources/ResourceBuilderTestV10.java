@@ -401,43 +401,44 @@ public class ResourceBuilderTestV10 {
   public void build_with_query_param_with_defaults() throws Exception {
 
     RamlV10.buildResourceV10(this, "resource_no_entity_query_param_with_defaults.raml",
-            new CodeContainer<TypeSpec>() {
+                             new CodeContainer<TypeSpec>() {
 
-              @Override
-              public void into(TypeSpec g) throws IOException {
+                               @Override
+                               public void into(TypeSpec g) throws IOException {
 
-                assertEquals("Foo", g.name);
-                assertEquals(1, g.methodSpecs.size());
-                MethodSpec methodSpec = g.methodSpecs.get(0);
-                assertEquals("postSearch", methodSpec.name);
-                assertEquals(1, methodSpec.annotations.size());
-                assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
-                assertEquals(2, methodSpec.parameters.size());
+                                 assertEquals("Foo", g.name);
+                                 assertEquals(1, g.methodSpecs.size());
+                                 MethodSpec methodSpec = g.methodSpecs.get(0);
+                                 assertEquals("postSearch", methodSpec.name);
+                                 assertEquals(1, methodSpec.annotations.size());
+                                 assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+                                 assertEquals(2, methodSpec.parameters.size());
 
-                ParameterSpec paramOneSpec = methodSpec.parameters.get(0);
-                assertEquals("one", paramOneSpec.name);
-                assertEquals(ClassName.get(String.class), paramOneSpec.type);
-                assertEquals(2, paramOneSpec.annotations.size());
-                assertEquals(ClassName.get(QueryParam.class), paramOneSpec.annotations.get(0).type);
-                assertEquals("\"one\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
-                        .toString());
-                assertEquals(ClassName.get(DefaultValue.class), paramOneSpec.annotations.get(1).type);
-                assertEquals("\"all\"", paramOneSpec.annotations.get(1).members.get("value").get(0)
-                        .toString());
+                                 ParameterSpec paramOneSpec = methodSpec.parameters.get(0);
+                                 assertEquals("one", paramOneSpec.name);
+                                 assertEquals(ClassName.get(String.class), paramOneSpec.type);
+                                 assertEquals(2, paramOneSpec.annotations.size());
+                                 assertEquals(ClassName.get(QueryParam.class), paramOneSpec.annotations.get(0).type);
+                                 assertEquals("\"one\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+                                 assertEquals(ClassName.get(DefaultValue.class), paramOneSpec.annotations.get(1).type);
+                                 assertEquals("\"all\"", paramOneSpec.annotations.get(1).members.get("value").get(0)
+                                     .toString());
 
-                ParameterSpec paramTwoSpec = methodSpec.parameters.get(1);
-                assertEquals("two", paramTwoSpec.name);
-                assertEquals(ClassName.INT, paramTwoSpec.type);
-                assertEquals(2, paramTwoSpec.annotations.size());
-                assertEquals(ClassName.get(QueryParam.class), paramTwoSpec.annotations.get(0).type);
-                assertEquals("\"two\"", paramTwoSpec.annotations.get(0).members.get("value").get(0)
-                        .toString());
-                assertEquals(ClassName.get(DefaultValue.class), paramTwoSpec.annotations.get(1).type);
-                assertEquals("\"-1\"", paramTwoSpec.annotations.get(1).members.get("value").get(0)
-                        .toString());
-              }
-            }, "foo", "/fun");
+                                 ParameterSpec paramTwoSpec = methodSpec.parameters.get(1);
+                                 assertEquals("two", paramTwoSpec.name);
+                                 assertEquals(ClassName.INT, paramTwoSpec.type);
+                                 assertEquals(2, paramTwoSpec.annotations.size());
+                                 assertEquals(ClassName.get(QueryParam.class), paramTwoSpec.annotations.get(0).type);
+                                 assertEquals("\"two\"", paramTwoSpec.annotations.get(0).members.get("value").get(0)
+                                     .toString());
+                                 assertEquals(ClassName.get(DefaultValue.class), paramTwoSpec.annotations.get(1).type);
+                                 assertEquals("\"-1\"", paramTwoSpec.annotations.get(1).members.get("value").get(0)
+                                     .toString());
+                               }
+                             }, "foo", "/fun");
   }
+
   @Test
   public void build_with_header_param() throws Exception {
 

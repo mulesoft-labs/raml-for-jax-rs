@@ -511,17 +511,16 @@ public class ResourceBuilder implements ResourceGenerator {
     for (GParameter gParameter : gMethod.queryParameters()) {
 
       ParameterSpec.Builder parameterSpec = ParameterSpec
-              .builder(
-                      gParameter.type().defaultJavaTypeName(this.build.getModelPackage()),
-                      Names.methodName(gParameter.name()))
-              .addAnnotation(
-                      AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
-                              .build())
-              ;
-      if(gParameter.defaultValue()!=null) {
+          .builder(
+                   gParameter.type().defaultJavaTypeName(this.build.getModelPackage()),
+                   Names.methodName(gParameter.name()))
+          .addAnnotation(
+                         AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
+                             .build());
+      if (gParameter.defaultValue() != null) {
         parameterSpec.addAnnotation(
-                AnnotationSpec.builder(DefaultValue.class)
-                        .addMember("value", "$S", gParameter.defaultValue()).build());
+            AnnotationSpec.builder(DefaultValue.class)
+                .addMember("value", "$S", gParameter.defaultValue()).build());
       }
       methodSpec.addParameter(parameterSpec.build());
     }

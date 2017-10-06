@@ -63,6 +63,8 @@ public class Jsr303Extension extends TypeExtensionHelper {
     }
   }
 
+
+
   private void addFacetsForObject(FieldSpec.Builder typeSpec) {
 
     typeSpec.addAnnotation(Valid.class);

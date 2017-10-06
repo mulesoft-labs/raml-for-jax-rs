@@ -159,6 +159,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
 
+
     methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
         .onMethod(new ResourceContextImpl(build),
                   gMethod, methodSpec);
@@ -177,6 +178,8 @@ public class ResourceBuilder implements ResourceGenerator {
     ParameterSpec parameterSpec = createParamteter(gRequest);
     methodSpec.addParameter(parameterSpec);
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
+
+    methodSpec = build.withResourceListeners().onMethod(new ResourceContextImpl(build), gMethod, methodSpec);
 
     methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
         .onMethod(new ResourceContextImpl(build),
@@ -254,8 +257,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
       responseClass =
           build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_CREATION, gMethod)
-              .onMethod(new ResourceContextImpl(build),
-                        gMethod, responseClass);
+              .onResponseClass(new ResourceContextImpl(build),
+                               gMethod, responseClass);
 
       if (responseClass == null) {
 
@@ -412,8 +415,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
       responseClass =
           build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod)
-              .onMethod(new ResourceContextImpl(build),
-                        gMethod, responseClass);
+              .onResponseClass(new ResourceContextImpl(build),
+                               gMethod, responseClass);
 
       if (responseClass == null) {
 

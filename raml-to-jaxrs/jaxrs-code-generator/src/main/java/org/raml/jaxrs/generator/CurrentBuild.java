@@ -34,11 +34,7 @@ import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
 import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
-import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
-import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
-import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
-import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
-import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
+import org.raml.jaxrs.generator.extension.resources.*;
 import org.raml.jaxrs.generator.extension.types.FieldExtension;
 import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
 import org.raml.jaxrs.generator.extension.types.MethodExtension;
@@ -74,7 +70,10 @@ public class CurrentBuild {
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
+
   private TypeExtensionList typeExtensionList = new TypeExtensionList();
+  private GlobalResourceExtension.Composite resourceExtensionList = new GlobalResourceExtension.Composite();
+
   private Map<String, GeneratorType> foundTypes = new HashMap<>();
 
   private final List<JavaPoetTypeGenerator> supportGenerators = new ArrayList<>();
@@ -223,13 +222,6 @@ public class CurrentBuild {
     }
   }
 
-
-  public LegacyTypeExtension withTypeListeners() {
-
-    return typeExtensionList;
-  }
-
-
   public void newGenerator(String ramlTypeName, TypeGenerator generator) {
 
     builtTypes.put(ramlTypeName, generator);
@@ -299,6 +291,7 @@ public class CurrentBuild {
       if (s.equals("jsr303")) {
 
         typeExtensionList.addExtension(new Jsr303Extension());
+        resourceExtensionList.addExtension(new Jsr303ResourceExtension());
       }
     }
   }
@@ -434,4 +427,16 @@ public class CurrentBuild {
       throw new GenerationException(e);
     }
   }
+
+  public GlobalResourceExtension withResourceListeners() {
+
+    return resourceExtensionList;
+  }
+
+  public LegacyTypeExtension withTypeListeners() {
+
+    return typeExtensionList;
+  }
+
+
 }

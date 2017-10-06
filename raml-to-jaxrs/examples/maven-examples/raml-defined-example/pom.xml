@@ -49,6 +49,7 @@
                     <supportPackage>example.support</supportPackage>
                     <generateTypesWith>
                         <value>jackson</value>
+                        <value>jsr303</value>
                     </generateTypesWith>
                 </configuration>
             </plugin>

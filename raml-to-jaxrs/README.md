@@ -42,8 +42,10 @@ The project [raml-to-jaxrs-cli](raml-to-jaxrs-cli/) contains the CLI artifact. I
 ```
 usage: ramltojaxrs -d <arg> [-g <arg>] [-m <arg>] [-r <arg>] [-s <arg>]
  -d,--directory <arg>             generation directory
- -g,--generate-types-with <arg>   generate types with plugins (jackson,
-                                  gson, jaxb, javadoc, jsr303)
+ -j,--json-mapper <arg>           jsonschema2pojo annotation types
+                                  (jackson, jackson2 or gson)
+ -g,--generate-types-with <arg>   generate types with plugins
+                                  (jackson, gson, jaxb, javadoc, jsr303)
  -m,--model-package <arg>         model package
  -r,--resource-package <arg>      resource package
  -s,--support-package <arg>       support package

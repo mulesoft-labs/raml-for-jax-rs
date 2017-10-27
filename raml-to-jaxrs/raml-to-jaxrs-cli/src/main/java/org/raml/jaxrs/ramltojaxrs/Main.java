@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.ramltojaxrs;
 
+import com.google.common.base.Optional;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -24,6 +25,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.RamlScanner;
@@ -40,6 +42,7 @@ public class Main {
   public static void main(String[] args) throws IOException, GenerationException, ParseException {
 
     Options options = new Options();
+    options.addOption("j", "json-mapper", true, "jsonschema2pojo annotation types (jackson, jackson2 or gson)");
     options.addOption("m", "model-package", true, "model package");
     options.addOption("s", "support-package", true, "support package");
     options.addOption("g", "generate-types-with", true, "generate types with plugins (jackson, gson, jaxb, javadoc, jsr303)");
@@ -55,6 +58,7 @@ public class Main {
       String resourceDir = command.getOptionValue("r");
       String directory = command.getOptionValue("d");
       String extensions = command.getOptionValue("g");
+      Optional<String> jsonMapper = Optional.fromNullable(command.getOptionValue("j"));
 
       List<String> ramlFiles = command.getArgList();
 
@@ -63,6 +67,7 @@ public class Main {
       configuration.setResourcePackage(resourceDir);
       configuration.setSupportPackage(supportDir);
       configuration.setOutputDirectory(new File(directory));
+      configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.or("jackson2").toUpperCase()));
 
       if (extensions != null) {
         configuration.setTypeConfiguration(extensions.split(("\\s*,\\s*")));

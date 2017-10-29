@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GFinder;
 import org.raml.jaxrs.generator.GFinderListener;
 import org.raml.v2.api.model.v10.api.Api;
@@ -161,5 +162,10 @@ public class V10Finder implements GFinder {
         listener.newTypeDeclaration(type);
       }
     }
+  }
+
+  @Override
+  public void setupConstruction(CurrentBuild currentBuild) {
+
   }
 }

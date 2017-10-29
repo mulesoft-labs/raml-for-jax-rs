@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.io.Files;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.sun.codemodel.JCodeModel;
@@ -24,12 +25,12 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
-import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
-import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.builders.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.UUID;
 
 /**
  * Created by Jean-Philippe Belanger on 11/20/16. Just potential zeroes and ones
@@ -56,8 +57,11 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
                                                  new SchemaGenerator());
     final JCodeModel codeModel = new JCodeModel();
 
+    File schemaFile = File.createTempFile("schema", "json", build.getSchemaRepository());
+    Files.write(schema, schemaFile, Charset.defaultCharset());
     try {
-      mapper.generate(codeModel, name.simpleName(), pack, schema);
+
+      mapper.generate(codeModel, name.simpleName(), pack, schemaFile.toURL());
     } catch (IOException e) {
       throw new GenerationException(e);
     }

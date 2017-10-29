@@ -18,9 +18,11 @@ package org.raml.jaxrs.generator;
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
+import com.google.common.io.Files;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
+import org.apache.commons.io.FileUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.CodeContainer;
@@ -49,6 +51,9 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,6 +72,7 @@ public class CurrentBuild {
   private final GFinder typeFinder;
   private final Api api;
   private ExtensionManager extensionManager;
+  private final File ramlLocation;
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
@@ -82,14 +88,30 @@ public class CurrentBuild {
 
   private ArrayListMultimap<JavaPoetTypeGenerator, JavaPoetTypeGenerator> internalTypesPerClass = ArrayListMultimap.create();
 
-  public CurrentBuild(GFinder typeFinder, Api api, ExtensionManager extensionManager) {
+  private File schemaRepository;
+
+  public CurrentBuild(GFinder typeFinder, Api api, ExtensionManager extensionManager, File ramlLocation) {
 
     this.typeFinder = typeFinder;
     this.api = api;
     this.extensionManager = extensionManager;
+    this.ramlLocation = ramlLocation;
     this.configuration = Configuration.defaultConfiguration();
   }
 
+
+  public File getSchemaRepository() {
+
+    if (schemaRepository == null) {
+
+      // schemaRepository = Files.createTempDir();
+      schemaRepository = new File("/tmp/glouglou");
+      schemaRepository.mkdir();
+
+    }
+
+    return schemaRepository;
+  }
 
   public Api getApi() {
     return api;
@@ -111,55 +133,64 @@ public class CurrentBuild {
 
   public void generate(final File rootDirectory) throws IOException {
 
-    if (resources.size() > 0) {
-      ResponseSupport.buildSupportClasses(rootDirectory, getSupportPackage());
-    }
-
-    for (TypeGenerator typeGenerator : builtTypes.values()) {
-
-      if (typeGenerator instanceof JavaPoetTypeGenerator) {
-
-        buildTypeTree(rootDirectory, (JavaPoetTypeGenerator) typeGenerator);
-        continue;
+    try {
+      if (resources.size() > 0) {
+        ResponseSupport.buildSupportClasses(rootDirectory, getSupportPackage());
       }
 
-      if (typeGenerator instanceof CodeModelTypeGenerator) {
-        CodeModelTypeGenerator b = (CodeModelTypeGenerator) typeGenerator;
-        b.output(new CodeContainer<JCodeModel>() {
+      for (TypeGenerator typeGenerator : builtTypes.values()) {
+
+        if (typeGenerator instanceof JavaPoetTypeGenerator) {
+
+          buildTypeTree(rootDirectory, (JavaPoetTypeGenerator) typeGenerator);
+          continue;
+        }
+
+        if (typeGenerator instanceof CodeModelTypeGenerator) {
+          CodeModelTypeGenerator b = (CodeModelTypeGenerator) typeGenerator;
+          b.output(new CodeContainer<JCodeModel>() {
+
+            @Override
+            public void into(JCodeModel g) throws IOException {
+
+              g.build(rootDirectory);
+            }
+          });
+        }
+
+      }
+
+
+      for (ResourceGenerator resource : resources) {
+        resource.output(new CodeContainer<TypeSpec>() {
 
           @Override
-          public void into(JCodeModel g) throws IOException {
-
-            g.build(rootDirectory);
+          public void into(TypeSpec g) throws IOException {
+            JavaFile.Builder file = JavaFile.builder(getResourcePackage(), g);
+            file.build().writeTo(rootDirectory);
           }
         });
       }
 
-    }
+      for (JavaPoetTypeGenerator typeGenerator : supportGenerators) {
 
+        typeGenerator.output(new CodeContainer<TypeSpec.Builder>() {
 
-    for (ResourceGenerator resource : resources) {
-      resource.output(new CodeContainer<TypeSpec>() {
+          @Override
+          public void into(TypeSpec.Builder g) throws IOException {
 
-        @Override
-        public void into(TypeSpec g) throws IOException {
-          JavaFile.Builder file = JavaFile.builder(getResourcePackage(), g);
-          file.build().writeTo(rootDirectory);
-        }
-      });
-    }
+            JavaFile.Builder file = JavaFile.builder(getSupportPackage(), g.build());
+            file.build().writeTo(rootDirectory);
+          }
+        });
+      }
 
-    for (JavaPoetTypeGenerator typeGenerator : supportGenerators) {
+    } finally {
 
-      typeGenerator.output(new CodeContainer<TypeSpec.Builder>() {
+      if (schemaRepository != null) {
 
-        @Override
-        public void into(TypeSpec.Builder g) throws IOException {
-
-          JavaFile.Builder file = JavaFile.builder(getSupportPackage(), g.build());
-          file.build().writeTo(rootDirectory);
-        }
-      });
+         FileUtils.deleteDirectory(schemaRepository);
+      }
     }
   }
 
@@ -227,6 +258,10 @@ public class CurrentBuild {
     builtTypes.put(ramlTypeName, generator);
   }
 
+  public File getRamlLocation() {
+    return ramlLocation;
+  }
+
   public void newSupportGenerator(JavaPoetTypeGenerator generator) {
 
     supportGenerators.add(generator);
@@ -253,6 +288,7 @@ public class CurrentBuild {
     TypeFindingListener listener = new TypeFindingListener(foundTypes);
     typeFinder.findTypes(listener);
 
+    typeFinder.setupConstruction(this);
     for (GeneratorType type : foundTypes.values()) {
 
       type.construct(this);
@@ -437,6 +473,4 @@ public class CurrentBuild {
 
     return typeExtensionList;
   }
-
-
 }

@@ -21,4 +21,6 @@ package org.raml.jaxrs.generator;
 public interface GFinder {
 
   GFinder findTypes(GFinderListener listener);
+
+  void setupConstruction(CurrentBuild currentBuild);
 }

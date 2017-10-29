@@ -46,40 +46,31 @@ public class RamlScanner {
   }
 
 
-  public void handle(String resourceName) throws IOException, GenerationException {
-
-    handle(RamlScanner.class.getResource(resourceName));
-  }
-
   public void handle(File resource) throws IOException, GenerationException {
 
-    handle(new FileInputStream(resource), resource.getAbsoluteFile().getParentFile().getAbsolutePath() + "/");
+    handle(new FileInputStream(resource), resource.getAbsoluteFile().getParentFile());
   }
 
-  public void handle(URL resourceName) throws IOException, GenerationException {
-
-    handle(resourceName.openStream(), ".");
-  }
-
-  public void handle(InputStream stream, String directory) throws GenerationException, IOException {
+  public void handle(InputStream stream, File ramlDirectory) throws GenerationException, IOException {
 
     RamlModelResult result =
-        new RamlModelBuilder().buildApi(new InputStreamReader(stream), directory);
+        new RamlModelBuilder().buildApi(new InputStreamReader(stream), ramlDirectory.getAbsolutePath() + "/");
     if (result.hasErrors()) {
       throw new GenerationException(result.getValidationResults());
     }
 
     if (result.isVersion08()) {
-      handle(result.getApiV08());
+      handle(result.getApiV08(), ramlDirectory);
     } else {
-      handle(result.getApiV10());
+      handle(result.getApiV10(), ramlDirectory);
     }
   }
 
-  public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
+  public void handle(org.raml.v2.api.model.v10.api.Api api, File ramlDirectory) throws IOException {
 
     V10TypeRegistry registry = new V10TypeRegistry();
-    CurrentBuild build = new CurrentBuild(new V10Finder(api, registry), api, ExtensionManager.createExtensionManager());
+    CurrentBuild build =
+        new CurrentBuild(new V10Finder(api, registry), api, ExtensionManager.createExtensionManager(), ramlDirectory);
     configuration.setupBuild(build);
     build.constructClasses();
 
@@ -96,12 +87,13 @@ public class RamlScanner {
   }
 
 
-  public void handle(org.raml.v2.api.model.v08.api.Api api) throws IOException {
+  public void handle(org.raml.v2.api.model.v08.api.Api api, File ramlDirectory) throws IOException {
 
     GAbstractionFactory factory = new GAbstractionFactory();
     V08TypeRegistry registry = new V08TypeRegistry();
     V08Finder typeFinder = new V08Finder(api, factory, registry);
-    CurrentBuild build = new CurrentBuild(typeFinder, null, ExtensionManager.createExtensionManager());
+    CurrentBuild build = new CurrentBuild(typeFinder, null, ExtensionManager.createExtensionManager(), ramlDirectory);
+
     configuration.setupBuild(build);
 
     build.constructClasses();
@@ -111,7 +103,7 @@ public class RamlScanner {
 
     // handle resources.
     for (org.raml.v2.api.model.v08.resources.Resource resource : api.resources()) {
-      resourceHandler.handle(typeFinder.globalSchemas(), registry, resource);
+      resourceHandler.handle(typeFinder.globalSchemas().keySet(), registry, resource);
     }
 
     build.generate(configuration.getOutputDirectory());

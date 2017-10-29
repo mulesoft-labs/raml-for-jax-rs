@@ -104,10 +104,7 @@ public class CurrentBuild {
 
     if (schemaRepository == null) {
 
-      // schemaRepository = Files.createTempDir();
-      schemaRepository = new File("/tmp/glouglou");
-      schemaRepository.mkdir();
-
+      schemaRepository = Files.createTempDir();
     }
 
     return schemaRepository;
@@ -189,7 +186,7 @@ public class CurrentBuild {
 
       if (schemaRepository != null) {
 
-         FileUtils.deleteDirectory(schemaRepository);
+        FileUtils.deleteDirectory(schemaRepository);
       }
     }
   }

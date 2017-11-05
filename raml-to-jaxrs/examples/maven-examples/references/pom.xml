@@ -10,7 +10,7 @@
         <version>2.1.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>scalar-types</artifactId>
+    <artifactId>anonymous</artifactId>
     <!-- Repeating here for documentation -->
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -39,23 +39,55 @@
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.raml.plugins</groupId>
+            <artifactId>raml-jaxrs-maven-plugin</artifactId>
+            <version>1.3.4</version>
+            <scope>test</scope>
+        </dependency>
+   </dependencies>
     <build>
         <plugins>
+
+<!--
+            <plugin>
+                <groupId>org.raml.plugins</groupId>
+                <artifactId>raml-jaxrs-maven-plugin</artifactId>
+                <version>1.3.4</version>
+                <configuration>
+                    <sourceDirectory>${project.build.resources[0].directory}</sourceDirectory>
+                    <basePackageName>com.acme.api</basePackageName>
+                    <useSourceHierarchyInPackageName>true</useSourceHierarchyInPackageName>
+                    <jaxrsVersion>2.0</jaxrsVersion>
+                    <useJsr303Annotations>false</useJsr303Annotations>
+                    <jsonMapper>jackson2</jsonMapper>
+                    <removeOldOutput>true</removeOldOutput>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+-->
+
             <plugin>
                 <groupId>org.raml.jaxrs</groupId>
                 <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <configuration>
-                    <ramlFile>${project.build.resources[0].directory}/example_scalar_types.raml</ramlFile>
-                    <resourcePackage>example.scalar</resourcePackage>
+                    <ramlFile>${project.build.resources[0].directory}/api.raml</ramlFile>
+                    <resourcePackage>example.references</resourcePackage>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>server.search.StartServer</mainClass>
+                    <mainClass>server.raml08.StartServer</mainClass>
                 </configuration>
                 <executions>
                     <execution>

@@ -32,6 +32,8 @@ import org.raml.jaxrs.generator.RamlScanner;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 
 /**
@@ -77,7 +79,16 @@ public class Main {
 
       for (String ramlFile : ramlFiles) {
 
-        scanner.handle(new File(ramlFile));
+        URLClassLoader ucl =
+            new URLClassLoader(new URL[] {new File(ramlFile).getParentFile().toURL()}, Main.class.getClassLoader());
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+          Thread.currentThread().setContextClassLoader(ucl);
+          scanner.handle(new File(ramlFile));
+        } finally {
+
+          Thread.currentThread().setContextClassLoader(loader);
+        }
       }
 
     } catch (ParseException e) {

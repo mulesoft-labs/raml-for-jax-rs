@@ -10,6 +10,12 @@
         <version>2.1.1-SNAPSHOT</version>
     </parent>
 
+    <!-- Repeating here for documentation -->
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+
     <artifactId>maven-examples</artifactId>
     <packaging>pom</packaging>
     <modules>
@@ -21,9 +27,7 @@
         <module>type-torture-test</module>
         <module>simple-raml08</module>
         <module>features</module>
-<!--
-        <module>marketing-example</module>
--->
+        <module>references</module>
 
     </modules>
     <build>

@@ -1,0 +1,32 @@
+#%RAML 1.0
+---
+title: test
+version: 1
+baseUri: http://localhost
+
+types:
+  error: !include schemas/error.json
+  fieldError: !include schemas/fieldError.json
+  dr: !include schemas/dr/dr.json
+  msg: !include schemas/message/msg.json
+
+
+
+/resource1:
+  patch:
+    body:
+      application/json:
+        schema: msg
+    responses:
+      200:
+        body:
+          application/json:
+/resource2:
+  patch:
+    body:
+      application/json:
+        schema: msg
+    responses:
+      200:
+        body:
+          application/json:

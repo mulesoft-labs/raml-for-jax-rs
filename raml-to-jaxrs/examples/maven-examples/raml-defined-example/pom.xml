@@ -47,7 +47,10 @@
                 <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <configuration>
-                    <ramlFile>${project.build.resources[0].directory}/types_user_defined.raml</ramlFile>
+                    <ramlFile>${project.build.resources[0].directory}</ramlFile>
+                    <includes>
+                        <include>types_user_defined.raml</include>
+                    </includes>
                     <resourcePackage>example.resources</resourcePackage>
                     <modelPackage>example.model</modelPackage>
                     <resourcePackage>example.types</resourcePackage>

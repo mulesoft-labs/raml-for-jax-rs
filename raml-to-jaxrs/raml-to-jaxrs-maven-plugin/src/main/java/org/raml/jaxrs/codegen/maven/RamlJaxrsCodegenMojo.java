@@ -206,9 +206,9 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
     File currentSourcePath = null;
 
     try {
-
       RamlScanner scanner = new RamlScanner(configuration);
       scanner.handle(ramlFile);
+      getLog().info("Files generated in " + outputDirectory.getAbsolutePath());
     } catch (final Exception e) {
       throw new MojoExecutionException("Error generating Java classes from: " + currentSourcePath, e);
     }

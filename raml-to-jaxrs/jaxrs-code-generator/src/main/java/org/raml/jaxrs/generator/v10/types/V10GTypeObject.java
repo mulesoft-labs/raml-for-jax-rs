@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
+import com.google.common.base.Optional;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
@@ -143,8 +144,8 @@ public class V10GTypeObject extends V10GTypeHelper {
   }
 
   @Override
-  public String discriminatorValue() {
-    return ((ObjectTypeDeclaration) typeDeclaration).discriminatorValue();
+  public Optional<String> discriminatorValue() {
+    return Optional.fromNullable(((ObjectTypeDeclaration) typeDeclaration).discriminatorValue());
   }
 
   public Collection<V10GType> childClasses(String typeName) {

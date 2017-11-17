@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "fieldError",
+  "description": "Field specific error message",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string"
+    },
+    "field": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "field",
+    "message"
+  ]
+}

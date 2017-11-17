@@ -26,7 +26,7 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
 public class TrialResponseClassExtension implements ResponseClassExtension<GMethod> {
 
   @Override
-  public TypeSpec.Builder onMethod(ResourceContext context, GMethod response, TypeSpec.Builder typeSpec) {
+  public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod response, TypeSpec.Builder typeSpec) {
 
     return typeSpec;
   }

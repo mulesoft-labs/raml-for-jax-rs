@@ -15,9 +15,8 @@
  */
 package org.raml.jaxrs.generator.v08;
 
-import org.raml.jaxrs.generator.GAbstractionFactory;
-import org.raml.jaxrs.generator.GFinder;
-import org.raml.jaxrs.generator.GFinderListener;
+import com.google.common.io.Files;
+import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v08.api.Api;
@@ -27,6 +26,9 @@ import org.raml.v2.api.model.v08.bodies.Response;
 import org.raml.v2.api.model.v08.methods.Method;
 import org.raml.v2.api.model.v08.resources.Resource;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +43,7 @@ public class V08Finder implements GFinder {
   private final Api api;
   private final GAbstractionFactory factory;
   private final V08TypeRegistry registry;
-  private Set<String> globalSchemas = new HashSet<>();
+  private Map<String, String> globalSchemas = new HashMap<>();
 
 
   public V08Finder(Api api, GAbstractionFactory factory, V08TypeRegistry registry) {
@@ -61,12 +63,24 @@ public class V08Finder implements GFinder {
     return this;
   }
 
+  @Override
+  public void setupConstruction(CurrentBuild currentBuild) {
+    for (String name : globalSchemas.keySet()) {
+
+      try {
+        Files.write(globalSchemas.get(name), new File(currentBuild.getSchemaRepository(), name), Charset.defaultCharset());
+      } catch (IOException e) {
+        throw new GenerationException("while writing schemas", e);
+      }
+    }
+  }
+
   private void goThroughSchemas(List<GlobalSchema> schemas) {
 
 
     for (GlobalSchema schema : schemas) {
 
-      globalSchemas.add(schema.key());
+      globalSchemas.put(schema.key(), schema.value().value());
     }
 
   }
@@ -87,7 +101,12 @@ public class V08Finder implements GFinder {
                              GFinderListener listener) {
     for (BodyLike typeDeclaration : body) {
 
-      if (globalSchemas.contains(typeDeclaration.schema().value())) {
+      if (typeDeclaration.schema() == null) {
+
+        continue;
+      }
+
+      if (globalSchemas.containsKey(typeDeclaration.schema().value())) {
         V08GType type = new V08GType(typeDeclaration.schema().value(), typeDeclaration);
         registry.addType(type);
         listener.newTypeDeclaration(type);
@@ -103,8 +122,11 @@ public class V08Finder implements GFinder {
     for (Response response : method.responses()) {
       for (BodyLike typeDeclaration : response.body()) {
 
-        if (globalSchemas.contains(typeDeclaration.schema().value())) {
-          V08GType type = new V08GType(typeDeclaration.schema().value());
+        if (typeDeclaration.schema() == null) {
+          continue;
+        }
+        if (globalSchemas.containsKey(typeDeclaration.schema().value())) {
+          V08GType type = new V08GType(typeDeclaration.schema().value(), typeDeclaration);
           registry.addType(type);
           listener.newTypeDeclaration(type);
         } else {
@@ -117,7 +139,7 @@ public class V08Finder implements GFinder {
     }
   }
 
-  public Set<String> globalSchemas() {
+  public Map<String, String> globalSchemas() {
 
     return globalSchemas;
   }

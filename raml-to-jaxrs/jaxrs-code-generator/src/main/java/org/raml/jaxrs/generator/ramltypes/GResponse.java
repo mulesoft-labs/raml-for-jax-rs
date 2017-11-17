@@ -27,4 +27,6 @@ public interface GResponse extends GAbstraction {
   List<GResponseType> body();
 
   String code();
+
+  List<GParameter> headers();
 }

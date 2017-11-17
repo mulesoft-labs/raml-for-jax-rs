@@ -15,8 +15,11 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import com.google.common.io.Files;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GFinder;
 import org.raml.jaxrs.generator.GFinderListener;
+import org.raml.jaxrs.generator.GenerationException;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -25,6 +28,9 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -159,6 +165,21 @@ public class V10Finder implements GFinder {
 
         V10GType type = registry.fetchType(typeDeclaration);
         listener.newTypeDeclaration(type);
+      }
+    }
+  }
+
+  @Override
+  public void setupConstruction(CurrentBuild currentBuild) {
+
+    List<V10GType> schemaTypes = registry.fetchSchemaTypes();
+    for (V10GType schemaType : schemaTypes) {
+
+      try {
+        Files.write(schemaType.schema(), new File(currentBuild.getSchemaRepository(), schemaType.name()),
+                    Charset.defaultCharset());
+      } catch (IOException e) {
+        throw new GenerationException("while writing schemas", e);
       }
     }
   }

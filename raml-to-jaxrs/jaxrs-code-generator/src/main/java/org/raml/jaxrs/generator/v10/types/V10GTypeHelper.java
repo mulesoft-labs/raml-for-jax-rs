@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
+import com.google.common.base.Optional;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
@@ -106,8 +107,8 @@ public abstract class V10GTypeHelper implements V10GType {
   }
 
   @Override
-  public String discriminatorValue() {
-    return null;
+  public Optional<String> discriminatorValue() {
+    return Optional.absent();
   }
 
   @Override

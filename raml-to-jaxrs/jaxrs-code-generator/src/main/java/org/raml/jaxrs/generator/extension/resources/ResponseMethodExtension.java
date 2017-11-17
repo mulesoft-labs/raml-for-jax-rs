@@ -30,7 +30,7 @@ public interface ResponseMethodExtension<T extends GResponse> {
   ResponseMethodExtension<GResponse> NULL_EXTENSION = new ResponseMethodExtension<GResponse>() {
 
     @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, GResponse method, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(ResourceContext context, GResponse responseMethod, MethodSpec.Builder methodSpec) {
       return methodSpec;
     }
   };
@@ -43,17 +43,18 @@ public interface ResponseMethodExtension<T extends GResponse> {
     }
 
     @Override
-    public MethodSpec.Builder onMethod(final ResourceContext context, final GResponse method, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(final ResourceContext context, final GResponse responseMethod,
+                                       MethodSpec.Builder methodSpec) {
 
       return runList(methodSpec, new ElementJob<ResponseMethodExtension<GResponse>, MethodSpec.Builder>() {
 
         @Override
         public MethodSpec.Builder doElement(ResponseMethodExtension<GResponse> e, MethodSpec.Builder builder) {
-          return e.onMethod(context, method, builder);
+          return e.onMethod(context, responseMethod, builder);
         }
       });
     }
   }
 
-  MethodSpec.Builder onMethod(ResourceContext context, T method, MethodSpec.Builder methodSpec);
+  MethodSpec.Builder onMethod(ResourceContext context, T responseMethod, MethodSpec.Builder methodSpec);
 }

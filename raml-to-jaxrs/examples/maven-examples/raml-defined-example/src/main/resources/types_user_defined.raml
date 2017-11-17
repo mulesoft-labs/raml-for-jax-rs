@@ -4,7 +4,8 @@ version: v1
 baseUri: https://api.github.com
 uses:
   ramltojaxrs: ramltojaxrs.raml
-
+(ramltojaxrs.types):
+  onTypeCreation: [ core.suppress-additional-properties ]
 types:
     ObjectOne:
         type: object
@@ -20,8 +21,8 @@ types:
     Gender:
         enum: [male, female, other]
     Leg:
-        properties:
-            toes: integer
+      properties:
+          toes: integer
     Arm:
         properties:
             fingers: integer
@@ -29,7 +30,7 @@ types:
         Arm | Leg
     Person:
         type: Human
-        discriminatorValue: person
+#        discriminatorValue: person
         properties:
             name:
                 required: true
@@ -41,7 +42,7 @@ types:
                 type: Human[]
     Corpse:
         type: Human
-        discriminatorValue: corpse
+#        discriminatorValue: corpse
         properties:
             dateOfDeath:
                 required: true
@@ -51,6 +52,7 @@ types:
         (ramltojaxrs.types):
             abstract: true
         discriminator: humanType
+#        discriminatorValue: human
         properties:
             humanType: string
             limbs: Limb
@@ -107,6 +109,9 @@ types:
                 body:
                     application/json:
                         type: Human[]
+                headers:
+                  boo:
+                  somethingElse:
     /{id}:
         uriParameters:
             id: string
@@ -126,3 +131,5 @@ types:
                     type: Human
             responses:
                 200:
+                  headers:
+                    someOtherHeader:

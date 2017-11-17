@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.raml.jaxrs.generator.ramltypes.GParameter;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -34,6 +35,7 @@ public class V10GResponse implements GResponse {
   private V10GResource v10GResource;
   private final Response response;
   private final List<GResponseType> bodies;
+  private final List<GParameter> headers;
 
   public V10GResponse(final V10TypeRegistry registry, final V10GResource v10GResource,
                       final Method method, final Response response) {
@@ -55,6 +57,15 @@ public class V10GResponse implements GResponse {
             }
           }
         });
+
+    this.headers = Lists.transform(response.headers(), new Function<TypeDeclaration, GParameter>() {
+
+      @Nullable
+      @Override
+      public GParameter apply(@Nullable TypeDeclaration input) {
+        return new V10PGParameter(input, registry.fetchType(input.type(), input));
+      }
+    });
   }
 
   @Override
@@ -70,5 +81,10 @@ public class V10GResponse implements GResponse {
   @Override
   public String code() {
     return response.code().value();
+  }
+
+  @Override
+  public List<GParameter> headers() {
+    return headers;
   }
 }

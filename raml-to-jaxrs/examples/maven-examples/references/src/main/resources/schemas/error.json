@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Error",
+  "description": "A common error response",
+  "type": "object",
+  "properties": {
+
+    "code": {
+      "type": "string"
+    },
+    "more_info": {
+      "type": "string"
+    },
+    "fieldErrors": {
+      "type": "array",
+      "items": {
+        "$ref": "java:schemas/fieldError.json"
+      }
+    }
+  },
+  "required": [
+    "status"
+  ]
+}

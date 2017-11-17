@@ -33,7 +33,7 @@ public class SchemaTypeFactory {
   public static TypeGenerator createXmlType(CurrentBuild currentBuild, GType type) {
     File schemaFile = null;
     try {
-      schemaFile = JAXBHelper.saveSchema(type.schema());
+      schemaFile = JAXBHelper.saveSchema(type.schema(), currentBuild.getSchemaRepository());
       final JCodeModel codeModel = new JCodeModel();
 
       Map<String, JClass> generated =
@@ -48,12 +48,6 @@ public class SchemaTypeFactory {
     } catch (Exception e) {
 
       throw new GenerationException(e);
-    } finally {
-
-      if (schemaFile != null) {
-
-        schemaFile.delete();
-      }
     }
   }
 

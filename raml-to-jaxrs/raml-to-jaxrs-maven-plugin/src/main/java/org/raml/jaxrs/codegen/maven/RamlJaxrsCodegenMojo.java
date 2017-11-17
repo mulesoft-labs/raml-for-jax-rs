@@ -16,9 +16,12 @@
 package org.raml.jaxrs.codegen.maven;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -33,6 +36,18 @@ import org.raml.jaxrs.generator.extension.types.TypeExtension;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.maven.plugins.annotations.ResolutionScope.COMPILE_PLUS_RUNTIME;
@@ -63,6 +78,11 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   @Parameter(property = "ramlFile", required = true)
   private File ramlFile;
 
+  @Parameter(property = "includes", required = false)
+  private String[] includes;
+
+  @Parameter(property = "excludes", required = false)
+  private String[] excludes;
 
   /**
    * Resource package name used for generated Java classes.
@@ -200,17 +220,105 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
       throw new MojoExecutionException("Failed to configure plug-in", e);
     }
 
-
     project.addCompileSourceRoot(outputDirectory.getPath());
 
     File currentSourcePath = null;
 
     try {
-      RamlScanner scanner = new RamlScanner(configuration);
-      scanner.handle(ramlFile);
+      final RamlScanner scanner = new RamlScanner(configuration);
+      if (ramlFile.isDirectory()) {
+        final MatchPatternsFileFilter filter =
+            new MatchPatternsFileFilter.Builder().addIncludes(includes).addExcludes(excludes).addDefaultExcludes()
+                .withSourceDirectory(ramlFile.getCanonicalPath()).withCaseSensitive(false).build();
+        Files.walkFileTree(ramlFile.toPath(), new PathFileVisitor(scanner, filter));
+      } else {
+        runFile(scanner, ramlFile);
+      }
       getLog().info("Files generated in " + outputDirectory.getAbsolutePath());
     } catch (final Exception e) {
       throw new MojoExecutionException("Error generating Java classes from: " + currentSourcePath, e);
+    }
+  }
+
+  private void runFile(RamlScanner scanner, File ramlFile) throws IOException, DependencyResolutionRequiredException {
+
+    ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+    ClassLoader newClassLoader = getClassLoader(project, oldClassLoader, getLog(), ramlFile.getParentFile().getAbsoluteFile());
+    try {
+      Thread.currentThread().setContextClassLoader(newClassLoader);
+      scanner.handle(ramlFile);
+    } finally {
+      Thread.currentThread().setContextClassLoader(oldClassLoader);
+    }
+  }
+
+  private ClassLoader getClassLoader(MavenProject project, final ClassLoader parent, Log log, File file)
+      throws DependencyResolutionRequiredException, MalformedURLException {
+
+    @SuppressWarnings("unchecked")
+    List<String> classpathElements = project.getCompileClasspathElements();
+
+    final List<URL> classpathUrls = new ArrayList<>(classpathElements.size());
+    classpathUrls.add(file.toURL());
+    for (String classpathElement : classpathElements) {
+
+      try {
+        log.debug("Adding project artifact to classpath: " + classpathElement);
+        classpathUrls.add(new File(classpathElement).toURI().toURL());
+      } catch (MalformedURLException e) {
+        log.debug("Unable to use classpath entry as it could not be understood as a valid URL: " + classpathElement, e);
+      }
+    }
+
+    return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+      @Override
+      public ClassLoader run() {
+        return new URLClassLoader(classpathUrls.toArray(new URL[classpathUrls.size()]), parent);
+      }
+    });
+
+  }
+
+  private class PathFileVisitor implements FileVisitor<Path> {
+
+    private final RamlScanner scanner;
+    private final MatchPatternsFileFilter filter;
+
+    public PathFileVisitor(RamlScanner scanner, MatchPatternsFileFilter filter) {
+      this.scanner = scanner;
+      this.filter = filter;
+    }
+
+    @Override
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+
+      if (filter.accept(file.toFile())) {
+
+        try {
+          runFile(scanner, file.toFile());
+        } catch (DependencyResolutionRequiredException e) {
+          throw new IOException(e);
+        }
+      }
+
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+      return FileVisitResult.CONTINUE;
+    }
+
+    @Override
+    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+      return FileVisitResult.CONTINUE;
     }
   }
 }

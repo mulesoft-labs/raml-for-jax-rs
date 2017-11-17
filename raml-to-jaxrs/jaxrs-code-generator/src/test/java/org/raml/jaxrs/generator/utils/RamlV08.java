@@ -23,12 +23,14 @@ import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.v08.V08Finder;
 import org.raml.jaxrs.generator.v08.V08GResource;
 import org.raml.jaxrs.generator.v08.V08TypeRegistry;
+import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v08.api.Api;
 import org.raml.v2.api.model.v08.resources.Resource;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -63,11 +65,11 @@ public class RamlV08 {
     Api api = buildApiV08(test, raml);
     V08TypeRegistry registry = new V08TypeRegistry();
     V08Finder typeFinder = new V08Finder(api, new GAbstractionFactory(), registry);
-    CurrentBuild currentBuild = new CurrentBuild(typeFinder, null);
+    CurrentBuild currentBuild = new CurrentBuild(typeFinder, null, ExtensionManager.createExtensionManager(), new File(""));
     currentBuild.constructClasses();
     ResourceBuilder builder =
         new ResourceBuilder(currentBuild, new V08GResource(new GAbstractionFactory(), api
-            .resources().get(0), typeFinder.globalSchemas(), registry), name, uri);
+            .resources().get(0), typeFinder.globalSchemas().keySet(), registry), name, uri);
     builder.output(container);
   }
 }

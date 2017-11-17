@@ -37,6 +37,11 @@ class V10PGParameter implements GParameter {
   }
 
   @Override
+  public String defaultValue() {
+    return input.defaultValue();
+  }
+
+  @Override
   public String name() {
     return input.name();
   }

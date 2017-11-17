@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>raml-to-jaxrs</artifactId>
-        <version>2.1.0</version>
+        <version>2.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>raml-to-jaxrs-gradle-plugin-wrapper</artifactId>
@@ -50,9 +50,9 @@
                         <id>deploy</id>
                         <phase>deploy</phase>
                         <configuration>
-                            <file>./build/raml-to-jaxrs-gradle-plugin-${project.version}.jar/</file>
-                            <sources>./build/raml-to-jaxrs-gradle-plugin-${project.version}-sources.jar</sources>
-                            <javadoc>./build/raml-to-jaxrs-gradle-plugin-${project.version}-javadoc.jar</javadoc>
+                            <file>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}.jar/</file>
+                            <sources>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}-sources.jar</sources>
+                            <javadoc>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}-javadoc.jar</javadoc>
                             <pomFile>./build/poms/pom-default.xml</pomFile>
                         </configuration>
                     </execution>

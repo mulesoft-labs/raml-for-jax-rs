@@ -15,7 +15,6 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
@@ -30,7 +29,7 @@ public interface ResponseClassExtension<T extends GMethod> {
   ResponseClassExtension<GMethod> NULL_EXTENSION = new ResponseClassExtension<GMethod>() {
 
     @Override
-    public TypeSpec.Builder onMethod(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
       return typeSpec;
     }
   };
@@ -43,18 +42,18 @@ public interface ResponseClassExtension<T extends GMethod> {
     }
 
     @Override
-    public TypeSpec.Builder onMethod(final ResourceContext context, final GMethod method, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResponseClass(final ResourceContext context, final GMethod method, TypeSpec.Builder typeSpec) {
 
       return runList(typeSpec, new ElementJob<ResponseClassExtension<GMethod>, TypeSpec.Builder>() {
 
         @Override
         public TypeSpec.Builder doElement(ResponseClassExtension<GMethod> e, TypeSpec.Builder builder) {
-          return e.onMethod(context, method, builder);
+          return e.onResponseClass(context, method, builder);
         }
       });
     }
   }
 
-  TypeSpec.Builder onMethod(ResourceContext context, T method, TypeSpec.Builder typeSpec);
+  TypeSpec.Builder onResponseClass(ResourceContext context, T method, TypeSpec.Builder typeSpec);
 
 }

@@ -1,7 +1,7 @@
 allprojects {
     apply plugin: 'java'
     group 'org.raml.jaxrs'
-    version '2.1.0'
+    version '2.1.1-SNAPSHOT'
     repositories {
         mavenLocal()
         maven { url 'https://repository.mulesoft.org/snapshots/' }
@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.raml.jaxrs:jaxrs-to-raml-gradle-plugin:2.1.0"
+        classpath "org.raml.jaxrs:jaxrs-to-raml-gradle-plugin:2.1.1-SNAPSHOT"
     }
 }
 

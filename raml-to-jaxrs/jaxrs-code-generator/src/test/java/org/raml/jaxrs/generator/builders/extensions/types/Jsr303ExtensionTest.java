@@ -24,8 +24,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 
 import javax.lang.model.element.Modifier;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -54,6 +56,10 @@ public class Jsr303ExtensionTest {
 
   @Mock
   ArrayTypeDeclaration array;
+
+  @Mock
+  ObjectTypeDeclaration object;
+
 
   @Test
   public void forInteger() throws Exception {
@@ -84,6 +90,19 @@ public class Jsr303ExtensionTest {
 
 
   @Test
+  public void forObject() throws Exception {
+
+    Jsr303Extension ext = new Jsr303Extension();
+    FieldSpec.Builder builder =
+        FieldSpec.builder(ClassName.get(Double.class), "champ", Modifier.PUBLIC);
+
+    ext.onFieldImplementation(null, builder, object);
+
+    assertEquals(1, builder.build().annotations.size());
+    assertEquals(Valid.class.getName(), builder.build().annotations.get(0).type.toString());
+  }
+
+  @Test
   public void forDouble() throws Exception {
 
     setupNumberFacets();
@@ -91,10 +110,10 @@ public class Jsr303ExtensionTest {
     FieldSpec.Builder builder =
         FieldSpec.builder(ClassName.get(Double.class), "champ", Modifier.PUBLIC);
 
-    ext.onFieldImplementation(null, builder, number);
+    ext.onFieldImplementation(null, builder, object);
 
     assertEquals(1, builder.build().annotations.size());
-    assertEquals(NotNull.class.getName(), builder.build().annotations.get(0).type.toString());
+    assertEquals(Valid.class.getName(), builder.build().annotations.get(0).type.toString());
   }
 
   @Test

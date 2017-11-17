@@ -15,7 +15,9 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Multimap;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
@@ -30,6 +32,7 @@ import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -229,5 +232,16 @@ public class V10TypeRegistry {
     registry.childMap = this.childMap;
 
     return registry;
+  }
+
+  public List<V10GType> fetchSchemaTypes() {
+
+    return FluentIterable.from(types.values()).filter(new Predicate<V10GType>() {
+
+      @Override
+      public boolean apply(@Nullable V10GType input) {
+        return input.isJson() || input.isXml();
+      }
+    }).toList();
   }
 }

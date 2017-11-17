@@ -19,7 +19,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath "org.raml.jaxrs:jaxrs-to-raml-gradle-plugin:2.1.0"
+    classpath "org.raml.jaxrs:jaxrs-to-raml-gradle-plugin:2.1.1-SNAPSHOT"
   }
 }
 

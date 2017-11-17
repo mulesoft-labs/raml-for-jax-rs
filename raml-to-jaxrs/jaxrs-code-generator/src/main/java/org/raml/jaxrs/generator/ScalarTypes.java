@@ -100,7 +100,7 @@ public class ScalarTypes {
 
   private static boolean shouldUsePrimitiveType(NumberTypeDeclaration type) {
 
-    Boolean shouldUse = Annotations.USE_PRIMITIVE_TYPE.get(type);
+    Boolean shouldUse = Annotations.USE_PRIMITIVE_TYPE.get(null, type);
     if (shouldUse != null && shouldUse) {
 
       return true;
@@ -112,7 +112,7 @@ public class ScalarTypes {
 
   private static boolean shouldUsePrimitiveType(BooleanTypeDeclaration type) {
 
-    Boolean shouldUse = Annotations.USE_PRIMITIVE_TYPE.get(type);
+    Boolean shouldUse = Annotations.USE_PRIMITIVE_TYPE.get(null, type);
     if (shouldUse != null && shouldUse) {
 
       return true;

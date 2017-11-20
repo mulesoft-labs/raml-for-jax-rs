@@ -3,16 +3,31 @@ The examples included in this folder all come with a server that can be started 
 
 Here's an example configuration:
 ```xml
-<configuration>
-    <ramlFile>${project.build.resources[0].directory}/types_user_defined.raml</ramlFile>
-    <resourcePackage>example.resources</resourcePackage>
-    <modelPackage>example.model</modelPackage>
-    <resourcePackage>example.types</resourcePackage>
-    <supportPackage>example.support</supportPackage>
-    <generateTypesWith>
-        <value>jackson</value>
-    </generateTypesWith>
-</configuration>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.raml.jaxrs</groupId>
+            <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
+            <version>$VERSION</version>
+            <dependencies>
+                <dependency>
+                    <groupId>org.raml.jaxrs</groupId>
+                    <artifactId>jaxrs-code-generator</artifactId>
+                    <version>$VERSION</version>
+                </dependency>
+            </dependencies>
+            <configuration>
+                <ramlFile>${project.build.resources[0].directory}/types_user_defined.raml</ramlFile>
+                <resourcePackage>example.resources</resourcePackage>
+                <modelPackage>example.model</modelPackage>
+                <supportPackage>example.support</supportPackage>
+                <generateTypesWith>
+                    <value>jackson</value>
+                </generateTypesWith>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 ```
 
 The `ramlFile` configuration parameter should point to your RAML file.
@@ -29,3 +44,8 @@ the support classes (serializers, responses and such) will be generated.
 
 The `generateTypesWith` configuration parameter determines which annotation plugin(s) to use
 to generate types. Available options are: jackson, gson, jaxb, javadoc, jsr303
+
+Generate JAX-RS code by running:
+```
+mvn raml:generate
+```

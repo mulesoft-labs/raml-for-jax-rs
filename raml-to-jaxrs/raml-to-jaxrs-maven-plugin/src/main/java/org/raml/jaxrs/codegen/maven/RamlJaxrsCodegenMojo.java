@@ -225,19 +225,16 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
     File currentSourcePath = null;
 
     try {
-
       final RamlScanner scanner = new RamlScanner(configuration);
       if (ramlFile.isDirectory()) {
-
-
         final MatchPatternsFileFilter filter =
             new MatchPatternsFileFilter.Builder().addIncludes(includes).addExcludes(excludes).addDefaultExcludes()
                 .withSourceDirectory(ramlFile.getCanonicalPath()).withCaseSensitive(false).build();
         Files.walkFileTree(ramlFile.toPath(), new PathFileVisitor(scanner, filter));
       } else {
-
         runFile(scanner, ramlFile);
       }
+      getLog().info("Files generated in " + outputDirectory.getAbsolutePath());
     } catch (final Exception e) {
       throw new MojoExecutionException("Error generating Java classes from: " + currentSourcePath, e);
     }

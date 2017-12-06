@@ -21,10 +21,7 @@ deploy:
             condition: $TRAVIS_BRANCH =~ ^release/[0-9]+.[0-9]+.[0-9]+$
     -
         provider: script
-        script:
-            - mvn --settings ~/settings.xml org.codehaus.mojo:versions-maven-plugin:2.1:set -DnewVersion=$TRAVIS_TAG
-            - mvn deploy --settings ~/settings.xml -DskipTests -B -U
-            - mvn deploy --settings ~/settings.xml -DskipTests -Psonatype -B -U
+        script: mvn --settings ~/settings.xml org.codehaus.mojo:versions-maven-plugin:2.1:set -DnewVersion=$TRAVIS_TAG; mvn deploy --settings ~/settings.xml -DskipTests -B -U; mvn deploy --settings ~/settings.xml -DskipTests -Psonatype -B -U
         skip_cleanup: true
         on:
             repo: mulesoft-labs/raml-for-jax-rs

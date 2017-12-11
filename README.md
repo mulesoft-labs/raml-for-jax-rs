@@ -16,6 +16,8 @@ Maven artifacts are available at:
  - https://repository-master.mulesoft.org/releases/ - releases repository
  - https://repository-master.mulesoft.org/snapshots/ - snaphots repository
 
+Releases are also available on Maven Central.
+
 ## Contributing
 If you are interested in contributing some code to this project, thanks! Please submit a [Contributors Agreement](https://api-notebook.anypoint.mulesoft.com/notebooks#bc1cf75a0284268407e4) acknowledging that you are transferring ownership.
 

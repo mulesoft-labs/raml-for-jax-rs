@@ -37,7 +37,6 @@ import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GProperty;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.*;
-import org.raml.jaxrs.generator.v10.types.V10TypeFactory;
 import org.raml.v2.api.model.v10.common.Annotable;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -327,13 +326,13 @@ public class SimpleInheritanceExtension implements TypeExtension {
     switch (type.getObjectType()) {
 
       case ENUMERATION_TYPE:
-        return V10TypeFactory.createEnumerationType(currentBuild, type.getDeclaredType());
+        return SchemaTypeFactory.createRamlToPojo(currentBuild, (V10GType) type.getDeclaredType());
 
       case UNION_TYPE:
-        return V10TypeFactory.createUnion(currentBuild, registry, (V10GType) type.getDeclaredType());
+        return SchemaTypeFactory.createRamlToPojo(currentBuild, (V10GType) type.getDeclaredType());
 
       case PLAIN_OBJECT_TYPE:
-        return V10TypeFactory.createObjectType(registry, currentBuild, (V10GType) type.getDeclaredType(), false);
+        return SchemaTypeFactory.createRamlToPojo(currentBuild, (V10GType) type.getDeclaredType());
 
       case JSON_OBJECT_TYPE:
         return SchemaTypeFactory.createJsonType(currentBuild, type.getDeclaredType());

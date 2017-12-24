@@ -20,6 +20,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
+import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
@@ -168,7 +169,7 @@ public class V10GTypeObject extends V10GTypeHelper {
       @Override
       public void onPlainObject() {
 
-        V10TypeFactory.createObjectType(registry, currentBuild, V10GTypeObject.this, true);
+        SchemaTypeFactory.createRamlToPojo(currentBuild, V10GTypeObject.this);
       }
     });
   }

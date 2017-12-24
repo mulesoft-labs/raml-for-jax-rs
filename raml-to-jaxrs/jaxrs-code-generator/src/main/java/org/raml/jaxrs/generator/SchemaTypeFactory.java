@@ -15,13 +15,21 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.squareup.javapoet.ClassName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
+import org.raml.jaxrs.generator.builders.RamlToPojoTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.ramltopojo.*;
+import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Map;
 
@@ -59,6 +67,28 @@ public class SchemaTypeFactory {
     type.setJavaType(gen.getGeneratedJavaType());
     currentBuild.newGenerator(type.name(), gen);
     return gen;
+  }
+
+  public static TypeGenerator createRamlToPojo(CurrentBuild currentBuild, final V10GType type) {
+
+    ResultingPojos p = RamlToPojoBuilder.builder(currentBuild.getApi())
+        .inPackage(currentBuild.getModelPackage())
+        .fetchTypes(TypeFetchers.fromAnywhere())
+        .findTypes(new TypeFinder() {
+
+          @Override
+          public Iterable<TypeDeclaration> findTypes(Api api) {
+
+            return FluentIterable.from(TypeFinders.everyWhere().findTypes(api)).firstMatch(new Predicate<TypeDeclaration>() {
+
+              @Override
+              public boolean apply(@Nullable TypeDeclaration input) {
+                return input.name().equals(type.name());
+              }
+            }).asSet();
+          }
+        }).build().buildPojos();
+    return new RamlToPojoTypeGenerator(p);
   }
 
 

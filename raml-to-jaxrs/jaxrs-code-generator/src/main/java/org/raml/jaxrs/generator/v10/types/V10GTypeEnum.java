@@ -19,6 +19,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
+import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
@@ -99,7 +100,7 @@ public class V10GTypeEnum extends V10GTypeHelper {
       @Override
       public void onEnumeration() {
 
-        V10TypeFactory.createEnumerationType(currentBuild, V10GTypeEnum.this);
+        SchemaTypeFactory.createRamlToPojo(currentBuild, V10GTypeEnum.this);
       }
     });
 

@@ -24,11 +24,7 @@ import com.squareup.javapoet.TypeSpec;
 import com.sun.codemodel.JCodeModel;
 import org.apache.commons.io.FileUtils;
 import org.jsonschema2pojo.GenerationConfig;
-import org.raml.jaxrs.generator.builders.BuildPhase;
-import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
-import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
-import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.builders.*;
 import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
 import org.raml.jaxrs.generator.builders.extensions.types.jackson.JacksonExtensions;
 import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeLegacyExtension;
@@ -45,6 +41,8 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.v10.*;
+import org.raml.ramltopojo.RamlToPojoBuilder;
+import org.raml.ramltopojo.ResultingPojos;
 import org.raml.v2.api.model.v10.api.Api;
 
 import javax.annotation.Nullable;
@@ -137,6 +135,17 @@ public class CurrentBuild {
 
       for (TypeGenerator typeGenerator : builtTypes.values()) {
 
+        if (typeGenerator instanceof RamlToPojoTypeGenerator) {
+
+          RamlToPojoTypeGenerator ramlToPojoTypeGenerator = (RamlToPojoTypeGenerator) typeGenerator;
+          ramlToPojoTypeGenerator.output(new CodeContainer<ResultingPojos>() {
+
+            @Override
+            public void into(ResultingPojos g) throws IOException {
+              g.createFoundTypes(rootDirectory.getAbsolutePath());
+            }
+          });
+        }
         if (typeGenerator instanceof JavaPoetTypeGenerator) {
 
           buildTypeTree(rootDirectory, (JavaPoetTypeGenerator) typeGenerator);

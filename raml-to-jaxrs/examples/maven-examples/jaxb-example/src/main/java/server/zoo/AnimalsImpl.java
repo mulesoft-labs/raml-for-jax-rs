@@ -15,11 +15,7 @@
  */
 package server.zoo;
 
-import example.model.Ancestor;
-import example.model.Animal;
-import example.model.AnimalImpl;
-import example.model.Gender;
-import example.model.InsectImpl;
+import example.model.*;
 import example.resources.Animals;
 
 import javax.ws.rs.core.GenericEntity;
@@ -65,7 +61,7 @@ public class AnimalsImpl implements Animals {
     animal.setMother(insect);
     animal.setSiblings(animals);
 
-    animal.setAncestor(new Ancestor(insect));
+    animal.setAncestor(new AncestorImpl(insect));
 
     return GetAnimalsByIdResponse.respond200WithApplicationXml(animal);
   }

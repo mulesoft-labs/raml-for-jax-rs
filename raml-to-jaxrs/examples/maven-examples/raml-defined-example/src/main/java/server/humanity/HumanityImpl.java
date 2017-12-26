@@ -15,13 +15,7 @@
  */
 package server.humanity;
 
-import example.model.ArmImpl;
-import example.model.CorpseImpl;
-import example.model.Gender;
-import example.model.Human;
-import example.model.Limb;
-import example.model.Person;
-import example.model.PersonImpl;
+import example.model.*;
 import example.types.Humans;
 
 import java.util.ArrayList;
@@ -51,7 +45,7 @@ public class HumanityImpl implements Humans {
     CorpseImpl ci = new CorpseImpl();
     ci.setDateOfDeath(new Date());
     pi.setSiblings(Collections.<Human>singletonList(ci));
-    pi.setLimbs(new Limb(new ArmImpl()));
+    pi.setLimbs(new LimbImpl(new ArmImpl()));
 
     CorpseImpl another = new CorpseImpl();
     another.setActualGender(Gender.OTHER);
@@ -82,7 +76,7 @@ public class HumanityImpl implements Humans {
       CorpseImpl ci = new CorpseImpl();
       ci.setDateOfDeath(new Date());
       pi.setSiblings(Collections.<Human>singletonList(ci));
-      pi.setLimbs(new Limb(new ArmImpl()));
+      pi.setLimbs(new LimbImpl(new ArmImpl()));
       return GetHumansByIdResponse.respond200WithApplicationJson(pi);
     } else {
 

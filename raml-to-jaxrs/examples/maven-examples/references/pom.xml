@@ -10,7 +10,7 @@
         <version>2.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>anonymous</artifactId>
+    <artifactId>references</artifactId>
     <!-- Repeating here for documentation -->
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>

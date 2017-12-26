@@ -88,7 +88,10 @@ public class SchemaTypeFactory {
             }).asSet();
           }
         }).build().buildPojos();
-    return new RamlToPojoTypeGenerator(p);
+
+    RamlToPojoTypeGenerator gen = new RamlToPojoTypeGenerator(p);
+    currentBuild.newGenerator(type.name(), gen);
+    return gen;
   }
 
 

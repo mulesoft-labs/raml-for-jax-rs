@@ -22,10 +22,7 @@
         <dependency>
             <groupId>org.raml.jaxrs</groupId>
             <artifactId>jaxrs-code-generator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jsonschema2pojo</groupId>
-            <artifactId>jsonschema2pojo-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>

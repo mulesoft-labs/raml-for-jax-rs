@@ -19,25 +19,18 @@
     <artifactId>maven-examples</artifactId>
     <packaging>pom</packaging>
     <modules>
-<!--
         <module>local-test</module>
--->
         <module>raml-defined-example</module>
         <module>jaxb-example</module>
-<!--
         <module>simple-json-example</module>
--->
         <module>simple-xml-example</module>
         <module>scalar-types</module>
 <!--
         <module>type-torture-test</module>
-
-        <module>simple-raml08</module>
-        -->
-        <module>features</module>
-<!--
-        <module>references</module>
 -->
+        <module>simple-raml08</module>
+        <module>features</module>
+        <module>references</module>
     </modules>
     <build>
         <pluginManagement>

@@ -16,6 +16,7 @@
         <dependency>
             <groupId>org.raml.jaxrs</groupId>
             <artifactId>jaxrs-code-generator</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

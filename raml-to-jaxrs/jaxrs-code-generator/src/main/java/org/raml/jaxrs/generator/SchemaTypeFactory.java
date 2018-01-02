@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.squareup.javapoet.ClassName;
@@ -88,7 +89,14 @@ public class SchemaTypeFactory {
               }
             }).asSet();
           }
-        }).build(currentBuild.typeConfiguration()).buildPojos();
+        }).build(FluentIterable.from(currentBuild.typeConfiguration()).transform(new Function<String, String>() {
+
+          @Nullable
+          @Override
+          public String apply(@Nullable String s) {
+            return "core." + s;
+          }
+        }).toList()).buildPojos();
 
     RamlToPojoTypeGenerator gen = new RamlToPojoTypeGenerator(p);
     currentBuild.newGenerator(type.name(), gen);

@@ -52,12 +52,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.singletonList;
@@ -304,6 +299,11 @@ public class CurrentBuild {
   public void newImplementation(JavaPoetTypeGenerator objectType) {
 
     implementations.add(objectType);
+  }
+
+  public List<String> typeConfiguration() {
+
+    return Arrays.asList(this.configuration.getTypeConfiguration());
   }
 
   public void setConfiguration(Configuration configuration) {

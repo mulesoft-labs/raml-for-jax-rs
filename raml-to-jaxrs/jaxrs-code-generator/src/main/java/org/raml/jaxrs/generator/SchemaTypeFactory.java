@@ -31,6 +31,7 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -87,7 +88,7 @@ public class SchemaTypeFactory {
               }
             }).asSet();
           }
-        }).build().buildPojos();
+        }).build(currentBuild.typeConfiguration()).buildPojos();
 
     RamlToPojoTypeGenerator gen = new RamlToPojoTypeGenerator(p);
     currentBuild.newGenerator(type.name(), gen);

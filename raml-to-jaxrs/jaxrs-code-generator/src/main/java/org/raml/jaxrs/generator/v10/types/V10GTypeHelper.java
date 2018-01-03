@@ -15,21 +15,13 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
-import com.google.common.base.Optional;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.CreationModel;
-import org.raml.jaxrs.generator.v10.NullXMLFacetInfo;
-import org.raml.jaxrs.generator.v10.V10GProperty;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/5/17. Just potential zeroes and ones
@@ -57,11 +49,6 @@ public abstract class V10GTypeHelper implements V10GType {
   }
 
   @Override
-  public boolean isUnion() {
-    return false;
-  }
-
-  @Override
   public boolean isXml() {
     return false;
   }
@@ -72,23 +59,8 @@ public abstract class V10GTypeHelper implements V10GType {
   }
 
   @Override
-  public boolean isObject() {
-    return false;
-  }
-
-  @Override
   public String schema() {
     return null;
-  }
-
-  @Override
-  public List<V10GType> parentTypes() {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public List<V10GProperty> properties() {
-    return Collections.emptyList();
   }
 
   @Override
@@ -102,33 +74,12 @@ public abstract class V10GTypeHelper implements V10GType {
   }
 
   @Override
-  public String discriminator() {
-    return null;
-  }
-
-  @Override
-  public Optional<String> discriminatorValue() {
-    return Optional.absent();
-  }
-
-  @Override
   public boolean isEnum() {
     return false;
   }
 
-  @Override
-  public List<String> enumValues() {
-    return Collections.emptyList();
-  }
-
-  @Override
   public boolean isInline() {
     return creationModel.isInline(typeDeclaration);
-  }
-
-  @Override
-  public Collection<V10GType> childClasses(String typeName) {
-    return Collections.emptyList();
   }
 
   @Override
@@ -161,11 +112,4 @@ public abstract class V10GTypeHelper implements V10GType {
     return name.hashCode();
   }
 
-  @Override
-  public XMLFacetInfo xml() {
-    if (implementation().xml() == null) {
-      return new NullXMLFacetInfo();
-    }
-    return implementation().xml();
-  }
 }

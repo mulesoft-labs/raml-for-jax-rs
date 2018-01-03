@@ -17,10 +17,7 @@ package org.raml.jaxrs.generator.v10.types;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ScalarTypes;
-import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10GType;
@@ -76,11 +73,6 @@ public class V10GTypeScalar extends V10GTypeHelper {
         return ClassName.get(pack, annotation);
       }
     }
-  }
-
-  @Override
-  public ClassName javaImplementationName(String pack) {
-    return ClassName.get(ScalarTypes.scalarToJavaType(scalar));
   }
 
   @Override

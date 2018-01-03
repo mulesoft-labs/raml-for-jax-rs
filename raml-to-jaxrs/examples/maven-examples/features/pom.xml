@@ -15,6 +15,5 @@
 
     <modules>
         <module>feature-raml-project</module>
-        <module>feature-plugins</module>
     </modules>
 </project>

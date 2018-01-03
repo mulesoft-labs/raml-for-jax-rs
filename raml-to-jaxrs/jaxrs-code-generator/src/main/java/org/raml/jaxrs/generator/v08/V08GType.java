@@ -32,9 +32,7 @@ import org.raml.v2.api.model.v08.resources.Resource;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -122,11 +120,6 @@ public class V08GType implements GType {
 
 
   @Override
-  public boolean isObject() {
-    return false;
-  }
-
-  @Override
   public GType arrayContents() {
     return null;
   }
@@ -166,16 +159,6 @@ public class V08GType implements GType {
   }
 
   @Override
-  public List<String> enumValues() {
-    return Collections.emptyList();
-  }
-
-  @Override
-  public boolean isUnion() {
-    return false;
-  }
-
-  @Override
   public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
     objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
 
@@ -205,7 +188,7 @@ public class V08GType implements GType {
       @Override
       public void onUnion() {
 
-        throw new GenerationException("no enums objects in v08");
+        throw new GenerationException("no union objects in v08");
       }
 
     });

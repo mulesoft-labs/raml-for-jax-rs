@@ -19,14 +19,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResourceMethodExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseClassExtension;
 import org.raml.jaxrs.generator.extension.resources.ResponseMethodExtension;
-import org.raml.jaxrs.generator.extension.types.FieldExtension;
-import org.raml.jaxrs.generator.extension.types.MethodExtension;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
@@ -36,7 +32,10 @@ import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
 import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/2/17. Just potential zeroes and ones
@@ -187,51 +186,6 @@ public abstract class Annotations<T> {
       };
 
 
-  /*
-   * Types
-   */
-  public static Annotations<TypeExtension> ON_TYPE_CLASS_CREATION = new Annotations<TypeExtension>() {
-
-    @Override
-    public TypeExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
-      List<String> classNames = getWithDefault("types", "onTypeCreation", null, target, others);
-
-      List<TypeExtension> extension = createExtension(currentBuild, classNames);
-      return new TypeExtension.Composite(extension);
-    }
-  };
-
-  public static Annotations<TypeExtension> ON_TYPE_CLASS_FINISH = new Annotations<TypeExtension>() {
-
-    @Override
-    public TypeExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
-      List<String> classNames = getWithDefault("types", "onTypeFinish", null, target, others);
-
-      List<TypeExtension> extension = createExtension(currentBuild, classNames);
-      return new TypeExtension.Composite(extension);
-    }
-  };
-
-  public static Annotations<FieldExtension> ON_TYPE_FIELD_CREATION = new Annotations<FieldExtension>() {
-
-    @Override
-    public FieldExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
-      List<String> classNames = getWithDefault("types", "onFieldCreation", null, target, others);
-      List<FieldExtension> extensions = createExtension(currentBuild, classNames);
-
-      return new FieldExtension.Composite(extensions);
-    }
-  };
-
-  public static Annotations<MethodExtension> ON_TYPE_METHOD_CREATION = new Annotations<MethodExtension>() {
-
-    @Override
-    public MethodExtension getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
-      List<String> classNames = getWithDefault("types", "onMethodCreation", null, target, others);
-      List<MethodExtension> extension = createExtension(currentBuild, classNames);
-      return new MethodExtension.Composite(extension);
-    }
-  };
 
   private static <T> List<T> createExtension(final CurrentBuild currentBuild, List<String> classNames) {
     if (classNames == null) {

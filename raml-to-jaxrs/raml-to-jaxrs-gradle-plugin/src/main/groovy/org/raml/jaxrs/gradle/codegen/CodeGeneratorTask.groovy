@@ -23,7 +23,6 @@ import org.jsonschema2pojo.AnnotationStyle
 import org.raml.jaxrs.generator.Configuration
 import org.raml.jaxrs.generator.RamlScanner
 import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension
-import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension
 import org.raml.jaxrs.gradle.RamlExtension
 
 /**
@@ -119,12 +118,14 @@ class CodeGeneratorTask extends DefaultTask {
                 ramlConfiguration.defaultResourceFinishExtension(c)
             }
 
+/*
             if (getTypeExtensions() != null) {
                 typeExtensions.each { String className ->
                     Class<LegacyTypeExtension> c = Class.forName(className) as Class<LegacyTypeExtension>
                     ramlConfiguration.typeExtensions.add c.newInstance() as LegacyTypeExtension
                 }
             }
+*/
 
         } catch (final Exception e) {
             throw new InvalidUserDataException("Failed to configure plug-in", e)

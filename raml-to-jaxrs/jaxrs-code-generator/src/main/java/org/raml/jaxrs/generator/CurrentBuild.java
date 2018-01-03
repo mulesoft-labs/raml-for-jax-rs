@@ -25,23 +25,12 @@ import com.sun.codemodel.JCodeModel;
 import org.apache.commons.io.FileUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.generator.builders.*;
-import org.raml.jaxrs.generator.builders.extensions.types.GsonExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.jackson.JacksonExtensions;
-import org.raml.jaxrs.generator.builders.extensions.types.JavadocTypeLegacyExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.JaxbTypeExtension;
-import org.raml.jaxrs.generator.builders.extensions.types.Jsr303Extension;
-import org.raml.jaxrs.generator.builders.extensions.types.TypeExtensionList;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.extension.resources.*;
-import org.raml.jaxrs.generator.extension.types.FieldExtension;
-import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
-import org.raml.jaxrs.generator.extension.types.MethodExtension;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.v10.*;
-import org.raml.ramltopojo.RamlToPojoBuilder;
 import org.raml.ramltopojo.ResultingPojos;
 import org.raml.v2.api.model.v10.api.Api;
 
@@ -49,9 +38,6 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -70,7 +56,6 @@ public class CurrentBuild {
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
 
-  private TypeExtensionList typeExtensionList = new TypeExtensionList();
   private GlobalResourceExtension.Composite resourceExtensionList = new GlobalResourceExtension.Composite();
 
   private Map<String, GeneratorType> foundTypes = new HashMap<>();
@@ -296,10 +281,6 @@ public class CurrentBuild {
     }
   }
 
-  public void newImplementation(JavaPoetTypeGenerator objectType) {
-
-    implementations.add(objectType);
-  }
 
   public List<String> typeConfiguration() {
 
@@ -308,34 +289,6 @@ public class CurrentBuild {
 
   public void setConfiguration(Configuration configuration) {
     this.configuration = configuration;
-
-    for (String s : this.configuration.getTypeConfiguration()) {
-
-      if (s.equals("jackson")) {
-        typeExtensionList.addExtension(new JacksonExtensions());
-      }
-
-      if (s.equals("jaxb")) {
-
-        typeExtensionList.addExtension(new JaxbTypeExtension());
-      }
-
-      if (s.equals("gson")) {
-
-        typeExtensionList.addExtension(new GsonExtension());
-      }
-
-      if (s.equals("javadoc")) {
-
-        typeExtensionList.addExtension(new JavadocTypeLegacyExtension());
-      }
-
-      if (s.equals("jsr303")) {
-
-        typeExtensionList.addExtension(new Jsr303Extension());
-        resourceExtensionList.addExtension(new Jsr303ResourceExtension());
-      }
-    }
   }
 
   public GenerationConfig getJsonMapperConfig() {
@@ -368,24 +321,6 @@ public class CurrentBuild {
     } else {
       return GlobalResourceExtension.NULL_EXTENSION;
     }
-  }
-
-  public TypeExtension getTypeExtension(
-                                        Annotations<TypeExtension> typeExtensionAnnotation, V10GType type) {
-
-    return typeExtensionAnnotation.getWithContext(this, getApi(), type.implementation());
-  }
-
-  public MethodExtension getMethodExtension(
-                                            Annotations<MethodExtension> methodExtensionAnnotations, V10GType type) {
-
-    return methodExtensionAnnotations.getWithContext(this, getApi(), type.implementation());
-  }
-
-  public FieldExtension getFieldExtension(
-                                          Annotations<FieldExtension> fieldExtensionAnnotations, V10GType type) {
-
-    return fieldExtensionAnnotations.getWithContext(this, getApi(), type.implementation());
   }
 
 
@@ -473,10 +408,5 @@ public class CurrentBuild {
   public GlobalResourceExtension withResourceListeners() {
 
     return resourceExtensionList;
-  }
-
-  public LegacyTypeExtension withTypeListeners() {
-
-    return typeExtensionList;
   }
 }

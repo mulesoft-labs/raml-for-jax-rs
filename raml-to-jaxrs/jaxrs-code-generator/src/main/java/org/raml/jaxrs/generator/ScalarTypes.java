@@ -127,20 +127,6 @@ public class ScalarTypes {
     return stringScalarToType.get(name.toLowerCase());
   }
 
-  public static Class<?> scalarToJavaType(GType type) {
-
-    if (type.isEnum()) {
-      return null;
-    }
-
-    if (type instanceof V10GType) {
-
-      return scalarToJavaType((TypeDeclaration) type.implementation());
-    } else {
-
-      return scalarToJavaType(type.name());
-    }
-  }
 
   public static boolean extendsScalarRamlType(TypeDeclaration typeDeclaration) {
 

@@ -18,9 +18,6 @@ package org.raml.jaxrs.generator.v10.types;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GObjectType;
-import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
@@ -84,8 +81,4 @@ public class V10GTypeArray extends V10GTypeHelper {
                                      parameterType);
   }
 
-  @Override
-  public ClassName javaImplementationName(String pack) {
-    return null;
-  }
 }

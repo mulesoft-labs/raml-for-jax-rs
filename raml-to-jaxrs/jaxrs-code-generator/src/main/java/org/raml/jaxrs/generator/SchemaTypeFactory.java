@@ -26,6 +26,7 @@ import org.raml.jaxrs.generator.builders.RamlToPojoTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.jaxrs.generator.v10.V10RamlToPojoGType;
 import org.raml.ramltopojo.*;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
@@ -100,6 +101,11 @@ public class SchemaTypeFactory {
 
     RamlToPojoTypeGenerator gen = new RamlToPojoTypeGenerator(p);
     currentBuild.newGenerator(type.name(), gen);
+    if (type instanceof V10RamlToPojoGType) {
+      if (p.creationResults().size() != 0) {
+        type.setJavaType(p.creationResults().get(0).getJavaName(EventType.INTERFACE));
+      }
+    }
     return gen;
   }
 

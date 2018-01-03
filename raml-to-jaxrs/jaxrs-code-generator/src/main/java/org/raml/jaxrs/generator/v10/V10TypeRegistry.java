@@ -47,18 +47,6 @@ public class V10TypeRegistry {
   private Map<String, V10GType> types = new HashMap<>();
   private Multimap<String, V10GType> childMap = ArrayListMultimap.create();
 
-  public void addChildToParent(List<V10GType> parents, V10GType child) {
-
-    for (V10GType parent : parents) {
-
-      if (parent.name().equals("object")) {
-        continue;
-      }
-      childMap.put(parent.name(), child);
-      addChildToParent(parent.parentTypes(), child);
-    }
-  }
-
   public V10GType fetchType(Resource resource, TypeDeclaration typeDeclaration) {
 
     String key = Names.ramlTypeName(resource, typeDeclaration);
@@ -107,7 +95,7 @@ public class V10TypeRegistry {
     } else {
 
       V10GType type =
-          V10GTypeFactory.createResponseBodyType(this, resource, method, response, typeDeclaration);
+          V10GTypeFactory.createResponseBodyType(resource, method, response, typeDeclaration);
       storeNewType(type);
       return type;
     }
@@ -125,7 +113,7 @@ public class V10TypeRegistry {
           return types.get(name);
         } else {
           V10GType type =
-              V10GTypeFactory.createEnum(this, name, (StringTypeDeclaration) typeDeclaration, CreationModel.INLINE_FROM_TYPE);
+              V10GTypeFactory.createEnum(name, (StringTypeDeclaration) typeDeclaration);
           storeNewType(type);
           return type;
         }
@@ -155,10 +143,10 @@ public class V10TypeRegistry {
                                       CreationModel.INLINE_FROM_TYPE);
       } else if (typeDeclaration instanceof UnionTypeDeclaration) {
         type =
-            V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
-                                        typeDeclaration.name(), CreationModel.INLINE_FROM_TYPE);
+            V10GTypeFactory.createUnion((UnionTypeDeclaration) typeDeclaration,
+                                        typeDeclaration.name());
       } else {
-        type = V10GTypeFactory.createExplicitlyNamedType(this, name, typeDeclaration);
+        type = V10GTypeFactory.createExplicitlyNamedType(name, typeDeclaration);
       }
       storeNewType(type);
       return type;
@@ -180,8 +168,8 @@ public class V10TypeRegistry {
       if (typeDeclaration instanceof StringTypeDeclaration
           && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
         V10GType type =
-            V10GTypeFactory.createEnum(this, name, javaTypeName,
-                                       (StringTypeDeclaration) typeDeclaration, model);
+            V10GTypeFactory.createEnum(name,
+                                       (StringTypeDeclaration) typeDeclaration);
         storeNewType(type);
         return type;
 
@@ -211,28 +199,16 @@ public class V10TypeRegistry {
                                       javaTypeName, model);
       } else if (typeDeclaration instanceof UnionTypeDeclaration) {
         type =
-            V10GTypeFactory.createUnion(this, (UnionTypeDeclaration) typeDeclaration,
-                                        typeDeclaration.name(), javaTypeName, model);
+            V10GTypeFactory.createUnion((UnionTypeDeclaration) typeDeclaration,
+                                        typeDeclaration.name());
       } else {
-        type = V10GTypeFactory.createInlineType(this, name, javaTypeName, typeDeclaration, containingType);
+        type = V10GTypeFactory.createInlineType(name, typeDeclaration);
       }
       storeNewType(type);
       return type;
     }
   }
 
-  public Multimap<String, V10GType> getChildClasses() {
-    return childMap;
-  }
-
-  public V10TypeRegistry createRegistry() {
-    V10TypeRegistry registry = new V10TypeRegistry();
-    registry.types = new HashMap<>();
-    registry.types.putAll(this.types);
-    registry.childMap = this.childMap;
-
-    return registry;
-  }
 
   public List<V10GType> fetchSchemaTypes() {
 

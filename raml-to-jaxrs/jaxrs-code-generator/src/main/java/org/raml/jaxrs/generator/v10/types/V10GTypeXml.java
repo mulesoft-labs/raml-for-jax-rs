@@ -21,7 +21,6 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.v10.CreationModel;
-import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
@@ -91,11 +90,6 @@ public class V10GTypeXml extends V10GTypeHelper {
   public void setJavaType(TypeName generatedJavaType) {
 
     this.modelSpecifiedJavaType = generatedJavaType;
-  }
-
-  public ClassName javaImplementationName(String pack) {
-
-    return null;
   }
 
   @Override

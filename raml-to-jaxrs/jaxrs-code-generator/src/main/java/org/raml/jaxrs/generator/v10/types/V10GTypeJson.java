@@ -21,7 +21,6 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.v10.CreationModel;
-import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -84,11 +83,6 @@ public class V10GTypeJson extends V10GTypeHelper {
     } else {
       return ClassName.get(pack, defaultJavatypeName);
     }
-  }
-
-  public ClassName javaImplementationName(String pack) {
-
-    return null;
   }
 
   @Override

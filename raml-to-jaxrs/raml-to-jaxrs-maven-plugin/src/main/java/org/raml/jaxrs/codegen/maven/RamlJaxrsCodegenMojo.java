@@ -17,7 +17,6 @@ package org.raml.jaxrs.codegen.maven;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -29,10 +28,7 @@ import org.apache.maven.project.MavenProject;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.RamlScanner;
-import org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
-import org.raml.jaxrs.generator.extension.types.LegacyTypeExtension;
-import org.raml.jaxrs.generator.extension.types.TypeExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -195,25 +191,6 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 
         Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceFinishExtension);
         configuration.defaultResourceFinishExtension(c);
-      }
-
-      if (typeExtensions != null) {
-        for (String className : typeExtensions) {
-          Class c = Class.forName(className);
-          if (c == null) {
-            throw new MojoExecutionException("typeExtension " + className
-                + " cannot be loaded."
-                + "Have you installed the correct dependency in the plugin configuration?");
-          }
-          if (!((c.newInstance()) instanceof TypeExtension)) {
-            throw new MojoExecutionException("typeExtension " + className
-                + " does not implement" + TrialResourceClassExtension.class.getPackage() + "."
-                + TrialResourceClassExtension.class.getName());
-
-          }
-
-          configuration.getTypeExtensions().add((LegacyTypeExtension) c.newInstance());
-        }
       }
 
     } catch (final Exception e) {

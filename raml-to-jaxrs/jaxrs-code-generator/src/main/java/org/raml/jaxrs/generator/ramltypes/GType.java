@@ -37,17 +37,11 @@ public interface GType extends GAbstraction {
 
   boolean isXml();
 
-  boolean isObject();
-
   boolean isArray();
 
   boolean isEnum();
 
-  boolean isUnion();
-
   boolean isScalar();
-
-  List<String> enumValues();
 
   String schema();
 

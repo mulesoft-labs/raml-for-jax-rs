@@ -126,11 +126,6 @@ public class Names {
   }
 
 
-  public static String constantName(String value) {
-
-    return buildJavaFriendlyName(value, NameFixer.ALL_UPPER, 0);
-  }
-
   public static String resourceMethodName(GResource resource, GMethod method) {
 
     List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);

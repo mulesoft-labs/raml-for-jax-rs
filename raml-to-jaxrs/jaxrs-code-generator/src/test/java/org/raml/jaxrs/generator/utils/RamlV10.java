@@ -65,7 +65,7 @@ public class RamlV10 {
 
     Api api = buildApiV10(test, raml);
     CurrentBuild currentBuild =
-        new CurrentBuild(api, ExtensionManager.createExtensionManager(), new File(""));
+        new CurrentBuild(api, ExtensionManager.createExtensionManager());
 
     currentBuild.constructClasses(new V10Finder(api));
     ResourceBuilder builder =

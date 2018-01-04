@@ -59,7 +59,6 @@ public class CurrentBuild {
 
   private final Api api;
   private ExtensionManager extensionManager;
-  private final File ramlLocation;
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
@@ -76,11 +75,10 @@ public class CurrentBuild {
 
   private File schemaRepository;
 
-  public CurrentBuild(Api api, ExtensionManager extensionManager, File ramlLocation) {
+  public CurrentBuild(Api api, ExtensionManager extensionManager) {
 
     this.api = api;
     this.extensionManager = extensionManager;
-    this.ramlLocation = ramlLocation;
     this.configuration = Configuration.defaultConfiguration();
   }
 
@@ -251,24 +249,9 @@ public class CurrentBuild {
     builtTypes.put(ramlTypeName, generator);
   }
 
-  public File getRamlLocation() {
-    return ramlLocation;
-  }
-
   public void newSupportGenerator(JavaPoetTypeGenerator generator) {
 
     supportGenerators.add(generator);
-  }
-
-  public <T extends TypeGenerator> T getBuiltType(String ramlType) {
-
-    TypeGenerator type = builtTypes.get(ramlType);
-    if (type == null) {
-
-      throw new GenerationException("no such type " + ramlType);
-    }
-
-    return (T) type;
   }
 
   public void newResource(ResourceGenerator rg) {
@@ -508,7 +491,7 @@ public class CurrentBuild {
   public V10GType fetchType(String name, TypeDeclaration typeDeclaration) {
     TypeName typeName =
         TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
-            .fetchType(typeDeclaration.type(), typeDeclaration);
+            .fetchType(name, typeDeclaration);
 
     V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration);
     type.setJavaType(typeName);

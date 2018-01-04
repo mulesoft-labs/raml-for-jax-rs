@@ -52,7 +52,7 @@ public class V10GTypeFactory {
 
   public static V10GType createScalar(String name, TypeDeclaration typeDeclaration) {
 
-    return new V10GTypeScalar(name, typeDeclaration);
+    return new V10RamlToPojoGType(name, typeDeclaration);
   }
 
   public static V10GType createArray(String name,

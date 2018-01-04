@@ -25,6 +25,7 @@
         <dependency>
             <groupId>org.raml.jaxrs</groupId>
             <artifactId>jaxrs-code-generator</artifactId>
+            <version>2.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>

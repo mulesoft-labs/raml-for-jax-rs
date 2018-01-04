@@ -65,8 +65,8 @@ public class RamlV08 {
     Api api = buildApiV08(test, raml);
     V08TypeRegistry registry = new V08TypeRegistry();
     V08Finder typeFinder = new V08Finder(api, new GAbstractionFactory(), registry);
-    CurrentBuild currentBuild = new CurrentBuild(typeFinder, null, ExtensionManager.createExtensionManager(), new File(""));
-    currentBuild.constructClasses();
+    CurrentBuild currentBuild = new CurrentBuild(null, ExtensionManager.createExtensionManager(), new File(""));
+    currentBuild.constructClasses(typeFinder);
     ResourceBuilder builder =
         new ResourceBuilder(currentBuild, new V08GResource(new GAbstractionFactory(), api
             .resources().get(0), typeFinder.globalSchemas().keySet(), registry), name, uri);

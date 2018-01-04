@@ -65,12 +65,13 @@ public class RamlV10 {
                                       String name, String uri) throws IOException {
 
     Api api = buildApiV10(test, raml);
-    V10TypeRegistry registry = new V10TypeRegistry();
     CurrentBuild currentBuild =
-        new CurrentBuild(new V10Finder(api, registry), api, ExtensionManager.createExtensionManager(), new File(""));
-    currentBuild.constructClasses();
+        new CurrentBuild(api, ExtensionManager.createExtensionManager(), new File(""));
+    V10TypeRegistry registry = new V10TypeRegistry(currentBuild);
+
+    currentBuild.constructClasses(new V10Finder(api, registry));
     ResourceBuilder builder =
-        new ResourceBuilder(currentBuild, new V10GResource(registry, new GAbstractionFactory(), api
+        new ResourceBuilder(currentBuild, new V10GResource(currentBuild, new GAbstractionFactory(), api
             .resources().get(0)), name, uri);
     builder.output(container);
   }
@@ -93,9 +94,8 @@ public class RamlV10 {
       throw new AssertionError();
     } else {
       CurrentBuild currentBuild =
-          new CurrentBuild(new V10Finder(ramlModelResult.getApiV10(), registry),
-                           ramlModelResult.getApiV10(), ExtensionManager.createExtensionManager(), new File(""));
-      currentBuild.constructClasses();
+          new CurrentBuild(ramlModelResult.getApiV10(), ExtensionManager.createExtensionManager(), new File(""));
+      currentBuild.constructClasses(new V10Finder(ramlModelResult.getApiV10(), registry));
       return currentBuild;
     }
   }

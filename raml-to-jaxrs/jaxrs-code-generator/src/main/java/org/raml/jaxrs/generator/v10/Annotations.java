@@ -52,14 +52,6 @@ public abstract class Annotations<T> {
     }
   };
 
-  public static Annotations<String> IMPLEMENTATION_CLASS_NAME = new Annotations<String>() {
-
-    @Override
-    public String getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
-
-      return getWithDefault("types", "implementationClassName", null, target, others);
-    }
-  };
 
   public static Annotations<Boolean> USE_PRIMITIVE_TYPE = new Annotations<Boolean>() {
 
@@ -69,15 +61,6 @@ public abstract class Annotations<T> {
       return getWithDefault("types", "usePrimitiveType", false, target, others);
     }
 
-  };
-
-  public static Annotations<Boolean> ABSTRACT = new Annotations<Boolean>() {
-
-    @Override
-    public Boolean getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
-
-      return getWithDefault("types", "abstract", false, target, others);
-    }
   };
 
   /*

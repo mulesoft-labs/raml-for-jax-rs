@@ -15,24 +15,17 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.v10.*;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
-
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 1/3/17. Just potential zeroes and ones
@@ -97,7 +90,7 @@ public class V10GTypeFactory {
     return new V10GTypeXml(typeDeclaration, ramlName, javaName, model);
   }
 
-  public static V10GType createUnion(UnionTypeDeclaration typeDeclaration, String ramlName) {
+  public static V10GType createUnion(String ramlName, UnionTypeDeclaration typeDeclaration) {
     return new V10RamlToPojoGType(ramlName, typeDeclaration);
   }
 

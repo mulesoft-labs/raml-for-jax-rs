@@ -26,6 +26,7 @@ import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.jaxrs.generator.builders.*;
+import org.raml.jaxrs.generator.ramltypes.GType;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,12 +40,14 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
 
   private final CurrentBuild build;
   private final String pack;
+  private final GType type;
   private final ClassName name;
   private final String schema;
 
-  public JsonSchemaTypeGenerator(CurrentBuild build, String pack, ClassName name, String schema) {
+  public JsonSchemaTypeGenerator(CurrentBuild build, String pack, GType type, ClassName name, String schema) {
     this.build = build;
     this.pack = pack;
+    this.type = type;
     this.name = name;
     this.schema = schema;
   }
@@ -67,6 +70,10 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
     }
 
     container.into(codeModel);
+  }
+
+  public GType getType() {
+    return type;
   }
 
   @Override

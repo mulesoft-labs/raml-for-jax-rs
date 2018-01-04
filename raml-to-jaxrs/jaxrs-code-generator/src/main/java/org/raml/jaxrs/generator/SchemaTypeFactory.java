@@ -15,9 +15,6 @@
  */
 package org.raml.jaxrs.generator;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.squareup.javapoet.ClassName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -25,15 +22,14 @@ import org.raml.jaxrs.generator.builders.JAXBHelper;
 import org.raml.jaxrs.generator.builders.RamlToPojoTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10RamlToPojoGType;
 import org.raml.ramltopojo.*;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
-import javax.annotation.Nullable;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -51,7 +47,7 @@ public class SchemaTypeFactory {
           JAXBHelper.generateClassesFromXmlSchemas(currentBuild.getModelPackage(), schemaFile,
                                                    codeModel);
       XmlSchemaTypeGenerator gen =
-          new XmlSchemaTypeGenerator(codeModel, currentBuild.getModelPackage(), generated.values()
+          new XmlSchemaTypeGenerator(type, codeModel, currentBuild.getModelPackage(), generated.values()
               .iterator().next());
       type.setJavaType(gen.getGeneratedJavaType());
       currentBuild.newGenerator(type.name(), gen);
@@ -65,39 +61,19 @@ public class SchemaTypeFactory {
   public static TypeGenerator createJsonType(CurrentBuild currentBuild, GType type) {
 
     JsonSchemaTypeGenerator gen =
-        new JsonSchemaTypeGenerator(currentBuild, currentBuild.getModelPackage(),
+        new JsonSchemaTypeGenerator(currentBuild, currentBuild.getModelPackage(), type,
                                     (ClassName) type.defaultJavaTypeName(currentBuild.getModelPackage()), type.schema());
     type.setJavaType(gen.getGeneratedJavaType());
     currentBuild.newGenerator(type.name(), gen);
     return gen;
   }
 
+
   public static TypeGenerator createRamlToPojo(CurrentBuild currentBuild, final V10GType type) {
 
-    ResultingPojos p = RamlToPojoBuilder.builder(currentBuild.getApi())
-        .inPackage(currentBuild.getModelPackage())
-        .fetchTypes(TypeFetchers.fromAnywhere())
-        .findTypes(new TypeFinder() {
-
-          @Override
-          public Iterable<TypeDeclaration> findTypes(Api api) {
-
-            return FluentIterable.from(TypeFinders.everyWhere().findTypes(api)).firstMatch(new Predicate<TypeDeclaration>() {
-
-              @Override
-              public boolean apply(@Nullable TypeDeclaration input) {
-                return input.name().equals(type.name());
-              }
-            }).asSet();
-          }
-        }).build(FluentIterable.from(currentBuild.typeConfiguration()).transform(new Function<String, String>() {
-
-          @Nullable
-          @Override
-          public String apply(@Nullable String s) {
-            return "core." + s;
-          }
-        }).toList()).buildPojos();
+    ResultingPojos p =
+        TypeUtils.fetchRamlToPojoBuilder(currentBuild.getApi(), currentBuild.getModelPackage(), currentBuild.typeConfiguration())
+            .buildPojo(type.name(), type.implementation());
 
     RamlToPojoTypeGenerator gen = new RamlToPojoTypeGenerator(p);
     currentBuild.newGenerator(type.name(), gen);

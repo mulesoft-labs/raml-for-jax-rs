@@ -31,7 +31,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 
 /**
@@ -68,11 +67,12 @@ public class RamlScanner {
 
   public void handle(org.raml.v2.api.model.v10.api.Api api, File ramlDirectory) throws IOException {
 
-    V10TypeRegistry registry = new V10TypeRegistry();
     CurrentBuild build =
-        new CurrentBuild(new V10Finder(api, registry), api, ExtensionManager.createExtensionManager(), ramlDirectory);
+        new CurrentBuild(api, ExtensionManager.createExtensionManager(), ramlDirectory);
+    V10TypeRegistry registry = new V10TypeRegistry(build);
+
     configuration.setupBuild(build);
-    build.constructClasses();
+    build.constructClasses(new V10Finder(api, registry));
 
     ResourceHandler resourceHandler = new ResourceHandler(build);
 
@@ -81,7 +81,6 @@ public class RamlScanner {
     for (Resource resource : api.resources()) {
       resourceHandler.handle(registry, resource);
     }
-
 
     build.generate(configuration.getOutputDirectory());
   }
@@ -92,11 +91,11 @@ public class RamlScanner {
     GAbstractionFactory factory = new GAbstractionFactory();
     V08TypeRegistry registry = new V08TypeRegistry();
     V08Finder typeFinder = new V08Finder(api, factory, registry);
-    CurrentBuild build = new CurrentBuild(typeFinder, null, ExtensionManager.createExtensionManager(), ramlDirectory);
+    CurrentBuild build = new CurrentBuild(null, ExtensionManager.createExtensionManager(), ramlDirectory);
 
     configuration.setupBuild(build);
 
-    build.constructClasses();
+    build.constructClasses(typeFinder);
 
     ResourceHandler resourceHandler = new ResourceHandler(build);
 

@@ -16,9 +16,8 @@
 package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Multimap;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
@@ -44,41 +43,14 @@ import java.util.Map;
 
 public class V10TypeRegistry {
 
+  private final CurrentBuild build;
   private Map<String, V10GType> types = new HashMap<>();
-  private Multimap<String, V10GType> childMap = ArrayListMultimap.create();
 
-  public V10GType fetchType(Resource resource, TypeDeclaration typeDeclaration) {
-
-    String key = Names.ramlTypeName(resource, typeDeclaration);
-    if (types.containsKey(key)) {
-
-      return types.get(key);
-    } else {
-
-      V10GType type =
-          createInlineType(key, Names.javaTypeName(resource, typeDeclaration), typeDeclaration, null, CreationModel.NEVER_INLINE);
-
-      storeNewType(type);
-      return type;
-    }
+  public V10TypeRegistry(CurrentBuild build) {
+    this.build = build;
   }
 
-  public V10GType fetchType(Resource resource, Method method, TypeDeclaration typeDeclaration) {
 
-    String key = Names.ramlTypeName(resource, method, typeDeclaration);
-    if (types.containsKey(key)) {
-
-      return types.get(key);
-    } else {
-
-      V10GType type =
-          createInlineType(key, Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration, null,
-                           CreationModel.NEVER_INLINE);
-
-      storeNewType(type);
-      return type;
-    }
-  }
 
   private void storeNewType(V10GType type) {
     if (!type.isScalar()) {
@@ -86,20 +58,6 @@ public class V10TypeRegistry {
     }
   }
 
-  public V10GType fetchType(Resource resource, Method method, Response response,
-                            TypeDeclaration typeDeclaration) {
-    String key = Names.ramlTypeName(resource, method, response, typeDeclaration);
-    if (types.containsKey(key)) {
-
-      return types.get(key);
-    } else {
-
-      V10GType type =
-          V10GTypeFactory.createResponseBodyType(resource, method, response, typeDeclaration);
-      storeNewType(type);
-      return type;
-    }
-  }
 
   public V10GType fetchType(String name, TypeDeclaration typeDeclaration) {
 
@@ -143,8 +101,8 @@ public class V10TypeRegistry {
                                       CreationModel.INLINE_FROM_TYPE);
       } else if (typeDeclaration instanceof UnionTypeDeclaration) {
         type =
-            V10GTypeFactory.createUnion((UnionTypeDeclaration) typeDeclaration,
-                                        typeDeclaration.name());
+            V10GTypeFactory.createUnion(typeDeclaration.name(), (UnionTypeDeclaration) typeDeclaration
+                );
       } else {
         type = V10GTypeFactory.createExplicitlyNamedType(name, typeDeclaration);
       }
@@ -152,63 +110,6 @@ public class V10TypeRegistry {
       return type;
     }
   }
-
-  public V10GType fetchType(TypeDeclaration typeDeclaration) {
-
-    String name = typeDeclaration.name();
-    return fetchType(name, typeDeclaration);
-  }
-
-  public V10GType createInlineType(String name, String javaTypeName, TypeDeclaration typeDeclaration, V10GType containingType,
-                                   CreationModel model) {
-
-    Class<?> javaType = ScalarTypes.scalarToJavaType(typeDeclaration);
-    if (javaType != null) {
-
-      if (typeDeclaration instanceof StringTypeDeclaration
-          && ((StringTypeDeclaration) typeDeclaration).enumValues().size() > 0) {
-        V10GType type =
-            V10GTypeFactory.createEnum(name,
-                                       (StringTypeDeclaration) typeDeclaration);
-        storeNewType(type);
-        return type;
-
-      } else {
-        return V10GTypeFactory.createScalar(name, typeDeclaration);
-      }
-    }
-
-    if (typeDeclaration instanceof ArrayTypeDeclaration) {
-
-      return V10GTypeFactory.createArray(this, name, (ArrayTypeDeclaration) typeDeclaration, CreationModel.NEVER_INLINE);
-    }
-
-    if (types.containsKey(name)) {
-
-      return types.get(name);
-    } else {
-
-      V10GType type;
-      if (typeDeclaration instanceof JSONTypeDeclaration) {
-        type =
-            V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration,
-                                       typeDeclaration.name(), javaTypeName, model);
-      } else if (typeDeclaration instanceof XMLTypeDeclaration) {
-        type =
-            V10GTypeFactory.createXml((XMLTypeDeclaration) typeDeclaration, typeDeclaration.name(),
-                                      javaTypeName, model);
-      } else if (typeDeclaration instanceof UnionTypeDeclaration) {
-        type =
-            V10GTypeFactory.createUnion((UnionTypeDeclaration) typeDeclaration,
-                                        typeDeclaration.name());
-      } else {
-        type = V10GTypeFactory.createInlineType(name, typeDeclaration);
-      }
-      storeNewType(type);
-      return type;
-    }
-  }
-
 
   public List<V10GType> fetchSchemaTypes() {
 

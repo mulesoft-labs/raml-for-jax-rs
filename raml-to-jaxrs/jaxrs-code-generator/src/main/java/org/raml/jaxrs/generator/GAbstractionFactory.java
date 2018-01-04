@@ -21,6 +21,7 @@ import org.raml.jaxrs.generator.v08.V08TypeRegistry;
 import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.model.v08.resources.Resource;
+import org.raml.v2.api.model.v10.api.Api;
 
 import java.util.Set;
 
@@ -29,16 +30,16 @@ import java.util.Set;
  */
 public class GAbstractionFactory {
 
-  public GResource newResource(V10TypeRegistry registry,
+  public GResource newResource(CurrentBuild currentBuild,
                                final org.raml.v2.api.model.v10.resources.Resource resource) {
 
-    return new V10GResource(registry, this, resource);
+    return new V10GResource(currentBuild, this, resource);
   }
 
-  public GResource newResource(V10TypeRegistry registry, final GResource parent,
+  public GResource newResource(CurrentBuild api, final GResource parent,
                                final org.raml.v2.api.model.v10.resources.Resource resource) {
 
-    return new V10GResource(registry, this, parent, resource);
+    return new V10GResource(api, this, parent, resource);
   }
 
 

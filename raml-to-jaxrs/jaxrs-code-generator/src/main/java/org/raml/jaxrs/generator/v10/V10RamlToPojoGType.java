@@ -38,7 +38,7 @@ public class V10RamlToPojoGType implements V10GType {
 
   public V10RamlToPojoGType(String name, TypeDeclaration typeDeclaration) {
     // this is wrong. TODO fix.
-    this.name = typeDeclaration.name() == null ? name : typeDeclaration.name();
+    this.name = name;
     this.typeDeclaration = typeDeclaration;
   }
 

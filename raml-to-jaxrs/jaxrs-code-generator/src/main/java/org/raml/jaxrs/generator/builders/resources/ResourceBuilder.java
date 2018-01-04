@@ -443,7 +443,7 @@ public class ResourceBuilder implements ResourceGenerator {
       if (responseType.type() != null) {
         TypeName typeName = responseType.type().defaultJavaTypeName(build.getModelPackage());
         if (typeName == null) {
-          throw new GenerationException(responseType + " was not seen before");
+          throw new GenerationException(responseType.mediaType() + "," + responseType.type().name() + " was not seen before");
         }
 
         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());

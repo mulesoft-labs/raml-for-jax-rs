@@ -253,11 +253,12 @@ uses:
   post:
     body:
       application/octet-stream:
+        type: string
     responses:
       200:
         body:
           application/octet-stream:
-
+            type: string
 /songs:
   displayName: Songs
   description:  Access to all songs inside the music world library.

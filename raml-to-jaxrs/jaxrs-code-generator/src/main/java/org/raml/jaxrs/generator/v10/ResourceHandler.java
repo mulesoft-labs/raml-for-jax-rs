@@ -34,7 +34,7 @@ public class ResourceHandler {
     this.build = build;
   }
 
-  public void handle(V10TypeRegistry registry, final Resource resource) {
+  public void handle(final Resource resource) {
 
     GAbstractionFactory factory = new GAbstractionFactory();
 

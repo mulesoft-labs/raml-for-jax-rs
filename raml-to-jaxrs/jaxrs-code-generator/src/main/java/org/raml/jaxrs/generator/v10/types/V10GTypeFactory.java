@@ -55,10 +55,10 @@ public class V10GTypeFactory {
     return new V10GTypeScalar(name, typeDeclaration);
   }
 
-  public static V10GType createArray(V10TypeRegistry registry, String name,
-                                     ArrayTypeDeclaration typeDeclaration, CreationModel model) {
+  public static V10GType createArray(String name,
+                                     ArrayTypeDeclaration typeDeclaration) {
 
-    return new V10GTypeArray(registry, name, typeDeclaration, model);
+    return new V10RamlToPojoGType(name, typeDeclaration);
   }
 
   public static V10GType createEnum(String name,

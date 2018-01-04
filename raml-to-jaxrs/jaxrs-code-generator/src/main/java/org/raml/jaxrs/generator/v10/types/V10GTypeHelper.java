@@ -33,9 +33,6 @@ public abstract class V10GTypeHelper implements V10GType {
   private final TypeDeclaration typeDeclaration;
   private final CreationModel creationModel;
 
-  public V10GTypeHelper(String name, TypeDeclaration typeDeclaration) {
-    this(name, typeDeclaration, CreationModel.NEVER_INLINE);
-  }
 
   public V10GTypeHelper(String name, TypeDeclaration typeDeclaration, CreationModel creationModel) {
     this.name = name;

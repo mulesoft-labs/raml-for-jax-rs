@@ -44,13 +44,11 @@ import java.util.Set;
 public class V10Finder implements GFinder {
 
   private final Api api;
-  private final V10TypeRegistry registry;
 
   private Map<String, V10GType> foundTypes = new HashMap<>();
 
-  public V10Finder(Api api, V10TypeRegistry registry) {
+  public V10Finder(Api api) {
     this.api = api;
-    this.registry = registry;
   }
 
   @Override
@@ -196,9 +194,9 @@ public class V10Finder implements GFinder {
 
     if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-      return putInFoundTypes(typeDeclaration.name(), V10GTypeFactory.createArray(null, typeDeclaration.name(),
-                                                                                 (ArrayTypeDeclaration) typeDeclaration,
-                                                                                 CreationModel.NEVER_INLINE));
+      return putInFoundTypes(typeDeclaration.name(), V10GTypeFactory.createArray(typeDeclaration.name(),
+                                                                                 (ArrayTypeDeclaration) typeDeclaration
+          ));
     }
 
     return putInFoundTypes(typeDeclaration.name(), V10GTypeFactory.createScalar(typeDeclaration.name(), typeDeclaration));
@@ -250,8 +248,8 @@ public class V10Finder implements GFinder {
 
     if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-      return putInFoundTypes(ramlName, V10GTypeFactory.createArray(null, ramlName, (ArrayTypeDeclaration) typeDeclaration,
-                                                                   CreationModel.NEVER_INLINE));
+      return putInFoundTypes(ramlName, V10GTypeFactory.createArray(ramlName, (ArrayTypeDeclaration) typeDeclaration
+          ));
     }
 
     return putInFoundTypes(ramlName, V10GTypeFactory.createScalar(ramlName, typeDeclaration));

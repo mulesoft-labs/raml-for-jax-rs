@@ -24,10 +24,8 @@ import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.TypeUtils;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.jaxrs.generator.v10.V10RamlToPojoGType;
+import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
 import org.raml.ramltopojo.*;
-import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.File;
 import java.util.Map;

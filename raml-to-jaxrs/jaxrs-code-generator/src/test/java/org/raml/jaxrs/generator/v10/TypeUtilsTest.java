@@ -120,9 +120,7 @@ public class TypeUtilsTest {
       throw new AssertionError();
     } else {
       final Map<String, GType> decls = new HashMap<>();
-      new V10Finder(ramlModelResult.getApiV10(), new V10TypeRegistry(new CurrentBuild(ramlModelResult.getApiV10(),
-                                                                                      ExtensionManager.createExtensionManager(),
-                                                                                      new File("."))))
+      new V10Finder(ramlModelResult.getApiV10())
           .findTypes(new GFinderListener() {
 
             @Override

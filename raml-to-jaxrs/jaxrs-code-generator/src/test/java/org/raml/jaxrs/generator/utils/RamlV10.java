@@ -23,7 +23,6 @@ import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.jaxrs.generator.v10.V10GResource;
-import org.raml.jaxrs.generator.v10.V10TypeRegistry;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
@@ -67,36 +66,12 @@ public class RamlV10 {
     Api api = buildApiV10(test, raml);
     CurrentBuild currentBuild =
         new CurrentBuild(api, ExtensionManager.createExtensionManager(), new File(""));
-    V10TypeRegistry registry = new V10TypeRegistry(currentBuild);
 
-    currentBuild.constructClasses(new V10Finder(api, registry));
+    currentBuild.constructClasses(new V10Finder(api));
     ResourceBuilder builder =
         new ResourceBuilder(currentBuild, new V10GResource(currentBuild, new GAbstractionFactory(), api
             .resources().get(0)), name, uri);
     builder.output(container);
   }
 
-
-  public static CurrentBuild buildType(Object test, String raml, V10TypeRegistry registry,
-                                       String name, String uri) throws IOException, URISyntaxException {
-
-    URL u = test.getClass().getResource(raml);
-    File ramlFile = new File(u.toURI());
-
-    RamlModelResult ramlModelResult =
-        new RamlModelBuilder().buildApi(
-                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)),
-                                        ramlFile.getAbsolutePath());
-    if (ramlModelResult.hasErrors()) {
-      for (ValidationResult validationResult : ramlModelResult.getValidationResults()) {
-        System.out.println(validationResult.getMessage());
-      }
-      throw new AssertionError();
-    } else {
-      CurrentBuild currentBuild =
-          new CurrentBuild(ramlModelResult.getApiV10(), ExtensionManager.createExtensionManager(), new File(""));
-      currentBuild.constructClasses(new V10Finder(ramlModelResult.getApiV10(), registry));
-      return currentBuild;
-    }
-  }
 }

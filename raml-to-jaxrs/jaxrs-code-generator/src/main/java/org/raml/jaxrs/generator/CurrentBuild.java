@@ -414,7 +414,8 @@ public class CurrentBuild {
       TypeName typeName =
           ramlToPojo
               .fetchType(Names.javaTypeName(implementation, method, typeDeclaration), typeDeclaration);
-      V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration);
+      V10RamlToPojoGType type =
+          new V10RamlToPojoGType(Names.javaTypeName(implementation, method, typeDeclaration), typeDeclaration);
       type.setJavaType(typeName);
       return type;
     } else {
@@ -422,7 +423,7 @@ public class CurrentBuild {
       TypeName typeName =
           ramlToPojo
               .fetchType(typeDeclaration.type(), typeDeclaration);
-      V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration);
+      V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration.type(), typeDeclaration);
       type.setJavaType(typeName);
       return type;
     }
@@ -473,7 +474,8 @@ public class CurrentBuild {
           TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
               .fetchType(Names.javaTypeName(resource, method, response, typeDeclaration), typeDeclaration);
 
-      V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration);
+      V10RamlToPojoGType type =
+          new V10RamlToPojoGType(Names.javaTypeName(resource, method, response, typeDeclaration), typeDeclaration);
       type.setJavaType(typeName);
       return type;
     } else {
@@ -482,7 +484,7 @@ public class CurrentBuild {
           TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
               .fetchType(typeDeclaration.type(), typeDeclaration);
 
-      V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration);
+      V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration.type(), typeDeclaration);
       type.setJavaType(typeName);
       return type;
     }

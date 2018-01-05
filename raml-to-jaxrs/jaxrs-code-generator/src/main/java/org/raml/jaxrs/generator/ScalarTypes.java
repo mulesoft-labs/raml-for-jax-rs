@@ -133,10 +133,6 @@ public class ScalarTypes {
     return scalarToJavaType(typeDeclaration.name()) != null;
   }
 
-  public static boolean isArray(TypeDeclaration typeDeclaration) {
-    return typeDeclaration instanceof ArrayTypeDeclaration;
-  }
-
   public static TypeName classToTypeName(Class scalar) {
     if (scalar.isPrimitive()) {
       switch (scalar.getSimpleName()) {

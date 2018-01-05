@@ -19,7 +19,9 @@
     <artifactId>maven-examples</artifactId>
     <packaging>pom</packaging>
     <modules>
+<!--
         <module>local-test</module>
+-->
         <module>raml-defined-example</module>
         <module>jaxb-example</module>
         <module>simple-json-example</module>

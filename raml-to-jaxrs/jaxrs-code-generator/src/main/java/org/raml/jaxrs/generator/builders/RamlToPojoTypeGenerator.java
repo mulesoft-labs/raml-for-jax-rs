@@ -18,7 +18,9 @@ package org.raml.jaxrs.generator.builders;
 import com.squareup.javapoet.TypeName;
 import org.raml.ramltopojo.CreationResult;
 import org.raml.ramltopojo.EventType;
+import org.raml.ramltopojo.RamlToPojo;
 import org.raml.ramltopojo.ResultingPojos;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.IOException;
 
@@ -27,10 +29,16 @@ import java.io.IOException;
  */
 public class RamlToPojoTypeGenerator implements TypeGenerator<ResultingPojos> {
 
-  private final ResultingPojos pojos;
+  private final RamlToPojo pojos;
+  private final String name;
+  private final TypeDeclaration typeDeclaration;
+  private final TypeName generatedType;
 
-  public RamlToPojoTypeGenerator(ResultingPojos p) {
+  public RamlToPojoTypeGenerator(RamlToPojo p, String name, TypeDeclaration typeDeclaration, TypeName generatedType) {
     this.pojos = p;
+    this.name = name;
+    this.typeDeclaration = typeDeclaration;
+    this.generatedType = generatedType;
   }
 
   @Override
@@ -42,12 +50,16 @@ public class RamlToPojoTypeGenerator implements TypeGenerator<ResultingPojos> {
   @Override
   public TypeName getGeneratedJavaType() {
 
-    return pojos.creationResults().get(0).getJavaName(EventType.INTERFACE);
+    return generatedType;
   }
 
   @Override
   public void output(CodeContainer<ResultingPojos> rootDirectory) throws IOException {
 
-    rootDirectory.into(pojos);
+    ResultingPojos p =
+        pojos
+            .buildPojo(name, typeDeclaration);
+
+    rootDirectory.into(p);
   }
 }

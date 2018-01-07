@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.JAXBHelper;
@@ -68,17 +69,14 @@ public class SchemaTypeFactory {
 
   public static TypeGenerator createRamlToPojo(CurrentBuild currentBuild, final V10GType type) {
 
-    ResultingPojos p =
+    TypeName typeName =
         currentBuild.fetchRamlToPojoBuilder()
-            .buildPojo(type.name(), type.implementation());
+            .fetchType(type.name(), type.implementation());
 
-    RamlToPojoTypeGenerator gen = new RamlToPojoTypeGenerator(p);
+    RamlToPojoTypeGenerator gen =
+        new RamlToPojoTypeGenerator(currentBuild.fetchRamlToPojoBuilder(), type.name(), type.implementation(), typeName);
     currentBuild.newGenerator(type.name(), gen);
-    if (type instanceof V10RamlToPojoGType) {
-      if (p.creationResults().size() != 0) {
-        type.setJavaType(p.creationResults().get(0).getJavaName(EventType.INTERFACE));
-      }
-    }
+    type.setJavaType(typeName);
     return gen;
   }
 

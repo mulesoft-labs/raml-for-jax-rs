@@ -104,17 +104,4 @@ public class TypeUtils {
   }
 
 
-  public static RamlToPojo fetchRamlToPojoBuilder(Api api, String pack, List<String> configuration) {
-    return RamlToPojoBuilder.builder(api)
-        .inPackage(pack)
-        .fetchTypes(TypeFetchers.fromAnywhere())
-        .build(FluentIterable.from(configuration).transform(new Function<String, String>() {
-
-          @Nullable
-          @Override
-          public String apply(@Nullable String s) {
-            return "core." + s;
-          }
-        }).toList());
-  }
 }

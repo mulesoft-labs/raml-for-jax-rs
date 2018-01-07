@@ -43,11 +43,13 @@ import java.util.Set;
  */
 public class V10Finder implements GFinder {
 
+  private final CurrentBuild build;
   private final Api api;
 
   private Map<String, V10GType> foundTypes = new HashMap<>();
 
-  public V10Finder(Api api) {
+  public V10Finder(CurrentBuild build, Api api) {
+    this.build = build;
     this.api = api;
   }
 
@@ -209,11 +211,11 @@ public class V10Finder implements GFinder {
       return !foundTypes.containsKey(typeDeclaration.type());
     }
 
-    if (typeDeclaration instanceof ObjectTypeHandlerPlugin
+    if (typeDeclaration instanceof ObjectTypeDeclaration
         || typeDeclaration instanceof UnionTypeDeclaration
         || (typeDeclaration instanceof StringTypeDeclaration && !((StringTypeDeclaration) typeDeclaration).enumValues().isEmpty())) {
 
-      return !foundTypes.containsKey(typeDeclaration.type());
+      return build.fetchRamlToPojoBuilder().isInline(typeDeclaration);
     }
 
     return false;
@@ -233,12 +235,12 @@ public class V10Finder implements GFinder {
                                                                  ramlName, suggestedJavaName, CreationModel.INLINE_FROM_TYPE));
     }
 
-    if (typeDeclaration instanceof ObjectTypeHandlerPlugin) {
-      return putInFoundTypes(ramlName, V10GTypeFactory.createInlineType(ramlName, typeDeclaration));
+    if (typeDeclaration instanceof ObjectTypeDeclaration) {
+      return putInFoundTypes(ramlName, V10GTypeFactory.createInlineType(suggestedJavaName, typeDeclaration));
     }
 
     if (typeDeclaration instanceof UnionTypeDeclaration) {
-      return putInFoundTypes(ramlName, V10GTypeFactory.createUnion(ramlName, (UnionTypeDeclaration) typeDeclaration));
+      return putInFoundTypes(ramlName, V10GTypeFactory.createUnion(suggestedJavaName, (UnionTypeDeclaration) typeDeclaration));
     }
 
     if (typeDeclaration instanceof StringTypeDeclaration && !((StringTypeDeclaration) typeDeclaration).enumValues().isEmpty()) {

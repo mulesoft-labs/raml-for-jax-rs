@@ -29,11 +29,8 @@ import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.resources.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Created by Jean-Philippe Belanger on 12/25/16. Just potential zeroes and ones
@@ -67,7 +64,7 @@ public class RamlV10 {
     CurrentBuild currentBuild =
         new CurrentBuild(api, ExtensionManager.createExtensionManager());
 
-    currentBuild.constructClasses(new V10Finder(api));
+    currentBuild.constructClasses(new V10Finder(null, api));
     ResourceBuilder builder =
         new ResourceBuilder(currentBuild, new V10GResource(currentBuild, new GAbstractionFactory(), api
             .resources().get(0)), name, uri);

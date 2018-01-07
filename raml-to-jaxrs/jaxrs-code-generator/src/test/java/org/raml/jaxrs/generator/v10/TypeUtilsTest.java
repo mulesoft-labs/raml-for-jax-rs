@@ -16,7 +16,6 @@
 package org.raml.jaxrs.generator.v10;
 
 import org.junit.Test;
-import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GFinderListener;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.RamlModelBuilder;
@@ -25,7 +24,6 @@ import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
-import java.io.File;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,7 +118,7 @@ public class TypeUtilsTest {
       throw new AssertionError();
     } else {
       final Map<String, GType> decls = new HashMap<>();
-      new V10Finder(ramlModelResult.getApiV10())
+      new V10Finder(null, ramlModelResult.getApiV10())
           .findTypes(new GFinderListener() {
 
             @Override

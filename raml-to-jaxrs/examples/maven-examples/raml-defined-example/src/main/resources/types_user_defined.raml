@@ -30,7 +30,7 @@ types:
         Arm | Leg
     Person:
         type: Human
-#        discriminatorValue: person
+        discriminatorValue: person
         properties:
             name:
                 required: true
@@ -42,17 +42,15 @@ types:
                 type: Human[]
     Corpse:
         type: Human
-#        discriminatorValue: corpse
+        discriminatorValue: corpse
         properties:
             dateOfDeath:
                 required: true
                 type: date-only
     Human:
         type: object
-        (ramltojaxrs.types):
-            abstract: true
         discriminator: humanType
-#        discriminatorValue: human
+        discriminatorValue: human
         properties:
             humanType: string
             limbs: Limb

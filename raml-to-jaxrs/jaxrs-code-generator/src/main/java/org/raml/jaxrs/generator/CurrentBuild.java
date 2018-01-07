@@ -34,7 +34,9 @@ import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.v10.*;
 import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
 import org.raml.ramltopojo.RamlToPojo;
+import org.raml.ramltopojo.RamlToPojoBuilder;
 import org.raml.ramltopojo.ResultingPojos;
+import org.raml.ramltopojo.TypeFetchers;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -75,11 +77,33 @@ public class CurrentBuild {
 
   private File schemaRepository;
 
+  private RamlToPojo ramlToPojo;
+
   public CurrentBuild(Api api, ExtensionManager extensionManager) {
 
     this.api = api;
     this.extensionManager = extensionManager;
     this.configuration = Configuration.defaultConfiguration();
+  }
+
+  public RamlToPojo fetchRamlToPojoBuilder() {
+
+    if (ramlToPojo == null) {
+
+      ramlToPojo = RamlToPojoBuilder.builder(this.api)
+          .inPackage(getModelPackage())
+          .fetchTypes(TypeFetchers.fromAnywhere())
+          .build(FluentIterable.from(this.typeConfiguration()).transform(new Function<String, String>() {
+
+            @Nullable
+            @Override
+            public String apply(@Nullable String s) {
+              return "core." + s;
+            }
+          }).toList());
+    }
+
+    return ramlToPojo;
   }
 
 
@@ -408,7 +432,7 @@ public class CurrentBuild {
       return (V10GType) ((XmlSchemaTypeGenerator) builtTypes.get(typeDeclaration.type())).getType();
     }
 
-    RamlToPojo ramlToPojo = TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration());
+    RamlToPojo ramlToPojo = fetchRamlToPojoBuilder();
     if (ramlToPojo.isInline(typeDeclaration)) {
 
       TypeName typeName =
@@ -432,11 +456,11 @@ public class CurrentBuild {
 
   public V10GType fetchType(Resource resource, TypeDeclaration input) {
 
-    RamlToPojo ramlToPojo = TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration());
+    RamlToPojo ramlToPojo = fetchRamlToPojoBuilder();
     if (ramlToPojo.isInline(input)) {
 
       TypeName typeName =
-          TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
+          fetchRamlToPojoBuilder()
               .fetchType(Names.javaTypeName(resource, input), input);
 
       V10RamlToPojoGType type = new V10RamlToPojoGType(input);
@@ -445,7 +469,7 @@ public class CurrentBuild {
     } else {
 
       TypeName typeName =
-          TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
+          fetchRamlToPojoBuilder()
               .fetchType(input.type(), input);
 
       V10RamlToPojoGType type = new V10RamlToPojoGType(input);
@@ -467,11 +491,11 @@ public class CurrentBuild {
     }
 
 
-    RamlToPojo ramlToPojo = TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration());
+    RamlToPojo ramlToPojo = fetchRamlToPojoBuilder();
     if (ramlToPojo.isInline(typeDeclaration)) {
 
       TypeName typeName =
-          TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
+          fetchRamlToPojoBuilder()
               .fetchType(Names.javaTypeName(resource, method, response, typeDeclaration), typeDeclaration);
 
       V10RamlToPojoGType type =
@@ -481,7 +505,7 @@ public class CurrentBuild {
     } else {
 
       TypeName typeName =
-          TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
+          fetchRamlToPojoBuilder()
               .fetchType(typeDeclaration.type(), typeDeclaration);
 
       V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration.type(), typeDeclaration);
@@ -492,7 +516,7 @@ public class CurrentBuild {
 
   public V10GType fetchType(String name, TypeDeclaration typeDeclaration) {
     TypeName typeName =
-        TypeUtils.fetchRamlToPojoBuilder(this.getApi(), this.getModelPackage(), this.typeConfiguration())
+        fetchRamlToPojoBuilder()
             .fetchType(name, typeDeclaration);
 
     V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration);

@@ -28,7 +28,9 @@
         <module>simple-xml-example</module>
         <module>scalar-types</module>
         <module>simple-raml08</module>
+<!--
         <module>features</module>
+-->
         <module>references</module>
         <module>type-torture-test</module>
     </modules>

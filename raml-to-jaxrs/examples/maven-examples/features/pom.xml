@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>feature-plugins</module>
         <module>feature-raml-project</module>
     </modules>
 </project>

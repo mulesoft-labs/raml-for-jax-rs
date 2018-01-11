@@ -15,13 +15,23 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.ScalarTypes;
 import org.raml.jaxrs.generator.ramltypes.GParameter;
+import org.raml.ramltopojo.RamlToPojo;
+import org.raml.ramltopojo.RamlToPojoBuilder;
+import org.raml.ramltopojo.TypeFetchers;
+import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 11/28/16. Just potential zeroes and ones

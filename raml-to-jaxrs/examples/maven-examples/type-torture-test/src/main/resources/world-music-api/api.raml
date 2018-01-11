@@ -224,6 +224,8 @@ uses:
                     body:
                         application/json:
                             type: BizzareType
+                            properties:
+                              googoo: string
 /ViewingSession:
   /{viewingSessionId}:
     /Attachments:
@@ -257,7 +259,6 @@ uses:
       200:
         body:
           application/octet-stream:
-
 /songs:
   displayName: Songs
   description:  Access to all songs inside the music world library.

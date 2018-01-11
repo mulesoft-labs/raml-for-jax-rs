@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator.v10;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.ramltypes.GParameter;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.ramltypes.GResponseType;
@@ -32,14 +33,12 @@ import java.util.List;
  */
 public class V10GResponse implements GResponse {
 
-  private V10GResource v10GResource;
   private final Response response;
   private final List<GResponseType> bodies;
   private final List<GParameter> headers;
 
-  public V10GResponse(final V10TypeRegistry registry, final V10GResource v10GResource,
+  public V10GResponse(final CurrentBuild currentBuild, final V10GResource v10GResource,
                       final Method method, final Response response) {
-    this.v10GResource = v10GResource;
     this.response = response;
     this.bodies =
         Lists.transform(this.response.body(), new Function<TypeDeclaration, GResponseType>() {
@@ -47,14 +46,8 @@ public class V10GResponse implements GResponse {
           @Nullable
           @Override
           public GResponseType apply(@Nullable TypeDeclaration input) {
-            if (TypeUtils.shouldCreateNewClass(input,
-                                               input.parentTypes().toArray(new TypeDeclaration[0]))) {
-              return new V10GResponseType(input, registry.fetchType(v10GResource.implementation(),
-                                                                    method, response, input));
-            } else {
-
-              return new V10GResponseType(input, registry.fetchType(input.type(), input));
-            }
+            return new V10GResponseType(input, currentBuild.fetchType(v10GResource.implementation(),
+                                                                      method, response, input));
           }
         });
 
@@ -63,7 +56,7 @@ public class V10GResponse implements GResponse {
       @Nullable
       @Override
       public GParameter apply(@Nullable TypeDeclaration input) {
-        return new V10PGParameter(input, registry.fetchType(input.type(), input));
+        return new V10PGParameter(input, currentBuild.fetchType(input.type(), input));
       }
     });
   }

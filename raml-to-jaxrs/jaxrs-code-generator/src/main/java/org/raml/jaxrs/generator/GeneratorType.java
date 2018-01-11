@@ -17,6 +17,8 @@ package org.raml.jaxrs.generator;
 
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
 import static org.raml.jaxrs.generator.GObjectType.ENUMERATION_TYPE;
 import static org.raml.jaxrs.generator.GObjectType.JSON_OBJECT_TYPE;
@@ -40,7 +42,7 @@ public class GeneratorType {
       return new GeneratorType(JSON_OBJECT_TYPE, typeDeclaration);
     }
 
-    if (typeDeclaration.isUnion()) {
+    if (typeDeclaration.implementation() instanceof UnionTypeDeclaration) {
 
       return new GeneratorType(UNION_TYPE, typeDeclaration);
     }
@@ -50,7 +52,7 @@ public class GeneratorType {
       return new GeneratorType(XML_OBJECT_TYPE, typeDeclaration);
     }
 
-    if (typeDeclaration.isObject()) {
+    if (typeDeclaration.implementation() instanceof ObjectTypeDeclaration) {
 
       return new GeneratorType(PLAIN_OBJECT_TYPE, typeDeclaration);
     }
@@ -68,10 +70,6 @@ public class GeneratorType {
 
     this.objectType = objectType;
     this.declaredType = declaredType;
-  }
-
-  public GType getDeclaredType() {
-    return declaredType;
   }
 
   public GObjectType getObjectType() {

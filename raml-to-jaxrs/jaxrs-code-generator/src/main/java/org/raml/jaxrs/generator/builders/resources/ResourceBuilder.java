@@ -159,6 +159,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
 
+
     methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
         .onMethod(new ResourceContextImpl(build),
                   gMethod, methodSpec);
@@ -177,6 +178,8 @@ public class ResourceBuilder implements ResourceGenerator {
     ParameterSpec parameterSpec = createParamteter(gRequest);
     methodSpec.addParameter(parameterSpec);
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
+
+    methodSpec = build.withResourceListeners().onMethod(new ResourceContextImpl(build), gMethod, methodSpec);
 
     methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
         .onMethod(new ResourceContextImpl(build),
@@ -254,8 +257,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
       responseClass =
           build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_CREATION, gMethod)
-              .onMethod(new ResourceContextImpl(build),
-                        gMethod, responseClass);
+              .onResponseClass(new ResourceContextImpl(build),
+                               gMethod, responseClass);
 
       if (responseClass == null) {
 
@@ -412,8 +415,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
       responseClass =
           build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod)
-              .onMethod(new ResourceContextImpl(build),
-                        gMethod, responseClass);
+              .onResponseClass(new ResourceContextImpl(build),
+                               gMethod, responseClass);
 
       if (responseClass == null) {
 
@@ -440,7 +443,7 @@ public class ResourceBuilder implements ResourceGenerator {
       if (responseType.type() != null) {
         TypeName typeName = responseType.type().defaultJavaTypeName(build.getModelPackage());
         if (typeName == null) {
-          throw new GenerationException(responseType + " was not seen before");
+          throw new GenerationException(responseType.mediaType() + "," + responseType.type().name() + " was not seen before");
         }
 
         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
@@ -510,15 +513,19 @@ public class ResourceBuilder implements ResourceGenerator {
 
     for (GParameter gParameter : gMethod.queryParameters()) {
 
-      methodSpec.addParameter(
-          ParameterSpec
-              .builder(
-                       gParameter.type().defaultJavaTypeName(build.getModelPackage()),
-                       Names.methodName(gParameter.name()))
-              .addAnnotation(
-                             AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
-                                 .build())
-              .build());
+      ParameterSpec.Builder parameterSpec = ParameterSpec
+          .builder(
+                   gParameter.type().defaultJavaTypeName(this.build.getModelPackage()),
+                   Names.methodName(gParameter.name()))
+          .addAnnotation(
+                         AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
+                             .build());
+      if (gParameter.defaultValue() != null) {
+        parameterSpec.addAnnotation(
+            AnnotationSpec.builder(DefaultValue.class)
+                .addMember("value", "$S", gParameter.defaultValue()).build());
+      }
+      methodSpec.addParameter(parameterSpec.build());
     }
 
     for (GParameter gParameter : gMethod.headers()) {

@@ -15,13 +15,7 @@
  */
 package server.humanity;
 
-import example.model.ArmImpl;
-import example.model.CorpseImpl;
-import example.model.Gender;
-import example.model.Human;
-import example.model.HumanId;
-import example.model.Limb;
-import example.model.PersonImpl;
+import example.model.*;
 import example.types.Complexhumans;
 import example.types.Humans;
 
@@ -52,7 +46,7 @@ public class ComplexHumanityImpl implements Complexhumans {
       CorpseImpl ci = new CorpseImpl();
       ci.setDateOfDeath(new Date());
       pi.setSiblings(Collections.<Human>singletonList(ci));
-      pi.setLimbs(new Limb(new ArmImpl()));
+      pi.setLimbs(new LimbImpl(new ArmImpl()));
       return GetComplexhumansByIdResponse.respond200WithApplicationJson(pi);
     } else {
 
@@ -82,7 +76,7 @@ public class ComplexHumanityImpl implements Complexhumans {
       CorpseImpl ci = new CorpseImpl();
       ci.setDateOfDeath(new Date());
       pi.setSiblings(Collections.<Human>singletonList(ci));
-      pi.setLimbs(new Limb(new ArmImpl()));
+      pi.setLimbs(new LimbImpl(new ArmImpl()));
       return GetComplexhumansResponse.respond200WithApplicationJson(pi);
     } else {
 

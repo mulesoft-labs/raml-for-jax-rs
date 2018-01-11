@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Message",
+  "type": "object",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "drs": {
+      "type": "array",
+      "items": {
+        "$ref": "dr"
+      }
+    }
+  }
+}

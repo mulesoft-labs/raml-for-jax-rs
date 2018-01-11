@@ -22,20 +22,6 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  */
 public enum CreationModel {
 
-  NEVER_INLINE {
-
-    @Override
-    public boolean isInline(TypeDeclaration t) {
-      return false;
-    }
-  },
-  ALWAYS_INLINE {
-
-    @Override
-    public boolean isInline(TypeDeclaration t) {
-      return true;
-    }
-  },
   INLINE_FROM_TYPE {
 
     @Override

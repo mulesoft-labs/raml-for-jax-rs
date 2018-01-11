@@ -19,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.handlers.SimpleJacksonTypes;
 
+import java.util.List;
+
 /**
  * Created by Jean-Philippe Belanger on 4/17/17. Just potential zeroes and ones
  */
@@ -27,6 +29,11 @@ public class ProducedJsonValue {
 
   @JsonProperty
   int id;
+
+  @JsonProperty
+  private ProducedJsonSubValue userInfo;
+  @JsonProperty
+  private List<ProducedJsonSubValue> accounts;
 
   @JsonProperty
   public String getName() {

@@ -7,25 +7,32 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>examples</artifactId>
-        <version>2.1.1-SNAPSHOT</version>
+        <version>2.2.0-SNAPSHOT</version>
     </parent>
+
+    <!-- Repeating here for documentation -->
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
 
     <artifactId>maven-examples</artifactId>
     <packaging>pom</packaging>
     <modules>
+<!--
+        <module>local-test</module>
+-->
         <module>raml-defined-example</module>
         <module>jaxb-example</module>
         <module>simple-json-example</module>
         <module>simple-xml-example</module>
         <module>scalar-types</module>
-        <module>type-torture-test</module>
         <module>simple-raml08</module>
-        <module>posti-smartship</module>
-        <module>features</module>
 <!--
-        <module>marketing-example</module>
+        <module>features</module>
 -->
-
+        <module>references</module>
+        <module>type-torture-test</module>
     </modules>
     <build>
         <pluginManagement>
@@ -33,7 +40,7 @@
                 <plugin>
                     <groupId>org.raml.jaxrs</groupId>
                     <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
-                    <version>2.1.1-SNAPSHOT</version>
+                    <version>2.2.0-SNAPSHOT</version>
                     <executions>
                         <execution>
                             <goals>

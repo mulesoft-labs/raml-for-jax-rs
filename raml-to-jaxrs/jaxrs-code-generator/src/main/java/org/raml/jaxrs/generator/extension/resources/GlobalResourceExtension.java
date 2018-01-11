@@ -24,6 +24,9 @@ import org.raml.jaxrs.generator.v08.V08GResource;
 import org.raml.jaxrs.generator.v08.V08Method;
 import org.raml.jaxrs.generator.v08.V08Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Jean-Philippe Belanger on 1/22/17. Just potential zeroes and ones
  *
@@ -49,14 +52,57 @@ public interface GlobalResourceExtension<M extends GMethod, R extends GResource,
         }
 
         @Override
-        public TypeSpec.Builder onMethod(ResourceContext context, V08Method method, TypeSpec.Builder typeSpec) {
+        public TypeSpec.Builder onResponseClass(ResourceContext context, V08Method method, TypeSpec.Builder typeSpec) {
           return typeSpec;
         }
 
         @Override
-        public MethodSpec.Builder onMethod(ResourceContext context, V08Response method, MethodSpec.Builder methodSpec) {
+        public MethodSpec.Builder onMethod(ResourceContext context, V08Response responseMethod, MethodSpec.Builder methodSpec) {
           return methodSpec;
         }
       };
 
+  public class Composite<M extends GMethod, R extends GResource, S extends GResponse> implements GlobalResourceExtension<M, R, S> {
+
+    private List<GlobalResourceExtension<M, R, S>> extensions = new ArrayList<>();
+
+    @Override
+    public TypeSpec.Builder onResource(ResourceContext context, R resource, TypeSpec.Builder typeSpec) {
+
+      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+        typeSpec = extension.onResource(context, resource, typeSpec);
+      }
+      return typeSpec;
+    }
+
+    @Override
+    public MethodSpec.Builder onMethod(ResourceContext context, M method, MethodSpec.Builder methodSpec) {
+      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+        methodSpec = extension.onMethod(context, method, methodSpec);
+      }
+      return methodSpec;
+    }
+
+    @Override
+    public TypeSpec.Builder onResponseClass(ResourceContext context, M method, TypeSpec.Builder typeSpec) {
+
+      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+        typeSpec = extension.onResponseClass(context, method, typeSpec);
+      }
+      return typeSpec;
+    }
+
+    @Override
+    public MethodSpec.Builder onMethod(ResourceContext context, S responseMethod, MethodSpec.Builder methodSpec) {
+      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+        methodSpec = extension.onMethod(context, responseMethod, methodSpec);
+      }
+      return methodSpec;
+    }
+
+    public void addExtension(GlobalResourceExtension<M, R, S> extension) {
+
+      extensions.add(extension);
+    }
+  }
 }

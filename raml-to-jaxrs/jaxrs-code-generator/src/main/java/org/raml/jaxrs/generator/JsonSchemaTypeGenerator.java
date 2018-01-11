@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.io.Files;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.sun.codemodel.JCodeModel;
@@ -24,12 +25,13 @@ import org.jsonschema2pojo.SchemaGenerator;
 import org.jsonschema2pojo.SchemaMapper;
 import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
-import org.raml.jaxrs.generator.builders.CodeContainer;
-import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
-import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.builders.*;
+import org.raml.jaxrs.generator.ramltypes.GType;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.UUID;
 
 /**
  * Created by Jean-Philippe Belanger on 11/20/16. Just potential zeroes and ones
@@ -38,12 +40,14 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
 
   private final CurrentBuild build;
   private final String pack;
+  private final GType type;
   private final ClassName name;
   private final String schema;
 
-  public JsonSchemaTypeGenerator(CurrentBuild build, String pack, ClassName name, String schema) {
+  public JsonSchemaTypeGenerator(CurrentBuild build, String pack, GType type, ClassName name, String schema) {
     this.build = build;
     this.pack = pack;
+    this.type = type;
     this.name = name;
     this.schema = schema;
   }
@@ -56,13 +60,20 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
                                                  new SchemaGenerator());
     final JCodeModel codeModel = new JCodeModel();
 
+    File schemaFile = File.createTempFile("schema", "json", build.getSchemaRepository());
+    Files.write(schema, schemaFile, Charset.defaultCharset());
     try {
-      mapper.generate(codeModel, name.simpleName(), pack, schema);
+
+      mapper.generate(codeModel, name.simpleName(), pack, schemaFile.toURL());
     } catch (IOException e) {
       throw new GenerationException(e);
     }
 
     container.into(codeModel);
+  }
+
+  public GType getType() {
+    return type;
   }
 
   @Override

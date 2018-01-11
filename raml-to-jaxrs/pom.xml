@@ -27,9 +27,7 @@
         <module>jaxrs-code-generator</module>
         <module>raml-to-jaxrs-maven-plugin</module>
         <module>raml-to-jaxrs-cli</module>
-<!--
         <module>raml-to-jaxrs-gradle-plugin</module>
--->
     </modules>
     <properties>
         <licensePath>LICENSE_HEADER.txt</licensePath>

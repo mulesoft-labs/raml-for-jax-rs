@@ -15,6 +15,8 @@
 
     <modules>
         <module>jaxrs-to-raml-maven-examples</module>
+<!--
         <module>jaxrs-to-raml-gradle-examples</module>
+-->
     </modules>
 </project>

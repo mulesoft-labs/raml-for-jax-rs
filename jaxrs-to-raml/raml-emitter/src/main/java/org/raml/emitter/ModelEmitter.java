@@ -77,13 +77,11 @@ public class ModelEmitter implements Emitter {
     RamlDocumentBuilder documentBuilder = RamlDocumentBuilder.document();
     try {
       documentBuilder
-          .with(
+          .title(modelApi.getTitle())
+          .baseUri(modelApi.getBaseUri())
+          .mediaType(modelApi.getDefaultMediaType().toStringRepresentation())
+          .version(modelApi.getVersion());
 
-                property("title", modelApi.getTitle()),
-                property("baseUri", modelApi.getBaseUri()),
-                property("version", modelApi.getVersion()),
-                property("mediaType", modelApi.getDefaultMediaType().toStringRepresentation())
-          );
       annotationTypes(documentBuilder, modelApi);
       resources(documentBuilder, modelApi);
 

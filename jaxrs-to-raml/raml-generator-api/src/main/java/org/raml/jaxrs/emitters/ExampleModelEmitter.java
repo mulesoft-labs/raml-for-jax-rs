@@ -80,6 +80,8 @@ public class ExampleModelEmitter implements LocalEmitter {
           if (hasAnExample(ramlType)) {
 
             emitOneExample(ramlType);
+          } else {
+            examplesBuilder.withNoProperties();
           }
 
           typeBuilder.withExamples(examplesBuilder);

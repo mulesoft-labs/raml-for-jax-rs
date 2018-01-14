@@ -16,21 +16,16 @@
 package org.raml.jaxrs.handlers;
 
 import com.google.common.base.Optional;
-import org.raml.api.RamlEntity;
 import org.raml.api.Annotable;
+import org.raml.api.RamlEntity;
+import org.raml.jaxrs.plugins.TypeHandler;
+import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.jaxrs.plugins.TypeHandler;
-import org.raml.jaxrs.plugins.TypeScanner;
-import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.types.Cast;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.*;
 import java.beans.Introspector;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -44,15 +39,6 @@ import java.lang.reflect.Type;
  */
 public class SimpleJaxbTypes implements TypeHandler {
 
-  @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer,
-                        RamlEntity type)
-      throws IOException {
-
-    String name = writeBody(registry, type);
-    writer.appendLine("type", name);
-
-  }
 
   @Override
   public String writeType(TypeRegistry registry, RamlEntity type) throws IOException {

@@ -16,12 +16,11 @@
 package org.raml.jaxrs.handlers;
 
 import org.raml.api.RamlEntity;
+import org.raml.jaxrs.plugins.TypeHandler;
+import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.jaxrs.plugins.TypeHandler;
-import org.raml.jaxrs.plugins.TypeScanner;
-import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
@@ -36,24 +35,12 @@ import java.util.List;
 public class BeanLikeTypes implements TypeHandler {
 
   @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer,
-                        RamlEntity type)
-      throws IOException {
-
-    String name = writeBody(registry, writer, type);
-
-    // find fields
-    writer.appendLine("type", name);
-
-  }
-
-  @Override
   public String writeType(TypeRegistry registry, RamlEntity type) throws IOException {
 
-    return writeBody(registry, null, type);
+    return writeBody(registry, type);
   }
 
-  private String writeBody(final TypeRegistry registry, IndentedAppendable writer,
+  private String writeBody(final TypeRegistry registry,
                            final RamlEntity bodyType)
       throws IOException {
 

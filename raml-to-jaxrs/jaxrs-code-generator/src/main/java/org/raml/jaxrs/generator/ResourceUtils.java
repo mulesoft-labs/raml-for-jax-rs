@@ -17,14 +17,9 @@ package org.raml.jaxrs.generator;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GParameter;
-import org.raml.jaxrs.generator.ramltypes.GRequest;
-import org.raml.jaxrs.generator.ramltypes.GResource;
-import org.raml.jaxrs.generator.ramltypes.GResponse;
+import org.raml.jaxrs.generator.ramltypes.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

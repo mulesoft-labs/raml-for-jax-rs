@@ -22,8 +22,6 @@ import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import java.util.List;
-
 /**
  * Created by Jean-Philippe Belanger on 3/4/17. Just potential zeroes and ones
  */

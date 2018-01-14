@@ -19,19 +19,14 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-
 import org.glassfish.jersey.server.ResourceConfig;
-import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 import org.raml.utilities.builder.NonNullableField;
 
-import java.nio.file.Files;
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.raml.utilities.builder.Preconditions.checkSet;
 import static org.raml.utilities.builder.Preconditions.checkUnset;

@@ -15,12 +15,12 @@
  */
 package org.raml.jaxrs.converter.model;
 
+import org.raml.api.RamlApi;
+import org.raml.api.RamlMediaType;
+import org.raml.api.RamlResource;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.model.JaxRsApplication;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlApi;
-import org.raml.api.RamlResource;
 
 import java.util.List;
 

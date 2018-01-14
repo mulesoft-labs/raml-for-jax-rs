@@ -15,24 +15,18 @@
  */
 package org.raml.jaxrs.parser;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import org.raml.jaxrs.model.JaxRsApplication;
-import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.analyzers.Analyzers;
 import org.raml.jaxrs.parser.gatherers.JerseyGatherer;
-import org.raml.jaxrs.parser.model.JerseyJaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
 import org.raml.jaxrs.parser.util.ClassLoaderUtils;
 import org.raml.utilities.format.Joiners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;

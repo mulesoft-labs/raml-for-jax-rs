@@ -18,7 +18,6 @@ package org.raml.jaxrs.parser.analyzers;
 import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
 
-import java.util.List;
 import java.util.Set;
 
 public class Analyzers {

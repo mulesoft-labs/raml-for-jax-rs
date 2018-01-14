@@ -36,7 +36,6 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.Collections;
 
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;

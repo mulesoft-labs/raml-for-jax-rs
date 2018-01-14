@@ -17,7 +17,6 @@ package org.raml.api;
 
 import com.google.common.base.Optional;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 public interface RamlResourceMethod extends Annotable {

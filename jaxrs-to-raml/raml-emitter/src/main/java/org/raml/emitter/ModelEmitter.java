@@ -44,7 +44,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.String.format;
 import static org.raml.builder.BodyBuilder.body;
 import static org.raml.builder.NodeBuilders.property;
 import static org.raml.v2.api.model.v10.RamlFragment.Default;
@@ -215,8 +214,8 @@ public class ModelEmitter implements Emitter {
     for (RamlHeaderParameter parameter : headerParameters) {
 
       TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
-      ParameterEmitter parameterEmitter = new ParameterEmitter(null, typeRegistry, typeHandler);
-      ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter, builder);
+      ParameterEmitter parameterEmitter = new ParameterEmitter(typeRegistry, typeHandler);
+      ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter);
       builder.withHeaderParameters(parameterBuilder);
     }
   }
@@ -227,8 +226,8 @@ public class ModelEmitter implements Emitter {
     for (RamlQueryParameter parameter : queryParameters) {
 
       TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
-      ParameterEmitter parameterEmitter = new ParameterEmitter(null, typeRegistry, typeHandler);
-      ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter, builder);
+      ParameterEmitter parameterEmitter = new ParameterEmitter(typeRegistry, typeHandler);
+      ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter);
       builder.withQueryParameter(parameterBuilder);
     }
 

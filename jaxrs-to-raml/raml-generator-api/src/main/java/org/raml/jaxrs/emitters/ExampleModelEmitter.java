@@ -16,7 +16,6 @@
 package org.raml.jaxrs.emitters;
 
 import com.google.common.base.Optional;
-import org.raml.api.RamlResourceMethod;
 import org.raml.builder.ExamplesBuilder;
 import org.raml.builder.PropertyValueBuilder;
 import org.raml.builder.SupportsProperties;
@@ -178,8 +177,4 @@ public class ExampleModelEmitter implements LocalEmitter {
     return false;
   }
 
-  @Override
-  public void emit(RamlResourceMethod method) throws IOException {
-
-  }
 }

@@ -21,10 +21,9 @@ import org.raml.builder.BodyBuilder;
 import org.raml.builder.MethodBuilder;
 import org.raml.builder.ResponseBuilder;
 import org.raml.builder.TypeBuilder;
-import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
-import org.raml.utilities.IndentedAppendable;
+import org.raml.jaxrs.types.TypeRegistry;
 
 import java.io.IOException;
 
@@ -37,36 +36,6 @@ public class DefaultResponseHandler implements ResponseHandler {
   @Override
   public int handlesResponses(RamlResourceMethod method) {
     return 0;
-  }
-
-  @Override
-  public void writeResponses(TypeRegistry typeRegistry, IndentedAppendable writer,
-                             RamlResourceMethod method, TypeSelector selector)
-      throws IOException {
-
-    if (!method.getProducedType().isPresent()) {
-      return;
-    }
-
-    // We have no clue what the error responses are, however, we want to generate
-    // well formed raml, so we pick one.
-    writer.appendLine("200:");
-    writer.indent();
-
-    writer.appendLine("body:");
-    for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
-
-      writer.indent();
-      writer.appendLine(producedMediaType.toStringRepresentation() + ":");
-
-      writer.indent();
-      TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-      typeHandler.writeType(typeRegistry, writer, method.getProducedType().get());
-      writer.outdent();
-      writer.outdent();
-    }
-
-    writer.outdent();
   }
 
   @Override

@@ -15,17 +15,17 @@
  */
 package org.raml.jaxrs.codegen.maven;
 
+import org.apache.maven.shared.utils.io.DirectoryScanner;
+import org.apache.maven.shared.utils.io.MatchPatterns;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.shared.utils.io.DirectoryScanner;
-import org.apache.maven.shared.utils.io.MatchPatterns;
-
-import static java.util.Arrays.*;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.regex.Pattern.quote;
 
 /**

@@ -17,23 +17,8 @@ package org.raml.jaxrs.converter.model;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-
-import org.raml.api.RamlFormParameter;
-import org.raml.api.RamlHeaderParameter;
-import org.raml.api.RamlMultiFormDataParameter;
-import org.raml.api.RamlSupportedAnnotation;
-import org.raml.api.ScalarType;
-import org.raml.jaxrs.model.JaxRsFormParameter;
-import org.raml.jaxrs.model.JaxRsHeaderParameter;
-import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
-import org.raml.jaxrs.model.JaxRsResource;
-import org.raml.jaxrs.model.JaxRsMethod;
-import org.raml.jaxrs.model.JaxRsQueryParameter;
-import org.raml.api.RamlMediaType;
-import org.raml.api.RamlQueryParameter;
-import org.raml.api.RamlResource;
-import org.raml.api.RamlResourceMethod;
-import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
+import org.raml.api.*;
+import org.raml.jaxrs.model.*;
 
 import java.util.List;
 

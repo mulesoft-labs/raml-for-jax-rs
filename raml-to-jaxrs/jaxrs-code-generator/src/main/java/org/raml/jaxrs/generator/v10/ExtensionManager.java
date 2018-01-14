@@ -15,9 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.common.collect.SetMultimap;
 import org.raml.jaxrs.generator.GenerationException;
 

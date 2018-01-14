@@ -24,7 +24,6 @@ import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.types.Cast;
 
 import java.beans.Introspector;
@@ -38,24 +37,6 @@ import java.lang.reflect.Type;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 public class SimpleJacksonTypes implements TypeHandler {
-
-  @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer,
-                        RamlEntity type)
-      throws IOException {
-
-    Type javaType = type.getType();
-    Class c = Cast.toClass(javaType);
-    if (c.isEnum()) {
-
-      String name = writeEnum(registry, c, type);
-      writer.appendLine("type", name);
-    } else {
-
-      String name = writeBody(registry, type);
-      writer.appendLine("type", name);
-    }
-  }
 
   @Override
   public String writeType(TypeRegistry registry, RamlEntity type) throws IOException {

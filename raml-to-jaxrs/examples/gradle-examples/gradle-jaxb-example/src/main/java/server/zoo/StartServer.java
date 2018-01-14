@@ -25,7 +25,6 @@ import org.raml.test.model.AnimalImpl;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * Created by Jean-Philippe Belanger on 11/3/16. Just potential zeroes and ones

@@ -17,14 +17,12 @@ package org.raml.jaxrs.parser.analyzers;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.RuntimeResource;
 import org.glassfish.jersey.server.model.RuntimeResourceModel;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
+import java.util.List;
 
 class JerseyBridgeImpl implements JerseyBridge {
 

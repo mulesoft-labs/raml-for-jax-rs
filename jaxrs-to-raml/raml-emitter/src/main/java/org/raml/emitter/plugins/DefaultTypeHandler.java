@@ -17,34 +17,16 @@ package org.raml.emitter.plugins;
 
 import org.raml.api.RamlEntity;
 import org.raml.api.ScalarType;
-import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.jaxrs.plugins.TypeHandler;
-import org.raml.utilities.IndentedAppendable;
+import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
-
-import static java.lang.String.format;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 public class DefaultTypeHandler implements TypeHandler {
-
-  @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer,
-                        RamlEntity bodyType)
-      throws IOException {
-
-    if (ScalarType.fromType(bodyType.getType()).isPresent()) {
-
-      writer.appendLine("type", ScalarType.fromType(bodyType.getType()).get().getRamlSyntax());
-    } else {
-
-      Class castClass = Cast.toClass(bodyType.getType());
-      writer.appendLine("type", castClass.getSimpleName());
-    }
-  }
 
   @Override
   public String writeType(TypeRegistry registry, RamlEntity bodyType) throws IOException {

@@ -19,7 +19,6 @@ import org.raml.jaxrs.parser.source.SourceParser;
 
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Set;
 
 public class JaxRsParsers {

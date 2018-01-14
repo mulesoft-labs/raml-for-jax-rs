@@ -17,11 +17,6 @@ package org.raml.jaxrs.plugin
 
 import org.gradle.api.Project
 
-import java.nio.file.Path
-import java.util.List
-
-import static com.google.common.base.Preconditions.checkNotNull
-
 class PluginConfiguration {
 
   File inputPath

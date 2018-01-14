@@ -19,19 +19,17 @@ import com.google.common.io.Files;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import com.sun.codemodel.JCodeModel;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.*;
 import org.jsonschema2pojo.rules.RuleFactory;
-import org.raml.jaxrs.generator.builders.*;
+import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
+import org.raml.jaxrs.generator.builders.BuildPhase;
+import org.raml.jaxrs.generator.builders.CodeContainer;
+import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.UUID;
 
 /**
  * Created by Jean-Philippe Belanger on 11/20/16. Just potential zeroes and ones

@@ -17,9 +17,6 @@ package org.raml.api;
 
 import com.google.common.base.Optional;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 /**
  * Created by barnabef on 4/12/17.
  */

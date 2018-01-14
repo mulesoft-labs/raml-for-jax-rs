@@ -17,10 +17,7 @@ package org.raml.jaxrs.generator.v10;
 
 import org.raml.jaxrs.generator.ramltypes.GParameter;
 import org.raml.jaxrs.generator.ramltypes.GType;
-import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
 
 /**
  * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones

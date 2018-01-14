@@ -23,7 +23,6 @@ import org.raml.builder.MethodBuilder;
 import org.raml.builder.ParameterBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -36,18 +35,16 @@ import java.io.IOException;
  */
 public class ParameterEmitter {
 
-  private IndentedAppendable writer;
   private final TypeRegistry typeRegistry;
   private final TypeHandler typeHandler;
 
-  public ParameterEmitter(IndentedAppendable writer, TypeRegistry typeRegistry,
+  public ParameterEmitter(TypeRegistry typeRegistry,
                           TypeHandler typeHandler) {
-    this.writer = writer;
     this.typeRegistry = typeRegistry;
     this.typeHandler = typeHandler;
   }
 
-  public ParameterBuilder emit(RamlParameter parameter, MethodBuilder builder) throws IOException {
+  public ParameterBuilder emit(RamlParameter parameter) throws IOException {
 
     ParameterBuilder parameterBuilder =
         ParameterBuilder.parameter(parameter.getName()).ofType(typeHandler.writeType(typeRegistry, parameter.getEntity()));
@@ -93,39 +90,4 @@ public class ParameterEmitter {
 
     return parameterBuilder;
   }
-
-  public void emit(RamlParameter parameter) throws IOException {
-    writer.appendLine(String.format("%s:", parameter.getName()));
-    writer.indent();
-
-    typeHandler.writeType(typeRegistry, writer, parameter.getEntity());
-
-    if (parameter.getDefaultValue().isPresent()) {
-      writer.appendEscapedLine("default", parameter.getDefaultValue().get());
-      writer.appendLine("required", "false");
-    } else if (parameter.getAnnotation(NotNull.class).isPresent()) {
-      writer.appendLine("required", "true");
-    }
-
-    Optional<ScalarType> ramlType = ScalarType.fromType(parameter.getEntity().getType());
-    if (ramlType.isPresent()) {
-      if (ramlType.get() == ScalarType.INTEGER || ramlType.get() == ScalarType.NUMBER) {
-        if (parameter.getAnnotation(Min.class).isPresent()) {
-          writer.appendLine("minimum", String.valueOf(parameter.getAnnotation(Min.class).get().value()));
-        }
-        if (parameter.getAnnotation(Max.class).isPresent()) {
-          writer.appendLine("maximum", String.valueOf(parameter.getAnnotation(Max.class).get().value()));
-        }
-      }
-      if (parameter.getAnnotation(Size.class).isPresent()) {
-        if (ramlType.get() == ScalarType.STRING) {
-          writer.appendLine("minLength", String.valueOf(parameter.getAnnotation(Size.class).get().min()));
-          writer.appendLine("maxLength", String.valueOf(parameter.getAnnotation(Size.class).get().max()));
-        }
-      }
-    }
-
-    writer.outdent();
-  }
-
 }

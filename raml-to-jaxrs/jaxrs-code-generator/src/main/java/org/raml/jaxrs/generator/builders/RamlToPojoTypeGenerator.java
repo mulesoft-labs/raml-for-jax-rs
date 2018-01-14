@@ -16,8 +16,6 @@
 package org.raml.jaxrs.generator.builders;
 
 import com.squareup.javapoet.TypeName;
-import org.raml.ramltopojo.CreationResult;
-import org.raml.ramltopojo.EventType;
 import org.raml.ramltopojo.RamlToPojo;
 import org.raml.ramltopojo.ResultingPojos;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;

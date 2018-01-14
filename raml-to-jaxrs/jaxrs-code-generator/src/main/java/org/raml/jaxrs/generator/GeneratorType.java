@@ -15,17 +15,11 @@
  */
 package org.raml.jaxrs.generator;
 
-import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
-import static org.raml.jaxrs.generator.GObjectType.ENUMERATION_TYPE;
-import static org.raml.jaxrs.generator.GObjectType.JSON_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.GObjectType.PLAIN_OBJECT_TYPE;
-import static org.raml.jaxrs.generator.GObjectType.SCALAR;
-import static org.raml.jaxrs.generator.GObjectType.UNION_TYPE;
-import static org.raml.jaxrs.generator.GObjectType.XML_OBJECT_TYPE;
+import static org.raml.jaxrs.generator.GObjectType.*;
 
 /**
  * Created by Jean-Philippe Belanger on 12/7/16. Just potential zeroes and ones

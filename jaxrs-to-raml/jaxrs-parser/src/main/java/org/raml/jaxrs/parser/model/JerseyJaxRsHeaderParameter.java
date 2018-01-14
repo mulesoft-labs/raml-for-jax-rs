@@ -16,7 +16,6 @@
 package org.raml.jaxrs.parser.model;
 
 import com.google.common.base.Optional;
-
 import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsEntity;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;

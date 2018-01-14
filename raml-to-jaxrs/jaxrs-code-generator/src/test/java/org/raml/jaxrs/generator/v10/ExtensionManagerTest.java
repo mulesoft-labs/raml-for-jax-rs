@@ -18,10 +18,9 @@ package org.raml.jaxrs.generator.v10;
 import org.junit.Test;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created. There, you have it.

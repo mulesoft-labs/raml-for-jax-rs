@@ -16,9 +16,9 @@
 package org.raml.jaxrs.gradle.codegen
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.*
-import org.gradle.api.InvalidUserDataException
 import org.gradle.api.GradleException
+import org.gradle.api.InvalidUserDataException
+import org.gradle.api.tasks.*
 import org.jsonschema2pojo.AnnotationStyle
 import org.raml.jaxrs.generator.Configuration
 import org.raml.jaxrs.generator.RamlScanner

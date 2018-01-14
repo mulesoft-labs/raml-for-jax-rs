@@ -30,7 +30,6 @@ import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v08.api.Api;
 import org.raml.v2.api.model.v08.resources.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 

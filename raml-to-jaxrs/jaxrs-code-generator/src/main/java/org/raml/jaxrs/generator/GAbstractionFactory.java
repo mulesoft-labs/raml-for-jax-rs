@@ -20,6 +20,7 @@ import org.raml.jaxrs.generator.v08.V08GResource;
 import org.raml.jaxrs.generator.v08.V08TypeRegistry;
 import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.v2.api.model.v08.resources.Resource;
+
 import java.util.Set;
 
 /**

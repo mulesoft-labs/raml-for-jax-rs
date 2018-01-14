@@ -16,15 +16,8 @@
 package org.raml.jaxrs.cli;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.FluentIterable;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.raml.core.DefaultRamlConfiguration;
 import org.raml.jaxrs.raml.core.OneStopShop;

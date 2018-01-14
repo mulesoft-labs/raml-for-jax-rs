@@ -17,8 +17,6 @@ package org.raml.jaxrs.generator.v08;
 
 import com.google.common.io.Files;
 import org.raml.jaxrs.generator.*;
-import org.raml.jaxrs.generator.v10.TypeUtils;
-import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v08.api.Api;
 import org.raml.v2.api.model.v08.api.GlobalSchema;
 import org.raml.v2.api.model.v08.bodies.BodyLike;
@@ -30,10 +28,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Jean-Philippe Belanger on 12/6/16. Just potential zeroes and ones

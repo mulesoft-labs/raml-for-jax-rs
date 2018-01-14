@@ -20,7 +20,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
-import org.raml.ramltopojo.extensions.ObjectTypeHandlerPlugin;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.api.Library;
 import org.raml.v2.api.model.v10.bodies.Response;
@@ -32,11 +31,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Jean-Philippe Belanger on 12/6/16. Just potential zeroes and ones

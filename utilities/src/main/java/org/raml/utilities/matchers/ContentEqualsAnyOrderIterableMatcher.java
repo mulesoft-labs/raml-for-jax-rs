@@ -16,7 +16,6 @@
 package org.raml.utilities.matchers;
 
 import com.google.common.collect.Iterables;
-
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 

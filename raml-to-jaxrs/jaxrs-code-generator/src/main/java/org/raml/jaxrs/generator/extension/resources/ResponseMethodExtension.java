@@ -17,7 +17,6 @@ package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.MethodSpec;
 import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 
 import java.util.List;

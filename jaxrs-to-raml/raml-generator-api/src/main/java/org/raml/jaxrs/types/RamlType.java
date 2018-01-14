@@ -25,10 +25,10 @@ import org.raml.api.ScalarType;
 import org.raml.builder.RamlDocumentBuilder;
 import org.raml.builder.TypeBuilder;
 import org.raml.builder.TypeDeclarationBuilder;
-import org.raml.jaxrs.emitters.*;
-import org.raml.utilities.IndentedAppendable;
-import org.raml.utilities.format.Joiner;
-import org.raml.utilities.format.Joiners;
+import org.raml.jaxrs.emitters.Emittable;
+import org.raml.jaxrs.emitters.ExampleModelEmitter;
+import org.raml.jaxrs.emitters.LocalEmitter;
+import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
@@ -40,8 +40,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.raml.builder.NodeBuilders.property;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -82,46 +80,6 @@ public class RamlType implements Annotable, Emittable {
   public void setEnumValues(Collection<String> values) {
 
     this.enumValues = values;
-  }
-
-  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
-    Type ttype = type.getType();
-    Class c = Cast.toClass(ttype);
-    writer.appendLine(c.getSimpleName() + ":");
-    writer.indent();
-
-    if (superTypes != null && superTypes.size() > 0) {
-      writer.appendList("type", Collections2.transform(superTypes, new Function<RamlType, String>() {
-
-        @Override
-        public String apply(RamlType input) {
-          return input.getTypeName();
-        }
-      }).toArray(new String[] {}));
-    }
-
-    emitter.emit(this);
-
-    writeExample(writer);
-
-    if (type.getDescription().isPresent()) {
-      writer.appendEscapedLine("description", type.getDescription().get());
-    }
-
-    if (enumValues != null) {
-      writer.appendLine("enum", Joiner.on(",").withPrefix("[").withSuffix("]").join(enumValues));
-    }
-
-    if (properties.values().size() > 0) {
-      writer.appendLine("properties:");
-      writer.indent();
-      for (RamlProperty ramlProperty : properties.values()) {
-
-        ramlProperty.write(emitter, writer);
-      }
-      writer.outdent();
-    }
-    writer.outdent();
   }
 
   public void write(List<RamlSupportedAnnotation> supportedAnnotations, RamlDocumentBuilder documentBuilder) throws IOException {
@@ -169,11 +127,6 @@ public class RamlType implements Annotable, Emittable {
 
     documentBuilder.withTypes(TypeDeclarationBuilder.typeDeclaration(c.getSimpleName()).ofType(typeBuilder));
 
-  }
-
-  public void writeExample(IndentedAppendable writer) throws IOException {
-
-    this.emit(new ExampleEmitter(writer));
   }
 
 

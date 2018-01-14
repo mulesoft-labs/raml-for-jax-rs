@@ -30,5 +30,4 @@ public interface LocalEmitter {
 
   void emit(RamlProperty ramlProperty) throws IOException;
 
-  void emit(RamlResourceMethod method) throws IOException;
 }

@@ -16,7 +16,6 @@
 package org.raml.emitter;
 
 import org.raml.api.RamlApi;
-import org.raml.utilities.IndentedAppendable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,11 +51,8 @@ public class FileEmitter implements Emitter {
     }
 
     try (PrintWriter writer = printWriterOf(filePath)) {
-      IndentedAppendable appendable = IndentedAppendable.forNoSpaces(4, writer);
 
-      // IndentedAppendableEmitter innerEmitter = IndentedAppendableEmitter.create(appendable);
       Emitter innerEmitter = new ModelEmitter(writer);
-
       innerEmitter.emit(api);
     } catch (IOException | RamlEmissionException e) {
       throw new RamlEmissionException(format("unable to successfully output raml to %s", filePath),

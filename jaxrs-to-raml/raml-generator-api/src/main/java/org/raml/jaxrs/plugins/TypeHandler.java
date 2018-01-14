@@ -17,7 +17,6 @@ package org.raml.jaxrs.plugins;
 
 import org.raml.api.RamlEntity;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 
@@ -25,9 +24,6 @@ import java.io.IOException;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 public interface TypeHandler {
-
-  void writeType(TypeRegistry registry, IndentedAppendable writer,
-                 RamlEntity type) throws IOException;
 
   String writeType(TypeRegistry registry, RamlEntity type) throws IOException;
 

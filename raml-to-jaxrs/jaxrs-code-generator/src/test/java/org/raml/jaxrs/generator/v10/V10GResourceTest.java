@@ -22,7 +22,6 @@ import org.raml.jaxrs.generator.ramltypes.GRequest;
 import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.jaxrs.generator.utils.RamlV10;
 import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 import static org.junit.Assert.assertEquals;
 

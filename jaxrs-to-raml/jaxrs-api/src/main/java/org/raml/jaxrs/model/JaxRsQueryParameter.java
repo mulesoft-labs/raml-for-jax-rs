@@ -17,10 +17,7 @@ package org.raml.jaxrs.model;
 
 import com.google.common.base.Optional;
 
-import javax.annotation.processing.SupportedAnnotationTypes;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.List;
 
 public interface JaxRsQueryParameter {
 

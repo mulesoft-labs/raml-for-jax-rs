@@ -18,21 +18,14 @@ package org.raml.jaxrs.parser.model;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
-
 import org.glassfish.jersey.server.model.RuntimeResource;
 import org.raml.jaxrs.model.JaxRsApplication;
 import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.annotation.Nullable;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

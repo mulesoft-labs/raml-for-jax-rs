@@ -1,6 +1,6 @@
 
 dependencies {
-    compile 'org.raml.jaxrs:jaxrs-code-generator:2.1.1-SNAPSHOT'
+    compile 'org.raml.jaxrs:jaxrs-code-generator:2.1.2-SNAPSHOT'
     compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
     compile "org.glassfish.jersey.media:jersey-media-moxy:2.24"
     compile "org.glassfish.jersey.containers:jersey-container-jetty-http:2.24"

@@ -53,7 +53,7 @@ public class PluginUtilities {
       }
     }
 
-    fieldRamlType = typeRegistry.registerType(simpleName, genericType, scanner);
+    fieldRamlType = typeRegistry.registerType(simpleName, genericType);
     return fieldRamlType;
   }
 }

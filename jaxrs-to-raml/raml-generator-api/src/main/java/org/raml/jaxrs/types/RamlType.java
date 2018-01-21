@@ -25,10 +25,16 @@ import org.raml.api.ScalarType;
 import org.raml.builder.RamlDocumentBuilder;
 import org.raml.builder.TypeBuilder;
 import org.raml.builder.TypeDeclarationBuilder;
+import org.raml.builder.TypePropertyBuilder;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.ExampleModelEmitter;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
+import org.raml.jaxrs.handlers.BeanLikeClassParser;
+import org.raml.jaxrs.handlers.PojoToRamlProperty;
+import org.raml.pojotoraml.*;
+import org.raml.utilities.tuples.ImmutablePair;
+import org.raml.utilities.tuples.Pair;
 import org.raml.utilities.types.Cast;
 
 import java.io.IOException;
@@ -36,10 +42,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -52,7 +55,6 @@ public class RamlType implements Annotable, Emittable {
   private final boolean collection;
 
   private Map<String, RamlProperty> properties = new HashMap<>();
-  private List<RamlType> superTypes;
   private Collection<String> enumValues;
 
   public RamlType(RamlData type) {
@@ -82,50 +84,81 @@ public class RamlType implements Annotable, Emittable {
     this.enumValues = values;
   }
 
-  public void write(List<RamlSupportedAnnotation> supportedAnnotations, RamlDocumentBuilder documentBuilder) throws IOException {
+  public void write(final List<RamlSupportedAnnotation> supportedAnnotations, RamlDocumentBuilder documentBuilder)
+      throws IOException {
 
     Type ttype = type.getType();
     Class c = Cast.toClass(ttype);
 
-    TypeBuilder typeBuilder;
+    final List<Pair<PojoToRamlProperty, TypePropertyBuilder>> pojoToRamlProperties = new ArrayList<>();
 
-    if (superTypes != null && superTypes.size() > 0) {
-      String[] superTypeList = Collections2.transform(superTypes, new Function<RamlType, String>() {
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new ClassParserFactory() {
 
-        @Override
-        public String apply(RamlType input) {
-          return input.getTypeName();
-        }
-      }).toArray(new String[] {});
+      @Override
+      public ClassParser createParser(Class<?> clazz) {
 
-      typeBuilder = TypeBuilder.type(superTypeList);
-    } else {
-
-      typeBuilder = TypeBuilder.type();
-    }
-
-    ModelEmitterAnnotations.annotate(supportedAnnotations, this, typeBuilder);
-    new ExampleModelEmitter(typeBuilder).emit(this);
-
-    if (type.getDescription().isPresent()) {
-
-      typeBuilder.description(type.getDescription().get());
-    }
-
-    if (enumValues != null) {
-
-      typeBuilder.enumValues(enumValues.toArray(new String[0]));
-    }
-
-    if (properties.values().size() > 0) {
-      for (RamlProperty ramlProperty : properties.values()) {
-
-        ramlProperty.write(supportedAnnotations, typeBuilder);
-        // annotations emitter.emit(this);
+        return new BeanLikeClassParser(clazz);
       }
-    }
+    }, new RamlAdjuster.Helper() {
 
-    documentBuilder.withTypes(TypeDeclarationBuilder.typeDeclaration(c.getSimpleName()).ofType(typeBuilder));
+      @Override
+      public TypeBuilder adjustType(Type actualType, TypeBuilder typeBuilder) {
+
+        try {
+          ModelEmitterAnnotations.annotate(supportedAnnotations, RamlType.this, typeBuilder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+        if (type.getDescription().isPresent()) {
+
+          typeBuilder.description(type.getDescription().get());
+        }
+
+        if (enumValues != null) {
+
+          typeBuilder.enumValues(enumValues.toArray(new String[0]));
+        }
+
+        return typeBuilder;
+      }
+
+
+      @Override
+      public TypePropertyBuilder adjustScalarProperty(TypeDeclarationBuilder typeDeclaration, Property property,
+                                                      TypePropertyBuilder typePropertyBuilder) {
+
+        try {
+          ModelEmitterAnnotations.annotate(supportedAnnotations, (Annotable) property, typePropertyBuilder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+        pojoToRamlProperties.add(ImmutablePair.create((PojoToRamlProperty) property, typePropertyBuilder));
+        return typePropertyBuilder;
+      }
+
+      @Override
+      public TypePropertyBuilder adjustComposedProperty(TypeDeclarationBuilder typeDeclaration, Property property,
+                                                        TypePropertyBuilder typePropertyBuilder) {
+        try {
+          ModelEmitterAnnotations.annotate(supportedAnnotations, (Annotable) property, typePropertyBuilder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+        pojoToRamlProperties.add(ImmutablePair.create((PojoToRamlProperty) property, typePropertyBuilder));
+        return typePropertyBuilder;
+      }
+    });
+
+
+
+    Result r = pojoToRaml.classToRaml(c);
+
+    // new ExampleModelEmitter(this, pojoToRamlProperties);
+
+    documentBuilder.withTypes(r.requestedType());
 
   }
 
@@ -163,9 +196,7 @@ public class RamlType implements Annotable, Emittable {
   }
 
 
-  public void setSuperTypes(List<RamlType> superTypes) {
-    this.superTypes = superTypes;
-  }
+  public void setSuperTypes(List<RamlType> superTypes) {}
 
   @Override
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {

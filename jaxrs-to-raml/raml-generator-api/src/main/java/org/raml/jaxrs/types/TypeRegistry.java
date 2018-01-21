@@ -32,16 +32,18 @@ public class TypeRegistry {
 
   private Map<String, RamlType> types = new HashMap<>();
 
-  public RamlType registerType(String name, RamlEntity type, TypeScanner scanner) {
+  public RamlType registerType(String name, RamlEntity type) {
 
     if (types.containsKey(name)) {
       return types.get(name);
     } else {
 
       RamlType ramlType = new RamlType(type);
-      types.put(name, ramlType);
+      if (ramlType.isRamlScalarType()) {
+        return ramlType;
+      }
 
-      scanner.scanType(this, type, ramlType);
+      types.put(name, ramlType);
       return ramlType;
     }
   }
@@ -53,5 +55,4 @@ public class TypeRegistry {
       ramlType.write(supportedAnnotations, documentBuilder);
     }
   }
-
 }

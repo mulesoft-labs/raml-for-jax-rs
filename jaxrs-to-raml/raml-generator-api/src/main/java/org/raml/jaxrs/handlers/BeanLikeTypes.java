@@ -73,7 +73,7 @@ public class BeanLikeTypes implements TypeHandler {
     }
 
     Method[] methods = currentInterface.getDeclaredMethods();
-    RamlType rt = registry.registerType(currentInterface.getSimpleName(), entity, typeScanner);
+    RamlType rt = registry.registerType(currentInterface.getSimpleName(), entity/* , typeScanner */);
     rt.setSuperTypes(superTypes);
     for (Method method : methods) {
 
@@ -93,5 +93,4 @@ public class BeanLikeTypes implements TypeHandler {
 
     return rt;
   }
-
 }

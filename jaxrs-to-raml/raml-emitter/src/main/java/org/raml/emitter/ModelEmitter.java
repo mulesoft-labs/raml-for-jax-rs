@@ -21,6 +21,7 @@ import org.raml.api.*;
 import org.raml.builder.*;
 import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.emitter.plugins.DefaultTypeHandler;
+import org.raml.emitter.plugins.RamlToPojoTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
@@ -279,21 +280,20 @@ public class ModelEmitter implements Emitter {
 
   private TypeHandler pickTypeHandler(Type type) throws IOException {
 
-    Class castClass = Cast.toClass(type);
-
-    RamlGenerator generatorAnnotation = ((Class<?>) castClass).getAnnotation(RamlGenerator.class);
-
-    if (generatorAnnotation != null) {
-
-      try {
-        return generatorAnnotation.value().newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
-        throw new IOException("enable to create generator", e);
-      }
-    } else {
-
-      return new DefaultTypeHandler();
-    }
+    /*
+     * 
+     * Class castClass = Cast.toClass(type);
+     * 
+     * RamlGenerator generatorAnnotation = ((Class<?>) castClass).getAnnotation(RamlGenerator.class);
+     * 
+     * if (generatorAnnotation != null) {
+     * 
+     * try { return generatorAnnotation.value().newInstance(); } catch (InstantiationException | IllegalAccessException e) { throw
+     * new IOException("enable to create generator", e); } } else {
+     * 
+     * return new DefaultTypeHandler(); }
+     */
+    return new RamlToPojoTypeHandler();
   }
 
   private void annotationTypes(RamlDocumentBuilder builder, RamlApi modelApi) throws IOException {

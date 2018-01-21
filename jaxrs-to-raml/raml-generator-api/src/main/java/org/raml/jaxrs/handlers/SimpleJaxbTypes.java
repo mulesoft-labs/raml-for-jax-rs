@@ -53,7 +53,7 @@ public class SimpleJaxbTypes implements TypeHandler {
     Class type = Cast.toClass(bodyType.getType());
 
 
-    registry.registerType(type.getSimpleName(), bodyType, new SimpleJaxbTypeScanner());
+    registry.registerType(type.getSimpleName(), bodyType/* , new SimpleJaxbTypeScanner() */);
     return type.getSimpleName();
   }
 

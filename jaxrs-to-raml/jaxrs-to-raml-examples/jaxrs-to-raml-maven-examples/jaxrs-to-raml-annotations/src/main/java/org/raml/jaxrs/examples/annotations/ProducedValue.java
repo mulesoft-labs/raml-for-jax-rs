@@ -16,6 +16,7 @@
 package org.raml.jaxrs.examples.annotations;
 
 import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.handlers.SimpleJaxbClassParser;
 import org.raml.jaxrs.handlers.SimpleJaxbTypes;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -26,7 +27,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @XmlRootElement
-@RamlGenerator(SimpleJaxbTypes.class)
+@RamlGenerator(SimpleJaxbClassParser.class)
 public class ProducedValue {
 
   @XmlElement

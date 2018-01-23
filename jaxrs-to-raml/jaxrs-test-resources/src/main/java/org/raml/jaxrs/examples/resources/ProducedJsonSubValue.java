@@ -17,14 +17,14 @@ package org.raml.jaxrs.examples.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.raml.jaxrs.common.RamlGenerator;
-import org.raml.jaxrs.handlers.SimpleJacksonTypes;
+import org.raml.jaxrs.handlers.SimpleJacksonClassParser;
 
 import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 4/17/17. Just potential zeroes and ones
  */
-@RamlGenerator(SimpleJacksonTypes.class)
+@RamlGenerator(SimpleJacksonClassParser.class)
 public class ProducedJsonSubValue {
 
   @JsonProperty

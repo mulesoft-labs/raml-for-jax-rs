@@ -21,7 +21,7 @@ import org.raml.jaxrs.handlers.SimpleJacksonClassParser;
 /**
  * Created by Jean-Philippe Belanger on 5/22/17. Just potential zeroes and ones
  */
-@RamlGenerator(SimpleJacksonClassParser.class)
+@RamlGenerator(parser = SimpleJacksonClassParser.class)
 public enum Gender {
 
   MALE, FEMALE

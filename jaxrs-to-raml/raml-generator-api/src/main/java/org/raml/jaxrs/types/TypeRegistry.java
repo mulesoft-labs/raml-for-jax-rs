@@ -18,7 +18,6 @@ package org.raml.jaxrs.types;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.builder.RamlDocumentBuilder;
-import org.raml.jaxrs.plugins.TypeScanner;
 
 import java.io.IOException;
 import java.util.HashMap;

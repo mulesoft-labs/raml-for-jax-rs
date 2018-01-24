@@ -13,10 +13,9 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.types;
+package org.raml.jaxrs.handlers;
 
 import org.raml.jaxrs.common.RamlGenerator;
-import org.raml.jaxrs.handlers.BeanLikeClassParser;
 import org.raml.pojotoraml.ClassParser;
 import org.raml.pojotoraml.ClassParserFactory;
 
@@ -27,8 +26,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class RamlToPojoClassParserFactory implements ClassParserFactory {
 
-  public RamlToPojoClassParserFactory() {}
-
   @Override
   public ClassParser createParser(Class<?> clazz) {
 
@@ -37,7 +34,7 @@ public class RamlToPojoClassParserFactory implements ClassParserFactory {
     ClassParser parser = new BeanLikeClassParser(clazz);
     if (generator != null) {
       try {
-        parser = generator.value().getConstructor(Class.class).newInstance(clazz);
+        parser = generator.parser().getConstructor(Class.class).newInstance(clazz);
       } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       }
     }

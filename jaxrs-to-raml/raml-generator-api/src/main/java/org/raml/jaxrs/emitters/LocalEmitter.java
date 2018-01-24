@@ -15,7 +15,6 @@
  */
 package org.raml.jaxrs.emitters;
 
-import org.raml.api.RamlResourceMethod;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 

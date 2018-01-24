@@ -19,7 +19,6 @@ import com.google.common.base.Optional;
 import org.raml.api.RamlParameter;
 import org.raml.api.ScalarType;
 import org.raml.builder.FacetBuilder;
-import org.raml.builder.MethodBuilder;
 import org.raml.builder.ParameterBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.types.TypeRegistry;

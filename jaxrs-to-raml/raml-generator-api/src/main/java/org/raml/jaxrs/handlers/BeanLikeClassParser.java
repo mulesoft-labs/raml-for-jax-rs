@@ -16,18 +16,10 @@
 package org.raml.jaxrs.handlers;
 
 import com.google.common.base.Optional;
-import org.raml.api.Annotable;
-import org.raml.api.RamlEntity;
-import org.raml.jaxrs.plugins.TypeHandler;
-import org.raml.jaxrs.plugins.TypeScanner;
-import org.raml.jaxrs.types.RamlProperty;
-import org.raml.jaxrs.types.RamlType;
-import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.pojotoraml.ClassParser;
 import org.raml.pojotoraml.Property;
 import org.raml.utilities.types.Cast;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;

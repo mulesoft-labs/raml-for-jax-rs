@@ -19,25 +19,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
-import org.raml.api.RamlEntity;
-import org.raml.jaxrs.plugins.TypeHandler;
-import org.raml.jaxrs.plugins.TypeScanner;
-import org.raml.jaxrs.types.RamlProperty;
-import org.raml.jaxrs.types.RamlType;
-import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.pojotoraml.ClassParser;
 import org.raml.pojotoraml.Property;
-import org.raml.utilities.types.Cast;
 
 import javax.annotation.Nullable;
 import java.beans.Introspector;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones

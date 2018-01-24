@@ -20,7 +20,6 @@ import org.raml.jaxrs.common.Examples;
 import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
 import org.raml.jaxrs.handlers.BeanLikeClassParser;
-import org.raml.jaxrs.handlers.BeanLikeTypes;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -29,7 +28,7 @@ import java.util.List;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @XmlRootElement
-@RamlGenerator(BeanLikeClassParser.class)
+@RamlGenerator(parser = BeanLikeClassParser.class)
 @Secure(security = String.class, level = 17)
 public interface HierarchyValue extends TopValue, AnotherTopValue {
 

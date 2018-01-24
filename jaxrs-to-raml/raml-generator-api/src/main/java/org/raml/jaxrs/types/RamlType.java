@@ -28,6 +28,7 @@ import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 import org.raml.jaxrs.handlers.PojoToRamlProperty;
+import org.raml.jaxrs.handlers.RamlToPojoClassParserFactory;
 import org.raml.pojotoraml.*;
 import org.raml.utilities.tuples.ImmutablePair;
 import org.raml.utilities.tuples.Pair;

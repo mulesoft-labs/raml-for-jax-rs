@@ -32,5 +32,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface RamlGenerator {
 
   Class<? extends ClassParser> parser();
+
   Class<? extends RamlAdjuster>[] adjuster() default {};
 }

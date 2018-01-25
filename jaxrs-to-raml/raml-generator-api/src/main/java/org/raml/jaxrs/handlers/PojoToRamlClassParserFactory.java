@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created. There, you have it.
  */
-public class RamlToPojoClassParserFactory implements ClassParserFactory {
+public class PojoToRamlClassParserFactory implements ClassParserFactory {
 
   @Override
   public ClassParser createParser(Class<?> clazz) {

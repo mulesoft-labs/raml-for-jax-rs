@@ -16,15 +16,15 @@
 package org.raml.emitter.plugins;
 
 import org.raml.api.RamlEntity;
+import org.raml.jaxrs.handlers.PojoToRamlExtensionFactory;
 import org.raml.jaxrs.plugins.TypeHandler;
-import org.raml.jaxrs.handlers.RamlToPojoClassParserFactory;
+import org.raml.jaxrs.handlers.PojoToRamlClassParserFactory;
+import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.pojotoraml.PojoToRaml;
 import org.raml.pojotoraml.PojoToRamlBuilder;
 import org.raml.pojotoraml.RamlAdjuster;
 import org.raml.utilities.types.Cast;
-
-import java.io.IOException;
 
 /**
  * Created. There, you have it.
@@ -36,7 +36,9 @@ public class RamlToPojoTypeHandler implements TypeHandler {
 
     final Class cls = Cast.toClass(type.getType());
 
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new RamlToPojoClassParserFactory(), RamlAdjuster.NULL_ADJUSTER);
+    RamlAdjuster adjuster = PojoToRamlExtensionFactory.createAdjusters(cls);
+
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), adjuster);
 
     String name = pojoToRaml.name(cls);
     registry.registerType(name, type);

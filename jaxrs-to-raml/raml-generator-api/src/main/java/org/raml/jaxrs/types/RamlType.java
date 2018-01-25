@@ -24,11 +24,13 @@ import org.raml.builder.RamlDocumentBuilder;
 import org.raml.builder.TypeBuilder;
 import org.raml.builder.TypeDeclarationBuilder;
 import org.raml.builder.TypePropertyBuilder;
+import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
+import org.raml.jaxrs.handlers.PojoToRamlExtensionFactory;
 import org.raml.jaxrs.handlers.PojoToRamlProperty;
-import org.raml.jaxrs.handlers.RamlToPojoClassParserFactory;
+import org.raml.jaxrs.handlers.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.*;
 import org.raml.utilities.tuples.ImmutablePair;
 import org.raml.utilities.tuples.Pair;
@@ -85,20 +87,12 @@ public class RamlType implements Annotable, Emittable {
       throws IOException {
 
     Type ttype = type.getType();
-    Class c = Cast.toClass(ttype);
+    Class<?> c = Cast.toClass(ttype);
 
     final List<Pair<PojoToRamlProperty, TypePropertyBuilder>> pojoToRamlProperties = new ArrayList<>();
 
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new RamlToPojoClassParserFactory(),
-                                                           new
-                                                           Fixer
-                                                           (
-                                                            supportedAnnotations
-                                                            ,
-                                                            pojoToRamlProperties
-                                                           )
-        );
-
+    RamlAdjuster adjuster = PojoToRamlExtensionFactory.createAdjusters(c, new Fixer(supportedAnnotations, pojoToRamlProperties));
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), adjuster);
 
     Result r = pojoToRaml.classToRaml(c);
 

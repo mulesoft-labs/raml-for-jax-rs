@@ -29,7 +29,7 @@ import java.util.List;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@RamlGenerator(SimpleJaxbClassParser.class)
+@RamlGenerator(parser = SimpleJaxbClassParser.class)
 @Secure(security = String.class, level = 0)
 public class ConsumedValue {
 

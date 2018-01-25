@@ -22,7 +22,7 @@ import org.raml.jaxrs.handlers.SimpleJacksonClassParser;
 /**
  * Created by Jean-Philippe Belanger on 4/17/17. Just potential zeroes and ones
  */
-@RamlGenerator(SimpleJacksonClassParser.class)
+@RamlGenerator(parser = SimpleJacksonClassParser.class)
 public class ProducedJsonValue {
 
   @JsonProperty

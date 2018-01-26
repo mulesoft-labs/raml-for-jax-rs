@@ -157,6 +157,7 @@ public class NamesTest {
     when(resource.resourcePath()).thenReturn("/songs");
     when(resource.uriParameters()).thenReturn(new ArrayList<GParameter>());
     when(method.method()).thenReturn("get");
+    when(resource.relativePath()).thenReturn("path");
 
     assertEquals("getSongs", Names.resourceMethodName(resource, method));
   }
@@ -169,6 +170,7 @@ public class NamesTest {
     when(uriParameter.name()).thenReturn("songId");
     when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter));
     when(method.method()).thenReturn("get");
+    when(resource.relativePath()).thenReturn("path");
 
     assertEquals("getSongsBySongId", Names.resourceMethodName(resource, method));
   }
@@ -179,6 +181,7 @@ public class NamesTest {
     when(method.resource()).thenReturn(resource);
     when(resource.resourcePath()).thenReturn("/songs/foo/{songId}");
     when(uriParameter.name()).thenReturn("songId");
+    when(resource.relativePath()).thenReturn("path");
     when(method.method()).thenReturn("get");
 
     assertEquals("getSongsFoo", Names.resourceMethodName(resource, method));
@@ -191,6 +194,7 @@ public class NamesTest {
     when(resource.resourcePath()).thenReturn("/songs/{songId}/{songId}");
     when(uriParameter.name()).thenReturn("songId");
     when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter, uriParameter));
+    when(resource.relativePath()).thenReturn("path");
     when(method.method()).thenReturn("get");
 
     assertEquals("getSongsBySongIdAndSongId", Names.resourceMethodName(resource, method));

@@ -15,18 +15,20 @@
  */
 package org.raml.jaxrs.generator;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GParameter;
-import org.raml.jaxrs.generator.ramltypes.GRequest;
-import org.raml.jaxrs.generator.ramltypes.GResource;
-import org.raml.jaxrs.generator.ramltypes.GResponse;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
+import org.hamcrest.Matchers;
+import org.raml.jaxrs.generator.ramltypes.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Jean-Philippe Belanger on 12/4/16. Just potential zeroes and ones
@@ -60,19 +62,147 @@ public class ResourceUtils {
 
   }
 
+  private static final Pattern PARAM = Pattern.compile(".*?\\{([^}]+?)\\}");
+
   public static List<GParameter> accumulateUriParameters(GResource resource) {
 
+    Set<String> seenHere = extractSeen(new HashSet<String>(), resource);
+
     List<GParameter> parameters = new ArrayList<>();
-    parameters.addAll(Lists.reverse(resource.uriParameters()));
+    parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters())
+        .append(allMatches(seenHere, resource.relativePath())).toList()));
 
     while (resource.parentResource() != null) {
 
       resource = resource.parentResource();
-      parameters.addAll(Lists.reverse(resource.uriParameters()));
+      seenHere = extractSeen(seenHere, resource);
+      parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters())
+          .append(allMatches(seenHere, resource.relativePath())).toList()));
     }
 
     Collections.reverse(parameters);
 
     return parameters;
+  }
+
+  private static ImmutableSet<String> extractSeen(Set<String> seen, GResource resource) {
+    return FluentIterable.from(resource.uriParameters())
+        .transform(new Function<GParameter, String>() {
+
+          @Nullable
+          @Override
+          public String apply(@Nullable GParameter gParameter) {
+            return gParameter.name();
+          }
+        }).append(seen).toSet();
+  }
+
+  private static List<GParameter> allMatches(Set<String> seenHere, String path) {
+
+    List<GParameter> allMatches = new ArrayList<>();
+    Matcher m = PARAM.matcher(path);
+    while (m.find()) {
+      final String group = m.group(1);
+      if (!seenHere.contains(group)) {
+        allMatches.add(new ImplicitStringGParameter(group));
+      }
+    }
+
+    return allMatches;
+  }
+
+  private static class ImplicitStringGParameter implements GParameter {
+
+    private final String group;
+
+    public ImplicitStringGParameter(String group) {
+      this.group = group;
+    }
+
+    @Override
+    public String defaultValue() {
+      return null;
+    }
+
+    @Override
+    public String name() {
+      return group;
+    }
+
+    @Override
+    public GType type() {
+      return new GType() {
+
+        @Override
+        public String type() {
+          return "string";
+        }
+
+        @Override
+        public String name() {
+          return "string";
+        }
+
+        @Override
+        public TypeName defaultJavaTypeName(String pack) {
+          return ClassName.get(String.class);
+        }
+
+        @Override
+        public boolean isJson() {
+          return false;
+        }
+
+        @Override
+        public boolean isXml() {
+          return false;
+        }
+
+        @Override
+        public boolean isArray() {
+          return false;
+        }
+
+        @Override
+        public boolean isEnum() {
+          return false;
+        }
+
+        @Override
+        public boolean isScalar() {
+          return true;
+        }
+
+        @Override
+        public String schema() {
+          return null;
+        }
+
+        @Override
+        public GType arrayContents() {
+          return null;
+        }
+
+        @Override
+        public void construct(CurrentBuild currentBuild, GObjectType objectType) {
+
+        }
+
+        @Override
+        public void setJavaType(TypeName generatedJavaType) {
+
+        }
+
+        @Override
+        public Object implementation() {
+          return null;
+        }
+      };
+    }
+
+    @Override
+    public Object implementation() {
+      return null;
+    }
   }
 }

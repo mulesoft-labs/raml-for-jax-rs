@@ -231,7 +231,7 @@ uses:
     /Attachments:
       uriParameters:
         viewingSessionId:
-          type: string
+          type: integer
       get:
         responses:
           200:
@@ -290,3 +290,9 @@ uses:
 #            application/xml:
 #              type: !include schemas/songs.xsd
 #              example: !include examples/songs.xml
+
+/foo:
+    /bar:
+        get:
+    /bar/{id}:
+        get:

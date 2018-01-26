@@ -58,6 +58,9 @@ public class ResourceUtilsTest {
   @Test
   public void accumulateUriParameters() throws Exception {
 
+    when(resource.relativePath()).thenReturn("/fun");
+    when(one.name()).thenReturn("one");
+    when(two.name()).thenReturn("two");
     when(resource.uriParameters()).thenReturn(Arrays.asList(one, two));
 
     List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
@@ -67,8 +70,16 @@ public class ResourceUtilsTest {
     assertEquals(two, parameters.get(1));
   }
 
+
   @Test
   public void accumulateUriParametersFromParent() throws Exception {
+
+    when(one.name()).thenReturn("one");
+    when(two.name()).thenReturn("two");
+    when(three.name()).thenReturn("three");
+
+    when(topResource.relativePath()).thenReturn("/fun/");
+    when(resource.relativePath()).thenReturn("/allo");
 
     when(resource.parentResource()).thenReturn(topResource);
     when(topResource.uriParameters()).thenReturn(Arrays.asList(one, two));
@@ -80,6 +91,49 @@ public class ResourceUtilsTest {
     assertEquals(one, parameters.get(0));
     assertEquals(two, parameters.get(1));
     assertEquals(three, parameters.get(2));
+  }
+
+  @Test
+  public void accumulateImplicitParameter() throws Exception {
+
+    when(resource.relativePath()).thenReturn("/fun/{id}");
+    when(resource.uriParameters()).thenReturn(Collections.<GParameter>emptyList());
+
+    List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
+
+    assertEquals(1, parameters.size());
+    assertEquals("id", parameters.get(0).name());
+  }
+
+  @Test
+  public void accumulateImplicitUriParametersFromParent() throws Exception {
+
+    when(resource.parentResource()).thenReturn(topResource);
+    when(topResource.relativePath()).thenReturn("/fun/{id}/{color}");
+    when(resource.relativePath()).thenReturn("/{goo}");
+
+    List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
+
+    assertEquals(3, parameters.size());
+    assertEquals("id", parameters.get(0).name());
+    assertEquals("color", parameters.get(1).name());
+    assertEquals("goo", parameters.get(2).name());
+  }
+
+  @Test
+  public void accumulateDeclaredLater() throws Exception {
+
+    when(resource.parentResource()).thenReturn(topResource);
+    when(topResource.relativePath()).thenReturn("/fun/{id}");
+    when(resource.relativePath()).thenReturn("/fun");
+    when(one.name()).thenReturn("id");
+    when(resource.uriParameters()).thenReturn(Collections.singletonList(one));
+
+
+    List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
+
+    assertEquals(1, parameters.size());
+    assertEquals("id", parameters.get(0).name());
   }
 
 }

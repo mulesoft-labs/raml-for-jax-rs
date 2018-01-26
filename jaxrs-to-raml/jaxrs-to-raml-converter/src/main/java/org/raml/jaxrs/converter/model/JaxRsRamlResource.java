@@ -15,9 +15,9 @@
  */
 package org.raml.jaxrs.converter.model;
 
-import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.api.RamlResource;
 import org.raml.api.RamlResourceMethod;
+import org.raml.jaxrs.model.JaxRsResource;
 
 import java.util.List;
 

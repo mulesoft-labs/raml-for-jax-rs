@@ -18,7 +18,6 @@ package org.raml.jaxrs.converter.model;
 import com.google.common.base.Optional;
 import org.raml.api.RamlFormParameter;
 import org.raml.jaxrs.model.JaxRsFormParameter;
-import org.raml.jaxrs.model.JaxRsHeaderParameter;
 
 import java.lang.reflect.Type;
 

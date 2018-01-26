@@ -33,8 +33,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.ParameterizedType;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones

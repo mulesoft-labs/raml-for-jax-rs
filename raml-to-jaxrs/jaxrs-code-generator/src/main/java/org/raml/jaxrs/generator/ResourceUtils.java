@@ -22,7 +22,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import org.hamcrest.Matchers;
 import org.raml.jaxrs.generator.ramltypes.*;
 
 import javax.annotation.Nullable;

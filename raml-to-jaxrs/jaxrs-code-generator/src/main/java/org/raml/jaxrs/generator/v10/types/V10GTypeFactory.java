@@ -16,14 +16,11 @@
 package org.raml.jaxrs.generator.v10.types;
 
 import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.v10.*;
+import org.raml.jaxrs.generator.v10.Annotations;
+import org.raml.jaxrs.generator.v10.CreationModel;
+import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.XMLTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.*;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
 

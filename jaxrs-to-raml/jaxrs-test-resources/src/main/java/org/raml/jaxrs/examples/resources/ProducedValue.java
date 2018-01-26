@@ -17,8 +17,8 @@ package org.raml.jaxrs.examples.resources;
 
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.common.ExampleCases;
-import org.raml.jaxrs.handlers.SimpleJaxbTypes;
 import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.handlers.SimpleJaxbTypes;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

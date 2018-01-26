@@ -20,8 +20,6 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.NoSuchElementException;
 
-import static java.lang.String.format;
-
 /**
  * An enum representing valid possible http verbs.
  */

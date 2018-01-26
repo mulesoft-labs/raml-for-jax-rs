@@ -21,7 +21,9 @@ import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.*;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
  * Created. There, you have it.

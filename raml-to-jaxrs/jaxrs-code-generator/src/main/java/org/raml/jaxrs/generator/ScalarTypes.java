@@ -18,9 +18,7 @@ package org.raml.jaxrs.generator;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.Annotations;
-import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.*;
 
 import java.io.File;
@@ -62,6 +60,7 @@ public class ScalarTypes {
       .put("int16", Short.class).put("int32", Integer.class).put("int64", Long.class)
       .put("int", Integer.class).build();
 
+  @Deprecated
   public static Class<?> scalarToJavaType(TypeDeclaration type) {
 
     if (type instanceof IntegerTypeDeclaration) {
@@ -122,7 +121,7 @@ public class ScalarTypes {
     }
   }
 
-  public static Class<?> scalarToJavaType(String name) {
+  private static Class<?> scalarToJavaType(String name) {
 
     return stringScalarToType.get(name.toLowerCase());
   }

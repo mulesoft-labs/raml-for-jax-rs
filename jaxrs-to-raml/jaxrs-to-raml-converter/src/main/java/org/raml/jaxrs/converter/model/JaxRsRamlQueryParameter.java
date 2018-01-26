@@ -16,10 +16,9 @@
 package org.raml.jaxrs.converter.model;
 
 import com.google.common.base.Optional;
-
 import org.raml.api.RamlEntity;
-import org.raml.jaxrs.model.JaxRsQueryParameter;
 import org.raml.api.RamlQueryParameter;
+import org.raml.jaxrs.model.JaxRsQueryParameter;
 
 import java.lang.annotation.Annotation;
 

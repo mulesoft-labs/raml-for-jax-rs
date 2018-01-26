@@ -22,7 +22,6 @@ import org.raml.api.*;
 import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;

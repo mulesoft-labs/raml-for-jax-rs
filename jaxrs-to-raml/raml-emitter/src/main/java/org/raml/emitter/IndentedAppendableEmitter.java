@@ -16,28 +16,25 @@
 package org.raml.emitter;
 
 import com.google.common.base.Optional;
-
 import com.google.common.collect.Ordering;
 import org.raml.api.*;
+import org.raml.emitter.plugins.DefaultResponseHandler;
 import org.raml.emitter.plugins.DefaultTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
-import org.raml.emitter.plugins.DefaultResponseHandler;
+import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
 import org.raml.jaxrs.emitters.AnnotationTypeEmitter;
 import org.raml.jaxrs.emitters.ParameterEmitter;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.types.Cast;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.List;
 

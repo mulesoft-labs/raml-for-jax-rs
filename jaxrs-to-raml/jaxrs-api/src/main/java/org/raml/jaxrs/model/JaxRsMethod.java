@@ -17,11 +17,9 @@ package org.raml.jaxrs.model;
 
 import com.google.common.base.Optional;
 
+import javax.ws.rs.core.MediaType;
 import java.lang.annotation.Annotation;
 import java.util.List;
-
-import javax.ws.rs.core.MediaType;
-import javax.xml.crypto.dsig.Transform;
 
 public interface JaxRsMethod {
 

@@ -17,8 +17,6 @@ package org.raml.jaxrs.converter.model;
 
 import com.google.common.base.Optional;
 import org.raml.api.Annotable;
-import org.raml.api.RamlEntity;
-import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlSupportedAnnotation;
 
 import java.lang.annotation.Annotation;

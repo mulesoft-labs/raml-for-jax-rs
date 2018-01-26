@@ -15,15 +15,11 @@
  */
 package org.raml.jaxrs.generator.v10;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.XMLFacetInfo;
-
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones

@@ -16,7 +16,6 @@
 package org.raml.jaxrs.generator.matchers;
 
 import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;

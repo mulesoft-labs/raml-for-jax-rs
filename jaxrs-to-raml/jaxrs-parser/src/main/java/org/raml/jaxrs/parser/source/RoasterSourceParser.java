@@ -16,12 +16,10 @@
 package org.raml.jaxrs.parser.source;
 
 import com.google.common.base.Optional;
-
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaDoc;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.MethodHolder;
-import org.jboss.forge.roaster.model.TypeHolder;
 import org.jboss.forge.roaster.model.source.JavaDocSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
 import org.raml.utilities.format.Joiners;

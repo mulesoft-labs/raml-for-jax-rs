@@ -16,11 +16,11 @@
 package org.raml.jaxrs.handlers;
 
 import org.raml.api.RamlEntity;
+import org.raml.jaxrs.plugins.TypeHandler;
+import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.jaxrs.plugins.TypeHandler;
-import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.types.Cast;
 

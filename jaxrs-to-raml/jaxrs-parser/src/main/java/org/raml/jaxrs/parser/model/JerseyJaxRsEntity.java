@@ -18,8 +18,8 @@ package org.raml.jaxrs.parser.model;
 import com.google.common.base.Optional;
 import org.glassfish.jersey.server.model.Parameter;
 import org.raml.jaxrs.model.JaxRsEntity;
-import org.raml.utilities.types.Cast;
 import org.raml.jaxrs.parser.source.SourceParser;
+import org.raml.utilities.types.Cast;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

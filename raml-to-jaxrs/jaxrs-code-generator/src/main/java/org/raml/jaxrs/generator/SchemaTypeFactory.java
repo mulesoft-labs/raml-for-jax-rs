@@ -24,8 +24,6 @@ import org.raml.jaxrs.generator.builders.RamlToPojoTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
-import org.raml.ramltopojo.*;
 
 import java.io.File;
 import java.util.Map;

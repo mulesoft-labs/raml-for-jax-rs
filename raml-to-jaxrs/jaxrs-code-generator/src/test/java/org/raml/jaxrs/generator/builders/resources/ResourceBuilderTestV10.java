@@ -15,11 +15,7 @@
  */
 package org.raml.jaxrs.generator.builders.resources;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import org.junit.Test;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.utils.RamlV10;

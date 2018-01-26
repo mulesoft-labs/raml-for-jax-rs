@@ -18,7 +18,6 @@ package server.zoo;
 import example.model.*;
 import example.resources.Animals;
 
-import javax.ws.rs.core.GenericEntity;
 import java.util.ArrayList;
 import java.util.List;
 

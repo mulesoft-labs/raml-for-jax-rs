@@ -27,7 +27,6 @@ import org.raml.jaxrs.emitters.ExampleEmitter;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.utilities.IndentedAppendable;
 import org.raml.utilities.format.Joiner;
-import org.raml.utilities.format.Joiners;
 import org.raml.utilities.types.Cast;
 
 import java.io.IOException;

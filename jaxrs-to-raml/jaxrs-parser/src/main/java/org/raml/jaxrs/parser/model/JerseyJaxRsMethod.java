@@ -16,22 +16,13 @@
 package org.raml.jaxrs.parser.model;
 
 import com.google.common.base.Optional;
-
-import com.google.common.collect.FluentIterable;
 import org.glassfish.jersey.server.model.ResourceMethod;
-import org.raml.jaxrs.model.HttpVerb;
-import org.raml.jaxrs.model.JaxRsEntity;
-import org.raml.jaxrs.model.JaxRsFormParameter;
-import org.raml.jaxrs.model.JaxRsHeaderParameter;
-import org.raml.jaxrs.model.JaxRsMethod;
-import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
-import org.raml.jaxrs.model.JaxRsQueryParameter;
+import org.raml.jaxrs.model.*;
 import org.raml.jaxrs.parser.source.SourceParser;
 
+import javax.ws.rs.core.MediaType;
 import java.lang.annotation.Annotation;
 import java.util.List;
-
-import javax.ws.rs.core.MediaType;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

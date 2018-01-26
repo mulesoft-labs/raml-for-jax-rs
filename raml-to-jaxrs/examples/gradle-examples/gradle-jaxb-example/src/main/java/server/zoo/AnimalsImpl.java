@@ -19,7 +19,6 @@ package server.zoo;
 import org.raml.test.model.*;
 import org.raml.test.res.Animals;
 
-import javax.ws.rs.core.GenericEntity;
 import java.util.ArrayList;
 import java.util.List;
 

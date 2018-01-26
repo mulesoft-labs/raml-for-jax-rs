@@ -17,17 +17,15 @@ package org.raml.jaxrs.parser.model;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.glassfish.jersey.server.model.RuntimeResource;
-import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.JaxRsMethod;
+import org.raml.jaxrs.model.JaxRsResource;
 import org.raml.jaxrs.model.Path;
 import org.raml.jaxrs.parser.source.SourceParser;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
+import java.util.List;
 
 import static jersey.repackaged.com.google.common.base.Preconditions.checkNotNull;
 

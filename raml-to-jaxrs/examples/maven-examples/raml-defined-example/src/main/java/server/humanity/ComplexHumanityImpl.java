@@ -17,7 +17,6 @@ package server.humanity;
 
 import example.model.*;
 import example.types.Complexhumans;
-import example.types.Humans;
 
 import java.util.Collections;
 import java.util.Date;

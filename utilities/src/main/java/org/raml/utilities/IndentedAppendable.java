@@ -16,14 +16,11 @@
 package org.raml.utilities;
 
 import com.google.common.base.Strings;
-
 import net.jcip.annotations.NotThreadSafe;
 
 import java.io.IOException;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
 
 @NotThreadSafe
 public class IndentedAppendable {

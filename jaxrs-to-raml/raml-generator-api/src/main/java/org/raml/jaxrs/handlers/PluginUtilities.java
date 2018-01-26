@@ -17,9 +17,9 @@ package org.raml.jaxrs.handlers;
 
 import org.raml.api.RamlEntity;
 import org.raml.api.ScalarType;
+import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.jaxrs.plugins.TypeScanner;
 import org.raml.utilities.types.Cast;
 
 import java.lang.reflect.ParameterizedType;

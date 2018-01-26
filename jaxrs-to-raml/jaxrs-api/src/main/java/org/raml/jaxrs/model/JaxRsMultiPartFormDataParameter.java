@@ -15,10 +15,6 @@
  */
 package org.raml.jaxrs.model;
 
-import com.google.common.base.Optional;
-
-import java.lang.reflect.Type;
-
 public interface JaxRsMultiPartFormDataParameter {
 
   String getName();

@@ -15,16 +15,11 @@
  */
 package org.raml.jaxrs.raml.core;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-import org.raml.api.Annotable;
+import org.raml.api.RamlMediaType;
 import org.raml.jaxrs.converter.RamlConfiguration;
 import org.raml.jaxrs.converter.model.JaxRsRamlMediaType;
-import org.raml.api.RamlMediaType;
 
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;

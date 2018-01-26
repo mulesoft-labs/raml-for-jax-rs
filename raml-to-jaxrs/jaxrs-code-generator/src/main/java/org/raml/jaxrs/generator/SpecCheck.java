@@ -19,11 +19,6 @@ import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
 import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.internal.impl.RamlBuilder;
-import org.raml.yagi.framework.nodes.ErrorNode;
-import org.raml.yagi.framework.nodes.Node;
-
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 12/7/16. Just potential zeroes and ones

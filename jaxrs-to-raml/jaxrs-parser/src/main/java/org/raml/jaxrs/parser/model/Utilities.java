@@ -19,23 +19,14 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.ResourceMethod;
-import org.raml.jaxrs.model.JaxRsEntity;
-import org.raml.jaxrs.model.JaxRsFormParameter;
-import org.raml.jaxrs.model.JaxRsHeaderParameter;
-import org.raml.jaxrs.model.JaxRsMultiPartFormDataParameter;
-import org.raml.jaxrs.model.JaxRsQueryParameter;
-import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
+import org.raml.jaxrs.model.*;
 import org.raml.jaxrs.parser.source.SourceParser;
 
 import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Set;
 
 class Utilities {
 

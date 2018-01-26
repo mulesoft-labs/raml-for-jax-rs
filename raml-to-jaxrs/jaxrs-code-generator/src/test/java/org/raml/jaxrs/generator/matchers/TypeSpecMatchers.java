@@ -15,16 +15,12 @@
  */
 package org.raml.jaxrs.generator.matchers;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import org.hamcrest.Description;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Created by Jean-Philippe Belanger on 3/4/17. Just potential zeroes and ones

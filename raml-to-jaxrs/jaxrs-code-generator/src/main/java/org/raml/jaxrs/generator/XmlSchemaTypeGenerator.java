@@ -20,9 +20,9 @@ import com.squareup.javapoet.TypeName;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
+import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
-import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.ramltypes.GType;
 
 import java.io.IOException;

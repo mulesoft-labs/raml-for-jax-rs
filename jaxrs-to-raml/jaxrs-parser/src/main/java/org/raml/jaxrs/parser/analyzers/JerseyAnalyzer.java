@@ -17,7 +17,6 @@ package org.raml.jaxrs.parser.analyzers;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
-
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.RuntimeResource;
 import org.raml.jaxrs.model.JaxRsApplication;

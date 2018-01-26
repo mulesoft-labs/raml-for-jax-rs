@@ -16,7 +16,6 @@
 package org.raml.jaxrs.converter.model;
 
 import com.google.common.base.Optional;
-
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlHeaderParameter;
 import org.raml.jaxrs.model.JaxRsHeaderParameter;

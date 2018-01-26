@@ -15,12 +15,13 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 
-import javax.lang.model.element.Modifier;
 import javax.validation.Valid;
 
 /**

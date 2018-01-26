@@ -15,8 +15,6 @@
  */
 package org.raml.jaxrs.examples.annotations;
 
-import org.raml.jaxrs.common.Example;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 

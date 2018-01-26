@@ -181,7 +181,7 @@ public class CurrentBuild {
 
           @Override
           public void into(TypeSpec g) throws IOException {
-            JavaFile.Builder file = JavaFile.builder(getResourcePackage(), g);
+            JavaFile.Builder file = JavaFile.builder(getResourcePackage(), g).skipJavaLangImports(true);
             file.build().writeTo(rootDirectory);
           }
         });
@@ -194,7 +194,7 @@ public class CurrentBuild {
           @Override
           public void into(TypeSpec.Builder g) throws IOException {
 
-            JavaFile.Builder file = JavaFile.builder(getSupportPackage(), g.build());
+            JavaFile.Builder file = JavaFile.builder(getSupportPackage(), g.build()).skipJavaLangImports(true);
             file.build().writeTo(rootDirectory);
           }
         });
@@ -231,7 +231,7 @@ public class CurrentBuild {
 
         if (containing != null) {
 
-          JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
+          JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build()).skipJavaLangImports(true);
           file.build().writeTo(rootDirectory);
         }
       }
@@ -259,7 +259,7 @@ public class CurrentBuild {
           }
 
           if (containing != null) {
-            JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build());
+            JavaFile.Builder file = JavaFile.builder(getModelPackage(), containing.build()).skipJavaLangImports(true);
             file.build().writeTo(rootDirectory);
           }
         }

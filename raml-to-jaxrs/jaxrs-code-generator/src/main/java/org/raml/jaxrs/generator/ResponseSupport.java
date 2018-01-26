@@ -142,7 +142,7 @@ public class ResponseSupport {
 
 
     builder.addType(headerBuilderBase.build());
-    JavaFile.Builder file = JavaFile.builder(defaultPackage, builder.build());
+    JavaFile.Builder file = JavaFile.builder(defaultPackage, builder.build()).skipJavaLangImports(true);
     file.build().writeTo(rootDir);
 
   }

@@ -16,7 +16,8 @@
 package org.raml.jaxrs.examples.multipart;
 
 import org.raml.jaxrs.common.RamlGenerator;
-import org.raml.jaxrs.handlers.SimpleJaxbTypes;
+import org.raml.jaxrs.handlers.SimpleJaxbClassParser;
+import org.raml.pojotoraml.RamlAdjuster;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@RamlGenerator(SimpleJaxbTypes.class)
+@RamlGenerator(parser = SimpleJaxbClassParser.class)
 public class ConsumedValue {
 
   @XmlElement

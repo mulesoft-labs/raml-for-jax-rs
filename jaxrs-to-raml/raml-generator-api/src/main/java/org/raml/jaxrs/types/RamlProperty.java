@@ -17,14 +17,16 @@ package org.raml.jaxrs.types;
 
 import com.google.common.base.Optional;
 import org.raml.api.Annotable;
-import org.raml.jaxrs.common.Example;
-import org.raml.jaxrs.emitters.AnnotationInstanceEmitter;
+import org.raml.api.RamlSupportedAnnotation;
+import org.raml.builder.TypeBuilder;
+import org.raml.builder.TypePropertyBuilder;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.LocalEmitter;
-import org.raml.utilities.IndentedAppendable;
+import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -49,38 +51,11 @@ public class RamlProperty implements Emittable, Annotable {
     return new RamlProperty(name, ramlType, source);
   }
 
-  public void write(AnnotationInstanceEmitter emitter, IndentedAppendable writer) throws IOException {
+  public void write(Collection<RamlSupportedAnnotation> supportedAnnotations, TypeBuilder typeBuilder) throws IOException {
 
-    writer.appendLine(name + ": ");
-    writer.indent();
-    writer.appendLine("type", ramlType.getTypeName());
-
-    emitter.emit(this);
-
-    writer.outdent();
-  }
-
-  public void writeExample(IndentedAppendable writer) throws IOException {
-
-    if (!ramlType.isRamlScalarType()) {
-
-      writer.appendLine(name + ":");
-      writer.indent();
-
-      ramlType.writeExample(writer);
-
-      writer.outdent();
-    } else {
-
-      Optional<Example> e = source.getAnnotation(Example.class);
-      if (!e.isPresent()) {
-
-        return;
-      }
-
-      writer.appendLine(name + ": " + e.get().value());
-    }
-
+    TypePropertyBuilder property = TypePropertyBuilder.property(name, ramlType.getTypeName());
+    ModelEmitterAnnotations.annotate(supportedAnnotations, this, property);
+    typeBuilder.withProperty(property);
   }
 
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {

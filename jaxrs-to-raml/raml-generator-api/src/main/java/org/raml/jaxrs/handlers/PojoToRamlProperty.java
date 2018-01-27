@@ -13,16 +13,13 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.plugins;
+package org.raml.jaxrs.handlers;
 
-import org.raml.api.RamlEntity;
-import org.raml.jaxrs.types.RamlType;
-import org.raml.jaxrs.types.TypeRegistry;
+import org.raml.api.Annotable;
+import org.raml.pojotoraml.Property;
 
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Created. There, you have it.
  */
-public interface TypeScanner {
-
-  void scanType(TypeRegistry typeRegistry, RamlEntity type, RamlType ramlType);
+public interface PojoToRamlProperty extends Property, Annotable {
 }

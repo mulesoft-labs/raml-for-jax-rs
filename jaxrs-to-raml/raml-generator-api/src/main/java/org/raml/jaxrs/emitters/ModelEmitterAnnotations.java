@@ -16,71 +16,42 @@
 package org.raml.jaxrs.emitters;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import org.raml.api.Annotable;
-import org.raml.api.RamlResourceMethod;
 import org.raml.api.RamlSupportedAnnotation;
-import org.raml.jaxrs.types.RamlProperty;
-import org.raml.jaxrs.types.RamlType;
-import org.raml.utilities.IndentedAppendable;
+import org.raml.builder.AnnotableBuilder;
+import org.raml.builder.AnnotationBuilder;
+import org.raml.builder.PropertyValueBuilder;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by Jean-Philippe Belanger on 3/29/17. Just potential zeroes and ones
+ * Created. There, you have it.
  */
-public class AnnotationInstanceEmitter implements LocalEmitter {
+public class ModelEmitterAnnotations {
 
-  private final IndentedAppendable writer;
-  private final List<RamlSupportedAnnotation> supportedAnnotations;
-
-  public AnnotationInstanceEmitter(IndentedAppendable writer, List<RamlSupportedAnnotation> supportedAnnotation) {
-    this.writer = writer;
-    this.supportedAnnotations = supportedAnnotation;
-  }
-
-  @Override
-  public void emit(RamlType ramlType) throws IOException {
-
-    annotate(ramlType);
-  }
-
-  @Override
-  public void emit(RamlProperty ramlProperty) throws IOException {
-
-    annotate(ramlProperty);
-  }
-
-  @Override
-  public void emit(RamlResourceMethod method) throws IOException {
-
-    annotate(method);
-  }
-
-  private void annotate(Annotable annotable) throws IOException {
+  public static void annotate(Collection<RamlSupportedAnnotation> supportedAnnotations, Annotable annotable,
+                              AnnotableBuilder annotableModel) throws IOException {
     for (RamlSupportedAnnotation suportedAnnotation : supportedAnnotations) {
 
       Optional<Annotation> annotationOptional = suportedAnnotation.getAnnotationInstance(annotable);
-      if (annotationOptional.isPresent() == false) {
+      if (!annotationOptional.isPresent()) {
         continue;
       }
 
       Annotation annotation = annotationOptional.get();
 
-      if (annotation.annotationType().getDeclaredMethods().length == 0) {
+      AnnotationBuilder builder = AnnotationBuilder.annotation(annotation.annotationType().getSimpleName());
 
-        writer.appendLine("(" + annotation.annotationType().getSimpleName() + "):");
-      } else {
+      if (annotation.annotationType().getDeclaredMethods().length > 0) {
 
-        writer.appendLine("(" + annotation.annotationType().getSimpleName() + "):");
-        writer.indent();
         try {
           for (Method method : annotation.annotationType().getDeclaredMethods()) {
 
@@ -91,30 +62,31 @@ public class AnnotationInstanceEmitter implements LocalEmitter {
                 list.add(Array.get(value, i));
               }
 
-              String listString = Joiner.on(", ").join(FluentIterable.from(list).transform(new Function<Object, String>() {
+              String[] listString = FluentIterable.from(list).transform(new Function<Object, String>() {
 
                 @Override
                 public String apply(Object input) {
                   return toValue(input);
                 }
-              }));
-              writer.appendLine(method.getName() + ": [" + listString + "]");
+              }).toArray(String.class);
+
+              builder.withProperties(PropertyValueBuilder.property(method.getName(), listString));
             } else {
 
-              writer.appendLine(method.getName() + ": " + toValue(value));
+              builder.withProperties(PropertyValueBuilder.property(method.getName(), toValue(value)));
             }
           }
-
-          writer.outdent();
         } catch (Exception e) {
           throw new IOException("unable to write property", e);
         }
       }
 
+      annotableModel.withAnnotations(builder);
+
     }
   }
 
-  private String toValue(Object value) {
+  private static String toValue(Object value) {
 
     if (Class.class.isAssignableFrom(value.getClass())) {
 

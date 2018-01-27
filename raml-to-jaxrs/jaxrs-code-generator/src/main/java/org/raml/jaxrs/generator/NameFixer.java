@@ -48,20 +48,6 @@ public interface NameFixer {
     }
   };
 
-  NameFixer ALL_UPPER = new NameFixer() {
-
-    @Override
-    public String fixFirst(String name) {
-
-      return name.toUpperCase();
-    }
-
-    @Override
-    public String fixOthers(String name) {
-      return name.toUpperCase();
-    }
-  };
-
   String fixFirst(String name);
 
   String fixOthers(String name);

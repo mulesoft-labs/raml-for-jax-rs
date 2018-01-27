@@ -16,32 +16,37 @@
 package org.raml.jaxrs.emitters;
 
 import com.google.common.base.Optional;
-import org.raml.api.RamlResourceMethod;
+import org.raml.builder.ExamplesBuilder;
+import org.raml.builder.PropertyValueBuilder;
+import org.raml.builder.SupportsProperties;
+import org.raml.builder.TypeBuilder;
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.common.ExampleCases;
 import org.raml.jaxrs.common.Examples;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
-import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Created by Jean-Philippe Belanger on 4/16/17. Just potential zeroes and ones
  */
-public class ExampleEmitter implements LocalEmitter {
+public class ExampleModelEmitter implements LocalEmitter {
 
 
-  private final IndentedAppendable writer;
+  private final TypeBuilder typeBuilder;
   private boolean headerDone = false;
 
   private String currentCaseName;
   private Set<String> seenTypeNames = new HashSet<>();
 
-  public ExampleEmitter(IndentedAppendable writer) {
-    this.writer = writer;
+  private Stack<SupportsProperties> propertyValues = new Stack<>();
+
+  public ExampleModelEmitter(TypeBuilder typeBuilder) {
+    this.typeBuilder = typeBuilder;
   }
 
   @Override
@@ -62,7 +67,6 @@ public class ExampleEmitter implements LocalEmitter {
       if (examplesAnnotation.isPresent()) {
 
         String[] examples = examplesAnnotation.get().value();
-        writer.appendLine("examples:");
         for (String caseName : examples) {
           if (caseName.isEmpty()) {
             throw new IOException("@ExampleCases case on type " + ramlType.getTypeName() + " is empty");
@@ -70,21 +74,16 @@ public class ExampleEmitter implements LocalEmitter {
 
           currentCaseName = caseName;
 
-          writer.indent();
-          writer.appendLine(caseName + ":");
-          writer.indent();
-          writer.appendLine("strict: false");
-          writer.appendLine("value:");
-          writer.indent();
-
+          ExamplesBuilder examplesBuilder = ExamplesBuilder.example(caseName).strict(false);
+          propertyValues.push(examplesBuilder);
           if (hasAnExample(ramlType)) {
 
             emitOneExample(ramlType);
+          } else {
+            examplesBuilder.withNoProperties();
           }
 
-          writer.outdent();
-          writer.outdent();
-          writer.outdent();
+          typeBuilder.withExamples(examplesBuilder);
         }
       } else {
 
@@ -96,23 +95,17 @@ public class ExampleEmitter implements LocalEmitter {
         }
 
 
-        boolean currentHeaderDone = headerDone;
+        ExamplesBuilder examplesBuilder = ExamplesBuilder.example("onlyCase").strict(false);
+        propertyValues.push(examplesBuilder);
+        typeBuilder.withExamples(examplesBuilder);
 
-        writer.appendLine("example:");
-        writer.indent();
-        writer.appendLine("strict: false");
-        writer.appendLine("value:");
-        writer.indent();
         headerDone = true;
 
         emitOneExample(ramlType);
-        if (!currentHeaderDone) {
-          writer.outdent();
-          writer.outdent();
-        }
       }
     } else {
 
+      // This is never the first call.
       emitOneExample(ramlType);
     }
   }
@@ -130,19 +123,22 @@ public class ExampleEmitter implements LocalEmitter {
     RamlType ramlType = ramlProperty.getRamlType();
     if (!ramlType.isRamlScalarType()) {
 
-      writer.appendLine(ramlProperty.getName() + ":");
-      writer.indent();
+      try {
+        PropertyValueBuilder property = PropertyValueBuilder.property(ramlProperty.getName());
+        propertyValues.peek().withPropertyValue(property);
+        propertyValues.push(property);
+        ramlType.emit(this);
+      } finally {
 
-      ramlType.emit(this);
-
-      writer.outdent();
+        propertyValues.pop();
+      }
     } else {
 
       Optional<Example> e = ramlProperty.getAnnotation(Example.class);
       if (e.isPresent()) {
 
         if (e.get().useCase().equals(currentCaseName)) {
-          writer.appendLine(ramlProperty.getName() + ": " + e.get().value());
+          propertyValues.peek().withPropertyValue(PropertyValueBuilder.property(ramlProperty.getName(), e.get().value()));
           return;
         }
       }
@@ -151,7 +147,8 @@ public class ExampleEmitter implements LocalEmitter {
       if (examplesAnnotation.isPresent()) {
         for (Example example : examplesAnnotation.get().value()) {
           if (example.useCase().equals(currentCaseName)) {
-            writer.appendLine(ramlProperty.getName() + ": " + example.value());
+
+            propertyValues.peek().withPropertyValue(PropertyValueBuilder.property(ramlProperty.getName(), example.value()));
             return;
           }
         }
@@ -180,8 +177,4 @@ public class ExampleEmitter implements LocalEmitter {
     return false;
   }
 
-  @Override
-  public void emit(RamlResourceMethod method) throws IOException {
-
-  }
 }

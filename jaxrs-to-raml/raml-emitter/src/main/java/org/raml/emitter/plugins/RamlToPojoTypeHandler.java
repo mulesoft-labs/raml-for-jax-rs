@@ -16,31 +16,33 @@
 package org.raml.emitter.plugins;
 
 import org.raml.api.RamlEntity;
-import org.raml.api.ScalarType;
+import org.raml.jaxrs.handlers.PojoToRamlExtensionFactory;
 import org.raml.jaxrs.plugins.TypeHandler;
+import org.raml.jaxrs.handlers.PojoToRamlClassParserFactory;
+import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
+import org.raml.pojotoraml.PojoToRaml;
+import org.raml.pojotoraml.PojoToRamlBuilder;
+import org.raml.pojotoraml.RamlAdjuster;
 import org.raml.utilities.types.Cast;
 
-import java.io.IOException;
-
 /**
- * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ * Created. There, you have it.
  */
-public class DefaultTypeHandler implements TypeHandler {
+public class RamlToPojoTypeHandler implements TypeHandler {
 
   @Override
-  public void writeType(TypeRegistry registry, IndentedAppendable writer,
-                        RamlEntity bodyType)
-      throws IOException {
+  public String writeType(final TypeRegistry registry, RamlEntity type) {
 
-    if (ScalarType.fromType(bodyType.getType()).isPresent()) {
+    final Class cls = Cast.toClass(type.getType());
 
-      writer.appendLine("type", ScalarType.fromType(bodyType.getType()).get().getRamlSyntax());
-    } else {
+    RamlAdjuster adjuster = PojoToRamlExtensionFactory.createAdjusters(cls);
 
-      Class castClass = Cast.toClass(bodyType.getType());
-      writer.appendLine("type", castClass.getSimpleName());
-    }
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), adjuster);
+
+    String name = pojoToRaml.name(cls);
+    registry.registerType(name, type);
+    return name;
   }
+
 }

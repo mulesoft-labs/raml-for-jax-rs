@@ -15,7 +15,6 @@
  */
 package org.raml.jaxrs.emitters;
 
-import org.raml.api.RamlResourceMethod;
 import org.raml.jaxrs.types.RamlProperty;
 import org.raml.jaxrs.types.RamlType;
 
@@ -30,5 +29,4 @@ public interface LocalEmitter {
 
   void emit(RamlProperty ramlProperty) throws IOException;
 
-  void emit(RamlResourceMethod method) throws IOException;
 }

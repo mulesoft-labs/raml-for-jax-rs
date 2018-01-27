@@ -17,10 +17,13 @@ package org.raml.emitter.plugins;
 
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
+import org.raml.builder.BodyBuilder;
+import org.raml.builder.MethodBuilder;
+import org.raml.builder.ResponseBuilder;
+import org.raml.builder.TypeBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 
@@ -36,8 +39,8 @@ public class DefaultResponseHandler implements ResponseHandler {
   }
 
   @Override
-  public void writeResponses(TypeRegistry typeRegistry, IndentedAppendable writer,
-                             RamlResourceMethod method, TypeSelector selector)
+  public void writeResponses(TypeRegistry typeRegistry, RamlResourceMethod method, TypeSelector selector,
+                             MethodBuilder methodBuilder)
       throws IOException {
 
     if (!method.getProducedType().isPresent()) {
@@ -46,22 +49,19 @@ public class DefaultResponseHandler implements ResponseHandler {
 
     // We have no clue what the error responses are, however, we want to generate
     // well formed raml, so we pick one.
-    writer.appendLine("200:");
-    writer.indent();
+    ResponseBuilder responseBuilder = ResponseBuilder.response(200);
 
-    writer.appendLine("body:");
     for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
 
-      writer.indent();
-      writer.appendLine(producedMediaType.toStringRepresentation() + ":");
+      BodyBuilder body = BodyBuilder.body(producedMediaType.toStringRepresentation());
+      responseBuilder.withBodies(body);
 
-      writer.indent();
       TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-      typeHandler.writeType(typeRegistry, writer, method.getProducedType().get());
-      writer.outdent();
-      writer.outdent();
+      String type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
+      body.ofType(TypeBuilder.type(type));
     }
 
-    writer.outdent();
+    methodBuilder.withResponses(responseBuilder);
   }
+
 }

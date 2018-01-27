@@ -16,9 +16,9 @@
 package org.raml.emitter.plugins;
 
 import org.raml.api.RamlResourceMethod;
+import org.raml.builder.MethodBuilder;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.utilities.IndentedAppendable;
 
 import java.io.IOException;
 
@@ -29,6 +29,6 @@ public interface ResponseHandler {
 
   int handlesResponses(RamlResourceMethod method);
 
-  void writeResponses(TypeRegistry typeRegistry, IndentedAppendable writer, RamlResourceMethod method,
-                      TypeSelector selector) throws IOException;
+  void writeResponses(TypeRegistry typeRegistry, RamlResourceMethod method, TypeSelector selector, MethodBuilder methodBuilder)
+      throws IOException;
 }

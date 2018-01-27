@@ -16,12 +16,12 @@
 package org.raml.jaxrs.examples.resources;
 
 import org.raml.jaxrs.common.RamlGenerator;
-import org.raml.jaxrs.handlers.SimpleJacksonTypes;
+import org.raml.jaxrs.handlers.SimpleJacksonClassParser;
 
 /**
  * Created by Jean-Philippe Belanger on 5/22/17. Just potential zeroes and ones
  */
-@RamlGenerator(SimpleJacksonTypes.class)
+@RamlGenerator(parser = SimpleJacksonClassParser.class)
 public enum Gender {
 
   MALE, FEMALE

@@ -34,6 +34,12 @@ public class Resource {
 
   }
 
+  @Consumes({"text/xml", "application/*"})
+  @PUT
+  public void putStuff(byte[] bytes) {
+
+  }
+
   @Path("/head/")
   @HEAD
   public String head() {

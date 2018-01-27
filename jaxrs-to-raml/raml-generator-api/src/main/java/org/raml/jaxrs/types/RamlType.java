@@ -98,7 +98,9 @@ public class RamlType implements Annotable, Emittable {
 
     // new ExampleModelEmitter(this, pojoToRamlProperties);
 
-    documentBuilder.withTypes(r.requestedType());
+    if (r.requestedType() != null) {
+      documentBuilder.withTypes(r.requestedType());
+    }
 
   }
 

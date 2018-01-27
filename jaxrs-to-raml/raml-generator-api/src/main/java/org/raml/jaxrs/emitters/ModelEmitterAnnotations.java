@@ -70,7 +70,7 @@ public class ModelEmitterAnnotations {
                 }
               }).toArray(String.class);
 
-              builder.withProperties(PropertyValueBuilder.property(method.getName(), listString));
+              builder.withProperties(PropertyValueBuilder.propertyOfArray(method.getName(), listString));
             } else {
 
               builder.withProperties(PropertyValueBuilder.property(method.getName(), toValue(value)));

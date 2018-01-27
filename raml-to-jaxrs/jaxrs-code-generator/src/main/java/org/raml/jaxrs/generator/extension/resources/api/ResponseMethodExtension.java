@@ -13,13 +13,12 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.generator.extension.resources;
+package org.raml.jaxrs.generator.extension.resources.api;
 
 import com.squareup.javapoet.MethodSpec;
-import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
@@ -37,7 +36,7 @@ public interface ResponseMethodExtension<T extends GResponse> {
   class Composite extends AbstractCompositeExtension<ResponseMethodExtension<GResponse>, MethodSpec.Builder> implements
       ResponseMethodExtension<GResponse> {
 
-    public Composite(List<ResponseMethodExtension<GResponse>> extensions) {
+    public Composite(Collection<ResponseMethodExtension<GResponse>> extensions) {
       super(extensions);
     }
 

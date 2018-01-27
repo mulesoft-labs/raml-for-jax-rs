@@ -25,10 +25,8 @@ import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
-import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
-import org.raml.jaxrs.generator.extension.resources.ResourceContext;
+import org.raml.jaxrs.generator.extension.resources.api.*;
 import org.raml.jaxrs.generator.ramltypes.*;
-import org.raml.jaxrs.generator.v10.Annotations;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -62,11 +60,7 @@ public class ResourceBuilder implements ResourceGenerator {
   @Override
   public void output(CodeContainer<TypeSpec> container) throws IOException {
 
-
-    TypeSpec.Builder typeSpec =
-        build.getResourceClassExtension(new DefaultResourceClassCreator(), Annotations.ON_RESOURCE_CLASS_CREATION,
-                                        topResource)
-            .onResource(new ResourceContextImpl(build), topResource, null);
+    TypeSpec.Builder typeSpec = new DefaultResourceClassCreator().onResource(new ResourceContextImpl(build), topResource, null);
 
     if (typeSpec != null) {
       container.into(typeSpec.build());
@@ -140,9 +134,18 @@ public class ResourceBuilder implements ResourceGenerator {
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
 
 
-    methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
-        .onMethod(new ResourceContextImpl(build),
-                  gMethod, methodSpec);
+    methodSpec =
+        build
+            .pluginsForResourceMethod(new Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>>() {
+
+                                        @Nullable
+                                        @Override
+                                        public ResourceMethodExtension<GMethod> apply(@Nullable Collection<ResourceMethodExtension<GMethod>> resourceMethodExtensions) {
+                                          return new ResourceMethodExtension.Composite(resourceMethodExtensions);
+                                        }
+                                      }, gMethod)
+            .onMethod(new ResourceContextImpl(build),
+                      gMethod, methodSpec);
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, null);
 
     if (methodSpec != null) {
@@ -159,11 +162,18 @@ public class ResourceBuilder implements ResourceGenerator {
     methodSpec.addParameter(parameterSpec);
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
 
-    methodSpec = build.withResourceListeners().onMethod(new ResourceContextImpl(build), gMethod, methodSpec);
+    methodSpec =
+        build
+            .pluginsForResourceMethod(new Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>>() {
 
-    methodSpec = build.getResourceMethodExtension(Annotations.ON_METHOD_FINISH, gMethod)
-        .onMethod(new ResourceContextImpl(build),
-                  gMethod, methodSpec);
+                                        @Nullable
+                                        @Override
+                                        public ResourceMethodExtension<GMethod> apply(@Nullable Collection<ResourceMethodExtension<GMethod>> resourceMethodExtensions) {
+                                          return new ResourceMethodExtension.Composite(resourceMethodExtensions);
+                                        }
+                                      }, gMethod)
+            .onMethod(new ResourceContextImpl(build),
+                      gMethod, methodSpec);
 
     if (methodSpec != null) {
       typeSpec.addMethod(methodSpec.build());
@@ -235,16 +245,8 @@ public class ResourceBuilder implements ResourceGenerator {
                           .addCode("super(response);\n").build()
           );;
 
-      responseClass =
-          build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_CREATION, gMethod)
-              .onResponseClass(new ResourceContextImpl(build),
-                               gMethod, responseClass);
 
-      if (responseClass == null) {
-
-        map.put(defaultName, null);
-        continue;
-      }
+      map.put(defaultName, null);
 
       TypeSpec currentClass = responseClass.build();
       for (GResponse gResponse : responses.get(gMethod)) {
@@ -279,17 +281,17 @@ public class ResourceBuilder implements ResourceGenerator {
                 .addStatement("return new $N(responseBuilder.build())", currentClass);
           }
 
-          builder =
-              build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse)
-                  .onMethod(new ResourceContextImpl(build),
-                            gResponse, builder);
-
-          if (builder == null) {
-            continue;
-          }
 
           builder =
-              build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse)
+              build
+                  .pluginsForResponseMethod(new Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>>() {
+
+                                              @Nullable
+                                              @Override
+                                              public ResponseMethodExtension<GResponse> apply(@Nullable Collection<ResponseMethodExtension<GResponse>> responseMethodExtensions) {
+                                                return new ResponseMethodExtension.Composite(responseMethodExtensions);
+                                              }
+                                            }, gResponse)
                   .onMethod(new ResourceContextImpl(build),
                             gResponse, builder);
 
@@ -307,15 +309,6 @@ public class ResourceBuilder implements ResourceGenerator {
                 MethodSpec.methodBuilder(
                                          Names.methodName("respond", httpCode, "With", responseType.mediaType()))
                     .addModifiers(Modifier.STATIC, Modifier.PUBLIC);
-
-            builder =
-                build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_CREATION, gResponse)
-                    .onMethod(new ResourceContextImpl(build),
-                              gResponse, builder);
-
-            if (builder == null) {
-              continue;
-            }
 
             builder
                 .returns(TypeVariableName.get(currentClass.name));
@@ -379,10 +372,17 @@ public class ResourceBuilder implements ResourceGenerator {
             }
 
             builder =
-                build.getResponseMethodExtension(Annotations.ON_RESPONSE_METHOD_FINISH, gResponse)
+                build
+                    .pluginsForResponseMethod(new Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>>() {
+
+                                                @Nullable
+                                                @Override
+                                                public ResponseMethodExtension<GResponse> apply(@Nullable Collection<ResponseMethodExtension<GResponse>> responseMethodExtensions) {
+                                                  return new ResponseMethodExtension.Composite(responseMethodExtensions);
+                                                }
+                                              }, gResponse)
                     .onMethod(new ResourceContextImpl(build),
                               gResponse, builder);
-
 
             if (builder == null) {
               continue;
@@ -392,9 +392,16 @@ public class ResourceBuilder implements ResourceGenerator {
         }
       }
 
-
       responseClass =
-          build.getResponseClassExtension(Annotations.ON_RESPONSE_CLASS_FINISH, gMethod)
+          build
+              .pluginsForResponseClass(new Function<Collection<ResponseClassExtension<GMethod>>, ResponseClassExtension<GMethod>>() {
+
+                                         @Nullable
+                                         @Override
+                                         public ResponseClassExtension<GMethod> apply(@Nullable Collection<ResponseClassExtension<GMethod>> responseClassExtensions) {
+                                           return new ResponseClassExtension.Composite(responseClassExtensions);
+                                         }
+                                       }, gMethod)
               .onResponseClass(new ResourceContextImpl(build),
                                gMethod, responseClass);
 
@@ -472,10 +479,6 @@ public class ResourceBuilder implements ResourceGenerator {
     MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
         .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
-    methodSpec =
-        build.getResourceMethodExtension(Annotations.ON_METHOD_CREATION, gMethod)
-            .onMethod(new ResourceContextImpl(build),
-                      gMethod, methodSpec);
 
     for (GParameter parameter : ResourceUtils.accumulateUriParameters(gMethod.resource())) {
 
@@ -633,7 +636,16 @@ public class ResourceBuilder implements ResourceGenerator {
       recurse(typeSpec, topResource);
 
       typeSpec =
-          build.getResourceClassExtension(NULL_EXTENSION, Annotations.ON_RESOURCE_CLASS_FINISH, topResource)
+          build
+              .pluginsForResourceClass(new Function<Collection<ResourceClassExtension<GResource>>, ResourceClassExtension<GResource>>() {
+
+                                         @Nullable
+                                         @Override
+                                         public ResourceClassExtension<GResource> apply(@Nullable Collection<ResourceClassExtension<GResource>> resourceClassExtensions) {
+                                           return new ResourceClassExtension.Composite(resourceClassExtensions);
+
+                                         }
+                                       }, ResourceClassExtension.class, topResource)
               .onResource(new ResourceContextImpl(build), topResource, typeSpec);
       return typeSpec;
     }

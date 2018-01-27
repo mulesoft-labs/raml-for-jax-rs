@@ -119,4 +119,9 @@ public class V08GResource implements GResource {
   public String relativePath() {
     return resource.relativeUri().value();
   }
+
+  @Override
+  public String getDescription() {
+    return resource.displayName();
+  }
 }

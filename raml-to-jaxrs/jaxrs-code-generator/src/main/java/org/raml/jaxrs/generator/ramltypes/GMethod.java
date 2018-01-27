@@ -36,4 +36,6 @@ public interface GMethod extends GAbstraction {
   List<GParameter> headers();
 
   List<GResponse> responses();
+
+  String getDescription();
 }

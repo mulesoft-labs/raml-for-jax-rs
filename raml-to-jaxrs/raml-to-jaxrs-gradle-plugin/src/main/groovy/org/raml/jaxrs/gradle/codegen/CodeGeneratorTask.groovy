@@ -22,7 +22,7 @@ import org.gradle.api.tasks.*
 import org.jsonschema2pojo.AnnotationStyle
 import org.raml.jaxrs.generator.Configuration
 import org.raml.jaxrs.generator.RamlScanner
-import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension
+import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension
 import org.raml.jaxrs.gradle.RamlExtension
 
 /**

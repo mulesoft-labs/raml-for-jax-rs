@@ -28,7 +28,7 @@ import org.apache.maven.project.MavenProject;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.RamlScanner;
-import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
+import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,13 +127,13 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   private Map<String, String> jsonMapperConfiguration;
 
   /**
-   * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension)
+   * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension)
    */
   @Parameter(property = "resourceCreationExtension")
   private String resourceCreationExtension;
 
   /**
-   * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension)
+   * The name of a generator extension class (implements org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension)
    */
   @Parameter(property = "resourceCreationExtension")
   private String resourceFinishExtension;

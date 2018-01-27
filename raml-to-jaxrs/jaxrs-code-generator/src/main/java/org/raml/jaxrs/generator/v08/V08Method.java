@@ -116,6 +116,11 @@ public class V08Method implements GMethod {
     return responses;
   }
 
+  @Override
+  public String getDescription() {
+    return input.description() != null ? input.description().value() : null;
+  }
+
 
   @Override
   public List<GParameter> headers() {

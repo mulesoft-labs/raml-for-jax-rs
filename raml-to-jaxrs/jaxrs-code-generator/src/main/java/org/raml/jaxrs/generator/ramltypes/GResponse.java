@@ -29,4 +29,6 @@ public interface GResponse extends GAbstraction {
   String code();
 
   List<GParameter> headers();
+
+  String getDescription();
 }

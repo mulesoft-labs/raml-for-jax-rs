@@ -16,8 +16,8 @@
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.extension.resources.ResourceClassExtension;
-import org.raml.jaxrs.generator.extension.resources.ResourceContext;
+import org.raml.jaxrs.generator.extension.resources.api.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 
 /**

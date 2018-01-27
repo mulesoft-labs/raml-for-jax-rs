@@ -82,4 +82,9 @@ public class V08Response implements GResponse {
   public List<GParameter> headers() {
     return headers;
   }
+
+  @Override
+  public String getDescription() {
+    return response.description() != null ? response.description().value() : null;
+  }
 }

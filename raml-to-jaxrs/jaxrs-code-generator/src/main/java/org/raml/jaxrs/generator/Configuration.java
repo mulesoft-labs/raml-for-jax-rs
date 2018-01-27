@@ -17,7 +17,7 @@ package org.raml.jaxrs.generator;
 
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.GenerationConfig;
-import org.raml.jaxrs.generator.extension.resources.GlobalResourceExtension;
+import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 
 import java.io.File;
 import java.util.HashMap;

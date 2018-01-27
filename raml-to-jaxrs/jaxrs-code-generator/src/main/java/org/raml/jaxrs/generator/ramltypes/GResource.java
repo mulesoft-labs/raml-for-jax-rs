@@ -36,4 +36,6 @@ public interface GResource extends GAbstraction {
   GResource parentResource();
 
   String relativePath();
+
+  String getDescription();
 }

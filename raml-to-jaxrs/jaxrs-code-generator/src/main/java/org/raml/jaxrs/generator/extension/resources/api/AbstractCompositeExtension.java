@@ -13,10 +13,11 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.generator.extension;
+package org.raml.jaxrs.generator.extension.resources.api;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,14 +25,14 @@ import java.util.List;
  */
 abstract public class AbstractCompositeExtension<T, B> {
 
-  private List<T> elements;
+  private Collection<T> elements;
 
-  public AbstractCompositeExtension(List<T> elements) {
+  public AbstractCompositeExtension(Collection<T> elements) {
     this.elements = elements;
   }
 
   @VisibleForTesting
-  public List<T> getElements() {
+  public Collection<T> getElements() {
     return elements;
   }
 

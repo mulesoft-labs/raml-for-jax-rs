@@ -130,6 +130,11 @@ public class V10GMethod implements GMethod {
   }
 
   @Override
+  public String getDescription() {
+    return method.description() != null ? method.description().value() : null;
+  }
+
+  @Override
   public boolean equals(Object obj) {
 
     if (obj == null || !(obj instanceof V10GMethod)) {

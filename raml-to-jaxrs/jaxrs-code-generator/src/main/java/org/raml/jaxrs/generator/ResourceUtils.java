@@ -196,6 +196,7 @@ public class ResourceUtils {
         public Object implementation() {
           return null;
         }
+
       };
     }
 
@@ -203,5 +204,6 @@ public class ResourceUtils {
     public Object implementation() {
       return null;
     }
+
   }
 }

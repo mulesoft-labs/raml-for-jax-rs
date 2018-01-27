@@ -117,4 +117,9 @@ public class V10GResource implements GResource {
 
     return resource.relativeUri().value();
   }
+
+  @Override
+  public String getDescription() {
+    return resource.description() != null ? resource.description().value() : null;
+  }
 }

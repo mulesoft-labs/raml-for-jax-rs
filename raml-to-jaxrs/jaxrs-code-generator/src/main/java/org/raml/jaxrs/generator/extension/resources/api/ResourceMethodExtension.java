@@ -13,13 +13,12 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.generator.extension.resources;
+package org.raml.jaxrs.generator.extension.resources.api;
 
 import com.squareup.javapoet.MethodSpec;
-import org.raml.jaxrs.generator.extension.AbstractCompositeExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
@@ -37,7 +36,7 @@ public interface ResourceMethodExtension<T extends GMethod> {
   class Composite extends AbstractCompositeExtension<ResourceMethodExtension<GMethod>, MethodSpec.Builder> implements
       ResourceMethodExtension<GMethod> {
 
-    public Composite(List<ResourceMethodExtension<GMethod>> extensions) {
+    public Composite(Collection<ResourceMethodExtension<GMethod>> extensions) {
       super(extensions);
     }
 

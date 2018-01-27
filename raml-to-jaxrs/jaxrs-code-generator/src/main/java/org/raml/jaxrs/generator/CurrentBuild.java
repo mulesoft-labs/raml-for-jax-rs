@@ -27,16 +27,15 @@ import org.apache.commons.io.FileUtils;
 import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.generator.builders.*;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
-import org.raml.jaxrs.generator.extension.resources.*;
+import org.raml.jaxrs.generator.extension.resources.api.*;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.v10.*;
+import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
-import org.raml.ramltopojo.RamlToPojo;
-import org.raml.ramltopojo.RamlToPojoBuilder;
-import org.raml.ramltopojo.ResultingPojos;
-import org.raml.ramltopojo.TypeFetchers;
+import org.raml.ramltopojo.*;
+import org.raml.ramltopojo.plugin.PluginManager;
 import org.raml.v2.api.model.v10.api.Api;
 import org.raml.v2.api.model.v10.bodies.Response;
 import org.raml.v2.api.model.v10.datamodel.JSONTypeDeclaration;
@@ -64,6 +63,7 @@ public class CurrentBuild {
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
+  private final PluginManager pluginManager = PluginManager.createPluginManager("META-INF/ramltopojo-plugin.properties");
 
   private GlobalResourceExtension.Composite resourceExtensionList = new GlobalResourceExtension.Composite();
 
@@ -309,84 +309,102 @@ public class CurrentBuild {
     return configuration.createJsonSchemaGenerationConfig();
   }
 
-  private <T> T buildGlobalForCreate(T defaultValue) {
+  private <T> void loadBasePlugins(Set<T> plugins, Class<T> pluginType) {
 
-    if (configuration.getDefaultCreationExtension() != null) {
+    List<String> configuredPlugins = FluentIterable.from(this.typeConfiguration()).transform(new Function<String, String>() {
 
-      try {
-        return (T) configuration.getDefaultCreationExtension().newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
-        throw new GenerationException(e);
+      @Nullable
+      @Override
+      public String apply(@Nullable String s) {
+        return "ramltojaxrs." + s;
       }
-    } else {
-      return defaultValue;
+    }).toList();
+
+    for (String basePlugin : configuredPlugins) {
+      plugins.addAll(pluginManager.getClassesForName(basePlugin, Collections.<String>emptyList(), pluginType));
     }
   }
 
-  private GlobalResourceExtension buildGlobalForFinish() {
+  public ResourceClassExtension<GResource> pluginsForResourceClass(Function<Collection<ResourceClassExtension<GResource>>, ResourceClassExtension<GResource>> provider,
+                                                                   Class<ResourceClassExtension> cls, GResource resource) {
 
-    if (configuration.getDefaultCreationExtension() != null) {
+    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    Set<ResourceClassExtension> plugins = buildPluginList(ResourceClassExtension.class, data);
 
-      try {
-        return configuration.getDefaultFinishExtension().newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
-        throw new GenerationException(e);
-      }
-    } else {
-      return GlobalResourceExtension.NULL_EXTENSION;
-    }
+    // Ugly, but I don't care
+    return provider.apply(FluentIterable.from(plugins)
+        .transform(new Function<ResourceClassExtension, ResourceClassExtension<GResource>>() {
+
+          @Nullable
+          @Override
+          public ResourceClassExtension<GResource> apply(@Nullable ResourceClassExtension resourceClassExtension) {
+            return resourceClassExtension;
+          }
+        }).toList());
   }
 
+  public ResponseClassExtension<GMethod> pluginsForResponseClass(Function<Collection<ResponseClassExtension<GMethod>>, ResponseClassExtension<GMethod>> provider,
+                                                                 GMethod resource) {
 
-  public ResourceMethodExtension<GMethod> getResourceMethodExtension(
-                                                                     Annotations<ResourceMethodExtension<GMethod>> onResourceMethodExtension,
-                                                                     GMethod gMethod) {
+    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    Set<ResponseClassExtension> plugins = buildPluginList(ResponseClassExtension.class, data);
 
-    if (gMethod instanceof V10GMethod) {
-      return onResourceMethodExtension.getWithContext(this, getApi(), ((V10GMethod) gMethod).implementation());
-    }
+    // Ugly, but I don't care
+    return provider.apply(FluentIterable.from(plugins)
+        .transform(new Function<ResponseClassExtension, ResponseClassExtension<GMethod>>() {
 
-    return onResourceMethodExtension == Annotations.ON_METHOD_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION)
-        : buildGlobalForFinish();
+          @Nullable
+          @Override
+          public ResponseClassExtension<GMethod> apply(@Nullable ResponseClassExtension resourceClassExtension) {
+            return resourceClassExtension;
+          }
+        }).toList());
   }
 
-  public ResourceClassExtension<GResource> getResourceClassExtension(ResourceClassExtension<GResource> defaultClass,
-                                                                     Annotations<ResourceClassExtension<GResource>> onResourceClassCreation,
-                                                                     GResource topResource) {
-    if (topResource instanceof V10GResource) {
-      List<ResourceClassExtension<GResource>> list = new ArrayList<>();
-      list.add(defaultClass);
-      list.add(onResourceClassCreation.getWithContext(this, getApi(), ((V10GResource) topResource).implementation()));
+  public ResourceMethodExtension<GMethod> pluginsForResourceMethod(Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>> provider,
+                                                                   GMethod resource) {
 
-      return new ResourceClassExtension.Composite(list);
-    }
+    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    Set<ResourceMethodExtension> plugins = buildPluginList(ResourceMethodExtension.class, data);
 
-    return onResourceClassCreation == Annotations.ON_RESOURCE_CLASS_CREATION ? buildGlobalForCreate(defaultClass)
-        : buildGlobalForFinish();
+    // Ugly, but I don't care
+    return provider.apply(FluentIterable.from(plugins)
+        .transform(new Function<ResourceMethodExtension, ResourceMethodExtension<GMethod>>() {
+
+          @Nullable
+          @Override
+          public ResourceMethodExtension<GMethod> apply(@Nullable ResourceMethodExtension resourceClassExtension) {
+            return resourceClassExtension;
+          }
+        }).toList());
   }
 
-  public ResponseClassExtension<GMethod> getResponseClassExtension(
-                                                                   Annotations<ResponseClassExtension<GMethod>> onResponseClassCreation,
-                                                                   GMethod gMethod) {
-    if (gMethod instanceof V10GMethod) {
-      return onResponseClassCreation.getWithContext(this, getApi(), ((V10GMethod) gMethod).implementation());
-    }
+  public ResponseMethodExtension<GResponse> pluginsForResponseMethod(Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>> provider,
+                                                                     GResponse resource) {
 
-    return onResponseClassCreation == Annotations.ON_RESPONSE_CLASS_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION)
-        : buildGlobalForFinish();
+    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    Set<ResponseMethodExtension> plugins = buildPluginList(ResponseMethodExtension.class, data);
+
+    // Ugly, but I don't care
+    return provider.apply(FluentIterable.from(plugins)
+        .transform(new Function<ResponseMethodExtension, ResponseMethodExtension<GResponse>>() {
+
+          @Nullable
+          @Override
+          public ResponseMethodExtension<GResponse> apply(@Nullable ResponseMethodExtension resourceClassExtension) {
+            return resourceClassExtension;
+          }
+        }).toList());
   }
 
-  public ResponseMethodExtension<GResponse> getResponseMethodExtension(
-                                                                       Annotations<ResponseMethodExtension<GResponse>> onResponseMethodExtension,
-                                                                       GResponse gResponse) {
-    if (gResponse instanceof V10GResponse) {
-      return onResponseMethodExtension.getWithContext(this, getApi(), ((V10GResponse) gResponse).implementation());
+  private <T> Set<T> buildPluginList(Class<T> cls, List<PluginDef> data) {
+    Set<T> plugins = new HashSet<>();
+    loadBasePlugins(plugins, cls);
+    for (PluginDef datum : data) {
+      plugins.addAll(pluginManager.getClassesForName(datum.getPluginName(), datum.getArguments(), cls));
     }
-
-    return onResponseMethodExtension == Annotations.ON_RESPONSE_METHOD_CREATION ? buildGlobalForCreate(GlobalResourceExtension.NULL_EXTENSION)
-        : buildGlobalForFinish();
+    return plugins;
   }
-
 
   public <T> Iterable<T> createExtensions(String className) {
 

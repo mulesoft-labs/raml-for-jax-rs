@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 @XmlRootElement
 @RamlGenerator(parser = BeanLikeClassParser.class, plugins = {@RamlGeneratorPlugin(plugin = "core.changeType",
-    parameters = {"hello"})})
+    parameters = {"java.util.UUID", "string"})})
 @Secure(security = String.class, level = 17)
 public interface HierarchyValue extends TopValue, AnotherTopValue {
 

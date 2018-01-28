@@ -17,34 +17,38 @@ package org.raml.jaxrs.handlers;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
+import org.raml.ramltopojo.plugin.PluginManager;
 import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.common.RamlGeneratorPlugin;
 import org.raml.pojotoraml.RamlAdjuster;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created. There, you have it.
  */
 public class PojoToRamlExtensionFactory {
 
-  public static RamlAdjuster createAdjusters(Class<?> clazz, RamlAdjuster... ramlAdjusters) {
+  private static PluginManager pluginManager = PluginManager.createPluginManager("META-INF/jaxrstoraml.properties");
+
+  public static RamlAdjuster createAdjusters(Class<?> clazz, final RamlAdjuster... ramlAdjusters) {
 
     RamlGenerator generator = clazz.getAnnotation(RamlGenerator.class);
     if (generator != null) {
-      return new RamlAdjuster.Composite(FluentIterable.of(generator.adjuster())
-          .transform(new Function<Class<? extends RamlAdjuster>, RamlAdjuster>() {
+      return new RamlAdjuster.Composite(FluentIterable.of(generator.plugins())
+          .transform(new Function<RamlGeneratorPlugin, RamlAdjuster>() {
 
             @Nullable
             @Override
-            public RamlAdjuster apply(@Nullable Class<? extends RamlAdjuster> aClass) {
-              try {
-                return aClass.newInstance();
-              } catch (InstantiationException | IllegalAccessException e) {
-
-                throw new IllegalArgumentException(e);
-              }
+            public RamlAdjuster apply(@Nullable RamlGeneratorPlugin ramlGeneratorPlugin) {
+              Set<RamlAdjuster> adjuster =
+                  pluginManager.getClassesForName(ramlGeneratorPlugin.plugin(),
+                                                  Arrays.asList(ramlGeneratorPlugin.parameters()), RamlAdjuster.class);
+              return new RamlAdjuster.Composite(adjuster);
             }
           }).append(ramlAdjusters).toList());
     } else {

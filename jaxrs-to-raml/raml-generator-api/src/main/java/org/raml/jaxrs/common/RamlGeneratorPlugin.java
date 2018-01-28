@@ -28,10 +28,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @Retention(RUNTIME)
-@Target({ElementType.TYPE})
-public @interface RamlGenerator {
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface RamlGeneratorPlugin {
 
-  Class<? extends ClassParser> parser();
+  String plugin();
 
-  RamlGeneratorPlugin[] plugins() default {};
+  String[] parameters() default {};
 }

@@ -24,6 +24,11 @@
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
+            <artifactId>raml-to-pojo</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.raml</groupId>
             <artifactId>raml-simple-emitter</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>

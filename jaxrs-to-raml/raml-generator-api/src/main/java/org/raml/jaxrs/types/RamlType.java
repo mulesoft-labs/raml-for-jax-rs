@@ -91,8 +91,14 @@ public class RamlType implements Annotable, Emittable {
 
     final List<Pair<PojoToRamlProperty, TypePropertyBuilder>> pojoToRamlProperties = new ArrayList<>();
 
-    RamlAdjuster adjuster = PojoToRamlExtensionFactory.createAdjusters(c, new Fixer(supportedAnnotations, pojoToRamlProperties));
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), adjuster);
+    AdjusterFactory factory = new AdjusterFactory() {
+
+      @Override
+      public RamlAdjuster createAdjuster(Class<?> clazz) {
+        return PojoToRamlExtensionFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties));
+      }
+    };
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), factory);
 
     Result r = pojoToRaml.classToRaml(c);
 

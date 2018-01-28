@@ -21,6 +21,7 @@ import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.handlers.PojoToRamlClassParserFactory;
 import org.raml.jaxrs.types.RamlType;
 import org.raml.jaxrs.types.TypeRegistry;
+import org.raml.pojotoraml.AdjusterFactory;
 import org.raml.pojotoraml.PojoToRaml;
 import org.raml.pojotoraml.PojoToRamlBuilder;
 import org.raml.pojotoraml.RamlAdjuster;
@@ -36,9 +37,15 @@ public class RamlToPojoTypeHandler implements TypeHandler {
 
     final Class cls = Cast.toClass(type.getType());
 
-    RamlAdjuster adjuster = PojoToRamlExtensionFactory.createAdjusters(cls);
+    AdjusterFactory factory = new AdjusterFactory() {
 
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), adjuster);
+      @Override
+      public RamlAdjuster createAdjuster(Class<?> clazz) {
+        return PojoToRamlExtensionFactory.createAdjusters(clazz);
+      }
+    };
+
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), factory);
 
     String name = pojoToRaml.name(cls);
     registry.registerType(name, type);

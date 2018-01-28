@@ -18,7 +18,6 @@ package org.raml.jaxrs.emitters;
 import com.google.common.base.Optional;
 import org.raml.api.RamlParameter;
 import org.raml.api.ScalarType;
-import org.raml.builder.FacetBuilder;
 import org.raml.builder.ParameterBuilder;
 import org.raml.builder.PropertyValueBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
@@ -65,13 +64,13 @@ public class ParameterEmitter {
       if (ramlType.get() == ScalarType.INTEGER || ramlType.get() == ScalarType.NUMBER) {
         if (parameter.getAnnotation(Min.class).isPresent()) {
           parameterBuilder.with(
-              PropertyValueBuilder.property("minimum", String.valueOf(parameter.getAnnotation(Min.class).get().value()))
+              PropertyValueBuilder.property("minimum", parameter.getAnnotation(Min.class).get().value())
 
               );
         }
         if (parameter.getAnnotation(Max.class).isPresent()) {
           parameterBuilder.with(
-              PropertyValueBuilder.property("maximum", String.valueOf(parameter.getAnnotation(Max.class).get().value()))
+              PropertyValueBuilder.property("maximum", parameter.getAnnotation(Max.class).get().value())
               );
         }
       }
@@ -79,9 +78,9 @@ public class ParameterEmitter {
         if (ramlType.get() == ScalarType.STRING) {
           parameterBuilder.with(
                                 PropertyValueBuilder.property("minLength",
-                                                              String.valueOf(parameter.getAnnotation(Size.class).get().min())),
+                                                              parameter.getAnnotation(Size.class).get().min()),
                                 PropertyValueBuilder.property("maxLength",
-                                                              String.valueOf(parameter.getAnnotation(Size.class).get().max()))
+                                                              parameter.getAnnotation(Size.class).get().max())
               );
         }
       }

@@ -172,7 +172,7 @@ public class ModelEmitter implements Emitter {
             Type type = method.getConsumedType().get().getType();
 
             TypeHandler typeHandler = pickTypeHandler(type);
-            body.ofType(TypeBuilder.type(typeHandler.writeType(typeRegistry, method.getConsumedType().get())));
+            body.ofType(typeHandler.writeType(typeRegistry, method.getConsumedType().get()));
           }
         }
 

@@ -20,6 +20,9 @@ import org.junit.Test;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;
+import org.raml.v2.api.model.v10.api.Api;
+import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -49,5 +52,11 @@ public class JustLoadTest {
 
       fail("Cant load");
     }
+
+    Api api = ramlModelResult.getApiV10();
+    ObjectTypeDeclaration otd = (ObjectTypeDeclaration) api.types().get(0);
+    ArrayTypeDeclaration atd = (ArrayTypeDeclaration) otd.properties().get(0);
+    ObjectTypeDeclaration arrayItems = (ObjectTypeDeclaration) atd.items();
+    System.err.println(arrayItems.type());
   }
 }

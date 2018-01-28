@@ -57,8 +57,8 @@ public class DefaultResponseHandler implements ResponseHandler {
       responseBuilder.withBodies(body);
 
       TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-      String type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
-      body.ofType(TypeBuilder.type(type));
+      TypeBuilder type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
+      body.ofType(type);
     }
 
     methodBuilder.withResponses(responseBuilder);

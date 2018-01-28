@@ -16,6 +16,7 @@
 package org.raml.jaxrs.plugins;
 
 import org.raml.api.RamlEntity;
+import org.raml.builder.TypeBuilder;
 import org.raml.jaxrs.types.TypeRegistry;
 
 import java.io.IOException;
@@ -25,6 +26,6 @@ import java.io.IOException;
  */
 public interface TypeHandler {
 
-  String writeType(TypeRegistry registry, RamlEntity type) throws IOException;
+  TypeBuilder writeType(TypeRegistry registry, RamlEntity type) throws IOException;
 
 }

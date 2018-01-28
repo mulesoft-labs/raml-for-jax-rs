@@ -106,6 +106,10 @@ public class RamlType implements Annotable, Emittable {
 
     if (r.requestedType() != null) {
       documentBuilder.withTypes(r.requestedType());
+      for (TypeDeclarationBuilder typeDeclarationBuilder : r.dependentTypes()) {
+
+        documentBuilder.withTypes(typeDeclarationBuilder);
+      }
     }
 
   }

@@ -68,6 +68,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -81,6 +82,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
     <description>RAML JAXRS</description>

@@ -36,8 +36,10 @@ public class Main {
     Options options = new Options();
     options.addOption(Option.builder("a").required().longOpt("applicationDirectory").hasArg().desc("application path").build());
     options.addOption(Option.builder("o").required().longOpt("output").hasArg().desc("RAML output file").build());
+
     options.addOption("s", "sourceRoot", true, "JaxRs source root");
     options.addOption("t", "translatedAnnotations", true, "translated annotation list (comma separated");
+    options.addOption("p", "topPackage", true, "top package used for resources");
 
     try {
 
@@ -53,10 +55,16 @@ public class Main {
         jaxRsSourceRoot = Paths.get(command.getOptionValue('s'));
       }
 
+      Package topPackage = null;
+      if (command.hasOption('p')) {
+
+        topPackage = Package.getPackage(command.getOptionValue('p'));
+      }
+
 
       RamlConfiguration ramlConfiguration =
           DefaultRamlConfiguration.forApplication(jaxRsResourceFile.getFileName().toString(),
-                                                  Collections.<Class<? extends Annotation>>emptySet());
+                                                  Collections.<Class<? extends Annotation>>emptySet(), topPackage);
 
       OneStopShop.Builder builder =
           OneStopShop.builder().withJaxRsClassesRoot(jaxRsResourceFile)

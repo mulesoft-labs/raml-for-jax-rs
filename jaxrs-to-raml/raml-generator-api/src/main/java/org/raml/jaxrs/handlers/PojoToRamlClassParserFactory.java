@@ -15,10 +15,17 @@
  */
 package org.raml.jaxrs.handlers;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.jaxrs.common.RamlGeneratorForClass;
+import org.raml.jaxrs.common.RamlGenerators;
 import org.raml.pojotoraml.ClassParser;
 import org.raml.pojotoraml.ClassParserFactory;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -26,17 +33,47 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class PojoToRamlClassParserFactory implements ClassParserFactory {
 
+  private final Package topPackage;
+
+  public PojoToRamlClassParserFactory(Package topPackage) {
+    this.topPackage = topPackage;
+  }
+
   @Override
-  public ClassParser createParser(Class<?> clazz) {
+  public ClassParser createParser(final Class<?> clazz) {
 
     RamlGenerator generator = clazz.getAnnotation(RamlGenerator.class);
 
-    ClassParser parser = new BeanLikeClassParser(clazz);
+    ClassParser parser = null;
     if (generator != null) {
       try {
         parser = generator.parser().getConstructor(Class.class).newInstance(clazz);
       } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       }
+    }
+
+    if ( parser == null && topPackage != null ) {
+
+      RamlGenerators generators = topPackage.getAnnotation(RamlGenerators.class);
+      Optional<ClassParser> classParserOptional =  FluentIterable.of(generators.value()).filter(new Predicate<RamlGeneratorForClass>() {
+        @Override
+        public boolean apply(@Nullable RamlGeneratorForClass ramlGeneratorForClass) {
+          return ramlGeneratorForClass.forClass().equals(clazz);
+        }
+      }).first().transform(new Function<RamlGeneratorForClass, ClassParser>() {
+        @Nullable
+        @Override
+        public ClassParser apply(@Nullable RamlGeneratorForClass ramlGeneratorForClass) {
+          try {
+            return ramlGeneratorForClass.generator().parser().getConstructor(Class.class).newInstance(clazz);
+          }catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+
+            return null;
+          }
+        }
+      });
+
+      return classParserOptional.or(new BeanLikeClassParser(clazz));
     }
 
     return parser;

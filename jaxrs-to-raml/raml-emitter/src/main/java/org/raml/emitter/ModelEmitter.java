@@ -56,6 +56,7 @@ public class ModelEmitter implements Emitter {
 
   private final List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
   private List<RamlSupportedAnnotation> supportedAnnotations;
+  private Package topPackage;
 
   private PrintWriter writer;
 
@@ -68,6 +69,7 @@ public class ModelEmitter implements Emitter {
   public void emit(RamlApi modelApi) throws RamlEmissionException {
 
     supportedAnnotations = modelApi.getSupportedAnnotation();
+    topPackage = modelApi.getTopPackage();
 
     org.raml.simpleemitter.Emitter emitter = new org.raml.simpleemitter.Emitter();
 
@@ -277,20 +279,7 @@ public class ModelEmitter implements Emitter {
 
   private TypeHandler pickTypeHandler(Type type) throws IOException {
 
-    /*
-     * 
-     * Class castClass = Cast.toClass(type);
-     * 
-     * RamlGenerator generatorAnnotation = ((Class<?>) castClass).getAnnotation(RamlGenerator.class);
-     * 
-     * if (generatorAnnotation != null) {
-     * 
-     * try { return generatorAnnotation.value().newInstance(); } catch (InstantiationException | IllegalAccessException e) { throw
-     * new IOException("enable to create generator", e); } } else {
-     * 
-     * return new DefaultTypeHandler(); }
-     */
-    return new RamlToPojoTypeHandler();
+    return new RamlToPojoTypeHandler(topPackage);
   }
 
   private void annotationTypes(RamlDocumentBuilder builder, RamlApi modelApi) throws IOException {

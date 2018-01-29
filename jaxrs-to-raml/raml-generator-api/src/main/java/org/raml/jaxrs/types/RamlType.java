@@ -24,7 +24,6 @@ import org.raml.builder.RamlDocumentBuilder;
 import org.raml.builder.TypeBuilder;
 import org.raml.builder.TypeDeclarationBuilder;
 import org.raml.builder.TypePropertyBuilder;
-import org.raml.jaxrs.common.RamlGenerator;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
@@ -98,7 +97,7 @@ public class RamlType implements Annotable, Emittable {
         return PojoToRamlExtensionFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties));
       }
     };
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), factory);
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
 
     Result r = pojoToRaml.classToRaml(c);
 

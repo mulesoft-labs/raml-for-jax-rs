@@ -13,24 +13,22 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.raml.jaxrs.converter;
+package org.raml.jaxrs.common;
 
-import org.raml.api.RamlMediaType;
+import org.raml.pojotoraml.ClassParser;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public interface RamlConfiguration {
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-  String getTitle();
+/**
+ * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
+ */
+@Retention(RUNTIME)
+@Target({ElementType.PACKAGE})
+public @interface RamlGenerators {
 
-  String getBaseUri();
-
-  String getVersion();
-
-  RamlMediaType getDefaultMediaType();
-
-  Set<Class<? extends Annotation>> getTranslatedAnnotations();
-
-    Package getTopPackage();
+  RamlGeneratorForClass[] value() ;
 }

@@ -22,4 +22,6 @@ public interface JaxRsApplication {
   Set<JaxRsResource> getResources();
 
   Set<JaxRsSupportedAnnotation> getSupportedAnnotations();
+
+  Package getTopPackage();
 }

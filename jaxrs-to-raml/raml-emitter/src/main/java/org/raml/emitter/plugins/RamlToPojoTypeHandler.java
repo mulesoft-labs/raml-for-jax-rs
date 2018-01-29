@@ -32,6 +32,12 @@ import org.raml.utilities.types.Cast;
  */
 public class RamlToPojoTypeHandler implements TypeHandler {
 
+  private final Package topPackage;
+
+  public RamlToPojoTypeHandler(Package topPackage) {
+    this.topPackage = topPackage;
+  }
+
   @Override
   public TypeBuilder writeType(final TypeRegistry registry, RamlEntity type) {
 
@@ -45,7 +51,7 @@ public class RamlToPojoTypeHandler implements TypeHandler {
       }
     };
 
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(), factory);
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
 
     TypeBuilder name = pojoToRaml.name(cls);
     registry.registerType(name.id(), type);

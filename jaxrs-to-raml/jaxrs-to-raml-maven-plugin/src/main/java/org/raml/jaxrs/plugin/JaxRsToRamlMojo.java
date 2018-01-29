@@ -70,6 +70,9 @@ public class JaxRsToRamlMojo extends AbstractMojo {
   @Parameter(property = "jaxrs.to.raml.translatedAnnotations")
   private List<String> translatedAnnotations = new ArrayList<>();
 
+  @Parameter(property = "jaxrs.to.raml.topPackage")
+  private String topPackage;
+
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -107,7 +110,7 @@ public class JaxRsToRamlMojo extends AbstractMojo {
                   throw new IllegalArgumentException("invalid class " + input, e);
                 }
               }
-            }).toSet());
+            }).toSet(), Package.getPackage(configuration.getTopPackage()));
 
     OneStopShop oneStopShop =
         OneStopShop.builder()
@@ -126,7 +129,7 @@ public class JaxRsToRamlMojo extends AbstractMojo {
 
   private PluginConfiguration createConfiguration() {
     return PluginConfiguration.create(getInputPath(), getSourceDirectoryPath(),
-                                      getOutputDirectoryPath(), getRamlFileName(), this.translatedAnnotations);
+                                      getOutputDirectoryPath(), getRamlFileName(), this.translatedAnnotations, this.topPackage);
   }
 
   private static void printConfiguration(PluginConfiguration configuration, Log logger) {

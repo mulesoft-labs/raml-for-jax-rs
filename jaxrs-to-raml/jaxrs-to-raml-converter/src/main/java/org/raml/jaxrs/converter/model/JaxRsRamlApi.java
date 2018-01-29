@@ -73,4 +73,9 @@ public class JaxRsRamlApi implements RamlApi {
 
     return Utilities.toRamlSupportedAnnotation(application.getSupportedAnnotations()).toList();
   }
+
+  @Override
+  public Package getTopPackage() {
+    return application.getTopPackage();
+  }
 }

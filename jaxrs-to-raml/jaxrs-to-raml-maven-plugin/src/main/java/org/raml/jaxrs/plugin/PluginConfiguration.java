@@ -27,24 +27,26 @@ class PluginConfiguration {
   private final Path outputDirectory;
   private final Path ramlFileName;
   private final List<String> translatedAnnotations;
+  private final String topPackage;
 
   private PluginConfiguration(Path inputPaths, Path sourceDirectory, Path outputDirectory,
-                              Path ramlFileName, List<String> translatedAnnotations) {
+                              Path ramlFileName, List<String> translatedAnnotations, String topPackage) {
     this.inputPaths = inputPaths;
     this.sourceDirectory = sourceDirectory;
     this.outputDirectory = outputDirectory;
     this.ramlFileName = ramlFileName;
     this.translatedAnnotations = translatedAnnotations;
+    this.topPackage = topPackage;
   }
 
   public static PluginConfiguration create(Path inputPath, Path sourceDirectory,
-                                           Path outputDirectory, Path ramlFileName, List<String> translatedAnnotations) {
+                                           Path outputDirectory, Path ramlFileName, List<String> translatedAnnotations, String topPackage) {
     checkNotNull(inputPath);
     checkNotNull(sourceDirectory);
     checkNotNull(outputDirectory);
     checkNotNull(ramlFileName);
 
-    return new PluginConfiguration(inputPath, sourceDirectory, outputDirectory, ramlFileName, translatedAnnotations);
+    return new PluginConfiguration(inputPath, sourceDirectory, outputDirectory, ramlFileName, translatedAnnotations, topPackage);
   }
 
   public Path getInput() {
@@ -65,5 +67,9 @@ class PluginConfiguration {
 
   public List<String> getTranslatedAnnotations() {
     return translatedAnnotations;
+  }
+
+  public String getTopPackage() {
+    return topPackage;
   }
 }

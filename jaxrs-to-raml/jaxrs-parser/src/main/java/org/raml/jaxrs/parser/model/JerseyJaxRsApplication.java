@@ -33,23 +33,25 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
 
   private final Set<JaxRsResource> resources;
   private final Set<JaxRsSupportedAnnotation> supportedAnnotations;
+  private final Package topPackage;
 
-  private JerseyJaxRsApplication(Set<JaxRsResource> resources, Set<JaxRsSupportedAnnotation> supportedAnnotations) {
+  private JerseyJaxRsApplication(Set<JaxRsResource> resources, Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
     this.resources = resources;
     this.supportedAnnotations = supportedAnnotations;
+    this.topPackage = topPackage;
   }
 
   private static JerseyJaxRsApplication create(Iterable<JaxRsResource> resources,
-                                               Set<JaxRsSupportedAnnotation> supportedAnnotations) {
+                                               Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
     checkNotNull(resources);
 
-    return new JerseyJaxRsApplication(ImmutableSet.copyOf(resources), supportedAnnotations);
+    return new JerseyJaxRsApplication(ImmutableSet.copyOf(resources), supportedAnnotations, topPackage);
   }
 
   public static JerseyJaxRsApplication fromRuntimeResources(
                                                             Iterable<RuntimeResource> runtimeResources,
                                                             final SourceParser sourceParser,
-                                                            Set<JaxRsSupportedAnnotation> supportedAnnotations) {
+                                                            Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
     return create(FluentIterable.from(runtimeResources).transform(
                                                                   new Function<RuntimeResource, JaxRsResource>() {
 
@@ -59,7 +61,7 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
                                                                       return JerseyJaxRsResource.create(runtimeResource,
                                                                                                         sourceParser);
                                                                     }
-                                                                  }), supportedAnnotations);
+                                                                  }), supportedAnnotations, topPackage);
   }
 
   @Override
@@ -70,5 +72,10 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
   @Override
   public Set<JaxRsSupportedAnnotation> getSupportedAnnotations() {
     return supportedAnnotations;
+  }
+
+  @Override
+  public Package getTopPackage() {
+    return topPackage;
   }
 }

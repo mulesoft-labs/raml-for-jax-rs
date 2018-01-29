@@ -39,21 +39,23 @@ class JerseyJaxRsParser implements JaxRsParser {
   private final Path jaxRsResource;
   private final SourceParser sourceParser;
   private final Set<Class<? extends Annotation>> translatedAnnotations;
+  private final Package topPackage;
 
 
   private JerseyJaxRsParser(Path jaxRsResource, SourceParser sourceParser,
-                            Set<Class<? extends Annotation>> translatedAnnotations) {
+                            Set<Class<? extends Annotation>> translatedAnnotations, Package topPackage) {
     this.jaxRsResource = jaxRsResource;
     this.sourceParser = sourceParser;
     this.translatedAnnotations = translatedAnnotations;
+    this.topPackage = topPackage;
   }
 
   public static JerseyJaxRsParser create(Path classesPath, SourceParser sourceParser,
-                                         Set<Class<? extends Annotation>> translatedAnnotations) {
+                                         Set<Class<? extends Annotation>> translatedAnnotations, Package topPackage) {
     checkNotNull(classesPath);
     checkNotNull(sourceParser);
 
-    return new JerseyJaxRsParser(classesPath, sourceParser, translatedAnnotations);
+    return new JerseyJaxRsParser(classesPath, sourceParser, translatedAnnotations, topPackage);
   }
 
   @Override
@@ -62,7 +64,7 @@ class JerseyJaxRsParser implements JaxRsParser {
 
     Iterable<Class<?>> classes = getJaxRsClassesFor(jaxRsResource);
 
-    return Analyzers.jerseyAnalyzerFor(classes, sourceParser, Utilities.getSupportedAnnotations(translatedAnnotations)).analyze();
+    return Analyzers.jerseyAnalyzerFor(classes, sourceParser, Utilities.getSupportedAnnotations(translatedAnnotations), topPackage).analyze();
   }
 
   private static Iterable<Class<?>> getJaxRsClassesFor(Path jaxRsResource)

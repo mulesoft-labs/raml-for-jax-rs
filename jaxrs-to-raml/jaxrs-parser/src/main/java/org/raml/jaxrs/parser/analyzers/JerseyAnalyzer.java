@@ -44,22 +44,24 @@ class JerseyAnalyzer implements Analyzer {
   private final JerseyBridge jerseyBridge;
   private final SourceParser sourceParser;
   private final Set<JaxRsSupportedAnnotation> supportedAnnotations;
+  private final Package topPackage;
 
   private JerseyAnalyzer(ImmutableSet<Class<?>> jaxRsClasses, JerseyBridge jerseyBridge,
-                         SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations) {
+                         SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
     this.jaxRsClasses = jaxRsClasses;
     this.jerseyBridge = jerseyBridge;
     this.sourceParser = sourceParser;
     this.supportedAnnotations = supportedAnnotations;
+    this.topPackage = topPackage;
   }
 
   static JerseyAnalyzer create(Iterable<Class<?>> classes, JerseyBridge jerseyBridge,
-                               SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations) {
+                               SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
     checkNotNull(classes);
     checkNotNull(jerseyBridge);
     checkNotNull(sourceParser);
 
-    return new JerseyAnalyzer(ImmutableSet.copyOf(classes), jerseyBridge, sourceParser, supportedAnnotations);
+    return new JerseyAnalyzer(ImmutableSet.copyOf(classes), jerseyBridge, sourceParser, supportedAnnotations, topPackage);
   }
 
   @Override
@@ -83,6 +85,6 @@ class JerseyAnalyzer implements Analyzer {
                    Joiners.squareBracketsPerLineJoiner().join(runtimeResources));
     }
 
-    return JerseyJaxRsApplication.fromRuntimeResources(runtimeResources, sourceParser, supportedAnnotations);
+    return JerseyJaxRsApplication.fromRuntimeResources(runtimeResources, sourceParser, supportedAnnotations, topPackage);
   }
 }

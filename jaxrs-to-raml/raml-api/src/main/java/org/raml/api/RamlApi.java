@@ -30,4 +30,6 @@ public interface RamlApi {
   List<RamlSupportedAnnotation> getSupportedAnnotation();
 
   RamlMediaType getDefaultMediaType();
+
+  Package getTopPackage();
 }

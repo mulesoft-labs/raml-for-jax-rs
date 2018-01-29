@@ -26,7 +26,7 @@ public class JaxRsParsers {
   private JaxRsParsers() {}
 
   public static JaxRsParser usingJerseyWith(Path classesPath, SourceParser sourceParser,
-                                            Set<Class<? extends Annotation>> translatedAnnotations) {
-    return JerseyJaxRsParser.create(classesPath, sourceParser, translatedAnnotations);
+                                            Set<Class<? extends Annotation>> translatedAnnotations, Package topPackage) {
+    return JerseyJaxRsParser.create(classesPath, sourceParser, translatedAnnotations, topPackage);
   }
 }

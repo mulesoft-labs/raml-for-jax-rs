@@ -25,7 +25,7 @@ public class Analyzers {
   private Analyzers() {}
 
   public static Analyzer jerseyAnalyzerFor(Iterable<Class<?>> classes, SourceParser sourceParser,
-                                           Set<JaxRsSupportedAnnotation> supportedAnnotations) {
-    return JerseyAnalyzer.create(classes, new JerseyBridgeImpl(), sourceParser, supportedAnnotations);
+                                           Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
+    return JerseyAnalyzer.create(classes, new JerseyBridgeImpl(), sourceParser, supportedAnnotations, topPackage);
   }
 }

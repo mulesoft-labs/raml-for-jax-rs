@@ -30,18 +30,20 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
 
   private final String application;
   private final Set<Class<? extends Annotation>> translatedClasses;
+  private final Package topPackage;
 
-  private DefaultRamlConfiguration(String application, Set<Class<? extends Annotation>> translatedClasses) {
+  private DefaultRamlConfiguration(String application, Set<Class<? extends Annotation>> translatedClasses, Package topPackage) {
     this.application = application;
     this.translatedClasses = translatedClasses;
+    this.topPackage = topPackage;
   }
 
-  public static DefaultRamlConfiguration forApplication(String application, Set<Class<? extends Annotation>> translatedClasses) {
+  public static DefaultRamlConfiguration forApplication(String application, Set<Class<? extends Annotation>> translatedClasses, Package topPackage) {
     checkNotNull(application);
     checkArgument(!application.trim().isEmpty(),
                   "application path should contain at least one meaningful character");
 
-    return new DefaultRamlConfiguration(application.trim(), translatedClasses);
+    return new DefaultRamlConfiguration(application.trim(), translatedClasses, topPackage);
   }
 
   @Override
@@ -67,5 +69,10 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
   @Override
   public RamlMediaType getDefaultMediaType() {
     return JaxRsRamlMediaType.create(javax.ws.rs.core.MediaType.WILDCARD_TYPE);
+  }
+
+  @Override
+  public Package getTopPackage() {
+    return topPackage;
   }
 }

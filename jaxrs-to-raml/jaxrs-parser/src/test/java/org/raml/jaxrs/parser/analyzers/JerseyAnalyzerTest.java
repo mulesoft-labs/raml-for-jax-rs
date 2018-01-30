@@ -44,7 +44,7 @@ public class JerseyAnalyzerTest {
 
   private JerseyAnalyzer makeAnalyzerFor(Iterable<Class<?>> classes,
                                          Set<JaxRsSupportedAnnotation> supportedAnnotations) {
-    return JerseyAnalyzer.create(classes, jerseyBridge, sourceParser, supportedAnnotations);
+    return JerseyAnalyzer.create(classes, jerseyBridge, sourceParser, supportedAnnotations, "java.util");
   }
 
   private static <T> Supplier<T> mockSupplierFor(final Class<? extends T> clazz) {

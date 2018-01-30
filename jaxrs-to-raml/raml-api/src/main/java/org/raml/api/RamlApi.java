@@ -31,5 +31,5 @@ public interface RamlApi {
 
   RamlMediaType getDefaultMediaType();
 
-  Package getTopPackage();
+  String getTopPackage();
 }

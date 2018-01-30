@@ -30,5 +30,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ElementType.PACKAGE})
 public @interface RamlGenerators {
 
-  RamlGeneratorForClass[] value() ;
+  RamlGeneratorForClass[] value();
 }

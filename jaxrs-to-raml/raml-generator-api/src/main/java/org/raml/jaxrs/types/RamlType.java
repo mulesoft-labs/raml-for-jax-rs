@@ -82,7 +82,8 @@ public class RamlType implements Annotable, Emittable {
     this.enumValues = values;
   }
 
-  public void write(final List<RamlSupportedAnnotation> supportedAnnotations, RamlDocumentBuilder documentBuilder)
+  public void write(final List<RamlSupportedAnnotation> supportedAnnotations, Package topPackage,
+                    RamlDocumentBuilder documentBuilder)
       throws IOException {
 
     Type ttype = type.getType();

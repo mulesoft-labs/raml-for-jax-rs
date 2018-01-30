@@ -110,7 +110,7 @@ public class JaxRsToRamlMojo extends AbstractMojo {
                   throw new IllegalArgumentException("invalid class " + input, e);
                 }
               }
-            }).toSet(), Package.getPackage(configuration.getTopPackage()));
+            }).toSet(), configuration.getTopPackage());
 
     OneStopShop oneStopShop =
         OneStopShop.builder()

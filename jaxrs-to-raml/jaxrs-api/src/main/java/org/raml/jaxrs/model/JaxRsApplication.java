@@ -23,5 +23,5 @@ public interface JaxRsApplication {
 
   Set<JaxRsSupportedAnnotation> getSupportedAnnotations();
 
-  Package getTopPackage();
+  String getTopPackage();
 }

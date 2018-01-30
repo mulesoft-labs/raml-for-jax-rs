@@ -33,16 +33,17 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
 
   private final Set<JaxRsResource> resources;
   private final Set<JaxRsSupportedAnnotation> supportedAnnotations;
-  private final Package topPackage;
+  private final String topPackage;
 
-  private JerseyJaxRsApplication(Set<JaxRsResource> resources, Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
+  private JerseyJaxRsApplication(Set<JaxRsResource> resources, Set<JaxRsSupportedAnnotation> supportedAnnotations,
+                                 String topPackage) {
     this.resources = resources;
     this.supportedAnnotations = supportedAnnotations;
     this.topPackage = topPackage;
   }
 
   private static JerseyJaxRsApplication create(Iterable<JaxRsResource> resources,
-                                               Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
+                                               Set<JaxRsSupportedAnnotation> supportedAnnotations, String topPackage) {
     checkNotNull(resources);
 
     return new JerseyJaxRsApplication(ImmutableSet.copyOf(resources), supportedAnnotations, topPackage);
@@ -51,7 +52,7 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
   public static JerseyJaxRsApplication fromRuntimeResources(
                                                             Iterable<RuntimeResource> runtimeResources,
                                                             final SourceParser sourceParser,
-                                                            Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
+                                                            Set<JaxRsSupportedAnnotation> supportedAnnotations, String topPackage) {
     return create(FluentIterable.from(runtimeResources).transform(
                                                                   new Function<RuntimeResource, JaxRsResource>() {
 
@@ -75,7 +76,7 @@ public class JerseyJaxRsApplication implements JaxRsApplication {
   }
 
   @Override
-  public Package getTopPackage() {
+  public String getTopPackage() {
     return topPackage;
   }
 }

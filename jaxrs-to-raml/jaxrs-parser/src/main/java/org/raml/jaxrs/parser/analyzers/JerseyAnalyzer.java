@@ -44,10 +44,10 @@ class JerseyAnalyzer implements Analyzer {
   private final JerseyBridge jerseyBridge;
   private final SourceParser sourceParser;
   private final Set<JaxRsSupportedAnnotation> supportedAnnotations;
-  private final Package topPackage;
+  private final String topPackage;
 
   private JerseyAnalyzer(ImmutableSet<Class<?>> jaxRsClasses, JerseyBridge jerseyBridge,
-                         SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
+                         SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations, String topPackage) {
     this.jaxRsClasses = jaxRsClasses;
     this.jerseyBridge = jerseyBridge;
     this.sourceParser = sourceParser;
@@ -56,7 +56,7 @@ class JerseyAnalyzer implements Analyzer {
   }
 
   static JerseyAnalyzer create(Iterable<Class<?>> classes, JerseyBridge jerseyBridge,
-                               SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations, Package topPackage) {
+                               SourceParser sourceParser, Set<JaxRsSupportedAnnotation> supportedAnnotations, String topPackage) {
     checkNotNull(classes);
     checkNotNull(jerseyBridge);
     checkNotNull(sourceParser);

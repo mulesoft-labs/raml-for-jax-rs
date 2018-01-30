@@ -30,15 +30,16 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
 
   private final String application;
   private final Set<Class<? extends Annotation>> translatedClasses;
-  private final Package topPackage;
+  private final String topPackage;
 
-  private DefaultRamlConfiguration(String application, Set<Class<? extends Annotation>> translatedClasses, Package topPackage) {
+  private DefaultRamlConfiguration(String application, Set<Class<? extends Annotation>> translatedClasses, String topPackage) {
     this.application = application;
     this.translatedClasses = translatedClasses;
     this.topPackage = topPackage;
   }
 
-  public static DefaultRamlConfiguration forApplication(String application, Set<Class<? extends Annotation>> translatedClasses, Package topPackage) {
+  public static DefaultRamlConfiguration forApplication(String application, Set<Class<? extends Annotation>> translatedClasses,
+                                                        String topPackage) {
     checkNotNull(application);
     checkArgument(!application.trim().isEmpty(),
                   "application path should contain at least one meaningful character");
@@ -72,7 +73,7 @@ public class DefaultRamlConfiguration implements RamlConfiguration {
   }
 
   @Override
-  public Package getTopPackage() {
+  public String getTopPackage() {
     return topPackage;
   }
 }

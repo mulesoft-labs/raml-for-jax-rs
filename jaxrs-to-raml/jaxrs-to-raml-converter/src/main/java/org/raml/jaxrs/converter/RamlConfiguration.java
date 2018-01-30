@@ -32,5 +32,5 @@ public interface RamlConfiguration {
 
   Set<Class<? extends Annotation>> getTranslatedAnnotations();
 
-    Package getTopPackage();
+  String getTopPackage();
 }

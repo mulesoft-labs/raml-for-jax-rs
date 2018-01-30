@@ -55,10 +55,10 @@ public class Main {
         jaxRsSourceRoot = Paths.get(command.getOptionValue('s'));
       }
 
-      Package topPackage = null;
+      String topPackage = null;
       if (command.hasOption('p')) {
 
-        topPackage = Package.getPackage(command.getOptionValue('p'));
+        topPackage = command.getOptionValue('p');
       }
 
 

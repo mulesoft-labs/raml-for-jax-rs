@@ -72,7 +72,8 @@ public class OneStopShop {
             : SourceParsers.nullParser();
 
     JaxRsApplication application =
-        JaxRsParsers.usingJerseyWith(jaxRsUrl, sourceParser, ramlConfiguration.getTranslatedAnnotations(), ramlConfiguration.getTopPackage()).parse();
+        JaxRsParsers.usingJerseyWith(jaxRsUrl, sourceParser, ramlConfiguration.getTranslatedAnnotations(),
+                                     ramlConfiguration.getTopPackage()).parse();
 
     RamlApi ramlApi = JaxRsToRamlConverter.create().convert(ramlConfiguration, application);
 

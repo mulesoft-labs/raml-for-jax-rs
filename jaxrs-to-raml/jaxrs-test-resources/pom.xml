@@ -98,6 +98,7 @@
                             <translatedAnnotations>
                                 <item>org.raml.jaxrs.examples.Secure</item>
                             </translatedAnnotations>
+                            <topPackage>org.raml.jaxrs.examples.resources</topPackage>
                         </configuration>
                     </execution>
                 </executions>

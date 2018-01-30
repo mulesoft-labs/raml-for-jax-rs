@@ -95,7 +95,7 @@ class RamlGeneratorTask extends DefaultTask {
                             throw new IllegalArgumentException("invalid class " + input, e)
                         }
                     }
-                }).toSet())
+                }).toSet(), null)
 
         OneStopShop oneStopShop =
                 OneStopShop.builder()

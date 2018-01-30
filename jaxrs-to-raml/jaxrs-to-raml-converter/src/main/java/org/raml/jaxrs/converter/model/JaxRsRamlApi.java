@@ -75,7 +75,7 @@ public class JaxRsRamlApi implements RamlApi {
   }
 
   @Override
-  public Package getTopPackage() {
+  public String getTopPackage() {
     return application.getTopPackage();
   }
 }

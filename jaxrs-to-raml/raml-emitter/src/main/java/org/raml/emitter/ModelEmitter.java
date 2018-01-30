@@ -56,7 +56,7 @@ public class ModelEmitter implements Emitter {
 
   private final List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
   private List<RamlSupportedAnnotation> supportedAnnotations;
-  private Package topPackage;
+  private String topPackage;
 
   private PrintWriter writer;
 
@@ -84,7 +84,7 @@ public class ModelEmitter implements Emitter {
       annotationTypes(documentBuilder, modelApi);
       resources(documentBuilder, modelApi);
 
-      typeRegistry.writeAll(supportedAnnotations, documentBuilder);
+      typeRegistry.writeAll(supportedAnnotations, topPackage != null ? Package.getPackage(topPackage) : null, documentBuilder);
 
     } catch (IOException e) {
 
@@ -279,7 +279,7 @@ public class ModelEmitter implements Emitter {
 
   private TypeHandler pickTypeHandler(Type type) throws IOException {
 
-    return new RamlToPojoTypeHandler(topPackage);
+    return new RamlToPojoTypeHandler(topPackage != null ? Package.getPackage(topPackage) : null);
   }
 
   private void annotationTypes(RamlDocumentBuilder builder, RamlApi modelApi) throws IOException {

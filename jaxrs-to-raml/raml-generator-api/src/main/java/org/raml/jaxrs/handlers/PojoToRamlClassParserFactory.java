@@ -52,30 +52,33 @@ public class PojoToRamlClassParserFactory implements ClassParserFactory {
       }
     }
 
-    if ( parser == null && topPackage != null ) {
+    if (parser == null && topPackage != null) {
 
       RamlGenerators generators = topPackage.getAnnotation(RamlGenerators.class);
-      Optional<ClassParser> classParserOptional =  FluentIterable.of(generators.value()).filter(new Predicate<RamlGeneratorForClass>() {
-        @Override
-        public boolean apply(@Nullable RamlGeneratorForClass ramlGeneratorForClass) {
-          return ramlGeneratorForClass.forClass().equals(clazz);
-        }
-      }).first().transform(new Function<RamlGeneratorForClass, ClassParser>() {
-        @Nullable
-        @Override
-        public ClassParser apply(@Nullable RamlGeneratorForClass ramlGeneratorForClass) {
-          try {
-            return ramlGeneratorForClass.generator().parser().getConstructor(Class.class).newInstance(clazz);
-          }catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+      Optional<ClassParser> classParserOptional =
+          FluentIterable.of(generators.value()).filter(new Predicate<RamlGeneratorForClass>() {
 
-            return null;
-          }
-        }
-      });
+            @Override
+            public boolean apply(@Nullable RamlGeneratorForClass ramlGeneratorForClass) {
+              return ramlGeneratorForClass.forClass().equals(clazz);
+            }
+          }).first().transform(new Function<RamlGeneratorForClass, ClassParser>() {
+
+            @Nullable
+            @Override
+            public ClassParser apply(@Nullable RamlGeneratorForClass ramlGeneratorForClass) {
+              try {
+                return ramlGeneratorForClass.generator().parser().getConstructor(Class.class).newInstance(clazz);
+              } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+
+                return null;
+              }
+            }
+          });
 
       return classParserOptional.or(new BeanLikeClassParser(clazz));
     }
 
-    return parser;
+    return Optional.fromNullable(parser).or(new BeanLikeClassParser(clazz));
   }
 }

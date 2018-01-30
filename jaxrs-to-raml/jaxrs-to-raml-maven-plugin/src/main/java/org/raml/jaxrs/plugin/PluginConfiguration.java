@@ -40,7 +40,8 @@ class PluginConfiguration {
   }
 
   public static PluginConfiguration create(Path inputPath, Path sourceDirectory,
-                                           Path outputDirectory, Path ramlFileName, List<String> translatedAnnotations, String topPackage) {
+                                           Path outputDirectory, Path ramlFileName, List<String> translatedAnnotations,
+                                           String topPackage) {
     checkNotNull(inputPath);
     checkNotNull(sourceDirectory);
     checkNotNull(outputDirectory);

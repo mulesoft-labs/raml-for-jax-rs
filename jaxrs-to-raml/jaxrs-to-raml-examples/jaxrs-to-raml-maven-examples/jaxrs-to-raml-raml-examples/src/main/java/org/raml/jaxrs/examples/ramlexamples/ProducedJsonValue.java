@@ -16,7 +16,7 @@
 package org.raml.jaxrs.examples.ramlexamples;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.pojotoraml.plugins.RamlGenerator;
 import org.raml.jaxrs.handlers.SimpleJacksonClassParser;
 
 /**

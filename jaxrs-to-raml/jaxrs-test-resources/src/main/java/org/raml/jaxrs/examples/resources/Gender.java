@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.examples.resources;
 
-import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.pojotoraml.plugins.RamlGenerator;
 import org.raml.jaxrs.handlers.SimpleJacksonClassParser;
 
 /**

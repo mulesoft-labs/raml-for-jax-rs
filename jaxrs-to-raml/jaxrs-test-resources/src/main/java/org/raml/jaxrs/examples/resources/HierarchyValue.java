@@ -17,8 +17,8 @@ package org.raml.jaxrs.examples.resources;
 
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.common.Examples;
-import org.raml.jaxrs.common.RamlGenerator;
-import org.raml.jaxrs.common.RamlGeneratorPlugin;
+import org.raml.pojotoraml.plugins.RamlGenerator;
+import org.raml.pojotoraml.plugins.RamlGeneratorPlugin;
 import org.raml.jaxrs.examples.Secure;
 import org.raml.jaxrs.handlers.BeanLikeClassParser;
 
@@ -30,6 +30,7 @@ import java.util.UUID;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @XmlRootElement
+@RamlGenerator(parser = BeanLikeClassParser.class)
 @Secure(security = String.class, level = 17)
 public interface HierarchyValue extends TopValue, AnotherTopValue {
 

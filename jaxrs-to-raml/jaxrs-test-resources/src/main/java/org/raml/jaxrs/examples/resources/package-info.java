@@ -20,15 +20,15 @@
     @RamlGeneratorForClass(
         forClass = UUID.class,
         generator = @RamlGenerator(parser = BeanLikeClassParser.class,
-            plugins = {@RamlGeneratorPlugin(plugin = "core.changeType", parameters = {"java.util.UUID", "string"})})
+            plugins = {@RamlGeneratorPlugin(plugin = "core.changeType", parameters = {"string"})})
     )
 })
 package org.raml.jaxrs.examples.resources;
 
-import org.raml.jaxrs.common.RamlGenerator;
-import org.raml.jaxrs.common.RamlGeneratorForClass;
-import org.raml.jaxrs.common.RamlGeneratorPlugin;
-import org.raml.jaxrs.common.RamlGenerators;
+import org.raml.pojotoraml.plugins.RamlGenerator;
+import org.raml.pojotoraml.plugins.RamlGeneratorForClass;
+import org.raml.pojotoraml.plugins.RamlGeneratorPlugin;
+import org.raml.pojotoraml.plugins.RamlGenerators;
 import org.raml.jaxrs.handlers.BeanLikeClassParser;
 
 import java.util.UUID;

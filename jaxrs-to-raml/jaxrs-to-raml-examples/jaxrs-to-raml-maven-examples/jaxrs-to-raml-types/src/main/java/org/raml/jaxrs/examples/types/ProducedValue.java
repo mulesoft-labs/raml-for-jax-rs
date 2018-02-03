@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.examples.types;
 
-import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.pojotoraml.plugins.RamlGenerator;
 import org.raml.jaxrs.handlers.SimpleJaxbClassParser;
 
 import javax.xml.bind.annotation.XmlElement;

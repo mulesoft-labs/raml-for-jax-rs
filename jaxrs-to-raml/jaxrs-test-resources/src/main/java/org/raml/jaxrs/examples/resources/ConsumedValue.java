@@ -16,7 +16,7 @@
 package org.raml.jaxrs.examples.resources;
 
 import org.raml.jaxrs.common.Example;
-import org.raml.jaxrs.common.RamlGenerator;
+import org.raml.pojotoraml.plugins.RamlGenerator;
 import org.raml.jaxrs.examples.Secure;
 import org.raml.jaxrs.handlers.SimpleJaxbClassParser;
 

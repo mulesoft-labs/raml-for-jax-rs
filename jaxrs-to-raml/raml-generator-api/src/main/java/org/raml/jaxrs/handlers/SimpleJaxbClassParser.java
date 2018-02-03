@@ -40,19 +40,8 @@ import java.util.TreeMap;
  */
 public class SimpleJaxbClassParser implements ClassParser {
 
-  private final Class<?> classToParse;
-
-  public SimpleJaxbClassParser(Class<?> classToParse) {
-    this.classToParse = classToParse;
-  }
-
   @Override
-  public Class<?> underlyingClass() {
-    return classToParse;
-  }
-
-  @Override
-  public List<Property> properties() {
+  public List<Property> properties(Class<?> classToParse) {
 
     Map<String, PojoToRamlProperty> properties = new TreeMap<>();
 
@@ -71,17 +60,17 @@ public class SimpleJaxbClassParser implements ClassParser {
         break;
       case FIELD:
         // only non transient fields
-        forFields(properties, false);
-        forProperties(properties, true, false);
+        forFields(classToParse, properties, false);
+        forProperties(classToParse, properties, true, false);
         break;
       case PROPERTY:
         // Only properties
-        forProperties(properties, false, false);
-        forFields(properties, true);
+        forProperties(classToParse, properties, false, false);
+        forFields(classToParse, properties, true);
         break;
       case PUBLIC_MEMBER:
-        forProperties(properties, false, true);
-        forFields(properties, true);
+        forProperties(classToParse, properties, false, true);
+        forFields(classToParse, properties, true);
         break;
     }
 
@@ -96,11 +85,11 @@ public class SimpleJaxbClassParser implements ClassParser {
   }
 
   @Override
-  public Collection<Type> parentClasses() {
+  public Collection<Type> parentClasses(Class<?> classToParse) {
     return null;
   }
 
-  private void forProperties(Map<String, PojoToRamlProperty> properties, boolean explicitOnly,
+  private void forProperties(Class<?> classToParse, Map<String, PojoToRamlProperty> properties, boolean explicitOnly,
                              boolean publicOnly) {
     for (final Method method : classToParse.getDeclaredMethods()) {
 
@@ -153,7 +142,7 @@ public class SimpleJaxbClassParser implements ClassParser {
     }
   }
 
-  private void forFields(Map<String, PojoToRamlProperty> properties, boolean explicitOnly) {
+  private void forFields(Class<?> classToParse, Map<String, PojoToRamlProperty> properties, boolean explicitOnly) {
     for (Field field : classToParse.getDeclaredFields()) {
 
       if (field.isAnnotationPresent(XmlTransient.class) || Modifier.isTransient(field.getModifiers())) {

@@ -39,23 +39,12 @@ import java.util.TreeMap;
  */
 public class SimpleJacksonClassParser implements ClassParser {
 
-  private final Class<?> classToParse;
-
-  public SimpleJacksonClassParser(Class<?> classToParse) {
-    this.classToParse = classToParse;
-  }
-
   @Override
-  public Class<?> underlyingClass() {
-    return classToParse;
-  }
-
-  @Override
-  public List<Property> properties() {
+  public List<Property> properties(Class<?> classToParse) {
 
     Map<String, PojoToRamlProperty> properties = new TreeMap<>();
-    forFields(properties);
-    forProperties(properties);
+    forFields(classToParse, properties);
+    forProperties(classToParse, properties);
 
     return FluentIterable.from(properties.entrySet()).transform(new Function<Map.Entry<String, PojoToRamlProperty>, Property>() {
 
@@ -67,13 +56,14 @@ public class SimpleJacksonClassParser implements ClassParser {
     }).toList();
   }
 
+
   @Override
-  public Collection<Type> parentClasses() {
+  public Collection<Type> parentClasses(Class<?> classToParse) {
     return null;
   }
 
 
-  private void forProperties(Map<String, PojoToRamlProperty> propertyMap) {
+  private void forProperties(Class<?> classToParse, Map<String, PojoToRamlProperty> propertyMap) {
     for (final Method method : classToParse.getDeclaredMethods()) {
 
       if (!(method.getName().startsWith("get") || method.getName().startsWith("is"))) {
@@ -111,7 +101,7 @@ public class SimpleJacksonClassParser implements ClassParser {
     }
   }
 
-  private void forFields(Map<String, PojoToRamlProperty> propertyMap) {
+  private void forFields(Class<?> classToParse, Map<String, PojoToRamlProperty> propertyMap) {
     for (final Field field : classToParse.getDeclaredFields()) {
 
       JsonProperty elem = field.getAnnotation(JsonProperty.class);

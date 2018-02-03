@@ -204,11 +204,18 @@ public class RamlType implements Annotable, Emittable {
 
 
     @Override
-    public TypePropertyBuilder adjustScalarProperty(TypeDeclarationBuilder typeDeclaration, Property property,
+    public TypePropertyBuilder adjustScalarProperty(TypeDeclarationBuilder typeDeclaration, final Property property,
                                                     TypePropertyBuilder typePropertyBuilder) {
 
       try {
-        ModelEmitterAnnotations.annotate(supportedAnnotations, (Annotable) property, typePropertyBuilder);
+        // todo fix: annotable should be outside
+        ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {
+
+          @Override
+          public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+            return property.getAnnotation(annotationType);
+          }
+        }, typePropertyBuilder);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -218,10 +225,18 @@ public class RamlType implements Annotable, Emittable {
     }
 
     @Override
-    public TypePropertyBuilder adjustComposedProperty(TypeDeclarationBuilder typeDeclaration, Property property,
+    public TypePropertyBuilder adjustComposedProperty(TypeDeclarationBuilder typeDeclaration, final Property property,
                                                       TypePropertyBuilder typePropertyBuilder) {
       try {
-        ModelEmitterAnnotations.annotate(supportedAnnotations, (Annotable) property, typePropertyBuilder);
+        // todo fix: annotable should be outside
+        ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {
+
+          @Override
+          public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+            return property.getAnnotation(annotationType);
+          }
+        }, typePropertyBuilder);
+
       } catch (IOException e) {
         e.printStackTrace();
       }

@@ -90,15 +90,15 @@ public class RamlType implements Annotable, Emittable {
     Class<?> c = Cast.toClass(ttype);
 
     final List<Pair<PojoToRamlProperty, TypePropertyBuilder>> pojoToRamlProperties = new ArrayList<>();
+    final PojoToRamlExtensionFactory toRamlClassParserFactory = new PojoToRamlExtensionFactory(topPackage);
 
-    AdjusterFactory factory = new AdjusterFactory() {
+    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), new AdjusterFactory() {
 
       @Override
       public RamlAdjuster createAdjuster(Class<?> clazz) {
-        return PojoToRamlExtensionFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties));
+        return toRamlClassParserFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties));
       }
-    };
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
+    });
 
     Result r = pojoToRaml.classToRaml(c);
 
@@ -113,7 +113,6 @@ public class RamlType implements Annotable, Emittable {
     }
 
   }
-
 
   @SuppressWarnings({"rawtypes"})
   public String getTypeName() {

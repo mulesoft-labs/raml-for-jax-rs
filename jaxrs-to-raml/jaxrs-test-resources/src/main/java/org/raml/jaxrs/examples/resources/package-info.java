@@ -20,7 +20,7 @@
     @RamlGeneratorForClass(
         forClass = UUID.class,
         generator = @RamlGenerator(parser = BeanLikeClassParser.class,
-            plugins = {@RamlGeneratorPlugin(plugin = "core.changeType")})
+            plugins = {@RamlGeneratorPlugin(plugin = "core.changeType", parameters = {"java.util.UUID", "string"})})
     )
 })
 package org.raml.jaxrs.examples.resources;

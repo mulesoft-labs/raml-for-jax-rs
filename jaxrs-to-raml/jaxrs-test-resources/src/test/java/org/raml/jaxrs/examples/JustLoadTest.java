@@ -53,6 +53,7 @@ public class JustLoadTest {
       fail("Cant load");
     }
 
+    Api api = ramlModelResult.getApiV10();
     /*
      * Api api = ramlModelResult.getApiV10(); ObjectTypeDeclaration otd = (ObjectTypeDeclaration) api.types().get(0);
      * ArrayTypeDeclaration atd = (ArrayTypeDeclaration) otd.properties().get(0); ObjectTypeDeclaration arrayItems =

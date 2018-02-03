@@ -15,12 +15,14 @@
  */
 package org.raml.jaxrs.plugins;
 
+import org.raml.builder.TypeBuilder;
 import org.raml.builder.TypeDeclarationBuilder;
 import org.raml.builder.TypePropertyBuilder;
 import org.raml.pojotoraml.ClassParser;
 import org.raml.pojotoraml.Property;
 import org.raml.pojotoraml.RamlAdjuster;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,14 +39,25 @@ public class ChangeType extends RamlAdjuster.Helper {
 
 
   @Override
-  public String adjustTypeName(Class<?> aClass, String name, ClassParser parser) {
+  public String adjustTypeName(Class<?> type, String name, ClassParser parser) {
 
-    if (arguments.get(0).equals(aClass.getName())) {
+    if (arguments.get(0).equals(type.getName())) {
 
       return arguments.get(1);
     }
 
     return name;
+  }
+
+  @Override
+  public String adjustEnumValue(Class<?> type, String name) {
+    return super.adjustEnumValue(type, name);
+  }
+
+  @Override
+  public TypeBuilder adjustType(Type type, TypeBuilder builder) {
+
+    return TypeBuilder.type("string");
   }
 
   @Override

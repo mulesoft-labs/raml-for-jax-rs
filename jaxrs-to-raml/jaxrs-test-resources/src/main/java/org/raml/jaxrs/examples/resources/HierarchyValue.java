@@ -30,8 +30,6 @@ import java.util.UUID;
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
  */
 @XmlRootElement
-@RamlGenerator(parser = BeanLikeClassParser.class, plugins = {@RamlGeneratorPlugin(plugin = "core.changeType",
-    parameters = {"java.util.UUID", "string"})})
 @Secure(security = String.class, level = 17)
 public interface HierarchyValue extends TopValue, AnotherTopValue {
 

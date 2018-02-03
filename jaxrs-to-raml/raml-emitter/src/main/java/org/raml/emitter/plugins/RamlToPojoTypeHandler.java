@@ -47,7 +47,7 @@ public class RamlToPojoTypeHandler implements TypeHandler {
 
       @Override
       public RamlAdjuster createAdjuster(Class<?> clazz) {
-        return PojoToRamlExtensionFactory.createAdjusters(clazz);
+        return new PojoToRamlExtensionFactory(topPackage).createAdjusters(clazz);
       }
     };
 

@@ -8,7 +8,8 @@ uses:
 types:
     Network:
         (ramltojaxrs.types):
-            onTypeCreation: [org.raml.jaxrs.features.AddDeprecatedAnnotationToTypePlugin]
+            plugins:
+              - name: myown.deprecate
         type: object
         properties:
             name:
@@ -19,7 +20,8 @@ types:
                 type: string
     Switch:
         (ramltojaxrs.types):
-            onTypeCreation: [org.raml.jaxrs.features.SuppressTypePlugin]
+            plugins:
+              - name: core.suppressType
         type: object
         properties:
             portcount:
@@ -28,10 +30,11 @@ types:
 
     ChainableRouter:
         (ramltojaxrs.types):
-            onMethodCreation: [org.raml.jaxrs.features.ChainSetter]
+            plugins:
+              - name: myown.chain
         type: object
         properties:
-            portcount:
+            portCount:
                 required: true
                 type: integer
             routerName:

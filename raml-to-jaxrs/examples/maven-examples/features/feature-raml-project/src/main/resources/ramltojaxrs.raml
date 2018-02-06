@@ -11,25 +11,4 @@ annotationTypes:
                 type: boolean
             abstract?:
                 type: boolean
-            onTypeCreation?: string[]
-            onTypeFinish?: string[]
-            onMethodCreation?: string[]
-            onFieldCreation?: string[]
-
-    resources:
-        allowedTargets: [Resource, API]
-        properties:
-            onResourceClassCreation?: string[]
-            onResourceClassFinish?: string[]
-    methods:
-        allowedTargets: [Method, API]
-        properties:
-            onResourceMethodCreation?: string[]
-            onResourceMethodFinish?: string[]
-            onResponseClassCreation?: string[]
-            onResponseClassFinish?: string[]
-    responses:
-        allowedTargets: [Response, API]
-        properties:
-            onResponseMethodCreation?: string[]
-            onResponseMethodFinish?: string[]
+            plugins?: any[]

@@ -63,7 +63,7 @@ public class CurrentBuild {
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
-  private final PluginManager pluginManager = PluginManager.createPluginManager("META-INF/ramltopojo-plugin.properties");
+  private final PluginManager pluginManager = PluginManager.createPluginManager("META-INF/ramltojaxrs-plugin.properties");
 
   private GlobalResourceExtension.Composite resourceExtensionList = new GlobalResourceExtension.Composite();
 
@@ -326,9 +326,9 @@ public class CurrentBuild {
   }
 
   public ResourceClassExtension<GResource> pluginsForResourceClass(Function<Collection<ResourceClassExtension<GResource>>, ResourceClassExtension<GResource>> provider,
-                                                                   Class<ResourceClassExtension> cls, GResource resource) {
+                                                                   GResource resource) {
 
-    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    List<PluginDef> data = Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
     Set<ResourceClassExtension> plugins = buildPluginList(ResourceClassExtension.class, data);
 
     // Ugly, but I don't care
@@ -344,9 +344,9 @@ public class CurrentBuild {
   }
 
   public ResponseClassExtension<GMethod> pluginsForResponseClass(Function<Collection<ResponseClassExtension<GMethod>>, ResponseClassExtension<GMethod>> provider,
-                                                                 GMethod resource) {
+                                                                 GMethod method) {
 
-    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    List<PluginDef> data = Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, method);
     Set<ResponseClassExtension> plugins = buildPluginList(ResponseClassExtension.class, data);
 
     // Ugly, but I don't care
@@ -364,7 +364,7 @@ public class CurrentBuild {
   public ResourceMethodExtension<GMethod> pluginsForResourceMethod(Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>> provider,
                                                                    GMethod resource) {
 
-    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    List<PluginDef> data = Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
     Set<ResourceMethodExtension> plugins = buildPluginList(ResourceMethodExtension.class, data);
 
     // Ugly, but I don't care
@@ -382,7 +382,7 @@ public class CurrentBuild {
   public ResponseMethodExtension<GResponse> pluginsForResponseMethod(Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>> provider,
                                                                      GResponse resource) {
 
-    List<PluginDef> data = Annotations.PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    List<PluginDef> data = Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
     Set<ResponseMethodExtension> plugins = buildPluginList(ResponseMethodExtension.class, data);
 
     // Ugly, but I don't care
@@ -398,7 +398,7 @@ public class CurrentBuild {
   }
 
   private <T> Set<T> buildPluginList(Class<T> cls, List<PluginDef> data) {
-    Set<T> plugins = new HashSet<>();
+    Set<T> plugins = new LinkedHashSet<>();
     loadBasePlugins(plugins, cls);
     for (PluginDef datum : data) {
       plugins.addAll(pluginManager.getClassesForName(datum.getPluginName(), datum.getArguments(), cls));

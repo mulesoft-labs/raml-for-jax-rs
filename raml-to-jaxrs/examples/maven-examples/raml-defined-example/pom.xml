@@ -58,7 +58,6 @@
                     <generateTypesWith>
                         <value>jackson</value>
                         <value>jsr303</value>
-                        <value>javadoc</value>
                     </generateTypesWith>
                 </configuration>
             </plugin>

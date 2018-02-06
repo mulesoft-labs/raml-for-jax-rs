@@ -1,37 +1,13 @@
 #%RAML 1.0 Library
 annotationTypes:
-    types:
-        allowedTargets: [TypeDeclaration,API]
-        properties:
-            # generated class interface name
-            className?:
-                type: string
-            # generated class implementation name
-            implementationClassName?:
-                type: string
-            # use primitive types instead of boxed types.
-            usePrimitiveType?:
-                type: boolean
-            # is the class abstract.
-            abstract?:
-                type: boolean
-            # classes to be run on type created
-            onTypeCreation?: string[]
-            # classes to be run on type finished
-            onTypeFinish?: string[]
-            # classes to be run on type method creation
-            onMethodCreation?: string[]
-            # classes to be run on type field creation
-            onFieldCreation?: string[]
-
-
     resources:
-        allowedTargets: [Resource, API]
+        allowedTargets: [Resource, Method, Response, API]
         properties:
             # classes to be run on resource created
             onResourceClassCreation?: string[]
             # classes to be run on resource finished
             onResourceClassFinish?: string[]
+            plugins?: any[]
     methods:
         allowedTargets: [Method, API]
         properties:
@@ -43,6 +19,17 @@ annotationTypes:
             onResponseClassCreation?: string[]
             # classes to be run on response class created
             onResponseClassFinish?: string[]
+            plugins?: any[]
+
+    responseClasses:
+        allowedTargets: [Method, API]
+        properties:
+            # classes to be run on response method created
+            onResponseMethodCreation?: string[]
+            # classes to be run on response method created
+            onResponseMethodFinish?: string[]
+            plugins?: any[]
+
     responses:
         allowedTargets: [Response, API]
         properties:
@@ -50,3 +37,4 @@ annotationTypes:
             onResponseMethodCreation?: string[]
             # classes to be run on response method created
             onResponseMethodFinish?: string[]
+            plugins?: any[]

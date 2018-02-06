@@ -645,7 +645,7 @@ public class ResourceBuilder implements ResourceGenerator {
                                            return new ResourceClassExtension.Composite(resourceClassExtensions);
 
                                          }
-                                       }, ResourceClassExtension.class, topResource)
+                                       }, topResource)
               .onResource(new ResourceContextImpl(build), topResource, typeSpec);
       return typeSpec;
     }

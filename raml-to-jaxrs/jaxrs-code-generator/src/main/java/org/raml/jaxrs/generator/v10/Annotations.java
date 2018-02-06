@@ -49,11 +49,12 @@ public abstract class Annotations<T> {
   };
 
 
-  public static Annotations<List<PluginDef>> PLUGINS = new Annotations<List<PluginDef>>() {
+  public static Annotations<List<PluginDef>> RESOURCE_PLUGINS = new Annotations<List<PluginDef>>() {
 
     @Override
     public List<PluginDef> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
-      return Annotations.getWithDefault(new TypeInstanceToPluginDefFunction(), "plugins", Collections.<PluginDef>emptyList(),
+      return Annotations.getWithDefault(new TypeInstanceToPluginDefFunction(), "resources", "plugins",
+                                        Collections.<PluginDef>emptyList(),
                                         target, others);
     }
   };
@@ -66,23 +67,30 @@ public abstract class Annotations<T> {
       if (input.properties().size() == 0) {
 
         return new PluginDef((String) input.value(), Collections.<String>emptyList());
-      } else
-        return new PluginDef((String) input.properties().get(0).value().value(), Lists.transform(input.properties().get(1)
-            .values(), new Function<TypeInstance, String>() {
+      } else {
+        if (input.properties().size() == 1) {
 
-          @Nullable
-          @Override
-          public String apply(@Nullable TypeInstance input) {
-            return (String) input.value();
+          return new PluginDef((String) input.properties().get(0).value().value(), Collections.<String>emptyList());
+        } else {
+          return new PluginDef((String) input.properties().get(0).value().value(), Lists.transform(input.properties().get(1)
+              .values(), new Function<TypeInstance, String>() {
+
+            @Nullable
+            @Override
+            public String apply(@Nullable TypeInstance input) {
+              return (String) input.value();
+            }
           }
+              ));
         }
-            ));
+      }
     }
   }
 
-  private static <T, R> R getWithDefault(Function<TypeInstance, T> convert, String propName, R def, Annotable target,
+  private static <T, R> R getWithDefault(Function<TypeInstance, T> convert, String annotationName, String propName, R def,
+                                         Annotable target,
                                          Annotable... others) {
-    R b = org.raml.ramltopojo.Annotations.evaluate(convert, "resources", propName, target, others);
+    R b = org.raml.ramltopojo.Annotations.evaluate(convert, annotationName, propName, target, others);
     if (b == null) {
 
       return def;

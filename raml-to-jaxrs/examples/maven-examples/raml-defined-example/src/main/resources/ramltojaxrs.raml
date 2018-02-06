@@ -3,38 +3,18 @@ annotationTypes:
     resources:
         allowedTargets: [Resource, Method, Response, API]
         properties:
-            # classes to be run on resource created
-            onResourceClassCreation?: string[]
-            # classes to be run on resource finished
-            onResourceClassFinish?: string[]
             plugins?: any[]
     methods:
         allowedTargets: [Method, API]
         properties:
-            # classes to be run on resource method created
-            onResourceMethodCreation?: string[]
-            # classes to be run on resource method created
-            onResourceMethodFinish?: string[]
-            # classes to be run on response class created
-            onResponseClassCreation?: string[]
-            # classes to be run on response class created
-            onResponseClassFinish?: string[]
             plugins?: any[]
 
     responseClasses:
         allowedTargets: [Method, API]
         properties:
-            # classes to be run on response method created
-            onResponseMethodCreation?: string[]
-            # classes to be run on response method created
-            onResponseMethodFinish?: string[]
             plugins?: any[]
 
     responses:
         allowedTargets: [Response, API]
         properties:
-            # classes to be run on response method created
-            onResponseMethodCreation?: string[]
-            # classes to be run on response method created
-            onResponseMethodFinish?: string[]
             plugins?: any[]

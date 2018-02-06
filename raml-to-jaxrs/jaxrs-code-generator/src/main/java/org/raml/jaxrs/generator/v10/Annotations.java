@@ -59,6 +59,36 @@ public abstract class Annotations<T> {
     }
   };
 
+  public static Annotations<List<PluginDef>> METHOD_PLUGINS = new Annotations<List<PluginDef>>() {
+
+    @Override
+    public List<PluginDef> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
+      return Annotations.getWithDefault(new TypeInstanceToPluginDefFunction(), "methods", "plugins",
+                                        Collections.<PluginDef>emptyList(),
+                                        target, others);
+    }
+  };
+
+  public static Annotations<List<PluginDef>> RESPONSE_PLUGINS = new Annotations<List<PluginDef>>() {
+
+    @Override
+    public List<PluginDef> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
+      return Annotations.getWithDefault(new TypeInstanceToPluginDefFunction(), "responses", "plugins",
+                                        Collections.<PluginDef>emptyList(),
+                                        target, others);
+    }
+  };
+
+  public static Annotations<List<PluginDef>> RESPONSE_CLASS_PLUGINS = new Annotations<List<PluginDef>>() {
+
+    @Override
+    public List<PluginDef> getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
+      return Annotations.getWithDefault(new TypeInstanceToPluginDefFunction(), "responseClasses", "plugins",
+                                        Collections.<PluginDef>emptyList(),
+                                        target, others);
+    }
+  };
+
   private static class TypeInstanceToPluginDefFunction implements Function<TypeInstance, PluginDef> {
 
     @Override

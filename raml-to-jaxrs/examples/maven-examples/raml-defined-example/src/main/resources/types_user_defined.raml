@@ -73,7 +73,7 @@ types:
       plugins:
         - name: ramltojaxrs.javadoc
     get:
-        (ramltojaxrs.resources):
+        (ramltojaxrs.methods):
           plugins:
             - name: ramltojaxrs.javadoc
         description: getme
@@ -81,7 +81,7 @@ types:
             id: HumanId
         responses:
           200:
-            (ramltojaxrs.resources):
+            (ramltojaxrs.responses):
                plugins:
                  - name: ramltojaxrs.javadoc
             description: response

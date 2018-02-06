@@ -346,7 +346,7 @@ public class CurrentBuild {
   public ResponseClassExtension<GMethod> pluginsForResponseClass(Function<Collection<ResponseClassExtension<GMethod>>, ResponseClassExtension<GMethod>> provider,
                                                                  GMethod method) {
 
-    List<PluginDef> data = Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, method);
+    List<PluginDef> data = Annotations.RESPONSE_CLASS_PLUGINS.get(Collections.<PluginDef>emptyList(), api, method);
     Set<ResponseClassExtension> plugins = buildPluginList(ResponseClassExtension.class, data);
 
     // Ugly, but I don't care
@@ -364,7 +364,7 @@ public class CurrentBuild {
   public ResourceMethodExtension<GMethod> pluginsForResourceMethod(Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>> provider,
                                                                    GMethod resource) {
 
-    List<PluginDef> data = Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    List<PluginDef> data = Annotations.METHOD_PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
     Set<ResourceMethodExtension> plugins = buildPluginList(ResourceMethodExtension.class, data);
 
     // Ugly, but I don't care
@@ -382,7 +382,7 @@ public class CurrentBuild {
   public ResponseMethodExtension<GResponse> pluginsForResponseMethod(Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>> provider,
                                                                      GResponse resource) {
 
-    List<PluginDef> data = Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
+    List<PluginDef> data = Annotations.RESPONSE_PLUGINS.get(Collections.<PluginDef>emptyList(), api, resource);
     Set<ResponseMethodExtension> plugins = buildPluginList(ResponseMethodExtension.class, data);
 
     // Ugly, but I don't care

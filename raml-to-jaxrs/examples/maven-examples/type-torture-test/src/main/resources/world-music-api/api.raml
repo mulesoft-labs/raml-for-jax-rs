@@ -59,6 +59,13 @@ types:
     example:
       firstname: John
 
+  StringEnumeration:
+    enum: ["one", "two"]
+
+  NumericEnumeration:
+    type: integer
+    enum: [1,2,3]
+
 traits:
   secured: !include secured/accessToken.raml
 

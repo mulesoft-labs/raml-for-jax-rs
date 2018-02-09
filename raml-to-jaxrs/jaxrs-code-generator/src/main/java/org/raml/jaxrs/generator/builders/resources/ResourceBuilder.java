@@ -462,7 +462,7 @@ public class ResourceBuilder implements ResourceGenerator {
           .returns(ClassName.get("", "HeadersFor" + code))
           .addParameter(ParameterSpec.builder(header.type().defaultJavaTypeName(build.getModelPackage()), "p", Modifier.FINAL)
               .build())
-          .addStatement("headerMap.put($S, p.toString())", header.name())
+          .addStatement("headerMap.put($S, String.valueOf(p));", header.name())
           .addStatement("return this")
           .build();
       headerForCode.addMethod(spec);

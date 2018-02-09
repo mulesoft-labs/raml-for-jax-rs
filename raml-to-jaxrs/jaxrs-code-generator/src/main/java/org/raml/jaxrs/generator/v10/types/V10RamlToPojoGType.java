@@ -22,6 +22,7 @@ import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
@@ -97,7 +98,8 @@ public class V10RamlToPojoGType implements V10GType {
 
   @Override
   public boolean isEnum() {
-    return (typeDeclaration instanceof StringTypeDeclaration) && ((StringTypeDeclaration) typeDeclaration).enumValues() != null;
+    return ((typeDeclaration instanceof StringTypeDeclaration) && ((StringTypeDeclaration) typeDeclaration).enumValues() != null)
+        || ((typeDeclaration instanceof NumberTypeDeclaration) && ((NumberTypeDeclaration) typeDeclaration).enumValues() != null);
   }
 
   @Override

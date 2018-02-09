@@ -28,6 +28,7 @@ import org.raml.ramltopojo.extensions.ObjectPluginContext;
 import org.raml.ramltopojo.extensions.UnionPluginContext;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
 
 /**
@@ -49,7 +50,7 @@ public class DeprecateClass extends AllTypesPluginHelper {
   }
 
   @Override
-  public TypeSpec.Builder classCreated(EnumerationPluginContext enumerationPluginContext, StringTypeDeclaration ramlType,
+  public TypeSpec.Builder classCreated(EnumerationPluginContext enumerationPluginContext, TypeDeclaration ramlType,
                                        TypeSpec.Builder incoming, EventType eventType) {
     return incoming.addAnnotation(AnnotationSpec.builder(Deprecated.class).build());
   }

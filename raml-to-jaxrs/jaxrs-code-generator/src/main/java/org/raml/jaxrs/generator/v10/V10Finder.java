@@ -189,6 +189,12 @@ public class V10Finder implements GFinder {
                              V10GTypeFactory.createEnum(typeDeclaration.name(), (StringTypeDeclaration) typeDeclaration));
     }
 
+    if (typeDeclaration instanceof NumberTypeDeclaration && !((NumberTypeDeclaration) typeDeclaration).enumValues().isEmpty()) {
+
+      return putInFoundTypes(typeDeclaration.name(),
+                             V10GTypeFactory.createEnum(typeDeclaration.name(), (NumberTypeDeclaration) typeDeclaration));
+    }
+
     if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
       return putInFoundTypes(typeDeclaration.name(), V10GTypeFactory.createArray(typeDeclaration.name(),

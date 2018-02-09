@@ -63,6 +63,11 @@ public class V10GTypeFactory {
     return new V10RamlToPojoGType(name, typeDeclaration);
   }
 
+  public static V10GType createEnum(String name,
+                                    NumberTypeDeclaration typeDeclaration) {
+    return new V10RamlToPojoGType(name, typeDeclaration);
+  }
+
   public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName, CreationModel model) {
 
     return new V10GTypeJson(jsonTypeDeclaration, ramlName, Annotations.CLASS_NAME.get(

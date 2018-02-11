@@ -214,7 +214,8 @@ public class V10Finder implements GFinder {
 
     if (typeDeclaration instanceof ObjectTypeDeclaration
         || typeDeclaration instanceof UnionTypeDeclaration
-        || (typeDeclaration instanceof StringTypeDeclaration && !((StringTypeDeclaration) typeDeclaration).enumValues().isEmpty())) {
+        || (typeDeclaration instanceof StringTypeDeclaration && !((StringTypeDeclaration) typeDeclaration).enumValues().isEmpty())
+        || (typeDeclaration instanceof NumberTypeDeclaration && !((NumberTypeDeclaration) typeDeclaration).enumValues().isEmpty())) {
 
       return build.fetchRamlToPojoBuilder().isInline(typeDeclaration);
     }

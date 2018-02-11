@@ -120,14 +120,13 @@ public class ExampleModelEmitter implements LocalEmitter {
   @Override
   public void emit(RamlProperty ramlProperty) throws IOException {
 
-    RamlType ramlType = ramlProperty.getRamlType();
-    if (!ramlType.isRamlScalarType()) {
+    if (!ramlProperty.isRamlScalarType()) {
 
       try {
         PropertyValueBuilder property = PropertyValueBuilder.property(ramlProperty.getName());
         propertyValues.peek().withPropertyValue(property);
         propertyValues.push(property);
-        ramlType.emit(this);
+        // ramlType.emit(this);
       } finally {
 
         propertyValues.pop();

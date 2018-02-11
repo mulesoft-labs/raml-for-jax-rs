@@ -33,29 +33,18 @@ import java.util.Collection;
  */
 public class RamlProperty implements Emittable, Annotable {
 
-  private final RamlType ramlType;
   private final String name;
   private final Annotable source;
+  private final boolean isScalar;
 
-  public RamlProperty(String name, RamlType ramlType, Annotable source) {
-    this.ramlType = ramlType;
+  public RamlProperty(String name, Annotable source, boolean isScalar) {
     this.name = name;
     this.source = source;
+    this.isScalar = isScalar;
   }
 
   public String getName() {
     return name;
-  }
-
-  public static RamlProperty createProperty(Annotable source, String name, RamlType ramlType) {
-    return new RamlProperty(name, ramlType, source);
-  }
-
-  public void write(Collection<RamlSupportedAnnotation> supportedAnnotations, TypeBuilder typeBuilder) throws IOException {
-
-    TypePropertyBuilder property = TypePropertyBuilder.property(name, ramlType.getTypeName());
-    ModelEmitterAnnotations.annotate(supportedAnnotations, this, property);
-    typeBuilder.withProperty(property);
   }
 
   public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
@@ -68,7 +57,7 @@ public class RamlProperty implements Emittable, Annotable {
     emitter.emit(this);
   }
 
-  public RamlType getRamlType() {
-    return ramlType;
+  public boolean isRamlScalarType() {
+    return isScalar;
   }
 }

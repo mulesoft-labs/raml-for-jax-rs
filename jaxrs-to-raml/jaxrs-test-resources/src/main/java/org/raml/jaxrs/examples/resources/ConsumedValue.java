@@ -41,10 +41,8 @@ public class ConsumedValue {
 
   private int id;
 
-  @Example("1")
   private SubType subType;
 
-  @Example("['1','2','3']")
   private List<String> names;
 
   @Example("1")
@@ -53,10 +51,12 @@ public class ConsumedValue {
     return id;
   }
 
+  @Example("1")
   public SubType getSubType() {
     return subType;
   }
 
+  @Example("['1','2','3']")
   public List<String> getNames() {
     return names;
   }

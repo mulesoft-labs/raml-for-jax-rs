@@ -15,9 +15,11 @@
  */
 package org.raml.jaxrs.types;
 
+import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.builder.RamlDocumentBuilder;
+import org.raml.jaxrs.emitters.ExampleModelEmitter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,13 +33,21 @@ public class TypeRegistry {
 
   private Map<String, RamlType> types = new HashMap<>();
 
-  public RamlType registerType(String name, RamlEntity type) {
+  public RamlType registerType(final String name, final RamlEntity type) {
 
     if (types.containsKey(name)) {
       return types.get(name);
     } else {
 
-      RamlType ramlType = new RamlType(type);
+      final RamlType ramlType = new RamlType(type.getType(), new Descriptor() {
+
+        @Override
+        public Optional<String> describe() {
+          return type.getDescription();
+        }
+      });
+
+
       if (ramlType.isRamlScalarType()) {
         return ramlType;
       }
@@ -53,5 +63,12 @@ public class TypeRegistry {
 
       ramlType.write(supportedAnnotations, topPackage, documentBuilder);
     }
+
+    for (RamlType ramlType : RamlType.getAllTypes().values()) {
+
+      ramlType.emitExamples();
+    }
+
   }
+
 }

@@ -44,7 +44,7 @@ public abstract class Annotations<T> {
     @Override
     public String getWithContext(CurrentBuild currentBuild, Annotable target, Annotable... others) {
 
-      return getWithDefault("types", "classname", null, target, others);
+      return getWithDefault("types", "className", null, target, others);
     }
   };
 

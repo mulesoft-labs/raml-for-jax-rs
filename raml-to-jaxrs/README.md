@@ -18,7 +18,8 @@ and with `@Min`/`@Max` support limited to non decimal minimum/maximum constraint
 - Model object generation based on JSON schemas, with Jackson 1, 2 or Gson annotations;
 - Generation of JAXB-annotated classes based on XML Schemas;
 - Annotations can be generated using one or a combination of three formats: [Gson](GSON.md), [Jackson](JACKSON.md) and [JAXB](JAXB.md)
-- [Generation plugins](jaxrs-code-generator/README.md): the generation of the interfaces and the response classes can be controlled using a set of RAML annotations in the source RAML file.
+- [Generation plugins](jaxrs-code-generator/README.md): the generation of the interfaces and the response classes can be 
+controlled using a set of RAML annotations in the source RAML file.  **The interface for plugins has changed somewhat: please see the documentation**
 
 ### Using the Maven plugin
 There are several examples of projects using the maven plugin.

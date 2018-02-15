@@ -95,9 +95,9 @@ public class ExampleModelEmitter implements LocalEmitter {
         }
 
 
-        ExamplesBuilder examplesBuilder = ExamplesBuilder.example("onlyCase").strict(false);
+        ExamplesBuilder examplesBuilder = ExamplesBuilder.singleExample().strict(false);
         propertyValues.push(examplesBuilder);
-        typeBuilder.withExamples(examplesBuilder);
+        typeBuilder.withExample(examplesBuilder);
 
         headerDone = true;
 

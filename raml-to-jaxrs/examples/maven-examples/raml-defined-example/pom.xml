@@ -56,7 +56,10 @@
                     <resourcePackage>example.types</resourcePackage>
                     <supportPackage>example.support</supportPackage>
                     <generateTypesWith>
-                        <value>jackson</value>
+<!--   If you want to try jackson 1
+                        <value>jackson1</value>
+-->
+                        <value>jackson2</value>
                         <value>jsr303</value>
                     </generateTypesWith>
                 </configuration>

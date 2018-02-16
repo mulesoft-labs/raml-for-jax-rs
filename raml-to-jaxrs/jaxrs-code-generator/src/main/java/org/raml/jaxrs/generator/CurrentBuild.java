@@ -98,7 +98,11 @@ public class CurrentBuild {
             @Nullable
             @Override
             public String apply(@Nullable String s) {
-              return "core." + s;
+              if (s.contains(".")) {
+                return s;
+              } else {
+                return "core." + s;
+              }
             }
           }).toList());
     }

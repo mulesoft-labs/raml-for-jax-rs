@@ -28,7 +28,9 @@ types:
           toes: integer
     Arm:
         properties:
-            fingers: integer
+            fingers:
+              type: integer
+              default: 5
     Limb:
         Arm | Leg
     Person:

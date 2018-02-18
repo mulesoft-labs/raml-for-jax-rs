@@ -66,6 +66,40 @@ types:
     type: integer
     enum: [1,2,3]
 
+  NameIdentifier:
+    type: string
+    minLength: 1
+    maxLength: 200
+    pattern: "^[A-Za-z0-9_-]+$"
+
+  # Configuration objects
+  Amount:
+    type: object
+    description: |
+    properties:
+      value: number
+      currency: string
+
+  MyInlineObject:
+    type: object
+    properties:
+      parentInline:
+        type: object
+        properties:
+          reference:
+            type: NameIdentifier
+          prop1:
+            type: object
+            properties:
+              amount: Amount
+          prop2:
+            type: object
+            properties:
+              id?: NameIdentifier
+              amount: Amount
+              reference?: string
+
+
 traits:
   secured: !include secured/accessToken.raml
 

@@ -131,3 +131,14 @@ types:
                 200:
                   headers:
                     someOtherHeader:
+    /person/{id}:
+        uriParameters:
+            id: string
+        get:
+            queryParameters:
+                type: string
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: Person

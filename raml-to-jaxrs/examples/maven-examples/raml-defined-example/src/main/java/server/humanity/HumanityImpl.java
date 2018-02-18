@@ -88,6 +88,26 @@ public class HumanityImpl implements Humans {
   }
 
   @Override
+  public GetHumansPersonByIdResponse getHumansPersonById(String id, String type) {
+    PersonImpl pi = new PersonImpl();
+    pi.setActualGender(Gender.FEMALE);
+    pi.setWeight(180);
+
+    pi.setDateOfBirth(new Date());
+    pi.setInstantOfBirth(new Date());
+    pi.setTimeOfArrival(new Date());
+    pi.setDateOfBirth(new Date());
+    pi.setTimeOfBirth(new Date());
+    pi.setRequestTime(new Date());
+
+    CorpseImpl ci = new CorpseImpl();
+    ci.setDateOfDeath(new Date());
+    pi.setSiblings(Collections.<Human>singletonList(ci));
+    pi.setLimbs(new LimbImpl(new ArmImpl()));
+    return GetHumansPersonByIdResponse.respond200WithApplicationJson(pi);
+  }
+
+  @Override
   public PutHumansByIdResponse putHumansById(String id, Human entity) {
 
     return PutHumansByIdResponse.respond200(PutHumansByIdResponse.headersFor200().withSomeOtherHeader("Blah"));

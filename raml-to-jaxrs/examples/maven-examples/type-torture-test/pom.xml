@@ -51,6 +51,9 @@
                     <resourcePackage>example.torture</resourcePackage>
                     <supportPackage>example.support</supportPackage>
                     <modelPackage>example.model</modelPackage>
+                    <generateTypesWith>
+                        <value>equalsAndHashCode</value>
+                    </generateTypesWith>
                 </configuration>
             </plugin>
         </plugins>

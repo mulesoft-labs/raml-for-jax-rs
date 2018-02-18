@@ -61,6 +61,7 @@
 -->
                         <value>jackson2</value>
                         <value>jsr303</value>
+                        <value>equalsAndHashCode</value>
                     </generateTypesWith>
                 </configuration>
             </plugin>

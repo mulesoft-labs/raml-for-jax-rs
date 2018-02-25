@@ -19,6 +19,7 @@ import com.squareup.javapoet.MethodSpec;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceMethodExtension;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
 
 /**
  * Created by Jean-Philippe Belanger on 1/6/17. Just potential zeroes and ones
@@ -26,7 +27,7 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
 public class TrialResourceMethodExtension implements ResourceMethodExtension<GMethod> {
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
     return methodSpec;
   }
 

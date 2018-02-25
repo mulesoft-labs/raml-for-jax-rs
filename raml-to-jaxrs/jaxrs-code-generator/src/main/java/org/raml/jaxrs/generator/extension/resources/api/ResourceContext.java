@@ -16,9 +16,13 @@
 package org.raml.jaxrs.generator.extension.resources.api;
 
 import org.raml.jaxrs.generator.extension.Context;
+import org.raml.ramltopojo.RamlToPojo;
+import org.raml.ramltopojo.RamlToPojoBuilder;
 
 /**
  * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
  */
 public interface ResourceContext extends Context, ResourceMethodExtension {
+
+  RamlToPojo fetchRamlToPojoBuilder();
 }

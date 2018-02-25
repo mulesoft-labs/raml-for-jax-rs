@@ -21,6 +21,7 @@ import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 
@@ -37,7 +38,7 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
 
     MethodSpec spec = methodSpec.build();
     MethodSpec.Builder builder = MethodSpec.methodBuilder(spec.name);

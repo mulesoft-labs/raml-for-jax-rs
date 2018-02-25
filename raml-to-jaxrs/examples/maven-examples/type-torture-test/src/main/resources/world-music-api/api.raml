@@ -347,3 +347,27 @@ uses:
           type: string
       get:
 
+/theMultiparts:
+    post:
+        body:
+            multipart/form-data:
+                type: object
+                properties:
+                    appBundle:
+                        type:
+                            type: file
+                            displayName:
+                                value: type
+                        displayName:
+                            value: appBundle
+                    configFile:
+                        type:
+                            type: file
+                            displayName:
+                                value: type
+                        displayName:
+                            value: configFile
+                    consumed:
+                        type: User
+                displayName:
+                    value: "multipart/form-data"

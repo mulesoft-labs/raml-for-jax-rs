@@ -18,6 +18,7 @@ package org.raml.jaxrs.generator.extension.resources.api;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.v08.V08GResource;
@@ -47,7 +48,8 @@ public interface GlobalResourceExtension<M extends GMethod, R extends GResource,
         }
 
         @Override
-        public MethodSpec.Builder onMethod(ResourceContext context, V08Method method, MethodSpec.Builder methodSpec) {
+        public MethodSpec.Builder onMethod(ResourceContext context, V08Method method, GRequest gRequest,
+                                           MethodSpec.Builder methodSpec) {
           return methodSpec;
         }
 
@@ -76,9 +78,9 @@ public interface GlobalResourceExtension<M extends GMethod, R extends GResource,
     }
 
     @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, M method, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(ResourceContext context, M method, GRequest gRequest, MethodSpec.Builder methodSpec) {
       for (GlobalResourceExtension<M, R, S> extension : extensions) {
-        methodSpec = extension.onMethod(context, method, methodSpec);
+        methodSpec = extension.onMethod(context, method, gRequest, methodSpec);
       }
       return methodSpec;
     }

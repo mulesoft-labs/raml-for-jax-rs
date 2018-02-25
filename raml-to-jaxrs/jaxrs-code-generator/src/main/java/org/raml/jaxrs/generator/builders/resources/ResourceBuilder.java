@@ -145,7 +145,7 @@ public class ResourceBuilder implements ResourceGenerator {
                                         }
                                       }, gMethod)
             .onMethod(new ResourceContextImpl(build),
-                      gMethod, methodSpec);
+                      gMethod, null, methodSpec);
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, null);
 
     if (methodSpec != null) {
@@ -158,8 +158,9 @@ public class ResourceBuilder implements ResourceGenerator {
                                     Map<String, TypeSpec.Builder> responseSpec) {
 
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>(), responseSpec);
-    ParameterSpec parameterSpec = createParamteter(gRequest);
-    methodSpec.addParameter(parameterSpec);
+
+    createParamteter(methodSpec, gRequest);
+
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
 
     methodSpec =
@@ -173,23 +174,23 @@ public class ResourceBuilder implements ResourceGenerator {
                                         }
                                       }, gMethod)
             .onMethod(new ResourceContextImpl(build),
-                      gMethod, methodSpec);
+                      gMethod, gRequest, methodSpec);
 
     if (methodSpec != null) {
       typeSpec.addMethod(methodSpec.build());
     }
   }
 
-  private ParameterSpec createParamteter(GRequest gRequest) {
+  private void createParamteter(MethodSpec.Builder methodSpec, GRequest gRequest) {
 
     if (gRequest.type().name().equals("any") && "application/octet-stream".equals(gRequest.mediaType())) {
 
       TypeName typeName = ClassName.get(InputStream.class);
-      return ParameterSpec.builder(typeName, "entity").build();
+      methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());
     } else {
 
       TypeName typeName = gRequest.type().defaultJavaTypeName(build.getModelPackage());
-      return ParameterSpec.builder(typeName, "entity").build();
+      methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());
     }
   }
 

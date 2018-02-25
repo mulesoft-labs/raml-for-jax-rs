@@ -20,6 +20,8 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.extensions.ContextImpl;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
+import org.raml.ramltopojo.RamlToPojo;
 
 /**
  * Created by Jean-Philippe Belanger on 1/29/17. Just potential zeroes and ones
@@ -31,8 +33,13 @@ public class ResourceContextImpl extends ContextImpl implements ResourceContext 
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
 
-    return getBuildContext().withResourceListeners().onMethod(context, method, methodSpec);
+    return getBuildContext().withResourceListeners().onMethod(context, method, gRequest, methodSpec);
+  }
+
+  @Override
+  public RamlToPojo fetchRamlToPojoBuilder() {
+    return getBuild().fetchRamlToPojoBuilder();
   }
 }

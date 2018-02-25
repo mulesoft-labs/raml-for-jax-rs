@@ -16,25 +16,13 @@
 package org.raml.jaxrs.generator.extension.resources;
 
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
-import org.raml.jaxrs.generator.v10.V10GResource;
-import org.raml.ramltopojo.EventType;
-import org.raml.ramltopojo.extensions.ObjectPluginContext;
-import org.raml.ramltopojo.extensions.javadoc.JavadocObjectTypeHandlerPlugin;
-import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.ExampleSpec;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
-
-import javax.validation.Valid;
 
 /**
  * Created. There, you have it.
@@ -52,7 +40,7 @@ public class JavadocResourceExtension implements GlobalResourceExtension {
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
 
     if (method.getDescription() != null) {
       methodSpec.addJavadoc("$L\n", method.getDescription());

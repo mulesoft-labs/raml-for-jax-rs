@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator.extension.resources.api;
 
 import com.squareup.javapoet.MethodSpec;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
+import org.raml.jaxrs.generator.ramltypes.GRequest;
 
 import java.util.Collection;
 
@@ -28,7 +29,7 @@ public interface ResourceMethodExtension<T extends GMethod> {
   ResourceMethodExtension<GMethod> NULL_EXTENSION = new ResourceMethodExtension<GMethod>() {
 
     @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
       return methodSpec;
     }
   };
@@ -41,18 +42,19 @@ public interface ResourceMethodExtension<T extends GMethod> {
     }
 
     @Override
-    public MethodSpec.Builder onMethod(final ResourceContext context, final GMethod method, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(final ResourceContext context, final GMethod method, final GRequest gRequest,
+                                       MethodSpec.Builder methodSpec) {
 
       return runList(methodSpec, new ElementJob<ResourceMethodExtension<GMethod>, MethodSpec.Builder>() {
 
         @Override
         public MethodSpec.Builder doElement(ResourceMethodExtension<GMethod> e, MethodSpec.Builder builder) {
-          return e.onMethod(context, method, builder);
+          return e.onMethod(context, method, gRequest, builder);
         }
       });
     }
   }
 
-  MethodSpec.Builder onMethod(ResourceContext context, T method, MethodSpec.Builder methodSpec);
+  MethodSpec.Builder onMethod(ResourceContext context, T method, GRequest gRequest, MethodSpec.Builder methodSpec);
 
 }

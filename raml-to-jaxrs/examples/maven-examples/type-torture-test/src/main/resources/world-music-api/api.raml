@@ -98,6 +98,51 @@ types:
               id?: NameIdentifier
               amount: Amount
               reference?: string
+  MyValue:
+      description:
+          value: "Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones"
+      properties:
+          name:
+              type:
+                  type: string
+                  displayName:
+                      value: type
+              displayName:
+                  value: name
+          id:
+                format: int64
+                type: integer
+                displayName:
+                    value: id
+          names:
+              type: array
+              items:
+                      type: string
+              displayName:
+                  value: names
+          subType:
+              type:
+                  type: MyInlineObject
+                  displayName:
+                      value: type
+              displayName:
+                  value: subType
+          uUID:
+              type:
+                  type: string
+                  displayName:
+                      value: type
+              displayName:
+                  value: uUID
+      example:
+          strict: false
+          value:
+              uUID: qqchose
+          displayName:
+              value: example
+      displayName:
+          value: MyValue
+
 
 
 traits:

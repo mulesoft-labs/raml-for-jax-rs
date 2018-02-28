@@ -53,10 +53,15 @@ public class RamlScanner {
       throw new GenerationException(result.getValidationResults());
     }
 
-    if (result.isVersion08()) {
+    if (result.isVersion08() && result.getApiV08() != null) {
       handle(result.getApiV08());
-    } else {
+      return;
+    }
+
+    if (result.isVersion10() && result.getLibrary() != null) {
       handle(result.getApiV10());
+    } else {
+      throw new GenerationException("RAML file is neither v10 nor v08 api file");
     }
   }
 

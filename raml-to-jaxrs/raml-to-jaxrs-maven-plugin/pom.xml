@@ -1,5 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -11,13 +13,6 @@
     <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
-    <name>RAML JAX-RS Maven Plug-in</name>
-
-    <properties>
-        <org.apache.maven.plugin-tools.version>3.2</org.apache.maven.plugin-tools.version>
-        <licensePath>../LICENSE_HEADER.txt</licensePath>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.raml.jaxrs</groupId>
@@ -27,7 +22,7 @@
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-tools-api</artifactId>
-            <version>${org.apache.maven.plugin-tools.version}</version>
+            <version>3.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
@@ -37,7 +32,7 @@
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-tools-annotations</artifactId>
-            <version>${org.apache.maven.plugin-tools.version}</version>
+            <version>3.5</version>
         </dependency>
         <!--  Test dependencies -->
         <dependency>
@@ -53,7 +48,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>${org.apache.maven.plugin-tools.version}</version>
+                <version>3.5</version>
                 <configuration>
                     <goalPrefix>raml</goalPrefix>
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -85,15 +80,4 @@
             -->
         </plugins>
     </build>
-    <description>RAML JAXRS</description>
-    <scm>
-        <url>https://github.com/mulesoft-labs/raml-for-jax-rs.git</url>
-        <connection>https://github.com/mulesoft-labs/raml-for-jax-rs.git</connection>
-        <developerConnection>Pavel Petrochenko(petrochenko.pavel.a@gmail.com)</developerConnection>
-    </scm>
-    <organization>
-        <name>Mulesoft</name>
-        <url>http://mulesoft.com</url>
-    </organization>
-    <url>https://github.com/mulesoft-labs/raml-for-jax-rs</url>
 </project>

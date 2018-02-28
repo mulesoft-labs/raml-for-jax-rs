@@ -8,8 +8,8 @@
     <groupId>org.raml.jaxrs</groupId>
     <artifactId>raml-for-jaxrs</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <name>RAML to JAXRS</name>
-    <description>RAML to JAXRS</description>
+    <name>RAML for JAXRS</name>
+    <description>This project is all about two way transformation of JAX-RS-annotated Java code to RAML API description and back.</description>
     <url>https://github.com/mulesoft-labs/raml-for-jax-rs</url>
     <packaging>pom</packaging>
 

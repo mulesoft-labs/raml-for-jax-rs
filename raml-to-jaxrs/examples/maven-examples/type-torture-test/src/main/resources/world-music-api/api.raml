@@ -392,8 +392,11 @@ uses:
           type: string
       get:
 
-/theMultiparts:
-    post:
+/theMultiparts/{id}:
+     uriParameters:
+        id:
+          type: string
+     post:
         body:
             multipart/form-data:
                 type: object

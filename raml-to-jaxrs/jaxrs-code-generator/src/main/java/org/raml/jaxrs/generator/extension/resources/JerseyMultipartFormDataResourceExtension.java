@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.squareup.javapoet.*;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
@@ -26,6 +28,9 @@ import org.raml.v2.api.model.v10.datamodel.FileTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
+import javax.annotation.Nullable;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import java.io.InputStream;
 
 /**
@@ -46,6 +51,9 @@ public class JerseyMultipartFormDataResourceExtension implements GlobalResourceE
       MethodSpec old = methodSpec.build();
       MethodSpec.Builder newMethod = MethodSpec.methodBuilder(old.name)
           .returns(old.returnType);
+
+      addExistingParameters(old, newMethod);
+
       for (AnnotationSpec annotation : old.annotations) {
         newMethod.addAnnotation(annotation);
       }
@@ -88,6 +96,22 @@ public class JerseyMultipartFormDataResourceExtension implements GlobalResourceE
       return newMethod;
     } else {
       return methodSpec;
+    }
+  }
+
+  private void addExistingParameters(MethodSpec old, MethodSpec.Builder newMethod) {
+    for (ParameterSpec parameter : old.parameters) {
+      if (FluentIterable.from(parameter.annotations).filter(new Predicate<AnnotationSpec>() {
+
+        @Override
+        public boolean apply(@Nullable AnnotationSpec annotationSpec) {
+
+          return annotationSpec.type.equals(ClassName.get(PathParam.class))
+              || annotationSpec.type.equals(ClassName.get(QueryParam.class));
+        }
+      }).size() > 0) {
+        newMethod.addParameter(parameter);
+      }
     }
   }
 

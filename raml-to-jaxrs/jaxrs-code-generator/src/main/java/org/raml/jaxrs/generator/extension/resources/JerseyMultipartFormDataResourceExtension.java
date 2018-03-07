@@ -58,6 +58,11 @@ public class JerseyMultipartFormDataResourceExtension implements GlobalResourceE
         newMethod.addAnnotation(annotation);
       }
 
+      for (TypeName exception : old.exceptions) {
+
+        newMethod.addException(exception);
+      }
+
       newMethod.addJavadoc("$L", old.javadoc);
       newMethod.addModifiers(old.modifiers);
 

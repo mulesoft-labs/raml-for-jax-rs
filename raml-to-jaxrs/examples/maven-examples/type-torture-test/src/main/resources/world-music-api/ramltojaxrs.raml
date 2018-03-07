@@ -1,0 +1,25 @@
+#%RAML 1.0 Library
+annotationTypes:
+    types:
+        allowedTargets: [TypeDeclaration,API]
+        properties:
+            # used for jaxb and jsonschema modules.
+            className?:
+    resources:
+        allowedTargets: [Resource, Method, Response, API]
+        properties:
+            plugins?: any[]
+    methods:
+        allowedTargets: [Method, API]
+        properties:
+            plugins?: any[]
+
+    responseClasses:
+        allowedTargets: [Method, API]
+        properties:
+            plugins?: any[]
+
+    responses:
+        allowedTargets: [Response, API]
+        properties:
+            plugins?: any[]

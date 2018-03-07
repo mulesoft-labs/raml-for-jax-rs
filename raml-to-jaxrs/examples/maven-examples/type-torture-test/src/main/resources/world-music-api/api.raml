@@ -39,6 +39,27 @@ types:
         }
       }
     }
+  TypeToChange:
+        schema: |
+         {
+           "type": "object",
+           "$schema": "http://json-schema.org/draft-03/schema",
+           "id": "http://jsonschema.net",
+           "required": true,
+           "properties": {
+             "songTitle": {
+               "type": "string",
+               "required": true
+             },
+             "albumId": {
+               "type": "string",
+               "required": true,
+               "minLength": 36,
+               "maxLength": 36
+             }
+           }
+         }
+
   BizzareType:
     properties:
         _link: string
@@ -250,6 +271,8 @@ securedBy: custom_scheme
 uses:
   SongsLib: libraries/songs-library.raml
   ApiLib: libraries/api-library.raml
+  ramltojaxrs: ramltojaxrs.raml
+
 
 /mappings:
   description: Maps stuff
@@ -391,7 +414,27 @@ uses:
         id:
           type: string
       get:
+/jsonThing:
+    /bar:
+        get:
+          responses:
+            200:
+              (ramltojaxrs.responses):
+                plugins:
+                  - name: workaround.entityListType
+                    arguments: [java.lang.String]
+              body:
+                application/json:
+                  type: TypeToChange
+        put:
+          (ramltojaxrs.methods):
+            plugins:
+              - name: workaround.entityListType
+                arguments: [java.lang.String]
 
+          body:
+            application/json:
+              type: TypeToChange
 /theMultiparts/{id}:
      uriParameters:
         id:

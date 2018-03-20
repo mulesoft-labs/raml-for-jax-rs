@@ -3,28 +3,24 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.raml.jaxrs</groupId>
     <artifactId>raml-for-jaxrs</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <name>RAML for JAXRS</name>
+    <packaging>pom</packaging>
+    <name>raml-for-jaxrs</name>
     <description>This project is all about two way transformation of JAX-RS-annotated Java code to RAML API description and back.</description>
     <url>https://github.com/mulesoft-labs/raml-for-jax-rs</url>
-    <packaging>pom</packaging>
-
     <modules>
         <module>build-tools</module>
         <module>jaxrs-to-raml</module>
         <module>raml-to-jaxrs</module>
         <module>utilities</module>
     </modules>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
-
     <dependencyManagement>
         <dependencies>
             <!-- Third party -->
@@ -88,7 +84,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -270,7 +265,6 @@
             </distributionManagement>
         </profile>
     </profiles>
-
     <distributionManagement>
         <repository>
             <id>mulesoft-releases</id>
@@ -283,13 +277,11 @@
             <url>https://repository-master.mulesoft.org/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
     <scm>
         <url>https://github.com/mulesoft-labs/raml-for-jax-rs.git</url>
         <connection>https://github.com/mulesoft-labs/raml-for-jax-rs.git</connection>
         <developerConnection>Jean-Philippe Belanger(jpbelang@hotmail.com)</developerConnection>
     </scm>
-
     <organization>
         <name>Mulesoft</name>
         <url>http://mulesoft.com</url>

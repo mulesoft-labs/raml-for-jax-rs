@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>jaxrs-to-raml</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>raml-generator-api</artifactId>
@@ -20,17 +20,17 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>pojo-to-raml</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-to-pojo</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-simple-emitter</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

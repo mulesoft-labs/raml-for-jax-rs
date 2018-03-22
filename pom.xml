@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.raml.jaxrs</groupId>
     <artifactId>raml-for-jaxrs</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>raml-for-jaxrs</name>
     <description>This project is all about two way transformation of JAX-RS-annotated Java code to RAML API description and back.</description>
@@ -27,7 +27,7 @@
             <dependency>
                 <groupId>org.raml</groupId>
                 <artifactId>raml-to-pojo</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.raml</groupId>

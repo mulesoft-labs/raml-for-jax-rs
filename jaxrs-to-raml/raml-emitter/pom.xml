@@ -44,10 +44,12 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-simple-emitter</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>pojo-to-raml</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

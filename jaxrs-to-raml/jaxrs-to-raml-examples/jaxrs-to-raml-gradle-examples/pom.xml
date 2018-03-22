@@ -31,6 +31,9 @@
                             <goal>invoke</goal>
                         </goals>
                         <configuration>
+                            <jvmArgs>
+                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                            </jvmArgs>
                             <tasks>
                                 <task>compileJava</task>
                                 <task>jaxrstoraml</task>
@@ -45,6 +48,9 @@
                             <goal>invoke</goal>
                         </goals>
                         <configuration>
+                            <jvmArgs>
+                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                            </jvmArgs>
                             <tasks>
                                 <task>clean</task>
                             </tasks>

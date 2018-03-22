@@ -1,13 +1,15 @@
+version = System.getProperty('artifactVersion')
+
 dependencies {
-    compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
-    compile "org.raml.jaxrs:raml-generator-api:3.0.0-SNAPSHOT"
-    compile "org.raml.jaxrs:raml-emitter:3.0.0-SNAPSHOT"
-    compile "org.glassfish.jersey.containers:jersey-container-jetty-http:2.24"
+    compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+    compile 'org.raml.jaxrs:raml-generator-api:' + version
+    compile 'org.raml.jaxrs:raml-emitter:' + version
+    compile 'org.glassfish.jersey.containers:jersey-container-jetty-http:2.24'
 }
 
 jaxrstoraml {
-    inputPath = file("build/classes/main")
-    outputDirectory = file("build")
+    inputPath = file('build/classes/main')
+    outputDirectory = file('build')
     sourceDirectory = file('src/main/java')
-    ramlFileName = file("build/api.raml")
+    ramlFileName = file('build/api.raml')
 }

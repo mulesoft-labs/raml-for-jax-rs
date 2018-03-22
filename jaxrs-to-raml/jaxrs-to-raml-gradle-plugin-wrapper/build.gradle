@@ -1,7 +1,7 @@
 /**
  * Copyright 2013-2015 (c) MuleSoft, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
@@ -18,25 +18,25 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'org.raml.jaxrs'
-version = System.getProperty("artifactVersion")
+version = System.getProperty('artifactVersion')
 description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
 
-def signingEnabled = false //ext."signing.secretKeyRingFile" != ""
-println "signing: $signingEnabled"
+def signingEnabled = false //ext.'signing.secretKeyRingFile' != ''
+println 'signing: $signingEnabled'
 
 buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url 'https://plugins.gradle.org/m2/'
         }
     }
     dependencies {
-        classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0"
+        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
     }
 }
@@ -59,10 +59,10 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile "org.raml.jaxrs:jaxrs-to-raml-core:" + version
+    compile 'org.raml.jaxrs:jaxrs-to-raml-core:' + version
     compile 'commons-io:commons-io:2.4'
 
-    testCompile("org.spockframework:spock-core:$spockVersion") {
+    testCompile('org.spockframework:spock-core:$spockVersion') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
     testCompile 'cglib:cglib-nodep:2.2.2'
@@ -72,8 +72,8 @@ dependencies {
 
 test {
     filter {
-        includeTestsMatching "*Test"
-        includeTestsMatching "*Spec"
+        includeTestsMatching '*Test'
+        includeTestsMatching '*Spec'
     }
 }
 

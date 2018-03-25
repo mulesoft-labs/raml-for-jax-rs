@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>examples</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
 
     <!-- Repeating here for documentation -->
@@ -38,7 +38,7 @@
                 <plugin>
                     <groupId>org.raml.jaxrs</groupId>
                     <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
-                    <version>3.0.1-SNAPSHOT</version>
+                    <version>3.0.2-SNAPSHOT</version>
                     <executions>
                         <execution>
                             <goals>

@@ -16,6 +16,7 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'maven-publish'
 
 group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
@@ -79,6 +80,7 @@ test {
 
 // publishing
 
+
 task sourcesJar(type: Jar) {
   classifier 'sources'
   from sourceSets.main.allSource
@@ -89,6 +91,7 @@ task javadocJar(type: Jar) {
   from javadoc
 }
 
+
 artifacts {
   archives javadocJar, sourcesJar
 }
@@ -98,3 +101,31 @@ if(signingEnabled) {
     sign configurations.archives
   }
 }
+
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "https://repository-master.mulesoft.org/snapshots"
+            credentials {
+                // here Jonathan...
+                username = "${repo_user}"
+                password = "${repo_password}"
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+
+        }
+    }
+}
+
+
+

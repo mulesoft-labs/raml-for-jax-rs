@@ -72,6 +72,22 @@
                             <gradleVersion>3.5</gradleVersion>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <task>publish</task>
+                            </tasks>
+                            <jvmArgs>
+                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                            </jvmArgs>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -82,6 +98,7 @@
                         <id>default-deploy</id>
                         <phase>none</phase>
                     </execution>
+<!--
                     <execution>
                         <id>deploy</id>
                         <phase>deploy</phase>
@@ -96,6 +113,7 @@
                             <pomFile>./build/poms/pom-default.xml</pomFile>
                         </configuration>
                     </execution>
+-->
                 </executions>
             </plugin>
         </plugins>

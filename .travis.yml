@@ -6,7 +6,7 @@ before_install:
     - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import; fi
     - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
     - echo "<settings><servers><server><id>mulesoft-releases</id><username>\${env.NEXUS_USER}</username><password>\${env.NEXUS_PASSWORD}</password></server><server><id>mulesoft-snapshots</id><username>\${env.NEXUS_USER}</username><password>\${env.NEXUS_PASSWORD}</password></server><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASSWORD}</password></server></servers><profiles><profile><id>ossrh</id><activation><activeByDefault>true</activeByDefault></activation><properties><gpg.executable>\${env.GPG_EXECUTABLE}</gpg.executable><gpg.keyname>\${env.GPG_KEY_NAME}</gpg.keyname><gpg.passphrase>\${env.GPG_PASSPHRASE}</gpg.passphrase></properties></profile></profiles></settings>" > ~/settings.xml
-    - printf 'repo_user = "${env.NEXUS_USER}"\nrepo_password = "${env.NEXUS_PASSWORD}"\ngpg_executable = "${env.GPG_EXECUTABLE}"\ngpg_key_name = "${env.GPG_KEY_NAME}"\ngpg_passphrase = "${env.GPG_PASSPHRASE}"' >> raml-to-jaxrs/raml-to-jaxrs-gradle-plugin/settings.gradle
+    - printf 'repo_user = "${System.env.NEXUS_USER}"\nrepo_password = "${System.env.NEXUS_PASSWORD}"\ngpg_executable = "${System.env.GPG_EXECUTABLE}"\ngpg_key_name = "${System.env.GPG_KEY_NAME}"\ngpg_passphrase = "${System.env.GPG_PASSPHRASE}"' >> raml-to-jaxrs/raml-to-jaxrs-gradle-plugin/settings.gradle
     - cat raml-to-jaxrs/raml-to-jaxrs-gradle-plugin/settings.gradle
 
 install:

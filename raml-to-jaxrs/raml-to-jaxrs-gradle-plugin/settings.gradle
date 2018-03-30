@@ -14,5 +14,3 @@
  * language governing permissions and limitations under the License.
  */
 rootProject.name = 'raml-to-jaxrs-gradle-plugin'
-repo_user = "some_user"
-repo_password = "his password"

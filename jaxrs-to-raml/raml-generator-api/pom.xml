@@ -20,17 +20,16 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>pojo-to-raml</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-to-pojo</artifactId>
-            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-simple-emitter</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

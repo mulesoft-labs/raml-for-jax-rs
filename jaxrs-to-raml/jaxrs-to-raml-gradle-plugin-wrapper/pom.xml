@@ -41,6 +41,38 @@
                             <gradleVersion>3.5</gradleVersion>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <task>clean</task>
+                            </tasks>
+                            <jvmArgs>
+                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                            </jvmArgs>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>invoke</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <task>publish</task>
+                            </tasks>
+                            <jvmArgs>
+                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                            </jvmArgs>
+                            <gradleVersion>3.5</gradleVersion>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -73,14 +105,8 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>deploy</id>
-                        <phase>deploy</phase>
-                        <configuration>
-                            <file>./build/jaxrs-to-raml-gradle-plugin-${project.version}.jar/</file>
-                            <sources>./build/jaxrs-to-raml-gradle-plugin-${project.version}-sources.jar</sources>
-                            <javadoc>./build/jaxrs-to-raml-gradle-plugin-${project.version}-javadoc.jar</javadoc>
-                            <pomFile>./build/poms/pom-default.xml</pomFile>
-                        </configuration>
+                        <id>default-deploy</id>
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>

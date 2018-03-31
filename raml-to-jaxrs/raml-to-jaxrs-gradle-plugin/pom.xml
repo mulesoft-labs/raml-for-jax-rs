@@ -98,22 +98,6 @@
                         <id>default-deploy</id>
                         <phase>none</phase>
                     </execution>
-<!--
-                    <execution>
-                        <id>deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy-file</goal>
-                        </goals>
-                        <configuration>
-                            <url>https://repository-master.mulesoft.org/snapshots/</url>
-                            <file>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}.jar/</file>
-                            <sources>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}-sources.jar</sources>
-                            <javadoc>./build/libs/raml-to-jaxrs-gradle-plugin-${project.version}-javadoc.jar</javadoc>
-                            <pomFile>./build/poms/pom-default.xml</pomFile>
-                        </configuration>
-                    </execution>
--->
                 </executions>
             </plugin>
         </plugins>

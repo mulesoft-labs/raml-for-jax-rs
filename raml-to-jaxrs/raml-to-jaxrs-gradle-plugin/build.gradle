@@ -108,9 +108,8 @@ publishing {
             // change to point to your repo, e.g. http://my.org/repo
             url "https://repository-master.mulesoft.org/snapshots"
             credentials {
-                // here Jonathan...
-                username = "${repo_user}"
-                password = "${repo_password}"
+                username = "${System.env.NEXUS_USER}"
+                password = "${System.env.NEXUS_PASSWORD}"
             }
         }
     }

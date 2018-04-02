@@ -83,7 +83,7 @@
                                 <task>publish</task>
                             </tasks>
                             <jvmArgs>
-                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                                <jvmArg>-DartifactVersion=${project.version} -Drepo=${repo}</jvmArg>
                             </jvmArgs>
                             <gradleVersion>3.5</gradleVersion>
                         </configuration>

@@ -15,15 +15,11 @@
  */
 package org.raml.jaxrs.generator;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
+import com.google.common.io.Files;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
+import com.sun.codemodel.JCodeModel;
+import org.jsonschema2pojo.*;
 import org.jsonschema2pojo.rules.RuleFactory;
 import org.raml.jaxrs.generator.builders.AbstractTypeGenerator;
 import org.raml.jaxrs.generator.builders.BuildPhase;
@@ -31,10 +27,9 @@ import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.CodeModelTypeGenerator;
 import org.raml.jaxrs.generator.ramltypes.GType;
 
-import com.google.common.io.Files;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-import com.sun.codemodel.JCodeModel;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * Created by Jean-Philippe Belanger on 11/20/16. Just potential zeroes and ones
@@ -59,7 +54,7 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
   public void output(CodeContainer<JCodeModel> container, BuildPhase buildPhase) throws IOException {
 
     GenerationConfig config = build.getJsonMapperConfig();
-        final SchemaMapper mapper = new SchemaMapper( new RuleFactory( config, new Jackson2Annotator( config ), new SchemaStore() ),
+    final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
                                                  new SchemaGenerator());
     final JCodeModel codeModel = new JCodeModel();
 

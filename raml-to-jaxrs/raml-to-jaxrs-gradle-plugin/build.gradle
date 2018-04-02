@@ -20,6 +20,8 @@ apply plugin: 'maven-publish'
 
 group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
+repotype = System.getProperty('repo')
+
 description '''RAML JAX-RS Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
@@ -106,7 +108,7 @@ publishing {
     repositories {
         maven {
             // change to point to your repo, e.g. http://my.org/repo
-            url "https://repository-master.mulesoft.org/snapshots"
+            url "https://repository-master.mulesoft.org/${repotype}"
             credentials {
                 username = "${System.env.NEXUS_USER}"
                 password = "${System.env.NEXUS_PASSWORD}"

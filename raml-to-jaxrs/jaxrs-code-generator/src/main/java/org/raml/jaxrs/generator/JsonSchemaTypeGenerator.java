@@ -54,7 +54,16 @@ public class JsonSchemaTypeGenerator extends AbstractTypeGenerator<JCodeModel> i
   public void output(CodeContainer<JCodeModel> container, BuildPhase buildPhase) throws IOException {
 
     GenerationConfig config = build.getJsonMapperConfig();
-    final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, new Jackson2Annotator(), new SchemaStore()),
+    Jackson2Annotator annotator = new Jackson2Annotator(config);
+    Class<? extends Annotator> annotatorClass = config.getCustomAnnotator();
+    if (Jackson2Annotator.class.isAssignableFrom(annotatorClass)) {
+      try {
+        annotator = (Jackson2Annotator) annotatorClass.getConstructor(GenerationConfig.class).newInstance(config);
+      } catch (Exception err) {
+        throw new IOException(err);
+      }
+    }
+    final SchemaMapper mapper = new SchemaMapper(new RuleFactory(config, annotator, new SchemaStore()),
                                                  new SchemaGenerator());
     final JCodeModel codeModel = new JCodeModel();
 

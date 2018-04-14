@@ -27,6 +27,11 @@ import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
 import org.raml.jaxrs.generator.extension.resources.api.*;
 import org.raml.jaxrs.generator.ramltypes.*;
+import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+import org.raml.v2.api.model.v10.methods.Method;
+import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
@@ -159,7 +164,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
     MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>(), responseSpec);
 
-    createParamteter(methodSpec, gRequest);
+    createParamteter(methodSpec, gRequest, gMethod);
 
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
 
@@ -181,7 +186,26 @@ public class ResourceBuilder implements ResourceGenerator {
     }
   }
 
-  private void createParamteter(MethodSpec.Builder methodSpec, GRequest gRequest) {
+  private void createParamteter(MethodSpec.Builder methodSpec, GRequest gRequest, GMethod gMethod) {
+
+    if ("application/x-www-form-urlencoded".equals(gRequest.mediaType())) {
+
+      if (gRequest.type().implementation() instanceof ObjectTypeDeclaration) {
+
+        ObjectTypeDeclaration object = (ObjectTypeDeclaration) gRequest.type().implementation();
+        for (TypeDeclaration typeDeclaration : object.properties()) {
+
+          V10GType type =
+              build.fetchType(Names.javaTypeName((Resource) gMethod.resource().implementation(),
+                                                 (Method) gMethod.implementation(), typeDeclaration), typeDeclaration);
+          methodSpec.addParameter(ParameterSpec
+              .builder(type.defaultJavaTypeName(build.getModelPackage()), typeDeclaration.name())
+              .addAnnotation(AnnotationSpec.builder(FormParam.class).addMember("value", "$S", typeDeclaration.name()).build())
+              .build());
+        }
+      }
+      return;
+    }
 
     if (gRequest.type().name().equals("any") && "application/octet-stream".equals(gRequest.mediaType())) {
 
@@ -492,7 +516,6 @@ public class ResourceBuilder implements ResourceGenerator {
                              AnnotationSpec.builder(PathParam.class).addMember("value", "$S", parameter.name())
                                  .build())
               .build());
-
     }
 
     for (GParameter gParameter : gMethod.queryParameters()) {

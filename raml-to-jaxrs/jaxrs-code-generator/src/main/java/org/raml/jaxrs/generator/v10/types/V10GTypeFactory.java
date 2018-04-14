@@ -37,11 +37,6 @@ public class V10GTypeFactory {
                                                      response, typeDeclaration), typeDeclaration);
   }
 
-  public static V10GType createExplicitlyNamedType(String s,
-                                                   TypeDeclaration typeDeclaration) {
-    return new V10RamlToPojoGType(s, typeDeclaration);
-  }
-
   public static V10GType createInlineType(String ramlName,
                                           TypeDeclaration typeDeclaration) {
     return new V10RamlToPojoGType(ramlName, typeDeclaration);

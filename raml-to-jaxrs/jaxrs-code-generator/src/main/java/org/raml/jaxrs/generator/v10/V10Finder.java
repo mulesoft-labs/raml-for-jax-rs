@@ -96,10 +96,23 @@ public class V10Finder implements GFinder {
         continue;
       }
 
-      V10GType type =
-          createInlineFromResourcesAndSuch(Names.ramlTypeName(resource, method, typeDeclaration),
-                                           Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration);
-      listener.newTypeDeclaration(type);
+      if ("application/x-www-form-urlencoded".equals(typeDeclaration.name())) {
+
+        ObjectTypeDeclaration formParameters = (ObjectTypeDeclaration) typeDeclaration;
+        for (TypeDeclaration formParameter : formParameters.properties()) {
+
+          V10GType type =
+              createInlineFromResourcesAndSuch(Names.ramlTypeName(resource, method, formParameter),
+                                               Names.javaTypeName(resource, method, formParameter), formParameter);
+          listener.newTypeDeclaration(type);
+        }
+      } else {
+
+        V10GType type =
+            createInlineFromResourcesAndSuch(Names.ramlTypeName(resource, method, typeDeclaration),
+                                             Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration);
+        listener.newTypeDeclaration(type);
+      }
     }
 
     for (TypeDeclaration parameterTypeDeclaration : method.queryParameters()) {

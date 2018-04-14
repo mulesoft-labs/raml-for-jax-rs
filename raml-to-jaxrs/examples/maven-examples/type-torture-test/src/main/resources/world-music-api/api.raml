@@ -462,3 +462,17 @@ uses:
                         type: User
                 displayName:
                     value: "multipart/form-data"
+
+
+/urlstuff:
+  post:
+    body:
+      application/x-www-form-urlencoded:
+        type: object
+        properties:
+          paramone: string
+          paramtwo: integer
+          paramthree:
+            type: object
+            properties:
+              maaa: string

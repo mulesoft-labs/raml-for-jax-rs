@@ -26,7 +26,7 @@ public class ResourceWithFormParam {
 
   @POST
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public String getFormcd(@FormParam("parameter") String parameter) {
+  public String getFormcd(@FormParam("parameter") String parameter, @FormParam("another") int number) {
     return "";
   }
 

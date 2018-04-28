@@ -109,7 +109,7 @@ public class ResourceBuilder implements ResourceGenerator {
           }
 
           if (ramlTypeToMediaType.containsKey(gRequest.type().name())) {
-            createMethodWithBody(typeSpec, gMethod, ramlTypeToMediaType, methodName, gRequest, responseSpecs);
+            createMethodWithBody(typeSpec, gMethod, ramlTypeToMediaType, methodName, gRequest, responseSpecs, mediaTypesForMethod);
             ramlTypeToMediaType.removeAll(gRequest.type().name());
           }
         }
@@ -160,9 +160,9 @@ public class ResourceBuilder implements ResourceGenerator {
 
   private void createMethodWithBody(TypeSpec.Builder typeSpec, GMethod gMethod,
                                     Multimap<String, String> ramlTypeToMediaType, String methodName, GRequest gRequest,
-                                    Map<String, TypeSpec.Builder> responseSpec) {
+                                    Map<String, TypeSpec.Builder> responseSpec, Set<String> mediaTypesForMethod) {
 
-    MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, new HashSet<String>(), responseSpec);
+    MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpec);
 
     createParamteter(methodSpec, gRequest, gMethod);
 
@@ -632,8 +632,10 @@ public class ResourceBuilder implements ResourceGenerator {
 
     Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration == null ? null : typeDeclaration.name());
 
-    AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
-    methodSpec.addAnnotation(ann.build());
+    if (mediaTypes.size() > 0) {
+      AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
+      methodSpec.addAnnotation(ann.build());
+    }
   }
 
   private AnnotationSpec.Builder buildAnnotation(Collection<String> mediaTypes, Class<? extends Annotation> type) {

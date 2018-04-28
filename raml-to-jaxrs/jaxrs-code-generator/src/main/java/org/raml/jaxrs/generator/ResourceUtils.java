@@ -99,6 +99,11 @@ public class ResourceUtils {
   private static List<GParameter> allMatches(Set<String> seenHere, String path) {
 
     List<GParameter> allMatches = new ArrayList<>();
+
+    if (path == null) {
+      return allMatches;
+    }
+
     Matcher m = PARAM.matcher(path);
     while (m.find()) {
       final String group = m.group(1);

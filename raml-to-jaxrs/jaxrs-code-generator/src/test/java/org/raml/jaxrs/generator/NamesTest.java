@@ -26,6 +26,7 @@ import org.raml.v2.api.model.v10.system.types.RelativeUriString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -133,6 +134,18 @@ public class NamesTest {
     when(resource.resourcePath()).thenReturn("/songs/{songId}");
     when(uriParameter.name()).thenReturn("songId");
     when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter));
+    when(method.method()).thenReturn("get");
+
+    assertEquals("GetSongsBySongIdResponse", Names.responseClassName(resource, method));
+  }
+
+  @Test
+  public void buildResponseClassnameWithUndeclaredURIParam() throws Exception {
+
+    when(method.resource()).thenReturn(resource);
+    when(resource.relativePath()).thenReturn("/songs/{songId}");
+    when(resource.resourcePath()).thenReturn("/songs/{songId}");
+    when(resource.uriParameters()).thenReturn(Collections.<GParameter>emptyList());
     when(method.method()).thenReturn("get");
 
     assertEquals("GetSongsBySongIdResponse", Names.responseClassName(resource, method));

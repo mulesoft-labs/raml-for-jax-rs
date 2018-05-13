@@ -65,6 +65,7 @@ public class NamesTest {
     assertEquals("FunAllo", Names.typeName("fun allo"));
     assertEquals("FunAllo", Names.typeName("funAllo"));
     assertEquals("FunAllo", Names.typeName("FunAllo"));
+    assertEquals("Fun200Allo", Names.typeName("fun_200Allo"));
 
     assertEquals("FunAllo", Names.typeName("/FunAllo"));
 

@@ -255,7 +255,7 @@ public class Names {
 
       String friendlyName = firstOrOthers(format, i, s);
 
-      if (isDigits(left(friendlyName, 1))) {
+      if (i == 0 && isDigits(left(friendlyName, 1))) {
 
         friendlyName = "_" + friendlyName;
       }

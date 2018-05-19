@@ -417,6 +417,11 @@ uses:
 /jsonThing:
     /bar:
         get:
+          (ramltojaxrs.methods):
+            plugins:
+              - name: ramltojaxrs.throwExceptions
+                arguments: [java.lang.Exception]
+
           responses:
             200:
               (ramltojaxrs.responses):

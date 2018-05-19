@@ -58,7 +58,8 @@
                     <supportPackage>example.support</supportPackage>
                     <modelPackage>example.model</modelPackage>
                     <generateTypesWith>
-                        <value>equalsAndHashCode</value>
+                        <value>equalsAndHashCodeWithSubclasses</value>
+                        <value>throwExceptions</value>
                         <value>jerseyMultipartFormData</value>
                     </generateTypesWith>
                 </configuration>

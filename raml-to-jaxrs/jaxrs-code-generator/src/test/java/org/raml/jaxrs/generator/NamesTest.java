@@ -56,7 +56,7 @@ public class NamesTest {
   @Test
   public void buildTypeName() throws Exception {
 
-      assertEquals("_200", Names.typeName("_200"));
+    assertEquals("_200", Names.typeName("_200"));
     assertEquals("Fun", Names.typeName("/fun"));
     assertEquals("Fun", Names.typeName("/fun"));
     assertEquals("CodeBytes", Names.typeName("//code//bytes"));

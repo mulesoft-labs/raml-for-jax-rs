@@ -149,6 +149,10 @@ types:
               displayName:
                   value: subType
           uUID:
+            (ramltopojo.types):
+              plugins:
+                - name: core.changeType
+                  arguments: [ java.util.UUID ]
               type:
                   type: string
                   displayName:
@@ -272,6 +276,7 @@ uses:
   SongsLib: libraries/songs-library.raml
   ApiLib: libraries/api-library.raml
   ramltojaxrs: ramltojaxrs.raml
+  ramltopojo: ramltopojo.raml
 
 
 /mappings:

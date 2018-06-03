@@ -50,7 +50,6 @@ public class BeanLikeClassParser implements ClassParser {
         }
 
         final String badlyCasedfieldName = method.getName().substring(3);
-
         properties.add(new BeanProperty(badlyCasedfieldName, method));
       }
     }

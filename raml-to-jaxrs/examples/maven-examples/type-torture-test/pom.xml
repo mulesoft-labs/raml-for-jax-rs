@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>maven-examples</artifactId>
-        <version>3.0.2-SNAPSHOT</version>
+        <version>3.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>type-torture-test</artifactId>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.raml.jaxrs</groupId>
             <artifactId>jaxrs-code-generator</artifactId>
-            <version>3.0.2-SNAPSHOT</version>
+            <version>3.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>

@@ -11,6 +11,9 @@
     </parent>
 
     <artifactId>raml-generator-api</artifactId>
+    <properties>
+        <tools.version>1.0.2</tools.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -20,7 +23,7 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>pojo-to-raml</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${tools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.raml</groupId>
@@ -29,7 +32,7 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-simple-emitter</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${tools.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

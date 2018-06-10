@@ -11,8 +11,12 @@
     </parent>
 
     <artifactId>raml-emitter</artifactId>
+    <properties>
+            <tools.version>1.0.2</tools.version>
+    </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>org.raml.jaxrs</groupId>
             <artifactId>raml-api</artifactId>
@@ -49,7 +53,7 @@
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>pojo-to-raml</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${tools.version}</version>
         </dependency>
     </dependencies>
 </project>

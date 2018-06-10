@@ -31,6 +31,7 @@ gradle.taskGraph.whenReady { taskGraph ->
         allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
         allprojects { ext."signing.keyId" = System.getenv("GPG_KEY_NAME") }
         allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
+        allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
     }
 }
 

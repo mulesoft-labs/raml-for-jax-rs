@@ -30,7 +30,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 
         // limitations in my knowledge of gradle ?
         allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
-        allprojects { ext."signing.keyId" = System.getenv("GPG_KEY_NAME").reverse().take(8).reverse() }
+//        allprojects { ext."signing.keyId" = System.getenv("GPG_KEY_NAME").reverse().take(8).reverse() }
         allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
         allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
     }

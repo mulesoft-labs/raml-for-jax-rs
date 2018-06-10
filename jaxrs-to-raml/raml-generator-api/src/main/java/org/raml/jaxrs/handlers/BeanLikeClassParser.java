@@ -45,7 +45,7 @@ public class BeanLikeClassParser implements ClassParser {
 
       if (method.getName().startsWith("get")) {
 
-        if ( "getClass".equals(method.getName()) && method.getParameterTypes().length == 0) {
+        if ("getClass".equals(method.getName()) && method.getParameterTypes().length == 0) {
           continue;
         }
 

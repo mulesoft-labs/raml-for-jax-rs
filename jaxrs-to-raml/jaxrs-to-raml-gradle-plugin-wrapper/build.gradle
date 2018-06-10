@@ -15,7 +15,6 @@
  */
 apply plugin: 'groovy'
 apply plugin: 'maven'
-apply plugin: 'signing'
 apply plugin: 'maven-publish'
 
 group = 'org.raml.jaxrs'
@@ -25,8 +24,24 @@ description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 sourceCompatibility = '1.6'
 
 
-def signingEnabled = false //ext.'signing.secretKeyRingFile' != ''
-println 'signing: $signingEnabled'
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+
+        // limitations in my knowledge of gradle ?
+        allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
+        allprojects { ext."signing.keyId" = System.getenv("GPG_KEY_NAME") }
+        allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
+    }
+}
+
+if (System.getenv("GPG_EXECUTABLE") != null) {
+    println "signing: enabled"
+    apply plugin: 'signing'
+    signing {
+        sign configurations.archives
+    }
+}
+
 
 buildscript {
     repositories {
@@ -92,12 +107,6 @@ task javadocJar(type: Jar) {
 
 artifacts {
   archives javadocJar, sourcesJar
-}
-
-if(signingEnabled) {
-  signing {
-    sign configurations.archives
-  }
 }
 
 publishing {

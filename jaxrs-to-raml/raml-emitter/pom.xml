@@ -11,9 +11,6 @@
     </parent>
 
     <artifactId>raml-emitter</artifactId>
-    <properties>
-            <tools.version>1.0.2</tools.version>
-    </properties>
 
     <dependencies>
 

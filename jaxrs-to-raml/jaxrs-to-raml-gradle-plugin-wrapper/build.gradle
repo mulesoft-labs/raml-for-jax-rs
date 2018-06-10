@@ -35,7 +35,7 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
 }
 
-if (System.getenv("GPG_EXECUTABLE") != null) {
+if (System.getenv("sign") != null) {
     println "signing: enabled"
     apply plugin: 'signing'
     signing {

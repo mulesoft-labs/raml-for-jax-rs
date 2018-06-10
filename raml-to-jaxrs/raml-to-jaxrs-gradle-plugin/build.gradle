@@ -37,11 +37,16 @@ gradle.taskGraph.whenReady { taskGraph ->
 }
 
 
-if (System.getenv("sign") != null) {
+if (System.getenv("gradleSonatype") != null) {
     println "signing: enabled"
     apply plugin: 'signing'
+    apply plugin: 'io.codearte.nexus-staging'
     signing {
         sign configurations.archives
+    }
+    nexusStaging {
+        username = System.getenv("OSSRH_USER")
+        password = System.getenv("OSSRH_PASSWORD")
     }
 }
 
@@ -57,6 +62,7 @@ buildscript {
     dependencies {
         classpath "gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0"
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
     }
 }
 

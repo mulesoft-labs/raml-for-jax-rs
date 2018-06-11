@@ -27,3 +27,14 @@ deploy:
             repo: mulesoft-labs/raml-for-jax-rs
             tags: true
             condition: "$TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+$"
+    -
+        provider: script
+        script:
+          - cd jaxrs-to-raml/jaxrs-to-raml-gradle-plugin-wrapper; gradle -DartifactVersion=3.0.2 -DgradleSonatype=true clean install
+          - cd raml-to-jaxrs/raml-to-jaxrs-gradle-plugin; gradle -DartifactVersion=3.0.2 -DgradleSonatype=true clean install
+        skip_cleanup: true
+        on:
+            repo: mulesoft-labs/raml-for-jax-rs
+            all_branches: true
+            tags: true
+            condition: "$TRAVIS_TAG =~ ^gradle-[0-9]+.[0-9]+.[0-9]+$"

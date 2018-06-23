@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <tools.version>1.0.2</tools.version>
+        <tools.version>1.0.3-SNAPSHOT</tools.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -33,7 +33,7 @@
             <dependency>
                 <groupId>org.raml</groupId>
                 <artifactId>raml-parser-2</artifactId>
-                <version>1.0.9</version>
+                <version>1.0.22</version>
             </dependency>
             <dependency>
                 <groupId>javax.ws.rs</groupId>
@@ -121,6 +121,11 @@
         </plugins>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>3.4</version>
+                </plugin>
                 <plugin>
                     <groupId>net.revelc.code</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>

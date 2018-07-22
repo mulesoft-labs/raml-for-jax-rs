@@ -1,0 +1,38 @@
+#%RAML 1.0 Library
+
+
+types:
+    Gender:
+        enum: [male, female, other]
+    Animal:
+        type: object
+        properties:
+            animalType:
+                type: string
+            specimenName:
+                type: string
+                xml:
+                    attribute: true
+                    namespace: "foo.bar"
+            gender:
+                type: Gender
+            siblings:
+                type: Animal[]
+                xml:
+                    wrapped: true
+            mother:
+                type: Animal
+            ancestor:
+                type: Ancestor
+    Insect:
+        type: Animal
+        properties:
+            icky:
+                type: boolean
+    Invertebrate:
+        type: Animal
+        properties:
+            squishy:
+                type: boolean
+    Ancestor:
+        type: Insect | Invertebrate

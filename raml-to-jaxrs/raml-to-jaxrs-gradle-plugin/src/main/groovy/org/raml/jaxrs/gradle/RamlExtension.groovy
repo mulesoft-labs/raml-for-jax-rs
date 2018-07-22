@@ -119,7 +119,7 @@ class RamlExtension {
 	 */
 	RamlExtension(Project project) {
 		project.logger?.info "Creating RAML JAX-RS code generation extension for project ${project.name}..."
-		sourceDirectory = new File(project.getRootDir(), DEFAULT_CONFIGURATION_FILES_DIRECTORY)
+//		sourceDirectory = new File(project.getRootDir(), DEFAULT_CONFIGURATION_FILES_DIRECTORY)
 		outputDirectory = new File(project.getBuildDir(), DEFAULT_OUTPUT_DIRECTORY)
 	}
 
@@ -138,6 +138,10 @@ class RamlExtension {
 	 */
 	Collection<File> getRamlFiles() {
 		Set<File> ramlFiles = [] as Set
+
+		if ( sourceDirectory == null && sourcePaths == null ) {
+			sourceDirectory = new File(project.getRootDir(), DEFAULT_CONFIGURATION_FILES_DIRECTORY)
+		}
 
 		if (sourceDirectory) {
 			if(!sourceDirectory.isDirectory()) {

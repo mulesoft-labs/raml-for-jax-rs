@@ -2,42 +2,8 @@
 title: Humanity
 version: v1
 baseUri: https://api.github.com
-
-types:
-    Gender:
-        enum: [male, female, other]
-    Animal:
-        type: object
-        properties:
-            animalType:
-                type: string
-            specimenName:
-                type: string
-                xml:
-                    attribute: true
-                    namespace: "foo.bar"
-            gender:
-                type: Gender
-            siblings:
-                type: Animal[]
-                xml:
-                    wrapped: true
-            mother:
-                type: Animal
-            ancestor:
-                type: Ancestor
-    Insect:
-        type: Animal
-        properties:
-            icky:
-                type: boolean
-    Invertebrate:
-        type: Animal
-        properties:
-            squishy:
-                type: boolean
-    Ancestor:
-        type: Insect | Invertebrate
+uses:
+  LibraryOne: types.raml
 
 /animals:
     get:
@@ -47,7 +13,7 @@ types:
             200:
                 body:
                     application/xml:
-                        type: Animal[]
+                        type: LibraryOne.Animal[]
     /{id}:
         uriParameters:
             id: string
@@ -56,10 +22,10 @@ types:
                 200:
                     body:
                         application/xml:
-                            type: Animal
+                            type: LibraryOne.Animal
         put:
             body:
                 application/xml:
-                    type: Animal
+                    type: LibraryOne.Animal
             responses:
                 200:

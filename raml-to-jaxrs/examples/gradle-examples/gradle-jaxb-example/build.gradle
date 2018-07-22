@@ -8,7 +8,8 @@ dependencies {
 sourceSets.main.java.srcDir "$buildDir/generated"
 
 ramltojaxrs {
-    sourceDirectory = file('src/main/resources')
+
+    sourcePaths = files('src/main/resources/xml-model.raml')
     outputDirectory = new File(buildDir,'generated')
     supportPackageName = 'org.raml.test.gen'
     resourcePackageName = 'org.raml.test.res'

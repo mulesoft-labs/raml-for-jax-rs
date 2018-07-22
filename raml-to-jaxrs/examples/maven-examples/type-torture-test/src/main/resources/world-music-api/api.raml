@@ -182,7 +182,17 @@ resourceTypes:
           body:
             application/json:
               schema: <<resourcePathName|!singularize|!uppercamelcase>>
-
+  paged:
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: object
+              properties:
+                contained: <<resourceType>>
+                next: string
+                previous: string
 
 annotationTypes:
   deprecated:
@@ -278,6 +288,8 @@ uses:
   ramltojaxrs: ramltojaxrs.raml
   ramltopojo: ramltopojo.raml
 
+/paged:
+  type: {paged: {resourceType: MyValue}}
 
 /mappings:
   description: Maps stuff

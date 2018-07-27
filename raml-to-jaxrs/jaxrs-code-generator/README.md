@@ -2,6 +2,8 @@
 The generation plugins have been broken in two:  for the generation plugins related to RAML types, please
 see the [raml-to-pojo](https://github.com/mulesoft-labs/raml-java-tools/) project.
 
+The generation plugins are activated by using [RAML Annotations](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations). Annotations must be declared in the `annotationTypes` node in the root of the RAML file, and then they must annotate the corresponding nodes.
+
 For the raml-to-jaxrs annotations, they are:
 ```raml
 annotationTypes:

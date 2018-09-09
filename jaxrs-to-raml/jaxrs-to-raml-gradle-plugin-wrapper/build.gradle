@@ -23,29 +23,20 @@ description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
-
-gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.allTasks.any { it instanceof Sign }) {
-
-        // limitations in my knowledge of gradle ?
-        allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
-        allprojects { ext."signing.keyId" = "0BC1B7B9" }
-        allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
-        allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
-    }
-}
-
-if (System.getenv("gradleSonatype") != null) {
+if (System.getProperty("gradleSonatype") != null) {
     println "signing: enabled"
-    apply plugin: 'signing'
-    apply plugin: 'io.codearte.nexus-staging'
-    signing {
-        sign configurations.archives
-    }
+    //   apply plugin: 'io.codearte.nexus-staging'
     nexusStaging {
+        packageGroup = 'org.raml'
+        numberOfRetries = 20
+        delayBetweenRetriesInMillis = 4000
+
         username = System.getenv("OSSRH_USER")
         password = System.getenv("OSSRH_PASSWORD")
     }
+
+    ext."nexusUsername" = System.getenv("OSSRH_USER")
+    ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
 }
 
 
@@ -60,7 +51,7 @@ buildscript {
     dependencies {
         classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+        //   classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
     }
 }
 
@@ -71,9 +62,6 @@ ext {
 
 repositories {
     mavenLocal()
-    //if(additionalRepoUrl) {
-    //    maven { url additionalRepoUrl }
-    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
@@ -95,48 +83,48 @@ dependencies {
 
 test {
     filter {
-        includeTestsMatching '*Test'
-        includeTestsMatching '*Spec'
+        includeTestsMatching "*Test"
+        includeTestsMatching "*Spec"
     }
 }
 
 // publishing
 
-task sourcesJar(type: Jar) {
-  classifier 'sources'
-  from sourceSets.main.allSource
-}
+if ( version.endsWith("SNAPSHOT")) {
+    task sourcesJar(type: Jar) {
+        classifier 'sources'
+        from sourceSets.main.allSource
+    }
 
-task javadocJar(type: Jar) {
-  classifier 'javadoc'
-  from javadoc
-}
+    task javadocJar(type: Jar) {
+        classifier 'javadoc'
+        from javadoc
+    }
 
-artifacts {
-  archives javadocJar, sourcesJar
-}
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
 
-publishing {
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
-            credentials {
-                username = "${System.env.NEXUS_USER}"
-                password = "${System.env.NEXUS_PASSWORD}"
+    publishing {
+        repositories {
+
+            maven {
+                // change to point to your repo, e.g. http://my.org/repo
+                url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
+                credentials {
+                    username = "${System.env.NEXUS_USER}"
+                    password = "${System.env.NEXUS_PASSWORD}"
+                }
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
             }
         }
     }
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
+} else {
 
 
-            artifact sourcesJar {
-                classifier "sources"
-            }
-
-        }
-    }
 }
-

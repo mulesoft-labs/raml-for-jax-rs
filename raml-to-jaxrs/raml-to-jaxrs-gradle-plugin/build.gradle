@@ -102,12 +102,9 @@ if ( version.endsWith("SNAPSHOT")) {
         from javadoc
     }
 
-
     artifacts {
         archives javadocJar, sourcesJar
     }
-
-
 
     publishing {
         repositories {

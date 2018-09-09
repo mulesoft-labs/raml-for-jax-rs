@@ -25,18 +25,6 @@ description '''RAML JAX-RS Gradle Plug-in'''
 sourceCompatibility = '1.6'
 
 
-gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.allTasks.any { it instanceof Sign }) {
-
-        // limitations in my knowledge of gradle ?
-        allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
-        allprojects { ext."signing.keyId" = "0BC1B7B9" }
-        allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
-        allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
-    }
-}
-
-
 if (System.getProperty("gradleSonatype") != null) {
     println "signing: enabled"
     apply plugin: 'signing'
@@ -107,9 +95,21 @@ test {
 
 if ( version.endsWith("SNAPSHOT")) {
 
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.allTasks.any { it instanceof Sign }) {
+
+            // limitations in my knowledge of gradle ?
+            allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
+            allprojects { ext."signing.keyId" = "0BC1B7B9" }
+            allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
+            allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
+        }
+    }
+
     signing {
         sign configurations.archives
     }
+
     task sourcesJar(type: Jar) {
         classifier 'sources'
         from sourceSets.main.allSource

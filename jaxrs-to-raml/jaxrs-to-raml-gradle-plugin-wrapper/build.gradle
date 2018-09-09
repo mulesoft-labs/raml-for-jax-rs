@@ -24,7 +24,7 @@ description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
-//if (! version.endsWith("SNAPSHOT")) {
+if (! version.endsWith("SNAPSHOT")) {
     println "signing: enabled"
     nexusStaging {
         packageGroup = 'org.raml'
@@ -37,7 +37,7 @@ sourceCompatibility = '1.6'
 
     ext."nexusUsername" = System.getenv("OSSRH_USER")
     ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
-//}
+}
 
 
 buildscript {

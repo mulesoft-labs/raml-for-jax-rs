@@ -17,6 +17,42 @@
         <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>sonatype</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.fortasoft</groupId>
+                        <artifactId>gradle-maven-plugin</artifactId>
+                        <version>1.0.8</version>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>invoke</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <task>clean</task>
+                                        <task>install</task>
+                                        <task>uploadArchives</task>
+                                        <task>closeAndReleaseRepository</task>
+                                    </tasks>
+                                    <jvmArgs>
+                                        <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                                    </jvmArgs>
+                                    <gradleVersion>3.5</gradleVersion>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <sourceDirectory>src/main/groovy</sourceDirectory>
         <plugins>

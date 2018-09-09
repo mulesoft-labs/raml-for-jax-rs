@@ -11,6 +11,43 @@
     <artifactId>raml-to-jaxrs-gradle-plugin-wrapper</artifactId>
 
     <name>RAML JAX-RS Gradle Plugin</name>
+
+    <profiles>
+        <profile>
+            <id>sonatype</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.fortasoft</groupId>
+                        <artifactId>gradle-maven-plugin</artifactId>
+                        <version>1.0.8</version>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>invoke</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <task>clean</task>
+                                        <task>install</task>
+                                        <task>uploadArchives</task>
+                                        <task>closeAndReleaseRepository</task>
+                                    </tasks>
+                                    <jvmArgs>
+                                        <jvmArg>-DartifactVersion=${project.version}</jvmArg>
+                                    </jvmArgs>
+                                    <gradleVersion>3.5</gradleVersion>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <properties>
         <maven.install.skip>false</maven.install.skip>
         <maven.deploy.skip>false</maven.deploy.skip>

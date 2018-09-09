@@ -25,7 +25,7 @@ description '''RAML JAX-RS Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
-if (! version.endsWith("SNAPSHOT")) {
+if (System.getenv("gradleSonatype") != null) {
     println "signing: enabled"
     nexusStaging {
         packageGroup = 'org.raml'
@@ -132,7 +132,7 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allJava
 }
 
-if ( version.endsWith("SNAPSHOT")) {
+if (System.getenv("gradleSonatype") == null) {
     publishing {
         repositories {
 

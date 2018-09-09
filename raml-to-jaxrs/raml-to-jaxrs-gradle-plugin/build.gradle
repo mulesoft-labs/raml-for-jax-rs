@@ -26,7 +26,7 @@ sourceCompatibility = '1.6'
 
 if (! version.endsWith("SNAPSHOT")) {
     println "signing: enabled"
- //   apply plugin: 'io.codearte.nexus-staging'
+    apply plugin: 'com.bmuschko.nexus'
     nexusStaging {
         packageGroup = 'org.raml'
         numberOfRetries = 20
@@ -50,9 +50,9 @@ buildscript {
         }
     }
     dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
-     //   classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
     }
 }
 
@@ -90,6 +90,42 @@ test {
 }
 
 // publishing
+
+modifyPom {
+    project {
+        name 'RAML to JAXRS Gragle Plugin'
+        description 'RAML to JAXRS generator'
+        url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+        inceptionYear '2017'
+
+        scm {
+            connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+            developerConnection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+        }
+
+        scm {
+            connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0'
+            }
+        }
+
+        developers {
+            developer {
+                name 'Jean-Philippe Belanger'
+            }
+            developer {
+                name 'Jonathan Stoikovitch'
+            }
+        }
+    }
+}
 
 if ( version.endsWith("SNAPSHOT")) {
     task sourcesJar(type: Jar) {

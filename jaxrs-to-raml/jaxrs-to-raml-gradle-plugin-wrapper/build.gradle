@@ -16,6 +16,7 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'com.bmuschko.nexus'
 
 group = 'org.raml.jaxrs'
 version = System.getProperty('artifactVersion')
@@ -23,9 +24,8 @@ description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
-if (! version.endsWith("SNAPSHOT")) {
+//if (! version.endsWith("SNAPSHOT")) {
     println "signing: enabled"
-    //   apply plugin: 'io.codearte.nexus-staging'
     nexusStaging {
         packageGroup = 'org.raml'
         numberOfRetries = 20
@@ -37,7 +37,7 @@ if (! version.endsWith("SNAPSHOT")) {
 
     ext."nexusUsername" = System.getenv("OSSRH_USER")
     ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
-}
+//}
 
 
 buildscript {
@@ -90,20 +90,43 @@ test {
 
 // publishing
 
+modifyPom {
+    project {
+        name 'RAML to JAXRS Gragle Plugin'
+        description 'RAML to JAXRS generator'
+        url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+        inceptionYear '2017'
+
+        scm {
+            connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+            developerConnection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+        }
+
+        scm {
+            connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0'
+            }
+        }
+
+        developers {
+            developer {
+                name 'Jean-Philippe Belanger'
+            }
+            developer {
+                name 'Jonathan Stoikovitch'
+            }
+        }
+    }
+}
+
 if ( version.endsWith("SNAPSHOT")) {
-    task sourcesJar(type: Jar) {
-        classifier 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar) {
-        classifier 'javadoc'
-        from javadoc
-    }
-
-    artifacts {
-        archives javadocJar, sourcesJar
-    }
 
     publishing {
         repositories {

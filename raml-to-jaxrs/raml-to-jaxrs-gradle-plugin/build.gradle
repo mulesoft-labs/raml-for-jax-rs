@@ -41,9 +41,6 @@ if (System.getProperty("gradleSonatype") != null) {
     println "signing: enabled"
     apply plugin: 'signing'
     apply plugin: 'io.codearte.nexus-staging'
-    signing {
-        sign configurations.archives
-    }
     nexusStaging {
         packageGroup = 'org.raml'
         numberOfRetries = 20
@@ -80,9 +77,6 @@ ext {
 
 repositories {
     mavenLocal()
-    //if(additionalRepoUrl) {
-    //    maven { url additionalRepoUrl }
-    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
@@ -111,45 +105,41 @@ test {
 
 // publishing
 
-task sourcesJar(type: Jar) {
-  classifier 'sources'
-  from sourceSets.main.allSource
-}
+if ( version.endsWith("SNAPSHOT")) {
 
-task javadocJar(type: Jar) {
-  classifier 'javadoc'
-  from javadoc
-}
+    signing {
+        sign configurations.archives
+    }
+    task sourcesJar(type: Jar) {
+        classifier 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar) {
+        classifier 'javadoc'
+        from javadoc
+    }
 
 
-artifacts {
-  archives javadocJar, sourcesJar
-}
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
 
+    publishing {
+        repositories {
 
-
-publishing {
-    repositories {
-
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
-            credentials {
-                username = "${System.env.NEXUS_USER}"
-                password = "${System.env.NEXUS_PASSWORD}"
+            maven {
+                url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
+                credentials {
+                    username = "${System.env.NEXUS_USER}"
+                    password = "${System.env.NEXUS_PASSWORD}"
+                }
             }
         }
-    }
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-/*
-            artifact sourcesJar {
-                classifier "sources"
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
             }
-*/
-
         }
     }
 }

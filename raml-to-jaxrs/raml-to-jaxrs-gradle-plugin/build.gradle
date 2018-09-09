@@ -127,6 +127,11 @@ modifyPom {
     }
 }
 
+task sourceJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+}
+
 if ( version.endsWith("SNAPSHOT")) {
     publishing {
         repositories {

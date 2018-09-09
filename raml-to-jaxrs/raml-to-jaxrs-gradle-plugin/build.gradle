@@ -16,6 +16,7 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'com.bmuschko.nexus'
 
 group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
@@ -26,7 +27,6 @@ sourceCompatibility = '1.6'
 
 if (! version.endsWith("SNAPSHOT")) {
     println "signing: enabled"
-    apply plugin: 'com.bmuschko.nexus'
     nexusStaging {
         packageGroup = 'org.raml'
         numberOfRetries = 20

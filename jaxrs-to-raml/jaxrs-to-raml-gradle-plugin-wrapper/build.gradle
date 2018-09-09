@@ -23,7 +23,7 @@ description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
-if (System.getProperty("gradleSonatype") != null) {
+if (! version.endsWith("SNAPSHOT")) {
     println "signing: enabled"
     //   apply plugin: 'io.codearte.nexus-staging'
     nexusStaging {

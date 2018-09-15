@@ -29,6 +29,7 @@ sourceCompatibility = '1.6'
 
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.allTasks.any { it instanceof Sign }) {
+        println "signing: setting keyid"
 
         // limitations in my knowledge of gradle ?
         allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
@@ -152,7 +153,7 @@ modifyPom {
 
 task sourceJar(type: Jar) {
     classifier 'sources'
-    from sourceSets.main.allJava
+    from sourceSets.main.allSource
 }
 
 if (System.getenv("gradleSonatype") == null) {

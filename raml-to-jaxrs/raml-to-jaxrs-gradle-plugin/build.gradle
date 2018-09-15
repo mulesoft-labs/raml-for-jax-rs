@@ -18,6 +18,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'com.bmuschko.nexus'
+apply plugin: 'signing'
 
 group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
@@ -25,6 +26,17 @@ version = System.getProperty("artifactVersion")
 description '''RAML JAX-RS Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+
+        // limitations in my knowledge of gradle ?
+        allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
+        allprojects { ext."signing.keyId" = "0BC1B7B9" }
+        allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
+        allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
+    }
+}
 
 if (System.getenv("gradleSonatype") != null) {
     println "signing: enabled"

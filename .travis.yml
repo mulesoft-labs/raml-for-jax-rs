@@ -8,22 +8,15 @@ before_install:
     - echo "<settings><servers><server><id>mulesoft-releases</id><username>\${env.NEXUS_USER}</username><password>\${env.NEXUS_PASSWORD}</password></server><server><id>mulesoft-snapshots</id><username>\${env.NEXUS_USER}</username><password>\${env.NEXUS_PASSWORD}</password></server><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASSWORD}</password></server></servers><profiles><profile><id>ossrh</id><activation><activeByDefault>true</activeByDefault></activation><properties><gpg.executable>\${env.GPG_EXECUTABLE}</gpg.executable><gpg.keyname>\${env.GPG_KEY_NAME}</gpg.keyname><gpg.passphrase>\${env.GPG_PASSPHRASE}</gpg.passphrase></properties></profile></profiles></settings>" > ~/settings.xml
 
 install:
-    - mvn install --settings ~/settings.xml -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+    - echo skipping install
 
 deploy:
     -
         provider: script
-        script: mvn deploy --settings ~/settings.xml -DskipTests -Drepo=snapshots -B -U
+        script:
+          - cd raml-to-jaxrs/raml-to-jaxrs-gradle-plugin; gradle  -DartifactVersion=3.0.3 -DgradleSonatype=true clean install uploadArchives closeAndReleaseRepository --info
         skip_cleanup: true
         on:
             repo: mulesoft-labs/raml-for-jax-rs
             all_branches: true
-            condition: $TRAVIS_BRANCH =~ ^release/[0-9]+.[0-9]+.[0-9]+$
-    -
-        provider: script
-        script: mvn --settings ~/settings.xml org.codehaus.mojo:versions-maven-plugin:2.1:set -DnewVersion=$TRAVIS_TAG; mvn clean deploy --settings ~/settings.xml -DskipTests=true -Drepo=releases -B -U; mvn clean deploy --settings ~/settings.xml -Drepo=releases -DskipTests=true -Psonatype -B -U
-        skip_cleanup: true
-        on:
-            repo: mulesoft-labs/raml-for-jax-rs
-            tags: true
-            condition: "$TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+$"
+            condition: $TRAVIS_BRANCH =~ ^release/another-gradle-release$

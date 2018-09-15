@@ -87,8 +87,8 @@ ext {
 
 repositories {
     mavenLocal()
-    maven { url 'https://repository.mulesoft.org/snapshots/' }
-    maven { url 'https://repository.mulesoft.org/releases/' }
+    maven { url 'https://repository-master.mulesoft.org/snapshots/' }
+    maven { url 'https://repository-master.mulesoft.org/releases/org/raml/jaxrs/raml-for-jaxrs/' }
     mavenCentral()
 }
 

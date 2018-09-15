@@ -41,6 +41,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 
 if (System.getenv("gradleSonatype") != null) {
     println "signing: enabled"
+/*
     nexusStaging {
         packageGroup = 'org.raml'
         numberOfRetries = 20
@@ -52,6 +53,7 @@ if (System.getenv("gradleSonatype") != null) {
 
     ext."nexusUsername" = System.getenv("OSSRH_USER")
     ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
+*/
 }
 
 nexusStaging {

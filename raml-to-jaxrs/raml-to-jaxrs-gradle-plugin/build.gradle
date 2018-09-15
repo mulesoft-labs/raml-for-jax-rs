@@ -16,6 +16,7 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'com.bmuschko.nexus'
 
 group = 'org.raml.jaxrs'
@@ -38,6 +39,15 @@ if (System.getenv("gradleSonatype") != null) {
 
     ext."nexusUsername" = System.getenv("OSSRH_USER")
     ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
+}
+
+nexusStaging {
+    packageGroup = 'org.raml'
+    numberOfRetries = 20
+    delayBetweenRetriesInMillis = 4000
+
+    username = System.getenv("OSSRH_USER")
+    password = System.getenv("OSSRH_PASSWORD")
 }
 
 

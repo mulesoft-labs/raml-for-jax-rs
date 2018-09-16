@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>raml-for-jaxrs</artifactId>
-        <version>3.0.3-SNAPSHOT</version>
+        <version>3.0.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>jaxrs-to-raml</artifactId>
@@ -112,9 +112,7 @@
                 <module>jaxrs-to-raml-converter</module>
                 <module>jaxrs-to-raml-cli</module>
                 <module>jaxrs-to-raml-maven-plugin</module>
-<!--
                 <module>jaxrs-to-raml-gradle-plugin-wrapper</module>
--->
                 <module>jaxrs-test-resources</module>
                 <module>raml-api</module>
                 <module>raml-emitter</module>
@@ -131,9 +129,7 @@
         <module>jaxrs-to-raml-converter</module>
         <module>jaxrs-to-raml-cli</module>
         <module>jaxrs-to-raml-maven-plugin</module>
-<!--
         <module>jaxrs-to-raml-gradle-plugin-wrapper</module>
--->
         <module>jaxrs-test-resources</module>
         <module>raml-api</module>
         <module>raml-emitter</module>

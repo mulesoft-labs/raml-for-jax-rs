@@ -22,6 +22,12 @@ uses:
 
 Annotate the type you need to deprecate:
 ```yaml
+annotationTypes:
+  types:
+    allowedTargets: [TypeDeclaration,API]
+    properties:
+      className?:
+...
 types:
     Network:
         (ramltojaxrs.types):
@@ -37,6 +43,8 @@ types:
 ```
 
 Both the implementation and declaration will be marked `@Deprecated`
+
+[Annotations](https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#annotations) must be declared in the `annotationTypes` node in the root of the RAML file, and then they must annotate the corresponding nodes (types, properties, ...).
 
 ### Use case #2: suppressing the generation of a type
 Plugins that return `null` values suppress the generation.

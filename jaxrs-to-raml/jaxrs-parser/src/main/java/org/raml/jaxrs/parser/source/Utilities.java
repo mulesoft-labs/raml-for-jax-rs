@@ -16,13 +16,18 @@
 package org.raml.jaxrs.parser.source;
 
 import com.google.common.base.Splitter;
+import org.raml.utilities.types.Cast;
 
+import javax.lang.model.type.DeclaredType;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 class Utilities {
 
-  public static Path getSourceFileRelativePath(Class<?> declaringClass) {
+  public static Path getSourceFileRelativePath(Type type) {
+
+    Class declaringClass = Cast.toClass(type);
     Path packageRelativePath = transformIntoPath(declaringClass);
     String declaringFileName = getSourceFileName(declaringClass);
     return packageRelativePath.resolve(declaringFileName);

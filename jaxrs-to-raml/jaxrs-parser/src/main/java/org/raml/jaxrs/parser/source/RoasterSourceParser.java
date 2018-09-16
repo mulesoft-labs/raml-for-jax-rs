@@ -68,7 +68,7 @@ class RoasterSourceParser implements SourceParser {
   @Override
   public Optional<String> getDocumentationFor(Type clazz) {
 
-    Path classFileRelativePath = Utilities.getSourceFileRelativePath((Class) clazz);
+    Path classFileRelativePath = Utilities.getSourceFileRelativePath(clazz);
     Path relativeFromRoot = sourceRoot.resolve(classFileRelativePath);
 
     if (!Files.isRegularFile(relativeFromRoot)) {

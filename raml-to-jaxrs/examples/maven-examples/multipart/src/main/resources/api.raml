@@ -1,0 +1,36 @@
+#%RAML 1.0
+title: Humanity
+version: v1
+baseUri: https://api.github.com
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+  ramltopojo: ramltopojo.raml
+types:
+  User:
+    properties:
+      name: string
+/multipart:
+     post:
+        body:
+            multipart/form-data:
+                type: object
+                properties:
+                    appBundle:
+                        type:
+                            type: file
+                            displayName:
+                                value: type
+                        displayName:
+                            value: appBundle
+                    configFile:
+                        type:
+                            type: file
+                            displayName:
+                                value: type
+                        displayName:
+                            value: configFile
+                    consumed:
+                        type: User
+                displayName:
+                    value: "multipart/form-data"
+

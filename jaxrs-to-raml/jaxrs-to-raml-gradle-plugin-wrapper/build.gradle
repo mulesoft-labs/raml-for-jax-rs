@@ -16,7 +16,6 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.bmuschko.nexus'
 
 group = 'org.raml.jaxrs'
 version = System.getProperty('artifactVersion')
@@ -24,8 +23,29 @@ description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
-if (System.getenv("gradleSonatype") != null) {
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+
+        // limitations in my knowledge of gradle ?
+        allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
+        allprojects { ext."signing.keyId" = "0BC1B7B9" }
+        allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
+        allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
+    }
+}
+
+if (System.getProperty("gradleSonatype") != null) {
     println "signing: enabled"
+    apply plugin: 'signing'
+    apply plugin: 'io.codearte.nexus-staging'
+    apply plugin: 'com.bmuschko.nexus'
+
+/*
+    signing {
+        sign configurations.archives
+    }
+*/
     nexusStaging {
         packageGroup = 'org.raml'
         numberOfRetries = 20
@@ -44,6 +64,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        jcenter()
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
@@ -52,7 +73,7 @@ buildscript {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
-        //   classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
     }
 }
 
@@ -63,6 +84,9 @@ ext {
 
 repositories {
     mavenLocal()
+    //if(additionalRepoUrl) {
+    //    maven { url additionalRepoUrl }
+    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
@@ -84,17 +108,37 @@ dependencies {
 
 test {
     filter {
-        includeTestsMatching "*Test"
-        includeTestsMatching "*Spec"
+        includeTestsMatching '*Test'
+        includeTestsMatching '*Spec'
     }
 }
 
 // publishing
 
+/*
+task sourcesJar(type: Jar) {
+  classifier 'sources'
+  from sourceSets.main.allSource
+}
+*/
+
+/*
+task javadocJar(type: Jar) {
+  classifier 'javadoc'
+  from javadoc
+}
+*/
+
+/*
+artifacts {
+  archives
+}
+*/
+
 modifyPom {
     project {
-        name 'RAML to JAXRS Gragle Plugin'
-        description 'RAML to JAXRS generator'
+        name 'JAXRS to RAML Gragle Plugin'
+        description 'JAXRS to RAML generator'
         url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
         inceptionYear '2017'
 
@@ -127,33 +171,29 @@ modifyPom {
     }
 }
 
-task sourceJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allJava
-}
 
-if (System.getenv("gradleSonatype") == null) {
-
-    publishing {
-        repositories {
-
-            maven {
-                // change to point to your repo, e.g. http://my.org/repo
-                url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
-                credentials {
-                    username = "${System.env.NEXUS_USER}"
-                    password = "${System.env.NEXUS_PASSWORD}"
-                }
-            }
-        }
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact tasks.sourceJar
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
+            credentials {
+                username = "${System.env.NEXUS_USER}"
+                password = "${System.env.NEXUS_PASSWORD}"
             }
         }
     }
-} else {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
 
+/*
+            artifact sourcesJar {
+                classifier "sources"
+            }
+*/
 
+        }
+    }
 }
+

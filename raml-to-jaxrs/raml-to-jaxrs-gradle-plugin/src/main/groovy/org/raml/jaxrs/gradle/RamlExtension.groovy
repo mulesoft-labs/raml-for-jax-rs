@@ -50,13 +50,13 @@ class RamlExtension {
 	 * default is {@code Jackson 1}.
 	 * @see org.raml.jaxrs.generator.Configuration#jsonMapper
 	 */
-	String jsonMapper = AnnotationStyle.JACKSON1.name()
+	String jsonMapper = AnnotationStyle.JACKSON2.name()
 	
 	/**
 	 * Configuration parameters for JSON mapper
 	 * @see org.raml.jaxrs.generator.Configuration#jsonMapperConfiguration
 	 */	
-	Map<String, String> jsonMapperConfiguration
+	Map<String, String> jsonMapperConfiguration = new HashMap<>()
 
 	/**
 	 * The output directory that will be the target of the generated source.  The default is

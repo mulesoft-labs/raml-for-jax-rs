@@ -4,6 +4,34 @@ version: v1
 baseUri: https://api.github.com
 uses:
   LibraryOne: types.raml
+types:
+    Gaaaakh: |
+        {
+          "type": "object",
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "id": "urn:jsonschema:com:zzzzz:advisor:domain:entities:Model",
+          "additionalProperties": false,
+          "properties": {
+          "pageNumber": {
+          "type": "integer"
+          },
+          "pageSize": {
+          "type": "integer"
+          },
+          "numberOfPages": {
+          "type": "integer"
+          },
+          "totalNumberOfElements": {
+          "type": "integer"
+          },
+          "page": {
+          "type": "array",
+          "items": {
+          "$schema": "model.res.json"
+          }
+          }
+          }
+        }
 
 /animals:
     get:

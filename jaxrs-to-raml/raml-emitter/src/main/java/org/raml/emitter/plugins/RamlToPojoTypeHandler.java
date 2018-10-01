@@ -41,8 +41,6 @@ public class RamlToPojoTypeHandler implements TypeHandler {
   @Override
   public TypeBuilder writeType(final TypeRegistry registry, RamlEntity type) {
 
-    final Class cls = Cast.toClass(type.getType());
-
     AdjusterFactory factory = new AdjusterFactory() {
 
       @Override

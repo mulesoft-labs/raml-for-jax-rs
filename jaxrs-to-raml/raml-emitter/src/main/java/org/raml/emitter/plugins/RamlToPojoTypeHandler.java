@@ -53,7 +53,7 @@ public class RamlToPojoTypeHandler implements TypeHandler {
 
     final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
 
-    TypeBuilder name = pojoToRaml.name(cls);
+    TypeBuilder name = pojoToRaml.name(type.getType());
     registry.registerType(name.id(), type);
     return name;
   }

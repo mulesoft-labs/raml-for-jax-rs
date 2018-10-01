@@ -44,4 +44,11 @@ public class ResourceWithParameterizedTypes {
     return null;
   }
 
+  @Path("returns")
+  @Produces("application/json")
+  @GET
+  public List<ProducedValue> getStuff() {
+
+    return null;
+  }
 }

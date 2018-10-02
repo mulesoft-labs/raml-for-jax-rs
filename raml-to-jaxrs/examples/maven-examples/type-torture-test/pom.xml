@@ -51,6 +51,14 @@
                 <groupId>org.raml.jaxrs</groupId>
                 <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
                 <version>${project.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>javax.servlet-api</artifactId>
+                        <version>4.0.0</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/world-music-api/api.raml</ramlFile>
                     <resourcePackage>example.torture</resourcePackage>
@@ -60,6 +68,7 @@
                         <value>equalsAndHashCodeWithSubclasses</value>
                         <value>throwExceptions</value>
                         <value>jerseyMultipartFormData</value>
+                        <value>simpleResponseObjects</value>
                     </generateTypesWith>
                 </configuration>
             </plugin>

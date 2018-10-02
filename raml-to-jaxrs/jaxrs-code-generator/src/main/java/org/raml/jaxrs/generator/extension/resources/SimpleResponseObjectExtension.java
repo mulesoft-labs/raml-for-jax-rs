@@ -96,7 +96,7 @@ public class SimpleResponseObjectExtension implements GlobalResourceExtension {
 
   @Override
   public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
-    return null;
+    return typeSpec;
   }
 
   @Override

@@ -57,7 +57,7 @@ public class SimpleResponseObjectExtension implements GlobalResourceExtension {
 
     if (method.responses().size() == 0) {
 
-      return methodSpec;
+      return methodSpec.returns(Void.class);
     }
 
     methodSpec.addParameter(ParameterSpec.builder(ClassName.get(HttpServletResponse.class), "httpServletResponse")
@@ -77,7 +77,12 @@ public class SimpleResponseObjectExtension implements GlobalResourceExtension {
 
       methodSpec.returns(ClassName.get(Void.class));
     } else {
-      methodSpec.returns(response.body().get(0).type().defaultJavaTypeName(context.getModelPackage()));
+      if (response.body().size() == 0) {
+
+        return methodSpec.returns(Void.class);
+      } else {
+        methodSpec.returns(response.body().get(0).type().defaultJavaTypeName(context.getModelPackage()));
+      }
     }
 
     return methodSpec;

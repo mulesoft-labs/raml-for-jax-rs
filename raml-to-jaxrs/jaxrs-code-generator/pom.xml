@@ -22,6 +22,11 @@
             <artifactId>raml-to-pojo</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.raml</groupId>
+            <artifactId>raml-builder</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.squareup</groupId>
             <artifactId>javapoet</artifactId>
         </dependency>

@@ -57,6 +57,7 @@
                     <modelPackage>example.model</modelPackage>
                     <generateTypesWith>
                         <value>jerseyMultipartFormData</value>
+                        <value>jackson2</value>
                     </generateTypesWith>
                 </configuration>
             </plugin>

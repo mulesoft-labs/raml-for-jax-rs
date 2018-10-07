@@ -26,6 +26,7 @@ import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
@@ -39,26 +40,29 @@ public class DefaultResponseHandler implements ResponseHandler {
   }
 
   @Override
-  public void writeResponses(TypeRegistry typeRegistry, RamlResourceMethod method, TypeSelector selector,
+  public void writeResponses(TypeRegistry typeRegistry, Collection<RamlResourceMethod> methods, TypeSelector selector,
                              MethodBuilder methodBuilder)
       throws IOException {
-
-    if (!method.getProducedType().isPresent()) {
-      return;
-    }
 
     // We have no clue what the error responses are, however, we want to generate
     // well formed raml, so we pick one.
     ResponseBuilder responseBuilder = ResponseBuilder.response(200);
+    for (RamlResourceMethod method : methods) {
 
-    for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
+      if (!method.getProducedType().isPresent()) {
+        continue;
+      }
 
-      BodyBuilder body = BodyBuilder.body(producedMediaType.toStringRepresentation());
-      responseBuilder.withBodies(body);
+      for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
 
-      TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-      TypeBuilder type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
-      body.ofType(type);
+        BodyBuilder body = BodyBuilder.body(producedMediaType.toStringRepresentation());
+        responseBuilder.withBodies(body);
+
+        TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
+        TypeBuilder type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
+        body.ofType(type);
+      }
+
     }
 
     methodBuilder.withResponses(responseBuilder);

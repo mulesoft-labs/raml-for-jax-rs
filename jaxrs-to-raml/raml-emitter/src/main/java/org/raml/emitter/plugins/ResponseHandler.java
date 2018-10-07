@@ -21,6 +21,7 @@ import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Created by Jean-Philippe Belanger on 3/25/17. Just potential zeroes and ones
@@ -29,6 +30,7 @@ public interface ResponseHandler {
 
   int handlesResponses(RamlResourceMethod method);
 
-  void writeResponses(TypeRegistry typeRegistry, RamlResourceMethod method, TypeSelector selector, MethodBuilder methodBuilder)
+  void writeResponses(TypeRegistry typeRegistry, Collection<RamlResourceMethod> method, TypeSelector selector,
+                      MethodBuilder methodBuilder)
       throws IOException;
 }

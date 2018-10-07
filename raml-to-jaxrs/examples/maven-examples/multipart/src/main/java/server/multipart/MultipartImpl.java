@@ -15,6 +15,7 @@
  */
 package server.multipart;
 
+import example.model.User;
 import example.resource.Multipart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
@@ -27,8 +28,10 @@ public class MultipartImpl implements Multipart {
 
   @Override
   public void postMultipart(InputStream appBundleStream, FormDataContentDisposition appBundleDisposition,
-                            InputStream configFileStream, FormDataContentDisposition configFileDisposition) {
+                            InputStream configFileStream, FormDataContentDisposition configFileDisposition, User consumed,
+                            boolean heyBool) {
 
     System.err.println("Triggered");
   }
+
 }

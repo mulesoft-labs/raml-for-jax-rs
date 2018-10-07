@@ -88,7 +88,7 @@ public class JerseyMultipartFormDataResourceExtension implements GlobalResourceE
 
         } else {
           TypeName typeName = context.fetchRamlToPojoBuilder().fetchType(property.type(), property);
-          methodSpec.addParameter(
+          newMethod.addParameter(
               ParameterSpec
                   .builder(typeName, property.name())
                   .addAnnotation(AnnotationSpec

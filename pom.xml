@@ -180,6 +180,11 @@
                 <artifactId>maven-shared-utils</artifactId>
                 <version>3.2.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.raml</groupId>
+                <artifactId>raml-builder</artifactId>
+                <version>${tools.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

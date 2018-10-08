@@ -142,7 +142,7 @@ public class ModelEmitter implements Emitter {
     for (String key : methods.keySet()) {
 
       MethodBuilder methodBuilder = MethodBuilder.method(key);
-      writeMethod(resourceBuilder, methods.get(key), methodBuilder);
+      writeMethod(methods.get(key), methodBuilder);
       resourceBuilder.with(methodBuilder);
     }
 
@@ -152,7 +152,7 @@ public class ModelEmitter implements Emitter {
     return resourceBuilder;
   }
 
-  private void writeMethod(ResourceBuilder resourceBuilder, Collection<RamlResourceMethod> methods, MethodBuilder methodBuilder)
+  private void writeMethod(Collection<RamlResourceMethod> methods, MethodBuilder methodBuilder)
       throws IOException {
 
     for (RamlResourceMethod method : methods) {

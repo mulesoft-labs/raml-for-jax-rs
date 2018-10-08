@@ -16,7 +16,8 @@
 package org.raml.emitter;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Ordering;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.raml.api.*;
 import org.raml.builder.*;
 import org.raml.emitter.plugins.DefaultResponseHandler;
@@ -39,8 +40,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.raml.builder.BodyBuilder.body;
 import static org.raml.builder.NodeBuilders.property;
@@ -54,7 +54,8 @@ public class ModelEmitter implements Emitter {
 
   private TypeRegistry typeRegistry = new TypeRegistry();
 
-  private final List<ResponseHandler> responseHandlerAlternatives = Arrays.<ResponseHandler>asList(new DefaultResponseHandler());
+  private final List<ResponseHandler> responseHandlerAlternatives = Collections
+      .<ResponseHandler>singletonList(new DefaultResponseHandler());
   private List<RamlSupportedAnnotation> supportedAnnotations;
   private String topPackage;
 
@@ -114,75 +115,95 @@ public class ModelEmitter implements Emitter {
 
     for (RamlResource ramlResource : modelApi.getResources()) {
 
-      ResourceBuilder resourceBuilder = ResourceBuilder.resource(ramlResource.getPath());
-      for (RamlResourceMethod method : ramlResource.getMethods()) {
-        writeMethod(resourceBuilder, method);
-      }
-
-      for (RamlResource child : ramlResource.getChildren()) {
-        resources(resourceBuilder, child);
-      }
+      ResourceBuilder resourceBuilder = handleResource(ramlResource);
 
       builder.with(resourceBuilder);
     }
   }
 
+
   private void resources(ResourceBuilder builder, RamlResource ramlResource) throws IOException {
 
+    ResourceBuilder resourceBuilder = handleResource(ramlResource);
+
+    builder.with(resourceBuilder);
+  }
+
+
+  private ResourceBuilder handleResource(RamlResource ramlResource) throws IOException {
     ResourceBuilder resourceBuilder = ResourceBuilder.resource(ramlResource.getPath());
+    Multimap<String, RamlResourceMethod> methods = ArrayListMultimap.create();
+
     for (RamlResourceMethod method : ramlResource.getMethods()) {
-      writeMethod(resourceBuilder, method);
+      String key = method.getHttpMethod();
+      methods.put(key, method);
+    }
+
+    for (String key : methods.keySet()) {
+
+      MethodBuilder methodBuilder = MethodBuilder.method(key);
+      writeMethod(methods.get(key), methodBuilder);
+      resourceBuilder.with(methodBuilder);
     }
 
     for (RamlResource child : ramlResource.getChildren()) {
       resources(resourceBuilder, child);
     }
-
-    builder.with(resourceBuilder);
+    return resourceBuilder;
   }
 
-  private void writeMethod(ResourceBuilder resourceBuilder, RamlResourceMethod method) throws IOException {
+  private void writeMethod(Collection<RamlResourceMethod> methods, MethodBuilder methodBuilder)
+      throws IOException {
 
-    MethodBuilder methodBuilder = MethodBuilder.method(method.getHttpMethod());
+    for (RamlResourceMethod method : methods) {
+      ModelEmitterAnnotations.annotate(supportedAnnotations, method, methodBuilder);
 
-    ModelEmitterAnnotations.annotate(supportedAnnotations, method, methodBuilder);
+      Optional<String> description = method.getDescription();
+      if (description.isPresent() && !description.get().isEmpty()) {
 
-    Optional<String> description = method.getDescription();
-    if (description.isPresent() && !description.get().isEmpty()) {
+        methodBuilder.with(property("description", description.get()));
+      }
 
-      methodBuilder.with(property("description", description.get()));
-    }
+      if (!method.getConsumedMediaTypes().isEmpty()
+          && (method.getConsumedType().isPresent() || !method.getMultiFormDataParameter().isEmpty() || !method
+              .getFormParameters()
+              .isEmpty())) {
 
-    if (!method.getConsumedMediaTypes().isEmpty()
-        && (method.getConsumedType().isPresent() || !method.getMultiFormDataParameter().isEmpty() || !method.getFormParameters()
-            .isEmpty())) {
+        for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
 
-      for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
+          BodyBuilder body = body(ramlMediaType.toStringRepresentation());
+          methodBuilder.withBodies(body);
 
-        BodyBuilder body = body(ramlMediaType.toStringRepresentation());
-        methodBuilder.withBodies(body);
-
-        if (ramlMediaType.toStringRepresentation().equals("multipart/form-data")) {
+          if (ramlMediaType.toStringRepresentation().equals("multipart/form-data")) {
 
 
-          writeMultiPartFormData(method, body);
-        } else {
-          if (ramlMediaType.toStringRepresentation().equals("application/x-www-form-urlencoded")) {
-
-            writeFormParam(method, body);
+            writeMultiPartFormData(method, body);
           } else {
-            Type type = method.getConsumedType().get().getType();
+            if (ramlMediaType.toStringRepresentation().equals("application/x-www-form-urlencoded")) {
 
-            TypeHandler typeHandler = pickTypeHandler(type);
-            body.ofType(typeHandler.writeType(typeRegistry, method.getConsumedType().get()));
+              writeFormParam(method, body);
+            } else {
+              Type type = method.getConsumedType().get().getType();
+
+              TypeHandler typeHandler = pickTypeHandler(type);
+              body.ofType(typeHandler.writeType(typeRegistry, method.getConsumedType().get()));
+            }
           }
-        }
 
+        }
+      }
+
+
+      if (!method.getHeaderParameters().isEmpty()) {
+        writeHeaderParameters(method.getHeaderParameters(), methodBuilder);
+      }
+
+      if (!method.getQueryParameters().isEmpty()) {
+        writeQueryParameters(method.getQueryParameters(), methodBuilder);
       }
     }
 
-    ResponseHandler handler = pickResponseHandler(method);
-
+    ResponseHandler handler = pickResponseHandler();
     TypeSelector selector = new TypeSelector() {
 
       @Override
@@ -190,23 +211,8 @@ public class ModelEmitter implements Emitter {
         return pickTypeHandler(method.getProducedType().get().getType());
       }
     };
+    handler.writeResponses(typeRegistry, methods, selector, methodBuilder);
 
-
-    if (!method.getProducedMediaTypes().isEmpty()) {
-
-      handler.writeResponses(typeRegistry, method, selector, methodBuilder);
-    }
-
-    if (!method.getHeaderParameters().isEmpty()) {
-      writeHeaderParameters(method.getHeaderParameters(), methodBuilder);
-    }
-
-    if (!method.getQueryParameters().isEmpty()) {
-      writeQueryParameters(method.getQueryParameters(), methodBuilder);
-    }
-
-
-    resourceBuilder.with(methodBuilder);
   }
 
 
@@ -233,17 +239,9 @@ public class ModelEmitter implements Emitter {
 
   }
 
-  private ResponseHandler pickResponseHandler(final RamlResourceMethod method) {
+  private ResponseHandler pickResponseHandler() {
 
-    Ordering<ResponseHandler> bodies = new Ordering<ResponseHandler>() {
-
-      @Override
-      public int compare(ResponseHandler left, ResponseHandler right) {
-        return left.handlesResponses(method) - right.handlesResponses(method);
-      }
-    };
-
-    return bodies.max(this.responseHandlerAlternatives);
+    return responseHandlerAlternatives.get(0);
   }
 
   private void writeFormParam(RamlResourceMethod method, BodyBuilder body) throws IOException {

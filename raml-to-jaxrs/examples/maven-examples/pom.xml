@@ -32,7 +32,6 @@
         <module>features</module>
         <module>references</module>
         <module>type-torture-test</module>
-        <module>multipart</module>
     </modules>
     <build>
         <pluginManagement>

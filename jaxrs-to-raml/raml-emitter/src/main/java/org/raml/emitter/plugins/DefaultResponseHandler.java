@@ -46,13 +46,17 @@ public class DefaultResponseHandler implements ResponseHandler {
 
     // We have no clue what the error responses are, however, we want to generate
     // well formed raml, so we pick one.
-    ResponseBuilder responseBuilder = ResponseBuilder.response(200);
+    ResponseBuilder responseBuilder = null;
     for (RamlResourceMethod method : methods) {
 
       if (!method.getProducedType().isPresent()) {
         continue;
       }
 
+      if (responseBuilder == null) {
+
+        responseBuilder = ResponseBuilder.response(200);
+      }
       for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
 
         BodyBuilder body = BodyBuilder.body(producedMediaType.toStringRepresentation());
@@ -65,7 +69,9 @@ public class DefaultResponseHandler implements ResponseHandler {
 
     }
 
-    methodBuilder.withResponses(responseBuilder);
+    if (responseBuilder != null) {
+      methodBuilder.withResponses(responseBuilder);
+    }
   }
 
 }

@@ -53,11 +53,12 @@ public class DefaultResponseHandler implements ResponseHandler {
         continue;
       }
 
-      if (responseBuilder == null) {
-
-        responseBuilder = ResponseBuilder.response(200);
-      }
       for (RamlMediaType producedMediaType : method.getProducedMediaTypes()) {
+
+        if (responseBuilder == null) {
+
+          responseBuilder = ResponseBuilder.response(200);
+        }
 
         BodyBuilder body = BodyBuilder.body(producedMediaType.toStringRepresentation());
         responseBuilder.withBodies(body);

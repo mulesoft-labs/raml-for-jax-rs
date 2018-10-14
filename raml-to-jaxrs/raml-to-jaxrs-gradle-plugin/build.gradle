@@ -59,6 +59,42 @@ if (System.getProperty("gradleSonatype") != null) {
 
     ext."nexusUsername" = System.getenv("OSSRH_USER")
     ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
+    modifyPom {
+        project {
+            name 'RAML to JAXRS Gragle Plugin'
+            description 'RAML to JAXRS generator'
+            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+            inceptionYear '2017'
+
+            scm {
+                connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+                developerConnection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+            }
+
+            scm {
+                connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+            }
+
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0'
+                }
+            }
+
+            developers {
+                developer {
+                    name 'Jean-Philippe Belanger'
+                }
+                developer {
+                    name 'Jonathan Stoikovitch'
+                }
+            }
+        }
+    }
+
 }
 
 
@@ -97,6 +133,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
+    compile "com.sun.codemodel:codemodel:2.6"
     compile "org.raml.jaxrs:jaxrs-code-generator:" + version
     compile 'commons-io:commons-io:2.4'
 
@@ -137,41 +174,6 @@ artifacts {
 }
 */
 
-modifyPom {
-    project {
-        name 'RAML to JAXRS Gragle Plugin'
-        description 'RAML to JAXRS generator'
-        url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-        inceptionYear '2017'
-
-        scm {
-            connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-            developerConnection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-        }
-
-        scm {
-            connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-        }
-
-        licenses {
-            license {
-                name 'The Apache Software License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0'
-            }
-        }
-
-        developers {
-            developer {
-                name 'Jean-Philippe Belanger'
-            }
-            developer {
-                name 'Jonathan Stoikovitch'
-            }
-        }
-    }
-}
 
 
     publishing {

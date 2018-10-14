@@ -16,7 +16,6 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.bmuschko.nexus'
 
 group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
@@ -25,8 +24,30 @@ description '''RAML JAX-RS Gradle Plug-in'''
 
 sourceCompatibility = '1.6'
 
-if (System.getenv("gradleSonatype") != null) {
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.allTasks.any { it instanceof Sign }) {
+
+        // limitations in my knowledge of gradle ?
+        allprojects { ext."signing.gnupg.executable" = System.getenv("GPG_EXECUTABLE") }
+        allprojects { ext."signing.keyId" = "0BC1B7B9" }
+        allprojects { ext."signing.password" = System.getenv("GPG_PASSPHRASE") }
+        allprojects { ext."signing.secretKeyRingFile" = System.getenv("HOME") + "/.gnupg/secring.gpg" }
+    }
+}
+
+
+if (System.getProperty("gradleSonatype") != null) {
     println "signing: enabled"
+    apply plugin: 'signing'
+    apply plugin: 'io.codearte.nexus-staging'
+    apply plugin: 'com.bmuschko.nexus'
+
+/*
+    signing {
+        sign configurations.archives
+    }
+*/
     nexusStaging {
         packageGroup = 'org.raml'
         numberOfRetries = 20
@@ -45,6 +66,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        jcenter()
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
@@ -53,6 +75,7 @@ buildscript {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
     }
 }
 
@@ -63,6 +86,9 @@ ext {
 
 repositories {
     mavenLocal()
+    //if(additionalRepoUrl) {
+    //    maven { url additionalRepoUrl }
+    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
@@ -71,7 +97,6 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile "com.sun.codemodel:codemodel:2.6"
     compile "org.raml.jaxrs:jaxrs-code-generator:" + version
     compile 'commons-io:commons-io:2.4'
 
@@ -91,6 +116,26 @@ test {
 }
 
 // publishing
+
+/*
+task sourcesJar(type: Jar) {
+  classifier 'sources'
+  from sourceSets.main.allSource
+}
+*/
+
+/*
+task javadocJar(type: Jar) {
+  classifier 'javadoc'
+  from javadoc
+}
+*/
+
+/*
+artifacts {
+  archives
+}
+*/
 
 modifyPom {
     project {
@@ -128,15 +173,9 @@ modifyPom {
     }
 }
 
-task sourceJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allJava
-}
 
-if (System.getenv("gradleSonatype") == null) {
     publishing {
         repositories {
-
             maven {
                 // change to point to your repo, e.g. http://my.org/repo
                 url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
@@ -149,12 +188,14 @@ if (System.getenv("gradleSonatype") == null) {
         publications {
             mavenJava(MavenPublication) {
                 from components.java
-                artifact tasks.sourceJar
+
+/*
+            artifact sourcesJar {
+                classifier "sources"
             }
+*/
+
         }
     }
-} else {
-
-
 }
 

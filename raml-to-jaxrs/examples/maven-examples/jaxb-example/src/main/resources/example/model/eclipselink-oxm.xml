@@ -6,5 +6,6 @@
     <java-types>
         <java-type name="example.model.AnimalImpl" super-type="example.model.Animal" />
         <java-type name="example.model.InsectImpl" super-type="example.model.Insect" />
+        <java-type name="example.model.AncestorImpl" super-type="example.model.Ancestor" />
     </java-types>
 </xml-bindings>

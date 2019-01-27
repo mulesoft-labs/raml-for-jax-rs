@@ -15,17 +15,22 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GRequest;
-import org.raml.jaxrs.generator.ramltypes.GResource;
-import org.raml.jaxrs.generator.ramltypes.GResponse;
+import org.raml.jaxrs.generator.ramltypes.*;
+import org.raml.jaxrs.generator.v10.V10GMethod;
+import org.raml.ramltopojo.extensions.jsr303.AnnotationAdder;
+import org.raml.ramltopojo.extensions.jsr303.FacetValidation;
+import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
-import javax.validation.Valid;
+import javax.annotation.Nullable;
 
 /**
  * Created. There, you have it.
@@ -58,12 +63,22 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
 
     builder.addModifiers(spec.modifiers);
 
-    for (ParameterSpec parameter : spec.parameters) {
+    for (final ParameterSpec parameter : spec.parameters) {
 
-      if (!(parameter.type.isPrimitive() || parameter.type.isBoxedPrimitive() || parameter.type.withoutAnnotations().toString()
-          .equals("java.lang.String"))) {
-        builder.addParameter(parameter.toBuilder().addAnnotation(Valid.class).build());
+      final ParameterSpec.Builder parameterBuilder = parameter.toBuilder();
+      Optional<GParameter> declaration = getTypeDeclarationForName((V10GMethod) method, parameter.name);
+      if (declaration.isPresent()) {
+        FacetValidation.addAnnotations((TypeDeclaration) declaration.get().implementation(), new AnnotationAdder() {
+
+          @Override
+          public void addAnnotation(AnnotationSpec spec) {
+            parameterBuilder.addAnnotation(spec);
+          }
+        });
+
+        builder.addParameter(parameterBuilder.build());
       } else {
+
         builder.addParameter(parameter);
       }
     }
@@ -75,6 +90,16 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
     builder.addTypeVariables(spec.typeVariables);
     builder.varargs(spec.varargs);
     return builder;
+  }
+
+  Optional<GParameter> getTypeDeclarationForName(V10GMethod request, final String name) {
+    return FluentIterable.from(request.queryParameters()).firstMatch(new Predicate<GParameter>() {
+
+      @Override
+      public boolean apply(@Nullable GParameter gParameter) {
+        return gParameter.name().equals(name);
+      }
+    });
   }
 
   @Override

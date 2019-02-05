@@ -18,10 +18,7 @@ package org.raml.jaxrs.generator.extension.resources;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.ramltypes.*;
@@ -69,6 +66,11 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
       Optional<GParameter> declaration = getTypeDeclarationForName((V10GMethod) method, parameter.name);
       if (declaration.isPresent()) {
         FacetValidation.addAnnotations((TypeDeclaration) declaration.get().implementation(), new AnnotationAdder() {
+
+          @Override
+          public TypeName typeName() {
+            return parameterBuilder.build().type;
+          }
 
           @Override
           public void addAnnotation(AnnotationSpec spec) {

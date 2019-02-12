@@ -81,7 +81,9 @@ types:
             - name: ramltojaxrs.javadoc
         description: getme
         queryParameters:
-            id: HumanId
+            id:
+              type: HumanId
+              required: false
         responses:
           200:
             (ramltojaxrs.responses):
@@ -118,7 +120,9 @@ types:
             id: string
         get:
             queryParameters:
-                type: string
+                userType:
+                  type: string
+                  maxLength: 18
             responses:
                 200:
                     body:

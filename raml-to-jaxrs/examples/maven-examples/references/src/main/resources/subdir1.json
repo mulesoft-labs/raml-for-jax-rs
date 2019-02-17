@@ -4,7 +4,7 @@
     "type": "object",
     "properties": {
         "subdir2": {
-            "$ref": "java:subdir/subdir2.json"
+            "$ref": "subdir/subdir2.json"
         }
     }
 }

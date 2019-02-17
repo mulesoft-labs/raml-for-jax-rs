@@ -31,6 +31,10 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 /**
@@ -311,9 +315,20 @@ public class V10Finder implements GFinder {
       try {
         Files.write(schemaType.schema(), new File(currentBuild.getSchemaRepository(), schemaType.name()),
                     Charset.defaultCharset());
+
       } catch (IOException e) {
         throw new GenerationException("while writing schemas", e);
       }
     }
+
+    if (currentBuild.shouldCopySchemas()) {
+      try {
+        FileCopy.fromTo(currentBuild.getRamlDirectory(), currentBuild.getSchemaRepository());
+      } catch (IOException e) {
+
+        throw new GenerationException("while copying schemas", e);
+      }
+    }
+
   }
 }

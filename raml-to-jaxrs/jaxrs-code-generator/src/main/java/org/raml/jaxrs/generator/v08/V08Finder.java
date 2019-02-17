@@ -69,6 +69,16 @@ public class V08Finder implements GFinder {
         throw new GenerationException("while writing schemas", e);
       }
     }
+
+    if (currentBuild.shouldCopySchemas()) {
+      try {
+        FileCopy.fromTo(currentBuild.getRamlDirectory(), currentBuild.getSchemaRepository());
+      } catch (IOException e) {
+
+        throw new GenerationException("while copying schemas", e);
+      }
+    }
+
   }
 
   private void goThroughSchemas(List<GlobalSchema> schemas) {

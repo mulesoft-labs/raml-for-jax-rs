@@ -39,6 +39,7 @@ public class Configuration {
 
   private Class<GlobalResourceExtension> defaultCreationExtension;
   private Class<GlobalResourceExtension> defaultFinishExtension;
+  private boolean copySchemas;
 
 
   public void setupBuild(CurrentBuild build) {
@@ -137,5 +138,13 @@ public class Configuration {
 
   public Class<GlobalResourceExtension> getDefaultFinishExtension() {
     return defaultFinishExtension;
+  }
+
+  public boolean getCopySchemas() {
+    return copySchemas;
+  }
+
+  public void setCopySchemas(boolean copySchemas) {
+    this.copySchemas = copySchemas;
   }
 }

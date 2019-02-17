@@ -35,7 +35,7 @@ public class V10GResourceTest {
 
     Api api = RamlV10.buildApiV10(this, "resource-simple.raml");
     GAbstractionFactory fac = new GAbstractionFactory();
-    V10GResource gr = new V10GResource(new CurrentBuild(api, null), fac, api.resources().get(0));
+    V10GResource gr = new V10GResource(new CurrentBuild(api, null, null), fac, api.resources().get(0));
     GRequest req = gr.methods().get(0).body().get(0);
     assertEquals("application/json", req.mediaType());
     assertEquals("ObjectBase", req.type().type());
@@ -47,7 +47,7 @@ public class V10GResourceTest {
 
     Api api = RamlV10.buildApiV10(this, "resource-extending-request.raml");
     GAbstractionFactory fac = new GAbstractionFactory();
-    V10GResource gr = new V10GResource(new CurrentBuild(api, null), fac, api.resources().get(0));
+    V10GResource gr = new V10GResource(new CurrentBuild(api, null, null), fac, api.resources().get(0));
     GRequest req = gr.methods().get(0).body().get(0);
     assertEquals("application/json", req.mediaType());
     assertEquals("ObjectBase", req.type().type());
@@ -60,7 +60,7 @@ public class V10GResourceTest {
 
     Api api = RamlV10.buildApiV10(this, "resource-response-simple.raml");
     GAbstractionFactory fac = new GAbstractionFactory();
-    V10GResource gr = new V10GResource(new CurrentBuild(api, null), fac, api.resources().get(0));
+    V10GResource gr = new V10GResource(new CurrentBuild(api, null, null), fac, api.resources().get(0));
     GResponseType resp = gr.methods().get(0).responses().get(0).body().get(0);
     assertEquals("application/json", resp.mediaType());
     assertEquals("ObjectBase", resp.type().type());
@@ -72,7 +72,7 @@ public class V10GResourceTest {
 
     Api api = RamlV10.buildApiV10(this, "resource-response-extending.raml");
     GAbstractionFactory fac = new GAbstractionFactory();
-    V10GResource gr = new V10GResource(new CurrentBuild(api, null), fac, api.resources().get(0));
+    V10GResource gr = new V10GResource(new CurrentBuild(api, null, null), fac, api.resources().get(0));
     GResponseType req = gr.methods().get(0).responses().get(0).body().get(0);
     assertEquals("application/json", req.mediaType());
     assertEquals("ObjectBase", req.type().type());

@@ -60,6 +60,7 @@ public class CurrentBuild {
 
   private final Api api;
   private ExtensionManager extensionManager;
+  private final File ramlDirectory;
 
   private final List<ResourceGenerator> resources = new ArrayList<>();
   private final Map<String, TypeGenerator> builtTypes = new ConcurrentHashMap<>();
@@ -79,11 +80,17 @@ public class CurrentBuild {
 
   private RamlToPojo ramlToPojo;
 
-  public CurrentBuild(Api api, ExtensionManager extensionManager) {
+  public CurrentBuild(Api api, ExtensionManager extensionManager, File ramlDirectory) {
 
     this.api = api;
     this.extensionManager = extensionManager;
+    this.ramlDirectory = ramlDirectory;
     this.configuration = Configuration.defaultConfiguration();
+  }
+
+
+  public File getRamlDirectory() {
+    return ramlDirectory;
   }
 
   public RamlToPojo fetchRamlToPojoBuilder() {
@@ -544,5 +551,9 @@ public class CurrentBuild {
     V10RamlToPojoGType type = new V10RamlToPojoGType(typeDeclaration);
     type.setJavaType(typeName);
     return type;
+  }
+
+  public boolean shouldCopySchemas() {
+    return configuration.getCopySchemas();
   }
 }

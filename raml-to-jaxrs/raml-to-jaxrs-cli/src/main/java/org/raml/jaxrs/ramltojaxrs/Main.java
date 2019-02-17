@@ -42,6 +42,7 @@ public class Main {
     options.addOption("g", "generate-types-with", true, "generate types with plugins (jackson, gson, jaxb, javadoc, jsr303)");
     options.addOption(Option.builder("r").required().longOpt("resource-package").hasArg().desc("resource package").build());
     options.addOption(Option.builder("d").required().longOpt("directory").hasArg().desc("generation directory").build());
+    options.addOption(Option.builder("c").longOpt("copy-schemas").build());
 
     try {
 
@@ -52,6 +53,7 @@ public class Main {
       String resourceDir = command.getOptionValue("r");
       String directory = command.getOptionValue("d");
       String extensions = command.getOptionValue("g");
+      boolean shouldCopySchemas = command.hasOption("c");
       Optional<String> jsonMapper = Optional.fromNullable(command.getOptionValue("j"));
 
       List<String> ramlFiles = command.getArgList();
@@ -60,6 +62,7 @@ public class Main {
       configuration.setModelPackage(modelDir);
       configuration.setResourcePackage(resourceDir);
       configuration.setSupportPackage(supportDir);
+      configuration.setCopySchemas(shouldCopySchemas);
       configuration.setOutputDirectory(new File(directory));
       configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.or("jackson2").toUpperCase()));
 

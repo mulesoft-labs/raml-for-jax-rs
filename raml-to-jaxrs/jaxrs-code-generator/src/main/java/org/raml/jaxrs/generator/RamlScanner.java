@@ -54,21 +54,21 @@ public class RamlScanner {
     }
 
     if (result.isVersion08() && result.getApiV08() != null) {
-      handle(result.getApiV08());
+      handleRamlFile(result.getApiV08(), ramlDirectory);
       return;
     }
 
     if (result.isVersion10() && result.getApiV10() != null) {
-      handle(result.getApiV10());
+      handleRamlFile(result.getApiV10(), ramlDirectory);
     } else {
       throw new GenerationException("RAML file is neither v10 nor v08 api file");
     }
   }
 
-  public void handle(org.raml.v2.api.model.v10.api.Api api) throws IOException {
+  public void handleRamlFile(org.raml.v2.api.model.v10.api.Api api, File ramlDirectory) throws IOException {
 
     CurrentBuild build =
-        new CurrentBuild(api, ExtensionManager.createExtensionManager());
+        new CurrentBuild(api, ExtensionManager.createExtensionManager(), ramlDirectory);
 
     configuration.setupBuild(build);
     build.constructClasses(new V10Finder(build, api));
@@ -85,12 +85,12 @@ public class RamlScanner {
   }
 
 
-  public void handle(org.raml.v2.api.model.v08.api.Api api) throws IOException {
+  public void handleRamlFile(org.raml.v2.api.model.v08.api.Api api, File ramlDirectory) throws IOException {
 
     GAbstractionFactory factory = new GAbstractionFactory();
     V08TypeRegistry registry = new V08TypeRegistry();
     V08Finder typeFinder = new V08Finder(api, factory, registry);
-    CurrentBuild build = new CurrentBuild(null, ExtensionManager.createExtensionManager());
+    CurrentBuild build = new CurrentBuild(null, ExtensionManager.createExtensionManager(), ramlDirectory);
 
     configuration.setupBuild(build);
 

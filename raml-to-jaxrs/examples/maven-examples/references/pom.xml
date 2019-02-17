@@ -81,6 +81,7 @@
                 <configuration>
                     <ramlFile>${project.build.resources[0].directory}/api.raml</ramlFile>
                     <resourcePackage>example.references</resourcePackage>
+                    <copySchemas>true</copySchemas>
                 </configuration>
             </plugin>
             <plugin>

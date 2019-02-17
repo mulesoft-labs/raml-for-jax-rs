@@ -9,6 +9,7 @@ types:
   fieldError: !include schemas/fieldError.json
   dr: !include schemas/dr/dr.json
   msg: !include schemas/message/msg.json
+  subdir1: !include subdir1.json
 
 
 
@@ -30,3 +31,8 @@ types:
       200:
         body:
           application/json:
+/subdir:
+  post:
+    body:
+      application/json:
+        schema: subdir1

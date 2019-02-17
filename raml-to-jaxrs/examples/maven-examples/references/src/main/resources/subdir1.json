@@ -1,0 +1,10 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "subdir1",
+    "type": "object",
+    "properties": {
+        "subdir2": {
+            "$ref": "java:subdir/subdir2.json"
+        }
+    }
+}

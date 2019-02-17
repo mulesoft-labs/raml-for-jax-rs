@@ -98,6 +98,8 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   @Parameter(property = "supportPackage")
   private String supportPackage;
 
+  @Parameter(property = "copySchemas")
+  private boolean copySchemas;
 
   /**
    * Whether to empty the output directory before generation occurs, to clear out all source files that have been generated
@@ -145,6 +147,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   private String[] typeExtensions;
 
 
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (skip) {
@@ -174,6 +177,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
 
     try {
       configuration.setModelPackage(modelPackage);
+      configuration.setCopySchemas(copySchemas);
       configuration.setResourcePackage(resourcePackage);
       configuration.setSupportPackage(supportPackage);
       configuration.setOutputDirectory(outputDirectory);

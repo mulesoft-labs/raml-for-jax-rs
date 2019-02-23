@@ -96,21 +96,30 @@ public class ResourceUtilsTest {
   @Test
   public void accumulateImplicitParameter() throws Exception {
 
+    when(one.name()).thenReturn("one");
+
     when(resource.relativePath()).thenReturn("/fun/{id}");
-    when(resource.uriParameters()).thenReturn(Collections.<GParameter>emptyList());
+    when(resource.uriParameters()).thenReturn(Collections.singletonList(one));
 
     List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
 
     assertEquals(1, parameters.size());
-    assertEquals("id", parameters.get(0).name());
+    assertEquals("one", parameters.get(0).name());
   }
 
   @Test
   public void accumulateImplicitUriParametersFromParent() throws Exception {
 
-    when(resource.parentResource()).thenReturn(topResource);
+    when(one.name()).thenReturn("id");
+    when(two.name()).thenReturn("color");
+    when(three.name()).thenReturn("goo");
+
     when(topResource.relativePath()).thenReturn("/fun/{id}/{color}");
+    when(topResource.uriParameters()).thenReturn(Arrays.asList(one, two));
+
+    when(resource.parentResource()).thenReturn(topResource);
     when(resource.relativePath()).thenReturn("/{goo}");
+    when(resource.uriParameters()).thenReturn(Collections.singletonList(three));
 
     List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
 
@@ -123,8 +132,8 @@ public class ResourceUtilsTest {
   @Test
   public void accumulateDeclaredLater() throws Exception {
 
-    when(resource.parentResource()).thenReturn(topResource);
     when(topResource.relativePath()).thenReturn("/fun/{id}");
+    when(resource.parentResource()).thenReturn(topResource);
     when(resource.relativePath()).thenReturn("/fun");
     when(one.name()).thenReturn("id");
     when(resource.uriParameters()).thenReturn(Collections.singletonList(one));

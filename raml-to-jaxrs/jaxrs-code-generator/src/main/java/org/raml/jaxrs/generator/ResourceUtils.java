@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -61,22 +62,27 @@ public class ResourceUtils {
 
   }
 
-  private static final Pattern PARAM = Pattern.compile(".*?\\{([^}]+?)\\}");
-
   public static List<GParameter> accumulateUriParameters(GResource resource) {
 
     Set<String> seenHere = extractSeen(new HashSet<String>(), resource);
 
     List<GParameter> parameters = new ArrayList<>();
-    parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters())
-        .append(allMatches(seenHere, resource.relativePath())).toList()));
+    parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters()).toList()));
 
     while (resource.parentResource() != null) {
 
       resource = resource.parentResource();
-      seenHere = extractSeen(seenHere, resource);
-      parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters())
-          .append(allMatches(seenHere, resource.relativePath())).toList()));
+      Set<String> seenInParent = extractSeen(seenHere, resource);
+      final Set<String> finalSeenHere = seenHere;
+      parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters()).filter(new Predicate<GParameter>() {
+
+        @Override
+        public boolean apply(@Nullable GParameter gParameter) {
+          return !finalSeenHere.contains(gParameter.name());
+        }
+      }).toList()));
+
+      seenHere = seenInParent;
     }
 
     Collections.reverse(parameters);
@@ -96,119 +102,4 @@ public class ResourceUtils {
         }).append(seen).toSet();
   }
 
-  private static List<GParameter> allMatches(Set<String> seenHere, String path) {
-
-    List<GParameter> allMatches = new ArrayList<>();
-
-    if (path == null) {
-      return allMatches;
-    }
-
-    Matcher m = PARAM.matcher(path);
-    while (m.find()) {
-      final String group = m.group(1);
-      if (!seenHere.contains(group)) {
-        allMatches.add(new ImplicitStringGParameter(group));
-      }
-    }
-
-    return allMatches;
-  }
-
-  private static class ImplicitStringGParameter implements GParameter {
-
-    private final String group;
-
-    public ImplicitStringGParameter(String group) {
-      this.group = group;
-    }
-
-    @Override
-    public String defaultValue() {
-      return null;
-    }
-
-    @Override
-    public String name() {
-      return group;
-    }
-
-    @Override
-    public GType type() {
-      return new GType() {
-
-        @Override
-        public String type() {
-          return "string";
-        }
-
-        @Override
-        public String name() {
-          return "string";
-        }
-
-        @Override
-        public TypeName defaultJavaTypeName(String pack) {
-          return ClassName.get(String.class);
-        }
-
-        @Override
-        public boolean isJson() {
-          return false;
-        }
-
-        @Override
-        public boolean isXml() {
-          return false;
-        }
-
-        @Override
-        public boolean isArray() {
-          return false;
-        }
-
-        @Override
-        public boolean isEnum() {
-          return false;
-        }
-
-        @Override
-        public boolean isScalar() {
-          return true;
-        }
-
-        @Override
-        public String schema() {
-          return null;
-        }
-
-        @Override
-        public GType arrayContents() {
-          return null;
-        }
-
-        @Override
-        public void construct(CurrentBuild currentBuild, GObjectType objectType) {
-
-        }
-
-        @Override
-        public void setJavaType(TypeName generatedJavaType) {
-
-        }
-
-        @Override
-        public Object implementation() {
-          return null;
-        }
-
-      };
-    }
-
-    @Override
-    public Object implementation() {
-      return null;
-    }
-
-  }
 }

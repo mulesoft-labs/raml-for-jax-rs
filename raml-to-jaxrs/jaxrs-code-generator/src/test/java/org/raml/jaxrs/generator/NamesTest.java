@@ -143,10 +143,12 @@ public class NamesTest {
   @Test
   public void buildResponseClassnameWithUndeclaredURIParam() throws Exception {
 
+    when(uriParameter.name()).thenReturn("songId");
+
     when(method.resource()).thenReturn(resource);
     when(resource.relativePath()).thenReturn("/songs/{songId}");
     when(resource.resourcePath()).thenReturn("/songs/{songId}");
-    when(resource.uriParameters()).thenReturn(Collections.<GParameter>emptyList());
+    when(resource.uriParameters()).thenReturn(Collections.singletonList(uriParameter));
     when(method.method()).thenReturn("get");
 
     assertEquals("GetSongsBySongIdResponse", Names.responseClassName(resource, method));

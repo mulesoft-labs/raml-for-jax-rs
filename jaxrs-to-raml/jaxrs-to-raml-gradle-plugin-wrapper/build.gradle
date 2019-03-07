@@ -169,6 +169,7 @@ publishing {
             }
         }
     }
+/*
    pom {
         name = 'JAXRS to RAML Gragle Plugin'
         description = 'JAXRS to RAML generator'
@@ -195,6 +196,7 @@ publishing {
             }
         }
     }
+*/
 
     publications {
         mavenJava(MavenPublication) {

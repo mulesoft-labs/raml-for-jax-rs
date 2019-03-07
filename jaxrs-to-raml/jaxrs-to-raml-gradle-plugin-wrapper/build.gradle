@@ -61,38 +61,50 @@ if (System.getProperty("gradleSonatype") != null) {
     ext."nexusUsername" = System.getenv("OSSRH_USER")
     ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
 
-    modifyPom {
-        project {
-            name 'JAXRS to RAML Gragle Plugin'
-            description 'JAXRS to RAML generator'
-            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-            inceptionYear '2017'
-
-            scm {
-                connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-                developerConnection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-            }
-
-            scm {
-                connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-            }
-
-            licenses {
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0'
+    publishing {
+        repositories {
+            maven {
+                // change to point to your repo, e.g. http://my.org/repo
+                url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                credentials {
+                    username = "${System.env.NEXUS_USER}"
+                    password = "${System.env.NEXUS_PASSWORD}"
                 }
             }
+        }
 
-            developers {
-                developer {
-                    name 'Jean-Philippe Belanger'
+        pom {
+            name = 'JAXRS to RAML Gragle Plugin'
+            description = 'JAXRS to RAML generator'
+
+            project {
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
                 }
-                developer {
-                    name 'Jonathan Stoikovitch'
+
+                scm {
+                    connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                    url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+                    developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
                 }
+
+                developers {
+                    developer {
+                        name = 'Jean-Philippe Belanger'
+                    }
+                    developer {
+                        name = 'Jonathan Stoikovitch'
+                    }
+                }
+            }
+        }
+
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
             }
         }
     }
@@ -202,7 +214,9 @@ test {
     }
 }
 
-// publishing
+signing {
+    sign publishing.publications.mavenJava
+}
 
 
 

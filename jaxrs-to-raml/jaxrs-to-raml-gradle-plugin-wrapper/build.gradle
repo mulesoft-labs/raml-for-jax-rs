@@ -169,34 +169,35 @@ publishing {
             }
         }
     }
-/*
-   pom {
-        name = 'JAXRS to RAML Gragle Plugin'
-        description = 'JAXRS to RAML generator'
 
-        scm {
-            connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-            url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-            developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-        }
+    pom {
+        name = 'RAML to JAXRS Gragle Plugin'
+        description = 'RAML to JAXRS generator'
 
-        licenses {
-            license {
-                name = 'The Apache Software License, Version 2.0'
-                url = 'http://www.apache.org/licenses/LICENSE-2.0'
+        project {
+            licenses {
+                license {
+                    name = 'The Apache License, Version 2.0'
+                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
             }
-        }
 
-        developers {
-            developer {
-                name = 'Jean-Philippe Belanger'
+            scm {
+                connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+                developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
             }
-            developer {
-                name = 'Jonathan Stoikovitch'
+
+            developers {
+                developer {
+                    name = 'Jean-Philippe Belanger'
+                }
+                developer {
+                    name = 'Jonathan Stoikovitch'
+                }
             }
         }
     }
-*/
 
     publications {
         mavenJava(MavenPublication) {

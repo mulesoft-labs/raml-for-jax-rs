@@ -41,6 +41,7 @@ if (System.getProperty("gradleSonatype") != null) {
     println "signing: enabled"
     apply plugin: 'signing'
     apply plugin: 'io.codearte.nexus-staging'
+    apply plugin: 'de.marcphilipp.nexus-publish'
     apply plugin: 'com.bmuschko.nexus'
 
 /*
@@ -55,6 +56,13 @@ if (System.getProperty("gradleSonatype") != null) {
 
         username = System.getenv("OSSRH_USER")
         password = System.getenv("OSSRH_PASSWORD")
+    }
+
+    nexusPublishing {
+        packageGroup = rootProject.nexusStaging.packageGroup
+        stagingProfileId = rootProject.nexusStaging.stagingProfileId
+        username = rootProject.nexusStaging.username
+        password = rootProject.nexusStaging.password
     }
 
     ext."nexusUsername" = System.getenv("OSSRH_USER")
@@ -152,51 +160,21 @@ test {
     }
 }
 
-// publishing
-
-/*
-task sourcesJar(type: Jar) {
-  classifier 'sources'
-  from sourceSets.main.allSource
-}
-*/
-
-/*
-task javadocJar(type: Jar) {
-  classifier 'javadoc'
-  from javadoc
-}
-*/
-
-/*
-artifacts {
-  archives
-}
-*/
-
-
-
-    publishing {
-        repositories {
-            maven {
-                // change to point to your repo, e.g. http://my.org/repo
-                url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
-                credentials {
-                    username = "${System.env.NEXUS_USER}"
-                    password = "${System.env.NEXUS_PASSWORD}"
-                }
+publishing {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
+            credentials {
+                username = "${System.env.NEXUS_USER}"
+                password = "${System.env.NEXUS_PASSWORD}"
             }
         }
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
+    }
 
-/*
-            artifact sourcesJar {
-                classifier "sources"
-            }
-*/
-
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
         }
     }
 }

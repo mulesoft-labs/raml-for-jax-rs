@@ -44,7 +44,7 @@
                                         <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                                         <jvmArg>-DgradleSonatype=true</jvmArg>
                                     </jvmArgs>
-                                    <gradleVersion>3.5</gradleVersion>
+                                    <gradleVersion>4.10</gradleVersion>
                                 </configuration>
                             </execution>
                         </executions>

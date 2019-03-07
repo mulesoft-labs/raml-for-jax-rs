@@ -33,7 +33,9 @@
                                         <task>clean</task>
                                         <task>install</task>
                                         <task>publishToNexus</task>
+<!--
                                         <task>closeAndReleaseRepository</task>
+-->
                                     </tasks>
                                     <jvmArgs>
                                         <jvmArg>-DartifactVersion=${project.version}</jvmArg>

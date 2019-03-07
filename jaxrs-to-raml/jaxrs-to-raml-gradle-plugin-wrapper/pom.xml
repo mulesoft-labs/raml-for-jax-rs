@@ -75,7 +75,7 @@
                             <tasks>
                                 <task>install</task>
                             </tasks>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -91,7 +91,7 @@
                             <jvmArgs>
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -107,7 +107,7 @@
                             <jvmArgs>
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10</gradleVersion>
                         </configuration>
                     </execution>
                 </executions>

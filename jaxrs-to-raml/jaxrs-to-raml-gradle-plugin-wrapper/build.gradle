@@ -97,6 +97,55 @@ if (System.getProperty("gradleSonatype") != null) {
         }
     }
 
+} else {
+
+    publishing {
+        repositories {
+            maven {
+                // change to point to your repo, e.g. http://my.org/repo
+                url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
+                credentials {
+                    username = "${System.env.NEXUS_USER}"
+                    password = "${System.env.NEXUS_PASSWORD}"
+                }
+            }
+        }
+
+        pom {
+            name = 'JAXRS to RAML Gragle Plugin'
+            description = 'JAXRS to RAML generator'
+
+            project {
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                    url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+                    developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                }
+
+                developers {
+                    developer {
+                        name = 'Jean-Philippe Belanger'
+                    }
+                    developer {
+                        name = 'Jonathan Stoikovitch'
+                    }
+                }
+            }
+        }
+
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
 }
 
 
@@ -158,51 +207,4 @@ test {
 
 
 
-publishing {
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
-            credentials {
-                username = "${System.env.NEXUS_USER}"
-                password = "${System.env.NEXUS_PASSWORD}"
-            }
-        }
-    }
-
-    pom {
-        name = 'JAXRS to RAML Gragle Plugin'
-        description = 'JAXRS to RAML generator'
-
-        project {
-            licenses {
-                license {
-                    name = 'The Apache License, Version 2.0'
-                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                }
-            }
-
-            scm {
-                connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-                developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-            }
-
-            developers {
-                developer {
-                    name = 'Jean-Philippe Belanger'
-                }
-                developer {
-                    name = 'Jonathan Stoikovitch'
-                }
-            }
-        }
-    }
-
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-}
 

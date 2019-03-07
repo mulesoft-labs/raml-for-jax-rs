@@ -44,7 +44,7 @@
                                         <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                                         <jvmArg>-DgradleSonatype=true</jvmArg>
                                     </jvmArgs>
-                                    <gradleVersion>4.10</gradleVersion>
+                                    <gradleVersion>4.10.3</gradleVersion>
                                 </configuration>
                             </execution>
                         </executions>
@@ -75,7 +75,7 @@
                             <tasks>
                                 <task>install</task>
                             </tasks>
-                            <gradleVersion>4.10</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -91,7 +91,7 @@
                             <jvmArgs>
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
-                            <gradleVersion>4.10</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -107,7 +107,7 @@
                             <jvmArgs>
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
-                            <gradleVersion>4.10</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                 </executions>

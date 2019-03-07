@@ -18,6 +18,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+
 group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
 
@@ -67,41 +68,6 @@ if (System.getProperty("gradleSonatype") != null) {
 
     ext."nexusUsername" = System.getenv("OSSRH_USER")
     ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
-    modifyPom {
-        project {
-            name 'RAML to JAXRS Gragle Plugin'
-            description 'RAML to JAXRS generator'
-            url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-            inceptionYear '2017'
-
-            scm {
-                connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-                developerConnection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-            }
-
-            scm {
-                connection 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                url 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-            }
-
-            licenses {
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0'
-                }
-            }
-
-            developers {
-                developer {
-                    name 'Jean-Philippe Belanger'
-                }
-                developer {
-                    name 'Jonathan Stoikovitch'
-                }
-            }
-        }
-    }
 
     publishing {
         repositories {
@@ -219,7 +185,8 @@ buildscript {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.20.0"
+        classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.2.0'
     }
 }
 

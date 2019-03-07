@@ -171,8 +171,8 @@ publishing {
     }
 
     pom {
-        name = 'RAML to JAXRS Gragle Plugin'
-        description = 'RAML to JAXRS generator'
+        name = 'JAXRS to RAML Gragle Plugin'
+        description = 'JAXRS to RAML generator'
 
         project {
             licenses {

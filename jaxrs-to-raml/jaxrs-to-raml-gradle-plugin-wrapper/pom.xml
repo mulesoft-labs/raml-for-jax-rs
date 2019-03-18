@@ -36,15 +36,18 @@
                                 <configuration>
                                     <tasks>
                                         <task>clean</task>
-                                        <task>install</task>
-                                        <task>uploadArchives</task>
+                                        <task>build</task>
+                                        <task>publishToNexus</task>
                                         <task>closeAndReleaseRepository</task>
                                     </tasks>
+                                    <args>
+                                        <arg>-b</arg>
+                                        <arg>build-sonatype.gradle</arg>
+                                    </args>
                                     <jvmArgs>
                                         <jvmArg>-DartifactVersion=${project.version}</jvmArg>
-                                        <jvmArg>-DgradleSonatype=true</jvmArg>
                                     </jvmArgs>
-                                    <gradleVersion>3.5</gradleVersion>
+                                    <gradleVersion>4.10.3</gradleVersion>
                                 </configuration>
                             </execution>
                         </executions>
@@ -73,9 +76,9 @@
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
                             <tasks>
-                                <task>install</task>
+                                <task>build</task>
                             </tasks>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -91,7 +94,7 @@
                             <jvmArgs>
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -107,7 +110,7 @@
                             <jvmArgs>
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                 </executions>

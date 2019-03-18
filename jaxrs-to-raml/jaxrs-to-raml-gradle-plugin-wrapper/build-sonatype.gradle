@@ -1,7 +1,7 @@
 /**
  * Copyright 2013-2015 (c) MuleSoft, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -9,11 +9,10 @@
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-
 buildscript {
     repositories {
         mavenLocal()
@@ -30,19 +29,21 @@ buildscript {
         classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.2.0'
     }
 }
-
 plugins {
     id 'groovy'
     id 'maven-publish'
     id 'signing'
+    id 'io.codearte.nexus-staging' version '0.20.0'
+    id 'de.marcphilipp.nexus-publish' version '0.2.0'
+
 }
 
 
 group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
-description 'RAML JAX-RS Gradle Plug-in'
+description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
-def targetRepository =  "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
+def targetRepository =  "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.allTasks.any { it instanceof Sign }) {
@@ -77,20 +78,18 @@ task javadocJar(type: Jar) {
     classifier = 'javadoc'
 }
 
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'raml-to-jaxrs-gradle-plugin'
+            artifactId = 'jaxrs-to-raml-gradle-plugin'
             from components.java
             artifact sourcesJar
             artifact javadocJar
             pom {
-                name = 'RAML to JAXRS Gradle Plugin'
-                description = 'RAML to JAXRS generator'
+                name = 'JAXRS to RAML Gradle Plugin'
+                description = 'JAXRS to RAML generator'
                 inceptionYear = "2017"
                 url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -121,12 +120,33 @@ publishing {
             // change to point to your repo, e.g. http://my.org/repo
             url targetRepository
             credentials {
-                username = "${System.env.NEXUS_USER}"
-                password = "${System.env.NEXUS_PASSWORD}"
+                username = System.getenv("OSSRH_USER").toString()
+                password = System.getenv("OSSRH_PASSWORD").toString()
             }
         }
     }
 }
+
+nexusStaging {
+    packageGroup = 'org.raml'
+    numberOfRetries = 20
+    delayBetweenRetriesInMillis = 3000
+    username = System.getenv("OSSRH_USER").toString()
+    password = System.getenv("OSSRH_PASSWORD").toString()
+}
+
+nexusPublishing {
+    packageGroup = rootProject.nexusStaging.packageGroup
+    stagingProfileId = rootProject.nexusStaging.stagingProfileId
+    username = System.getenv("OSSRH_USER").toString()
+    password = System.getenv("OSSRH_PASSWORD").toString()
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+
 
 repositories {
     mavenLocal()
@@ -138,8 +158,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile "com.sun.codemodel:codemodel:2.6"
-    compile "org.raml.jaxrs:jaxrs-code-generator:" + version
+    compile 'org.raml.jaxrs:jaxrs-to-raml-core:' + version
     compile 'commons-io:commons-io:2.4'
 
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
@@ -152,7 +171,6 @@ dependencies {
 
 
 
-signing {
-    sign publishing.publications.mavenJava
-}
+
+
 

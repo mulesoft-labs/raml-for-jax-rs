@@ -38,7 +38,7 @@
                                         <task>clean</task>
                                         <task>build</task>
                                         <task>publishToMavenLocal</task>
-                                        <task>publishToNexus</task>
+                                        <task>install</task>
                                         <task>closeAndReleaseRepository</task>
                                     </tasks>
                                     <args>

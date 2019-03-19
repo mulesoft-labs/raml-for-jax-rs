@@ -37,7 +37,7 @@
                                 <task>ramltojaxrs</task>
                                 <task>compileJava</task>
                             </tasks>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -53,7 +53,7 @@
                             <tasks>
                                 <task>clean</task>
                             </tasks>
-                            <gradleVersion>3.5</gradleVersion>
+                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                 </executions>

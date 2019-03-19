@@ -32,6 +32,7 @@
                                     <tasks>
                                         <task>clean</task>
                                         <task>build</task>
+                                        <task>publishToMavenLocal</task>
                                         <task>publishToNexus</task>
                                         <task>closeAndReleaseRepository</task>
                                     </tasks>
@@ -90,6 +91,7 @@
                         <configuration>
                             <tasks>
                                 <task>build</task>
+                                <task>publishToMavenLocal</task>
                             </tasks>
                             <jvmArgs>
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>

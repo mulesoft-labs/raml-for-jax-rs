@@ -37,6 +37,7 @@
                                     <tasks>
                                         <task>clean</task>
                                         <task>build</task>
+                                        <task>publishToMavenLocal</task>
                                         <task>publishToNexus</task>
                                         <task>closeAndReleaseRepository</task>
                                     </tasks>
@@ -77,6 +78,7 @@
                             </jvmArgs>
                             <tasks>
                                 <task>build</task>
+                                <task>publishToMavenLocal</task>
                             </tasks>
                             <gradleVersion>4.10.3</gradleVersion>
                         </configuration>

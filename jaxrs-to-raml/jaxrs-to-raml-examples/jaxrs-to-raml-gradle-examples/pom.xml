@@ -35,7 +35,7 @@
                                 <jvmArg>-DartifactVersion=${project.version}</jvmArg>
                             </jvmArgs>
                             <tasks>
-                                <task>compileJava</task>
+                                <task>build</task>
                                 <task>jaxrstoraml</task>
                             </tasks>
                             <gradleVersion>4.10.3</gradleVersion>

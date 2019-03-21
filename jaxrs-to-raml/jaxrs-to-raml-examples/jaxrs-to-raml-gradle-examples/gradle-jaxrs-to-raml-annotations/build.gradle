@@ -8,7 +8,7 @@ dependencies {
 }
 
 jaxrstoraml {
-    inputPath = file('build/classes/main')
+    inputPath = file('build/classes/java/main')
     outputDirectory = file('build')
     sourceDirectory = file('src/main/java')
     ramlFileName = file('build/api.raml')

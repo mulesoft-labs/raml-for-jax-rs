@@ -150,9 +150,3 @@ dependencies {
     testCompile 'org.objenesis:objenesis:1.2'
 }
 
-
-
-signing {
-    sign publishing.publications.mavenJava
-}
-

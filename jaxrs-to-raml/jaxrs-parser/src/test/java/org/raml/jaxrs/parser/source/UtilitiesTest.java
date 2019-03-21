@@ -49,6 +49,6 @@ public class UtilitiesTest {
   private static String perOS(String aPath) {
 
     return System.getProperty("os.name")
-            .contains("Windows") ? aPath.replaceAll("/", "\\\\") : aPath;
+        .contains("Windows") ? aPath.replaceAll("/", "\\\\") : aPath;
   }
 }

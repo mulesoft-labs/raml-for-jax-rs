@@ -5,6 +5,8 @@ dependencies {
     compile 'org.raml.jaxrs:raml-generator-api:' + version
     compile 'org.raml.jaxrs:raml-emitter:' + version
     compile 'org.glassfish.jersey.containers:jersey-container-jetty-http:2.24'
+    compile 'com.sun.xml.bind:jaxb-impl:2.1.6'
+    compile 'javax.xml.bind:jaxb-api:2.1'
 }
 
 jaxrstoraml {

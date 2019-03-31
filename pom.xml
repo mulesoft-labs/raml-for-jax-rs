@@ -31,9 +31,9 @@
                 <version>${tools.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.github.deduper</groupId>
-                <artifactId>pojo-to-raml-jdk12</artifactId>
-                <version>1.0.6</version>
+                <groupId>org.raml</groupId>
+                <artifactId>pojo-to-raml</artifactId>
+                <version>${tools.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.raml</groupId>

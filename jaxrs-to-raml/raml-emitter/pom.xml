@@ -47,8 +47,8 @@
             <artifactId>raml-simple-emitter</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.github.deduper</groupId>
-            <artifactId>pojo-to-raml-jdk12</artifactId>
+            <groupId>org.raml</groupId>
+            <artifactId>pojo-to-raml</artifactId>
         </dependency>
     </dependencies>
 </project>

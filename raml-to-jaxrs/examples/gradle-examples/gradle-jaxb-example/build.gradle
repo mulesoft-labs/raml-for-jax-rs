@@ -1,5 +1,5 @@
 dependencies {
-    compile 'org.raml.jaxrs:jaxrs-code-generator:' + System.getProperty('artifactVersion')
+    compile "org.raml.jaxrs:jaxrs-code-generator:" + System.getProperty('artifactVersion')
     compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
     compile 'org.glassfish.jersey.media:jersey-media-moxy:2.24'
     compile 'org.glassfish.jersey.containers:jersey-container-jetty-http:2.24'

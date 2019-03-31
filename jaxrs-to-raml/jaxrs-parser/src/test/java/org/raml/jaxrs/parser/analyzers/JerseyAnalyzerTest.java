@@ -57,7 +57,7 @@ public class JerseyAnalyzerTest {
     };
   }
 
-  private <T> FluentIterable<T> supplyingNTimes(int noItems, Supplier<? extends T> supplier) {
+  private <T> FluentIterable<? extends T> supplyingNTimes(int noItems, Supplier<? extends T> supplier) {
     return FluentIterable.from(Iterables.suplying(supplier)).limit(noItems);
   }
 

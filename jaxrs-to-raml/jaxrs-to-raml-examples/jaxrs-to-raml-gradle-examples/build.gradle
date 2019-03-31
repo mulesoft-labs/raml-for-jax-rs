@@ -24,6 +24,8 @@ buildscript {
     }
     dependencies {
         classpath 'org.raml.jaxrs:jaxrs-to-raml-gradle-plugin:' + System.getProperty('artifactVersion')
+        classpath 'com.sun.xml.bind:jaxb-impl:2.1.6'
+        classpath 'javax.xml.bind:jaxb-api:2.1'
     }
 }
 

@@ -28,6 +28,7 @@ import org.raml.ramltopojo.extensions.jsr303.FacetValidation;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 
 /**
  * Created. There, you have it.
@@ -63,7 +64,7 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
     for (final ParameterSpec parameter : spec.parameters) {
 
       final ParameterSpec.Builder parameterBuilder = parameter.toBuilder();
-      Optional<GParameter> declaration = getTypeDeclarationForName((V10GMethod) method, parameter.name);
+      Optional<GParameter> declaration = getQueryParameters((V10GMethod) method, parameter.name);
       if (declaration.isPresent()) {
         FacetValidation.addAnnotations((TypeDeclaration) declaration.get().implementation(), new AnnotationAdder() {
 
@@ -81,7 +82,26 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
         builder.addParameter(parameterBuilder.build());
       } else {
 
-        builder.addParameter(parameter);
+        if ("entity".equals(parameter.name)) {
+          FacetValidation.addAnnotations((TypeDeclaration) gRequest.type().implementation(), new AnnotationAdder() {
+
+            @Override
+            public TypeName typeName() {
+              return parameterBuilder.build().type;
+            }
+
+            @Override
+            public void addAnnotation(AnnotationSpec spec) {
+              parameterBuilder.addAnnotation(spec);
+            }
+          });
+
+          builder.addParameter(parameterBuilder.build());
+          // builder.addParameter(parameterBuilder.addAnnotation(Valid.class).build());
+        } else {
+
+          builder.addParameter(parameter);
+        }
       }
     }
 
@@ -94,7 +114,7 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
     return builder;
   }
 
-  Optional<GParameter> getTypeDeclarationForName(V10GMethod request, final String name) {
+  Optional<GParameter> getQueryParameters(V10GMethod request, final String name) {
     return FluentIterable.from(request.queryParameters()).firstMatch(new Predicate<GParameter>() {
 
       @Override

@@ -17,7 +17,7 @@ install:
 deploy:
     -
         provider: script
-        script: mvn deploy --settings ~/settings.xml -DskipTests -Drepo=snapshots -B -U
+        script: mvn deploy --settings ~/settings.xml -P '!with-examples' -DskipTests -Drepo=snapshots -B -U
         skip_cleanup: true
         on:
             repo: mulesoft-labs/raml-for-jax-rs

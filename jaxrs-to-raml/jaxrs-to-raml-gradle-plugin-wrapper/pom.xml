@@ -54,6 +54,7 @@
                                         <task>closeAndReleaseRepository</task>
                                     </tasks>
                                     <args>
+                                        <arg>-DartifactVersion=${project.version}</arg>
                                         <arg>-b</arg>
                                         <arg>build-sonatype.gradle</arg>
                                     </args>

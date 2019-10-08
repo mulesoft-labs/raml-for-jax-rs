@@ -13,17 +13,34 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
+        classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.20.0"
+        classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.2.0'
+    }
+}
+plugins {
+    id 'groovy'
+    id 'maven-publish'
+    id 'signing'
+}
+
 
 group = 'org.raml.jaxrs'
-version = System.getProperty('artifactVersion')
+version = System.getProperty("artifactVersion")
 description '''RAML JAX-RS-TO-RAML Gradle Plug-in'''
 
-sourceCompatibility = '1.6'
-
+def targetRepository =  "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
 
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.allTasks.any { it instanceof Sign }) {
@@ -36,159 +53,81 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
 }
 
-if (System.getProperty("gradleSonatype") != null) {
-    println "signing: enabled"
-    apply plugin: 'io.codearte.nexus-staging'
-    apply plugin: 'de.marcphilipp.nexus-publish'
-    apply plugin: 'com.bmuschko.nexus'
-
-    nexusStaging {
-        packageGroup = 'org.raml'
-        numberOfRetries = 20
-        delayBetweenRetriesInMillis = 4000
-
-        username = System.getenv("OSSRH_USER")
-        password = System.getenv("OSSRH_PASSWORD")
-    }
-
-    nexusPublishing {
-        packageGroup = rootProject.nexusStaging.packageGroup
-        stagingProfileId = rootProject.nexusStaging.stagingProfileId
-        username = rootProject.nexusStaging.username
-        password = rootProject.nexusStaging.password
-    }
-
-    ext."nexusUsername" = System.getenv("OSSRH_USER")
-    ext."nexusPassword" = System.getenv("OSSRH_PASSWORD")
-
-    publishing {
-        repositories {
-            maven {
-                // change to point to your repo, e.g. http://my.org/repo
-                url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-                credentials {
-                    username = "${System.env.NEXUS_USER}"
-                    password = "${System.env.NEXUS_PASSWORD}"
-                }
-            }
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/groovy'
         }
-
-        pom {
-            name = 'JAXRS to RAML Gragle Plugin'
-            description = 'JAXRS to RAML generator'
-
-            project {
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                scm {
-                    connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                    url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-                    developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                }
-
-                developers {
-                    developer {
-                        name = 'Jean-Philippe Belanger'
-                    }
-                    developer {
-                        name = 'Jonathan Stoikovitch'
-                    }
-                }
-            }
-        }
-
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-            }
-        }
-    }
-
-} else {
-
-    publishing {
-        repositories {
-            maven {
-                // change to point to your repo, e.g. http://my.org/repo
-                url "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
-                credentials {
-                    username = "${System.env.NEXUS_USER}"
-                    password = "${System.env.NEXUS_PASSWORD}"
-                }
-            }
-        }
-
-        pom {
-            name = 'JAXRS to RAML Gragle Plugin'
-            description = 'JAXRS to RAML generator'
-
-            project {
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                scm {
-                    connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                    url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-                    developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
-                }
-
-                developers {
-                    developer {
-                        name = 'Jean-Philippe Belanger'
-                    }
-                    developer {
-                        name = 'Jonathan Stoikovitch'
-                    }
-                }
-            }
-        }
-
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-            }
+        resources {
+            srcDir 'src/main/resources'
         }
     }
 }
 
 
-buildscript {
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'jaxrs-to-raml-gradle-plugin'
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = 'JAXRS to RAML Gradle Plugin'
+                description = 'JAXRS to RAML generator'
+                inceptionYear = "2017"
+                url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                    url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
+                    developerConnection = 'scm:git:https://github.com/mulesoft-labs/raml-for-jax-rs.git'
+                }
+
+                developers {
+                    developer {
+                        name = 'Jean-Philippe Belanger'
+                    }
+                    developer {
+                        name = 'Jonathan Stoikovitch'
+                    }
+                }
+            }
+        }
+    }
+
     repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            // change to point to your repo, e.g. http://my.org/repo
+            url targetRepository
+            credentials {
+                username = "${System.env.NEXUS_USER}"
+                password = "${System.env.NEXUS_PASSWORD}"
+            }
         }
-    }
-    dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.14.0'
-        classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.20.0"
-        classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.2.0'
     }
 }
 
-ext {
-    gradleVersion = '1.11'
-    spockVersion = '1.0-groovy-2.4' // Gradle API currently uses 1.8.6 of Groovy and there is no way to exclude/replace it (currently).
-}
+
 
 repositories {
     mavenLocal()
-    //if(additionalRepoUrl) {
-    //    maven { url additionalRepoUrl }
-    //}
     maven { url 'https://repository.mulesoft.org/snapshots/' }
     maven { url 'https://repository.mulesoft.org/releases/' }
     mavenCentral()
@@ -200,7 +139,7 @@ dependencies {
     compile 'org.raml.jaxrs:jaxrs-to-raml-core:' + version
     compile 'commons-io:commons-io:2.4'
 
-    testCompile('org.spockframework:spock-core:$spockVersion') {
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
     testCompile 'cglib:cglib-nodep:2.2.2'
@@ -208,16 +147,6 @@ dependencies {
     testCompile 'org.objenesis:objenesis:1.2'
 }
 
-test {
-    filter {
-        includeTestsMatching '*Test'
-        includeTestsMatching '*Spec'
-    }
-}
-
-signing {
-    sign publishing.publications.mavenJava
-}
 
 
 

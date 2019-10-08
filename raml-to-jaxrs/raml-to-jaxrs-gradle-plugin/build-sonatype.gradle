@@ -35,6 +35,8 @@ plugins {
     id 'groovy'
     id 'maven-publish'
     id 'signing'
+    id 'io.codearte.nexus-staging' version '0.20.0'
+    id 'de.marcphilipp.nexus-publish' version '0.2.0'
 }
 
 
@@ -42,7 +44,7 @@ group = 'org.raml.jaxrs'
 version = System.getProperty("artifactVersion")
 description 'RAML JAX-RS Gradle Plug-in'
 
-def targetRepository =  "https://repository-master.mulesoft.org/${System.getProperty('repo')}"
+def targetRepository =  "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.allTasks.any { it instanceof Sign }) {
@@ -88,9 +90,8 @@ publishing {
             pom {
                 name = 'RAML to JAXRS Gradle Plugin'
                 description = 'RAML to JAXRS generator'
-                inceptionYear = "2017"
                 url = 'https://github.com/mulesoft-labs/raml-for-jax-rs'
-
+                inceptionYear = "2017"
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -121,12 +122,33 @@ publishing {
             // change to point to your repo, e.g. http://my.org/repo
             url targetRepository
             credentials {
-                username = "${System.env.NEXUS_USER}"
-                password = "${System.env.NEXUS_PASSWORD}"
+                username = System.getenv("OSSRH_USER").toString()
+                password = System.getenv("OSSRH_PASSWORD").toString()
             }
         }
     }
 }
+
+nexusStaging {
+    packageGroup = 'org.raml'
+    numberOfRetries = 20
+    delayBetweenRetriesInMillis = 3000
+    username = System.getenv("OSSRH_USER").toString()
+    password = System.getenv("OSSRH_PASSWORD").toString()
+}
+
+nexusPublishing {
+    packageGroup = rootProject.nexusStaging.packageGroup
+    stagingProfileId = rootProject.nexusStaging.stagingProfileId
+    username = System.getenv("OSSRH_USER").toString()
+    password = System.getenv("OSSRH_PASSWORD").toString()
+}
+
+signing {
+    sign publishing.publications.mavenJava
+    }
+
+
 
 repositories {
     mavenLocal()
@@ -149,4 +171,9 @@ dependencies {
     testCompile 'junit:junit-dep:4.11'
     testCompile 'org.objenesis:objenesis:1.2'
 }
+
+
+
+
+
 

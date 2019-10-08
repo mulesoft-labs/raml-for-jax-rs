@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>raml-to-jaxrs</artifactId>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.0.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>raml-to-jaxrs-gradle-plugin-wrapper</artifactId>
@@ -21,6 +21,19 @@
                         <groupId>org.fortasoft</groupId>
                         <artifactId>gradle-maven-plugin</artifactId>
                         <version>1.0.8</version>
+                        <configuration>
+                            <args>
+                                <arg>-DartifactVersion=${project.version}</arg>
+                            </args>
+                            <gradleVersion>4.10.3</gradleVersion>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.gradle</groupId>
+                                <artifactId>gradle-tooling-api</artifactId>
+                                <version>4.10.3</version>
+                            </dependency>
+                        </dependencies>
                         <executions>
                             <execution>
                                 <id>deploy</id>
@@ -31,17 +44,14 @@
                                 <configuration>
                                     <tasks>
                                         <task>clean</task>
+                                        <task>build</task>
                                         <task>install</task>
-                                        <task>publishToNexus</task>
-<!--
                                         <task>closeAndReleaseRepository</task>
--->
                                     </tasks>
-                                    <jvmArgs>
-                                        <jvmArg>-DartifactVersion=${project.version}</jvmArg>
-                                        <jvmArg>-DgradleSonatype=true</jvmArg>
-                                    </jvmArgs>
-                                    <gradleVersion>4.10.3</gradleVersion>
+                                    <args>
+                                        <arg>-b</arg>
+                                        <arg>build-sonatype.gradle</arg>
+                                    </args>
                                 </configuration>
                             </execution>
                         </executions>
@@ -79,6 +89,19 @@
                 <groupId>org.fortasoft</groupId>
                 <artifactId>gradle-maven-plugin</artifactId>
                 <version>1.0.8</version>
+                <configuration>
+                    <args>
+                        <arg>-DartifactVersion=${project.version}</arg>
+                    </args>
+                    <gradleVersion>4.10.3</gradleVersion>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.gradle</groupId>
+                        <artifactId>gradle-tooling-api</artifactId>
+                        <version>4.10.3</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>install</id>
@@ -88,12 +111,9 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <task>install</task>
+                                <task>build</task>
+                                <task>publishToMavenLocal</task>
                             </tasks>
-                            <jvmArgs>
-                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
-                            </jvmArgs>
-                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -106,10 +126,6 @@
                             <tasks>
                                 <task>clean</task>
                             </tasks>
-                            <jvmArgs>
-                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
-                            </jvmArgs>
-                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -122,10 +138,6 @@
                             <tasks>
                                 <task>publish</task>
                             </tasks>
-                            <jvmArgs>
-                                <jvmArg>-DartifactVersion=${project.version}</jvmArg>
-                            </jvmArgs>
-                            <gradleVersion>4.10.3</gradleVersion>
                         </configuration>
                     </execution>
                 </executions>

@@ -24,7 +24,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.raml.jaxrs:raml-to-jaxrs-gradle-plugin:' + System.getProperty('artifactVersion')
+        classpath "org.raml.jaxrs:raml-to-jaxrs-gradle-plugin:" + System.getProperty('artifactVersion')
     }
 }
 

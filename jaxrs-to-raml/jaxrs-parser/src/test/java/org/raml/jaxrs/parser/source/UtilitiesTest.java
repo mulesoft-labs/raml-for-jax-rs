@@ -32,7 +32,7 @@ public class UtilitiesTest {
 
     Path p = Utilities.getSourceFileRelativePath(LocalClass.class);
 
-    assertEquals(p.toString(), "org/raml/jaxrs/parser/source/LocalClass.java");
+    assertEquals(p.toString(), perOS("org/raml/jaxrs/parser/source/LocalClass.java"));
   }
 
 
@@ -43,7 +43,12 @@ public class UtilitiesTest {
 
     Path p = Utilities.getSourceFileRelativePath(type);
 
-    assertEquals(p.toString(), "java/util/List.java");
+    assertEquals(p.toString(), perOS("java/util/List.java"));
   }
 
+  private static String perOS(String aPath) {
+
+    return System.getProperty("os.name")
+        .contains("Windows") ? aPath.replaceAll("/", "\\\\") : aPath;
+  }
 }

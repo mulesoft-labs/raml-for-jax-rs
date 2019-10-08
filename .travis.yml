@@ -25,9 +25,9 @@ deploy:
             condition: $TRAVIS_BRANCH =~ ^release/[0-9]+.[0-9]+.[0-9]+$
     -
         provider: script
-        script: mvn --settings ~/settings.xml org.codehaus.mojo:versions-maven-plugin:2.1:set -DnewVersion=$TRAVIS_TAG; mvn clean deploy --settings ~/settings.xml -DskipTests=true -Drepo=releases -B -U; mvn clean deploy --settings ~/settings.xml -Drepo=releases -DskipTests=true -Psonatype -B -U
+        script: mvn --settings ~/settings.xml org.codehaus.mojo:versions-maven-plugin:2.1:set -DnewVersion=$TRAVIS_TAG; mvn clean deploy -P '!with-examples' --settings ~/settings.xml -DskipTests=true -Drepo=releases -B -U; mvn clean deploy -P '!with-examples' --settings ~/settings.xml -Drepo=releases -DskipTests=true -Psonatype -B -U
         skip_cleanup: true
         on:
             repo: mulesoft-labs/raml-for-jax-rs
             tags: true
-            condition: "$TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+$"
+            condition: "$TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+(.[a-z])?$"

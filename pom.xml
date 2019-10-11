@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.raml.jaxrs</groupId>
     <artifactId>raml-for-jaxrs</artifactId>
-    <version>3.0.6-SNAPSHOT</version>
+    <version>3.0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>raml-for-jaxrs</name>
     <description>This project is all about two way transformation of JAX-RS-annotated Java code to RAML API description and back.</description>
@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <tools.version>1.0.6</tools.version>
+        <tools.version>1.0.7-SNAPSHOT</tools.version>
     </properties>
     <dependencyManagement>
         <dependencies>

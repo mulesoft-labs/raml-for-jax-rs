@@ -149,6 +149,9 @@ public class Configuration {
   }
 
   public Boolean getGenerateResponseClasses() {
+    if (generateResponseClasses == null) {
+      return true;
+    }
     return generateResponseClasses;
   }
 

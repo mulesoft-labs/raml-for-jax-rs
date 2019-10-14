@@ -21,6 +21,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.squareup.javapoet.*;
+import com.squareup.javapoet.MethodSpec.Builder;
+
 import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
@@ -239,6 +241,9 @@ public class ResourceBuilder implements ResourceGenerator {
 
   private Map<String, TypeSpec.Builder> createResponseClass(TypeSpec.Builder typeSpec, Multimap<GMethod, GRequest> bodies,
                                                             Multimap<GMethod, GResponse> responses) {
+    if (!build.shouldGenerateResponseClasses()) {
+      return Collections.emptyMap();
+    }
 
     Map<String, TypeSpec.Builder> map = new HashMap<>();
 
@@ -563,7 +568,11 @@ public class ResourceBuilder implements ResourceGenerator {
               .build());
     }
 
-    if (gMethod.responses().size() != 0) {
+    if (gMethod.responses().size() == 0) {
+      // There is no response, return void
+      methodSpec.returns(ClassName.VOID);
+    } else if (build.shouldGenerateResponseClasses()) {
+      // Return types are the responses with an entity
       TypeSpec.Builder responseSpecForMethod = responseSpec.get(Names.responseClassName(gMethod.resource(), gMethod));
       if (responseSpecForMethod == null) {
 
@@ -572,7 +581,13 @@ public class ResourceBuilder implements ResourceGenerator {
         methodSpec.returns(ClassName.get("", responseSpecForMethod.build().name));
       }
     } else {
-      methodSpec.returns(ClassName.VOID);
+      // Return types are the entities itself
+      List<GResponseType> bodies = gMethod.responses().get(0).body();
+      if (bodies == null || bodies.isEmpty()) {
+        methodSpec.returns(ClassName.VOID);
+      } else {
+        methodSpec.returns(bodies.get(0).type().defaultJavaTypeName(build.getModelPackage()));
+      }
     }
 
     if (mediaTypesForMethod.size() > 0) {

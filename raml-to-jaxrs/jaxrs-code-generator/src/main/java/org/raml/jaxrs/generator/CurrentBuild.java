@@ -556,4 +556,8 @@ public class CurrentBuild {
   public boolean shouldCopySchemas() {
     return configuration.getCopySchemas();
   }
+
+  public boolean shouldGenerateResponseClasses() {
+    return configuration.getGenerateResponseClasses();
+  }
 }

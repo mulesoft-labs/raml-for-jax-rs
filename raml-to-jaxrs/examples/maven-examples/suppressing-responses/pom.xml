@@ -10,7 +10,7 @@
         <version>3.0.8-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jaxb-example</artifactId>
+    <artifactId>supressing-responses</artifactId>
     <!-- Repeating here for documentation -->
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -23,13 +23,21 @@
             <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-moxy</artifactId>
-            <version>2.24</version>
+            <groupId>org.raml.jaxrs</groupId>
+            <artifactId>jaxrs-code-generator</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-jetty-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -39,12 +47,22 @@
                 <artifactId>raml-to-jaxrs-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <configuration>
-                    <ramlFile>${project.build.resources[0].directory}/xml-model.raml</ramlFile>
+                    <ramlFile>${project.build.resources[0].directory}</ramlFile>
+                    <includes>
+                        <include>baseball.raml</include>
+                    </includes>
                     <resourcePackage>example.resources</resourcePackage>
                     <modelPackage>example.model</modelPackage>
+                    <resourcePackage>example.types</resourcePackage>
                     <supportPackage>example.support</supportPackage>
+                    <generateResponseClasses>false</generateResponseClasses>
                     <generateTypesWith>
-                        <value>jaxb</value>
+<!--   If you want to try jackson 1
+                        <value>jackson1</value>
+-->
+                        <value>jackson2</value>
+                        <value>jsr303</value>
+                        <value>equalsAndHashCode</value>
                     </generateTypesWith>
                 </configuration>
             </plugin>
@@ -52,7 +70,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>server.zoo.StartServer</mainClass>
+                    <mainClass>server.baseball.StartServer</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -62,6 +80,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 </project>

@@ -1,0 +1,35 @@
+#%RAML 1.0
+title: Humanity
+version: v1
+baseUri: https://api.github.com
+uses:
+  ramltojaxrs: ramltojaxrs.raml
+  ramltopojo: ramltopojo.raml
+(ramltopojo.types):
+  plugins:
+    - name: core.box
+
+types:
+    Game:
+        properties:
+            innings: Inning[]
+    Inning:
+      properties:
+        inningNumber: integer
+
+/games:
+    get:
+        description: getme
+        responses:
+          200:
+            description: response
+            body:
+                application/json:
+                    type: Game[]
+    /{id}:
+        get:
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: Game

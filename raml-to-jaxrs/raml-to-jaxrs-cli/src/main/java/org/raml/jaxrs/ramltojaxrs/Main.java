@@ -43,6 +43,8 @@ public class Main {
     options.addOption(Option.builder("r").required().longOpt("resource-package").hasArg().desc("resource package").build());
     options.addOption(Option.builder("d").required().longOpt("directory").hasArg().desc("generation directory").build());
     options.addOption(Option.builder("c").longOpt("copy-schemas").build());
+    options.addOption(Option.builder("w").longOpt("suppress-response-wrappers").desc("suppress generation of response wrappers")
+        .build());
 
     try {
 
@@ -54,6 +56,8 @@ public class Main {
       String directory = command.getOptionValue("d");
       String extensions = command.getOptionValue("g");
       boolean shouldCopySchemas = command.hasOption("c");
+      boolean shouldGenerateWrappers = !command.hasOption("w");
+
       Optional<String> jsonMapper = Optional.fromNullable(command.getOptionValue("j"));
 
       List<String> ramlFiles = command.getArgList();
@@ -65,6 +69,7 @@ public class Main {
       configuration.setCopySchemas(shouldCopySchemas);
       configuration.setOutputDirectory(new File(directory));
       configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.or("jackson2").toUpperCase()));
+      configuration.setGenerateResponseClasses(shouldGenerateWrappers);
 
       if (extensions != null) {
         configuration.setTypeConfiguration(extensions.split(("\\s*,\\s*")));

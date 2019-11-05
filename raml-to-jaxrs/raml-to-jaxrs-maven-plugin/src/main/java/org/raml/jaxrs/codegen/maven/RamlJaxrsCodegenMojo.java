@@ -146,7 +146,8 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   @Parameter(property = "typeExtensions")
   private String[] typeExtensions;
 
-
+  @Parameter(property = "generateResponseClasses", defaultValue = "true")
+  private boolean generateResponseClasses;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -183,6 +184,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
       configuration.setOutputDirectory(outputDirectory);
       configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
       configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
+      configuration.setGenerateResponseClasses(generateResponseClasses);
       configuration.setTypeConfiguration(generateTypesWith);
       if (resourceCreationExtension != null) {
 

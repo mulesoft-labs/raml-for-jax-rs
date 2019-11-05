@@ -36,6 +36,7 @@ public class Configuration {
   private String[] typeConfiguration = new String[0];
   private String resourcePackage;
   private String supportPackage;
+  private Boolean generateResponseClasses;
 
   private Class<GlobalResourceExtension> defaultCreationExtension;
   private Class<GlobalResourceExtension> defaultFinishExtension;
@@ -104,7 +105,6 @@ public class Configuration {
   }
 
   public static Configuration defaultConfiguration() {
-
     Configuration configuration = new Configuration();
     configuration.setModelPackage("model");
     configuration.setResourcePackage("resource");
@@ -113,9 +113,9 @@ public class Configuration {
     // configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
     // configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
     configuration.setTypeConfiguration(new String[] {"jackson"});
+    configuration.setGenerateResponseClasses(true);
 
     return configuration;
-
   }
 
 
@@ -146,5 +146,16 @@ public class Configuration {
 
   public void setCopySchemas(boolean copySchemas) {
     this.copySchemas = copySchemas;
+  }
+
+  public Boolean getGenerateResponseClasses() {
+    if (generateResponseClasses == null) {
+      return true;
+    }
+    return generateResponseClasses;
+  }
+
+  public void setGenerateResponseClasses(Boolean generateResponseClasses) {
+    this.generateResponseClasses = generateResponseClasses;
   }
 }

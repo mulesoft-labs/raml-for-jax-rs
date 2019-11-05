@@ -48,6 +48,7 @@ import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -149,7 +150,7 @@ public class CurrentBuild {
   public void generate(final File rootDirectory) throws IOException {
 
     try {
-      if (resources.size() > 0) {
+      if (resources.size() > 0 && shouldGenerateResponseClasses()) {
         ResponseSupport.buildSupportClasses(rootDirectory, getSupportPackage());
       }
 
@@ -174,6 +175,10 @@ public class CurrentBuild {
 
         if (typeGenerator instanceof CodeModelTypeGenerator) {
           CodeModelTypeGenerator b = (CodeModelTypeGenerator) typeGenerator;
+          if (!rootDirectory.exists()) {
+            java.nio.file.Files.createDirectories(rootDirectory.toPath());
+          }
+
           b.output(new CodeContainer<JCodeModel>() {
 
             @Override
@@ -555,5 +560,9 @@ public class CurrentBuild {
 
   public boolean shouldCopySchemas() {
     return configuration.getCopySchemas();
+  }
+
+  public boolean shouldGenerateResponseClasses() {
+    return configuration.getGenerateResponseClasses();
   }
 }

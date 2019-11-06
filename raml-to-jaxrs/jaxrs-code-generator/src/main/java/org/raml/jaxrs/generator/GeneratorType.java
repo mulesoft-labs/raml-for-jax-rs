@@ -56,6 +56,11 @@ public class GeneratorType {
       return new GeneratorType(ENUMERATION_TYPE, typeDeclaration);
     }
 
+    if (typeDeclaration.isArray()) {
+
+      return new GeneratorType(PLAIN_OBJECT_TYPE, typeDeclaration);
+    }
+
 
     return new GeneratorType(SCALAR, typeDeclaration);
   }

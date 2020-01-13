@@ -21,7 +21,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.squareup.javapoet.*;
-import com.squareup.javapoet.MethodSpec.Builder;
 
 import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.builders.CodeContainer;
@@ -31,6 +30,7 @@ import org.raml.jaxrs.generator.extension.resources.api.*;
 import org.raml.jaxrs.generator.ramltypes.*;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
+import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 import org.raml.v2.api.model.v10.methods.Method;
 import org.raml.v2.api.model.v10.resources.Resource;
@@ -563,8 +563,13 @@ public class ResourceBuilder implements ResourceGenerator {
               .builder(Path.class)
               .addMember("value",
                          "$S",
-                         gMethod.resource().resourcePath()
-                             .substring(findTopResource(gMethod.resource().parentResource()).resourcePath().length()))
+                         generatePathString(
+                                            gMethod
+                                                .resource()
+                                                .resourcePath()
+                                                .substring(findTopResource(gMethod.resource().parentResource()).resourcePath()
+                                                    .length()),
+                                            ResourceUtils.accumulateUriParameters(gMethod.resource())))
               .build());
     }
 
@@ -595,6 +600,31 @@ public class ResourceBuilder implements ResourceGenerator {
       methodSpec.addAnnotation(ann.build());
     }
     return methodSpec;
+  }
+
+  private String generatePathString(final String pathString, final List<GParameter> uriParams) {
+    String generatedPathString = pathString;
+    // update regex of path string pattern variables (if needed)
+    for (GParameter parameter : uriParams) {
+      final String name = Names.methodName(parameter.name());
+      // check if path contains param
+      if (pathString.contains("{" + name + "}")) {
+        // check if param is a string value
+        if (parameter.implementation() instanceof StringTypeDeclaration) {
+          StringTypeDeclaration typeDecl = (StringTypeDeclaration) parameter.implementation();
+          // check if this string has a pattern to register
+          if (typeDecl.pattern() != null) {
+          	// remove ^...$ from pattern if existing
+            String pattern = typeDecl.pattern();
+            if (pattern.startsWith("^") && pattern.endsWith("$") && pattern.length() > 2) {
+              pattern = pattern.substring(1, pattern.length() - 1);
+            }
+            generatedPathString = pathString.replace("{" + name + "}", "{" + name + ":" + pattern + "}");
+          }
+        }
+      }
+    }
+    return generatedPathString;
   }
 
   private GResource findTopResource(GResource gResource) {
@@ -670,7 +700,7 @@ public class ResourceBuilder implements ResourceGenerator {
       TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
           .addModifiers(Modifier.PUBLIC)
           .addAnnotation(AnnotationSpec.builder(Path.class)
-              .addMember("value", "$S", uri).build());
+              .addMember("value", "$S", generatePathString(uri, resource.uriParameters())).build());
 
       buildResource(typeSpec, topResource);
 

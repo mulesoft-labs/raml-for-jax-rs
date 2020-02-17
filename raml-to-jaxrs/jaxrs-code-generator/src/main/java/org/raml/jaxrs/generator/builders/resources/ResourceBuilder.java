@@ -209,8 +209,7 @@ public class ResourceBuilder implements ResourceGenerator {
       return;
     }
 
-    if (gRequest.type().name().equals("any") && "application/octet-stream".equals(gRequest.mediaType())) {
-
+    if (gRequest.type().name().equals("any")) {
       TypeName typeName = ClassName.get(InputStream.class);
       methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());
     } else {
@@ -450,7 +449,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
   private TypeName createResponseParameter(GResponseType responseType, MethodSpec.Builder builder) {
 
-    if ("application/octet-stream".equals(responseType.mediaType()) && "any".equals(responseType.type().name())) {
+    if ("any".equals(responseType.type().name())) {
 
       TypeName typeName = ClassName.get(StreamingOutput.class);
       builder.addParameter(ParameterSpec.builder(typeName, "entity").build());

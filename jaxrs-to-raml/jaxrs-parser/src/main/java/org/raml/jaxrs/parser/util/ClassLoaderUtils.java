@@ -21,6 +21,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ClassLoaderUtils {
 
@@ -28,7 +31,9 @@ public class ClassLoaderUtils {
 
   public static ClassLoader classLoaderFor(URL firstUrl, URL... theRest) {
 
-    URL[] allOfDem = FluentIterable.of(theRest).append(firstUrl).toArray(URL.class);
+    List<URL> list = new ArrayList<>(Arrays.asList(theRest));
+    list.add(firstUrl);
+    URL[] allOfDem = list.toArray(new URL[0]);
 
     // In the absence of specific parent, we use the current one as the parent.
     // Otherwise, some incongruities might happen when running from the maven

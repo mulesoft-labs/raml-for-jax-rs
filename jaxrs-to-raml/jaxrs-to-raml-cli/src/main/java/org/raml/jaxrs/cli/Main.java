@@ -26,8 +26,10 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -78,22 +80,7 @@ public class Main {
 
         String[] classes = command.getOptionValue('t').split(",");
         List<Class<? extends Annotation>> c =
-            FluentIterable.of(classes).transform(
-                                                 new Function<String, Class<? extends Annotation>>() {
-
-                                                   @Nullable
-                                                   @Override
-                                                   public Class<? extends Annotation> apply(@Nullable String input) {
-
-                                                     try {
-                                                       return (Class<? extends Annotation>) Class.forName(input);
-                                                     } catch (ClassNotFoundException e) {
-                                                       throw new IllegalArgumentException(
-                                                                                          "while building translated annotations list",
-                                                                                          e);
-                                                     }
-                                                   }
-                                                 }).toList();
+            Arrays.stream(classes).map(Main::createClass).collect(Collectors.toList());
 
         builder.withTranslatedAnnotations(c);
       }
@@ -105,6 +92,17 @@ public class Main {
       System.err.println(e.getMessage());
       formatter.printHelp("jaxrstoraml", options, true);
 
+    }
+  }
+
+  private static Class<? extends Annotation> createClass(String s) {
+
+    try {
+      return (Class<? extends Annotation>) Class.forName(s);
+    } catch (ClassNotFoundException e) {
+      throw new IllegalArgumentException(
+                                         "while building translated annotations list",
+                                         e);
     }
   }
 }

@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>raml-to-jaxrs</artifactId>
-        <version>3.0.8-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>examples</artifactId>
     <packaging>pom</packaging>

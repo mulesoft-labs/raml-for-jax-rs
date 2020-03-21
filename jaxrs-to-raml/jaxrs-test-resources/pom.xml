@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.raml.jaxrs</groupId>
         <artifactId>jaxrs-to-raml</artifactId>
-        <version>3.0.8-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>jaxrs-test-resources</artifactId>
@@ -67,7 +67,7 @@
                         <argument>-o</argument>
                         <argument>${project.artifactId}.raml</argument>
                         <argument>-s</argument>
-                        <argument>${project.build.sourceDirectory}</argument>
+                        <argument>${project.build.sourceDirectory}/..</argument>
                         <argument>-t</argument>
                         <argument>org.raml.jaxrs.examples.Secure</argument>
                     </arguments>

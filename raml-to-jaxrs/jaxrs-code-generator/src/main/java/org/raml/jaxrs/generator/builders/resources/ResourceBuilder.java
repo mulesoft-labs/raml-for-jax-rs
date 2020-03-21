@@ -614,7 +614,7 @@ public class ResourceBuilder implements ResourceGenerator {
           StringTypeDeclaration typeDecl = (StringTypeDeclaration) parameter.implementation();
           // check if this string has a pattern to register
           if (typeDecl.pattern() != null) {
-          	// remove ^...$ from pattern if existing
+            // remove ^...$ from pattern if existing
             String pattern = typeDecl.pattern();
             if (pattern.startsWith("^") && pattern.endsWith("$") && pattern.length() > 2) {
               pattern = pattern.substring(1, pattern.length() - 1);

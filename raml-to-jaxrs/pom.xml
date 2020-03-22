@@ -18,8 +18,7 @@
                 <module>jaxrs-code-generator</module>
                 <module>raml-to-jaxrs-maven-plugin</module>
                 <module>raml-to-jaxrs-cli</module>
-                <module>raml-to-jaxrs-gradle-plugin</module>
-                <module>examples</module>
+<!--                <module>examples</module>-->
             </modules>
         </profile>
     </profiles>
@@ -27,7 +26,6 @@
         <module>jaxrs-code-generator</module>
         <module>raml-to-jaxrs-maven-plugin</module>
         <module>raml-to-jaxrs-cli</module>
-        <module>raml-to-jaxrs-gradle-plugin</module>
     </modules>
     <properties>
         <licensePath>LICENSE_HEADER.txt</licensePath>
@@ -51,8 +49,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.0</version>
                     <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
+                        <source>1.8</source>
+                        <target>1.8</target>
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>

@@ -15,14 +15,11 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
+import amf.client.model.domain.*;
 import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.*;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 /**
  * Created by Jean-Philippe Belanger on 1/3/17. Just potential zeroes and ones
@@ -30,65 +27,65 @@ import org.raml.v2.api.model.v10.resources.Resource;
 public class V10GTypeFactory {
 
 
-  public static V10GType createResponseBodyType(Resource resource,
-                                                Method method, Response response, TypeDeclaration typeDeclaration) {
+  public static V10GType createResponseBodyType(EndPoint resource,
+                                                Operation method, Response response, AnyShape anyShape) {
 
     return new V10RamlToPojoGType(Names.ramlTypeName(resource, method,
-                                                     response, typeDeclaration), typeDeclaration);
+                                                     response, anyShape), anyShape);
   }
 
   public static V10GType createInlineType(String ramlName,
-                                          TypeDeclaration typeDeclaration) {
-    return new V10RamlToPojoGType(ramlName, typeDeclaration);
+                                          AnyShape shape) {
+    return new V10RamlToPojoGType(ramlName, shape);
   }
 
-  public static V10GType createScalar(String name, TypeDeclaration typeDeclaration) {
+  public static V10GType createScalar(String name, AnyShape anyShape) {
 
-    return new V10RamlToPojoGType(name, typeDeclaration);
+    return new V10RamlToPojoGType(name, anyShape);
   }
 
   public static V10GType createArray(String name,
-                                     ArrayTypeDeclaration typeDeclaration) {
+                                     ArrayShape arrayShape) {
 
-    return new V10RamlToPojoGType(name, typeDeclaration);
+    return new V10RamlToPojoGType(name, arrayShape);
   }
 
   public static V10GType createEnum(String name,
-                                    StringTypeDeclaration typeDeclaration) {
-    return new V10RamlToPojoGType(name, typeDeclaration);
+                                    ScalarShape scalarShape) {
+    return new V10RamlToPojoGType(name, scalarShape);
   }
 
   public static V10GType createEnum(String name,
-                                    NumberTypeDeclaration typeDeclaration) {
-    return new V10RamlToPojoGType(name, typeDeclaration);
+                                    ScalarShape scalarShape) {
+    return new V10RamlToPojoGType(name, scalarShape);
   }
 
-  public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName, CreationModel model) {
+  public static V10GType createJson(SchemaShape schemaShape, String ramlName, CreationModel model) {
 
-    return new V10GTypeJson(jsonTypeDeclaration, ramlName, Annotations.CLASS_NAME.get(
+    return new V10GTypeJson(schemaShape, ramlName, Annotations.CLASS_NAME.get(
                                                                                       Names.typeName(ramlName),
-                                                                                      jsonTypeDeclaration), model);
+                                                                                      schemaShape), model);
   }
 
-  public static V10GType createJson(JSONTypeDeclaration jsonTypeDeclaration, String ramlName,
+  public static V10GType createJson(SchemaShape schemaShape, String ramlName,
                                     String javaTypeName, CreationModel model) {
 
-    return new V10GTypeJson(jsonTypeDeclaration, ramlName, javaTypeName, model);
+    return new V10GTypeJson(schemaShape, ramlName, javaTypeName, model);
   }
 
-  public static V10GType createXml(XMLTypeDeclaration typeDeclaration, String ramlName, CreationModel model) {
-    return new V10GTypeXml(typeDeclaration, ramlName, Annotations.CLASS_NAME.get(
-                                                                                 Names.typeName(ramlName), typeDeclaration),
+  public static V10GType createXml(SchemaShape schemaShape, String ramlName, CreationModel model) {
+    return new V10GTypeXml(schemaShape, ramlName, Annotations.CLASS_NAME.get(
+                                                                                 Names.typeName(ramlName), schemaShape),
                            model);
   }
 
-  public static V10GType createXml(XMLTypeDeclaration typeDeclaration, String ramlName,
+  public static V10GType createXml(SchemaShape  schemaShape, String ramlName,
                                    String javaName, CreationModel model) {
-    return new V10GTypeXml(typeDeclaration, ramlName, javaName, model);
+    return new V10GTypeXml(schemaShape, ramlName, javaName, model);
   }
 
-  public static V10GType createUnion(String ramlName, UnionTypeDeclaration typeDeclaration) {
-    return new V10RamlToPojoGType(ramlName, typeDeclaration);
+  public static V10GType createUnion(String ramlName, UnionShape unionShape) {
+    return new V10RamlToPojoGType(ramlName, unionShape);
   }
 
 }

@@ -15,26 +15,18 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import amf.client.model.domain.AnyShape;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.io.Files;
 import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
-import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.api.Library;
-import org.raml.v2.api.model.v10.bodies.Response;
-import org.raml.v2.api.model.v10.datamodel.*;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
+import org.w3c.dom.Document;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 /**
@@ -43,11 +35,11 @@ import java.util.*;
 public class V10Finder implements GFinder {
 
   private final CurrentBuild build;
-  private final Api api;
+  private final Document api;
 
   private Map<String, V10GType> foundTypes = new HashMap<>();
 
-  public V10Finder(CurrentBuild build, Api api) {
+  public V10Finder(CurrentBuild build, Document api) {
     this.build = build;
     this.api = api;
   }
@@ -180,7 +172,7 @@ public class V10Finder implements GFinder {
     if (typeDeclaration instanceof JSONTypeDeclaration) {
 
       return putInFoundTypes(typeDeclaration.name(),
-                             V10GTypeFactory.createJson((JSONTypeDeclaration) typeDeclaration,
+                             V10GTypeFactory.createJson(, (JSONTypeDeclaration) typeDeclaration,
                                                         typeDeclaration.name(), CreationModel.INLINE_FROM_TYPE));
     }
 
@@ -214,7 +206,7 @@ public class V10Finder implements GFinder {
 
     if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-      return putInFoundTypes(typeDeclaration.name(), V10GTypeFactory.createArray(typeDeclaration.name(),
+      return putInFoundTypes(typeDeclaration.name(), V10GTypeFactory.createArray(typeDeclaration.name(), ,
                                                                                  (ArrayTypeDeclaration) typeDeclaration
           ));
     }
@@ -222,7 +214,7 @@ public class V10Finder implements GFinder {
     return putInFoundTypes(typeDeclaration.name(), V10GTypeFactory.createScalar(typeDeclaration.name(), typeDeclaration));
   }
 
-  private boolean isInline(TypeDeclaration typeDeclaration) {
+  private boolean isInline(AnyShape typeDeclaration) {
 
     if (typeDeclaration instanceof JSONTypeDeclaration || typeDeclaration instanceof XMLTypeDeclaration) {
 
@@ -269,7 +261,7 @@ public class V10Finder implements GFinder {
 
     if (typeDeclaration instanceof ArrayTypeDeclaration) {
 
-      return putInFoundTypes(ramlName, V10GTypeFactory.createArray(ramlName, (ArrayTypeDeclaration) typeDeclaration
+      return putInFoundTypes(ramlName, V10GTypeFactory.createArray(ramlName, , (ArrayTypeDeclaration) typeDeclaration
           ));
     }
 

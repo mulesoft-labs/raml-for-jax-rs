@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import amf.client.model.document.Document;
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.FluentIterable;
@@ -59,7 +60,7 @@ import static java.util.Collections.singletonList;
  */
 public class CurrentBuild {
 
-  private final Api api;
+  private final Document api;
   private ExtensionManager extensionManager;
   private final File ramlDirectory;
 
@@ -81,7 +82,7 @@ public class CurrentBuild {
 
   private RamlToPojo ramlToPojo;
 
-  public CurrentBuild(Api api, ExtensionManager extensionManager, File ramlDirectory) {
+  public CurrentBuild(Document api, ExtensionManager extensionManager) {
 
     this.api = api;
     this.extensionManager = extensionManager;

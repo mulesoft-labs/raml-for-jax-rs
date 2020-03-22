@@ -16,13 +16,20 @@
 package org.raml.jaxrs.generator;
 
 
+import amf.client.model.document.Document;
+import amf.client.model.domain.EndPoint;
+import amf.client.model.domain.WebApi;
 import org.raml.jaxrs.generator.v08.V08Finder;
 import org.raml.jaxrs.generator.v08.V08TypeRegistry;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.ResourceHandler;
 import org.raml.jaxrs.generator.v10.V10Finder;
+import org.raml.ramltopojo.RamlLoader;
+import org.raml.ramltopojo.RamlLoaderException;
+import webapi.WebApiDocument;
 
 import java.io.*;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -30,6 +37,20 @@ import java.io.*;
  */
 public class RamlScanner {
 
+  enum Version implements RamlLoader.Loader {
+    RAML_08 {
+      @Override
+      public Document load(String raml) throws RamlLoaderException {
+        return RamlLoader.load(raml);
+      }
+    },
+    RAML_10 {
+      @Override
+      public Document load(String raml) throws RamlLoaderException {
+        return RamlLoader.load08(raml);
+      }
+    }
+  }
   private final Configuration configuration;
 
   public RamlScanner(Configuration configuration) {
@@ -37,35 +58,21 @@ public class RamlScanner {
   }
 
 
-  public void handle(File resource) throws IOException, GenerationException {
+  public void handle(File resource, Version version) throws IOException, GenerationException {
 
-    handle(new FileInputStream(resource), resource.getAbsoluteFile().getParentFile());
+    handle(resource.toURI().toString(), version);
   }
 
-  public void handle(InputStream stream, File ramlDirectory) throws GenerationException, IOException {
+  public void handle(String ramlTarget, Version version) throws GenerationException, IOException {
 
-    RamlModelResult result =
-        new RamlModelBuilder().buildApi(new InputStreamReader(stream), ramlDirectory.getAbsolutePath() + "/");
-    if (result.hasErrors()) {
-      throw new GenerationException(result.getValidationResults());
-    }
-
-    if (result.isVersion08() && result.getApiV08() != null) {
-      handleRamlFile(result.getApiV08(), ramlDirectory);
-      return;
-    }
-
-    if (result.isVersion10() && result.getApiV10() != null) {
-      handleRamlFile(result.getApiV10(), ramlDirectory);
-    } else {
-      throw new GenerationException("RAML file is neither v10 nor v08 api file");
-    }
+    Document d = version.load(ramlTarget);
+    handleRamlFile(d);
   }
 
-  public void handleRamlFile(org.raml.v2.api.model.v10.api.Api api, File ramlDirectory) throws IOException {
+  public void handleRamlFile(Document document) throws IOException {
 
     CurrentBuild build =
-        new CurrentBuild(api, ExtensionManager.createExtensionManager(), ramlDirectory);
+        new CurrentBuild(document, ExtensionManager.createExtensionManager());
 
     configuration.setupBuild(build);
     build.constructClasses(new V10Finder(build, api));
@@ -74,34 +81,10 @@ public class RamlScanner {
 
 
     // handle resources.
-    for (Resource resource : api.resources()) {
+    for (EndPoint resource : ((WebApi)document.encodes()).endPoints()) {
       resourceHandler.handle(resource);
     }
 
     build.generate(configuration.getOutputDirectory());
   }
-
-
-  public void handleRamlFile(org.raml.v2.api.model.v08.api.Api api, File ramlDirectory) throws IOException {
-
-    GAbstractionFactory factory = new GAbstractionFactory();
-    V08TypeRegistry registry = new V08TypeRegistry();
-    V08Finder typeFinder = new V08Finder(api, factory, registry);
-    CurrentBuild build = new CurrentBuild(null, ExtensionManager.createExtensionManager(), ramlDirectory);
-
-    configuration.setupBuild(build);
-
-    build.constructClasses(typeFinder);
-
-    ResourceHandler resourceHandler = new ResourceHandler(build);
-
-
-    // handle resources.
-    for (org.raml.v2.api.model.v08.resources.Resource resource : api.resources()) {
-      resourceHandler.handle(typeFinder.globalSchemas().keySet(), registry, resource);
-    }
-
-    build.generate(configuration.getOutputDirectory());
-  }
-
 }

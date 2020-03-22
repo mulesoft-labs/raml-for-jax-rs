@@ -229,7 +229,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
     ClassLoader newClassLoader = getClassLoader(project, oldClassLoader, getLog(), ramlFile.getParentFile().getAbsoluteFile());
     try {
       Thread.currentThread().setContextClassLoader(newClassLoader);
-      scanner.handle(ramlFile);
+      scanner.handle(ramlFile, RamlScanner.Version.RAML_10);
     } finally {
       Thread.currentThread().setContextClassLoader(oldClassLoader);
     }

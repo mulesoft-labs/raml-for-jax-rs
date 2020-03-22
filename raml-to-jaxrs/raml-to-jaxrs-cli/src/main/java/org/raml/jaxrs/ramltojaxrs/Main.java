@@ -84,7 +84,7 @@ public class Main {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
           Thread.currentThread().setContextClassLoader(ucl);
-          scanner.handle(new File(ramlFile));
+          scanner.handle(new File(ramlFile), RamlScanner.Version.RAML_10);
         } finally {
 
           Thread.currentThread().setContextClassLoader(loader);

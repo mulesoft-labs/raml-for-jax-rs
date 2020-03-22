@@ -12,7 +12,9 @@
     <url>https://github.com/mulesoft-labs/raml-for-jax-rs</url>
     <modules>
         <module>build-tools</module>
+<!--
         <module>jaxrs-to-raml</module>
+-->
         <module>raml-to-jaxrs</module>
         <module>utilities</module>
     </modules>

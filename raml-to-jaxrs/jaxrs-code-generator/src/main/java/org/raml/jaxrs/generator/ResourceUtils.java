@@ -15,45 +15,34 @@
  */
 package org.raml.jaxrs.generator;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
+import amf.client.model.domain.*;
 import com.google.common.collect.Multimap;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
-import org.raml.jaxrs.generator.ramltypes.*;
-
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Jean-Philippe Belanger on 12/4/16. Just potential zeroes and ones
  */
 public class ResourceUtils {
 
-  public static void fillInBodiesAndResponses(GResource resource,
-                                              Multimap<GMethod, GRequest> incomingBodies, Multimap<GMethod, GResponse> responses) {
+  public static void fillInBodiesAndResponses(EndPoint resource,
+                                              Multimap<Operation, Payload> incomingBodies, Multimap<Operation, Response> responses) {
 
 
-    for (GMethod method : resource.methods()) {
+    for (Operation method : resource.operations()) {
 
-      if (method.body().size() == 0) {
+      if (method.request().payloads().size() == 0) {
         incomingBodies.put(method, null);
       } else {
-        for (GRequest typeDeclaration : method.body()) {
+        for (Payload payload : method.request().payloads()) {
 
-          incomingBodies.put(method, typeDeclaration);
+          incomingBodies.put(method, payload);
         }
       }
 
       if (method.responses().size() == 0) {
         incomingBodies.put(method, null);
       } else {
-        for (GResponse response : method.responses()) {
+        for (Response response : method.responses()) {
 
           responses.put(method, response);
         }
@@ -62,44 +51,10 @@ public class ResourceUtils {
 
   }
 
-  public static List<GParameter> accumulateUriParameters(GResource resource) {
+  public static List<Parameter> accumulateUriParameters(EndPoint resource) {
 
-    Set<String> seenHere = extractSeen(new HashSet<String>(), resource);
-
-    List<GParameter> parameters = new ArrayList<>();
-    parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters()).toList()));
-
-    while (resource.parentResource() != null) {
-
-      resource = resource.parentResource();
-      Set<String> seenInParent = extractSeen(seenHere, resource);
-      final Set<String> finalSeenHere = seenHere;
-      parameters.addAll(Lists.reverse(FluentIterable.from(resource.uriParameters()).filter(new Predicate<GParameter>() {
-
-        @Override
-        public boolean apply(@Nullable GParameter gParameter) {
-          return !finalSeenHere.contains(gParameter.name());
-        }
-      }).toList()));
-
-      seenHere = seenInParent;
-    }
-
-    Collections.reverse(parameters);
-
-    return parameters;
+    return resource.parameters();
   }
 
-  private static ImmutableSet<String> extractSeen(Set<String> seen, GResource resource) {
-    return FluentIterable.from(resource.uriParameters())
-        .transform(new Function<GParameter, String>() {
-
-          @Nullable
-          @Override
-          public String apply(@Nullable GParameter gParameter) {
-            return gParameter.name();
-          }
-        }).append(seen).toSet();
-  }
 
 }

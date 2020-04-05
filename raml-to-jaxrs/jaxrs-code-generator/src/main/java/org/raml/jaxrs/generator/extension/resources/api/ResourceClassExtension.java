@@ -15,40 +15,41 @@
  */
 package org.raml.jaxrs.generator.extension.resources.api;
 
+import amf.client.model.domain.EndPoint;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.ramltypes.GResource;
+import org.raml.jaxrs.generator.ramltypes.EndPoint;
 
 import java.util.Collection;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
  */
-public interface ResourceClassExtension<T extends GResource> {
+public interface ResourceClassExtension<T extends EndPoint> {
 
-  class Composite extends AbstractCompositeExtension<ResourceClassExtension<GResource>, TypeSpec.Builder> implements
-      ResourceClassExtension<GResource> {
+  class Composite extends AbstractCompositeExtension<ResourceClassExtension<EndPoint>, TypeSpec.Builder> implements
+      ResourceClassExtension<EndPoint> {
 
-    public Composite(Collection<ResourceClassExtension<GResource>> extensions) {
+    public Composite(Collection<ResourceClassExtension<EndPoint>> extensions) {
       super(extensions);
     }
 
     @Override
-    public TypeSpec.Builder onResource(final ResourceContext context, final GResource resource, TypeSpec.Builder builder) {
+    public TypeSpec.Builder onResource(final ResourceContext context, final EndPoint resource, TypeSpec.Builder builder) {
 
-      return runList(builder, new ElementJob<ResourceClassExtension<GResource>, TypeSpec.Builder>() {
+      return runList(builder, new ElementJob<ResourceClassExtension<EndPoint>, TypeSpec.Builder>() {
 
         @Override
-        public TypeSpec.Builder doElement(ResourceClassExtension<GResource> e, TypeSpec.Builder builder) {
+        public TypeSpec.Builder doElement(ResourceClassExtension<EndPoint> e, TypeSpec.Builder builder) {
           return e.onResource(context, resource, builder);
         }
       });
     }
   }
 
-  ResourceClassExtension<GResource> NULL_EXTENSION = new ResourceClassExtension<GResource>() {
+  ResourceClassExtension<EndPoint> NULL_EXTENSION = new ResourceClassExtension<EndPoint>() {
 
     @Override
-    public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
       return typeSpec;
     }
   };

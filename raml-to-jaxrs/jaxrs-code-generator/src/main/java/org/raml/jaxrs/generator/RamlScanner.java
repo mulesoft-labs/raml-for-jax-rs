@@ -75,7 +75,7 @@ public class RamlScanner {
         new CurrentBuild(document, ExtensionManager.createExtensionManager());
 
     configuration.setupBuild(build);
-    build.constructClasses(new V10Finder(build, api));
+  //  build.constructClasses(new V10Finder(build, api));
 
     ResourceHandler resourceHandler = new ResourceHandler(build);
 

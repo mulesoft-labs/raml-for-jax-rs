@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.builders.resources;
 
+import amf.client.model.domain.*;
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
@@ -27,24 +28,18 @@ import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
 import org.raml.jaxrs.generator.extension.resources.api.*;
-import org.raml.jaxrs.generator.ramltypes.*;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
-import org.raml.v2.api.model.v10.methods.Method;
-import org.raml.v2.api.model.v10.resources.Resource;
 
 import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.*;
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Jean-Philippe Belanger on 10/27/16. Abstraction of creation.
@@ -52,11 +47,11 @@ import java.util.*;
 public class ResourceBuilder implements ResourceGenerator {
 
   private final CurrentBuild build;
-  private final GResource topResource;
+  private final EndPoint topResource;
   private final String name;
   private final String uri;
 
-  public ResourceBuilder(CurrentBuild build, GResource resource, String name, String uri) {
+  public ResourceBuilder(CurrentBuild build, EndPoint resource, String name, String uri) {
 
     this.build = build;
     this.topResource = resource;
@@ -74,190 +69,175 @@ public class ResourceBuilder implements ResourceGenerator {
     }
   }
 
+  private void buildResource(TypeSpec.Builder typeSpec, EndPoint endPoint) {
 
-  private void recurse(TypeSpec.Builder typeSpec, GResource parentResource) {
+    Multimap<Operation, Payload> incomingBodies = ArrayListMultimap.create();
+    Multimap<Operation, Response> responses = ArrayListMultimap.create();
+    ResourceUtils.fillInBodiesAndResponses(endPoint, incomingBodies, responses);
 
-    for (GResource resource : parentResource.resources()) {
+    Map<String, TypeSpec.Builder> responseSpecs = createResponseClass(typeSpec, endPoint, incomingBodies, responses);
 
-      buildResource(typeSpec, resource);
-      recurse(typeSpec, resource);
-    }
-  }
+    for (Operation operation : endPoint.operations()) {
 
-  private void buildResource(TypeSpec.Builder typeSpec, GResource currentResource) {
+      String methodName = Names.resourceMethodName(endPoint, operation);
+      Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(operation);
+      if (operation.request().payloads().size() == 0) {
 
-    Multimap<GMethod, GRequest> incomingBodies = ArrayListMultimap.create();
-    Multimap<GMethod, GResponse> responses = ArrayListMultimap.create();
-    ResourceUtils.fillInBodiesAndResponses(currentResource, incomingBodies, responses);
-
-    Map<String, TypeSpec.Builder> responseSpecs = createResponseClass(typeSpec, incomingBodies, responses);
-
-    for (GMethod gMethod : currentResource.methods()) {
-
-      String methodName = Names.resourceMethodName(gMethod.resource(), gMethod);
-      Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(gMethod);
-      if (gMethod.body().size() == 0) {
-
-        createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, HashMultimap.<String, String>create(), methodName,
+        createMethodWithoutBody(typeSpec, endPoint, operation, mediaTypesForMethod, HashMultimap.<String, String>create(), methodName,
                                 responseSpecs);
       } else {
-        Multimap<String, String> ramlTypeToMediaType = accumulateMediaTypesPerType(incomingBodies, gMethod);
-        for (GRequest gRequest : gMethod.body()) {
+        Multimap<String, String> ramlTypeToMediaType = accumulateMediaTypesPerType(incomingBodies, operation);
+        for (Payload payload : operation.request().payloads()) {
 
-          if (gRequest.type() == null) {
+          if (payload.schema() == null) {
 
-            createMethodWithoutBody(typeSpec, gMethod, mediaTypesForMethod, ramlTypeToMediaType, methodName, responseSpecs);
+            createMethodWithoutBody(typeSpec, endPoint, operation, mediaTypesForMethod, ramlTypeToMediaType, methodName, responseSpecs);
             continue;
           }
 
-          if (ramlTypeToMediaType.containsKey(gRequest.type().name())) {
-            createMethodWithBody(typeSpec, gMethod, ramlTypeToMediaType, methodName, gRequest, responseSpecs, mediaTypesForMethod);
-            ramlTypeToMediaType.removeAll(gRequest.type().name());
+          if (ramlTypeToMediaType.containsKey(payload.schema().name().value())) {
+            createMethodWithBody(typeSpec, endPoint, operation, ramlTypeToMediaType, methodName, payload, responseSpecs, mediaTypesForMethod);
+            ramlTypeToMediaType.removeAll(payload.schema().name().value());
           }
         }
       }
     }
   }
 
-  private Multimap<String, String> accumulateMediaTypesPerType(Multimap<GMethod, GRequest> incomingBodies,
-                                                               GMethod gMethod) {
+  private Multimap<String, String> accumulateMediaTypesPerType(Multimap<Operation, Payload> incomingBodies,
+                                                               Operation gMethod) {
     Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
-    for (GRequest request : incomingBodies.get(gMethod)) {
-      if (request != null) {
-        if (request.type() == null) {
-          ramlTypeToMediaType.put(null, request.mediaType());
+    for (Payload payload : incomingBodies.get(gMethod)) {
+      if (payload != null) {
+        if (payload.schema() == null) {
+          ramlTypeToMediaType.put(null, payload.mediaType().value());
         } else {
-          ramlTypeToMediaType.put(request.type().name(), request.mediaType());
+          ramlTypeToMediaType.put(payload.schema().name().value(), payload.mediaType().value());
         }
       }
     }
     return ramlTypeToMediaType;
   }
 
-  private void createMethodWithoutBody(TypeSpec.Builder typeSpec, GMethod gMethod, Set<String> mediaTypesForMethod,
+  private void createMethodWithoutBody(TypeSpec.Builder typeSpec, EndPoint endPoint, Operation operation, Set<String> mediaTypesForMethod,
                                        Multimap<String, String> ramlTypeToMediaType, String methodName,
                                        Map<String, TypeSpec.Builder> responseSpecs) {
 
-    MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpecs);
-
-
-    methodSpec =
-        build
-            .pluginsForResourceMethod(new Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>>() {
-
-                                        @Nullable
-                                        @Override
-                                        public ResourceMethodExtension<GMethod> apply(@Nullable Collection<ResourceMethodExtension<GMethod>> resourceMethodExtensions) {
-                                          return new ResourceMethodExtension.Composite(resourceMethodExtensions);
-                                        }
-                                      }, gMethod)
-            .onMethod(new ResourceContextImpl(build),
-                      gMethod, null, methodSpec);
+    MethodSpec.Builder methodSpec = createMethodBuilder(endPoint, operation, methodName, mediaTypesForMethod, responseSpecs);
     handleMethodConsumer(methodSpec, ramlTypeToMediaType, null);
+    typeSpec.addMethod(methodSpec.build());
+//  todo plugin
+//    methodSpec =
+//        build
+//            .pluginsForResourceMethod(new Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>>() {
+//
+//                                        @Nullable
+//                                        @Override
+//                                        public ResourceMethodExtension<GMethod> apply(@Nullable Collection<ResourceMethodExtension<GMethod>> resourceMethodExtensions) {
+//                                          return new ResourceMethodExtension.Composite(resourceMethodExtensions);
+//                                        }
+//                                      }, operation)
+//            .onMethod(new ResourceContextImpl(build),
+//                      operation, null, methodSpec);
+//
 
-    if (methodSpec != null) {
-      typeSpec.addMethod(methodSpec.build());
-    }
   }
 
-  private void createMethodWithBody(TypeSpec.Builder typeSpec, GMethod gMethod,
-                                    Multimap<String, String> ramlTypeToMediaType, String methodName, GRequest gRequest,
+  private void createMethodWithBody(TypeSpec.Builder typeSpec, EndPoint endPoint, Operation operation,
+                                    Multimap<String, String> ramlTypeToMediaType, String methodName, Payload  payload,
                                     Map<String, TypeSpec.Builder> responseSpec, Set<String> mediaTypesForMethod) {
 
-    MethodSpec.Builder methodSpec = createMethodBuilder(gMethod, methodName, mediaTypesForMethod, responseSpec);
+    MethodSpec.Builder methodSpec = createMethodBuilder(endPoint, operation, methodName, mediaTypesForMethod, responseSpec);
 
-    createParamteter(methodSpec, gRequest, gMethod);
+    createParameter(endPoint, methodSpec, payload, operation);
 
-    handleMethodConsumer(methodSpec, ramlTypeToMediaType, gRequest.type());
+    handleMethodConsumer(methodSpec, ramlTypeToMediaType, payload.schema());
 
-    methodSpec =
-        build
-            .pluginsForResourceMethod(new Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>>() {
+    typeSpec.addMethod(methodSpec.build());
 
-                                        @Nullable
-                                        @Override
-                                        public ResourceMethodExtension<GMethod> apply(@Nullable Collection<ResourceMethodExtension<GMethod>> resourceMethodExtensions) {
-                                          return new ResourceMethodExtension.Composite(resourceMethodExtensions);
-                                        }
-                                      }, gMethod)
-            .onMethod(new ResourceContextImpl(build),
-                      gMethod, gRequest, methodSpec);
-
-    if (methodSpec != null) {
-      typeSpec.addMethod(methodSpec.build());
-    }
+    // todo plugin.
+//    methodSpec =
+//        build
+//            .pluginsForResourceMethod(new Function<Collection<ResourceMethodExtension<GMethod>>, ResourceMethodExtension<GMethod>>() {
+//
+//                                        @Nullable
+//                                        @Override
+//                                        public ResourceMethodExtension<GMethod> apply(@Nullable Collection<ResourceMethodExtension<GMethod>> resourceMethodExtensions) {
+//                                          return new ResourceMethodExtension.Composite(resourceMethodExtensions);
+//                                        }
+//                                      }, operation)
+//            .onMethod(new ResourceContextImpl(build),
+//                      operation, payload, methodSpec);
+//
+//    if (methodSpec != null) {
+//    }
   }
 
-  private void createParamteter(MethodSpec.Builder methodSpec, GRequest gRequest, GMethod gMethod) {
+  private void createParameter(EndPoint endPoint, MethodSpec.Builder methodSpec, Payload payload, Operation operation) {
 
-    if ("application/x-www-form-urlencoded".equals(gRequest.mediaType())) {
+    if ("application/x-www-form-urlencoded".equals(payload.mediaType().value())) {
 
-      if (gRequest.type().implementation() instanceof ObjectTypeDeclaration) {
+      if (payload.schema() instanceof NodeShape) {
 
-        ObjectTypeDeclaration object = (ObjectTypeDeclaration) gRequest.type().implementation();
-        for (TypeDeclaration typeDeclaration : object.properties()) {
+        NodeShape object = (NodeShape) payload.schema();
+        for (PropertyShape shape : object.properties()) {
 
+          AnyShape parameterShape = (AnyShape)shape.range();
           V10GType type =
-              build.fetchType(Names.javaTypeName((Resource) gMethod.resource().implementation(),
-                                                 (Method) gMethod.implementation(), typeDeclaration), typeDeclaration);
+              build.fetchType(Names.javaTypeName(endPoint,
+                                                 operation, parameterShape), parameterShape);
           methodSpec.addParameter(ParameterSpec
-              .builder(type.defaultJavaTypeName(build.getModelPackage()), typeDeclaration.name())
-              .addAnnotation(AnnotationSpec.builder(FormParam.class).addMember("value", "$S", typeDeclaration.name()).build())
+              .builder(type.defaultJavaTypeName(build.getModelPackage()), shape.name().value())
+              .addAnnotation(AnnotationSpec.builder(FormParam.class).addMember("value", "$S", shape.name()).build())
               .build());
         }
       }
       return;
     }
 
-    if (gRequest.type().name().equals("any") && "application/octet-stream".equals(gRequest.mediaType())) {
+    if (payload.schema().name().value().equals("any") && "application/octet-stream".equals(payload.mediaType().value())) {
 
       TypeName typeName = ClassName.get(InputStream.class);
       methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());
     } else {
 
-      TypeName typeName = gRequest.type().defaultJavaTypeName(build.getModelPackage());
+      TypeName typeName = payload.schema().defaultJavaTypeName(build.getModelPackage());
       methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());
     }
   }
 
 
-  private Set<String> fetchAllMediaTypesForMethodResponses(GMethod gMethod) {
+  private Set<String> fetchAllMediaTypesForMethodResponses(Operation operation) {
 
     Set<String> mediaTypes = new HashSet<>();
-    for (GResponse gResponse : gMethod.responses()) {
+    // todo flatMap
+    for (Response gResponse : operation.responses()) {
 
-      mediaTypes.addAll(Lists.transform(gResponse.body(), new Function<GResponseType, String>() {
-
-        @Nullable
-        @Override
-        public String apply(@Nullable GResponseType input) {
-          return input.mediaType();
-        }
-      }));
+      mediaTypes.addAll(gResponse.payloads().stream().map(input -> input.mediaType().value()).collect(Collectors.toList()));
     }
 
     return mediaTypes;
   }
 
-  private Map<String, TypeSpec.Builder> createResponseClass(TypeSpec.Builder typeSpec, Multimap<GMethod, GRequest> bodies,
-                                                            Multimap<GMethod, GResponse> responses) {
+  private Map<String, TypeSpec.Builder> createResponseClass(TypeSpec.Builder typeSpec, EndPoint endPoint, Multimap<Operation, Payload> bodies,
+                                                            Multimap<Operation, Response> responses) {
     if (!build.shouldGenerateResponseClasses()) {
       return Collections.emptyMap();
     }
 
     Map<String, TypeSpec.Builder> map = new HashMap<>();
 
-    Set<GMethod> allMethods = new HashSet<>();
+    Set<Operation> allMethods = new HashSet<>();
     allMethods.addAll(bodies.keySet());
     allMethods.addAll(responses.keySet());
-    for (GMethod gMethod : allMethods) {
+    for (Operation method : allMethods) {
 
-      if (gMethod.responses().size() == 0) {
+      if (method.responses().size() == 0) {
 
         continue;
       }
 
-      String defaultName = Names.responseClassName(gMethod.resource(), gMethod);
+      String defaultName = Names.responseClassName(endPoint, method);
       TypeSpec.Builder responseClass = TypeSpec
           .classBuilder(defaultName)
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -279,20 +259,20 @@ public class ResourceBuilder implements ResourceGenerator {
       map.put(defaultName, null);
 
       TypeSpec currentClass = responseClass.build();
-      for (GResponse gResponse : responses.get(gMethod)) {
+      for (Response response : responses.get(method)) {
 
-        if (gResponse == null) {
+        if (response == null) {
           continue;
         }
 
         TypeSpec internalClassForHeaders = null;
-        if (!gResponse.headers().isEmpty()) {
+        if (!response.headers().isEmpty()) {
 
-          internalClassForHeaders = buildHeadersForResponse(responseClass, gResponse.headers(), gResponse.code());
+          internalClassForHeaders = buildHeadersForResponse(responseClass, response.headers(), response.statusCode().value());
         }
 
-        if (gResponse.body().size() == 0) {
-          String httpCode = gResponse.code();
+        if (response.payloads().size() == 0) {
+          String httpCode = response.statusCode().value();
           MethodSpec.Builder builder = MethodSpec.methodBuilder("respond" + httpCode);
           builder
               .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
@@ -311,33 +291,33 @@ public class ResourceBuilder implements ResourceGenerator {
                 .addStatement("return new $N(responseBuilder.build())", currentClass);
           }
 
-
-          builder =
-              build
-                  .pluginsForResponseMethod(new Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>>() {
-
-                                              @Nullable
-                                              @Override
-                                              public ResponseMethodExtension<GResponse> apply(@Nullable Collection<ResponseMethodExtension<GResponse>> responseMethodExtensions) {
-                                                return new ResponseMethodExtension.Composite(responseMethodExtensions);
-                                              }
-                                            }, gResponse)
-                  .onMethod(new ResourceContextImpl(build),
-                            gResponse, builder);
-
-
-          if (builder == null) {
-            continue;
-          }
+// todo dead plugins.  need to do better.  haha.
+//          builder =
+//              build
+//                  .pluginsForResponseMethod(new Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>>() {
+//
+//                                              @Nullable
+//                                              @Override
+//                                              public ResponseMethodExtension<GResponse> apply(@Nullable Collection<ResponseMethodExtension<GResponse>> responseMethodExtensions) {
+//                                                return new ResponseMethodExtension.Composite(responseMethodExtensions);
+//                                              }
+//                                            }, response)
+//                  .onMethod(new ResourceContextImpl(build),
+//                            response, builder);
+//
+//
+//          if (builder == null) {
+//            continue;
+//          }
 
           responseClass.addMethod(builder.build());
         } else {
-          for (GResponseType responseType : gResponse.body()) {
+          for (Payload responseType : response.payloads()) {
 
-            String httpCode = gResponse.code();
+            String httpCode = response.statusCode().value();
             MethodSpec.Builder builder =
                 MethodSpec.methodBuilder(
-                                         Names.methodName("respond", httpCode, "With", responseType.mediaType()))
+                                         Names.methodName("respond", httpCode, "With", responseType.mediaType().value()))
                     .addModifiers(Modifier.STATIC, Modifier.PUBLIC);
 
             builder
@@ -354,7 +334,7 @@ public class ResourceBuilder implements ResourceGenerator {
                 + ").header(\"Content-Type\", \""
                 + responseType.mediaType() + "\")");
 
-            if (responseType.type() == null) {
+            if (responseType.schema() == null) {
 
               if (internalClassForHeaders == null) {
                 builder
@@ -369,7 +349,7 @@ public class ResourceBuilder implements ResourceGenerator {
               }
             } else {
 
-              if (responseType.type().isArray()) {
+              if (responseType.schema() instanceof ArrayShape) {
 
                 if (internalClassForHeaders == null) {
                   builder
@@ -401,45 +381,45 @@ public class ResourceBuilder implements ResourceGenerator {
               }
             }
 
-            builder =
-                build
-                    .pluginsForResponseMethod(new Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>>() {
-
-                                                @Nullable
-                                                @Override
-                                                public ResponseMethodExtension<GResponse> apply(@Nullable Collection<ResponseMethodExtension<GResponse>> responseMethodExtensions) {
-                                                  return new ResponseMethodExtension.Composite(responseMethodExtensions);
-                                                }
-                                              }, gResponse)
-                    .onMethod(new ResourceContextImpl(build),
-                              gResponse, builder);
-
-            if (builder == null) {
-              continue;
-            }
+//            builder =
+//                build
+//                    .pluginsForResponseMethod(new Function<Collection<ResponseMethodExtension<GResponse>>, ResponseMethodExtension<GResponse>>() {
+//
+//                                                @Nullable
+//                                                @Override
+//                                                public ResponseMethodExtension<GResponse> apply(@Nullable Collection<ResponseMethodExtension<GResponse>> responseMethodExtensions) {
+//                                                  return new ResponseMethodExtension.Composite(responseMethodExtensions);
+//                                                }
+//                                              }, response)
+//                    .onMethod(new ResourceContextImpl(build),
+//                              response, builder);
+//
+//            if (builder == null) {
+//              continue;
+//            }
             responseClass.addMethod(builder.build());
           }
         }
       }
 
-      responseClass =
-          build
-              .pluginsForResponseClass(new Function<Collection<ResponseClassExtension<GMethod>>, ResponseClassExtension<GMethod>>() {
-
-                                         @Nullable
-                                         @Override
-                                         public ResponseClassExtension<GMethod> apply(@Nullable Collection<ResponseClassExtension<GMethod>> responseClassExtensions) {
-                                           return new ResponseClassExtension.Composite(responseClassExtensions);
-                                         }
-                                       }, gMethod)
-              .onResponseClass(new ResourceContextImpl(build),
-                               gMethod, responseClass);
-
-      if (responseClass == null) {
-
-        map.put(defaultName, null);
-        continue;
-      }
+//      responseClass =
+//          build
+//              .pluginsForResponseClass(new Function<Collection<ResponseClassExtension<GMethod>>, ResponseClassExtension<GMethod>>() {
+//
+//                                         @Nullable
+//                                         @Override
+//                                         public ResponseClassExtension<GMethod> apply(@Nullable Collection<ResponseClassExtension<GMethod>> responseClassExtensions) {
+//                                           return new ResponseClassExtension.Composite(responseClassExtensions);
+//                                         }
+//                                       }, method)
+//              .onResponseClass(new ResourceContextImpl(build),
+//                               method, responseClass);
+//
+//      if (responseClass == null) {
+//
+//        map.put(defaultName, null);
+//        continue;
+//      }
 
       map.put(defaultName, responseClass);
       typeSpec.addType(responseClass.build());
@@ -448,19 +428,20 @@ public class ResourceBuilder implements ResourceGenerator {
     return map;
   }
 
-  private TypeName createResponseParameter(GResponseType responseType, MethodSpec.Builder builder) {
+  private TypeName createResponseParameter(Payload responseType, MethodSpec.Builder builder) {
 
-    if ("application/octet-stream".equals(responseType.mediaType()) && "any".equals(responseType.type().name())) {
+    // todo this check for any is wrong, pretty sure.
+    if ("application/octet-stream".equals(responseType.mediaType().value()) && AnyShape.class.equals(responseType.schema().getClass())) {
 
       TypeName typeName = ClassName.get(StreamingOutput.class);
       builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
 
       return typeName;
     } else {
-      if (responseType.type() != null) {
-        TypeName typeName = responseType.type().defaultJavaTypeName(build.getModelPackage());
+      if (responseType.schema() != null) {
+        TypeName typeName = responseType.schema().defaultJavaTypeName(build.getModelPackage());
         if (typeName == null) {
-          throw new GenerationException(responseType.mediaType() + "," + responseType.type().name() + " was not seen before");
+          throw new GenerationException(responseType.mediaType() + "," + responseType.schema().name() + " was not seen before");
         }
 
         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
@@ -472,7 +453,7 @@ public class ResourceBuilder implements ResourceGenerator {
     }
   }
 
-  private TypeSpec buildHeadersForResponse(TypeSpec.Builder responseClass, List<GParameter> headers, String code) {
+  private TypeSpec buildHeadersForResponse(TypeSpec.Builder responseClass, List<Parameter> headers, String code) {
 
     responseClass.addMethod(MethodSpec.methodBuilder(Names.methodName("headersFor" + code))
         .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
@@ -485,12 +466,12 @@ public class ResourceBuilder implements ResourceGenerator {
         .superclass(ClassName.get("", "HeaderBuilderBase"))
         .addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
 
-    for (GParameter header : headers) {
+    for (Parameter header : headers) {
       MethodSpec spec = MethodSpec
-          .methodBuilder(Names.methodName("with", header.name()))
+          .methodBuilder(Names.methodName("with", header.name().value()))
           .addModifiers(Modifier.PUBLIC)
           .returns(ClassName.get("", "HeadersFor" + code))
-          .addParameter(ParameterSpec.builder(header.type().defaultJavaTypeName(build.getModelPackage()), "p", Modifier.FINAL)
+          .addParameter(ParameterSpec.builder(header.schema().defaultJavaTypeName(build.getModelPackage()), "p", Modifier.FINAL)
               .build())
           .addStatement("headerMap.put($S, String.valueOf(p));", header.name())
           .addStatement("return this")
@@ -503,82 +484,76 @@ public class ResourceBuilder implements ResourceGenerator {
     return build;
   }
 
-  private MethodSpec.Builder createMethodBuilder(GMethod gMethod, String methodName, Set<String> mediaTypesForMethod,
+  private MethodSpec.Builder createMethodBuilder(EndPoint endPoint, Operation operation, String methodName, Set<String> mediaTypesForMethod,
                                                  Map<String, TypeSpec.Builder> responseSpec) {
 
     MethodSpec.Builder methodSpec = MethodSpec.methodBuilder(methodName)
         .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC);
 
 
-    for (GParameter parameter : ResourceUtils.accumulateUriParameters(gMethod.resource())) {
+    for (Parameter parameter : ResourceUtils.accumulateUriParameters(endPoint)) {
 
       methodSpec.addParameter(
           ParameterSpec
               .builder(
-                       parameter.type().defaultJavaTypeName(build.getModelPackage()),
-                       Names.methodName(parameter.name()))
+                       parameter.schema().defaultJavaTypeName(build.getModelPackage()),
+                       Names.methodName(parameter.name().value()))
               .addAnnotation(
                              AnnotationSpec.builder(PathParam.class).addMember("value", "$S", parameter.name())
                                  .build())
               .build());
     }
 
-    for (GParameter gParameter : gMethod.queryParameters()) {
+    for (Parameter parameter : operation.request().queryParameters()) {
 
       ParameterSpec.Builder parameterSpec = ParameterSpec
           .builder(
-                   gParameter.type().defaultJavaTypeName(this.build.getModelPackage()),
-                   Names.methodName(gParameter.name()))
+                   parameter.schema().defaultJavaTypeName(this.build.getModelPackage()),
+                   Names.methodName(parameter.name().value()))
           .addAnnotation(
-                         AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", gParameter.name())
+                         AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", parameter.name())
                              .build());
-      if (gParameter.defaultValue() != null) {
+      if (parameter.schema().defaultValue() != null) {
         parameterSpec.addAnnotation(
+            //todo this is wrong
             AnnotationSpec.builder(DefaultValue.class)
-                .addMember("value", "$S", gParameter.defaultValue()).build());
+                .addMember("value", "$S", parameter.schema().defaultValue().name()).build());
       }
       methodSpec.addParameter(parameterSpec.build());
     }
 
-    for (GParameter gParameter : gMethod.headers()) {
+    for (Parameter parameter : operation.request().headers()) {
 
       methodSpec.addParameter(
           ParameterSpec
               .builder(
-                       gParameter.type().defaultJavaTypeName(build.getModelPackage()),
-                       Names.methodName(gParameter.name()))
+                       parameter.schema().defaultJavaTypeName(build.getModelPackage()),
+                       Names.methodName(parameter.name().value()))
               .addAnnotation(
-                             AnnotationSpec.builder(HeaderParam.class).addMember("value", "$S", gParameter.name())
+                             AnnotationSpec.builder(HeaderParam.class).addMember("value", "$S", parameter.name())
                                  .build())
               .build());
     }
 
-    buildNewWebMethod(gMethod, methodSpec);
+    buildNewWebMethod(operation, methodSpec);
 
-
-    if (gMethod.resource().parentResource() != null) {
-
-      methodSpec.addAnnotation(
+    methodSpec.addAnnotation(
           AnnotationSpec
               .builder(Path.class)
               .addMember("value",
                          "$S",
                          generatePathString(
-                                            gMethod
-                                                .resource()
-                                                .resourcePath()
-                                                .substring(findTopResource(gMethod.resource().parentResource()).resourcePath()
-                                                    .length()),
-                                            ResourceUtils.accumulateUriParameters(gMethod.resource())))
+                                            endPoint
+                                                .path().value(),
+                                            ResourceUtils.accumulateUriParameters(endPoint)))
               .build());
-    }
 
-    if (gMethod.responses().size() == 0) {
+    if (operation.responses().size() == 0) {
       // There is no response, return void
       methodSpec.returns(ClassName.VOID);
     } else if (build.shouldGenerateResponseClasses()) {
       // Return types are the responses with an entity
-      TypeSpec.Builder responseSpecForMethod = responseSpec.get(Names.responseClassName(gMethod.resource(), gMethod));
+      TypeSpec.Builder responseSpecForMethod = responseSpec.get(Names.responseClassName(endPoint, operation));
       if (responseSpecForMethod == null) {
 
         methodSpec.returns(ClassName.get(Response.class));
@@ -587,11 +562,11 @@ public class ResourceBuilder implements ResourceGenerator {
       }
     } else {
       // Return types are the entities itself
-      List<GResponseType> bodies = gMethod.responses().get(0).body();
+      List<Payload> bodies = operation.responses().get(0).payloads();
       if (bodies == null || bodies.isEmpty()) {
         methodSpec.returns(ClassName.VOID);
       } else {
-        methodSpec.returns(bodies.get(0).type().defaultJavaTypeName(build.getModelPackage()));
+        methodSpec.returns(bodies.get(0).schema().defaultJavaTypeName(build.getModelPackage()));
       }
     }
 
@@ -602,20 +577,20 @@ public class ResourceBuilder implements ResourceGenerator {
     return methodSpec;
   }
 
-  private String generatePathString(final String pathString, final List<GParameter> uriParams) {
+  private String generatePathString(final String pathString, final List<Parameter> uriParams) {
     String generatedPathString = pathString;
     // update regex of path string pattern variables (if needed)
-    for (GParameter parameter : uriParams) {
-      final String name = Names.methodName(parameter.name());
+    for (Parameter parameter : uriParams) {
+      final String name = Names.methodName(parameter.name().value());
       // check if path contains param
       if (pathString.contains("{" + name + "}")) {
         // check if param is a string value
-        if (parameter.implementation() instanceof StringTypeDeclaration) {
-          StringTypeDeclaration typeDecl = (StringTypeDeclaration) parameter.implementation();
+        if (parameter.schema() instanceof ScalarShape) {
+          ScalarShape typeDecl = (ScalarShape) parameter.schema();
           // check if this string has a pattern to register
           if (typeDecl.pattern() != null) {
             // remove ^...$ from pattern if existing
-            String pattern = typeDecl.pattern();
+            String pattern = typeDecl.pattern().value();
             if (pattern.startsWith("^") && pattern.endsWith("$") && pattern.length() > 2) {
               pattern = pattern.substring(1, pattern.length() - 1);
             }
@@ -627,21 +602,11 @@ public class ResourceBuilder implements ResourceGenerator {
     return generatedPathString;
   }
 
-  private GResource findTopResource(GResource gResource) {
-
-    if (gResource.parentResource() == null) {
-      return gResource;
-    } else {
-
-      return findTopResource(gResource.parentResource());
-    }
-  }
-
-  private void buildNewWebMethod(GMethod gMethod, MethodSpec.Builder methodSpec) {
-    Class<? extends Annotation> type = HTTPMethods.methodNameToAnnotation(gMethod.method());
+  private void buildNewWebMethod(Operation operation, MethodSpec.Builder methodSpec) {
+    Class<? extends Annotation> type = HTTPMethods.methodNameToAnnotation(operation.name().value());
     if (type == null) {
 
-      String name = gMethod.method().toUpperCase();
+      String name = operation.method().value().toUpperCase();
       final ClassName className = ClassName.get(build.getSupportPackage(), name);
       final TypeSpec.Builder builder = TypeSpec.annotationBuilder(className);
       builder
@@ -673,9 +638,9 @@ public class ResourceBuilder implements ResourceGenerator {
 
   private void handleMethodConsumer(MethodSpec.Builder methodSpec,
                                     Multimap<String, String> ramlTypeToMediaType,
-                                    GType typeDeclaration) {
+                                    AnyShape anyShape) {
 
-    Collection<String> mediaTypes = ramlTypeToMediaType.get(typeDeclaration == null ? null : typeDeclaration.name());
+    Collection<String> mediaTypes = ramlTypeToMediaType.get(anyShape == null ? null : anyShape.name().value());
 
     if (mediaTypes.size() > 0) {
       AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
@@ -692,32 +657,29 @@ public class ResourceBuilder implements ResourceGenerator {
     return ann;
   }
 
-  private class DefaultResourceClassCreator implements ResourceClassExtension<GResource> {
+  private class DefaultResourceClassCreator implements ResourceClassExtension<EndPoint> {
 
     @Override
-    public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder nullSpec) {
+    public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder nullSpec) {
 
       TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
           .addModifiers(Modifier.PUBLIC)
           .addAnnotation(AnnotationSpec.builder(Path.class)
-              .addMember("value", "$S", generatePathString(uri, resource.uriParameters())).build());
+              .addMember("value", "$S", generatePathString(uri, resource.parameters())).build());
 
       buildResource(typeSpec, topResource);
-
-      recurse(typeSpec, topResource);
-
-      typeSpec =
-          build
-              .pluginsForResourceClass(new Function<Collection<ResourceClassExtension<GResource>>, ResourceClassExtension<GResource>>() {
-
-                                         @Nullable
-                                         @Override
-                                         public ResourceClassExtension<GResource> apply(@Nullable Collection<ResourceClassExtension<GResource>> resourceClassExtensions) {
-                                           return new ResourceClassExtension.Composite(resourceClassExtensions);
-
-                                         }
-                                       }, topResource)
-              .onResource(new ResourceContextImpl(build), topResource, typeSpec);
+//      typeSpec =
+//          build
+//              .pluginsForResourceClass(new Function<Collection<ResourceClassExtension<GResource>>, ResourceClassExtension<GResource>>() {
+//
+//                                         @Nullable
+//                                         @Override
+//                                         public ResourceClassExtension<GResource> apply(@Nullable Collection<ResourceClassExtension<GResource>> resourceClassExtensions) {
+//                                           return new ResourceClassExtension.Composite(resourceClassExtensions);
+//
+//                                         }
+//                                       }, topResource)
+//              .onResource(new ResourceContextImpl(build), topResource, typeSpec);
       return typeSpec;
     }
   }

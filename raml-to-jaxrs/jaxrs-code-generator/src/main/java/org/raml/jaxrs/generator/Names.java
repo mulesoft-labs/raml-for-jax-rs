@@ -122,29 +122,22 @@ public class Names {
   }
 
 
-  public static String resourceMethodName(GResource resource, GMethod method) {
+  public static String resourceMethodName(EndPoint resource, Operation method) {
 
-    List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
+    List<Parameter> parameters = ResourceUtils.accumulateUriParameters(resource);
 
     if (parameters.size() == 0) {
 
-      return Names.smallCamel(method.method(),
-                              resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
+      return Names.smallCamel(method.method().value(),
+                              resource.path().value().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
     } else {
 
       List<String> elements = new ArrayList<>();
-      elements.add(method.method());
-      elements.add(resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
+      elements.add(method.method().value());
+      elements.add(resource.path().value().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
       elements.add("By");
       List<String> uriparam =
-          Lists.transform(parameters, new Function<GParameter, String>() {
-
-            @Nullable
-            @Override
-            public String apply(@Nullable GParameter input) {
-              return input.name();
-            }
-          });
+          parameters.stream().map(x-> x.name().value()).collect(Collectors.toList());
 
       for (int i = 0; i < uriparam.size(); i++) {
         elements.add(uriparam.get(i));
@@ -154,33 +147,26 @@ public class Names {
         }
       }
 
-      return Names.smallCamel(elements.toArray(new String[elements.size()]));
+      return Names.smallCamel(elements.toArray(new String[0]));
     }
   }
 
-  public static String responseClassName(GResource resource, GMethod method) {
+  public static String responseClassName(EndPoint resource, Operation method) {
 
-    List<GParameter> parameters = ResourceUtils.accumulateUriParameters(resource);
+    List<Parameter> parameters = ResourceUtils.accumulateUriParameters(resource);
 
     if (parameters.size() == 0) {
 
-      return Names.typeName(method.method(),
-                            resource.resourcePath().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""), "Response");
+      return Names.typeName(method.method().value(),
+                            resource.path().value().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""), "Response");
     } else {
 
       List<String> elements = new ArrayList<>();
-      elements.add(method.method());
-      elements.add(resource.resourcePath().replaceAll("\\{[^}]+\\}", ""));
+      elements.add(method.method().value());
+      elements.add(resource.path().value().replaceAll("\\{[^}]+\\}", ""));
       elements.add("By");
       List<String> uriparam =
-          Lists.transform(parameters, new Function<GParameter, String>() {
-
-            @Nullable
-            @Override
-            public String apply(@Nullable GParameter input) {
-              return input.name();
-            }
-          });
+              parameters.stream().map(input -> input.name().value()).collect(Collectors.toList());
 
       for (int i = 0; i < uriparam.size(); i++) {
         elements.add(uriparam.get(i));

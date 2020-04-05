@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator.extension.resources.api;
 
 import amf.client.model.domain.Operation;
+import amf.client.model.domain.Payload;
 import amf.client.model.domain.Request;
 import com.squareup.javapoet.MethodSpec;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
@@ -28,7 +29,7 @@ import java.util.Collection;
  */
 public interface ResourceMethodExtension {
 
-  ResourceMethodExtension NULL_EXTENSION = (context, method, gRequest, methodSpec) -> methodSpec;
+  ResourceMethodExtension NULL_EXTENSION = (context, method, gRequest, payload, methodSpec) -> methodSpec;
 
   class Composite extends AbstractCompositeExtension<ResourceMethodExtension, MethodSpec.Builder> implements
       ResourceMethodExtension {
@@ -39,12 +40,12 @@ public interface ResourceMethodExtension {
 
     @Override
     public MethodSpec.Builder onMethod(final ResourceContext context, final Operation method, final Request gRequest,
-                                       MethodSpec.Builder methodSpec) {
+                                       Payload payload, MethodSpec.Builder methodSpec) {
 
-      return runList(methodSpec, (e, b) -> e.onMethod(context, method, gRequest, b));
+      return runList(methodSpec, (e, b) -> e.onMethod(context, method, gRequest, payload, b));
     }
   }
 
-  MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, MethodSpec.Builder methodSpec);
+  MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec);
 
 }

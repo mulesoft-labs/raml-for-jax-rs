@@ -15,19 +15,9 @@
  */
 package org.raml.jaxrs.generator.extension.resources.api;
 
-import amf.client.model.domain.EndPoint;
-import amf.client.model.domain.Operation;
-import amf.client.model.domain.Request;
-import amf.client.model.domain.Response;
+import amf.client.model.domain.*;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GRequest;
-import org.raml.jaxrs.generator.ramltypes.GResource;
-import org.raml.jaxrs.generator.ramltypes.GResponse;
-import org.raml.jaxrs.generator.v08.V08GResource;
-import org.raml.jaxrs.generator.v08.V08Method;
-import org.raml.jaxrs.generator.v08.V08Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +43,7 @@ public interface GlobalResourceExtension extends
 
         @Override
         public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest,
-                                           MethodSpec.Builder methodSpec) {
+                                           Payload payload, MethodSpec.Builder methodSpec) {
           return methodSpec;
         }
 
@@ -68,7 +58,7 @@ public interface GlobalResourceExtension extends
         }
       };
 
-  public class Composite implements GlobalResourceExtension {
+   class Composite implements GlobalResourceExtension {
 
     private List<GlobalResourceExtension> extensions = new ArrayList<>();
 
@@ -82,9 +72,9 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
       for (GlobalResourceExtension extension : extensions) {
-        methodSpec = extension.onMethod(context, method, gRequest, methodSpec);
+        methodSpec = extension.onMethod(context, method, gRequest, payload, methodSpec);
       }
       return methodSpec;
     }
@@ -110,5 +100,29 @@ public interface GlobalResourceExtension extends
 
       extensions.add(extension);
     }
+  }
+
+  class Helper implements GlobalResourceExtension {
+
+      @Override
+      public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
+          return typeSpec;
+      }
+
+      @Override
+      public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest,
+                                         Payload payload, MethodSpec.Builder methodSpec) {
+          return methodSpec;
+      }
+
+      @Override
+      public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
+          return typeSpec;
+      }
+
+      @Override
+      public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
+          return methodSpec;
+      }
   }
 }

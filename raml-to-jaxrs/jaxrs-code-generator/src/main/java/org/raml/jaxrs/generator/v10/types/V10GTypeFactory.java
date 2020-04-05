@@ -55,16 +55,10 @@ public class V10GTypeFactory {
     return new V10RamlToPojoGType(name, scalarShape);
   }
 
-  public static V10GType createEnum(String name,
-                                    ScalarShape scalarShape) {
-    return new V10RamlToPojoGType(name, scalarShape);
-  }
 
   public static V10GType createJson(SchemaShape schemaShape, String ramlName, CreationModel model) {
 
-    return new V10GTypeJson(schemaShape, ramlName, Annotations.CLASS_NAME.get(
-                                                                                      Names.typeName(ramlName),
-                                                                                      schemaShape), model);
+    return new V10GTypeJson(schemaShape, ramlName, ramlName, model); // Should be annotable.
   }
 
   public static V10GType createJson(SchemaShape schemaShape, String ramlName,
@@ -75,11 +69,11 @@ public class V10GTypeFactory {
 
   public static V10GType createXml(SchemaShape schemaShape, String ramlName, CreationModel model) {
     return new V10GTypeXml(schemaShape, ramlName, Annotations.CLASS_NAME.get(
-                                                                                 Names.typeName(ramlName), schemaShape),
+                                                                             Names.typeName(ramlName), schemaShape),
                            model);
   }
 
-  public static V10GType createXml(SchemaShape  schemaShape, String ramlName,
+  public static V10GType createXml(SchemaShape schemaShape, String ramlName,
                                    String javaName, CreationModel model) {
     return new V10GTypeXml(schemaShape, ramlName, javaName, model);
   }

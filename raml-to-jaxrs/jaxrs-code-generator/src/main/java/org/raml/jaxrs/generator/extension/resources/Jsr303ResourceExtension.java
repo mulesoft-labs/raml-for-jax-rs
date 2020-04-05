@@ -15,34 +15,23 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
+import amf.client.model.domain.*;
 import com.squareup.javapoet.*;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.ramltypes.*;
-import org.raml.jaxrs.generator.v10.V10GMethod;
 import org.raml.ramltopojo.extensions.jsr303.AnnotationAdder;
 import org.raml.ramltopojo.extensions.jsr303.FacetValidation;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
-import javax.annotation.Nullable;
-import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Created. There, you have it.
  */
-public class Jsr303ResourceExtension implements GlobalResourceExtension {
+public class Jsr303ResourceExtension extends GlobalResourceExtension.Helper {
+
 
   @Override
-  public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder typeSpec) {
-    return typeSpec;
-  }
-
-  @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
-
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request request, Payload payload, MethodSpec.Builder methodSpec) {
     MethodSpec spec = methodSpec.build();
     MethodSpec.Builder builder = MethodSpec.methodBuilder(spec.name);
     builder.addAnnotations(spec.annotations);
@@ -64,9 +53,9 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
     for (final ParameterSpec parameter : spec.parameters) {
 
       final ParameterSpec.Builder parameterBuilder = parameter.toBuilder();
-      Optional<GParameter> declaration = getQueryParameters((V10GMethod) method, parameter.name);
+      Optional<Parameter> declaration = getQueryParameters(method, parameter.name);
       if (declaration.isPresent()) {
-        FacetValidation.addAnnotations((TypeDeclaration) declaration.get().implementation(), new AnnotationAdder() {
+        FacetValidation.addAnnotations((AnyShape) declaration.get().schema(), new AnnotationAdder() {
 
           @Override
           public TypeName typeName() {
@@ -83,7 +72,7 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
       } else {
 
         if ("entity".equals(parameter.name)) {
-          FacetValidation.addAnnotations((TypeDeclaration) gRequest.type().implementation(), new AnnotationAdder() {
+          FacetValidation.addAnnotations((AnyShape) payload.schema(), new AnnotationAdder() {
 
             @Override
             public TypeName typeName() {
@@ -114,23 +103,8 @@ public class Jsr303ResourceExtension implements GlobalResourceExtension {
     return builder;
   }
 
-  Optional<GParameter> getQueryParameters(V10GMethod request, final String name) {
-    return FluentIterable.from(request.queryParameters()).firstMatch(new Predicate<GParameter>() {
 
-      @Override
-      public boolean apply(@Nullable GParameter gParameter) {
-        return gParameter.name().equals(name);
-      }
-    });
-  }
-
-  @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
-    return typeSpec;
-  }
-
-  @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GResponse responseMethod, MethodSpec.Builder methodSpec) {
-    return methodSpec;
+  Optional<Parameter> getQueryParameters(Operation operation, final String name) {
+    return operation.request().queryParameters().stream().filter(gParameter -> gParameter.name().equals(name)).findFirst();
   }
 }

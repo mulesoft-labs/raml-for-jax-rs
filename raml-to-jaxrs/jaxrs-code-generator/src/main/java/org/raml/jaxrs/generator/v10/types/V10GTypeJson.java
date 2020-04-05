@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
+import amf.client.model.domain.SchemaShape;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
@@ -29,26 +30,21 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  */
 public class V10GTypeJson extends V10GTypeHelper {
 
-  private final JSONTypeDeclaration typeDeclaration;
+  private final SchemaShape schemaShape;
   private final String name;
   private final String defaultJavatypeName;
   private TypeName modelSpecifiedJavaType;
 
-  V10GTypeJson(JSONTypeDeclaration typeDeclaration, String realName, String defaultJavatypeName, CreationModel model) {
-    super(realName, typeDeclaration, model);
-    this.typeDeclaration = typeDeclaration;
+  V10GTypeJson(SchemaShape schemaShape, String realName, String defaultJavatypeName, CreationModel model) {
+    super(realName, schemaShape, model);
+    this.schemaShape = schemaShape;
     this.name = realName;
     this.defaultJavatypeName = defaultJavatypeName;
   }
 
   @Override
-  public TypeDeclaration implementation() {
-    return typeDeclaration;
-  }
-
-  @Override
   public String type() {
-    return typeDeclaration.type();
+    return schemaShape.name().value();
   }
 
   @Override
@@ -66,7 +62,7 @@ public class V10GTypeJson extends V10GTypeHelper {
   @Override
   public String schema() {
 
-    return typeDeclaration.schemaContent();
+    return schemaShape.schemaContent();
   }
 
 
@@ -87,7 +83,7 @@ public class V10GTypeJson extends V10GTypeHelper {
 
   @Override
   public String toString() {
-    return "V10GTypeJson{" + "input=" + typeDeclaration.name() + ":" + typeDeclaration.type()
+    return "V10GTypeJson{" + "input=" + schemaShape.name() + ":" + schemaShape.name()
         + ", name='" + name() + '\'' + '}';
   }
 

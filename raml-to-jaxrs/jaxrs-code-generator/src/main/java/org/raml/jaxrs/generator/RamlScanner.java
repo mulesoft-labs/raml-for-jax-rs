@@ -39,18 +39,21 @@ public class RamlScanner {
 
   enum Version implements RamlLoader.Loader {
     RAML_08 {
+
       @Override
       public Document load(String raml) throws RamlLoaderException {
         return RamlLoader.load(raml);
       }
     },
     RAML_10 {
+
       @Override
       public Document load(String raml) throws RamlLoaderException {
         return RamlLoader.load08(raml);
       }
     }
   }
+
   private final Configuration configuration;
 
   public RamlScanner(Configuration configuration) {
@@ -75,13 +78,13 @@ public class RamlScanner {
         new CurrentBuild(document, ExtensionManager.createExtensionManager());
 
     configuration.setupBuild(build);
-  //  build.constructClasses(new V10Finder(build, api));
+    // build.constructClasses(new V10Finder(build, api));
 
     ResourceHandler resourceHandler = new ResourceHandler(build);
 
 
     // handle resources.
-    for (EndPoint resource : ((WebApi)document.encodes()).endPoints()) {
+    for (EndPoint resource : ((WebApi) document.encodes()).endPoints()) {
       resourceHandler.handle(resource);
     }
 

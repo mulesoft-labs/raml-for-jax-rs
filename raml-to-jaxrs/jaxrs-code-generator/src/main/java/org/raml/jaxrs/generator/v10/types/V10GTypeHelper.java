@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
+import amf.client.model.domain.AnyShape;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
@@ -30,11 +31,11 @@ public abstract class V10GTypeHelper implements V10GType {
 
 
   private final String name;
-  private final TypeDeclaration typeDeclaration;
+  private final AnyShape typeDeclaration;
   private final CreationModel creationModel;
 
 
-  public V10GTypeHelper(String name, TypeDeclaration typeDeclaration, CreationModel creationModel) {
+  public V10GTypeHelper(String name, AnyShape typeDeclaration, CreationModel creationModel) {
     this.name = name;
     this.typeDeclaration = typeDeclaration;
     this.creationModel = creationModel;

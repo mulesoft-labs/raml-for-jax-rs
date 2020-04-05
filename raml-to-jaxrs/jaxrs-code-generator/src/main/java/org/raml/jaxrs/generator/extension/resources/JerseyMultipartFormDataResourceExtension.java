@@ -15,20 +15,11 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
+import amf.client.model.domain.*;
 import com.squareup.javapoet.*;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GRequest;
-import org.raml.jaxrs.generator.ramltypes.GResource;
-import org.raml.jaxrs.generator.ramltypes.GResponse;
-import org.raml.v2.api.model.v10.datamodel.FileTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.io.InputStream;
@@ -36,17 +27,13 @@ import java.io.InputStream;
 /**
  * Created. There, you have it.
  */
-public class JerseyMultipartFormDataResourceExtension implements GlobalResourceExtension {
+public class JerseyMultipartFormDataResourceExtension extends GlobalResourceExtension.Helper {
+
 
   @Override
-  public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder typeSpec) {
-    return typeSpec;
-  }
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
 
-  @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
-
-    if (gRequest != null && "multipart/form-data".equals(gRequest.mediaType())) {
+    if (gRequest != null && "multipart/form-data".equals(payload.mediaType().value())) {
 
       MethodSpec old = methodSpec.build();
       MethodSpec.Builder newMethod = MethodSpec.methodBuilder(old.name)
@@ -66,10 +53,10 @@ public class JerseyMultipartFormDataResourceExtension implements GlobalResourceE
       newMethod.addJavadoc("$L", old.javadoc);
       newMethod.addModifiers(old.modifiers);
 
-      ObjectTypeDeclaration declaration = (ObjectTypeDeclaration) gRequest.type().implementation();
-      for (TypeDeclaration property : declaration.properties()) {
+      NodeShape declaration = (NodeShape) payload.schema();
+      for (PropertyShape property : declaration.properties()) {
 
-        if (property instanceof FileTypeDeclaration) {
+        if (property.range() instanceof FileShape) {
           newMethod.addParameter(
               ParameterSpec
                   .builder(ClassName.get(InputStream.class), property.name() + "Stream")
@@ -87,10 +74,10 @@ public class JerseyMultipartFormDataResourceExtension implements GlobalResourceE
                                      .addMember("value", "$S", property.name()).build()).build());
 
         } else {
-          TypeName typeName = context.fetchRamlToPojoBuilder().fetchType(property.type(), property);
+          TypeName typeName = context.fetchRamlToPojoBuilder().fetchType(property.range().name().value(), (AnyShape) property.range());
           newMethod.addParameter(
               ParameterSpec
-                  .builder(typeName, property.name())
+                  .builder(typeName, property.name().value())
                   .addAnnotation(AnnotationSpec
                       .builder(ClassName.bestGuess("org.glassfish.jersey.media.multipart.FormDataParam"))
                       .addMember("value", "$S", property.name()).build())
@@ -106,27 +93,10 @@ public class JerseyMultipartFormDataResourceExtension implements GlobalResourceE
 
   private void addExistingParameters(MethodSpec old, MethodSpec.Builder newMethod) {
     for (ParameterSpec parameter : old.parameters) {
-      if (FluentIterable.from(parameter.annotations).filter(new Predicate<AnnotationSpec>() {
-
-        @Override
-        public boolean apply(@Nullable AnnotationSpec annotationSpec) {
-
-          return annotationSpec.type.equals(ClassName.get(PathParam.class))
-              || annotationSpec.type.equals(ClassName.get(QueryParam.class));
-        }
-      }).size() > 0) {
+      if ((int) parameter.annotations.stream().filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
+              || annotationSpec.type.equals(ClassName.get(QueryParam.class))).count() > 0) {
         newMethod.addParameter(parameter);
       }
     }
-  }
-
-  @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
-    return typeSpec;
-  }
-
-  @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GResponse responseMethod, MethodSpec.Builder methodSpec) {
-    return methodSpec;
   }
 }

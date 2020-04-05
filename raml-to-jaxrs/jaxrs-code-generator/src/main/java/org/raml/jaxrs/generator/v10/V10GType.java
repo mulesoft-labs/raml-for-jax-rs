@@ -26,8 +26,6 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  */
 public interface V10GType extends GType {
 
-  TypeDeclaration implementation();
-
   @Override
   String type();
 

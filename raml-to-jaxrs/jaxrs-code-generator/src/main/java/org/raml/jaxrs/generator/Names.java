@@ -137,7 +137,7 @@ public class Names {
       elements.add(resource.path().value().replaceAll(PATH_REPLACEMENT_TEMPLATE, ""));
       elements.add("By");
       List<String> uriparam =
-          parameters.stream().map(x-> x.name().value()).collect(Collectors.toList());
+          parameters.stream().map(x -> x.name().value()).collect(Collectors.toList());
 
       for (int i = 0; i < uriparam.size(); i++) {
         elements.add(uriparam.get(i));
@@ -166,7 +166,7 @@ public class Names {
       elements.add(resource.path().value().replaceAll("\\{[^}]+\\}", ""));
       elements.add("By");
       List<String> uriparam =
-              parameters.stream().map(input -> input.name().value()).collect(Collectors.toList());
+          parameters.stream().map(input -> input.name().value()).collect(Collectors.toList());
 
       for (int i = 0; i < uriparam.size(); i++) {
         elements.add(uriparam.get(i));
@@ -246,7 +246,7 @@ public class Names {
       i++;
     }
 
-    return String.join( "", friendlyNameBits);
+    return String.join("", friendlyNameBits);
   }
 
   private static String buildPart(int i, String s, NameFixer format) {

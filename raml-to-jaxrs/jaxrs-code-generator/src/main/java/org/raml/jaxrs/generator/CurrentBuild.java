@@ -569,4 +569,8 @@ public class CurrentBuild {
   public boolean shouldGenerateResponseClasses() {
     return configuration.getGenerateResponseClasses();
   }
+
+  public TypeName fetchTypeName(AnyShape anyShape) {
+    return fetchRamlToPojoBuilder().fetchType("none_but_fun", anyShape);
+  }
 }

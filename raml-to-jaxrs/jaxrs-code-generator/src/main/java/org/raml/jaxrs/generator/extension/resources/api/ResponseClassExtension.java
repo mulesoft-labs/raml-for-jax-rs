@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.extension.resources.api;
 
+import amf.client.model.domain.Operation;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 
@@ -23,36 +24,24 @@ import java.util.Collection;
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
  */
-public interface ResponseClassExtension<T extends GMethod> {
+public interface ResponseClassExtension {
 
-  ResponseClassExtension<GMethod> NULL_EXTENSION = new ResponseClassExtension<GMethod>() {
+  ResponseClassExtension NULL_EXTENSION = (context, method, typeSpec) -> typeSpec;
 
-    @Override
-    public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
-      return typeSpec;
-    }
-  };
+  class Composite extends AbstractCompositeExtension<ResponseClassExtension, TypeSpec.Builder> implements
+      ResponseClassExtension {
 
-  class Composite extends AbstractCompositeExtension<ResponseClassExtension<GMethod>, TypeSpec.Builder> implements
-      ResponseClassExtension<GMethod> {
-
-    public Composite(Collection<ResponseClassExtension<GMethod>> extensions) {
+    public Composite(Collection<ResponseClassExtension> extensions) {
       super(extensions);
     }
 
     @Override
-    public TypeSpec.Builder onResponseClass(final ResourceContext context, final GMethod method, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResponseClass(final ResourceContext context, final Operation method, TypeSpec.Builder typeSpec) {
 
-      return runList(typeSpec, new ElementJob<ResponseClassExtension<GMethod>, TypeSpec.Builder>() {
-
-        @Override
-        public TypeSpec.Builder doElement(ResponseClassExtension<GMethod> e, TypeSpec.Builder builder) {
-          return e.onResponseClass(context, method, builder);
-        }
-      });
+      return runList(typeSpec, (e, b) -> e.onResponseClass(context, method, b));
     }
   }
 
-  TypeSpec.Builder onResponseClass(ResourceContext context, T method, TypeSpec.Builder typeSpec);
+  TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec);
 
 }

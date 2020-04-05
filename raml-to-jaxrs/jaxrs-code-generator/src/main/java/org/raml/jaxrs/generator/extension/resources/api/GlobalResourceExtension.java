@@ -15,6 +15,10 @@
  */
 package org.raml.jaxrs.generator.extension.resources.api;
 
+import amf.client.model.domain.EndPoint;
+import amf.client.model.domain.Operation;
+import amf.client.model.domain.Request;
+import amf.client.model.domain.Response;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
@@ -33,76 +37,76 @@ import java.util.List;
  *
  * QUick and dirty
  */
-public interface GlobalResourceExtension<M extends GMethod, R extends GResource, S extends GResponse> extends
-    ResponseClassExtension<M>,
-    ResourceClassExtension<R>,
-    ResponseMethodExtension<S>,
-    ResourceMethodExtension<M> {
+public interface GlobalResourceExtension extends
+    ResponseClassExtension,
+    ResourceClassExtension,
+    ResponseMethodExtension,
+    ResourceMethodExtension {
 
-  GlobalResourceExtension<V08Method, V08GResource, V08Response> NULL_EXTENSION =
-      new GlobalResourceExtension<V08Method, V08GResource, V08Response>() {
+  GlobalResourceExtension NULL_EXTENSION =
+      new GlobalResourceExtension() {
 
         @Override
-        public TypeSpec.Builder onResource(ResourceContext context, V08GResource resource, TypeSpec.Builder typeSpec) {
+        public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
           return typeSpec;
         }
 
         @Override
-        public MethodSpec.Builder onMethod(ResourceContext context, V08Method method, GRequest gRequest,
+        public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest,
                                            MethodSpec.Builder methodSpec) {
           return methodSpec;
         }
 
         @Override
-        public TypeSpec.Builder onResponseClass(ResourceContext context, V08Method method, TypeSpec.Builder typeSpec) {
+        public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
           return typeSpec;
         }
 
         @Override
-        public MethodSpec.Builder onMethod(ResourceContext context, V08Response responseMethod, MethodSpec.Builder methodSpec) {
+        public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
           return methodSpec;
         }
       };
 
-  public class Composite<M extends GMethod, R extends GResource, S extends GResponse> implements GlobalResourceExtension<M, R, S> {
+  public class Composite implements GlobalResourceExtension {
 
-    private List<GlobalResourceExtension<M, R, S>> extensions = new ArrayList<>();
+    private List<GlobalResourceExtension> extensions = new ArrayList<>();
 
     @Override
-    public TypeSpec.Builder onResource(ResourceContext context, R resource, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
 
-      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+      for (GlobalResourceExtension extension : extensions) {
         typeSpec = extension.onResource(context, resource, typeSpec);
       }
       return typeSpec;
     }
 
     @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, M method, GRequest gRequest, MethodSpec.Builder methodSpec) {
-      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, MethodSpec.Builder methodSpec) {
+      for (GlobalResourceExtension extension : extensions) {
         methodSpec = extension.onMethod(context, method, gRequest, methodSpec);
       }
       return methodSpec;
     }
 
     @Override
-    public TypeSpec.Builder onResponseClass(ResourceContext context, M method, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
 
-      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+      for (GlobalResourceExtension extension : extensions) {
         typeSpec = extension.onResponseClass(context, method, typeSpec);
       }
       return typeSpec;
     }
 
     @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, S responseMethod, MethodSpec.Builder methodSpec) {
-      for (GlobalResourceExtension<M, R, S> extension : extensions) {
+    public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
+      for (GlobalResourceExtension extension : extensions) {
         methodSpec = extension.onMethod(context, responseMethod, methodSpec);
       }
       return methodSpec;
     }
 
-    public void addExtension(GlobalResourceExtension<M, R, S> extension) {
+    public void addExtension(GlobalResourceExtension extension) {
 
       extensions.add(extension);
     }

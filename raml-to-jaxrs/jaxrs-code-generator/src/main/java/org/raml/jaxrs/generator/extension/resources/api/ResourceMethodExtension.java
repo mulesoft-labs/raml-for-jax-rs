@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.generator.extension.resources.api;
 
+import amf.client.model.domain.Operation;
+import amf.client.model.domain.Request;
 import com.squareup.javapoet.MethodSpec;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GRequest;
@@ -24,37 +26,25 @@ import java.util.Collection;
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
  */
-public interface ResourceMethodExtension<T extends GMethod> {
+public interface ResourceMethodExtension {
 
-  ResourceMethodExtension<GMethod> NULL_EXTENSION = new ResourceMethodExtension<GMethod>() {
+  ResourceMethodExtension NULL_EXTENSION = (context, method, gRequest, methodSpec) -> methodSpec;
 
-    @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
-      return methodSpec;
-    }
-  };
+  class Composite extends AbstractCompositeExtension<ResourceMethodExtension, MethodSpec.Builder> implements
+      ResourceMethodExtension {
 
-  class Composite extends AbstractCompositeExtension<ResourceMethodExtension<GMethod>, MethodSpec.Builder> implements
-      ResourceMethodExtension<GMethod> {
-
-    public Composite(Collection<ResourceMethodExtension<GMethod>> extensions) {
+    public Composite(Collection<ResourceMethodExtension> extensions) {
       super(extensions);
     }
 
     @Override
-    public MethodSpec.Builder onMethod(final ResourceContext context, final GMethod method, final GRequest gRequest,
+    public MethodSpec.Builder onMethod(final ResourceContext context, final Operation method, final Request gRequest,
                                        MethodSpec.Builder methodSpec) {
 
-      return runList(methodSpec, new ElementJob<ResourceMethodExtension<GMethod>, MethodSpec.Builder>() {
-
-        @Override
-        public MethodSpec.Builder doElement(ResourceMethodExtension<GMethod> e, MethodSpec.Builder builder) {
-          return e.onMethod(context, method, gRequest, builder);
-        }
-      });
+      return runList(methodSpec, (e, b) -> e.onMethod(context, method, gRequest, b));
     }
   }
 
-  MethodSpec.Builder onMethod(ResourceContext context, T method, GRequest gRequest, MethodSpec.Builder methodSpec);
+  MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, MethodSpec.Builder methodSpec);
 
 }

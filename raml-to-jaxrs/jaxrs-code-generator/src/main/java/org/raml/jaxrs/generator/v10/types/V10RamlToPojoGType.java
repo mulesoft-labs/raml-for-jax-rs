@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.v10.types;
 
+import amf.client.model.domain.AnyShape;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
@@ -31,16 +32,16 @@ import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
  */
 public class V10RamlToPojoGType implements V10GType {
 
-  private final TypeDeclaration typeDeclaration;
+  private final AnyShape typeDeclaration;
   private final String name;
   private TypeName typeName;
 
-  public V10RamlToPojoGType(TypeDeclaration typeDeclaration) {
-    this.name = typeDeclaration.name();
+  public V10RamlToPojoGType(AnyShape typeDeclaration) {
+    this.name = typeDeclaration.name().value();
     this.typeDeclaration = typeDeclaration;
   }
 
-  public V10RamlToPojoGType(String name, TypeDeclaration typeDeclaration) {
+  public V10RamlToPojoGType(String name, AnyShape typeDeclaration) {
     // this is wrong. TODO fix.
     this.name = name;
     this.typeDeclaration = typeDeclaration;

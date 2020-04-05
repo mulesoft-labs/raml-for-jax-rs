@@ -22,5 +22,6 @@ import java.io.IOException;
  */
 public interface Generator<T> {
 
+  // todo: throw runtime exception
   void output(CodeContainer<T> rootDirectory) throws IOException;
 }

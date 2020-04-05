@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.extension.resources.api;
 
+import amf.client.model.domain.Response;
 import com.squareup.javapoet.MethodSpec;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 
@@ -23,36 +24,24 @@ import java.util.Collection;
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
  */
-public interface ResponseMethodExtension<T extends GResponse> {
+public interface ResponseMethodExtension {
 
-  ResponseMethodExtension<GResponse> NULL_EXTENSION = new ResponseMethodExtension<GResponse>() {
+  ResponseMethodExtension NULL_EXTENSION = (context, responseMethod, methodSpec) -> methodSpec;
 
-    @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, GResponse responseMethod, MethodSpec.Builder methodSpec) {
-      return methodSpec;
-    }
-  };
+  class Composite extends AbstractCompositeExtension<ResponseMethodExtension, MethodSpec.Builder> implements
+      ResponseMethodExtension {
 
-  class Composite extends AbstractCompositeExtension<ResponseMethodExtension<GResponse>, MethodSpec.Builder> implements
-      ResponseMethodExtension<GResponse> {
-
-    public Composite(Collection<ResponseMethodExtension<GResponse>> extensions) {
+    public Composite(Collection<ResponseMethodExtension> extensions) {
       super(extensions);
     }
 
     @Override
-    public MethodSpec.Builder onMethod(final ResourceContext context, final GResponse responseMethod,
+    public MethodSpec.Builder onMethod(final ResourceContext context, final Response responseMethod,
                                        MethodSpec.Builder methodSpec) {
 
-      return runList(methodSpec, new ElementJob<ResponseMethodExtension<GResponse>, MethodSpec.Builder>() {
-
-        @Override
-        public MethodSpec.Builder doElement(ResponseMethodExtension<GResponse> e, MethodSpec.Builder builder) {
-          return e.onMethod(context, responseMethod, builder);
-        }
-      });
+      return runList(methodSpec, (e, b) -> e.onMethod(context, responseMethod, b));
     }
   }
 
-  MethodSpec.Builder onMethod(ResourceContext context, T responseMethod, MethodSpec.Builder methodSpec);
+  MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec);
 }

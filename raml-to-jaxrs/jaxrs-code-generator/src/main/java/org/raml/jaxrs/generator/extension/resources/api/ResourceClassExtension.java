@@ -17,36 +17,29 @@ package org.raml.jaxrs.generator.extension.resources.api;
 
 import amf.client.model.domain.EndPoint;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.ramltypes.EndPoint;
 
 import java.util.Collection;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
  */
-public interface ResourceClassExtension<T extends EndPoint> {
+public interface ResourceClassExtension {
 
-  class Composite extends AbstractCompositeExtension<ResourceClassExtension<EndPoint>, TypeSpec.Builder> implements
-      ResourceClassExtension<EndPoint> {
+  class Composite extends AbstractCompositeExtension<ResourceClassExtension, TypeSpec.Builder> implements
+      ResourceClassExtension {
 
-    public Composite(Collection<ResourceClassExtension<EndPoint>> extensions) {
+    public Composite(Collection<ResourceClassExtension> extensions) {
       super(extensions);
     }
 
     @Override
     public TypeSpec.Builder onResource(final ResourceContext context, final EndPoint resource, TypeSpec.Builder builder) {
 
-      return runList(builder, new ElementJob<ResourceClassExtension<EndPoint>, TypeSpec.Builder>() {
-
-        @Override
-        public TypeSpec.Builder doElement(ResourceClassExtension<EndPoint> e, TypeSpec.Builder builder) {
-          return e.onResource(context, resource, builder);
-        }
-      });
+      return runList(builder, (e, b) -> e.onResource(context, resource, b));
     }
   }
 
-  ResourceClassExtension<EndPoint> NULL_EXTENSION = new ResourceClassExtension<EndPoint>() {
+  ResourceClassExtension NULL_EXTENSION = new ResourceClassExtension() {
 
     @Override
     public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
@@ -54,5 +47,5 @@ public interface ResourceClassExtension<T extends EndPoint> {
     }
   };
 
-  TypeSpec.Builder onResource(ResourceContext context, T resource, TypeSpec.Builder typeSpec);
+  TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec);
 }

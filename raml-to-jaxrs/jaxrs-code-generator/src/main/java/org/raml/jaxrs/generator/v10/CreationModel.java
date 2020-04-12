@@ -15,6 +15,8 @@
  */
 package org.raml.jaxrs.generator.v10;
 
+import amf.client.model.domain.AnyShape;
+import org.raml.ramltopojo.ExtraInformation;
 import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
@@ -25,16 +27,15 @@ public enum CreationModel {
   INLINE_FROM_TYPE {
 
     @Override
-    public boolean isInline(TypeDeclaration typeDeclaration) {
+    public boolean isInline(AnyShape anyShape) {
 
-      if (typeDeclaration == null) {
+      if (anyShape == null) {
         return false;
       } else {
-        return TypeUtils.shouldCreateNewClass(typeDeclaration,
-                                              typeDeclaration.parentTypes().toArray(new TypeDeclaration[0]));
+        return ExtraInformation.isInline(anyShape);
       }
     }
   };
 
-  public abstract boolean isInline(TypeDeclaration t);
+  public abstract boolean isInline(AnyShape t);
 }

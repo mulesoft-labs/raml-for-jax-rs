@@ -15,15 +15,18 @@
  */
 package org.raml.jaxrs.generator.ramltypes;
 
+import amf.client.model.domain.AnyShape;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstraction;
 import org.raml.jaxrs.generator.GObjectType;
 
+import java.util.function.Consumer;
+
 /**
  * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones
  */
-public interface GType extends GAbstraction {
+public interface GType extends GAbstraction<AnyShape> {
 
   String type();
 
@@ -45,7 +48,7 @@ public interface GType extends GAbstraction {
 
   GType arrayContents();
 
-  void construct(CurrentBuild currentBuild, GObjectType objectType);
+  void construct(CurrentBuild currentBuild, Consumer<GObjectType.GObjectTypeDispatcher> objectType);
 
   void setJavaType(TypeName generatedJavaType);
 }

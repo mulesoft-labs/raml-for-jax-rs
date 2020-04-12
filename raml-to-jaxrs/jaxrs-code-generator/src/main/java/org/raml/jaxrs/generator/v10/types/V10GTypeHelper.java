@@ -22,7 +22,8 @@ import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+
+import java.util.function.Consumer;
 
 /**
  * Created by Jean-Philippe Belanger on 1/5/17. Just potential zeroes and ones
@@ -31,13 +32,13 @@ public abstract class V10GTypeHelper implements V10GType {
 
 
   private final String name;
-  private final AnyShape typeDeclaration;
+  private final AnyShape anyShape;
   private final CreationModel creationModel;
 
 
-  public V10GTypeHelper(String name, AnyShape typeDeclaration, CreationModel creationModel) {
+  public V10GTypeHelper(String name, AnyShape anyShape, CreationModel creationModel) {
     this.name = name;
-    this.typeDeclaration = typeDeclaration;
+    this.anyShape = anyShape;
     this.creationModel = creationModel;
   }
 
@@ -77,11 +78,11 @@ public abstract class V10GTypeHelper implements V10GType {
   }
 
   public boolean isInline() {
-    return creationModel.isInline(typeDeclaration);
+    return creationModel.isInline(anyShape);
   }
 
   @Override
-  public void construct(CurrentBuild currentBuild, GObjectType objectType) {
+  public void construct(CurrentBuild currentBuild, Consumer<GObjectType.GObjectTypeDispatcher> objectType) {
 
   }
 
@@ -110,4 +111,9 @@ public abstract class V10GTypeHelper implements V10GType {
     return name.hashCode();
   }
 
+
+  @Override
+  public AnyShape implementation() {
+    return anyShape;
+  }
 }

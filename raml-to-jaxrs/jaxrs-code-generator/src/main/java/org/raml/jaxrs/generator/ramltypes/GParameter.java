@@ -15,12 +15,13 @@
  */
 package org.raml.jaxrs.generator.ramltypes;
 
+import amf.client.model.domain.Parameter;
 import org.raml.jaxrs.generator.GAbstraction;
 
 /**
  * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones
  */
-public interface GParameter extends GAbstraction {
+public interface GParameter extends GAbstraction<Parameter> {
 
   String defaultValue();
 

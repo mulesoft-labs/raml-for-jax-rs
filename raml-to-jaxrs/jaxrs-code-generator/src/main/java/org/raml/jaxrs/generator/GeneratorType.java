@@ -15,9 +15,11 @@
  */
 package org.raml.jaxrs.generator;
 
+import amf.client.model.domain.*;
 import org.raml.jaxrs.generator.ramltypes.GType;
-import org.raml.v2.api.model.v10.datamodel.ObjectTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.UnionTypeDeclaration;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static org.raml.jaxrs.generator.GObjectType.*;
 
@@ -26,61 +28,68 @@ import static org.raml.jaxrs.generator.GObjectType.*;
  */
 public class GeneratorType {
 
-  private final GObjectType objectType;
+  private final Consumer<GObjectTypeDispatcher> objectType;
   private final GType declaredType;
 
-  public static GeneratorType generatorFrom(GType typeDeclaration) {
+  public static GeneratorType generatorFrom(GType type) {
 
-    // Just a plain type we found.
-    if (typeDeclaration.isJson()) {
-      return new GeneratorType(JSON_OBJECT_TYPE, typeDeclaration);
-    }
+    return TypeBasedOperation.run(type.implementation(), new TypeBasedOperation.OptionalDefault<GeneratorType>() {
 
-    if (typeDeclaration.implementation() instanceof UnionTypeDeclaration) {
+      @Override
+      public Optional<GeneratorType> on(AnyShape anyShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onRamlToPojo, type));
+      }
 
-      return new GeneratorType(UNION_TYPE, typeDeclaration);
-    }
+      @Override
+      public Optional<GeneratorType> on(NodeShape anyShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onRamlToPojo, type));
+      }
 
-    if (typeDeclaration.isXml()) {
+      @Override
+      public Optional<GeneratorType> on(ArrayShape anyShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onRamlToPojo, type));
+      }
 
-      return new GeneratorType(XML_OBJECT_TYPE, typeDeclaration);
-    }
+      @Override
+      public Optional<GeneratorType> on(UnionShape anyShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onRamlToPojo, type));
+      }
 
-    if (typeDeclaration.implementation() instanceof ObjectTypeDeclaration) {
+      @Override
+      public Optional<GeneratorType> on(FileShape anyShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onRamlToPojo, type));
+      }
 
-      return new GeneratorType(PLAIN_OBJECT_TYPE, typeDeclaration);
-    }
+      @Override
+      public Optional<GeneratorType> on(ScalarShape anyShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onRamlToPojo, type));
+      }
 
-    if (typeDeclaration.isEnum()) {
+      @Override
+      public Optional<GeneratorType> on(SchemaShape schemaShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onSchema, type));
+      }
 
-      return new GeneratorType(ENUMERATION_TYPE, typeDeclaration);
-    }
+      @Override
+      public Optional<GeneratorType> on(NilShape nilShape) {
+        return Optional.of(new GeneratorType(GObjectTypeDispatcher::onRamlToPojo, type));
+      }
+    }).orElseThrow(() -> new GenerationException("can't create generator for " + type.implementation()));
 
-    if (typeDeclaration.isArray()) {
-
-      return new GeneratorType(PLAIN_OBJECT_TYPE, typeDeclaration);
-    }
-
-
-    return new GeneratorType(SCALAR, typeDeclaration);
   }
 
-  public GeneratorType(GObjectType objectType, GType declaredType) {
+  public GeneratorType(Consumer<GObjectTypeDispatcher> objectType, GType declaredType) {
 
     this.objectType = objectType;
     this.declaredType = declaredType;
   }
 
-  public GObjectType getObjectType() {
-    return objectType;
-  }
-
   public void construct(CurrentBuild currentBuild) {
 
-    if (getObjectType() != GObjectType.SCALAR) {
+    //if (getObjectType() != GObjectType.SCALAR) {
 
       declaredType.construct(currentBuild, objectType);
-    }
+    //}
 
   }
 }

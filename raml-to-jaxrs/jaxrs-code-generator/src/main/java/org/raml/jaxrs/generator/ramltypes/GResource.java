@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.ramltypes;
 
+import amf.client.model.domain.EndPoint;
 import org.raml.jaxrs.generator.GAbstraction;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones
  */
-public interface GResource extends GAbstraction {
+public interface GResource extends GAbstraction<EndPoint> {
 
 
   List<GResource> resources();

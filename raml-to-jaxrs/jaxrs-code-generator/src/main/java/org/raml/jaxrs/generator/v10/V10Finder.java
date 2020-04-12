@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -166,7 +167,7 @@ public class V10Finder implements GFinder {
 
   private V10GType createTypeFromLibraryPart(Shape typeDeclaration) {
 
-    return TypeBasedOperation.run((AnyShape) typeDeclaration, new CreateType());
+    return TypeBasedOperation.run((AnyShape) typeDeclaration, new CreateType(this));
   }
 
   private boolean isInline(Shape typeDeclaration) {
@@ -189,7 +190,7 @@ public class V10Finder implements GFinder {
 
   private V10GType createInlineFromEndPointsAndSuch(String ramlName, String suggestedJavaName, Shape typeDeclaration) {
 
-    return TypeBasedOperation.run((AnyShape) typeDeclaration, new CreateTypeInline(ramlName, suggestedJavaName));
+    return TypeBasedOperation.run((AnyShape) typeDeclaration, new CreateTypeInline(this, ramlName, suggestedJavaName));
   }
 
   private void goThroughLibraries(Set<String> visitedLibraries, List<Library> libraries,
@@ -243,115 +244,44 @@ public class V10Finder implements GFinder {
   }
 
 
-  class CreateType implements TypeBasedOperation<V10GType> { // todo should be external standalone class......
-    @Override
-    public V10GType on(AnyShape anyShape) {
-      return null;
+  static class CreateType extends TypeBasedOperation.Default<V10GType> {
+
+    private final V10Finder finder;
+
+    public CreateType(V10Finder finder) {
+      super((type) -> finder.putInFoundTypes(type.name().value(), V10GTypeFactory.createRamlToPojo(type.name().value(), type)));
+      this.finder = finder;
     }
 
-    @Override
-    public V10GType on(NodeShape nodeShape) {
-      return putInFoundTypes(nodeShape.name().value(), V10GTypeFactory.createInlineType(nodeShape.name().value(), nodeShape));
-    }
-
-    @Override
-    public V10GType on(ArrayShape arrayShape) {
-      return putInFoundTypes(arrayShape.name().value(), V10GTypeFactory.createArray(arrayShape.name().value(),
-              arrayShape
-      ));
-    }
-
-    @Override
-    public V10GType on(UnionShape unionShape) {
-      return putInFoundTypes(unionShape.name().value(),
-              V10GTypeFactory.createUnion(unionShape.name().value(), unionShape));
-    }
-
-    @Override
-    public V10GType on(FileShape anyShape) {
-      return null; // todo
-    }
-
-    @Override
-    public V10GType on(ScalarShape scalarShape) {
-      if ( scalarShape.values().size() != 0) {
-        return putInFoundTypes(scalarShape.name().value(),
-                V10GTypeFactory.createEnum(scalarShape.name().value(), scalarShape));
-      } else {
-
-        return putInFoundTypes(scalarShape.name().value(), V10GTypeFactory.createScalar(scalarShape.name().value(), scalarShape));
-      }
-    }
+    // todo should be external standalone class......
 
     @Override
     public V10GType on(SchemaShape schemaShape) {
-      return putInFoundTypes(schemaShape.name().value(),
+      return finder.putInFoundTypes(schemaShape.name().value(),
               V10GTypeFactory.createJson(schemaShape,
                       schemaShape.name().value(), CreationModel.INLINE_FROM_TYPE));
-    }
-
-    @Override
-    public V10GType on(NilShape nilShape) {
-      return null; // todo!
     }
   }
 
   // this is a bit wrong....
-  class CreateTypeInline implements TypeBasedOperation<V10GType> {
+  static class CreateTypeInline extends TypeBasedOperation.Default<V10GType> {
 
     private final String ramlName;
     private final String suggestedJavaName;
 
-    public CreateTypeInline(String ramlName, String suggestedJavaName) {
+    private final V10Finder finder;
+
+    public CreateTypeInline(V10Finder finder, String ramlName, String suggestedJavaName) {
+      super((type) -> finder.putInFoundTypes(ramlName, V10GTypeFactory.createRamlToPojo(suggestedJavaName, type)));
+      this.finder = finder;
       this.ramlName = ramlName;
       this.suggestedJavaName = suggestedJavaName;
     }
 
     @Override
     public V10GType on(SchemaShape schemaShape) {
-      return putInFoundTypes(ramlName, V10GTypeFactory.createJson(schemaShape,
+      return finder.putInFoundTypes(ramlName, V10GTypeFactory.createJson(schemaShape,
               ramlName, suggestedJavaName, CreationModel.INLINE_FROM_TYPE));
-    }
-
-    @Override
-    public V10GType on(NodeShape nodeShape) {
-      return putInFoundTypes(ramlName, V10GTypeFactory.createInlineType(suggestedJavaName, nodeShape));
-    }
-
-    @Override
-    public V10GType on(UnionShape unionShape) {
-
-      return putInFoundTypes(ramlName, V10GTypeFactory.createUnion(suggestedJavaName, unionShape));
-    }
-
-    @Override
-    public V10GType on(ScalarShape scalarShape) {
-      if (! scalarShape.values().isEmpty()) {
-
-        return putInFoundTypes(ramlName, V10GTypeFactory.createEnum(suggestedJavaName, scalarShape));
-      } else {
-        return putInFoundTypes(ramlName, V10GTypeFactory.createScalar(suggestedJavaName, scalarShape));
-      }
-    }
-
-    @Override
-    public V10GType on(ArrayShape arrayShape) {
-      return putInFoundTypes(ramlName, V10GTypeFactory.createArray(ramlName,  arrayShape));
-    }
-
-    @Override
-    public V10GType on(AnyShape anyShape) {
-      return null;
-    }
-
-    @Override
-    public V10GType on(FileShape anyShape) {
-      return null;
-    }
-
-    @Override
-    public V10GType on(NilShape nilShape) {
-      return null;
     }
   }
 }

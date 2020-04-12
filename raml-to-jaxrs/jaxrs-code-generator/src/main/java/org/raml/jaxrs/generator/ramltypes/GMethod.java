@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator.ramltypes;
 
 
+import amf.client.model.domain.Operation;
 import org.raml.jaxrs.generator.GAbstraction;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Created by Jean-Philippe Belanger on 12/10/16. Just potential zeroes and ones
  */
-public interface GMethod extends GAbstraction {
+public interface GMethod extends GAbstraction<Operation> {
 
   List<GRequest> body();
 

@@ -34,27 +34,9 @@ public class V10GTypeFactory {
                                                      response, anyShape), anyShape);
   }
 
-  public static V10GType createInlineType(String ramlName,
-                                          AnyShape shape) {
-    return new V10RamlToPojoGType(ramlName, shape);
-  }
-
-  public static V10GType createScalar(String name, AnyShape anyShape) {
-
+  public static V10GType createRamlToPojo(String name, AnyShape anyShape) {
     return new V10RamlToPojoGType(name, anyShape);
   }
-
-  public static V10GType createArray(String name,
-                                     ArrayShape arrayShape) {
-
-    return new V10RamlToPojoGType(name, arrayShape);
-  }
-
-  public static V10GType createEnum(String name,
-                                    ScalarShape scalarShape) {
-    return new V10RamlToPojoGType(name, scalarShape);
-  }
-
 
   public static V10GType createJson(SchemaShape schemaShape, String ramlName, CreationModel model) {
 
@@ -67,16 +49,17 @@ public class V10GTypeFactory {
     return new V10GTypeJson(schemaShape, ramlName, javaTypeName, model);
   }
 
-  public static V10GType createXml(SchemaShape schemaShape, String ramlName, CreationModel model) {
-    return new V10GTypeXml(schemaShape, ramlName, Annotations.CLASS_NAME.get(
-                                                                             Names.typeName(ramlName), schemaShape),
-                           model);
-  }
-
-  public static V10GType createXml(SchemaShape schemaShape, String ramlName,
-                                   String javaName, CreationModel model) {
-    return new V10GTypeXml(schemaShape, ramlName, javaName, model);
-  }
+  // todo annotation.
+//  public static V10GType createXml(SchemaShape schemaShape, String ramlName, CreationModel model) {
+//    return new V10GTypeXml(schemaShape, ramlName, Annotations.CLASS_NAME.get(
+//                                                                             Names.typeName(ramlName), schemaShape),
+//                           model);
+//  }
+//
+//  public static V10GType createXml(SchemaShape schemaShape, String ramlName,
+//                                   String javaName, CreationModel model) {
+//    return new V10GTypeXml(schemaShape, ramlName, javaName, model);
+//  }
 
   public static V10GType createUnion(String ramlName, UnionShape unionShape) {
     return new V10RamlToPojoGType(ramlName, unionShape);

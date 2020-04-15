@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator.v10;
 
 import amf.client.model.domain.*;
+import com.github.jsonldjava.shaded.com.google.common.collect.Streams;
 import com.google.common.io.Files;
 import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
@@ -62,21 +63,22 @@ public class V10Finder implements GFinder {
 
     for (EndPoint resource : resources) {
 
-      for (Parameter parameterTypeDeclaration : resource.parameters()) {
+      for (Parameter parameter : resource.parameters()) {
 
-        if (!isInline(parameterTypeDeclaration.schema())) {
+        if (!isInline(parameter.schema())) {
           continue;
         }
 
         V10GType type =
-            createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, parameterTypeDeclaration),
-                                             Names.javaTypeName(resource, parameterTypeDeclaration), parameterTypeDeclaration);
+            createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, parameter),
+                                             Names.javaTypeName(resource, parameter), parameter.schema());
         listener.newTypeDeclaration(type);
       }
 
-      for (Operation method : resource.methods()) {
+      for (Operation method : resource.operations()) {
 
-        typesInBodies(resource, method, method.body(), listener);
+        List<Shape> bodyShapes = method.request().payloads().stream().map(Payload::schema).collect(Collectors.toList());
+        typesInBodies(resource, method, bodyShapes, listener);
       }
     }
   }
@@ -84,69 +86,48 @@ public class V10Finder implements GFinder {
   private void typesInBodies(EndPoint resource, Operation method, List<Shape> body,
                              GFinderListener listener) {
 
-    for (Shape typeDeclaration : body) {
+    for (Shape shape : body) {
 
-      if (!isInline(typeDeclaration)) {
+      if (!isInline(shape)) {
         continue;
       }
 
-      if ("application/x-www-form-urlencoded".equals(typeDeclaration.name())) {
+      if ("application/x-www-form-urlencoded".equals(shape.name().value())) {
 
-        ObjectTypeDeclaration formParameters = (ObjectTypeDeclaration) typeDeclaration;
+        NodeShape formParameters = (NodeShape) shape;
         for (Shape formParameter : formParameters.properties()) {
 
           V10GType type =
-              createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, formParameter),
-                                               Names.javaTypeName(resource, method, formParameter), formParameter);
+              createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, (AnyShape)formParameter),
+                                               Names.javaTypeName(resource, method, (AnyShape)formParameter), formParameter);
           listener.newTypeDeclaration(type);
         }
       } else {
 
         V10GType type =
-            createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, typeDeclaration),
-                                             Names.javaTypeName(resource, method, typeDeclaration), typeDeclaration);
+            createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, (AnyShape)shape),
+                                             Names.javaTypeName(resource, method, (AnyShape)shape), shape);
         listener.newTypeDeclaration(type);
       }
     }
 
-    for (Shape parameterTypeDeclaration : method.queryParameters()) {
+    Streams.concat(method.request().queryParameters().stream(), method.request().headers().stream())
+            .map(Parameter::schema)
+            .map(s -> (AnyShape)s)
+            .filter(typeDeclaration1 -> !isInline(typeDeclaration1))
+            .map(s -> createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, s),
+                    Names.javaTypeName(resource, method, s),
+                    s)).forEach(listener::newTypeDeclaration);
 
-      if (!isInline(parameterTypeDeclaration)) {
-        continue;
-      }
 
-      V10GType type =
-          createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, parameterTypeDeclaration),
-                                           Names.javaTypeName(resource, method, parameterTypeDeclaration),
-                                           parameterTypeDeclaration);
-      listener.newTypeDeclaration(type);
-    }
-
-    for (Shape headerType : method.headers()) {
-
-      if (!isInline(headerType)) {
-        continue;
-      }
-
-      V10GType type =
-          createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, headerType),
-                                           Names.javaTypeName(resource, method, headerType), headerType);
-      listener.newTypeDeclaration(type);
-    }
-
-    for (Response response : method.responses()) {
-      for (Shape typeDeclaration : response.body()) {
-
-        if (!isInline(typeDeclaration)) {
-          continue;
-        }
-
-        V10GType type =
-            createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, response, typeDeclaration),
-                                             Names.javaTypeName(resource, method, response, typeDeclaration), typeDeclaration);
-        listener.newTypeDeclaration(type);
-      }
-    }
+    method.responses().forEach( response ->
+              response.payloads().stream()
+              .map(Payload::schema)
+                     .map(s -> (AnyShape)s)
+                     .filter(this::isInline)
+                     .map(s ->  createInlineFromEndPointsAndSuch(Names.ramlTypeName(resource, method, response, s),
+                                      Names.javaTypeName(resource, method, response, s), s))
+                     .forEach(listener::newTypeDeclaration));
   }
 
   private void localTypes(List<Shape> types, GFinderListener listener) {
@@ -180,12 +161,6 @@ public class V10Finder implements GFinder {
 
       return build.fetchRamlToPojoBuilder().isInline(actualShape);
     }
-// todo this seems not ok, and remove instaceofs
-//    if (actualShape instanceof ObjectTypeDeclaration
-//        || actualShape instanceof UnionTypeDeclaration
-//        || (actualShape instanceof StringTypeDeclaration && !((StringTypeDeclaration) actualShape).enumValues().isEmpty())
-//        || (actualShape instanceof NumberTypeDeclaration && !((NumberTypeDeclaration) actualShape).enumValues().isEmpty())) {
-//
   }
 
   private V10GType createInlineFromEndPointsAndSuch(String ramlName, String suggestedJavaName, Shape typeDeclaration) {

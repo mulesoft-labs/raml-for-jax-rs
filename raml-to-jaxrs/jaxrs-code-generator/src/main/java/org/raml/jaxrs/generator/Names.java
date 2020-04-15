@@ -186,6 +186,10 @@ public class Names {
     return typeName(endPoint.path().value(), anyShape.name().value());
   }
 
+  public static String javaTypeName(EndPoint endPoint, Parameter parameter) {
+    return typeName(endPoint.path().value(), parameter.name().value());
+  }
+
   public static String javaTypeName(EndPoint resource, Operation method, AnyShape anyShape) {
     return typeName(resource.path().value(), method.method().value(), anyShape.name().value());
   }
@@ -196,6 +200,10 @@ public class Names {
 
   public static String ramlTypeName(EndPoint resource, AnyShape anyShape) {
     return resource.path().value() + anyShape.name().value();
+  }
+
+  public static String ramlTypeName(EndPoint resource, Parameter parameter) {
+    return resource.path().value() + parameter.name().value();
   }
 
   public static String javaTypeName(EndPoint resource, Operation method, Response response,

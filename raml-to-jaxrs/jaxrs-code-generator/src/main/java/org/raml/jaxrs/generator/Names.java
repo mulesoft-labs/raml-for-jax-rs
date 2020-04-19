@@ -214,6 +214,15 @@ public class Names {
     return resource.path().value() + parameter.name().value();
   }
 
+  public static String ramlRawTypeName(String... names) {
+    return String.join("", names);
+  }
+
+  public static String javaRawTypeName(String... names) {
+    return typeName(names);
+  }
+
+
   public static String javaTypeName(EndPoint resource, Operation method, Response response,
                                     AnyShape anyShape) {
     return typeName(resource.path().value(), method.method().value(), response.statusCode().value(),

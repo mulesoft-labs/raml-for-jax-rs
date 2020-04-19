@@ -53,66 +53,81 @@ public class V10Finder implements GFinder {
         FilterableTypeFinder finder = new FilterableTypeFinder();
         finder.findTypes(api, (x) -> true, (path, type) -> {
 
+            if (path.endMatches(Module.class) || path.isRoot()) {
+
+                V10GType foundType = createTypeFromLibraryPart(type);
+                listener.newTypeDeclaration(foundType);
+                return;
+            }
+
+            // from here on in, we are interested only in inline types.
             if (!ExtraInformation.isInline(type)) {
                 return;
             }
 
-            if (path.endMatches(Module.class, AnyShape.class) || path.entirelyMatches(AnyShape.class)) {
-
-                V10GType foundType = createTypeFromLibraryPart(type);
-                listener.newTypeDeclaration(foundType);
-            }
-
-            if (path.endMatches(EndPoint.class, Parameter.class, AnyShape.class)) {
-
-                V10GType foundType =
-                        createInlineFromEndPointsAndSuch(Names.ramlTypeName(path.elementFromTheEnd(2), (Parameter) path.elementFromTheEnd(1)),
-                                Names.javaTypeName(path.elementFromTheEnd(2), (Parameter) path.elementFromTheEnd(1)), type);
-                listener.newTypeDeclaration(foundType);
-            }
 
             if (path.endMatches(
                     NamedElementPath.ANY_NAME, EndPoint.class,
                     NamedElementPath.ANY_NAME, Operation.class,
                     "application/x-www-form-urlencoded", Payload.class,
-                    NamedElementPath.ANY_NAME, NodeShape.class)) {
+                    NamedElementPath.ANY_NAME) && type instanceof NodeShape) {
 
                 NodeShape formParameters = (NodeShape) type;
                 for (PropertyShape formParameter : formParameters.properties()) {
 
-                    V10GType foundType =
-                            createInlineFromEndPointsAndSuch(Names.ramlTypeName(path.elementFromTheEnd(3), path.elementFromTheEnd(2), formParameter),
-                                    Names.javaTypeName(path.elementFromTheEnd(3), path.elementFromTheEnd(2), formParameter), formParameter.range());
-                    listener.newTypeDeclaration(foundType);
-                    return;
+                    if ( ExtraInformation.isInline(formParameter.range())) {
+
+                        NamedElementPath newPath = path.removeEnd().append(formParameter);
+                        V10GType foundType =
+                                createInlineFromEndPointsAndSuch(Names.ramlRawTypeName(newPath.names().toArray(new String[0])),
+                                        Names.javaRawTypeName(newPath.names().toArray(new String[0])), formParameter.range());
+                        listener.newTypeDeclaration(foundType);
+                    }
                 }
             }
 
-            if (path.endMatches(EndPoint.class, Operation.class, Payload.class, AnyShape.class)) {
+            if (path.endMatches(EndPoint.class, Parameter.class)) {
 
                 V10GType foundType =
-                        createInlineFromEndPointsAndSuch(Names.ramlTypeName(path.elementFromTheEnd(3), path.elementFromTheEnd(2), (Payload)path.elementFromTheEnd(1)),
-                                Names.javaTypeName(path.elementFromTheEnd(3), path.elementFromTheEnd(2), path.elementFromTheEnd(1), type), type);
+                        createInlineFromEndPointsAndSuch(Names.ramlRawTypeName(path.names().toArray(new String[0])),
+                                Names.javaRawTypeName(path.names().toArray(new String[0])), type);
                 listener.newTypeDeclaration(foundType);
             }
 
-            if (path.endMatches(EndPoint.class, Operation.class, Parameter.class, AnyShape.class)) {
+            if (path.endMatches(EndPoint.class, Operation.class, Payload.class)) {
 
-                createInlineFromEndPointsAndSuch(Names.ramlTypeName(path.elementFromTheEnd(3), path.elementFromTheEnd(2), (Parameter)path.elementFromTheEnd(1)),
-                        Names.javaTypeName(path.elementFromTheEnd(3), path.elementFromTheEnd(2), (Parameter)path.elementFromTheEnd(1)),
-                        type);
+                V10GType foundType =
+                        createInlineFromEndPointsAndSuch(Names.ramlRawTypeName(path.names().toArray(new String[0])),
+                                Names.javaRawTypeName(path.names().toArray(new String[0])), type);
+                listener.newTypeDeclaration(foundType);
+                return;
             }
 
-            if (path.endMatches(EndPoint.class, Operation.class, Response.class, Payload.class, AnyShape.class)) {
+            if (path.endMatches(EndPoint.class, Operation.class, Parameter.class)) {
 
-                createInlineFromEndPointsAndSuch(Names.ramlTypeName(path.elementFromTheEnd(4), path.elementFromTheEnd(3), path.elementFromTheEnd(2), path.elementFromTheEnd(1)),
-                        Names.javaTypeName(path.elementFromTheEnd(3), path.elementFromTheEnd(2), (Parameter)path.elementFromTheEnd(1)),
-                        type);
+                V10GType foundType =
+                        createInlineFromEndPointsAndSuch(Names.ramlRawTypeName(path.names().toArray(new String[0])),
+                                Names.javaRawTypeName(path.names().toArray(new String[0])), type);
+                listener.newTypeDeclaration(foundType);
+                return;
             }
 
+            if (path.endMatches(EndPoint.class, Operation.class, Response.class, Payload.class)) {
 
-            //Do response headers....
+                V10GType foundType =
+                        createInlineFromEndPointsAndSuch(Names.ramlRawTypeName(path.names().toArray(new String[0])),
+                                Names.javaRawTypeName(path.names().toArray(new String[0])), type);
+                listener.newTypeDeclaration(foundType);
+                return;
+            }
 
+            if (path.endMatches(EndPoint.class, Operation.class, Response.class, Parameter.class)) {
+
+                V10GType foundType =
+                        createInlineFromEndPointsAndSuch(Names.ramlRawTypeName(path.names().toArray(new String[0])),
+                                Names.javaRawTypeName(path.names().toArray(new String[0])), type);
+                listener.newTypeDeclaration(foundType);
+            }
         });
 
         return this;

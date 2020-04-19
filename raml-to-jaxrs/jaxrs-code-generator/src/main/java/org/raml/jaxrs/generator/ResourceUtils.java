@@ -17,7 +17,8 @@ package org.raml.jaxrs.generator;
 
 import amf.client.model.domain.*;
 import com.google.common.collect.Multimap;
-import java.util.*;
+
+import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 12/4/16. Just potential zeroes and ones

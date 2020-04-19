@@ -17,11 +17,7 @@ package org.raml.jaxrs.generator.v10;
 
 import amf.client.model.domain.EndPoint;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
-import org.raml.jaxrs.generator.v08.V08TypeRegistry;
-
-import java.util.Set;
 
 /**
  * Created by Jean-Philippe Belanger on 10/26/16. These handlers take care of different model types (v08 vs v10).

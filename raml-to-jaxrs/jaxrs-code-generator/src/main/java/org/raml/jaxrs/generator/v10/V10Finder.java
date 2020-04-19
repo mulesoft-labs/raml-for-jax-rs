@@ -18,7 +18,6 @@ package org.raml.jaxrs.generator.v10;
 import amf.client.model.document.Document;
 import amf.client.model.document.Module;
 import amf.client.model.domain.*;
-import com.github.jsonldjava.shaded.com.google.common.collect.Streams;
 import com.google.common.io.Files;
 import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
@@ -29,7 +28,9 @@ import org.raml.ramltopojo.NamedElementPath;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**

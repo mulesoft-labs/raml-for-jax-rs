@@ -16,7 +16,10 @@
 package org.raml.jaxrs.generator.extension.resources;
 
 import amf.client.model.domain.*;
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.ramltopojo.extensions.jsr303.AnnotationAdder;

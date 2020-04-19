@@ -15,18 +15,18 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import amf.client.model.domain.*;
-import com.google.common.base.Supplier;
-import com.google.common.collect.FluentIterable;
-import com.squareup.javapoet.*;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import amf.client.model.domain.Operation;
+import amf.client.model.domain.Payload;
+import amf.client.model.domain.Request;
+import amf.client.model.domain.Response;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.TypeBasedOperation;
 import org.raml.jaxrs.generator.builders.resources.DefaultJavaTypeOperation;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;

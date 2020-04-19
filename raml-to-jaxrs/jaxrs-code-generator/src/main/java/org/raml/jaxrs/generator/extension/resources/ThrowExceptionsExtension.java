@@ -15,7 +15,9 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
@@ -23,7 +25,6 @@ import org.raml.jaxrs.generator.ramltypes.GRequest;
 import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**

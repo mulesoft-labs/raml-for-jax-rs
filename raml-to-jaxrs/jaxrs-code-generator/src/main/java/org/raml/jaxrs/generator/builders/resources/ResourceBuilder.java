@@ -20,12 +20,12 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.squareup.javapoet.*;
-
 import org.raml.jaxrs.generator.*;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
-import org.raml.jaxrs.generator.extension.resources.api.*;
+import org.raml.jaxrs.generator.extension.resources.api.ResourceClassExtension;
+import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.v10.V10GType;
 
 import javax.lang.model.element.Modifier;
@@ -38,7 +38,7 @@ import java.lang.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.raml.jaxrs.generator.builders.resources.DefaultJavaTypeOperation.*;
+import static org.raml.jaxrs.generator.builders.resources.DefaultJavaTypeOperation.defaultJavaType;
 
 /**
  * Created by Jean-Philippe Belanger on 10/27/16. Abstraction of creation.

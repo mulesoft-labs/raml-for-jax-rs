@@ -40,7 +40,6 @@ import org.raml.ramltopojo.RamlToPojoBuilder;
 import org.raml.ramltopojo.TypeFetchers;
 import org.raml.ramltopojo.plugin.PluginManager;
 
-import javax.annotation.Nullable;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;

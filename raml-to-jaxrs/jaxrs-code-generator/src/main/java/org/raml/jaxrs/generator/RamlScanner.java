@@ -19,17 +19,13 @@ package org.raml.jaxrs.generator;
 import amf.client.model.document.Document;
 import amf.client.model.domain.EndPoint;
 import amf.client.model.domain.WebApi;
-import org.raml.jaxrs.generator.v08.V08Finder;
-import org.raml.jaxrs.generator.v08.V08TypeRegistry;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.ResourceHandler;
-import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.ramltopojo.RamlLoader;
 import org.raml.ramltopojo.RamlLoaderException;
-import webapi.WebApiDocument;
 
-import java.io.*;
-import java.util.concurrent.ExecutionException;
+import java.io.File;
+import java.io.IOException;
 
 
 /**

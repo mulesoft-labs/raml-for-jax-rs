@@ -17,7 +17,6 @@ package org.raml.jaxrs.generator.extension.resources.api;
 
 import amf.client.model.domain.Operation;
 import com.squareup.javapoet.TypeSpec;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
 
 import java.util.Collection;
 

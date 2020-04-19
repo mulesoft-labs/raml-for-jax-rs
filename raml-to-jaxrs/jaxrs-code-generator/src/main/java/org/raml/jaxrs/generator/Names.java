@@ -16,13 +16,7 @@
 package org.raml.jaxrs.generator;
 
 import amf.client.model.domain.*;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GParameter;
-import org.raml.jaxrs.generator.ramltypes.GResource;
 
-import javax.annotation.Nullable;
 import javax.lang.model.SourceVersion;
 import java.util.ArrayList;
 import java.util.List;

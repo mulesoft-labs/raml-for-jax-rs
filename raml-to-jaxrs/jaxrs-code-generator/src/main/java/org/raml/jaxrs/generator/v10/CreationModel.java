@@ -17,7 +17,6 @@ package org.raml.jaxrs.generator.v10;
 
 import amf.client.model.domain.AnyShape;
 import org.raml.ramltopojo.ExtraInformation;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 /**
  * Created by jpbelang on 2017-06-17.

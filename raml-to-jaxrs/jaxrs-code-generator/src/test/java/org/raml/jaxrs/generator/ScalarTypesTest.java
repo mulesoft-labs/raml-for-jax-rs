@@ -16,18 +16,9 @@
 package org.raml.jaxrs.generator;
 
 import com.squareup.javapoet.TypeName;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.raml.v2.api.model.v10.datamodel.*;
-import org.raml.v2.api.model.v10.declarations.AnnotationRef;
-
-import java.math.BigDecimal;
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by Jean-Philippe Belanger on 12/17/16. Just potential zeroes and ones

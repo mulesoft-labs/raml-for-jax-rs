@@ -17,7 +17,6 @@ package org.raml.jaxrs.generator.v10.types;
 
 import amf.client.model.domain.*;
 import org.raml.jaxrs.generator.Names;
-import org.raml.jaxrs.generator.v10.Annotations;
 import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10GType;
 

@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.generator.builders.resources;
 
-import amf.client.model.domain.*;
+import amf.client.model.domain.SchemaShape;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;

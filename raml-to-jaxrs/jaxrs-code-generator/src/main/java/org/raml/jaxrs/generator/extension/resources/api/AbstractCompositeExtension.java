@@ -18,7 +18,6 @@ package org.raml.jaxrs.generator.extension.resources.api;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by Jean-Philippe Belanger on 3/9/17. Just potential zeroes and ones

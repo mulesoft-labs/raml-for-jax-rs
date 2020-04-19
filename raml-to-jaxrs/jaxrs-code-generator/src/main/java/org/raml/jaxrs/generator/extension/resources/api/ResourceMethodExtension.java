@@ -19,8 +19,6 @@ import amf.client.model.domain.Operation;
 import amf.client.model.domain.Payload;
 import amf.client.model.domain.Request;
 import com.squareup.javapoet.MethodSpec;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GRequest;
 
 import java.util.Collection;
 

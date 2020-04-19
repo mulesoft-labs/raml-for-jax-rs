@@ -21,7 +21,7 @@ import org.raml.jaxrs.generator.ramltypes.GType;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static org.raml.jaxrs.generator.GObjectType.*;
+import static org.raml.jaxrs.generator.GObjectType.GObjectTypeDispatcher;
 
 /**
  * Created by Jean-Philippe Belanger on 12/7/16. Just potential zeroes and ones

@@ -27,6 +27,7 @@ import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImp
 import org.raml.jaxrs.generator.extension.resources.api.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.v10.V10GType;
+import org.raml.ramltopojo.TypeBasedOperation;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.*;

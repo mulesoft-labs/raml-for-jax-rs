@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator;
 
 import amf.client.model.domain.*;
 import org.raml.jaxrs.generator.ramltypes.GType;
+import org.raml.ramltopojo.TypeBasedOperation;
 
 import java.util.Optional;
 import java.util.function.Consumer;

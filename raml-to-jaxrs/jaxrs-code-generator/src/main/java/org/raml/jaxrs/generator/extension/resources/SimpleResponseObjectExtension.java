@@ -23,7 +23,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import org.raml.jaxrs.generator.GenerationException;
-import org.raml.jaxrs.generator.TypeBasedOperation;
+import org.raml.ramltopojo.TypeBasedOperation;
 import org.raml.jaxrs.generator.builders.resources.DefaultJavaTypeOperation;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;

@@ -24,6 +24,7 @@ import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
 import org.raml.ramltopojo.ExtraInformation;
 import org.raml.ramltopojo.FilterableTypeFinder;
 import org.raml.ramltopojo.NamedElementPath;
+import org.raml.ramltopojo.TypeBasedOperation;
 
 import java.io.File;
 import java.io.IOException;

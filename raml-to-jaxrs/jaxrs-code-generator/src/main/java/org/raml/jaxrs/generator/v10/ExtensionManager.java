@@ -28,9 +28,9 @@ import java.util.*;
  */
 public class ExtensionManager {
 
-  private SetMultimap<String, Class> info;
+  private SetMultimap<String, Class<?>> info;
 
-  ExtensionManager(SetMultimap<String, Class> info) {
+  ExtensionManager(SetMultimap<String, Class<?>> info) {
 
     this.info = info;
   }
@@ -43,7 +43,7 @@ public class ExtensionManager {
   static ExtensionManager createExtensionManager(String pluginFileName) {
 
     try {
-      SetMultimap<String, Class> info = LinkedHashMultimap.create();
+      SetMultimap<String, Class<?>> info = LinkedHashMultimap.create();
       Enumeration<URL> resourcesFiles = ExtensionManager.class.getClassLoader().getResources(pluginFileName);
 
       while (resourcesFiles.hasMoreElements()) {
@@ -63,16 +63,16 @@ public class ExtensionManager {
   }
 
 
-  public Set<Class> getClassesForName(String name) {
+  public Set<Class<?>> getClassesForName(String name) {
 
     return info.get(name);
   }
 
-  private static void buildPluginNames(SetMultimap<String, Class> info, Properties properties) {
+  private static void buildPluginNames(SetMultimap<String, Class<?>> info, Properties properties) {
 
     for (String name : properties.stringPropertyNames()) {
 
-      List<Class> classList = classList(name, properties.getProperty(name));
+      List<Class<?>> classList = classList(name, properties.getProperty(name));
       if (info.containsKey(name)) {
 
         throw new GenerationException("duplicate name in plugins: " + name);
@@ -81,12 +81,12 @@ public class ExtensionManager {
     }
   }
 
-  private static List<Class> classList(String name, String property) {
+  private static List<Class<?>> classList(String name, String property) {
 
-    List<Class> classes = new ArrayList<>();
+    List<Class<?>> classes = new ArrayList<>();
     for (String s : property.split("\\s*,\\s*")) {
       try {
-        Class foundClass = Class.forName(s);
+        Class<?> foundClass = Class.forName(s);
         classes.add(foundClass);
       } catch (ClassNotFoundException e) {
         throw new GenerationException("class " + s + " not found for plugin name " + name);

@@ -17,7 +17,6 @@ package org.raml.jaxrs.generator;
 
 import amf.client.model.document.Document;
 import amf.client.model.domain.*;
-import com.google.common.base.Function;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.io.Files;
@@ -45,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -315,7 +315,7 @@ public class CurrentBuild {
       return (Iterable<T>) singletonList(c.newInstance());
     } catch (ClassNotFoundException e) {
 
-      return extensionManager.getClassesForName(className).stream().map((Function<Class<?>, T>) input -> {
+      return extensionManager.getClassesForName(className).stream().map(input -> {
         try {
           return (T) input.newInstance();
         } catch (InstantiationException | IllegalAccessException e1) {

@@ -21,11 +21,6 @@ import com.google.common.collect.Lists;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GAbstraction;
 import org.raml.ramltopojo.PluginDef;
-import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.common.Annotable;
-import org.raml.v2.api.model.v10.datamodel.TypeInstance;
-import org.raml.v2.api.model.v10.datamodel.TypeInstanceProperty;
-import org.raml.v2.api.model.v10.declarations.AnnotationRef;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
+import amf.client.model.domain.*;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -39,13 +40,12 @@ public class ThrowExceptionsExtension implements GlobalResourceExtension {
   }
 
   @Override
-  public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder typeSpec) {
+  public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
     return typeSpec;
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
-
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
     if (arguments.size() > 0) {
       for (String argument : arguments) {
 
@@ -60,12 +60,12 @@ public class ThrowExceptionsExtension implements GlobalResourceExtension {
   }
 
   @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
+  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
     return typeSpec;
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GResponse responseMethod, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
     return methodSpec;
   }
 }

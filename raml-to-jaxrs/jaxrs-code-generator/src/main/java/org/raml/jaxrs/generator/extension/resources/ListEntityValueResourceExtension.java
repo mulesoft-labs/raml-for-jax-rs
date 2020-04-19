@@ -15,17 +15,11 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
+import amf.client.model.domain.*;
 import com.squareup.javapoet.*;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
-import org.raml.jaxrs.generator.ramltypes.GRequest;
-import org.raml.jaxrs.generator.ramltypes.GResource;
-import org.raml.jaxrs.generator.ramltypes.GResponse;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -42,16 +36,15 @@ public class ListEntityValueResourceExtension implements GlobalResourceExtension
   }
 
   @Override
-  public TypeSpec.Builder onResource(ResourceContext context, GResource resource, TypeSpec.Builder typeSpec) {
+  public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
     return typeSpec;
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
-
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
     MethodSpec old = methodSpec.build();
     MethodSpec.Builder newMethod = MethodSpec.methodBuilder(old.name)
-        .returns(old.returnType);
+            .returns(old.returnType);
 
     addParameters(old, newMethod);
 
@@ -73,51 +66,16 @@ public class ListEntityValueResourceExtension implements GlobalResourceExtension
     return newMethod;
   }
 
-  private void addParameters(MethodSpec old, MethodSpec.Builder newMethod) {
-    for (ParameterSpec parameter : old.parameters) {
-      if (FluentIterable.from(parameter.annotations).filter(new Predicate<AnnotationSpec>() {
-
-        @Override
-        public boolean apply(@Nullable AnnotationSpec annotationSpec) {
-
-          return annotationSpec.type.equals(ClassName.get(PathParam.class))
-              || annotationSpec.type.equals(ClassName.get(QueryParam.class));
-        }
-      }).size() > 0) {
-        newMethod.addParameter(parameter);
-      }
-    }
-
-    for (ParameterSpec parameter : old.parameters) {
-      if (FluentIterable.from(parameter.annotations).filter(new Predicate<AnnotationSpec>() {
-
-        @Override
-        public boolean apply(@Nullable AnnotationSpec annotationSpec) {
-
-          return annotationSpec.type.equals(ClassName.get(PathParam.class))
-              || annotationSpec.type.equals(ClassName.get(QueryParam.class));
-        }
-      }).size() == 0) {
-
-        newMethod.addParameter(ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(List.class),
-                                                                               ClassName.bestGuess(arguments.get(0))), "entity")
-            .build());
-      }
-    }
-
-  }
-
   @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
+  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
     return typeSpec;
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GResponse responseMethod, MethodSpec.Builder methodSpec) {
-
+  public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
     MethodSpec old = methodSpec.build();
     MethodSpec.Builder newMethod = MethodSpec.methodBuilder(old.name)
-        .returns(old.returnType);
+            .returns(old.returnType);
 
     addParameters(old, newMethod);
 
@@ -138,5 +96,24 @@ public class ListEntityValueResourceExtension implements GlobalResourceExtension
 
     newMethod.addCode(old.code);
     return newMethod;
+  }
+
+  private void addParameters(MethodSpec old, MethodSpec.Builder newMethod) {
+    for (ParameterSpec parameter : old.parameters) {
+      if ((int) parameter.annotations.stream().filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
+              || annotationSpec.type.equals(ClassName.get(QueryParam.class))).count() > 0) {
+        newMethod.addParameter(parameter);
+      }
+    }
+
+    for (ParameterSpec parameter : old.parameters) {
+      if ((int) parameter.annotations.stream().filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
+              || annotationSpec.type.equals(ClassName.get(QueryParam.class))).count() == 0) {
+
+        newMethod.addParameter(ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(List.class),
+                                                                               ClassName.bestGuess(arguments.get(0))), "entity")
+            .build());
+      }
+    }
   }
 }

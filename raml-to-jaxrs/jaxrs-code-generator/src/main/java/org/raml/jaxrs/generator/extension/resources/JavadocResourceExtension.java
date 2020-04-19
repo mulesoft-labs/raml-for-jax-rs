@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
+import amf.client.model.domain.*;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
@@ -30,35 +31,33 @@ import org.raml.jaxrs.generator.ramltypes.GResponse;
 public class JavadocResourceExtension implements GlobalResourceExtension {
 
   @Override
-  public TypeSpec.Builder onResource(ResourceContext context, GResource resource, final TypeSpec.Builder typeSpec) {
-
-    if (resource.getDescription() != null) {
-      typeSpec.addJavadoc("$L\n", resource.getDescription());
+  public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
+    if (! resource.description().isNullOrEmpty()) {
+      typeSpec.addJavadoc("$L\n", resource.description().value());
     }
 
     return typeSpec;
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
 
-    if (method.getDescription() != null) {
-      methodSpec.addJavadoc("$L\n", method.getDescription());
+    if (! method.description().isNullOrEmpty()) {
+      methodSpec.addJavadoc("$L\n", method.description().value());
     }
 
     return methodSpec;
   }
 
   @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod method, TypeSpec.Builder typeSpec) {
-
+  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
     return typeSpec;
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GResponse responseMethod, MethodSpec.Builder methodSpec) {
-    if (responseMethod.getDescription() != null) {
-      methodSpec.addJavadoc("$L\n", responseMethod.getDescription());
+  public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
+    if (! responseMethod.description().isNullOrEmpty()) {
+      methodSpec.addJavadoc("$L\n", responseMethod.description().value());
     }
 
     return methodSpec;

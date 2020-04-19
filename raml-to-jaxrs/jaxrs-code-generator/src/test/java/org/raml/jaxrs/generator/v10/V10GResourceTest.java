@@ -17,7 +17,6 @@ package org.raml.jaxrs.generator.v10;
 
 import org.junit.Test;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.ramltypes.GRequest;
 import org.raml.jaxrs.generator.ramltypes.GResponseType;
 import org.raml.jaxrs.generator.utils.RamlV10;

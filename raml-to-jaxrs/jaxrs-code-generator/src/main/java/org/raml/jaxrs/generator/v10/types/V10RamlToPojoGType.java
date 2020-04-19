@@ -20,41 +20,38 @@ import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
-import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.V10GType;
-import org.raml.v2.api.model.v10.datamodel.ArrayTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.NumberTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.StringTypeDeclaration;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
+
+import java.util.function.Consumer;
 
 /**
  * Created. There, you have it.
  */
 public class V10RamlToPojoGType implements V10GType {
 
-  private final AnyShape typeDeclaration;
+  private final AnyShape shape;
   private final String name;
   private TypeName typeName;
 
-  public V10RamlToPojoGType(AnyShape typeDeclaration) {
-    this.name = typeDeclaration.name().value();
-    this.typeDeclaration = typeDeclaration;
+  public V10RamlToPojoGType(AnyShape shape) {
+    this.name = shape.name().value();
+    this.shape = shape;
   }
 
-  public V10RamlToPojoGType(String name, AnyShape typeDeclaration) {
+  public V10RamlToPojoGType(String name, AnyShape shape) {
     // this is wrong. TODO fix.
     this.name = name;
-    this.typeDeclaration = typeDeclaration;
+    this.shape = shape;
   }
 
   @Override
-  public TypeDeclaration implementation() {
-    return typeDeclaration;
+  public AnyShape implementation() {
+    return shape;
   }
 
   @Override
   public String type() {
-    return typeDeclaration.type();
+    return shape.name().value();
   }
 
   @Override
@@ -73,23 +70,8 @@ public class V10RamlToPojoGType implements V10GType {
   }
 
   @Override
-  public boolean isScalar() {
-    return false;
-  }
-
-  @Override
   public String schema() {
     return null;
-  }
-
-  @Override
-  public boolean isArray() {
-    return typeDeclaration instanceof ArrayTypeDeclaration;
-  }
-
-  @Override
-  public GType arrayContents() {
-    return new V10RamlToPojoGType(((ArrayTypeDeclaration) typeDeclaration).items());
   }
 
   @Override
@@ -98,34 +80,14 @@ public class V10RamlToPojoGType implements V10GType {
   }
 
   @Override
-  public boolean isEnum() {
-    return ((typeDeclaration instanceof StringTypeDeclaration) && ((StringTypeDeclaration) typeDeclaration).enumValues() != null)
-        || ((typeDeclaration instanceof NumberTypeDeclaration) && ((NumberTypeDeclaration) typeDeclaration).enumValues() != null);
-  }
-
-  @Override
-  public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
-    objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
-
+  public void construct(CurrentBuild currentBuild, Consumer<GObjectType.GObjectTypeDispatcher> objectType) {
+    objectType.accept(new GObjectType.GObjectTypeDispatcher() {
       @Override
-      public void onRamlToPojo() {
-
-        SchemaTypeFactory.createRamlToPojo(currentBuild, V10RamlToPojoGType.this);
-      }
-
-      @Override
-      public void onEnumeration() {
-        SchemaTypeFactory.createRamlToPojo(currentBuild, V10RamlToPojoGType.this);
-      }
-
-      @Override
-      public void onUnion() {
+      public void onSchema() {
         SchemaTypeFactory.createRamlToPojo(currentBuild, V10RamlToPojoGType.this);
       }
     });
-
   }
-
 
   @Override
   public void setJavaType(TypeName generatedJavaType) {

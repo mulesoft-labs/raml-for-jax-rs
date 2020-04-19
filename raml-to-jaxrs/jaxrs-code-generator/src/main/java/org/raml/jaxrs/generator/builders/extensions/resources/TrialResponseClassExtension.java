@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
+import amf.client.model.domain.Operation;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.extension.resources.api.ResponseClassExtension;
@@ -23,10 +24,10 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
  */
-public class TrialResponseClassExtension implements ResponseClassExtension<GMethod> {
+public class TrialResponseClassExtension implements ResponseClassExtension {
 
   @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, GMethod response, TypeSpec.Builder typeSpec) {
+  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
 
     return typeSpec;
   }

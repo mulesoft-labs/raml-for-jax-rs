@@ -25,6 +25,7 @@ import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.ramltopojo.extensions.jsr303.AnnotationAdder;
 import org.raml.ramltopojo.extensions.jsr303.FacetValidation;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 /**
@@ -89,7 +90,7 @@ public class Jsr303ResourceExtension extends GlobalResourceExtension.Helper {
           });
 
           builder.addParameter(parameterBuilder.build());
-          // builder.addParameter(parameterBuilder.addAnnotation(Valid.class).build());
+          builder.addParameter(parameterBuilder.addAnnotation(Valid.class).build());
         } else {
 
           builder.addParameter(parameter);

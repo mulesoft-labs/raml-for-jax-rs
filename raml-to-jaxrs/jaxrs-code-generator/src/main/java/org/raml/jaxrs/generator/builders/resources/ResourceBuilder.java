@@ -684,7 +684,7 @@ public class ResourceBuilder implements ResourceGenerator {
     return ann;
   }
 
-  private class DefaultResourceClassCreator implements ResourceClassExtension<EndPoint> {
+  private class DefaultResourceClassCreator implements ResourceClassExtension {
 
     @Override
     public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder nullSpec) {

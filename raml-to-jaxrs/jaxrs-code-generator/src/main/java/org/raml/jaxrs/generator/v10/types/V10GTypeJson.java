@@ -22,19 +22,23 @@ import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GObjectType;
 import org.raml.jaxrs.generator.SchemaTypeFactory;
 import org.raml.jaxrs.generator.v10.CreationModel;
+import org.raml.jaxrs.generator.v10.V10GType;
+
+import java.util.function.Consumer;
 
 /**
  * Created by Jean-Philippe Belanger on 1/3/17. Just potential zeroes and ones
  */
-public class V10GTypeJson extends V10GTypeHelper {
+public class V10GTypeJson implements V10GType {
 
   private final SchemaShape schemaShape;
   private final String name;
   private final String defaultJavatypeName;
+  private final CreationModel creationModel;
   private TypeName modelSpecifiedJavaType;
 
   V10GTypeJson(SchemaShape schemaShape, String realName, String defaultJavatypeName, CreationModel model) {
-    super(realName, schemaShape, model);
+    this.creationModel = model;
     this.schemaShape = schemaShape;
     this.name = realName;
     this.defaultJavatypeName = defaultJavatypeName;
@@ -85,14 +89,12 @@ public class V10GTypeJson extends V10GTypeHelper {
         + ", name='" + name() + '\'' + '}';
   }
 
-
   @Override
-  public void construct(final CurrentBuild currentBuild, GObjectType objectType) {
-    objectType.dispatch(new GObjectType.GObjectTypeDispatcher() {
+  public void construct(CurrentBuild currentBuild, Consumer<GObjectType.GObjectTypeDispatcher> objectType) {
 
+    objectType.accept(new GObjectType.GObjectTypeDispatcher() {
       @Override
       public void onSchema() {
-
         SchemaTypeFactory.createJsonType(currentBuild, V10GTypeJson.this);
       }
     });
@@ -105,4 +107,37 @@ public class V10GTypeJson extends V10GTypeHelper {
   }
 
 
+  @Override
+  public boolean isXml() {
+    return false;
+  }
+
+  public boolean isInline() {
+    return creationModel.isInline(schemaShape);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+
+    if (!(o instanceof V10GType)) {
+
+      return false;
+    }
+
+    V10GType v10GType = (V10GType) o;
+
+    return name.equals(v10GType.name());
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  @Override
+  public SchemaShape implementation() {
+    return schemaShape;
+  }
 }

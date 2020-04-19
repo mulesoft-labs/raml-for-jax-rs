@@ -38,15 +38,7 @@ public interface GType extends GAbstraction<AnyShape> {
 
   boolean isXml();
 
-  boolean isArray();
-
-  boolean isEnum();
-
-  boolean isScalar();
-
   String schema();
-
-  GType arrayContents();
 
   void construct(CurrentBuild currentBuild, Consumer<GObjectType.GObjectTypeDispatcher> objectType);
 

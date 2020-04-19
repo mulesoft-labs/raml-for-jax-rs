@@ -17,12 +17,10 @@ package org.raml.jaxrs.generator.utils;
 
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
-import org.raml.jaxrs.generator.GAbstractionFactory;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.V10Finder;
-import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.v2.api.RamlModelBuilder;
 import org.raml.v2.api.RamlModelResult;
 import org.raml.v2.api.model.common.ValidationResult;

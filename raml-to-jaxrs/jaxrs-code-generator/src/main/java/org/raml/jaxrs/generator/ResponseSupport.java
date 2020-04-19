@@ -16,7 +16,6 @@
 package org.raml.jaxrs.generator;
 
 import com.squareup.javapoet.*;
-import joptsimple.internal.Strings;
 
 import javax.lang.model.element.Modifier;
 import javax.ws.rs.core.Response;
@@ -154,7 +153,7 @@ public class ResponseSupport {
       list.add("p" + i);
     }
 
-    return Strings.join(list, ",");
+    return String.join(",",list);
   }
 
 

@@ -24,8 +24,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.raml.builder.*;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.v10.V10GMethod;
-import org.raml.jaxrs.generator.v10.V10GResource;
 import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
 import org.raml.ramltopojo.RamlToPojo;
 import org.raml.v2.api.model.v10.api.Api;

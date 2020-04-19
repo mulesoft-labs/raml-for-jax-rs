@@ -20,6 +20,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.TypeBasedOperation;
+import org.raml.ramltopojo.ExtraInformation;
 
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class DefaultJavaTypeOperation extends TypeBasedOperation.Default<Optiona
 
   @Override
   public Optional<TypeName> on(SchemaShape schemaShape) {
-    if (false) {
+    if (ExtraInformation.isInline(schemaShape)) {
       return Optional.of(ClassName.get("", "SchemaShape"));
     } else {
       return Optional.of(ClassName.get(packageName, "SchemaShape"));

@@ -15,7 +15,8 @@
  */
 package org.raml.jaxrs.generator;
 
-import org.raml.v2.api.model.common.ValidationResult;
+
+import amf.client.validate.ValidationResult;
 
 import java.util.List;
 

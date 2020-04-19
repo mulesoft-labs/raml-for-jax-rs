@@ -15,10 +15,10 @@
  */
 package org.raml.jaxrs.generator.builders;
 
+import amf.client.model.domain.AnyShape;
 import com.squareup.javapoet.TypeName;
 import org.raml.ramltopojo.RamlToPojo;
 import org.raml.ramltopojo.ResultingPojos;
-import org.raml.v2.api.model.v10.datamodel.TypeDeclaration;
 
 import java.io.IOException;
 
@@ -29,13 +29,13 @@ public class RamlToPojoTypeGenerator implements TypeGenerator<ResultingPojos> {
 
   private final RamlToPojo pojos;
   private final String name;
-  private final TypeDeclaration typeDeclaration;
+  private final AnyShape anyShape;
   private final TypeName generatedType;
 
-  public RamlToPojoTypeGenerator(RamlToPojo p, String name, TypeDeclaration typeDeclaration, TypeName generatedType) {
+  public RamlToPojoTypeGenerator(RamlToPojo p, String name, AnyShape anyShape, TypeName generatedType) {
     this.pojos = p;
     this.name = name;
-    this.typeDeclaration = typeDeclaration;
+    this.anyShape = anyShape;
     this.generatedType = generatedType;
   }
 
@@ -56,7 +56,7 @@ public class RamlToPojoTypeGenerator implements TypeGenerator<ResultingPojos> {
 
     ResultingPojos p =
         pojos
-            .buildPojo(name, typeDeclaration);
+            .buildPojo(name, anyShape);
 
     rootDirectory.into(p);
   }

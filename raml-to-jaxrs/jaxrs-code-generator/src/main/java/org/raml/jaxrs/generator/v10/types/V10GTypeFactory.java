@@ -25,14 +25,6 @@ import org.raml.jaxrs.generator.v10.V10GType;
  */
 public class V10GTypeFactory {
 
-
-  public static V10GType createResponseBodyType(EndPoint resource,
-                                                Operation method, Response response, AnyShape anyShape) {
-
-    return new V10RamlToPojoGType(Names.ramlTypeName(resource, method,
-                                                     response, anyShape), anyShape);
-  }
-
   public static V10GType createRamlToPojo(String name, AnyShape anyShape) {
     return new V10RamlToPojoGType(name, anyShape);
   }
@@ -47,21 +39,4 @@ public class V10GTypeFactory {
 
     return new V10GTypeJson(schemaShape, ramlName, javaTypeName, model);
   }
-
-  // todo annotation.
-//  public static V10GType createXml(SchemaShape schemaShape, String ramlName, CreationModel model) {
-//    return new V10GTypeXml(schemaShape, ramlName, Annotations.CLASS_NAME.get(
-//                                                                             Names.typeName(ramlName), schemaShape),
-//                           model);
-//  }
-//
-//  public static V10GType createXml(SchemaShape schemaShape, String ramlName,
-//                                   String javaName, CreationModel model) {
-//    return new V10GTypeXml(schemaShape, ramlName, javaName, model);
-//  }
-
-  public static V10GType createUnion(String ramlName, UnionShape unionShape) {
-    return new V10RamlToPojoGType(ramlName, unionShape);
-  }
-
 }

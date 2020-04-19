@@ -15,6 +15,9 @@
  */
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
+import amf.client.model.domain.Operation;
+import amf.client.model.domain.Payload;
+import amf.client.model.domain.Request;
 import com.squareup.javapoet.MethodSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.extensions.ContextImpl;
@@ -33,7 +36,7 @@ public class ResourceContextImpl extends ContextImpl implements ResourceContext 
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, GMethod method, GRequest gRequest, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
 
     return getBuildContext().withResourceListeners().onMethod(context, method, gRequest, payload, methodSpec);
   }

@@ -146,18 +146,6 @@ public class V10Finder implements GFinder {
         return TypeBasedOperation.run((AnyShape) typeDeclaration, new CreateType(this));
     }
 
-    private boolean isInline(Shape typeDeclaration) {
-
-        AnyShape actualShape = (AnyShape) typeDeclaration;
-        if (actualShape instanceof SchemaShape) {
-
-            return !foundTypes.containsKey(actualShape.name().value());
-        } else {
-
-            return build.fetchRamlToPojoBuilder().isInline(actualShape);
-        }
-    }
-
     private V10GType createInlineFromEndPointsAndSuch(String ramlName, String suggestedJavaName, Shape
             typeDeclaration) {
 

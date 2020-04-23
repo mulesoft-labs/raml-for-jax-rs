@@ -15,18 +15,16 @@
  */
 package org.raml.jaxrs.generator.utils;
 
+import amf.client.model.document.Document;
+import amf.client.model.domain.EndPoint;
+import amf.client.model.domain.WebApi;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.CodeContainer;
 import org.raml.jaxrs.generator.builders.resources.ResourceBuilder;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.V10Finder;
-import org.raml.v2.api.RamlModelBuilder;
-import org.raml.v2.api.RamlModelResult;
-import org.raml.v2.api.model.common.ValidationResult;
-import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.api.model.v10.resources.Resource;
-
+import org.raml.ramltopojo.RamlLoader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -35,37 +33,27 @@ import java.io.InputStreamReader;
  */
 public class RamlV10 {
 
-  public static Resource withV10(Object test, String raml) {
+  public static EndPoint withV10(Object test, String raml) {
 
-    return buildApiV10(test, raml).resources().get(0);
+    return ((WebApi)buildApiV10(test, raml).encodes()).endPoints().get(0);
   }
 
-  public static Api buildApiV10(Object test, String raml) {
+  public static Document buildApiV10(Object test, String raml) {
 
-    RamlModelResult ramlModelResult =
-        new RamlModelBuilder().buildApi(
-                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)), ".");
-    if (ramlModelResult.hasErrors()) {
-      for (ValidationResult validationResult : ramlModelResult.getValidationResults()) {
-        System.out.println(validationResult.getMessage());
-      }
-      throw new AssertionError();
-    } else {
-      return ramlModelResult.getApiV10();
-    }
+    return RamlLoader.load(test.getClass().getResource(raml).toString());
   }
 
   public static void buildResourceV10(Object test, String raml, CodeContainer<TypeSpec> container,
                                       String name, String uri) throws IOException {
 
-    Api api = buildApiV10(test, raml);
+    Document api = buildApiV10(test, raml);
+    EndPoint endPoint = ((WebApi)buildApiV10(test, raml).encodes()).endPoints().get(0);
     CurrentBuild currentBuild =
-        new CurrentBuild(api, ExtensionManager.createExtensionManager(), null);
+        new CurrentBuild(api, ExtensionManager.createExtensionManager());
 
     currentBuild.constructClasses(new V10Finder(null, api));
     ResourceBuilder builder =
-        new ResourceBuilder(currentBuild, new V10GResource(currentBuild, new GAbstractionFactory(), api
-            .resources().get(0)), name, uri);
+        new ResourceBuilder(currentBuild, endPoint, name, uri);
     builder.output(container);
   }
 

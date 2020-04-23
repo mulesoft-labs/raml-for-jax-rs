@@ -81,7 +81,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
       String methodName = Names.resourceMethodName(endPoint, operation);
       Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(operation);
-      if (operation.request().payloads().size() == 0) {
+      if (operation.request() == null || operation.request().payloads().size() == 0) {
 
         createMethodWithoutBody(typeSpec, endPoint, operation, mediaTypesForMethod, HashMultimap.<String, String>create(),
                                 methodName,
@@ -525,39 +525,43 @@ public class ResourceBuilder implements ResourceGenerator {
               .build());
     }
 
-    for (Parameter parameter : operation.request().queryParameters()) {
+    if (operation.request() != null) {
+      for (Parameter parameter : operation.request().queryParameters()) {
 
-      TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
-          .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
-      ParameterSpec.Builder parameterSpec = ParameterSpec
-          .builder(
-                   typeName,
-                   Names.methodName(parameter.name().value()))
-          .addAnnotation(
-                         AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", parameter.name())
-                             .build());
-      if (parameter.schema().defaultValue() != null) {
-        parameterSpec.addAnnotation(
-            // todo this is wrong
-            AnnotationSpec.builder(DefaultValue.class)
-                .addMember("value", "$S", parameter.schema().defaultValue().name()).build());
+        TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
+                .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
+        ParameterSpec.Builder parameterSpec = ParameterSpec
+                .builder(
+                        typeName,
+                        Names.methodName(parameter.name().value()))
+                .addAnnotation(
+                        AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", parameter.name())
+                                .build());
+        if (parameter.schema().defaultValue() != null) {
+          parameterSpec.addAnnotation(
+                  // todo this is wrong
+                  AnnotationSpec.builder(DefaultValue.class)
+                          .addMember("value", "$S", parameter.schema().defaultValue().name()).build());
+        }
+        methodSpec.addParameter(parameterSpec.build());
       }
-      methodSpec.addParameter(parameterSpec.build());
     }
 
-    for (Parameter parameter : operation.request().headers()) {
+    if ( operation.request() != null ) {
+      for (Parameter parameter : operation.request().headers()) {
 
-      TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
-          .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
-      methodSpec.addParameter(
-          ParameterSpec
-              .builder(
-                       typeName,
-                       Names.methodName(parameter.name().value()))
-              .addAnnotation(
-                             AnnotationSpec.builder(HeaderParam.class).addMember("value", "$S", parameter.name())
-                                 .build())
-              .build());
+        TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
+            .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
+        methodSpec.addParameter(
+            ParameterSpec
+                .builder(
+                         typeName,
+                         Names.methodName(parameter.name().value()))
+                .addAnnotation(
+                               AnnotationSpec.builder(HeaderParam.class).addMember("value", "$S", parameter.name())
+                                   .build())
+                .build());
+      }
     }
 
     buildNewWebMethod(operation, methodSpec);
@@ -616,10 +620,10 @@ public class ResourceBuilder implements ResourceGenerator {
         if (parameter.schema() instanceof ScalarShape) {
           ScalarShape typeDecl = (ScalarShape) parameter.schema();
           // check if this string has a pattern to register
-          if (typeDecl.pattern() != null) {
+          if (! typeDecl.pattern().isNull()) {
             // remove ^...$ from pattern if existing
             String pattern = typeDecl.pattern().value();
-            if (pattern.startsWith("^") && pattern.endsWith("$") && pattern.length() > 2) {
+            if (pattern.startsWith("^") && pattern.endsWith("$") && pattern.length() > 2) {// JP todo, this is weird, why remove anchors
               pattern = pattern.substring(1, pattern.length() - 1);
             }
             generatedPathString = pathString.replace("{" + name + "}", "{" + name + ":" + pattern + "}");
@@ -631,7 +635,7 @@ public class ResourceBuilder implements ResourceGenerator {
   }
 
   private void buildNewWebMethod(Operation operation, MethodSpec.Builder methodSpec) {
-    Class<? extends Annotation> type = HTTPMethods.methodNameToAnnotation(operation.name().value());
+    Class<? extends Annotation> type = HTTPMethods.methodNameToAnnotation(operation.method().value());
     if (type == null) {
 
       String name = operation.method().value().toUpperCase();

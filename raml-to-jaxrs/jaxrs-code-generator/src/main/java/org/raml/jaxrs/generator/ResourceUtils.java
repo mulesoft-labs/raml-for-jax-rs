@@ -31,7 +31,7 @@ public class ResourceUtils {
 
     for (Operation method : resource.operations()) {
 
-      if (method.request().payloads().size() == 0) {
+      if (method.request() == null || method.request().payloads().size() == 0) {
         incomingBodies.put(method, null);
       } else {
         for (Payload payload : method.request().payloads()) {

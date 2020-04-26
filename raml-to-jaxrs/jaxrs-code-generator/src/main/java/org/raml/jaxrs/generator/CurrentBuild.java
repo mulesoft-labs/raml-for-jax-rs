@@ -24,12 +24,14 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jsonschema2pojo.GenerationConfig;
 import org.raml.jaxrs.generator.builders.*;
 import org.raml.jaxrs.generator.builders.resources.ResourceGenerator;
 import org.raml.jaxrs.generator.extension.resources.api.*;
 import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
+import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
@@ -64,7 +66,7 @@ public class CurrentBuild {
 
   private final GlobalResourceExtension.Composite resourceExtensionList = new GlobalResourceExtension.Composite();
 
-  private final Map<String, GeneratorType> foundTypes = new HashMap<>();
+  private final Map<String, Pair<GType, GeneratorType>> foundTypes = new HashMap<>();
 
   private final List<JavaPoetTypeGenerator> supportGenerators = new ArrayList<>();
   private Configuration configuration;
@@ -222,7 +224,7 @@ public class CurrentBuild {
     finder.findTypes(listener);
 
     finder.setupConstruction(this);
-    for (GeneratorType type : foundTypes.values()) {
+    for (GeneratorType type : foundTypes.values().stream().map(p -> p.getRight()).collect(Collectors.toList())) {
 
       type.construct(this);
     }
@@ -333,106 +335,11 @@ public class CurrentBuild {
     return resourceExtensionList;
   }
 
-  public V10GType fetchType(EndPoint implementation, Operation method, AnyShape anyShape) {
-
-
-    if (anyShape instanceof SchemaShape) {
-
-      return (V10GType) ((JsonSchemaTypeGenerator) builtTypes.get(anyShape.name().value())).getType();
-    }
-
-    // todo handling XML
-    // if (anyShape instanceof SchemaShape) {
-    //
-    // return (V10GType) ((XmlSchemaTypeGenerator) builtTypes.get(anyShape.type())).getType();
-    // }
-
-    RamlToPojo ramlToPojo = fetchRamlToPojoBuilder();
-    if (ramlToPojo.isInline(anyShape)) {
-
-      TypeName typeName =
-          ramlToPojo
-              .fetchType(Names.javaTypeName(implementation, method, anyShape), anyShape);
-      V10RamlToPojoGType type =
-          new V10RamlToPojoGType(Names.javaTypeName(implementation, method, anyShape), anyShape);
-      type.setJavaType(typeName);
-      return type;
-    } else {
-
-      TypeName typeName =
-          ramlToPojo
-              .fetchType(anyShape.name().value(), anyShape);
-      V10RamlToPojoGType type = new V10RamlToPojoGType(anyShape.name().value(), anyShape);
-      type.setJavaType(typeName);
-      return type;
-    }
-
-  }
-
-  public V10GType fetchType(EndPoint resource, AnyShape input) {
-
-    RamlToPojo ramlToPojo = fetchRamlToPojoBuilder();
-    if (ramlToPojo.isInline(input)) {
-
-      TypeName typeName =
-          fetchRamlToPojoBuilder()
-              .fetchType(Names.javaTypeName(resource, input), input);
-
-      V10RamlToPojoGType type = new V10RamlToPojoGType(input);
-      type.setJavaType(typeName);
-      return type;
-    } else {
-
-      TypeName typeName =
-          fetchRamlToPojoBuilder()
-              .fetchType(input.name().value(), input);
-
-      V10RamlToPojoGType type = new V10RamlToPojoGType(input);
-      type.setJavaType(typeName);
-      return type;
-    }
-  }
-
-  public V10GType fetchType(EndPoint resource, Operation method, Response response, AnyShape anyShape) {
-
-    if (anyShape instanceof SchemaShape) {
-
-      return (V10GType) ((JsonSchemaTypeGenerator) builtTypes.get(anyShape.name().value())).getType();
-    }
-
-    /*
-     * if (anyShape instanceof XMLTypeDeclaration) {
-     * 
-     * return (V10GType) ((XmlSchemaTypeGenerator) builtTypes.get(anyShape.type())).getType(); }
-     */
-
-    RamlToPojo ramlToPojo = fetchRamlToPojoBuilder();
-    if (ramlToPojo.isInline(anyShape)) {
-
-      TypeName typeName =
-          fetchRamlToPojoBuilder()
-              .fetchType(Names.javaTypeName(resource, method, response, anyShape), anyShape);
-
-      V10RamlToPojoGType type =
-          new V10RamlToPojoGType(Names.javaTypeName(resource, method, response, anyShape), anyShape);
-      type.setJavaType(typeName);
-      return type;
-    } else {
-
-      TypeName typeName =
-          fetchRamlToPojoBuilder()
-              .fetchType(anyShape.name().value(), anyShape);
-
-      V10RamlToPojoGType type = new V10RamlToPojoGType(anyShape.name().value(), anyShape);
-      type.setJavaType(typeName);
-      return type;
-    }
-  }
-
+  // todo:  wrong and a bit useless.  Fix me
   public V10GType fetchType(String name, AnyShape anyShape) {
     TypeName typeName =
         fetchRamlToPojoBuilder()
-            .fetchType(name, anyShape);
+            .fetchTypeName(name, anyShape);
 
     V10RamlToPojoGType type = new V10RamlToPojoGType(anyShape);
     type.setJavaType(typeName);
@@ -448,6 +355,7 @@ public class CurrentBuild {
   }
 
   public TypeName fetchTypeName(AnyShape anyShape) {
-    return fetchRamlToPojoBuilder().fetchType("none_but_fun", anyShape);
+    GType type = foundTypes.get(anyShape.id()).getLeft();
+    return fetchRamlToPojoBuilder().fetchTypeName(type.name(), anyShape);
   }
 }

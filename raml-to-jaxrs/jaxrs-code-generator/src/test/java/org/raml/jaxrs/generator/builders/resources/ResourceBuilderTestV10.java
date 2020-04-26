@@ -189,10 +189,10 @@ public class ResourceBuilderTestV10 {
                                  assertEquals("Foo", g.name);
                                  assertEquals(1, g.methodSpecs.size());
                                  MethodSpec methodSpec = g.methodSpecs.get(0);
-                                 assertEquals("postSearchByIdAndTwo", methodSpec.name);
+                                 assertEquals("postSearchById", methodSpec.name);
                                  assertEquals(1, methodSpec.annotations.size());
                                  assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
-                                 assertEquals(2, methodSpec.parameters.size());
+                                 assertEquals(1, methodSpec.parameters.size());
 
                                  ParameterSpec paramOneSpec = methodSpec.parameters.get(0);
                                  assertEquals("id", paramOneSpec.name);
@@ -200,14 +200,6 @@ public class ResourceBuilderTestV10 {
                                  assertEquals(1, paramOneSpec.annotations.size());
                                  assertEquals(ClassName.get(PathParam.class), paramOneSpec.annotations.get(0).type);
                                  assertEquals("\"id\"", paramOneSpec.annotations.get(0).members.get("value").get(0)
-                                     .toString());
-
-                                 ParameterSpec paramTwoSpec = methodSpec.parameters.get(1);
-                                 assertEquals("two", paramTwoSpec.name);
-                                 assertEquals(ClassName.INT, paramTwoSpec.type);
-                                 assertEquals(1, paramTwoSpec.annotations.size());
-                                 assertEquals(ClassName.get(PathParam.class), paramTwoSpec.annotations.get(0).type);
-                                 assertEquals("\"two\"", paramTwoSpec.annotations.get(0).members.get("value").get(0)
                                      .toString());
                                }
                              }, "foo", "/fun");

@@ -26,17 +26,11 @@ import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.ramltopojo.RamlLoader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * Created by Jean-Philippe Belanger on 12/25/16. Just potential zeroes and ones
  */
 public class RamlV10 {
-
-  public static EndPoint withV10(Object test, String raml) {
-
-    return ((WebApi)buildApiV10(test, raml).encodes()).endPoints().get(0);
-  }
 
   public static Document buildApiV10(Object test, String raml) {
 
@@ -47,11 +41,12 @@ public class RamlV10 {
                                       String name, String uri) throws IOException {
 
     Document api = buildApiV10(test, raml);
-    EndPoint endPoint = ((WebApi)buildApiV10(test, raml).encodes()).endPoints().get(0);
+    WebApi webApi = (WebApi)api.encodes();
+    EndPoint endPoint = webApi.endPoints().get(0);
     CurrentBuild currentBuild =
         new CurrentBuild(api, ExtensionManager.createExtensionManager());
 
-    currentBuild.constructClasses(new V10Finder(null, api));
+    currentBuild.constructClasses(new V10Finder(null, api, webApi));
     ResourceBuilder builder =
         new ResourceBuilder(currentBuild, endPoint, name, uri);
     builder.output(container);

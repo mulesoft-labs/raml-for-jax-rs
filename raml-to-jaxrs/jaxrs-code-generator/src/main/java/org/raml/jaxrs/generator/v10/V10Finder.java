@@ -41,19 +41,21 @@ public class V10Finder implements GFinder {
 
     private final CurrentBuild build;
     private final Document api;
+    private final WebApi webApi;
 
     private Map<String, V10GType> foundTypes = new HashMap<>();
 
-    public V10Finder(CurrentBuild build, Document api) {
+    public V10Finder(CurrentBuild build, Document api, WebApi webApi) {
         this.build = build;
         this.api = api;
+        this.webApi = webApi;
     }
 
     @Override
     public GFinder findTypes(GFinderListener listener) {
 
         FilterableTypeFinder finder = new FilterableTypeFinder();
-        finder.findTypes(api, (x) -> true, (path, type) -> {
+        finder.findTypes(api, webApi, (x) -> true, (path, type) -> {
 
             if (path.endMatches(Module.class) || path.isRoot()) {
 

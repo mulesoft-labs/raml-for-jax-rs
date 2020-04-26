@@ -45,6 +45,11 @@ public class V10RamlToPojoGType implements V10GType {
   }
 
   @Override
+  public String id() {
+    return shape.id();
+  }
+
+  @Override
   public AnyShape implementation() {
     return shape;
   }
@@ -93,5 +98,18 @@ public class V10RamlToPojoGType implements V10GType {
   public void setJavaType(TypeName generatedJavaType) {
 
     this.typeName = generatedJavaType;
+  }
+
+  @Override
+  public int hashCode() {
+    return shape.id().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof V10RamlToPojoGType)) return false;
+    V10RamlToPojoGType that = (V10RamlToPojoGType) o;
+    return shape.id().equals(that.shape.id());
   }
 }

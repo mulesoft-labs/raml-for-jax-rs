@@ -28,6 +28,8 @@ import java.util.function.Consumer;
  */
 public interface GType extends GAbstraction<AnyShape> {
 
+  String id();
+
   String type();
 
   String name();

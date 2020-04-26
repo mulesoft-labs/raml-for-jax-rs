@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class RamlScanner {
 
-  enum Version implements RamlLoader.Loader {
+  public enum Version implements RamlLoader.Loader {
     RAML_08 {
 
       @Override

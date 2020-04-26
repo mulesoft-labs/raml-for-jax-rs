@@ -45,6 +45,11 @@ public class V10GTypeJson implements V10GType {
   }
 
   @Override
+  public String id() {
+    return schemaShape.id();
+  }
+
+  @Override
   public String type() {
     return schemaShape.name().value();
   }
@@ -117,27 +122,20 @@ public class V10GTypeJson implements V10GType {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o)
-      return true;
-
-    if (!(o instanceof V10GType)) {
-
-      return false;
-    }
-
-    V10GType v10GType = (V10GType) o;
-
-    return name.equals(v10GType.name());
+  public SchemaShape implementation() {
+    return schemaShape;
   }
 
   @Override
   public int hashCode() {
-    return name.hashCode();
+    return schemaShape.id().hashCode();
   }
 
   @Override
-  public SchemaShape implementation() {
-    return schemaShape;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof V10GTypeJson)) return false;
+    V10GTypeJson that = (V10GTypeJson) o;
+    return schemaShape.id().equals(that.schemaShape.id());
   }
 }

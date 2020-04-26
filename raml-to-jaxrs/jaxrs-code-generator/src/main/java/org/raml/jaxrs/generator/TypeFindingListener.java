@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.raml.jaxrs.generator.ramltypes.GType;
 
 import java.util.Map;
@@ -25,9 +26,9 @@ import java.util.Map;
  */
 public class TypeFindingListener implements GFinderListener {
 
-  private final Map<String, GeneratorType> foundTypes;
+  private final Map<String, Pair<GType, GeneratorType>> foundTypes;
 
-  public TypeFindingListener(Map<String, GeneratorType> foundTypes) {
+  public TypeFindingListener(Map<String, Pair<GType, GeneratorType>> foundTypes) {
     this.foundTypes = foundTypes;
   }
 
@@ -35,7 +36,7 @@ public class TypeFindingListener implements GFinderListener {
   public void newTypeDeclaration(GType typeDeclaration) {
 
     GeneratorType generator = GeneratorType.generatorFrom(typeDeclaration);
-    foundTypes.put(typeDeclaration.name(), generator);
+    foundTypes.put(typeDeclaration.id(), Pair.of(typeDeclaration, generator));
   }
 
 

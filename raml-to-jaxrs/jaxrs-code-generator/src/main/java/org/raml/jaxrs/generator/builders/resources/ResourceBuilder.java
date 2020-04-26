@@ -229,7 +229,7 @@ public class ResourceBuilder implements ResourceGenerator {
       return;
     }
 
-    if (payload.schema().name().value().equals("any") && "application/octet-stream".equals(payload.mediaType().value())) {
+    if (payload.schema().getClass().equals(AnyShape.class) && "application/octet-stream".equals(payload.mediaType().value())) {
 
       TypeName typeName = ClassName.get(InputStream.class);
       methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());

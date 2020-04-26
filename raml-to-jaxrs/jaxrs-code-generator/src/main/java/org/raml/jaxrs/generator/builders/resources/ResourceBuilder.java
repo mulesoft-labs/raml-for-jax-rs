@@ -731,6 +731,8 @@ public class ResourceBuilder implements ResourceGenerator {
               .addMember("value", "$S", generatePathString(uri, resource.parameters())).build());
 
       buildResource(typeSpec, topResource);
+      // recurse(typeSpec, topResource);
+
       // typeSpec =
       // build
       // .pluginsForResourceClass(new Function<Collection<ResourceClassExtension<GResource>>, ResourceClassExtension<GResource>>()

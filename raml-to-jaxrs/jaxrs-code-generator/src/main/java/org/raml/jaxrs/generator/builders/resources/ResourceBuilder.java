@@ -26,6 +26,7 @@ import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
+import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.ramltopojo.TypeBasedOperation;
 
@@ -731,7 +732,7 @@ public class ResourceBuilder implements ResourceGenerator {
               .addMember("value", "$S", generatePathString(uri, resource.parameters())).build());
 
       buildResource(typeSpec, topResource);
-      // recurse(typeSpec, topResource);
+      recurse(typeSpec, topResource);
 
       // typeSpec =
       // build
@@ -748,6 +749,17 @@ public class ResourceBuilder implements ResourceGenerator {
       // }, topResource)
       // .onResource(new ResourceContextImpl(build), topResource, typeSpec);
       return typeSpec;
+    }
+  }
+
+  private void recurse(TypeSpec.Builder typeSpec, EndPoint parentResource) {
+
+    List<EndPoint> immiediateChildren = ((WebApi)build.getApi().encodes()).endPoints().stream()
+            .filter(s -> s.parent().map( p -> p.id().equals(parentResource.id())).orElse(false)).collect(Collectors.toList());
+    for (EndPoint resource : immiediateChildren) {
+
+      buildResource(typeSpec, resource);
+      recurse(typeSpec, resource);
     }
   }
 

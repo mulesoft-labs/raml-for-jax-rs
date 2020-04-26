@@ -222,7 +222,7 @@ public class ResourceBuilderTestV10 {
                                  assertEquals(2, methodSpec.annotations.size());
                                  assertEquals(ClassName.get(PUT.class), methodSpec.annotations.get(0).type);
                                  assertEquals(ClassName.get(Path.class), methodSpec.annotations.get(1).type);
-                                 assertEquals("\"/{viewingSessionId}/Attachments\"",
+                                 assertEquals("\"/ViewingSession/{viewingSessionId}/Attachments\"",
                                               methodSpec.annotations.get(1).members.get("value").get(0).toString());
 
                                  assertEquals(1, methodSpec.parameters.size());
@@ -256,7 +256,7 @@ public class ResourceBuilderTestV10 {
                                  assertEquals(2, methodSpec.annotations.size());
                                  assertEquals(ClassName.get(PUT.class), methodSpec.annotations.get(0).type);
                                  assertEquals(ClassName.get(Path.class), methodSpec.annotations.get(1).type);
-                                 assertEquals("\"/{viewingSessionId:(;[^/;]+)*}/Attachments\"",
+                                 assertEquals("\"/ViewingSession/{viewingSessionId:(;[^/;]+)*}/Attachments\"",
                                               methodSpec.annotations.get(1).members.get("value").get(0).toString());
 
                                  assertEquals(1, methodSpec.parameters.size());
@@ -320,7 +320,7 @@ public class ResourceBuilderTestV10 {
                                  assertEquals(2, methodSpec.annotations.size());
                                  assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
                                  assertEquals(ClassName.get(Path.class), methodSpec.annotations.get(1).type);
-                                 assertEquals("\"/{id}\"",
+                                 assertEquals("\"/search/{id}\"",
                                               methodSpec.annotations.get(1).members.get("value").get(0).toString());
 
                                  assertEquals(1, methodSpec.parameters.size());
@@ -354,7 +354,7 @@ public class ResourceBuilderTestV10 {
                                  assertEquals(2, methodSpec.annotations.size());
                                  assertEquals(ClassName.get(PUT.class), methodSpec.annotations.get(0).type);
                                  assertEquals(ClassName.get(Path.class), methodSpec.annotations.get(1).type);
-                                 assertEquals("\"/{viewingSessionId}/Attachments\"",
+                                 assertEquals("\"/{something}/{viewingSessionId}/Attachments\"",
                                               methodSpec.annotations.get(1).members.get("value").get(0).toString());
 
                                  assertEquals(2, methodSpec.parameters.size());

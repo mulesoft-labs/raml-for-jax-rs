@@ -58,7 +58,7 @@ public interface GlobalResourceExtension extends
         }
       };
 
-   class Composite implements GlobalResourceExtension {
+  class Composite implements GlobalResourceExtension {
 
     private List<GlobalResourceExtension> extensions = new ArrayList<>();
 
@@ -72,7 +72,8 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
+    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                       MethodSpec.Builder methodSpec) {
       for (GlobalResourceExtension extension : extensions) {
         methodSpec = extension.onMethod(context, method, gRequest, payload, methodSpec);
       }
@@ -104,25 +105,25 @@ public interface GlobalResourceExtension extends
 
   class Helper implements GlobalResourceExtension {
 
-      @Override
-      public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
-          return typeSpec;
-      }
+    @Override
+    public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
+      return typeSpec;
+    }
 
-      @Override
-      public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest,
-                                         Payload payload, MethodSpec.Builder methodSpec) {
-          return methodSpec;
-      }
+    @Override
+    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest,
+                                       Payload payload, MethodSpec.Builder methodSpec) {
+      return methodSpec;
+    }
 
-      @Override
-      public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
-          return typeSpec;
-      }
+    @Override
+    public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
+      return typeSpec;
+    }
 
-      @Override
-      public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
-          return methodSpec;
-      }
+    @Override
+    public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
+      return methodSpec;
+    }
   }
 }

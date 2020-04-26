@@ -41,7 +41,7 @@ public class RamlV10 {
                                       String name, String uri) throws IOException {
 
     Document api = buildApiV10(test, raml);
-    WebApi webApi = (WebApi)api.encodes();
+    WebApi webApi = (WebApi) api.encodes();
     EndPoint endPoint = webApi.endPoints().get(0);
     CurrentBuild currentBuild =
         new CurrentBuild(api, ExtensionManager.createExtensionManager());

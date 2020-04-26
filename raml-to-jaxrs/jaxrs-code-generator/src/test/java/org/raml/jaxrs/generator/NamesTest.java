@@ -124,67 +124,73 @@ public class NamesTest {
   @Test
   public void buildResponseClassnameWithURIParam() throws Exception {
 
-    assertEquals("GetSongsBySongIdResponse", Names.responseClassName(
-            resource
-                    .withPath("/songs/{songId}")
-                    .withParameters(Collections.singletonList(new Parameter().withName("songId"))),
-            method.withMethod("get")));
+    assertEquals("GetSongsBySongIdResponse",
+                 Names.responseClassName(
+                                         resource
+                                             .withPath("/songs/{songId}")
+                                             .withParameters(Collections.singletonList(new Parameter().withName("songId"))),
+                                         method.withMethod("get")));
   }
 
 
   @Test
   public void buildResponseClassnameWithTwoURIParam() throws Exception {
 
-    assertEquals("GetSongsBySongIdAndSongIdResponse", Names.responseClassName(
-            resource
-                    .withPath("/songs/{songId}/{songId}")
-                    .withParameters(Arrays.asList(new Parameter().withName("songId"), new Parameter().withName("songId"))),
-            method.withMethod("get")));
+    assertEquals("GetSongsBySongIdAndSongIdResponse",
+                 Names.responseClassName(
+                                         resource
+                                             .withPath("/songs/{songId}/{songId}")
+                                             .withParameters(Arrays.asList(new Parameter().withName("songId"),
+                                                                           new Parameter().withName("songId"))),
+                                         method.withMethod("get")));
   }
 
   @Test
   public void buildResourceMethodClassname() throws Exception {
 
     assertEquals("getSongs", Names.resourceMethodName(
-            resource
-                    .withPath("/songs"),
-            method.withMethod("get")));
+                                                      resource
+                                                          .withPath("/songs"),
+                                                      method.withMethod("get")));
   }
 
   @Test
   public void buildResourceMethodNameWithURIParam() throws Exception {
 
-    assertEquals("getSongsBySongId", Names.resourceMethodName(
-            resource
-                    .withPath("/songs/{songId}")
-                    .withParameters(Arrays.asList(new Parameter().withName("songId"))),
-            method.withMethod("get")));
+    assertEquals("getSongsBySongId",
+                 Names.resourceMethodName(
+                                          resource
+                                              .withPath("/songs/{songId}")
+                                              .withParameters(Arrays.asList(new Parameter().withName("songId"))),
+                                          method.withMethod("get")));
   }
 
   @Test
   public void buildResourceMethodNameWithCurlyBracesAndWithoutParameter() throws Exception {
 
     assertEquals("getSongsFoo", Names.resourceMethodName(
-            resource
-                    .withPath("/songs/foo/{songId}"),
-            method.withMethod("get")));
+                                                         resource
+                                                             .withPath("/songs/foo/{songId}"),
+                                                         method.withMethod("get")));
   }
 
   @Test
   public void buildResourceMethodNameWithTwoURIParam() throws Exception {
 
-//    when(method.resource()).thenReturn(resource);
-//    when(resource.resourcePath()).thenReturn("/songs/{songId}/{songId}");
-//    when(uriParameter.name()).thenReturn("songId");
-//    when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter, uriParameter));
-//    when(resource.relativePath()).thenReturn("path");
-//    when(method.method()).thenReturn("get");
+    // when(method.resource()).thenReturn(resource);
+    // when(resource.resourcePath()).thenReturn("/songs/{songId}/{songId}");
+    // when(uriParameter.name()).thenReturn("songId");
+    // when(resource.uriParameters()).thenReturn(Arrays.asList(uriParameter, uriParameter));
+    // when(resource.relativePath()).thenReturn("path");
+    // when(method.method()).thenReturn("get");
 
-    assertEquals("getSongsBySongIdAndSongId", Names.resourceMethodName(
-            resource
-                    .withPath("/songs/{songId}/{songId}")
-                    .withParameters(Arrays.asList(new Parameter().withName("songId"), new Parameter().withName("songId"))),
-            method.withMethod("get")));
+    assertEquals("getSongsBySongIdAndSongId",
+                 Names.resourceMethodName(
+                                          resource
+                                              .withPath("/songs/{songId}/{songId}")
+                                              .withParameters(Arrays.asList(new Parameter().withName("songId"),
+                                                                            new Parameter().withName("songId"))),
+                                          method.withMethod("get")));
   }
 
 }

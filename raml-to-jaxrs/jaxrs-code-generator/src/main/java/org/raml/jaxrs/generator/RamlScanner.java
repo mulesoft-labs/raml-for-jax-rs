@@ -83,8 +83,8 @@ public class RamlScanner {
 
     // handle resources.
     List<EndPoint> topEndpoints = ((WebApi) document.encodes()).endPoints().stream()
-            .filter(e -> !e.parent().isPresent())
-            .collect(Collectors.toList());
+        .filter(e -> !e.parent().isPresent())
+        .collect(Collectors.toList());
 
     for (EndPoint resource : topEndpoints) {
       resourceHandler.handle(resource);

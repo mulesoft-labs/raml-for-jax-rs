@@ -31,7 +31,8 @@ public class JerseyMultipartFormDataResourceExtension extends GlobalResourceExte
 
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                     MethodSpec.Builder methodSpec) {
 
     if (gRequest != null && "multipart/form-data".equals(payload.mediaType().value())) {
 
@@ -74,7 +75,8 @@ public class JerseyMultipartFormDataResourceExtension extends GlobalResourceExte
                                      .addMember("value", "$S", property.name()).build()).build());
 
         } else {
-          TypeName typeName = context.fetchRamlToPojoBuilder().fetchTypeName(property.range().name().value(), (AnyShape) property.range());
+          TypeName typeName =
+              context.fetchRamlToPojoBuilder().fetchTypeName(property.range().name().value(), (AnyShape) property.range());
           newMethod.addParameter(
               ParameterSpec
                   .builder(typeName, property.name().value())
@@ -93,7 +95,8 @@ public class JerseyMultipartFormDataResourceExtension extends GlobalResourceExte
 
   private void addExistingParameters(MethodSpec old, MethodSpec.Builder newMethod) {
     for (ParameterSpec parameter : old.parameters) {
-      if ((int) parameter.annotations.stream().filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
+      if ((int) parameter.annotations.stream()
+          .filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
               || annotationSpec.type.equals(ClassName.get(QueryParam.class))).count() > 0) {
         newMethod.addParameter(parameter);
       }

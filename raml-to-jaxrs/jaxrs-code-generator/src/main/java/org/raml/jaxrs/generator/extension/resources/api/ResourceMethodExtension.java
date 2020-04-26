@@ -44,6 +44,7 @@ public interface ResourceMethodExtension {
     }
   }
 
-  MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec);
+  MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                              MethodSpec.Builder methodSpec);
 
 }

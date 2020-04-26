@@ -87,10 +87,10 @@ public class GeneratorType {
 
   public void construct(CurrentBuild currentBuild) {
 
-    //if (getObjectType() != GObjectType.SCALAR) {
+    // if (getObjectType() != GObjectType.SCALAR) {
 
-      declaredType.construct(currentBuild, objectType);
-    //}
+    declaredType.construct(currentBuild, objectType);
+    // }
 
   }
 }

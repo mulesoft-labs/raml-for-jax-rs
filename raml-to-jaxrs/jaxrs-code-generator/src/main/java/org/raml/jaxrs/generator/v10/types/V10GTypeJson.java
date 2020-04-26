@@ -98,6 +98,7 @@ public class V10GTypeJson implements V10GType {
   public void construct(CurrentBuild currentBuild, Consumer<GObjectType.GObjectTypeDispatcher> objectType) {
 
     objectType.accept(new GObjectType.GObjectTypeDispatcher() {
+
       @Override
       public void onSchema() {
         SchemaTypeFactory.createJsonType(currentBuild, V10GTypeJson.this);
@@ -133,8 +134,10 @@ public class V10GTypeJson implements V10GType {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof V10GTypeJson)) return false;
+    if (this == o)
+      return true;
+    if (!(o instanceof V10GTypeJson))
+      return false;
     V10GTypeJson that = (V10GTypeJson) o;
     return schemaShape.id().equals(that.schemaShape.id());
   }

@@ -32,7 +32,7 @@ public class JavadocResourceExtension implements GlobalResourceExtension {
 
   @Override
   public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
-    if (! resource.description().isNullOrEmpty()) {
+    if (!resource.description().isNullOrEmpty()) {
       typeSpec.addJavadoc("$L\n", resource.description().value());
     }
 
@@ -40,9 +40,10 @@ public class JavadocResourceExtension implements GlobalResourceExtension {
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                     MethodSpec.Builder methodSpec) {
 
-    if (! method.description().isNullOrEmpty()) {
+    if (!method.description().isNullOrEmpty()) {
       methodSpec.addJavadoc("$L\n", method.description().value());
     }
 
@@ -56,7 +57,7 @@ public class JavadocResourceExtension implements GlobalResourceExtension {
 
   @Override
   public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
-    if (! responseMethod.description().isNullOrEmpty()) {
+    if (!responseMethod.description().isNullOrEmpty()) {
       methodSpec.addJavadoc("$L\n", responseMethod.description().value());
     }
 

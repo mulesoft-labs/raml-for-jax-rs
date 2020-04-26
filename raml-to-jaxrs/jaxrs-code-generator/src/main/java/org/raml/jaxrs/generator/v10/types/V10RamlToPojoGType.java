@@ -87,6 +87,7 @@ public class V10RamlToPojoGType implements V10GType {
   @Override
   public void construct(CurrentBuild currentBuild, Consumer<GObjectType.GObjectTypeDispatcher> objectType) {
     objectType.accept(new GObjectType.GObjectTypeDispatcher() {
+
       @Override
       public void onSchema() {
         SchemaTypeFactory.createRamlToPojo(currentBuild, V10RamlToPojoGType.this);
@@ -107,8 +108,10 @@ public class V10RamlToPojoGType implements V10GType {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof V10RamlToPojoGType)) return false;
+    if (this == o)
+      return true;
+    if (!(o instanceof V10RamlToPojoGType))
+      return false;
     V10RamlToPojoGType that = (V10RamlToPojoGType) o;
     return shape.id().equals(that.shape.id());
   }

@@ -21,6 +21,7 @@ package org.raml.jaxrs.generator;
 public enum GObjectType implements GeneratorObjectType {
 
   RAML_TO_POJO_TYPE {
+
     @Override
     public void dispatch(GObjectTypeDispatcher dispatcher) {
 
@@ -28,6 +29,7 @@ public enum GObjectType implements GeneratorObjectType {
     }
   },
   SCHEMA_TYPE {
+
     @Override
     public void dispatch(GObjectTypeDispatcher dispatcher) {
       dispatcher.onSchema();
@@ -39,7 +41,8 @@ public enum GObjectType implements GeneratorObjectType {
   public static class GObjectTypeDispatcher {
 
     public void onRamlToPojo() {};
-   public void onSchema() {};
+
+    public void onSchema() {};
   }
 
   public abstract void dispatch(GObjectTypeDispatcher dispatcher);

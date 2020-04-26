@@ -153,7 +153,7 @@ public class ResponseSupport {
       list.add("p" + i);
     }
 
-    return String.join(",",list);
+    return String.join(",", list);
   }
 
 

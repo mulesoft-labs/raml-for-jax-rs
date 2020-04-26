@@ -225,7 +225,8 @@ public class Names {
 
   public static String ramlTypeName(EndPoint resource, Operation method, Response response, Payload payload,
                                     AnyShape anyShape) {
-    return resource.path().value() + method.method() + response.statusCode().value() + payload.mediaType() + anyShape.name().value();
+    return resource.path().value() + method.method() + response.statusCode().value() + payload.mediaType()
+        + anyShape.name().value();
   }
 
 

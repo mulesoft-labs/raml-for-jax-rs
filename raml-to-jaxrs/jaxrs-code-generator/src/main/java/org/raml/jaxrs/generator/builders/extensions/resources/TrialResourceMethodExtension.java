@@ -30,7 +30,8 @@ import org.raml.jaxrs.generator.ramltypes.GRequest;
 public class TrialResourceMethodExtension implements ResourceMethodExtension {
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                     MethodSpec.Builder methodSpec) {
 
     return methodSpec;
   }

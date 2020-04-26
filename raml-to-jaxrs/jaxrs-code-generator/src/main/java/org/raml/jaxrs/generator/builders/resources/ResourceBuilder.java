@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.*;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.raml.jaxrs.generator.builders.resources.DefaultJavaTypeOperation.defaultJavaType;
@@ -91,8 +92,10 @@ public class ResourceBuilder implements ResourceGenerator {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (!(o instanceof OperationHolder)) return false;
+      if (this == o)
+        return true;
+      if (!(o instanceof OperationHolder))
+        return false;
       OperationHolder that = (OperationHolder) o;
       return operation.id().equals(that.operation.id());
     }
@@ -126,10 +129,11 @@ public class ResourceBuilder implements ResourceGenerator {
             continue;
           }
 
-          if (ramlTypeToMediaType.containsKey(payload.schema().name().value())) {
+          String typename = TypeBasedOperation.run(payload.schema(), new TypeNameToString());
+          if (ramlTypeToMediaType.containsKey(typename)) {
             createMethodWithBody(typeSpec, endPoint, operation, ramlTypeToMediaType, methodName, payload, responseSpecs,
                                  mediaTypesForMethod);
-            ramlTypeToMediaType.removeAll(payload.schema().name().value());
+            ramlTypeToMediaType.removeAll(typename);
           }
         }
       }
@@ -144,7 +148,7 @@ public class ResourceBuilder implements ResourceGenerator {
         if (payload.schema() == null) {
           ramlTypeToMediaType.put(null, payload.mediaType().value());
         } else {
-          ramlTypeToMediaType.put(payload.schema().name().value(), payload.mediaType().value());
+          ramlTypeToMediaType.put(TypeBasedOperation.run(payload.schema(), new TypeNameToString()), payload.mediaType().value());
         }
       }
     }
@@ -239,7 +243,7 @@ public class ResourceBuilder implements ResourceGenerator {
       TypeName typeName =
           TypeBasedOperation.run((AnyShape) payload.schema(), defaultJavaType(build, build.getModelPackage()))
               .orElseThrow(() -> new GenerationException("in " + endPoint.path() + " at operation " + operation.method()
-                               + " schema " + payload.schema().name() + " was not seen before"));
+                  + " schema " + payload.schema().name() + " was not seen before"));
       methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());
     }
   }
@@ -487,7 +491,7 @@ public class ResourceBuilder implements ResourceGenerator {
         TypeName typeName =
             TypeBasedOperation.run((AnyShape) responseType.schema(), defaultJavaType(build, build.getModelPackage()))
                 .orElseThrow(() -> new GenerationException(responseType.mediaType() + "," + responseType.schema().name()
-                                 + " was not seen before"));
+                    + " was not seen before"));
 
         builder.addParameter(ParameterSpec.builder(typeName, "entity").build());
         return typeName;
@@ -557,30 +561,32 @@ public class ResourceBuilder implements ResourceGenerator {
     if (operation.request() != null) {
       for (Parameter parameter : operation.request().queryParameters()) {
 
-        TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
+        TypeName typeName =
+            TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
                 .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
         ParameterSpec.Builder parameterSpec = ParameterSpec
-                .builder(
-                        typeName,
-                        Names.methodName(parameter.name().value()))
-                .addAnnotation(
-                        AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", parameter.name())
-                                .build());
+            .builder(
+                     typeName,
+                     Names.methodName(parameter.name().value()))
+            .addAnnotation(
+                           AnnotationSpec.builder(QueryParam.class).addMember("value", "$S", parameter.name())
+                               .build());
         if (parameter.schema().defaultValue() != null) {
           parameterSpec.addAnnotation(
-                  // todo this is wrong
-                  AnnotationSpec.builder(DefaultValue.class)
-                          .addMember("value", "$S", parameter.schema().defaultValue().name()).build());
+              // todo this is wrong
+              AnnotationSpec.builder(DefaultValue.class)
+                  .addMember("value", "$S", parameter.schema().defaultValue().name()).build());
         }
         methodSpec.addParameter(parameterSpec.build());
       }
     }
 
-    if ( operation.request() != null ) {
+    if (operation.request() != null) {
       for (Parameter parameter : operation.request().headers()) {
 
-        TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
-            .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
+        TypeName typeName =
+            TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
+                .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
         methodSpec.addParameter(
             ParameterSpec
                 .builder(
@@ -598,15 +604,15 @@ public class ResourceBuilder implements ResourceGenerator {
     if (endPoint.parent().isPresent()) {
 
       methodSpec.addAnnotation(
-              AnnotationSpec
-                      .builder(Path.class)
-                      .addMember("value",
-                              "$S",
-                              generatePathString(
-                                      endPoint
-                                              .path().value(),
-                                      ResourceUtils.accumulateUriParameters(endPoint)))
-                      .build());
+          AnnotationSpec
+              .builder(Path.class)
+              .addMember("value",
+                         "$S",
+                         generatePathString(
+                                            endPoint
+                                                .path().value(),
+                                            ResourceUtils.accumulateUriParameters(endPoint)))
+              .build());
     }
 
     if (operation.responses().size() == 0) {
@@ -652,10 +658,11 @@ public class ResourceBuilder implements ResourceGenerator {
         if (parameter.schema() instanceof ScalarShape) {
           ScalarShape typeDecl = (ScalarShape) parameter.schema();
           // check if this string has a pattern to register
-          if (! typeDecl.pattern().isNull()) {
+          if (!typeDecl.pattern().isNull()) {
             // remove ^...$ from pattern if existing
             String pattern = typeDecl.pattern().value();
-            if (pattern.startsWith("^") && pattern.endsWith("$") && pattern.length() > 2) {// JP todo, this is weird, why remove anchors
+            if (pattern.startsWith("^") && pattern.endsWith("$") && pattern.length() > 2) {// JP todo, this is weird, why remove
+                                                                                           // anchors
               pattern = pattern.substring(1, pattern.length() - 1);
             }
             generatedPathString = pathString.replace("{" + name + "}", "{" + name + ":" + pattern + "}");
@@ -704,7 +711,9 @@ public class ResourceBuilder implements ResourceGenerator {
                                     Multimap<String, String> ramlTypeToMediaType,
                                     AnyShape anyShape) {
 
-    Collection<String> mediaTypes = ramlTypeToMediaType.get(anyShape == null ? null : anyShape.name().value());
+    String typename = TypeBasedOperation.run(anyShape, new TypeNameToString());
+
+    Collection<String> mediaTypes = ramlTypeToMediaType.get(anyShape == null ? null : typename);
 
     if (mediaTypes.size() > 0) {
       AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);
@@ -754,8 +763,8 @@ public class ResourceBuilder implements ResourceGenerator {
 
   private void recurse(TypeSpec.Builder typeSpec, EndPoint parentResource) {
 
-    List<EndPoint> immiediateChildren = ((WebApi)build.getApi().encodes()).endPoints().stream()
-            .filter(s -> s.parent().map( p -> p.id().equals(parentResource.id())).orElse(false)).collect(Collectors.toList());
+    List<EndPoint> immiediateChildren = ((WebApi) build.getApi().encodes()).endPoints().stream()
+        .filter(s -> s.parent().map(p -> p.id().equals(parentResource.id())).orElse(false)).collect(Collectors.toList());
     for (EndPoint resource : immiediateChildren) {
 
       buildResource(typeSpec, resource);
@@ -764,7 +773,8 @@ public class ResourceBuilder implements ResourceGenerator {
   }
 
   public static void fillInBodiesAndResponses(EndPoint resource,
-                                              Multimap<OperationHolder, Payload> incomingBodies, Multimap<OperationHolder, Response> responses) {
+                                              Multimap<OperationHolder, Payload> incomingBodies,
+                                              Multimap<OperationHolder, Response> responses) {
 
 
     for (Operation method : resource.operations()) {
@@ -789,4 +799,16 @@ public class ResourceBuilder implements ResourceGenerator {
     }
   }
 
+  // todo users of this are TOO COMPLICATED!!
+  private static class TypeNameToString extends TypeBasedOperation.Default<String> {
+
+    public TypeNameToString() {
+      super((s) -> s.id());
+    }
+
+    @Override
+    public String on(ScalarShape anyShape) {
+      return anyShape.dataType().value();
+    }
+  }
 }

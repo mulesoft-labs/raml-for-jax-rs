@@ -37,98 +37,72 @@ import static org.mockito.Mockito.when;
  * Created by Jean-Philippe Belanger on 1/2/17. Just potential zeroes and ones
  */
 public class AnnotationsTest {
-/*
-  @Mock
-  CurrentBuild currentBuild;
-
-  @Before
-  public void setup() {
-
-    MockitoAnnotations.initMocks(this);
-  }
-
-  @Test
-  public void get() throws Exception {
-
-    TypeDeclaration type = buildType(this, "annotations.raml", 0);
-    assertEquals("Allo", Annotations.CLASS_NAME.get(type));
-  }
-
-  @Test
-  public void getNotDefined() throws Exception {
-
-    TypeDeclaration type = buildType(this, "annotations.raml", 1);
-
-  }
-
-  @Test
-  public void getExtensionClass() throws Exception {
-
-    Api type = buildApi(this, "annotations.raml");
-
-    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension"))
-        .thenReturn(Collections.<Object>singletonList(new TrialResourceClassExtension()));
-    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension"))
-        .thenReturn(Collections.<Object>singletonList(new TrialResourceMethodExtension()));
-    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension"))
-        .thenReturn(Collections.<Object>singletonList(new TrialResponseClassExtension()));
-    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension"))
-        .thenReturn(Collections.<Object>singletonList(new TrialResponseMethodExtension()));
-
-
-     * assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.getWithContext(currentBuild,
-     * type.resources() .get(0))).getElements().get(0) instanceof TrialResourceClassExtension);
-     * assertTrue(((AbstractCompositeExtension) Annotations.ON_METHOD_CREATION.getWithContext(currentBuild,
-     * type.resources().get(0) .methods().get(0))).getElements().get(0) instanceof TrialResourceMethodExtension);
-     * assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_CLASS_CREATION.getWithContext(currentBuild,
-     * type.resources() .get(0).methods().get(0))).getElements().get(0) instanceof TrialResponseClassExtension);
-     * assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_METHOD_CREATION.getWithContext(currentBuild,
-     * type.resources().get(0) .methods() .get(0) .responses().get(0)))
-     *
-     * .getElements().get(0) instanceof TrialResponseMethodExtension);
-
-  }
-
-  @Test
-  public void getDefaultExtensionClass() throws Exception {
-
-    Api api = buildApi(this, "annotations.raml");
-
-    when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension"))
-        .thenReturn(Collections.<Object>singletonList(new TrialResourceClassExtension()));
-
-     * assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.getWithContext(currentBuild, api, api
-     * .resources() .get(1))) .getElements().get(0) instanceof TrialResourceClassExtension);
-
-  }
-
-  public static TypeDeclaration buildType(Object test, String raml, int index) throws URISyntaxException {
-    RamlModelResult ramlModelResult =
-        new RamlModelBuilder().buildApi(
-                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)), new File(test
-                                            .getClass().getResource(raml).toURI()).getAbsolutePath());
-    if (ramlModelResult.hasErrors()) {
-      for (ValidationResult validationResult : ramlModelResult.getValidationResults()) {
-        System.out.println(validationResult.getMessage());
-      }
-      throw new AssertionError();
-    } else {
-      return ramlModelResult.getApiV10().types().get(index);
-    }
-  }
-
-  public static Api buildApi(Object test, String raml) throws URISyntaxException {
-    RamlModelResult ramlModelResult =
-        new RamlModelBuilder().buildApi(
-                                        new InputStreamReader(test.getClass().getResourceAsStream(raml)), new File(test
-                                            .getClass().getResource(raml).toURI()).getAbsolutePath());
-    if (ramlModelResult.hasErrors()) {
-      for (ValidationResult validationResult : ramlModelResult.getValidationResults()) {
-        System.out.println(validationResult.getMessage());
-      }
-      throw new AssertionError();
-    } else {
-      return ramlModelResult.getApiV10();
-    }
-  }
-*/}
+  /*
+   * @Mock CurrentBuild currentBuild;
+   * 
+   * @Before public void setup() {
+   * 
+   * MockitoAnnotations.initMocks(this); }
+   * 
+   * @Test public void get() throws Exception {
+   * 
+   * TypeDeclaration type = buildType(this, "annotations.raml", 0); assertEquals("Allo", Annotations.CLASS_NAME.get(type)); }
+   * 
+   * @Test public void getNotDefined() throws Exception {
+   * 
+   * TypeDeclaration type = buildType(this, "annotations.raml", 1);
+   * 
+   * }
+   * 
+   * @Test public void getExtensionClass() throws Exception {
+   * 
+   * Api type = buildApi(this, "annotations.raml");
+   * 
+   * when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension"))
+   * .thenReturn(Collections.<Object>singletonList(new TrialResourceClassExtension()));
+   * when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceMethodExtension"))
+   * .thenReturn(Collections.<Object>singletonList(new TrialResourceMethodExtension()));
+   * when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseClassExtension"))
+   * .thenReturn(Collections.<Object>singletonList(new TrialResponseClassExtension()));
+   * when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResponseMethodExtension"))
+   * .thenReturn(Collections.<Object>singletonList(new TrialResponseMethodExtension()));
+   * 
+   * 
+   * assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.getWithContext(currentBuild, type.resources()
+   * .get(0))).getElements().get(0) instanceof TrialResourceClassExtension); assertTrue(((AbstractCompositeExtension)
+   * Annotations.ON_METHOD_CREATION.getWithContext(currentBuild, type.resources().get(0) .methods().get(0))).getElements().get(0)
+   * instanceof TrialResourceMethodExtension); assertTrue(((AbstractCompositeExtension)
+   * Annotations.ON_RESPONSE_CLASS_CREATION.getWithContext(currentBuild, type.resources()
+   * .get(0).methods().get(0))).getElements().get(0) instanceof TrialResponseClassExtension);
+   * assertTrue(((AbstractCompositeExtension) Annotations.ON_RESPONSE_METHOD_CREATION.getWithContext(currentBuild,
+   * type.resources().get(0) .methods() .get(0) .responses().get(0)))
+   * 
+   * .getElements().get(0) instanceof TrialResponseMethodExtension);
+   * 
+   * }
+   * 
+   * @Test public void getDefaultExtensionClass() throws Exception {
+   * 
+   * Api api = buildApi(this, "annotations.raml");
+   * 
+   * when(currentBuild.createExtensions("org.raml.jaxrs.generator.builders.extensions.resources.TrialResourceClassExtension"))
+   * .thenReturn(Collections.<Object>singletonList(new TrialResourceClassExtension()));
+   * 
+   * assertTrue(((AbstractCompositeExtension) Annotations.ON_RESOURCE_CLASS_CREATION.getWithContext(currentBuild, api, api
+   * .resources() .get(1))) .getElements().get(0) instanceof TrialResourceClassExtension);
+   * 
+   * }
+   * 
+   * public static TypeDeclaration buildType(Object test, String raml, int index) throws URISyntaxException { RamlModelResult
+   * ramlModelResult = new RamlModelBuilder().buildApi( new InputStreamReader(test.getClass().getResourceAsStream(raml)), new
+   * File(test .getClass().getResource(raml).toURI()).getAbsolutePath()); if (ramlModelResult.hasErrors()) { for (ValidationResult
+   * validationResult : ramlModelResult.getValidationResults()) { System.out.println(validationResult.getMessage()); } throw new
+   * AssertionError(); } else { return ramlModelResult.getApiV10().types().get(index); } }
+   * 
+   * public static Api buildApi(Object test, String raml) throws URISyntaxException { RamlModelResult ramlModelResult = new
+   * RamlModelBuilder().buildApi( new InputStreamReader(test.getClass().getResourceAsStream(raml)), new File(test
+   * .getClass().getResource(raml).toURI()).getAbsolutePath()); if (ramlModelResult.hasErrors()) { for (ValidationResult
+   * validationResult : ramlModelResult.getValidationResults()) { System.out.println(validationResult.getMessage()); } throw new
+   * AssertionError(); } else { return ramlModelResult.getApiV10(); } }
+   */
+}

@@ -41,10 +41,11 @@ public class ListEntityValueResourceExtension implements GlobalResourceExtension
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                     MethodSpec.Builder methodSpec) {
     MethodSpec old = methodSpec.build();
     MethodSpec.Builder newMethod = MethodSpec.methodBuilder(old.name)
-            .returns(old.returnType);
+        .returns(old.returnType);
 
     addParameters(old, newMethod);
 
@@ -75,7 +76,7 @@ public class ListEntityValueResourceExtension implements GlobalResourceExtension
   public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
     MethodSpec old = methodSpec.build();
     MethodSpec.Builder newMethod = MethodSpec.methodBuilder(old.name)
-            .returns(old.returnType);
+        .returns(old.returnType);
 
     addParameters(old, newMethod);
 
@@ -100,14 +101,16 @@ public class ListEntityValueResourceExtension implements GlobalResourceExtension
 
   private void addParameters(MethodSpec old, MethodSpec.Builder newMethod) {
     for (ParameterSpec parameter : old.parameters) {
-      if ((int) parameter.annotations.stream().filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
+      if ((int) parameter.annotations.stream()
+          .filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
               || annotationSpec.type.equals(ClassName.get(QueryParam.class))).count() > 0) {
         newMethod.addParameter(parameter);
       }
     }
 
     for (ParameterSpec parameter : old.parameters) {
-      if ((int) parameter.annotations.stream().filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
+      if ((int) parameter.annotations.stream()
+          .filter(annotationSpec -> annotationSpec.type.equals(ClassName.get(PathParam.class))
               || annotationSpec.type.equals(ClassName.get(QueryParam.class))).count() == 0) {
 
         newMethod.addParameter(ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(List.class),

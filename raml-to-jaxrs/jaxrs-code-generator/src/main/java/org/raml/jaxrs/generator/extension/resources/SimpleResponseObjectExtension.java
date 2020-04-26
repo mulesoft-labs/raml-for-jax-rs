@@ -39,51 +39,53 @@ import java.util.function.Predicate;
  */
 public class SimpleResponseObjectExtension extends GlobalResourceExtension.Helper {
 
-    private final List<String> arguments;
+  private final List<String> arguments;
 
-    public SimpleResponseObjectExtension(List<String> arguments) {
-        this.arguments = arguments;
+  public SimpleResponseObjectExtension(List<String> arguments) {
+    this.arguments = arguments;
+  }
+
+  @Override
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                     MethodSpec.Builder methodSpec) {
+
+    if (method.responses().size() == 0) {
+
+      return methodSpec.returns(Void.class);
     }
 
-    @Override
-    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
+    methodSpec.addParameter(ParameterSpec.builder(ClassName.get(HttpServletResponse.class), "httpServletResponse")
+        .addAnnotation(Context.class).build());
 
-        if (method.responses().size() == 0) {
+    // Find 200 or 201 response.
+    Optional<Response> responseOptional = method.responses().stream().filter(findByCode("200")).findFirst();
+    Response response = responseOptional.orElseGet(
+        () -> method.responses().stream().filter(findByCode("201"))
+            .findFirst()
+            .orElse(null));
 
-            return methodSpec.returns(Void.class);
-        }
+    if (response == null) {
 
-        methodSpec.addParameter(ParameterSpec.builder(ClassName.get(HttpServletResponse.class), "httpServletResponse")
-                .addAnnotation(Context.class).build());
+      methodSpec.returns(ClassName.get(Void.class));
+    } else {
+      if (response.payloads().size() == 0) {
 
-        // Find 200 or 201 response.
-        Optional<Response> responseOptional = method.responses().stream().filter(findByCode("200")).findFirst();
-        Response response = responseOptional.orElseGet(
-                () -> method.responses().stream().filter(findByCode("201"))
-                        .findFirst()
-                        .orElse(null));
-
-        if (response == null) {
-
-            methodSpec.returns(ClassName.get(Void.class));
-        } else {
-            if (response.payloads().size() == 0) {
-
-                return methodSpec.returns(Void.class);
-            } else {
-                methodSpec.returns(
-                        TypeBasedOperation.run(
-                                response.payloads().get(0).schema(),
-                                DefaultJavaTypeOperation.defaultJavaType(null /*todo fix me */, context.getModelPackage()))
-                                .orElseThrow(() -> new GenerationException("could not find type for " + response.payloads().get(0).schema().name())));
-            }
-        }
-
-        return methodSpec;
+        return methodSpec.returns(Void.class);
+      } else {
+        methodSpec.returns(
+            TypeBasedOperation.run(
+                                   response.payloads().get(0).schema(),
+                                   DefaultJavaTypeOperation.defaultJavaType(null /* todo fix me */, context.getModelPackage()))
+                .orElseThrow(() -> new GenerationException("could not find type for "
+                    + response.payloads().get(0).schema().name())));
+      }
     }
 
-    private Predicate<Response> findByCode(final String code) {
+    return methodSpec;
+  }
 
-        return gResponse -> code.equals(gResponse.statusCode().value());
-    }
+  private Predicate<Response> findByCode(final String code) {
+
+    return gResponse -> code.equals(gResponse.statusCode().value());
+  }
 }

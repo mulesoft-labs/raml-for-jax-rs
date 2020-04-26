@@ -35,7 +35,8 @@ public class Jsr303ResourceExtension extends GlobalResourceExtension.Helper {
 
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request request, Payload payload, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request request, Payload payload,
+                                     MethodSpec.Builder methodSpec) {
     MethodSpec spec = methodSpec.build();
     MethodSpec.Builder builder = MethodSpec.methodBuilder(spec.name);
     builder.addAnnotations(spec.annotations);

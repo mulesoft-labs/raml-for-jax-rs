@@ -88,7 +88,7 @@ public class CurrentBuild {
                 .inPackage(getModelPackage())
                 .fetchTypes(TypeFetchers.fromAnywhere())
                 .build(this.typeConfiguration().stream().map((Function<String, String>) s -> s.contains(".") ? s : "core." + s)
-                           .collect(Collectors.toList())));
+                    .collect(Collectors.toList())));
   }
 
   public RamlToPojo fetchRamlToPojoBuilder() {
@@ -335,7 +335,7 @@ public class CurrentBuild {
     return resourceExtensionList;
   }
 
-  // todo:  wrong and a bit useless.  Fix me
+  // todo: wrong and a bit useless. Fix me
   public V10GType fetchType(String name, AnyShape anyShape) {
     TypeName typeName =
         fetchRamlToPojoBuilder()

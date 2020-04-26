@@ -36,7 +36,8 @@ public class ResourceContextImpl extends ContextImpl implements ResourceContext 
   }
 
   @Override
-  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload, MethodSpec.Builder methodSpec) {
+  public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                     MethodSpec.Builder methodSpec) {
 
     return getBuildContext().withResourceListeners().onMethod(context, method, gRequest, payload, methodSpec);
   }

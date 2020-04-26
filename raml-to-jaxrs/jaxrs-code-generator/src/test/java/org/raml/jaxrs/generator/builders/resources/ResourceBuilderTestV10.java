@@ -162,23 +162,19 @@ public class ResourceBuilderTestV10 {
   public void build_empty() throws Exception {
 
     RamlV10.buildResourceV10(this, "resource_no_entity_no_response.raml",
-                             new CodeContainer<TypeSpec>() {
+            g -> {
 
-                               @Override
-                               public void into(TypeSpec g) throws IOException {
+              assertEquals("Foo", g.name);
+              assertEquals(1, g.methodSpecs.size());
+              MethodSpec methodSpec = g.methodSpecs.get(0);
+              assertEquals("postSearch", methodSpec.name);
+              assertEquals(ClassName.VOID, methodSpec.returnType);
+              assertEquals(1, methodSpec.annotations.size());
+              assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
+              assertEquals(0, methodSpec.parameters.size());
 
-                                 assertEquals("Foo", g.name);
-                                 assertEquals(1, g.methodSpecs.size());
-                                 MethodSpec methodSpec = g.methodSpecs.get(0);
-                                 assertEquals("postSearch", methodSpec.name);
-                                 assertEquals(ClassName.VOID, methodSpec.returnType);
-                                 assertEquals(1, methodSpec.annotations.size());
-                                 assertEquals(ClassName.get(POST.class), methodSpec.annotations.get(0).type);
-                                 assertEquals(0, methodSpec.parameters.size());
-
-                                 assertEquals(0, g.typeSpecs.size());
-                               }
-                             }, "foo", "/fun");
+              assertEquals(0, g.typeSpecs.size());
+            }, "foo", "/fun");
   }
 
   @Test

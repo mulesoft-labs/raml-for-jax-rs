@@ -25,32 +25,6 @@ import java.util.List;
  */
 public class ResourceUtils {
 
-  public static void fillInBodiesAndResponses(EndPoint resource,
-                                              Multimap<Operation, Payload> incomingBodies, Multimap<Operation, Response> responses) {
-
-
-    for (Operation method : resource.operations()) {
-
-      if (method.request() == null || method.request().payloads().size() == 0) {
-        incomingBodies.put(method, null);
-      } else {
-        for (Payload payload : method.request().payloads()) {
-
-          incomingBodies.put(method, payload);
-        }
-      }
-
-      if (method.responses().size() == 0) {
-        incomingBodies.put(method, null);
-      } else {
-        for (Response response : method.responses()) {
-
-          responses.put(method, response);
-        }
-      }
-    }
-
-  }
 
   public static List<Parameter> accumulateUriParameters(EndPoint resource) {
 

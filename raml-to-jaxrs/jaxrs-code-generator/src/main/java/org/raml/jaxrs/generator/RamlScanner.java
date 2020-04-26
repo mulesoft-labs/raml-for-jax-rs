@@ -26,6 +26,8 @@ import org.raml.ramltopojo.RamlLoaderException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -80,7 +82,11 @@ public class RamlScanner {
 
 
     // handle resources.
-    for (EndPoint resource : ((WebApi) document.encodes()).endPoints()) {
+    List<EndPoint> topEndpoints = ((WebApi) document.encodes()).endPoints().stream()
+            .filter(e -> !e.parent().isPresent())
+            .collect(Collectors.toList());
+
+    for (EndPoint resource : topEndpoints) {
       resourceHandler.handle(resource);
     }
 

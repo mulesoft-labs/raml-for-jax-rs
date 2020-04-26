@@ -69,11 +69,39 @@ public class ResourceBuilder implements ResourceGenerator {
     }
   }
 
+  private static class OperationHolder {
+
+
+    public static OperationHolder wrap(Operation operation) {
+      return new OperationHolder(operation);
+    }
+
+    private OperationHolder(Operation operation) {
+      this.operation = operation;
+    }
+
+
+    private final Operation operation;
+
+    @Override
+    public int hashCode() {
+      return operation.id().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof OperationHolder)) return false;
+      OperationHolder that = (OperationHolder) o;
+      return operation.id().equals(that.operation.id());
+    }
+  }
+
   private void buildResource(TypeSpec.Builder typeSpec, EndPoint endPoint) {
 
-    Multimap<Operation, Payload> incomingBodies = ArrayListMultimap.create();
-    Multimap<Operation, Response> responses = ArrayListMultimap.create();
-    ResourceUtils.fillInBodiesAndResponses(endPoint, incomingBodies, responses);
+    Multimap<OperationHolder, Payload> incomingBodies = ArrayListMultimap.create();
+    Multimap<OperationHolder, Response> responses = ArrayListMultimap.create();
+    fillInBodiesAndResponses(endPoint, incomingBodies, responses);
 
     Map<String, TypeSpec.Builder> responseSpecs = createResponseClass(typeSpec, endPoint, incomingBodies, responses);
 
@@ -83,7 +111,7 @@ public class ResourceBuilder implements ResourceGenerator {
       Set<String> mediaTypesForMethod = fetchAllMediaTypesForMethodResponses(operation);
       if (operation.request() == null || operation.request().payloads().size() == 0) {
 
-        createMethodWithoutBody(typeSpec, endPoint, operation, mediaTypesForMethod, HashMultimap.<String, String>create(),
+        createMethodWithoutBody(typeSpec, endPoint, operation, mediaTypesForMethod, HashMultimap.create(),
                                 methodName,
                                 responseSpecs);
       } else {
@@ -107,10 +135,10 @@ public class ResourceBuilder implements ResourceGenerator {
     }
   }
 
-  private Multimap<String, String> accumulateMediaTypesPerType(Multimap<Operation, Payload> incomingBodies,
+  private Multimap<String, String> accumulateMediaTypesPerType(Multimap<OperationHolder, Payload> incomingBodies,
                                                                Operation gMethod) {
     Multimap<String, String> ramlTypeToMediaType = ArrayListMultimap.create();
-    for (Payload payload : incomingBodies.get(gMethod)) {
+    for (Payload payload : incomingBodies.get(OperationHolder.wrap(gMethod))) {
       if (payload != null) {
         if (payload.schema() == null) {
           ramlTypeToMediaType.put(null, payload.mediaType().value());
@@ -229,8 +257,8 @@ public class ResourceBuilder implements ResourceGenerator {
   }
 
   private Map<String, TypeSpec.Builder> createResponseClass(TypeSpec.Builder typeSpec, EndPoint endPoint,
-                                                            Multimap<Operation, Payload> bodies,
-                                                            Multimap<Operation, Response> responses) {
+                                                            Multimap<OperationHolder, Payload> bodies,
+                                                            Multimap<OperationHolder, Response> responses) {
     if (!build.shouldGenerateResponseClasses()) {
       return Collections.emptyMap();
     }
@@ -238,8 +266,8 @@ public class ResourceBuilder implements ResourceGenerator {
     Map<String, TypeSpec.Builder> map = new HashMap<>();
 
     Set<Operation> allMethods = new HashSet<>();
-    allMethods.addAll(bodies.keySet());
-    allMethods.addAll(responses.keySet());
+    allMethods.addAll(bodies.keySet().stream().map(o -> o.operation).collect(Collectors.toList()));
+    allMethods.addAll(responses.keySet().stream().map(o -> o.operation).collect(Collectors.toList()));
     for (Operation method : allMethods) {
 
       if (method.responses().size() == 0) {
@@ -269,7 +297,7 @@ public class ResourceBuilder implements ResourceGenerator {
       map.put(defaultName, null);
 
       TypeSpec currentClass = responseClass.build();
-      for (Response response : responses.get(method)) {
+      for (Response response : responses.get(OperationHolder.wrap(method))) {
 
         if (response == null) {
           continue;
@@ -566,16 +594,19 @@ public class ResourceBuilder implements ResourceGenerator {
 
     buildNewWebMethod(operation, methodSpec);
 
-    methodSpec.addAnnotation(
-        AnnotationSpec
-            .builder(Path.class)
-            .addMember("value",
-                       "$S",
-                       generatePathString(
-                                          endPoint
+    if (endPoint.parent().isPresent()) {
+
+      methodSpec.addAnnotation(
+              AnnotationSpec
+                      .builder(Path.class)
+                      .addMember("value",
+                              "$S",
+                              generatePathString(
+                                      endPoint
                                               .path().value(),
-                                          ResourceUtils.accumulateUriParameters(endPoint)))
-            .build());
+                                      ResourceUtils.accumulateUriParameters(endPoint)))
+                      .build());
+    }
 
     if (operation.responses().size() == 0) {
       // There is no response, return void
@@ -717,4 +748,31 @@ public class ResourceBuilder implements ResourceGenerator {
       return typeSpec;
     }
   }
+
+  public static void fillInBodiesAndResponses(EndPoint resource,
+                                              Multimap<OperationHolder, Payload> incomingBodies, Multimap<OperationHolder, Response> responses) {
+
+
+    for (Operation method : resource.operations()) {
+
+      if (method.request() == null || method.request().payloads().size() == 0) {
+        incomingBodies.put(OperationHolder.wrap(method), null);
+      } else {
+        for (Payload payload : method.request().payloads()) {
+
+          incomingBodies.put(OperationHolder.wrap(method), payload);
+        }
+      }
+
+      if (method.responses().size() == 0) {
+        incomingBodies.put(OperationHolder.wrap(method), null);
+      } else {
+        for (Response response : method.responses()) {
+
+          responses.put(OperationHolder.wrap(method), response);
+        }
+      }
+    }
+  }
+
 }

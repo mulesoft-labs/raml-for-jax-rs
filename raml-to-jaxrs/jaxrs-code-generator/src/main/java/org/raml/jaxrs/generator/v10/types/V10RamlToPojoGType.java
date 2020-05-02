@@ -89,7 +89,8 @@ public class V10RamlToPojoGType implements V10GType {
     objectType.accept(new GObjectType.GObjectTypeDispatcher() {
 
       @Override
-      public void onSchema() {
+      public void onRamlToPojo() {
+
         SchemaTypeFactory.createRamlToPojo(currentBuild, V10RamlToPojoGType.this);
       }
     });

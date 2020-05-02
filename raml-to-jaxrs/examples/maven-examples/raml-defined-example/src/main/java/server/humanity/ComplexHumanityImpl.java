@@ -56,8 +56,9 @@ public class ComplexHumanityImpl implements Complexhumans {
     }
   }
 
+
   @Override
-  public GetComplexhumansResponse getComplexhumans(HumanId id) {
+  public GetComplexhumansResponse getComplexhumans(ComplexhumansGetId id) {
 
     if ("person".equals(id.getType())) {
 

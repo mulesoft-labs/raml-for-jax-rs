@@ -224,7 +224,7 @@ public class CurrentBuild {
     finder.findTypes(listener);
 
     finder.setupConstruction(this);
-    for (GeneratorType type : foundTypes.values().stream().map(p -> p.getRight()).collect(Collectors.toList())) {
+    for (GeneratorType type : foundTypes.values().stream().map(Pair::getRight).collect(Collectors.toList())) {
 
       type.construct(this);
     }

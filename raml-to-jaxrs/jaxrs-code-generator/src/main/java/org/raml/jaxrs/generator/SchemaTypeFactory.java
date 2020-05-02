@@ -54,7 +54,7 @@ public class SchemaTypeFactory {
     }
   }
 
-  public static TypeGenerator createJsonType(CurrentBuild currentBuild, GType type) {
+  public static TypeGenerator<?> createJsonType(CurrentBuild currentBuild, GType type) {
 
     JsonSchemaTypeGenerator gen =
         new JsonSchemaTypeGenerator(currentBuild, currentBuild.getModelPackage(), type,
@@ -65,7 +65,7 @@ public class SchemaTypeFactory {
   }
 
 
-  public static TypeGenerator createRamlToPojo(CurrentBuild currentBuild, final V10GType type) {
+  public static TypeGenerator<?> createRamlToPojo(CurrentBuild currentBuild, final V10GType type) {
 
     TypeName typeName =
         currentBuild.fetchRamlToPojoBuilder()

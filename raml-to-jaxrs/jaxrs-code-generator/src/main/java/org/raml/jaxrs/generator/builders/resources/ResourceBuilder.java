@@ -711,9 +711,9 @@ public class ResourceBuilder implements ResourceGenerator {
                                     Multimap<String, String> ramlTypeToMediaType,
                                     AnyShape anyShape) {
 
-    String typename = TypeBasedOperation.run(anyShape, new TypeNameToString());
-
-    Collection<String> mediaTypes = ramlTypeToMediaType.get(anyShape == null ? null : typename);
+    Collection<String> mediaTypes = ramlTypeToMediaType.get(anyShape == null ?
+        null :
+        TypeBasedOperation.run(anyShape, new TypeNameToString()));
 
     if (mediaTypes.size() > 0) {
       AnnotationSpec.Builder ann = buildAnnotation(mediaTypes, Consumes.class);

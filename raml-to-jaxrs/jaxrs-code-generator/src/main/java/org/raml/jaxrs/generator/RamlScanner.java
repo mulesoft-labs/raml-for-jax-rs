@@ -21,6 +21,7 @@ import amf.client.model.domain.EndPoint;
 import amf.client.model.domain.WebApi;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.ResourceHandler;
+import org.raml.jaxrs.generator.v10.V10Finder;
 import org.raml.ramltopojo.RamlLoader;
 import org.raml.ramltopojo.RamlLoaderException;
 
@@ -76,7 +77,7 @@ public class RamlScanner {
         new CurrentBuild(document, ExtensionManager.createExtensionManager());
 
     configuration.setupBuild(build);
-    // build.constructClasses(new V10Finder(build, api));
+    build.constructClasses(new V10Finder(build, document, (WebApi) document.encodes()));
 
     ResourceHandler resourceHandler = new ResourceHandler(build);
 

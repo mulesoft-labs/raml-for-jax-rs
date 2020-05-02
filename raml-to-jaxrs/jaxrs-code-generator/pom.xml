@@ -18,6 +18,12 @@
             <artifactId>webapi-parser</artifactId>
             <version>0.4.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20190722</version>
+        </dependency>
         <dependency>
             <groupId>org.raml</groupId>
             <artifactId>raml-to-pojo</artifactId>

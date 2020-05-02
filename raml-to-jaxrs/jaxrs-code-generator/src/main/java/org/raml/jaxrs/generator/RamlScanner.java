@@ -40,14 +40,14 @@ public class RamlScanner {
 
       @Override
       public Document load(String raml) throws RamlLoaderException {
-        return RamlLoader.load(raml);
+        return RamlLoader.load08(raml);
       }
     },
     RAML_10 {
 
       @Override
       public Document load(String raml) throws RamlLoaderException {
-        return RamlLoader.load08(raml);
+        return RamlLoader.load(raml);
       }
     }
   }

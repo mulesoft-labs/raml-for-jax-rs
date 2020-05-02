@@ -23,7 +23,7 @@
         <module>raml-defined-example</module>
         <module>jaxb-example</module>
         <module>simple-json-example</module>
-<!--        <module>simple-xml-example</module>-->
+        <module>simple-xml-example</module>
         <module>scalar-types</module>
 <!--        <module>simple-raml08</module>-->
         <module>multipart</module>

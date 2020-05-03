@@ -60,7 +60,7 @@ public class AnimalsImpl implements Animals {
     animal.setMother(insect);
     animal.setSiblings(animals);
 
-    animal.setAncestor(new AncestorImpl(insect));
+    // todo need to fix unions animal.setAncestor(new AncestorImpl(insect));
 
     return GetAnimalsByIdResponse.respond200WithApplicationXml(animal);
   }

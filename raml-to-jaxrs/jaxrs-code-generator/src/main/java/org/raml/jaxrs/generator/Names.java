@@ -18,7 +18,9 @@ package org.raml.jaxrs.generator;
 import amf.client.model.domain.*;
 
 import javax.lang.model.SourceVersion;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -176,59 +178,18 @@ public class Names {
   }
 
 
-  public static String javaTypeName(EndPoint endPoint, AnyShape anyShape) {
-    return typeName(endPoint.path().value(), anyShape.name().value());
-  }
-
-  public static String javaTypeName(EndPoint endPoint, Parameter parameter) {
-    return typeName(endPoint.path().value(), parameter.name().value());
-  }
-
   public static String javaTypeName(EndPoint resource, Operation method, AnyShape anyShape) {
     return typeName(resource.path().value(), method.method().value(), anyShape.name().value());
   }
 
-  public static String javaTypeName(EndPoint resource, Operation method, Parameter parameter) {
-    return typeName(resource.path().value(), method.method().value(), parameter.name().value());
-  }
-
-  public static String ramlTypeName(EndPoint resource, Operation method, AnyShape anyShape) {
-    return resource.path().value() + method.method().value() + anyShape.name().value();
-  }
-
-  public static String ramlTypeName(EndPoint resource, Operation method, Parameter parameter) {
-    return resource.path().value() + method.method().value() + parameter.name().value();
-  }
-
-  public static String ramlTypeName(EndPoint resource, AnyShape anyShape) {
-    return resource.path().value() + anyShape.name().value();
-  }
-
-  public static String ramlTypeName(EndPoint resource, Parameter parameter) {
-    return resource.path().value() + parameter.name().value();
-  }
 
   public static String ramlRawTypeName(String... names) {
-    return String.join("", names);
+    return Arrays.stream(names).map(n -> n.replace(File.separatorChar + "", "_")).collect(Collectors.joining(""));
   }
 
   public static String javaRawTypeName(String... names) {
     return typeName(names);
   }
-
-
-  public static String javaTypeName(EndPoint resource, Operation method, Response response,
-                                    AnyShape anyShape) {
-    return typeName(resource.path().value(), method.method().value(), response.statusCode().value(),
-                    anyShape.name().value());
-  }
-
-  public static String ramlTypeName(EndPoint resource, Operation method, Response response, Payload payload,
-                                    AnyShape anyShape) {
-    return resource.path().value() + method.method() + response.statusCode().value() + payload.mediaType()
-        + anyShape.name().value();
-  }
-
 
   private Names() {
     throw new UnsupportedOperationException();

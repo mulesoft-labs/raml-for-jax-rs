@@ -153,7 +153,6 @@ public class CurrentBuild {
 
           b.output(g -> g.build(rootDirectory));
         }
-
       }
 
       // todo fix this: not loops, lambdas.

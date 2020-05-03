@@ -16,6 +16,7 @@
 package server.tracks;
 
 import example.jsonschema.Track;
+import example.jsonschema.TrackImpl;
 import example.jsonschema.Tracks;
 
 /**
@@ -26,7 +27,7 @@ public class TracksImpl implements Tracks {
 
   @Override
   public GetTracksResponse getTracks() {
-    Track track = new Track();
+    Track track = new TrackImpl();
     track.setAlbumId("17");
     track.setSongTitle("Booyakasha");
     return GetTracksResponse.respond200WithApplicationJson(track);

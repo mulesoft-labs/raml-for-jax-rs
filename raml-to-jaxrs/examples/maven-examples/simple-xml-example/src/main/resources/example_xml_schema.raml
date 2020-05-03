@@ -5,7 +5,7 @@ baseUri: https://api.github.com
 mediaType: application/xml
 types:
     Person:
-        schema: |
+        type: |
             <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
              <xs:element name="Person">
               <xs:complexType>
@@ -39,9 +39,7 @@ types:
         responses:
             200:
                 body:
-                    application/xml:
-                        type: Person
+                    application/xml: Person
     put:
         body:
-            application/xml:
-                type: Person
+            application/xml: Person

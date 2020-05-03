@@ -16,16 +16,14 @@ types:
                 xml:
                     attribute: true
                     namespace: "foo.bar"
-            gender:
-                type: Gender
-            siblings:
-                type: Animal[]
-                xml:
-                    wrapped: true
+            gender: Gender
+            siblings: Animal[]
+#                xml:
+#                    wrapped: true
             mother:
                 type: Animal
-            ancestor:
-                type: Ancestor
+#            ancestor:
+#                type: Ancestor
     Insect:
         type: Animal
         properties:
@@ -46,8 +44,7 @@ types:
         responses:
             200:
                 body:
-                    application/xml:
-                        type: Animal[]
+                    application/xml: Animal[]
     /{id}:
         uriParameters:
             id: string
@@ -55,11 +52,9 @@ types:
             responses:
                 200:
                     body:
-                        application/xml:
-                            type: Animal
+                        application/xml: Animal
         put:
             body:
-                application/xml:
-                    type: Animal
+                application/xml: Animal
             responses:
                 200:

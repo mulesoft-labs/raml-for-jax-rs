@@ -35,6 +35,7 @@ public class HrImpl implements Hr {
     return GetHrResponse.respond200WithApplicationXml(p);
   }
 
+
   @Override
   public void putHr(Person entity) {}
 

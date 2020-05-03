@@ -5,7 +5,7 @@ baseUri: https://api.github.com
 mediaType: application/json
 types:
     Track:
-        schema: |
+        type: |
          {
            "type": "object",
            "$schema": "http://json-schema.org/draft-03/schema",
@@ -31,9 +31,7 @@ types:
         responses:
             200:
                 body:
-                    application/json:
-                        type: Track
+                    application/json: Track
     put:
         body:
-            application/json:
-                type: Track
+            application/json: Track

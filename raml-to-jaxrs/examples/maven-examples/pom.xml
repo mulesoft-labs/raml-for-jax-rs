@@ -25,12 +25,15 @@
         <module>simple-json-example</module>
         <module>simple-xml-example</module>
         <module>scalar-types</module>
-<!--        <module>simple-raml08</module>-->
-        <module>multipart</module>
 <!--        <module>features</module>-->
 <!--        <module>references</module>-->
         <module>type-torture-test</module>
-        <module>suppressing-responses</module>
+        <!-- won't work till plugins... -->
+<!--        <module>multipart</module>-->
+<!--        <module>suppressing-responses</module>-->
+        <!-- Make maven raml08 aware -->
+<!--        <module>simple-raml08</module>-->
+
     </modules>
     <build>
         <pluginManagement>

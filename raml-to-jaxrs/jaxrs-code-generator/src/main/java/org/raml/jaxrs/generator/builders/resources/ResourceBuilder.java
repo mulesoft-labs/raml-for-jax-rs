@@ -122,7 +122,7 @@ public class ResourceBuilder implements ResourceGenerator {
         Multimap<String, String> ramlTypeToMediaType = accumulateMediaTypesPerType(incomingBodies, operation);
         for (Payload payload : operation.request().payloads()) {
 
-          if (payload.schema() == null) {
+          if (payload.schema() == null || isExactlyAnyShape(payload.schema()) /* put this for raml 08 ? */) {
 
             createMethodWithoutBody(typeSpec, endPoint, operation, mediaTypesForMethod, ramlTypeToMediaType, methodName,
                                     responseSpecs);
@@ -379,7 +379,7 @@ public class ResourceBuilder implements ResourceGenerator {
                 + ").header(\"Content-Type\", \""
                 + responseType.mediaType() + "\")");
 
-            if (responseType.schema() == null) {
+            if (responseType.schema() == null || isExactlyAnyShape(responseType.schema())) {
 
               if (internalClassForHeaders == null) {
                 builder
@@ -476,6 +476,11 @@ public class ResourceBuilder implements ResourceGenerator {
     return map;
   }
 
+  public boolean isExactlyAnyShape(Shape shape) {
+
+    return shape.getClass().isAssignableFrom(AnyShape.class) && AnyShape.class.isAssignableFrom(shape.getClass());
+  }
+
   private TypeName createResponseParameter(Payload responseType, MethodSpec.Builder builder) {
 
     // todo this check for any is wrong, pretty sure.
@@ -487,7 +492,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
       return typeName;
     } else {
-      if (responseType.schema() != null) {
+      if (responseType.schema() != null && !isExactlyAnyShape(responseType.schema())) {
         TypeName typeName =
             TypeBasedOperation.run((AnyShape) responseType.schema(), defaultJavaType(build, build.getModelPackage()))
                 .orElseThrow(() -> new GenerationException(responseType.mediaType() + "," + responseType.schema().name()

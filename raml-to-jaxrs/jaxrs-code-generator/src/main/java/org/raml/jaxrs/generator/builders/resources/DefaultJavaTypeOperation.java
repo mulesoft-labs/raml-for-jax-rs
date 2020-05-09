@@ -46,9 +46,9 @@ public class DefaultJavaTypeOperation extends TypeBasedOperation.Default<Optiona
   public Optional<TypeName> on(SchemaShape schemaShape) {
     if (ExtraInformation.isInline(schemaShape)) {
       // todo this is probably wrong with inline schemas.
-      return Optional.of(ClassName.get("", schemaShape.name().value()));
+      return Optional.ofNullable(build.fetchSchemaTypeName(schemaShape));
     } else {
-      return Optional.of(ClassName.get(packageName, schemaShape.name().value()));
+      return Optional.ofNullable(build.fetchSchemaTypeName(schemaShape));
     }
   }
 }

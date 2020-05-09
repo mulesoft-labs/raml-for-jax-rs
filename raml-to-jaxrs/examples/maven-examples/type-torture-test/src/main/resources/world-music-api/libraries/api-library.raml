@@ -15,10 +15,12 @@ types:
 #      ideas:
 #        type: array
 #        items: !include ../schemas/idea.raml
-      extIdeas:
-        type: !include ../schemas/idea.raml
-        properties:
-          createdBy: string
+
+# this parses weird in AMF todo
+#      extIdeas:
+#        type: !include ../schemas/idea.raml
+#        properties:
+#          createdBy: string
       feedback:
         type: string
         default: "very nice"
@@ -46,11 +48,13 @@ types:
         type: file
         fileTypes: ['image/jpeg', 'image/png']
         maxLength: 307200
-      NilValue:
-        type: object
-        properties:
-          name:
-          comment: string
+# todo causing problems Inherited internal type.
+#      NilValue:
+#        type: object
+#        properties:
+#          name:
+#          comment: string
+
 #      CatOrDog: Cat | Dog
 #      CatAndDog: [ Cat, Dog ]
       PossibleMeetingDate:

@@ -357,4 +357,10 @@ public class CurrentBuild {
     GType type = foundTypes.get(anyShape.id()).getLeft();
     return fetchRamlToPojoBuilder().fetchTypeName(type.name(), anyShape);
   }
+
+  public TypeName fetchSchemaTypeName(AnyShape anyShape) {
+    GType type = foundTypes.get(anyShape.id()).getLeft();
+    return type.defaultJavaTypeName(getModelPackage());
+  }
+
 }

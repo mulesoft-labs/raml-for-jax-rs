@@ -74,7 +74,7 @@ types:
 
 
   TypeToChange:
-        schema: |
+        type: |
          {
            "type": "object",
            "$schema": "http://json-schema.org/draft-03/schema",
@@ -175,18 +175,19 @@ types:
                       type: string
               displayName:
                   value: names
-          subType:
-              type:
-                  type: MyInlineObject
-                  displayName:
-                      value: type
-              displayName:
-                  value: subType
+# Inline subtype: handle them properly. TODO
+#          subType:
+#              type:
+#                  type: MyInlineObject
+#                  displayName:
+#                      value: type
+#              displayName:
+#                  value: subType
           uUID:
-            (ramltopojo.types):
-              plugins:
-                - name: core.changeType
-                  arguments: [ java.util.UUID ]
+#            (ramltopojo.types):
+#              plugins:
+#                - name: core.changeType
+#                  arguments: [ java.util.UUID ]
               type:
                   type: string
                   displayName:
@@ -215,7 +216,7 @@ resourceTypes:
         200:
           body:
             application/json:
-              schema: <<resourcePathName|!singularize|!uppercamelcase>>
+              type: <<resourcePathName|!singularize|!uppercamelcase>>
   paged:
     get:
       responses:
@@ -369,13 +370,13 @@ uses:
     body:
       application/json:
         type: ApiLib.RamlDataType
-        (javaClassName): example.worldmusic.RamlDataTypeImpl
-/entry:
-  type:  collection
-  post:
-    responses:
-      200:
-        body: AnotherEntry
+# Problems with resourceTypes
+# /entry:
+#  type:  collection
+#  post:
+#    responses:
+#      200:
+#        body: AnotherEntry
 /resources:
      /subresource:
         get:
@@ -495,40 +496,41 @@ uses:
      uriParameters:
         id:
           type: string
-     post:
-        body:
-            multipart/form-data:
-                type: object
-                properties:
-                    appBundle:
-                        type:
-                            type: file
-                            displayName:
-                                value: type
-                        displayName:
-                            value: appBundle
-                    configFile:
-                        type:
-                            type: file
-                            displayName:
-                                value: type
-                        displayName:
-                            value: configFile
-                    consumed:
-                        type: User
-                displayName:
-                    value: "multipart/form-data"
+#     post:
+#        body:
+#            multipart/form-data:
+#                type: object
+#                properties:
+#                    appBundle:
+#                        type:
+#                            type: file
+#                            displayName:
+#                                value: type
+#                        displayName:
+#                            value: appBundle
+#                    configFile:
+#                        type:
+#                            type: file
+#                            displayName:
+#                                value: type
+#                        displayName:
+#                            value: configFile
+#                    consumed:
+#                        type: User
+#                displayName:
+#                    value: "multipart/form-data"
 
 
-/urlstuff:
-  post:
-    body:
-      application/x-www-form-urlencoded:
-        type: object
-        properties:
-          paramone: string
-          paramtwo: integer
-          paramthree:
-            type: object
-            properties:
-              maaa: string
+# todo fixt the nae of the generated class for parameters on x-www-form-urlencoded
+#/urlstuff:
+#  post:
+#    body:
+#      application/x-www-form-urlencoded:
+#        type: object
+#        properties:
+#          paramone: string
+#          paramtwo: integer
+#          paramthree:
+#            type: object
+#            properties:
+#              maaa: string

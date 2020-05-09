@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 /**
  * Created by Jean-Philippe Belanger on 1/3/17. Just potential zeroes and ones
  */
-public class V10GTypeJson implements V10GType {
+public class V10GTypeSchema implements V10GType {
 
   private final SchemaShape schemaShape;
   private final String name;
@@ -37,7 +37,7 @@ public class V10GTypeJson implements V10GType {
   private final CreationModel creationModel;
   private TypeName modelSpecifiedJavaType;
 
-  V10GTypeJson(SchemaShape schemaShape, String realName, String defaultJavatypeName, CreationModel model) {
+  V10GTypeSchema(SchemaShape schemaShape, String realName, String defaultJavatypeName, CreationModel model) {
     this.creationModel = model;
     this.schemaShape = schemaShape;
     this.name = realName;
@@ -69,7 +69,7 @@ public class V10GTypeJson implements V10GType {
   @Override
   public String schema() {
 
-    return schemaShape.toJsonSchema();
+    return schemaShape.raw().value();
   }
 
 
@@ -101,7 +101,7 @@ public class V10GTypeJson implements V10GType {
 
       @Override
       public void onSchema() {
-        SchemaTypeFactory.createJsonType(currentBuild, V10GTypeJson.this);
+        SchemaTypeFactory.createXmlType(currentBuild, V10GTypeSchema.this);
       }
     });
   }
@@ -136,9 +136,9 @@ public class V10GTypeJson implements V10GType {
   public boolean equals(Object o) {
     if (this == o)
       return true;
-    if (!(o instanceof V10GTypeJson))
+    if (!(o instanceof V10GTypeSchema))
       return false;
-    V10GTypeJson that = (V10GTypeJson) o;
+    V10GTypeSchema that = (V10GTypeSchema) o;
     return schemaShape.id().equals(that.schemaShape.id());
   }
 }

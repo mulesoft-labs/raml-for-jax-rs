@@ -16,7 +16,6 @@
 package org.raml.jaxrs.generator.v10.types;
 
 import amf.client.model.domain.*;
-import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.v10.CreationModel;
 import org.raml.jaxrs.generator.v10.V10GType;
 
@@ -31,12 +30,12 @@ public class V10GTypeFactory {
 
   public static V10GType createJson(SchemaShape schemaShape, String ramlName, CreationModel model) {
 
-    return new V10GTypeJson(schemaShape, ramlName, ramlName, model); // Should be annotable.
+    return new V10GTypeSchema(schemaShape, ramlName, ramlName, model); // Should be annotable.
   }
 
   public static V10GType createJson(SchemaShape schemaShape, String ramlName,
                                     String javaTypeName, CreationModel model) {
 
-    return new V10GTypeJson(schemaShape, ramlName, javaTypeName, model);
+    return new V10GTypeSchema(schemaShape, ramlName, javaTypeName, model);
   }
 }

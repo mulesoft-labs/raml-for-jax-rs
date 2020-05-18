@@ -56,7 +56,7 @@ public class RamlToPojoTypeGenerator implements TypeGenerator<ResultingPojos> {
 
     ResultingPojos p =
         pojos
-            .buildPojo(name, anyShape);
+            .buildPojo(anyShape);
 
     rootDirectory.into(p);
   }

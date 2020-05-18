@@ -40,13 +40,15 @@ public class RamlV10 {
   public static void buildResourceV10(Object test, String raml, CodeContainer<TypeSpec> container,
                                       String name, String uri) throws IOException {
 
+    V10Finder finder = new V10Finder();
+
     Document api = buildApiV10(test, raml);
     WebApi webApi = (WebApi) api.encodes();
     EndPoint endPoint = webApi.endPoints().get(0);
     CurrentBuild currentBuild =
-        new CurrentBuild(api, ExtensionManager.createExtensionManager());
+        new CurrentBuild(api, ExtensionManager.createExtensionManager(), finder::foundCallback);
 
-    currentBuild.constructClasses(new V10Finder(null, api, webApi));
+    currentBuild.constructObjectClasses(finder);
     ResourceBuilder builder =
         new ResourceBuilder(currentBuild, endPoint, name, uri);
     builder.output(container);

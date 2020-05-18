@@ -73,11 +73,13 @@ public class RamlScanner {
 
   public void handleRamlFile(Document document) throws IOException {
 
-    CurrentBuild build =
-        new CurrentBuild(document, ExtensionManager.createExtensionManager());
+    V10Finder finder = new V10Finder();
+
+    final CurrentBuild build =
+        new CurrentBuild(document, ExtensionManager.createExtensionManager(), finder::foundCallback);
 
     configuration.setupBuild(build);
-    build.constructClasses(new V10Finder(build, document, (WebApi) document.encodes()));
+    build.constructObjectClasses(finder);
 
     ResourceHandler resourceHandler = new ResourceHandler(build);
 

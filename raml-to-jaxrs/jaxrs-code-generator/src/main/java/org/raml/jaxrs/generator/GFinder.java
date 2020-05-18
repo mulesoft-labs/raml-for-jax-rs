@@ -15,12 +15,14 @@
  */
 package org.raml.jaxrs.generator;
 
+import org.raml.ramltopojo.FoundCallback;
+
 /**
  * Created by Jean-Philippe Belanger on 12/8/16. Just potential zeroes and ones
  */
 public interface GFinder {
 
-  GFinder findTypes(GFinderListener listener);
+  FoundCallback foundCallback(CurrentBuild build);
 
   void setupConstruction(CurrentBuild currentBuild);
 }

@@ -35,10 +35,7 @@ import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
-import org.raml.ramltopojo.PluginDef;
-import org.raml.ramltopojo.RamlToPojo;
-import org.raml.ramltopojo.RamlToPojoBuilder;
-import org.raml.ramltopojo.TypeFetchers;
+import org.raml.ramltopojo.*;
 import org.raml.ramltopojo.plugin.PluginManager;
 
 import javax.lang.model.element.Modifier;
@@ -74,9 +71,9 @@ public class CurrentBuild {
       .create();
   private File schemaRepository;
 
-  private Supplier<RamlToPojo> ramlToPojo;
+  private final Supplier<RamlToPojo> ramlToPojo;
 
-  public CurrentBuild(Document api, ExtensionManager extensionManager) {
+  public CurrentBuild(Document api, ExtensionManager extensionManager, Function<CurrentBuild, FoundCallback> foundCallbackFactory) {
 
     this.api = api;
     this.extensionManager = extensionManager;
@@ -86,8 +83,8 @@ public class CurrentBuild {
             RamlToPojoBuilder
                 .builder(this.api)
                 .inPackage(getModelPackage())
-                .fetchTypes(TypeFetchers.fromAnywhere())
-                .build(this.typeConfiguration().stream().map((Function<String, String>) s -> s.contains(".") ? s : "core." + s)
+                .typeFinder(foundCallbackFactory.apply(this))
+                .build(this.typeConfiguration().stream().map(s -> s.contains(".") ? s : "core." + s)
                     .collect(Collectors.toList())));
   }
 
@@ -96,6 +93,15 @@ public class CurrentBuild {
     return ramlToPojo.get();
   }
 
+  public void newTypeDeclaration(String ramlName, AnyShape shape) {
+
+    fetchRamlToPojoBuilder().attributeTypeToName(ramlName, shape);
+  }
+
+  public void newTypeDeclaration(AnyShape shape) {
+
+    fetchRamlToPojoBuilder().attributeTypeToName(shape.name().value(), shape);
+  }
 
   public File getSchemaRepository() {
 
@@ -217,10 +223,7 @@ public class CurrentBuild {
     resources.add(rg);
   }
 
-  public void constructClasses(GFinder finder) {
-
-    TypeFindingListener listener = new TypeFindingListener(foundTypes);
-    finder.findTypes(listener);
+  public void constructObjectClasses(GFinder finder) {
 
     finder.setupConstruction(this);
     for (GeneratorType type : foundTypes.values().stream().map(Pair::getRight).collect(Collectors.toList())) {
@@ -335,10 +338,10 @@ public class CurrentBuild {
   }
 
   // todo: wrong and a bit useless. Fix me
-  public V10GType fetchType(String name, AnyShape anyShape) {
+  public V10GType fetchType(AnyShape anyShape) {
     TypeName typeName =
         fetchRamlToPojoBuilder()
-            .fetchTypeName(name, anyShape);
+            .fetchTypeName(anyShape).orElseThrow(() -> new GenerationException("can't find type for " + anyShape.name() + "(" + anyShape.id() + ")"));
 
     V10RamlToPojoGType type = new V10RamlToPojoGType(anyShape);
     type.setJavaType(typeName);
@@ -353,14 +356,7 @@ public class CurrentBuild {
     return configuration.getGenerateResponseClasses();
   }
 
-  public TypeName fetchTypeName(AnyShape anyShape) {
-    GType type = foundTypes.get(anyShape.id()).getLeft();
-    return fetchRamlToPojoBuilder().fetchTypeName(type.name(), anyShape);
+  public Optional<TypeName> fetchTypeName(AnyShape anyShape) {
+    return fetchRamlToPojoBuilder().fetchTypeName(anyShape);
   }
-
-  public TypeName fetchSchemaTypeName(AnyShape anyShape) {
-    GType type = foundTypes.get(anyShape.id()).getLeft();
-    return type.defaultJavaTypeName(getModelPackage());
-  }
-
 }

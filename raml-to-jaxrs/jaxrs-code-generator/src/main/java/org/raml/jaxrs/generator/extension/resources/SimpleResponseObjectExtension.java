@@ -22,6 +22,7 @@ import amf.client.model.domain.Response;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.GenerationException;
 import org.raml.ramltopojo.TypeBasedOperation;
 import org.raml.jaxrs.generator.builders.resources.DefaultJavaTypeOperation;
@@ -75,7 +76,7 @@ public class SimpleResponseObjectExtension extends GlobalResourceExtension.Helpe
         methodSpec.returns(
             TypeBasedOperation.run(
                                    response.payloads().get(0).schema(),
-                                   DefaultJavaTypeOperation.defaultJavaType(null /* todo fix me */, context.getModelPackage()))
+                                   DefaultJavaTypeOperation.defaultJavaType(null/* todo this is wrong...*/))
                 .orElseThrow(() -> new GenerationException("could not find type for "
                     + response.payloads().get(0).schema().name())));
       }

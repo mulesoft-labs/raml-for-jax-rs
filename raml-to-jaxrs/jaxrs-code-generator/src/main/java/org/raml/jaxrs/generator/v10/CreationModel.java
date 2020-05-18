@@ -16,7 +16,7 @@
 package org.raml.jaxrs.generator.v10;
 
 import amf.client.model.domain.AnyShape;
-import org.raml.ramltopojo.ExtraInformation;
+import org.raml.ramltopojo.amf.ExtraInformation;
 
 /**
  * Created by jpbelang on 2017-06-17.
@@ -31,7 +31,8 @@ public enum CreationModel {
       if (anyShape == null) {
         return false;
       } else {
-        return ExtraInformation.isInline(anyShape);
+        // todo hide this
+        return ExtraInformation.extraInformation().isInline(anyShape);
       }
     }
   };

@@ -223,8 +223,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
           AnyShape parameterShape = (AnyShape) shape.range();
           V10GType type =
-              build.fetchType(Names.javaTypeName(endPoint,
-                                                 operation, parameterShape), parameterShape);
+              build.fetchType(parameterShape);
           methodSpec.addParameter(ParameterSpec
               .builder(type.defaultJavaTypeName(build.getModelPackage()), shape.name().value())
               .addAnnotation(AnnotationSpec.builder(FormParam.class).addMember("value", "$S", shape.name()).build())
@@ -241,7 +240,7 @@ public class ResourceBuilder implements ResourceGenerator {
     } else {
 
       TypeName typeName =
-          TypeBasedOperation.run((AnyShape) payload.schema(), defaultJavaType(build, build.getModelPackage()))
+          TypeBasedOperation.run((AnyShape) payload.schema(), defaultJavaType(build))
               .orElseThrow(() -> new GenerationException("in " + endPoint.path() + " at operation " + operation.method()
                   + " schema " + payload.schema().name() + " was not seen before"));
       methodSpec.addParameter(ParameterSpec.builder(typeName, "entity").build());
@@ -494,7 +493,7 @@ public class ResourceBuilder implements ResourceGenerator {
     } else {
       if (responseType.schema() != null && !isExactlyAnyShape(responseType.schema())) {
         TypeName typeName =
-            TypeBasedOperation.run((AnyShape) responseType.schema(), defaultJavaType(build, build.getModelPackage()))
+            TypeBasedOperation.run((AnyShape) responseType.schema(), defaultJavaType(build))
                 .orElseThrow(() -> new GenerationException(responseType.mediaType() + "," + responseType.schema().name()
                     + " was not seen before"));
 
@@ -521,7 +520,7 @@ public class ResourceBuilder implements ResourceGenerator {
         .addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build());
 
     for (Parameter header : headers) {
-      TypeName typeName = TypeBasedOperation.run((AnyShape) header.schema(), defaultJavaType(build, build.getModelPackage()))
+      TypeName typeName = TypeBasedOperation.run((AnyShape) header.schema(), defaultJavaType(build))
           .orElseThrow(() -> new GenerationException("schema " + header.schema().name() + " was not seen before"));
       MethodSpec spec = MethodSpec
           .methodBuilder(Names.methodName("with", header.name().value()))
@@ -550,7 +549,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
     for (Parameter parameter : ResourceUtils.accumulateUriParameters(endPoint)) {
 
-      TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
+      TypeName typeName = TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build))
           .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
       methodSpec.addParameter(
           ParameterSpec
@@ -567,7 +566,7 @@ public class ResourceBuilder implements ResourceGenerator {
       for (Parameter parameter : operation.request().queryParameters()) {
 
         TypeName typeName =
-            TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
+            TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build))
                 .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
         ParameterSpec.Builder parameterSpec = ParameterSpec
             .builder(
@@ -590,7 +589,7 @@ public class ResourceBuilder implements ResourceGenerator {
       for (Parameter parameter : operation.request().headers()) {
 
         TypeName typeName =
-            TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build, build.getModelPackage()))
+            TypeBasedOperation.run((AnyShape) parameter.schema(), defaultJavaType(build))
                 .orElseThrow(() -> new GenerationException("schema " + parameter.schema().name() + " was not seen before"));
         methodSpec.addParameter(
             ParameterSpec
@@ -639,7 +638,7 @@ public class ResourceBuilder implements ResourceGenerator {
         methodSpec.returns(ClassName.VOID);
       } else {
         TypeName typeName =
-            TypeBasedOperation.run((AnyShape) bodies.get(0).schema(), defaultJavaType(build, build.getModelPackage()))
+            TypeBasedOperation.run((AnyShape) bodies.get(0).schema(), defaultJavaType(build))
                 .orElseThrow(() -> new GenerationException("schema " + bodies.get(0).schema() + " was not seen before"));
         methodSpec.returns(typeName);
       }

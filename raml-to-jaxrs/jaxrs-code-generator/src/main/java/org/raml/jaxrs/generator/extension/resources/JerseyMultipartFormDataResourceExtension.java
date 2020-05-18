@@ -17,6 +17,7 @@ package org.raml.jaxrs.generator.extension.resources;
 
 import amf.client.model.domain.*;
 import com.squareup.javapoet.*;
+import org.raml.jaxrs.generator.GenerationException;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 
@@ -76,7 +77,7 @@ public class JerseyMultipartFormDataResourceExtension extends GlobalResourceExte
 
         } else {
           TypeName typeName =
-              context.fetchRamlToPojoBuilder().fetchTypeName(property.range().name().value(), (AnyShape) property.range());
+              context.fetchRamlToPojoBuilder().fetchTypeName((AnyShape) property.range()).orElseThrow( () -> new GenerationException("can't get type " + property.range().id()));
           newMethod.addParameter(
               ParameterSpec
                   .builder(typeName, property.name().value())

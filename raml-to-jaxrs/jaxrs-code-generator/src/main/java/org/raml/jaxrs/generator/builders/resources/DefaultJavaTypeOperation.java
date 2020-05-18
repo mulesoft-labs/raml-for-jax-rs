@@ -20,35 +20,29 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.ramltopojo.TypeBasedOperation;
-import org.raml.ramltopojo.ExtraInformation;
 
 import java.util.Optional;
 
 /**
  * Created. There, you have it.
  */
+// todo this is deprecated.
 public class DefaultJavaTypeOperation extends TypeBasedOperation.Default<Optional<TypeName>> {
 
   private final CurrentBuild build;
-  private final String packageName;
 
-  private DefaultJavaTypeOperation(CurrentBuild build, String packageName) {
-    super((x) -> Optional.ofNullable(build.fetchTypeName(x)));
+  private DefaultJavaTypeOperation(CurrentBuild build) {
+    super(build::fetchTypeName);
     this.build = build;
-    this.packageName = packageName;
   }
 
-  public static DefaultJavaTypeOperation defaultJavaType(CurrentBuild build, String packageName) {
-    return new DefaultJavaTypeOperation(build, packageName);
+  public static DefaultJavaTypeOperation defaultJavaType(CurrentBuild build) {
+    return new DefaultJavaTypeOperation(build);
   }
 
   @Override
   public Optional<TypeName> on(SchemaShape schemaShape) {
-    if (ExtraInformation.isInline(schemaShape)) {
-      // todo this is probably wrong with inline schemas.
-      return Optional.ofNullable(build.fetchSchemaTypeName(schemaShape));
-    } else {
-      return Optional.ofNullable(build.fetchSchemaTypeName(schemaShape));
-    }
+
+    return build.fetchTypeName(schemaShape);
   }
 }

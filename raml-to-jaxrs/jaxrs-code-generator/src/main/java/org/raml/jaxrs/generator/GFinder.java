@@ -15,6 +15,7 @@
  */
 package org.raml.jaxrs.generator;
 
+import org.raml.ramltopojo.ExtendedFoundCallback;
 import org.raml.ramltopojo.FoundCallback;
 
 /**
@@ -22,7 +23,7 @@ import org.raml.ramltopojo.FoundCallback;
  */
 public interface GFinder {
 
-  FoundCallback foundCallback(CurrentBuild build);
+  ExtendedFoundCallback foundCallback(CurrentBuild build);
 
   void setupConstruction(CurrentBuild currentBuild);
 }

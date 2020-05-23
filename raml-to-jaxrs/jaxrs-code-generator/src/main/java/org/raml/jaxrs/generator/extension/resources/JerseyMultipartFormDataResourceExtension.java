@@ -77,7 +77,8 @@ public class JerseyMultipartFormDataResourceExtension extends GlobalResourceExte
 
         } else {
           TypeName typeName =
-              context.fetchRamlToPojoBuilder().fetchTypeName((AnyShape) property.range()).orElseThrow( () -> new GenerationException("can't get type " + property.range().id()));
+              context.fetchRamlToPojoBuilder().fetchTypeName((AnyShape) property.range())
+                  .orElseThrow(() -> new GenerationException("can't get type " + property.range().id()));
           newMethod.addParameter(
               ParameterSpec
                   .builder(typeName, property.name().value())

@@ -20,11 +20,10 @@ import amf.client.model.document.Module;
 import amf.client.model.domain.*;
 import com.google.common.io.Files;
 import org.raml.jaxrs.generator.*;
+import org.raml.jaxrs.generator.GenerationException;
+import org.raml.jaxrs.generator.Names;
 import org.raml.jaxrs.generator.v10.types.V10GTypeFactory;
-import org.raml.ramltopojo.FilterableTypeFinder;
-import org.raml.ramltopojo.FoundCallback;
-import org.raml.ramltopojo.NamedElementPath;
-import org.raml.ramltopojo.TypeBasedOperation;
+import org.raml.ramltopojo.*;
 import org.raml.ramltopojo.amf.ExtraInformation;
 
 import java.io.File;
@@ -40,151 +39,151 @@ import java.util.stream.Collectors;
  */
 public class V10Finder implements GFinder {
 
-    private Map<String, V10GType> foundTypes = new HashMap<>();
+  private Map<String, V10GType> foundTypes = new HashMap<>();
+
+  @Override
+  public ExtendedFoundCallback foundCallback(CurrentBuild currentBuild) {
+
+
+    return (path, type, typeCreator) -> {
+
+      if (path.endMatches(Module.class) || path.isRoot()) {
+
+        currentBuild.newTypeDeclaration(type);
+        return;
+      }
+
+      // from here on in, we are interested only in inline types.
+      // todo hide.
+      ExtraInformation extraInformation = ExtraInformation.extraInformation();
+      if (!extraInformation.isInline(type)) {
+        return;
+      }
+
+
+      if (path.endMatches(
+                          NamedElementPath.ANY_NAME, EndPoint.class,
+                          NamedElementPath.ANY_NAME, Operation.class,
+                          "application/x-www-form-urlencoded", Payload.class,
+                          NamedElementPath.ANY_NAME) && type instanceof NodeShape) {
+
+        NodeShape formParameters = (NodeShape) type;
+        for (PropertyShape formParameter : formParameters.properties()) {
+
+          if (extraInformation.isInline(formParameter.range())) {
+
+            NamedElementPath newPath = path.removeEnd().append(formParameter);
+            typeCreator.newTypeDeclaration(Names.ramlRawTypeName(newPath.names().toArray(new String[0])), type);
+          }
+        }
+      }
+
+      if (path.endMatches(EndPoint.class, Parameter.class)) {
+
+        typeCreator.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
+      }
+
+      if (path.endMatches(EndPoint.class, Operation.class, Payload.class)) {
+
+        typeCreator.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
+        return;
+      }
+
+      if (path.endMatches(EndPoint.class, Operation.class, Parameter.class)) {
+
+        // todo: check for path param or query param ?
+        typeCreator.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
+        return;
+      }
+
+      if (path.endMatches(EndPoint.class, Operation.class, Response.class, Payload.class)) {
+
+        typeCreator.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
+        return;
+      }
+
+      if (path.endMatches(EndPoint.class, Operation.class, Response.class, Parameter.class)) {
+
+        typeCreator.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
+      }
+    };
+  }
+
+  private V10GType putInFoundTypes(String name, V10GType type) {
+
+    foundTypes.put(name, type);
+    return type;
+  }
+
+  @Override
+  public void setupConstruction(CurrentBuild currentBuild) {
+
+
+    List<V10GType> schemaTypes =
+        foundTypes.values().stream().filter(input -> input.isJson() || input.isXml()).collect(Collectors.toList());
+
+    for (V10GType schemaType : schemaTypes) {
+
+      try {
+        Files.write(schemaType.schema(), new File(currentBuild.getSchemaRepository(), schemaType.name()),
+                    Charset.defaultCharset());
+
+      } catch (IOException e) {
+        throw new GenerationException("while writing schemas", e);
+      }
+    }
+
+    if (currentBuild.shouldCopySchemas()) {
+      try {
+        FileCopy.fromTo(new File("/funkytown"), currentBuild.getSchemaRepository()); // todo, no....
+      } catch (IOException e) {
+
+        throw new GenerationException("while copying schemas", e);
+      }
+    }
+
+  }
+
+
+  static class CreateType extends TypeBasedOperation.Default<V10GType> {
+
+    private final V10Finder finder;
+
+    public CreateType(V10Finder finder) {
+      super((type) -> finder.putInFoundTypes(type.name().value(), V10GTypeFactory.createRamlToPojo(type.name().value(), type)));
+      this.finder = finder;
+    }
+
+    // todo should be external standalone class......
 
     @Override
-    public FoundCallback foundCallback(CurrentBuild currentBuild) {
-
-
-        return (path, type) -> {
-
-            if (path.endMatches(Module.class) || path.isRoot()) {
-
-                currentBuild.newTypeDeclaration(type);
-                return;
-            }
-
-            // from here on in, we are interested only in inline types.
-            // todo hide.
-            ExtraInformation extraInformation = ExtraInformation.extraInformation();
-            if (!extraInformation.isInline(type)) {
-                return;
-            }
-
-
-            if (path.endMatches(
-                    NamedElementPath.ANY_NAME, EndPoint.class,
-                    NamedElementPath.ANY_NAME, Operation.class,
-                    "application/x-www-form-urlencoded", Payload.class,
-                    NamedElementPath.ANY_NAME) && type instanceof NodeShape) {
-
-                NodeShape formParameters = (NodeShape) type;
-                for (PropertyShape formParameter : formParameters.properties()) {
-
-                    if (extraInformation.isInline(formParameter.range())) {
-
-                        NamedElementPath newPath = path.removeEnd().append(formParameter);
-                        currentBuild.newTypeDeclaration(Names.ramlRawTypeName(newPath.names().toArray(new String[0])), type);
-                    }
-                }
-            }
-
-            if (path.endMatches(EndPoint.class, Parameter.class)) {
-
-                currentBuild.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
-            }
-
-            if (path.endMatches(EndPoint.class, Operation.class, Payload.class)) {
-
-                currentBuild.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
-                return;
-            }
-
-            if (path.endMatches(EndPoint.class, Operation.class, Parameter.class)) {
-
-                // todo:  check for path param or query param ?
-                currentBuild.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
-                return;
-            }
-
-            if (path.endMatches(EndPoint.class, Operation.class, Response.class, Payload.class)) {
-
-                currentBuild.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
-                return;
-            }
-
-            if (path.endMatches(EndPoint.class, Operation.class, Response.class, Parameter.class)) {
-
-                currentBuild.newTypeDeclaration(Names.ramlRawTypeName(path.names().toArray(new String[0])), type);
-            }
-        };
+    public V10GType on(SchemaShape schemaShape) {
+      return finder.putInFoundTypes(schemaShape.name().value(),
+                                    V10GTypeFactory.createJson(schemaShape,
+                                                               schemaShape.name().value(), CreationModel.INLINE_FROM_TYPE));
     }
+  }
 
-    private V10GType putInFoundTypes(String name, V10GType type) {
+  // this is a bit wrong....
+  static class CreateTypeInline extends TypeBasedOperation.Default<V10GType> {
 
-        foundTypes.put(name, type);
-        return type;
+    private final String ramlName;
+    private final String suggestedJavaName;
+
+    private final V10Finder finder;
+
+    public CreateTypeInline(V10Finder finder, String ramlName, String suggestedJavaName) {
+      super((type) -> finder.putInFoundTypes(ramlName, V10GTypeFactory.createRamlToPojo(suggestedJavaName, type)));
+      this.finder = finder;
+      this.ramlName = ramlName;
+      this.suggestedJavaName = suggestedJavaName;
     }
 
     @Override
-    public void setupConstruction(CurrentBuild currentBuild) {
-
-
-        List<V10GType> schemaTypes =
-                foundTypes.values().stream().filter(input -> input.isJson() || input.isXml()).collect(Collectors.toList());
-
-        for (V10GType schemaType : schemaTypes) {
-
-            try {
-                Files.write(schemaType.schema(), new File(currentBuild.getSchemaRepository(), schemaType.name()),
-                        Charset.defaultCharset());
-
-            } catch (IOException e) {
-                throw new GenerationException("while writing schemas", e);
-            }
-        }
-
-        if (currentBuild.shouldCopySchemas()) {
-            try {
-                FileCopy.fromTo(new File("/funkytown"), currentBuild.getSchemaRepository()); // todo, no....
-            } catch (IOException e) {
-
-                throw new GenerationException("while copying schemas", e);
-            }
-        }
-
+    public V10GType on(SchemaShape schemaShape) {
+      return finder.putInFoundTypes(ramlName,
+                                    V10GTypeFactory.createJson(schemaShape,
+                                                               ramlName, suggestedJavaName, CreationModel.INLINE_FROM_TYPE));
     }
-
-
-    static class CreateType extends TypeBasedOperation.Default<V10GType> {
-
-        private final V10Finder finder;
-
-        public CreateType(V10Finder finder) {
-            super((type) -> finder.putInFoundTypes(type.name().value(), V10GTypeFactory.createRamlToPojo(type.name().value(), type)));
-            this.finder = finder;
-        }
-
-        // todo should be external standalone class......
-
-        @Override
-        public V10GType on(SchemaShape schemaShape) {
-            return finder.putInFoundTypes(schemaShape.name().value(),
-                    V10GTypeFactory.createJson(schemaShape,
-                            schemaShape.name().value(), CreationModel.INLINE_FROM_TYPE));
-        }
-    }
-
-    // this is a bit wrong....
-    static class CreateTypeInline extends TypeBasedOperation.Default<V10GType> {
-
-        private final String ramlName;
-        private final String suggestedJavaName;
-
-        private final V10Finder finder;
-
-        public CreateTypeInline(V10Finder finder, String ramlName, String suggestedJavaName) {
-            super((type) -> finder.putInFoundTypes(ramlName, V10GTypeFactory.createRamlToPojo(suggestedJavaName, type)));
-            this.finder = finder;
-            this.ramlName = ramlName;
-            this.suggestedJavaName = suggestedJavaName;
-        }
-
-        @Override
-        public V10GType on(SchemaShape schemaShape) {
-            return finder.putInFoundTypes(ramlName,
-                    V10GTypeFactory.createJson(schemaShape,
-                            ramlName, suggestedJavaName, CreationModel.INLINE_FROM_TYPE));
-        }
-    }
+  }
 }

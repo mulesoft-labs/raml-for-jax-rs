@@ -69,7 +69,8 @@ public class SchemaTypeFactory {
 
     TypeName typeName =
         currentBuild.fetchRamlToPojoBuilder()
-            .fetchTypeName(type.implementation()).orElseThrow( () -> new GenerationException("can't get type " + type.implementation().id()));
+            .fetchTypeName(type.implementation())
+            .orElseThrow(() -> new GenerationException("can't get type " + type.implementation().id()));
 
     RamlToPojoTypeGenerator gen =
         new RamlToPojoTypeGenerator(currentBuild.fetchRamlToPojoBuilder(), type.name(), type.implementation(), typeName);

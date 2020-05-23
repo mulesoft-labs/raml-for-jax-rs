@@ -73,7 +73,8 @@ public class CurrentBuild {
 
   private final Supplier<RamlToPojo> ramlToPojo;
 
-  public CurrentBuild(Document api, ExtensionManager extensionManager, Function<CurrentBuild, FoundCallback> foundCallbackFactory) {
+  public CurrentBuild(Document api, ExtensionManager extensionManager,
+                      Function<CurrentBuild, ExtendedFoundCallback> foundCallbackFactory) {
 
     this.api = api;
     this.extensionManager = extensionManager;
@@ -83,7 +84,7 @@ public class CurrentBuild {
             RamlToPojoBuilder
                 .builder(this.api)
                 .inPackage(getModelPackage())
-                .typeFinder(foundCallbackFactory.apply(this))
+                .typeFinder((x, y, r) -> foundCallbackFactory.apply(this))
                 .build(this.typeConfiguration().stream().map(s -> s.contains(".") ? s : "core." + s)
                     .collect(Collectors.toList())));
   }
@@ -341,7 +342,8 @@ public class CurrentBuild {
   public V10GType fetchType(AnyShape anyShape) {
     TypeName typeName =
         fetchRamlToPojoBuilder()
-            .fetchTypeName(anyShape).orElseThrow(() -> new GenerationException("can't find type for " + anyShape.name() + "(" + anyShape.id() + ")"));
+            .fetchTypeName(anyShape).orElseThrow(() -> new GenerationException("can't find type for " + anyShape.name() + "("
+                + anyShape.id() + ")"));
 
     V10RamlToPojoGType type = new V10RamlToPojoGType(anyShape);
     type.setJavaType(typeName);

@@ -76,7 +76,7 @@ public class SimpleResponseObjectExtension extends GlobalResourceExtension.Helpe
         methodSpec.returns(
             TypeBasedOperation.run(
                                    response.payloads().get(0).schema(),
-                                   DefaultJavaTypeOperation.defaultJavaType(null/* todo this is wrong...*/))
+                                   DefaultJavaTypeOperation.defaultJavaType(null/* todo this is wrong... */))
                 .orElseThrow(() -> new GenerationException("could not find type for "
                     + response.payloads().get(0).schema().name())));
       }

@@ -84,7 +84,7 @@ public class CurrentBuild {
             RamlToPojoBuilder
                 .builder(this.api)
                 .inPackage(getModelPackage())
-                .typeFinder((x, y, r) -> foundCallbackFactory.apply(this))
+                .typeFinder(foundCallbackFactory.apply(this))
                 .build(this.typeConfiguration().stream().map(s -> s.contains(".") ? s : "core." + s)
                     .collect(Collectors.toList())));
   }
@@ -92,16 +92,6 @@ public class CurrentBuild {
   public RamlToPojo fetchRamlToPojoBuilder() {
 
     return ramlToPojo.get();
-  }
-
-  public void newTypeDeclaration(String ramlName, AnyShape shape) {
-
-    fetchRamlToPojoBuilder().attributeTypeToName(ramlName, shape);
-  }
-
-  public void newTypeDeclaration(AnyShape shape) {
-
-    fetchRamlToPojoBuilder().attributeTypeToName(shape.name().value(), shape);
   }
 
   public File getSchemaRepository() {

@@ -49,7 +49,7 @@ public class V10Finder implements GFinder {
 
       if (path.endMatches(Module.class) || path.isRoot()) {
 
-        currentBuild.newTypeDeclaration(type);
+        typeCreator.newTypeDeclaration(type.name().value(), type);
         return;
       }
 

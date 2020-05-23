@@ -216,10 +216,15 @@ public class CurrentBuild {
 
   public void constructObjectClasses(GFinder finder) {
 
-    finder.setupConstruction(this);
-    for (GeneratorType type : foundTypes.values().stream().map(Pair::getRight).collect(Collectors.toList())) {
+    try {
+      finder.setupConstruction(this);
+      fetchRamlToPojoBuilder().buildPojos().createFoundTypes(this.configuration.getOutputDirectory().toString());
+      for (GeneratorType type : foundTypes.values().stream().map(Pair::getRight).collect(Collectors.toList())) {
 
-      type.construct(this);
+        type.construct(this);
+      }
+    } catch (IOException e) {
+      throw new GenerationException(e);
     }
   }
 

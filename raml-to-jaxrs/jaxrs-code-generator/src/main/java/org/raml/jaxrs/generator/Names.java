@@ -184,7 +184,7 @@ public class Names {
 
 
   public static String ramlRawTypeName(String... names) {
-    return Arrays.stream(names).map(n -> n.replace(File.separatorChar + "", "_")).collect(Collectors.joining(""));
+    return Arrays.stream(names).map(n -> n.replace(File.separatorChar + "", "_")).collect(Collectors.joining("_"));
   }
 
   public static String javaRawTypeName(String... names) {

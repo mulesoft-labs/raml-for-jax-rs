@@ -47,19 +47,8 @@ public class V10Finder implements GFinder {
 
     return (path, type, typeCreator) -> {
 
-      if (path.endMatches(Module.class) || path.isRoot()) {
-
-        typeCreator.newTypeDeclaration(type.name().value(), type);
-        return;
-      }
-
-      // from here on in, we are interested only in inline types.
       // todo hide.
       ExtraInformation extraInformation = ExtraInformation.extraInformation();
-      if (!extraInformation.isInline(type)) {
-        return;
-      }
-
 
       if (path.endMatches(
                           NamedElementPath.ANY_NAME, EndPoint.class,
@@ -70,6 +59,7 @@ public class V10Finder implements GFinder {
         NodeShape formParameters = (NodeShape) type;
         for (PropertyShape formParameter : formParameters.properties()) {
 
+          // todo fix this
           if (extraInformation.isInline(formParameter.range())) {
 
             NamedElementPath newPath = path.removeEnd().append(formParameter);

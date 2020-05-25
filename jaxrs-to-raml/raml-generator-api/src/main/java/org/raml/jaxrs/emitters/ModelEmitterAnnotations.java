@@ -73,7 +73,11 @@ public class ModelEmitterAnnotations {
               builder.withProperties(PropertyValueBuilder.propertyOfArray(method.getName(), listString));
             } else {
 
-              builder.withProperties(PropertyValueBuilder.property(method.getName(), toValue(value)));
+              if (value instanceof Number) {
+                builder.withProperties(PropertyValueBuilder.property(method.getName(), ((Number) value).longValue()));
+              } else {
+                builder.withProperties(PropertyValueBuilder.property(method.getName(), toValue(value)));
+              }
             }
           }
         } catch (Exception e) {

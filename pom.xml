@@ -44,7 +44,7 @@
             <dependency>
                 <groupId>org.raml</groupId>
                 <artifactId>raml-parser-2</artifactId>
-                <version>1.0.28</version>
+                <version>1.0.48</version>
             </dependency>
             <dependency>
                 <groupId>javax.ws.rs</groupId>

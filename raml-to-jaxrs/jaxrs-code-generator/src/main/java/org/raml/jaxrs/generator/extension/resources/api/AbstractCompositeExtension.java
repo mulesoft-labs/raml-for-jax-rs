@@ -22,7 +22,7 @@ import java.util.Collection;
 /**
  * Created by Jean-Philippe Belanger on 3/9/17. Just potential zeroes and ones
  */
-abstract public class AbstractCompositeExtension<T, B> {
+abstract public class AbstractCompositeExtension<T> {
 
   private Collection<T> elements;
 
@@ -35,7 +35,7 @@ abstract public class AbstractCompositeExtension<T, B> {
     return elements;
   }
 
-  public B runList(B input, ElementJob<T, B> job) {
+  public <B> B runList(B input, ElementJob<T, B> job) {
 
     B current = input;
     for (T element : elements) {

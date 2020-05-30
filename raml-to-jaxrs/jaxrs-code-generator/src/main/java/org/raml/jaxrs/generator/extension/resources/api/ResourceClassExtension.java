@@ -25,11 +25,16 @@ import java.util.Collection;
  */
 public interface ResourceClassExtension {
 
-  class Composite extends AbstractCompositeExtension<ResourceClassExtension, TypeSpec.Builder> implements
+  class Composite extends AbstractCompositeExtension<ResourceClassExtension> implements
       ResourceClassExtension {
 
     public Composite(Collection<ResourceClassExtension> extensions) {
       super(extensions);
+    }
+
+    @Override
+    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+      return runList(originalName, (e, b) -> e.resourceClassName(context, resource, b));
     }
 
     @Override
@@ -42,10 +47,17 @@ public interface ResourceClassExtension {
   ResourceClassExtension NULL_EXTENSION = new ResourceClassExtension() {
 
     @Override
+    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+      return originalName;
+    }
+
+    @Override
     public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
       return typeSpec;
     }
   };
+
+  String resourceClassName(ResourceContext context, EndPoint resource, String originalName);
 
   TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec);
 }

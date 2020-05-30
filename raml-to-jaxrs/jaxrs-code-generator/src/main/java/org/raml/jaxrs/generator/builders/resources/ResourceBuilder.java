@@ -736,6 +736,12 @@ public class ResourceBuilder implements ResourceGenerator {
 
   private class DefaultResourceClassCreator implements ResourceClassExtension {
 
+
+    @Override
+    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+      return originalName;
+    }
+
     @Override
     public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder nullSpec) {
 

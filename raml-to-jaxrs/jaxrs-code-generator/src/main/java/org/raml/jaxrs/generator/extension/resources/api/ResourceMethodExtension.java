@@ -27,13 +27,32 @@ import java.util.Collection;
  */
 public interface ResourceMethodExtension {
 
-  ResourceMethodExtension NULL_EXTENSION = (context, method, gRequest, payload, methodSpec) -> methodSpec;
+  ResourceMethodExtension NULL_EXTENSION = new ResourceMethodExtension() {
 
-  class Composite extends AbstractCompositeExtension<ResourceMethodExtension, MethodSpec.Builder> implements
+    @Override
+    public String methodName(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                             String originalMethodName) {
+      return originalMethodName;
+    }
+
+    @Override
+    public MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                       MethodSpec.Builder methodSpec) {
+      return methodSpec;
+    }
+  };
+
+  class Composite extends AbstractCompositeExtension<ResourceMethodExtension> implements
       ResourceMethodExtension {
 
     public Composite(Collection<ResourceMethodExtension> extensions) {
       super(extensions);
+    }
+
+    @Override
+    public String methodName(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                             String originalMethodName) {
+      return runList(originalMethodName, (e, b) -> e.methodName(context, method, gRequest, payload, b));
     }
 
     @Override
@@ -43,6 +62,9 @@ public interface ResourceMethodExtension {
       return runList(methodSpec, (e, b) -> e.onMethod(context, method, gRequest, payload, b));
     }
   }
+
+  String methodName(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                    String originalMethodName);
 
   MethodSpec.Builder onMethod(ResourceContext context, Operation method, Request gRequest, Payload payload,
                               MethodSpec.Builder methodSpec);

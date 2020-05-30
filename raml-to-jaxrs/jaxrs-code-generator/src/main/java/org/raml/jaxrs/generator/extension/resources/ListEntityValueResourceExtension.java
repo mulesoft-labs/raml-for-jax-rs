@@ -27,13 +27,15 @@ import java.util.List;
 /**
  * Created. There, you have it.
  */
-public class ListEntityValueResourceExtension implements GlobalResourceExtension {
+public class ListEntityValueResourceExtension extends GlobalResourceExtension.Helper {
 
   private final List<String> arguments;
 
   public ListEntityValueResourceExtension(List<String> arguments) {
     this.arguments = arguments;
   }
+
+
 
   @Override
   public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
@@ -68,8 +70,8 @@ public class ListEntityValueResourceExtension implements GlobalResourceExtension
   }
 
   @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
-    return typeSpec;
+  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder) {
+    return typeBuilder;
   }
 
   @Override

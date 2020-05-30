@@ -26,6 +26,12 @@ import org.raml.jaxrs.generator.ramltypes.GResource;
  */
 public class TrialResourceClassExtension implements ResourceClassExtension {
 
+
+  @Override
+  public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+    return originalName;
+  }
+
   @Override
   public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
 

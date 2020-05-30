@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created. There, you have it.
  */
-public class ThrowExceptionsExtension implements GlobalResourceExtension {
+public class ThrowExceptionsExtension extends GlobalResourceExtension.Helper {
 
   private final List<String> arguments;
 
@@ -61,8 +61,8 @@ public class ThrowExceptionsExtension implements GlobalResourceExtension {
   }
 
   @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
-    return typeSpec;
+  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder) {
+    return typeBuilder;
   }
 
   @Override

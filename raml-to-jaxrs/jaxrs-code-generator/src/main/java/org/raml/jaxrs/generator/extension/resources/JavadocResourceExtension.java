@@ -28,7 +28,7 @@ import org.raml.jaxrs.generator.ramltypes.GResponse;
 /**
  * Created. There, you have it.
  */
-public class JavadocResourceExtension implements GlobalResourceExtension {
+public class JavadocResourceExtension extends GlobalResourceExtension.Helper {
 
   @Override
   public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec) {
@@ -51,8 +51,8 @@ public class JavadocResourceExtension implements GlobalResourceExtension {
   }
 
   @Override
-  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
-    return typeSpec;
+  public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder) {
+    return typeBuilder;
   }
 
   @Override

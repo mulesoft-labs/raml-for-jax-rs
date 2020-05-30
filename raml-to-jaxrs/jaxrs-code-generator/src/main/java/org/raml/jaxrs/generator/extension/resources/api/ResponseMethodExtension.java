@@ -25,13 +25,29 @@ import java.util.Collection;
  */
 public interface ResponseMethodExtension {
 
-  ResponseMethodExtension NULL_EXTENSION = (context, responseMethod, methodSpec) -> methodSpec;
+  ResponseMethodExtension NULL_EXTENSION = new ResponseMethodExtension() {
 
-  class Composite extends AbstractCompositeExtension<ResponseMethodExtension, MethodSpec.Builder> implements
+    @Override
+    public String methodName(ResourceContext context, Response responseMethod, String originalMethodName) {
+      return originalMethodName;
+    }
+
+    @Override
+    public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
+      return methodSpec;
+    }
+  };
+
+  class Composite extends AbstractCompositeExtension<ResponseMethodExtension> implements
       ResponseMethodExtension {
 
     public Composite(Collection<ResponseMethodExtension> extensions) {
       super(extensions);
+    }
+
+    @Override
+    public String methodName(ResourceContext context, Response responseMethod, String originalMethodName) {
+      return runList(originalMethodName, (e, b) -> e.methodName(context, responseMethod, b));
     }
 
     @Override
@@ -41,6 +57,8 @@ public interface ResponseMethodExtension {
       return runList(methodSpec, (e, b) -> e.onMethod(context, responseMethod, b));
     }
   }
+
+  String methodName(ResourceContext context, Response responseMethod, String originalMethodName);
 
   MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec);
 }

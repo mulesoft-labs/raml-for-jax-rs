@@ -25,9 +25,20 @@ import java.util.Collection;
  */
 public interface ResponseClassExtension {
 
-  ResponseClassExtension NULL_EXTENSION = (context, method, typeSpec) -> typeSpec;
+  ResponseClassExtension NULL_EXTENSION = new ResponseClassExtension() {
 
-  class Composite extends AbstractCompositeExtension<ResponseClassExtension, TypeSpec.Builder> implements
+    @Override
+    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+      return originalName;
+    }
+
+    @Override
+    public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder) {
+      return typeBuilder;
+    }
+  };
+
+  class Composite extends AbstractCompositeExtension<ResponseClassExtension> implements
       ResponseClassExtension {
 
     public Composite(Collection<ResponseClassExtension> extensions) {
@@ -35,12 +46,19 @@ public interface ResponseClassExtension {
     }
 
     @Override
-    public TypeSpec.Builder onResponseClass(final ResourceContext context, final Operation method, TypeSpec.Builder typeSpec) {
+    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+      return runList(originalName, (e, b) -> e.responseClassName(context, method, b));
+    }
 
-      return runList(typeSpec, (e, b) -> e.onResponseClass(context, method, b));
+    @Override
+    public TypeSpec.Builder onResponseClass(final ResourceContext context, final Operation method, TypeSpec.Builder typeBuilder) {
+
+      return runList(typeBuilder, (e, b) -> e.onResponseClass(context, method, b));
     }
   }
 
-  TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec);
+  String responseClassName(ResourceContext context, Operation method, String originalName);
+
+  TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder);
 
 }

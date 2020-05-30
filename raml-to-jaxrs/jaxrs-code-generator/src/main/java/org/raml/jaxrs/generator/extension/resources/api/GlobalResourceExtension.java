@@ -48,13 +48,34 @@ public interface GlobalResourceExtension extends
         }
 
         @Override
-        public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
-          return typeSpec;
+        public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder) {
+          return typeBuilder;
         }
 
         @Override
         public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
           return methodSpec;
+        }
+
+        @Override
+        public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+          return originalName;
+        }
+
+        @Override
+        public String methodName(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                                 String originalMethodName) {
+          return originalMethodName;
+        }
+
+        @Override
+        public String responseClassName(ResourceContext context, Operation method, String originalName) {
+          return originalName;
+        }
+
+        @Override
+        public String methodName(ResourceContext context, Response responseMethod, String originalMethodName) {
+          return originalMethodName;
         }
       };
 
@@ -81,12 +102,12 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
+    public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder) {
 
       for (GlobalResourceExtension extension : extensions) {
-        typeSpec = extension.onResponseClass(context, method, typeSpec);
+        typeBuilder = extension.onResponseClass(context, method, typeBuilder);
       }
-      return typeSpec;
+      return typeBuilder;
     }
 
     @Override
@@ -95,6 +116,39 @@ public interface GlobalResourceExtension extends
         methodSpec = extension.onMethod(context, responseMethod, methodSpec);
       }
       return methodSpec;
+    }
+
+    @Override
+    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+      for (GlobalResourceExtension extension : extensions) {
+        originalName = extension.resourceClassName(context, resource, originalName);
+      }
+      return originalName;
+    }
+
+    @Override
+    public String methodName(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                             String originalMethodName) {
+      for (GlobalResourceExtension extension : extensions) {
+        originalMethodName = extension.methodName(context, method, gRequest, payload, originalMethodName);
+      }
+      return originalMethodName;
+    }
+
+    @Override
+    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+      for (GlobalResourceExtension extension : extensions) {
+        originalName = extension.responseClassName(context, method, originalName);
+      }
+      return originalName;
+    }
+
+    @Override
+    public String methodName(ResourceContext context, Response responseMethod, String originalMethodName) {
+      for (GlobalResourceExtension extension : extensions) {
+        originalMethodName = extension.methodName(context, responseMethod, originalMethodName);
+      }
+      return originalMethodName;
     }
 
     public void addExtension(GlobalResourceExtension extension) {
@@ -117,13 +171,34 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeSpec) {
-      return typeSpec;
+    public TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder) {
+      return typeBuilder;
     }
 
     @Override
     public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
       return methodSpec;
+    }
+
+    @Override
+    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+      return originalName;
+    }
+
+    @Override
+    public String methodName(ResourceContext context, Operation method, Request gRequest, Payload payload,
+                             String originalMethodName) {
+      return originalMethodName;
+    }
+
+    @Override
+    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+      return originalName;
+    }
+
+    @Override
+    public String methodName(ResourceContext context, Response responseMethod, String originalMethodName) {
+      return originalMethodName;
     }
   }
 }

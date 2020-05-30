@@ -27,6 +27,11 @@ import org.raml.jaxrs.generator.ramltypes.GResponse;
 public class TrialResponseMethodExtension implements ResponseMethodExtension {
 
   @Override
+  public String methodName(ResourceContext context, Response responseMethod, String originalMethodName) {
+    return originalMethodName;
+  }
+
+  @Override
   public MethodSpec.Builder onMethod(ResourceContext context, Response responseMethod, MethodSpec.Builder methodSpec) {
 
     return methodSpec;

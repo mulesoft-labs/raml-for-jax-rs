@@ -33,6 +33,7 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
 import org.raml.jaxrs.generator.ramltypes.GResponse;
 import org.raml.jaxrs.generator.ramltypes.GType;
 import org.raml.jaxrs.generator.v10.ExtensionManager;
+import org.raml.jaxrs.generator.v10.JaxRsAnnotations;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.types.V10RamlToPojoGType;
 import org.raml.ramltopojo.*;
@@ -253,16 +254,12 @@ public class CurrentBuild {
     }
   }
 
-  public ResourceClassExtension pluginsForResourceClass(Function<Collection<ResourceClassExtension>, ResourceClassExtension> provider,
-                                                        EndPoint resource) {
+  public ResourceClassExtension pluginsForResourceClass(EndPoint endpoint) {
 
-    List<PluginDef> data = Collections.emptyList(); // todo annotations....
-                                                    // Annotations.RESOURCE_PLUGINS.get(Collections.<PluginDef>emptyList(), api,
-                                                    // resource);
+    List<PluginDef> data = JaxRsAnnotations.RESOURCE_PLUGINS.get(Collections.emptyList(), endpoint);
     Set<ResourceClassExtension> plugins = buildPluginList(ResourceClassExtension.class, data);
 
-    // Ugly, but I don't care
-    return provider.apply(plugins.stream().map(x -> x).collect(Collectors.toList()));
+    return new ResourceClassExtension.Composite(plugins);
   }
 
   public ResponseClassExtension pluginsForResponseClass(Function<Collection<ResponseClassExtension>, ResponseClassExtension> provider,

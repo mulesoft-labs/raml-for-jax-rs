@@ -745,10 +745,13 @@ public class ResourceBuilder implements ResourceGenerator {
     @Override
     public TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder nullSpec) {
 
-      TypeSpec.Builder typeSpec = TypeSpec.interfaceBuilder(Names.typeName(name))
-          .addModifiers(Modifier.PUBLIC)
-          .addAnnotation(AnnotationSpec.builder(Path.class)
-              .addMember("value", "$S", generatePathString(uri, resource.parameters())).build());
+      TypeSpec.Builder typeSpec =
+          TypeSpec
+              .interfaceBuilder(Names
+                  .typeName(build.pluginsForResourceClass(resource).resourceClassName(context, resource, name)))
+              .addModifiers(Modifier.PUBLIC)
+              .addAnnotation(AnnotationSpec.builder(Path.class)
+                  .addMember("value", "$S", generatePathString(uri, resource.parameters())).build());
 
       buildResource(typeSpec, topResource);
       recurse(typeSpec, topResource);

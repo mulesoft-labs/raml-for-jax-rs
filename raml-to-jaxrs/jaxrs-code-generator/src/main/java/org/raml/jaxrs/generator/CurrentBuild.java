@@ -246,11 +246,11 @@ public class CurrentBuild {
   private <T> void loadBasePlugins(Set<T> plugins, Class<T> pluginType) {
 
     List<String> configuredPlugins = this.typeConfiguration().stream()
-        .map((Function<String, String>) s -> "ramltojaxrs." + s)
+        .map(s -> "ramltojaxrs." + s)
         .collect(Collectors.toList());
 
     for (String basePlugin : configuredPlugins) {
-      plugins.addAll(pluginManager.getClassesForName(basePlugin, Collections.<String>emptyList(), pluginType));
+      plugins.addAll(pluginManager.getClassesForName(basePlugin, Collections.emptyList(), pluginType));
     }
   }
 
@@ -262,38 +262,28 @@ public class CurrentBuild {
     return new ResourceClassExtension.Composite(plugins);
   }
 
-  public ResponseClassExtension pluginsForResponseClass(Function<Collection<ResponseClassExtension>, ResponseClassExtension> provider,
-                                                        GMethod method) {
+  public ResponseClassExtension pluginsForResponseClass(Operation operation) {
 
-    List<PluginDef> data = Collections.emptyList(); // todo
-                                                    // Annotations.RESPONSE_CLASS_PLUGINS.get(Collections.<PluginDef>emptyList(),
-                                                    // api, method);
+    List<PluginDef> data = JaxRsAnnotations.RESPONSECLASSES_PLUGINS.get(Collections.emptyList(), operation);
     Set<ResponseClassExtension> plugins = buildPluginList(ResponseClassExtension.class, data);
 
-    // Ugly, but I don't care
-    return provider.apply(plugins.stream().map(x -> x).collect(Collectors.toList()));
+    return new ResponseClassExtension.Composite(plugins);
   }
 
-  public ResourceMethodExtension pluginsForResourceMethod(Function<Collection<ResourceMethodExtension>, ResourceMethodExtension> provider,
-                                                          GMethod resource) {
+  public ResourceMethodExtension pluginsForResourceMethod(Operation operation) {
 
-    List<PluginDef> data = Collections.emptyList(); // todo Annotations.METHOD_PLUGINS.get(Collections.<PluginDef>emptyList(),
-                                                    // api, resource);
+    List<PluginDef> data = JaxRsAnnotations.METHODS_PLUGINS.get(Collections.emptyList(), operation);
     Set<ResourceMethodExtension> plugins = buildPluginList(ResourceMethodExtension.class, data);
 
-    // Ugly, but I don't care
-    return provider.apply(plugins.stream().map(x -> x).collect(Collectors.toList()));
+    return new ResourceMethodExtension.Composite(plugins);
   }
 
-  public ResponseMethodExtension pluginsForResponseMethod(Function<Collection<ResponseMethodExtension>, ResponseMethodExtension> provider,
-                                                          GResponse resource) {
+  public ResponseMethodExtension pluginsForResponseMethod(Response response) {
 
-    List<PluginDef> data = Collections.emptyList(); // todo Annotations.RESPONSE_PLUGINS.get(Collections.<PluginDef>emptyList(),
-                                                    // api, resource);
+    List<PluginDef> data = JaxRsAnnotations.RESPONSEMETHODS_PLUGINS.get(Collections.emptyList(), response);
     Set<ResponseMethodExtension> plugins = buildPluginList(ResponseMethodExtension.class, data);
 
-    // Ugly, but I don't care
-    return provider.apply(plugins.stream().map(x -> x).collect(Collectors.toList()));
+    return new ResponseMethodExtension.Composite(plugins);
   }
 
   private <T> Set<T> buildPluginList(Class<T> cls, List<PluginDef> data) {

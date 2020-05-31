@@ -7,3 +7,27 @@ annotationTypes:
       properties:
         name: string
         arguments?: string[] | object
+
+  methods:
+    allowedTargets: [Method, API]
+    type: array
+    items:
+      properties:
+        name: string
+        arguments?: string[] | object
+
+  responseClasses:
+    allowedTargets: [Method, API]
+    type: array
+    items:
+      properties:
+        name: string
+        arguments?: string[] | object
+
+  responses:
+    allowedTargets: [Response, API]
+    type: array
+    items:
+      properties:
+        name: string
+        arguments?: string[] | object

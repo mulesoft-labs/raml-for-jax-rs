@@ -47,6 +47,32 @@ public abstract class JaxRsAnnotations<T> implements AnnotationUser<T> {
     }
   };
 
+  public static JaxRsAnnotations<List<PluginDef>> METHODS_PLUGINS = new JaxRsAnnotations<List<PluginDef>>() {
+
+    @Override
+    public List<PluginDef> getWithContext(Annotable target, Annotable... others) {
+      return AnnotationEngine.getWithDefaultList("ramltojaxrs.methods", JaxRsAnnotations::mapToPluginDefs, target, others);
+    }
+  };
+
+  public static JaxRsAnnotations<List<PluginDef>> RESPONSECLASSES_PLUGINS = new JaxRsAnnotations<List<PluginDef>>() {
+
+    @Override
+    public List<PluginDef> getWithContext(Annotable target, Annotable... others) {
+      return AnnotationEngine
+          .getWithDefaultList("ramltojaxrs.responseClasses", JaxRsAnnotations::mapToPluginDefs, target, others);
+    }
+  };
+
+  public static JaxRsAnnotations<List<PluginDef>> RESPONSEMETHODS_PLUGINS = new JaxRsAnnotations<List<PluginDef>>() {
+
+    @Override
+    public List<PluginDef> getWithContext(Annotable target, Annotable... others) {
+      return AnnotationEngine
+          .getWithDefaultList("ramltojaxrs.responses", JaxRsAnnotations::mapToPluginDefs, target, others);
+    }
+  };
+
   private static List<PluginDef> mapToPluginDefs(ArrayNode arrayNode) {
     return Optional.ofNullable(arrayNode).orElse(new ArrayNode()).members().stream()
         .filter(n -> n instanceof ObjectNode)

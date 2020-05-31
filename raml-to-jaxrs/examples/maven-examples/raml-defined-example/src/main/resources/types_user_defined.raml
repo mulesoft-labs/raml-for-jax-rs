@@ -71,12 +71,10 @@ types:
 /complexhumans:
     description: Hello!!!
     (ramltojaxrs.resources):
-      plugins:
         - name: ramltojaxrs.javadoc
     get:
-#        (ramltojaxrs.methods):
-#          plugins:
-#            - name: ramltojaxrs.javadoc
+        (ramltojaxrs.methods):
+            - name: ramltojaxrs.javadoc
         description: getme
         queryParameters:
             id:
@@ -84,9 +82,9 @@ types:
               required: false
         responses:
           200:
-#            (ramltojaxrs.responses):
-#               plugins:
-#                 - name: ramltojaxrs.javadoc
+            (ramltojaxrs.responses):
+               plugins:
+                 - name: ramltojaxrs.javadoc
             description: response
             body:
                 application/json: Human

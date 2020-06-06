@@ -15,25 +15,41 @@
  */
 package org.raml.jaxrs.generator.extension.resources;
 
-import amf.client.model.domain.EndPoint;
+import amf.client.model.domain.*;
+import com.squareup.javapoet.ClassName;
 import org.raml.jaxrs.generator.extension.resources.api.GlobalResourceExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created. There, you have it.
  */
 public class RenamingExtension extends GlobalResourceExtension.Helper {
 
-  private final List<String> args;
+  private final Map<String, String> args;
 
-  public RenamingExtension(List<String> args) {
+  public RenamingExtension(Map<String, String> args) {
     this.args = args;
   }
 
   @Override
-  public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
-    return args.get(0);
+  public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
+    return ClassName.get(context.getResourcePackage(), args.get("resourceClass"));
+  }
+
+  @Override
+  public String methodName(ResourceContext context, Operation method, Request gRequest, Payload payload, String originalMethodName) {
+    return args.get("methodName");
+  }
+
+  @Override
+  public ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName) {
+    return ClassName.get(context.getResourcePackage(), args.get("responseClass"));
+  }
+
+  @Override
+  public String methodName(ResourceContext context, Response responseMethod, String originalMethodName) {
+    return args.get("responseMethod");
   }
 }

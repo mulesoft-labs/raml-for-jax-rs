@@ -16,10 +16,10 @@
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import amf.client.model.domain.EndPoint;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.ramltypes.GResource;
 
 /**
  * Created by Jean-Philippe Belanger on 1/6/17. Just potential zeroes and ones
@@ -28,7 +28,7 @@ public class TrialResourceClassExtension implements ResourceClassExtension {
 
 
   @Override
-  public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+  public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
     return originalName;
   }
 

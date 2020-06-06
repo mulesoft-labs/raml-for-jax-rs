@@ -26,7 +26,6 @@ import org.raml.jaxrs.generator.builders.JavaPoetTypeGeneratorBase;
 import org.raml.jaxrs.generator.builders.extensions.resources.ResourceContextImpl;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceClassExtension;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
-import org.raml.jaxrs.generator.ramltypes.GResource;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.ramltopojo.TypeBasedOperation;
 
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.*;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.raml.jaxrs.generator.builders.resources.DefaultJavaTypeOperation.defaultJavaType;
@@ -738,7 +736,7 @@ public class ResourceBuilder implements ResourceGenerator {
 
 
     @Override
-    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+    public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
       return originalName;
     }
 
@@ -747,8 +745,11 @@ public class ResourceBuilder implements ResourceGenerator {
 
       TypeSpec.Builder typeSpec =
           TypeSpec
-              .interfaceBuilder(Names
-                  .typeName(build.pluginsForResourceClass(resource).resourceClassName(context, resource, name)))
+              .interfaceBuilder(build.pluginsForResourceClass(resource).resourceClassName(context,
+                                                                                          resource,
+                                                                                          ClassName.get(context
+                                                                                              .getResourcePackage(), Names
+                                                                                              .typeName(name))))
               .addModifiers(Modifier.PUBLIC)
               .addAnnotation(AnnotationSpec.builder(Path.class)
                   .addMember("value", "$S", generatePathString(uri, resource.parameters())).build());

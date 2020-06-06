@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator.extension.resources.api;
 
 import amf.client.model.domain.Operation;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.util.Collection;
@@ -28,7 +29,7 @@ public interface ResponseClassExtension {
   ResponseClassExtension NULL_EXTENSION = new ResponseClassExtension() {
 
     @Override
-    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+    public ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName) {
       return originalName;
     }
 
@@ -46,7 +47,7 @@ public interface ResponseClassExtension {
     }
 
     @Override
-    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+    public ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName) {
       return runList(originalName, (e, b) -> e.responseClassName(context, method, b));
     }
 
@@ -57,7 +58,7 @@ public interface ResponseClassExtension {
     }
   }
 
-  String responseClassName(ResourceContext context, Operation method, String originalName);
+  ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName);
 
   TypeSpec.Builder onResponseClass(ResourceContext context, Operation method, TypeSpec.Builder typeBuilder);
 

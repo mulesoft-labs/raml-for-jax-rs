@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator.extension.resources.api;
 
 import amf.client.model.domain.*;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
@@ -58,7 +59,7 @@ public interface GlobalResourceExtension extends
         }
 
         @Override
-        public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+        public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
           return originalName;
         }
 
@@ -69,7 +70,7 @@ public interface GlobalResourceExtension extends
         }
 
         @Override
-        public String responseClassName(ResourceContext context, Operation method, String originalName) {
+        public ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName) {
           return originalName;
         }
 
@@ -119,7 +120,7 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+    public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
       for (GlobalResourceExtension extension : extensions) {
         originalName = extension.resourceClassName(context, resource, originalName);
       }
@@ -136,7 +137,7 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+    public ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName) {
       for (GlobalResourceExtension extension : extensions) {
         originalName = extension.responseClassName(context, method, originalName);
       }
@@ -181,7 +182,7 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+    public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
       return originalName;
     }
 
@@ -192,7 +193,7 @@ public interface GlobalResourceExtension extends
     }
 
     @Override
-    public String responseClassName(ResourceContext context, Operation method, String originalName) {
+    public ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName) {
       return originalName;
     }
 

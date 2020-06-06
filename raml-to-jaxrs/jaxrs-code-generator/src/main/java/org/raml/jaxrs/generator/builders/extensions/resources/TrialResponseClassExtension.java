@@ -16,10 +16,10 @@
 package org.raml.jaxrs.generator.builders.extensions.resources;
 
 import amf.client.model.domain.Operation;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import org.raml.jaxrs.generator.extension.resources.api.ResourceContext;
 import org.raml.jaxrs.generator.extension.resources.api.ResponseClassExtension;
-import org.raml.jaxrs.generator.ramltypes.GMethod;
 
 /**
  * Created by Jean-Philippe Belanger on 1/12/17. Just potential zeroes and ones
@@ -27,7 +27,7 @@ import org.raml.jaxrs.generator.ramltypes.GMethod;
 public class TrialResponseClassExtension implements ResponseClassExtension {
 
   @Override
-  public String responseClassName(ResourceContext context, Operation method, String originalName) {
+  public ClassName responseClassName(ResourceContext context, Operation method, ClassName originalName) {
     return originalName;
   }
 

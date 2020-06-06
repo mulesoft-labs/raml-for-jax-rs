@@ -16,6 +16,7 @@
 package org.raml.jaxrs.generator.extension.resources.api;
 
 import amf.client.model.domain.EndPoint;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.util.Collection;
@@ -33,7 +34,7 @@ public interface ResourceClassExtension {
     }
 
     @Override
-    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+    public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
       return runList(originalName, (e, b) -> e.resourceClassName(context, resource, b));
     }
 
@@ -47,7 +48,7 @@ public interface ResourceClassExtension {
   ResourceClassExtension NULL_EXTENSION = new ResourceClassExtension() {
 
     @Override
-    public String resourceClassName(ResourceContext context, EndPoint resource, String originalName) {
+    public ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName) {
       return originalName;
     }
 
@@ -57,7 +58,7 @@ public interface ResourceClassExtension {
     }
   };
 
-  String resourceClassName(ResourceContext context, EndPoint resource, String originalName);
+  ClassName resourceClassName(ResourceContext context, EndPoint resource, ClassName originalName);
 
   TypeSpec.Builder onResource(ResourceContext context, EndPoint resource, TypeSpec.Builder typeSpec);
 }

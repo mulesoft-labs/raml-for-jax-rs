@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import static org.raml.builder.BodyBuilder.body;
+import static org.raml.builder.PayloadBuilder.body;
 import static org.raml.builder.NodeBuilders.property;
 import static org.raml.v2.api.model.v10.RamlFragment.Default;
 import static org.raml.v2.internal.impl.commons.RamlVersion.RAML_10;
@@ -141,9 +141,9 @@ public class ModelEmitter implements Emitter {
 
     for (String key : methods.keySet()) {
 
-      MethodBuilder methodBuilder = MethodBuilder.method(key);
-      writeMethod(methods.get(key), methodBuilder);
-      resourceBuilder.with(methodBuilder);
+      OperationBuilder operationBuilder = OperationBuilder.method(key);
+      writeMethod(methods.get(key), operationBuilder);
+      resourceBuilder.with(operationBuilder);
     }
 
     for (RamlResource child : ramlResource.getChildren()) {
@@ -152,16 +152,16 @@ public class ModelEmitter implements Emitter {
     return resourceBuilder;
   }
 
-  private void writeMethod(Collection<RamlResourceMethod> methods, MethodBuilder methodBuilder)
+  private void writeMethod(Collection<RamlResourceMethod> methods, OperationBuilder operationBuilder)
       throws IOException {
 
     for (RamlResourceMethod method : methods) {
-      ModelEmitterAnnotations.annotate(supportedAnnotations, method, methodBuilder);
+      ModelEmitterAnnotations.annotate(supportedAnnotations, method, operationBuilder);
 
       Optional<String> description = method.getDescription();
       if (description.isPresent() && !description.get().isEmpty()) {
 
-        methodBuilder.with(property("description", description.get()));
+        operationBuilder.with(property("description", description.get()));
       }
 
       if (!method.getConsumedMediaTypes().isEmpty()
@@ -171,8 +171,8 @@ public class ModelEmitter implements Emitter {
 
         for (RamlMediaType ramlMediaType : method.getConsumedMediaTypes()) {
 
-          BodyBuilder body = body(ramlMediaType.toStringRepresentation());
-          methodBuilder.withBodies(body);
+          PayloadBuilder body = body(ramlMediaType.toStringRepresentation());
+          operationBuilder.withPayloads(body);
 
           if (ramlMediaType.toStringRepresentation().equals("multipart/form-data")) {
 
@@ -195,11 +195,11 @@ public class ModelEmitter implements Emitter {
 
 
       if (!method.getHeaderParameters().isEmpty()) {
-        writeHeaderParameters(method.getHeaderParameters(), methodBuilder);
+        writeHeaderParameters(method.getHeaderParameters(), operationBuilder);
       }
 
       if (!method.getQueryParameters().isEmpty()) {
-        writeQueryParameters(method.getQueryParameters(), methodBuilder);
+        writeQueryParameters(method.getQueryParameters(), operationBuilder);
       }
     }
 
@@ -211,12 +211,12 @@ public class ModelEmitter implements Emitter {
         return pickTypeHandler(method.getProducedType().get().getType());
       }
     };
-    handler.writeResponses(typeRegistry, methods, selector, methodBuilder);
+    handler.writeResponses(typeRegistry, methods, selector, operationBuilder);
 
   }
 
 
-  private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters, MethodBuilder builder) throws IOException {
+  private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters, OperationBuilder builder) throws IOException {
     for (RamlHeaderParameter parameter : headerParameters) {
 
       TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
@@ -226,7 +226,7 @@ public class ModelEmitter implements Emitter {
     }
   }
 
-  private void writeQueryParameters(Iterable<RamlQueryParameter> queryParameters, MethodBuilder builder)
+  private void writeQueryParameters(Iterable<RamlQueryParameter> queryParameters, OperationBuilder builder)
       throws IOException {
 
     for (RamlQueryParameter parameter : queryParameters) {
@@ -244,23 +244,23 @@ public class ModelEmitter implements Emitter {
     return responseHandlerAlternatives.get(0);
   }
 
-  private void writeFormParam(RamlResourceMethod method, BodyBuilder body) throws IOException {
+  private void writeFormParam(RamlResourceMethod method, PayloadBuilder body) throws IOException {
 
-    TypeBuilder typeBuilder = TypeBuilder.type("object");
+    TypeShapeBuilder typeBuilder = TypeShapeBuilder.type("object");
 
     List<RamlFormParameter> formData = method.getFormParameters();
     for (RamlFormParameter formDatum : formData) {
 
-      typeBuilder.withProperty(TypePropertyBuilder.property(formDatum.getName(), RamlTypes.fromType(formDatum.getType())
+      typeBuilder.withProperty(PropertyShapeBuilder.property(formDatum.getName(), RamlTypes.fromType(formDatum.getType())
           .getRamlSyntax()));
     }
 
     body.ofType(typeBuilder);
   }
 
-  private void writeMultiPartFormData(RamlResourceMethod method, BodyBuilder body) throws IOException {
+  private void writeMultiPartFormData(RamlResourceMethod method, PayloadBuilder body) throws IOException {
 
-    TypeBuilder typeBuilder = TypeBuilder.type("object");
+    TypeShapeBuilder typeBuilder = TypeShapeBuilder.type("object");
 
     List<RamlMultiFormDataParameter> formData = method.getMultiFormDataParameter();
     for (RamlMultiFormDataParameter formDatum : formData) {
@@ -268,7 +268,7 @@ public class ModelEmitter implements Emitter {
       Type type = formDatum.getPartEntity().getType();
       TypeHandler typeHandler = pickTypeHandler(type);
 
-      typeBuilder.withProperty(TypePropertyBuilder.property(formDatum.getName(),
+      typeBuilder.withProperty(PropertyShapeBuilder.property(formDatum.getName(),
                                                             typeHandler.writeType(typeRegistry, formDatum.getPartEntity())));
     }
 

@@ -17,31 +17,26 @@ package org.raml.jaxrs.types;
 
 import com.google.common.base.Optional;
 import org.raml.api.Annotable;
-import org.raml.api.RamlData;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
 import org.raml.builder.RamlDocumentBuilder;
-import org.raml.builder.TypeBuilder;
-import org.raml.builder.TypeDeclarationBuilder;
-import org.raml.builder.TypePropertyBuilder;
+import org.raml.builder.TypeShapeBuilder;
+import org.raml.builder.AnyShapeBuilder;
+import org.raml.builder.PropertyShapeBuilder;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.ExampleModelEmitter;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
-import org.raml.jaxrs.handlers.PojoToRamlProperty;
 import org.raml.pojotoraml.*;
 import org.raml.pojotoraml.plugins.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
 import org.raml.utilities.tuples.ImmutablePair;
 import org.raml.utilities.tuples.Pair;
 import org.raml.utilities.types.Cast;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.*;
 
 /**
@@ -51,7 +46,7 @@ import java.util.*;
 public class RamlType implements Annotable, Emittable {
 
   static private Map<String, RamlType> allTypes = new HashMap<>();
-  static private Map<String, TypeBuilder> allBuilders = new HashMap<>();
+  static private Map<String, TypeShapeBuilder> allBuilders = new HashMap<>();
   static private Map<Type, String> ramlTypeNames = new HashMap<>();
 
   private final Type realType;
@@ -82,7 +77,7 @@ public class RamlType implements Annotable, Emittable {
     Type ttype = realType;
     Class<?> c = Cast.toClass(ttype);
 
-    final List<Pair<SimpleAnnotable, TypePropertyBuilder>> pojoToRamlProperties = new ArrayList<>();
+    final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties = new ArrayList<>();
     final PojoToRamlExtensionFactory toRamlClassParserFactory = new PojoToRamlExtensionFactory(topPackage);
 
     final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), new AdjusterFactory() {
@@ -94,8 +89,8 @@ public class RamlType implements Annotable, Emittable {
                                                      new RamlAdjuster.Helper() {
 
                                                        @Override
-                                                       public TypeBuilder adjustType(Type type, String typeName,
-                                                                                     TypeBuilder builder) {
+                                                       public TypeShapeBuilder adjustType(Type type, String typeName,
+                                                                                          TypeShapeBuilder builder) {
 
                                                          allTypes.put(typeName, new RamlType(type, new Descriptor() {
 
@@ -110,9 +105,9 @@ public class RamlType implements Annotable, Emittable {
                                                        }
 
                                                        @Override
-                                                       public TypePropertyBuilder adjustScalarProperty(TypeDeclarationBuilder typeDeclaration,
-                                                                                                       final Property property,
-                                                                                                       TypePropertyBuilder typePropertyBuilder) {
+                                                       public PropertyShapeBuilder adjustScalarProperty(AnyShapeBuilder typeDeclaration,
+                                                                                                        final Property property,
+                                                                                                        PropertyShapeBuilder typePropertyBuilder) {
 
 
                                                          allTypes
@@ -124,9 +119,9 @@ public class RamlType implements Annotable, Emittable {
                                                        }
 
                                                        @Override
-                                                       public TypePropertyBuilder adjustComposedProperty(TypeDeclarationBuilder typeDeclaration,
-                                                                                                         final Property property,
-                                                                                                         TypePropertyBuilder typePropertyBuilder) {
+                                                       public PropertyShapeBuilder adjustComposedProperty(AnyShapeBuilder typeDeclaration,
+                                                                                                          final Property property,
+                                                                                                          PropertyShapeBuilder typePropertyBuilder) {
 
                                                          allTypes.get(typeDeclaration.id())
                                                              .addProperty(new
@@ -147,9 +142,9 @@ public class RamlType implements Annotable, Emittable {
 
     if (r.requestedType() != null) {
       documentBuilder.withTypes(r.requestedType());
-      for (TypeDeclarationBuilder typeDeclarationBuilder : r.dependentTypes()) {
+      for (AnyShapeBuilder anyShapeBuilder : r.dependentTypes()) {
 
-        documentBuilder.withTypes(typeDeclarationBuilder);
+        documentBuilder.withTypes(anyShapeBuilder);
       }
     }
   }
@@ -210,16 +205,16 @@ public class RamlType implements Annotable, Emittable {
   private class Fixer extends RamlAdjuster.Helper {
 
     private final List<RamlSupportedAnnotation> supportedAnnotations;
-    private final List<Pair<SimpleAnnotable, TypePropertyBuilder>> pojoToRamlProperties;
+    private final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties;
 
     public Fixer(List<RamlSupportedAnnotation> supportedAnnotations,
-                 List<Pair<SimpleAnnotable, TypePropertyBuilder>> pojoToRamlProperties) {
+                 List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties) {
       this.supportedAnnotations = supportedAnnotations;
       this.pojoToRamlProperties = pojoToRamlProperties;
     }
 
     @Override
-    public TypeBuilder adjustType(Type actualType, String typeName, TypeBuilder typeBuilder) {
+    public TypeShapeBuilder adjustType(Type actualType, String typeName, TypeShapeBuilder typeBuilder) {
 
       try {
         ModelEmitterAnnotations.annotate(supportedAnnotations, RamlType.this, typeBuilder);
@@ -237,8 +232,8 @@ public class RamlType implements Annotable, Emittable {
 
 
     @Override
-    public TypePropertyBuilder adjustScalarProperty(TypeDeclarationBuilder typeDeclaration, final Property property,
-                                                    TypePropertyBuilder typePropertyBuilder) {
+    public PropertyShapeBuilder adjustScalarProperty(AnyShapeBuilder typeDeclaration, final Property property,
+                                                     PropertyShapeBuilder propertyShapeBuilder) {
 
       try {
         // todo fix: annotable should be outside
@@ -248,18 +243,18 @@ public class RamlType implements Annotable, Emittable {
           public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
             return property.getAnnotation(annotationType);
           }
-        }, typePropertyBuilder);
+        }, propertyShapeBuilder);
       } catch (IOException e) {
         e.printStackTrace();
       }
 
-      pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), typePropertyBuilder));
-      return typePropertyBuilder;
+      pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), propertyShapeBuilder));
+      return propertyShapeBuilder;
     }
 
     @Override
-    public TypePropertyBuilder adjustComposedProperty(TypeDeclarationBuilder typeDeclaration, final Property property,
-                                                      TypePropertyBuilder typePropertyBuilder) {
+    public PropertyShapeBuilder adjustComposedProperty(AnyShapeBuilder typeDeclaration, final Property property,
+                                                       PropertyShapeBuilder propertyShapeBuilder) {
       try {
         // todo fix: annotable should be outside
         ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {
@@ -268,14 +263,14 @@ public class RamlType implements Annotable, Emittable {
           public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
             return property.getAnnotation(annotationType);
           }
-        }, typePropertyBuilder);
+        }, propertyShapeBuilder);
 
       } catch (IOException e) {
         e.printStackTrace();
       }
 
-      pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), typePropertyBuilder));
-      return typePropertyBuilder;
+      pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), propertyShapeBuilder));
+      return propertyShapeBuilder;
     }
   }
 }

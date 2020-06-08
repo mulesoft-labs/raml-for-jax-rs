@@ -16,7 +16,7 @@
 package org.raml.emitter.plugins;
 
 import org.raml.api.RamlEntity;
-import org.raml.builder.TypeBuilder;
+import org.raml.builder.TypeShapeBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.pojotoraml.AdjusterFactory;
@@ -25,7 +25,6 @@ import org.raml.pojotoraml.PojoToRamlBuilder;
 import org.raml.pojotoraml.RamlAdjuster;
 import org.raml.pojotoraml.plugins.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
-import org.raml.utilities.types.Cast;
 
 /**
  * Created. There, you have it.
@@ -39,7 +38,7 @@ public class RamlToPojoTypeHandler implements TypeHandler {
   }
 
   @Override
-  public TypeBuilder writeType(final TypeRegistry registry, RamlEntity type) {
+  public TypeShapeBuilder writeType(final TypeRegistry registry, RamlEntity type) {
 
     AdjusterFactory factory = new AdjusterFactory() {
 
@@ -51,7 +50,7 @@ public class RamlToPojoTypeHandler implements TypeHandler {
 
     final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
 
-    TypeBuilder name = pojoToRaml.name(type.getType());
+    TypeShapeBuilder name = pojoToRaml.name(type.getType());
     registry.registerType(name.id(), type);
     return name;
   }

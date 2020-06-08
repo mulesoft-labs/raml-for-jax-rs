@@ -16,7 +16,7 @@
 package org.raml.emitter.plugins;
 
 import org.raml.api.RamlResourceMethod;
-import org.raml.builder.MethodBuilder;
+import org.raml.builder.OperationBuilder;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
 
@@ -31,6 +31,6 @@ public interface ResponseHandler {
   int handlesResponses(RamlResourceMethod method);
 
   void writeResponses(TypeRegistry typeRegistry, Collection<RamlResourceMethod> method, TypeSelector selector,
-                      MethodBuilder methodBuilder)
+                      OperationBuilder operationBuilder)
       throws IOException;
 }

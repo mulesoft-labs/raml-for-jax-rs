@@ -19,7 +19,7 @@ import com.google.common.base.Optional;
 import org.raml.builder.ExamplesBuilder;
 import org.raml.builder.PropertyValueBuilder;
 import org.raml.builder.SupportsProperties;
-import org.raml.builder.TypeBuilder;
+import org.raml.builder.TypeShapeBuilder;
 import org.raml.jaxrs.common.Example;
 import org.raml.jaxrs.common.ExampleCases;
 import org.raml.jaxrs.common.Examples;
@@ -37,7 +37,7 @@ import java.util.Stack;
 public class ExampleModelEmitter implements LocalEmitter {
 
 
-  private final TypeBuilder typeBuilder;
+  private final TypeShapeBuilder typeBuilder;
   private boolean headerDone = false;
 
   private String currentCaseName;
@@ -45,7 +45,7 @@ public class ExampleModelEmitter implements LocalEmitter {
 
   private Stack<SupportsProperties> propertyValues = new Stack<>();
 
-  public ExampleModelEmitter(TypeBuilder typeBuilder) {
+  public ExampleModelEmitter(TypeShapeBuilder typeBuilder) {
     this.typeBuilder = typeBuilder;
   }
 

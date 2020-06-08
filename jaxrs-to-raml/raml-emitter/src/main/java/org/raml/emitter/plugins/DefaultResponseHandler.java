@@ -17,10 +17,10 @@ package org.raml.emitter.plugins;
 
 import org.raml.api.RamlMediaType;
 import org.raml.api.RamlResourceMethod;
-import org.raml.builder.BodyBuilder;
-import org.raml.builder.MethodBuilder;
+import org.raml.builder.PayloadBuilder;
+import org.raml.builder.OperationBuilder;
 import org.raml.builder.ResponseBuilder;
-import org.raml.builder.TypeBuilder;
+import org.raml.builder.TypeShapeBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
@@ -41,7 +41,7 @@ public class DefaultResponseHandler implements ResponseHandler {
 
   @Override
   public void writeResponses(TypeRegistry typeRegistry, Collection<RamlResourceMethod> methods, TypeSelector selector,
-                             MethodBuilder methodBuilder)
+                             OperationBuilder operationBuilder)
       throws IOException {
 
     // We have no clue what the error responses are, however, we want to generate
@@ -60,18 +60,18 @@ public class DefaultResponseHandler implements ResponseHandler {
           responseBuilder = ResponseBuilder.response(200);
         }
 
-        BodyBuilder body = BodyBuilder.body(producedMediaType.toStringRepresentation());
+        PayloadBuilder body = PayloadBuilder.body(producedMediaType.toStringRepresentation());
         responseBuilder.withBodies(body);
 
         TypeHandler typeHandler = selector.pickTypeWriter(method, producedMediaType);
-        TypeBuilder type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
+        TypeShapeBuilder type = typeHandler.writeType(typeRegistry, method.getProducedType().get());
         body.ofType(type);
       }
 
     }
 
     if (responseBuilder != null) {
-      methodBuilder.withResponses(responseBuilder);
+      operationBuilder.withResponses(responseBuilder);
     }
   }
 

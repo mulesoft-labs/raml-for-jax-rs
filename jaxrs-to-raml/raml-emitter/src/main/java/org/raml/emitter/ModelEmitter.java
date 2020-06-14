@@ -246,7 +246,7 @@ public class ModelEmitter implements Emitter {
 
   private void writeFormParam(RamlResourceMethod method, PayloadBuilder body) throws IOException {
 
-    TypeShapeBuilder typeBuilder = TypeShapeBuilder.type("object");
+    TypeShapeBuilder typeBuilder = TypeShapeBuilder.simpleType("object");
 
     List<RamlFormParameter> formData = method.getFormParameters();
     for (RamlFormParameter formDatum : formData) {
@@ -260,7 +260,7 @@ public class ModelEmitter implements Emitter {
 
   private void writeMultiPartFormData(RamlResourceMethod method, PayloadBuilder body) throws IOException {
 
-    TypeShapeBuilder typeBuilder = TypeShapeBuilder.type("object");
+    TypeShapeBuilder typeBuilder = TypeShapeBuilder.simpleType("object");
 
     List<RamlMultiFormDataParameter> formData = method.getMultiFormDataParameter();
     for (RamlMultiFormDataParameter formDatum : formData) {

@@ -15,6 +15,7 @@
  */
 package org.raml.emitter;
 
+import amf.client.model.domain.WebApi;
 import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -34,6 +35,7 @@ import org.raml.yagi.framework.model.NodeModel;
 import org.raml.yagi.framework.nodes.ErrorNode;
 import org.raml.yagi.framework.nodes.Node;
 import org.raml.yagi.framework.phase.GrammarPhase;
+import webapi.WebApiDocument;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -43,7 +45,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 import static org.raml.builder.PayloadBuilder.body;
-import static org.raml.builder.NodeBuilders.property;
+import static org.raml.builder.PropertyShapeBuilder.property;
 import static org.raml.v2.api.model.v10.RamlFragment.Default;
 import static org.raml.v2.internal.impl.commons.RamlVersion.RAML_10;
 
@@ -92,7 +94,7 @@ public class ModelEmitter implements Emitter {
       throw new RamlEmissionException("trying to emit", e);
     }
 
-    Api api = documentBuilder.buildModel();
+    WebApiDocument api = documentBuilder.buildModel();
     final GrammarPhase grammarPhase =
         new GrammarPhase(RamlHeader.getFragmentRule(new RamlHeader(RAML_10, Default).getFragment()));
     Node node = ((NodeModel) api).getNode();
@@ -161,7 +163,7 @@ public class ModelEmitter implements Emitter {
       Optional<String> description = method.getDescription();
       if (description.isPresent() && !description.get().isEmpty()) {
 
-        operationBuilder.with(property("description", description.get()));
+        operationBuilder.description(description.get());
       }
 
       if (!method.getConsumedMediaTypes().isEmpty()
@@ -246,13 +248,15 @@ public class ModelEmitter implements Emitter {
 
   private void writeFormParam(RamlResourceMethod method, PayloadBuilder body) throws IOException {
 
-    TypeShapeBuilder typeBuilder = TypeShapeBuilder.simpleType("object");
+    NodeShapeBuilder typeBuilder = NodeShapeBuilder.inheritingObjectFromShapes();
 
     List<RamlFormParameter> formData = method.getFormParameters();
     for (RamlFormParameter formDatum : formData) {
 
-      typeBuilder.withProperty(PropertyShapeBuilder.property(formDatum.getName(), RamlTypes.fromType(formDatum.getType())
-          .getRamlSyntax()));
+      // todo cavalier way of doing it
+      typeBuilder.withProperty(PropertyShapeBuilder.property(formDatum.getName(),
+                                                             org.raml.pojotoraml.types.ScalarType.fromType(formDatum.getType())
+                                                                 .get().getRamlSyntax(null).asTypeShapeBuilder()));
     }
 
     body.ofType(typeBuilder);
@@ -260,7 +264,7 @@ public class ModelEmitter implements Emitter {
 
   private void writeMultiPartFormData(RamlResourceMethod method, PayloadBuilder body) throws IOException {
 
-    TypeShapeBuilder typeBuilder = TypeShapeBuilder.simpleType("object");
+    NodeShapeBuilder typeBuilder = TypeShapeBuilder.inheritingObjectFromShapes();
 
     List<RamlMultiFormDataParameter> formData = method.getMultiFormDataParameter();
     for (RamlMultiFormDataParameter formDatum : formData) {
@@ -269,7 +273,7 @@ public class ModelEmitter implements Emitter {
       TypeHandler typeHandler = pickTypeHandler(type);
 
       typeBuilder.withProperty(PropertyShapeBuilder.property(formDatum.getName(),
-                                                            typeHandler.writeType(typeRegistry, formDatum.getPartEntity())));
+                                                             typeHandler.writeType(typeRegistry, formDatum.getPartEntity())));
     }
 
     body.ofType(typeBuilder);
@@ -291,13 +295,11 @@ public class ModelEmitter implements Emitter {
       if (javaAnnotation.getDeclaredMethods().length > 0) {
         for (Method method : javaAnnotation.getDeclaredMethods()) {
 
-          if (method.getReturnType().isArray()) {
-            annotationTypeBuilder.withProperty(property(method.getName(), calculateRamlType(method.getReturnType()
-                .getComponentType()) + "[]"));
-          } else {
-            annotationTypeBuilder.withProperty(property(method.getName(), calculateRamlType(method.getReturnType())
-                ));
-          }
+          /*
+           * if (method.getReturnType().isArray()) { annotationTypeBuilder.withProperty(property(method.getName(),
+           * calculateRamlType(method.getReturnType() .getComponentType()) + "[]")); } else {
+           * annotationTypeBuilder.withProperty(property(method.getName(), calculateRamlType(method.getReturnType()) )); }
+           */
         }
 
         builder.withAnnotationTypes(annotationTypeBuilder);

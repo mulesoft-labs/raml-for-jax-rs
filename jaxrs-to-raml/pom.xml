@@ -112,13 +112,11 @@
                 <module>jaxrs-to-raml-converter</module>
                 <module>jaxrs-to-raml-cli</module>
                 <module>jaxrs-to-raml-maven-plugin</module>
-<!--
                 <module>jaxrs-test-resources</module>
--->
                 <module>raml-api</module>
                 <module>raml-emitter</module>
                 <module>raml-generator-api</module>
-<!--                <module>jaxrs-to-raml-examples</module>-->
+                <module>jaxrs-to-raml-examples</module>
             </modules>
         </profile>
     </profiles>
@@ -130,7 +128,7 @@
         <module>jaxrs-to-raml-converter</module>
         <module>jaxrs-to-raml-cli</module>
         <module>jaxrs-to-raml-maven-plugin</module>
-<!--        <module>jaxrs-test-resources</module>-->
+        <module>jaxrs-test-resources</module>
         <module>raml-api</module>
         <module>raml-emitter</module>
         <module>raml-generator-api</module>

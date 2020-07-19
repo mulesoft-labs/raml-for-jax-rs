@@ -17,13 +17,13 @@ package org.raml.jaxrs.parser.analyzers;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.raml.jaxrs.model.JaxRsSupportedAnnotation;
 import org.raml.jaxrs.parser.source.SourceParser;
-import org.raml.utilities.iterables.Iterables;
 
 import java.util.Set;
 
@@ -45,24 +45,6 @@ public class JerseyAnalyzerTest {
   private JerseyAnalyzer makeAnalyzerFor(Iterable<Class<?>> classes,
                                          Set<JaxRsSupportedAnnotation> supportedAnnotations) {
     return JerseyAnalyzer.create(classes, jerseyBridge, sourceParser, supportedAnnotations, "java.util");
-  }
-
-  private static <T> Supplier<T> mockSupplierFor(final Class<? extends T> clazz) {
-    return new Supplier<T>() {
-
-      @Override
-      public T get() {
-        return mock(clazz);
-      }
-    };
-  }
-
-  private <T> FluentIterable<? extends T> supplyingNTimes(int noItems, Supplier<? extends T> supplier) {
-    return FluentIterable.from(Iterables.suplying(supplier)).limit(noItems);
-  }
-
-  private Iterable<Class<?>> testClasses() {
-    return Lists.<Class<?>>newArrayList(String.class, Integer.class, Double.class, Byte.class);
   }
 
   // @Test

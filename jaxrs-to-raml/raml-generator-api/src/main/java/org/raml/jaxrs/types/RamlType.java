@@ -19,10 +19,7 @@ import com.google.common.base.Optional;
 import org.raml.api.Annotable;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
-import org.raml.builder.RamlDocumentBuilder;
-import org.raml.builder.TypeShapeBuilder;
-import org.raml.builder.AnyShapeBuilder;
-import org.raml.builder.PropertyShapeBuilder;
+import org.raml.builder.*;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.ExampleModelEmitter;
 import org.raml.jaxrs.emitters.LocalEmitter;
@@ -92,7 +89,7 @@ public class RamlType implements Annotable, Emittable {
                                                        public TypeShapeBuilder adjustType(Type type, String typeName,
                                                                                           TypeShapeBuilder builder) {
 
-                                                         allTypes.put(typeName, new RamlType(type, new Descriptor() {
+                                                         allTypes.put(builder.id(), new RamlType(type, new Descriptor() {
 
                                                            @Override
                                                            public Optional<String> describe() {
@@ -105,31 +102,30 @@ public class RamlType implements Annotable, Emittable {
                                                        }
 
                                                        @Override
-                                                       public PropertyShapeBuilder adjustScalarProperty(AnyShapeBuilder typeDeclaration,
-                                                                                                        final Property property,
-                                                                                                        PropertyShapeBuilder typePropertyBuilder) {
-
+                                                       public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration,
+                                                                                                        Property property,
+                                                                                                        PropertyShapeBuilder propertyShapeBuilder) {
 
                                                          allTypes
-                                                             .get(typeDeclaration.id())
+                                                             .get(typeDeclaration.asTypeShapeBuilder().id())
                                                              .addProperty(new RamlProperty(property.name(),
                                                                                            new SimpleAnnotable(property), true));
                                                          return super.adjustScalarProperty(typeDeclaration, property,
-                                                                                           typePropertyBuilder);
+                                                                                           propertyShapeBuilder);
                                                        }
 
                                                        @Override
-                                                       public PropertyShapeBuilder adjustComposedProperty(AnyShapeBuilder typeDeclaration,
-                                                                                                          final Property property,
-                                                                                                          PropertyShapeBuilder typePropertyBuilder) {
+                                                       public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration,
+                                                                                                          Property property,
+                                                                                                          PropertyShapeBuilder propertyShapeBuilder) {
 
-                                                         allTypes.get(typeDeclaration.id())
+                                                         allTypes.get(typeDeclaration.asTypeShapeBuilder().id())
                                                              .addProperty(new
                                                                           RamlProperty(property.name(),
                                                                                        new SimpleAnnotable(property), true));
 
                                                          return super.adjustComposedProperty(typeDeclaration, property,
-                                                                                             typePropertyBuilder);
+                                                                                             propertyShapeBuilder);
                                                        }
                                                      });
         return adjuster;
@@ -142,7 +138,7 @@ public class RamlType implements Annotable, Emittable {
 
     if (r.requestedType() != null) {
       documentBuilder.withTypes(r.requestedType());
-      for (AnyShapeBuilder anyShapeBuilder : r.dependentTypes()) {
+      for (DeclaredShapeBuilder anyShapeBuilder : r.dependentTypes()) {
 
         documentBuilder.withTypes(anyShapeBuilder);
       }
@@ -232,7 +228,7 @@ public class RamlType implements Annotable, Emittable {
 
 
     @Override
-    public PropertyShapeBuilder adjustScalarProperty(AnyShapeBuilder typeDeclaration, final Property property,
+    public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration, Property property,
                                                      PropertyShapeBuilder propertyShapeBuilder) {
 
       try {
@@ -253,8 +249,9 @@ public class RamlType implements Annotable, Emittable {
     }
 
     @Override
-    public PropertyShapeBuilder adjustComposedProperty(AnyShapeBuilder typeDeclaration, final Property property,
+    public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration, Property property,
                                                        PropertyShapeBuilder propertyShapeBuilder) {
+
       try {
         // todo fix: annotable should be outside
         ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {

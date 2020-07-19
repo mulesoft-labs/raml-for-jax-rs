@@ -95,21 +95,10 @@ public class ModelEmitter implements Emitter {
     }
 
     WebApiDocument api = documentBuilder.buildModel();
-    final GrammarPhase grammarPhase =
-        new GrammarPhase(RamlHeader.getFragmentRule(new RamlHeader(RAML_10, Default).getFragment()));
-    Node node = ((NodeModel) api).getNode();
-    grammarPhase.apply(node);
-
-    List<ErrorNode> errors = node.findDescendantsWith(ErrorNode.class);
-    for (ErrorNode error : errors) {
-      System.err.println("error: " + error.getErrorMessage());
-    }
-    if (errors.size() == 0) {
-      try {
-        emitter.emit(api, writer);
-      } catch (IOException e) {
-        throw new RamlEmissionException("trying to emit", e);
-      }
+    try {
+      emitter.emit(api, writer);
+    } catch (IOException e) {
+      throw new RamlEmissionException("trying to emit", e);
     }
   }
 

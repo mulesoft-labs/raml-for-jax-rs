@@ -119,7 +119,8 @@ public class RamlType implements Annotable, Emittable {
                                                                                                           Property property,
                                                                                                           PropertyShapeBuilder propertyShapeBuilder) {
 
-                                                         allTypes.get(typeDeclaration.asTypeShapeBuilder().id())
+                                                         String id = typeDeclaration.asTypeShapeBuilder().id();
+                                                         allTypes.get(id)
                                                              .addProperty(new
                                                                           RamlProperty(property.name(),
                                                                                        new SimpleAnnotable(property), true));

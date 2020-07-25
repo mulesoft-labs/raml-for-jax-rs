@@ -52,62 +52,47 @@ public class ExampleModelEmitter implements LocalEmitter {
   @Override
   public void emit(RamlType ramlType) throws IOException {
 
-
-    if (seenTypeNames.contains(ramlType.getTypeName())) {
-
-      return;
-    } else {
-
-      seenTypeNames.add(ramlType.getTypeName());
-    }
-
-    if (!headerDone) {
-
-      Optional<ExampleCases> examplesAnnotation = ramlType.getAnnotation(ExampleCases.class);
-      if (examplesAnnotation.isPresent()) {
-
-        String[] examples = examplesAnnotation.get().value();
-        for (String caseName : examples) {
-          if (caseName.isEmpty()) {
-            throw new IOException("@ExampleCases case on type " + ramlType.getTypeName() + " is empty");
-          }
-
-          currentCaseName = caseName;
-
-          ExamplesBuilder examplesBuilder = ExamplesBuilder.example(caseName).strict(false);
-          propertyValues.push(examplesBuilder);
-          if (hasAnExample(ramlType)) {
-
-            emitOneExample(ramlType);
-          } else {
-            examplesBuilder.withNoProperties();
-          }
-
-          typeBuilder.withExamples(examplesBuilder);
-        }
-      } else {
-
-        currentCaseName = "";
-
-        if (!hasAnExample(ramlType)) {
-
-          return;
-        }
-
-
-        ExamplesBuilder examplesBuilder = ExamplesBuilder.singleExample().strict(false);
-        propertyValues.push(examplesBuilder);
-        typeBuilder.withExample(examplesBuilder);
-
-        headerDone = true;
-
-        emitOneExample(ramlType);
-      }
-    } else {
-
-      // This is never the first call.
-      emitOneExample(ramlType);
-    }
+    /*
+     * 
+     * if (seenTypeNames.contains(ramlType.getTypeName())) {
+     * 
+     * return; } else {
+     * 
+     * seenTypeNames.add(ramlType.getTypeName()); }
+     * 
+     * if (!headerDone) {
+     * 
+     * Optional<ExampleCases> examplesAnnotation = ramlType.getAnnotation(ExampleCases.class); if (examplesAnnotation.isPresent())
+     * {
+     * 
+     * String[] examples = examplesAnnotation.get().value(); for (String caseName : examples) { if (caseName.isEmpty()) { throw
+     * new IOException("@ExampleCases case on type " + ramlType.getTypeName() + " is empty"); }
+     * 
+     * currentCaseName = caseName;
+     * 
+     * ExamplesBuilder examplesBuilder = ExamplesBuilder.example(caseName).strict(false); propertyValues.push(examplesBuilder); if
+     * (hasAnExample(ramlType)) {
+     * 
+     * emitOneExample(ramlType); } else { examplesBuilder.withNoProperties(); }
+     * 
+     * typeBuilder.withExamples(examplesBuilder); } } else {
+     * 
+     * currentCaseName = "";
+     * 
+     * if (!hasAnExample(ramlType)) {
+     * 
+     * return; }
+     * 
+     * 
+     * ExamplesBuilder examplesBuilder = ExamplesBuilder.singleExample().strict(false); propertyValues.push(examplesBuilder);
+     * typeBuilder.withExample(examplesBuilder);
+     * 
+     * headerDone = true;
+     * 
+     * emitOneExample(ramlType); } } else {
+     * 
+     * // This is never the first call. emitOneExample(ramlType); }
+     */
   }
 
   private void emitOneExample(RamlType ramlType) throws IOException {

@@ -30,6 +30,7 @@ import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 import org.raml.pojotoraml.*;
 import org.raml.pojotoraml.plugins.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
+import org.raml.ramltopojo.RamlToPojo;
 import org.raml.utilities.tuples.ImmutablePair;
 import org.raml.utilities.tuples.Pair;
 import org.raml.utilities.types.Cast;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -45,233 +47,245 @@ import java.util.*;
 
 public class RamlType implements Annotable, Emittable {
 
-  static private Map<String, RamlType> allTypes = new HashMap<>();
-  static private Map<String, TypeShapeBuilder> allBuilders = new HashMap<>();
-  static private Map<Type, String> ramlTypeNames = new HashMap<>();
+    static private Map<String, RamlType> allTypes = new HashMap<>();
+    static private Map<String, TypeShapeBuilder> allBuilders = new HashMap<>();
+    static private Map<Type, String> ramlTypeNames = new HashMap<>();
 
-  private final Type realType;
-  private final Descriptor descriptor;
+    private final Type realType;
+    private final Descriptor descriptor;
+    private final Supplier<PojoToRaml> pojoToRaml;
 
-  private Map<String, RamlProperty> properties = new HashMap<>();
+    private Map<String, RamlProperty> properties = new HashMap<>();
 
 
-  public RamlType(Type type, Descriptor descriptor) {
+    public RamlType(Type type, Descriptor descriptor, Supplier<PojoToRaml> pojoToRaml) {
 
-    this.realType = type;
-    this.descriptor = descriptor;
-  }
-
-  public static Map<String, RamlType> getAllTypes() {
-    return allTypes;
-  }
-
-  public void addProperty(RamlProperty property) {
-
-    properties.put(property.getName(), property);
-  }
-
-  public void write(final List<RamlSupportedAnnotation> supportedAnnotations, Package topPackage,
-                    RamlDocumentBuilder documentBuilder)
-      throws IOException {
-
-    Type ttype = realType;
-    Class<?> c = Cast.toClass(ttype);
-
-    final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties = new ArrayList<>();
-    final PojoToRamlExtensionFactory toRamlClassParserFactory = new PojoToRamlExtensionFactory(topPackage);
-
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), new AdjusterFactory() {
-
-      @Override
-      public RamlAdjuster createAdjuster(Type clazz) {
-        RamlAdjuster adjuster =
-            toRamlClassParserFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties),
-                                                     new RamlAdjuster.Helper() {
-
-                                                       @Override
-                                                       public TypeShapeBuilder adjustType(Type type, String typeName,
-                                                                                          TypeShapeBuilder builder) {
-
-                                                         allTypes.put(builder.id(), new RamlType(type, new Descriptor() {
-
-                                                           @Override
-                                                           public java.util.Optional<String> describe() {
-                                                             return java.util.Optional.empty();
-                                                           }
-                                                         }));
-                                                         allBuilders.put(typeName, builder);
-                                                         ramlTypeNames.put(type, typeName);
-                                                         return super.adjustType(type, typeName, builder);
-                                                       }
-
-                                                       @Override
-                                                       public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration,
-                                                                                                        Property property,
-                                                                                                        PropertyShapeBuilder propertyShapeBuilder) {
-
-                                                         allTypes
-                                                             .get(typeDeclaration.asTypeShapeBuilder().id())
-                                                             .addProperty(new RamlProperty(property.name(),
-                                                                                           new SimpleAnnotable(property), true));
-                                                         return super.adjustScalarProperty(typeDeclaration, property,
-                                                                                           propertyShapeBuilder);
-                                                       }
-
-                                                       @Override
-                                                       public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration,
-                                                                                                          Property property,
-                                                                                                          PropertyShapeBuilder propertyShapeBuilder) {
-
-                                                         String id = typeDeclaration.asTypeShapeBuilder().id();
-                                                         allTypes.get(id)
-                                                             .addProperty(new
-                                                                          RamlProperty(property.name(),
-                                                                                       new SimpleAnnotable(property), true));
-
-                                                         return super.adjustComposedProperty(typeDeclaration, property,
-                                                                                             propertyShapeBuilder);
-                                                       }
-                                                     });
-        return adjuster;
-      }
-    });
-
-    Result r = pojoToRaml.classToRaml(c);
-
-    // new ExampleModelEmitter(this, pojoToRamlProperties);
-
-    if (r.requestedType() != null) {
-      documentBuilder.withTypes(() -> Collections.singletonList(r.requestedType()));
-      for (DeclaredShapeBuilder anyShapeBuilder : r.dependentTypes()) {
-
-        documentBuilder.withTypes(() -> Collections.singletonList(anyShapeBuilder));
-      }
+        this.pojoToRaml = pojoToRaml;
+        this.realType = type;
+        this.descriptor = descriptor;
     }
-  }
 
-  @SuppressWarnings({"rawtypes"})
-  public String getTypeName() {
-
-    return ramlTypeNames.get(realType);
-  }
-
-
-  @Override
-  public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
-
-    if (realType instanceof Class) {
-      return Optional.fromNullable(((Class<?>) realType).getAnnotation(annotationType));
-    } else {
-      return Optional.absent();
+    public static Map<String, RamlType> getAllTypes() {
+        return allTypes;
     }
-  }
 
-  public boolean isRamlScalarType() {
+    public void addProperty(RamlProperty property) {
 
-    Optional<ScalarType> st = ScalarType.fromType(realType);
-    return st.isPresent();
-  }
-
-  public void emit(LocalEmitter emitter) throws IOException {
-
-    emitter.emit(this);
-  }
-
-  public Collection<RamlProperty> getProperties() {
-    return properties.values();
-  }
-
-  public void emitExamples() throws IOException {
-
-    this.emit(new ExampleModelEmitter(allBuilders.get(getTypeName())));
-  }
-
-  private static class SimpleAnnotable implements Annotable {
-
-    private final Property property;
-
-    public SimpleAnnotable(Property property) {
-      this.property = property;
+        properties.put(property.getName(), property);
     }
+
+    public void write(final List<RamlSupportedAnnotation> supportedAnnotations, Package topPackage,
+                      RamlDocumentBuilder documentBuilder)
+            throws IOException {
+
+        Type ttype = realType;
+        Class<?> c = Cast.toClass(ttype);
+
+        final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties = new ArrayList<>();
+        final PojoToRamlExtensionFactory toRamlClassParserFactory = new PojoToRamlExtensionFactory(topPackage);
+
+        Result r = pojoToRaml.get().classToRaml(c);
+
+        // new ExampleModelEmitter(this, pojoToRamlProperties);
+
+        if (r.requestedType() != null) {
+            documentBuilder.withTypes(() -> Collections.singletonList(r.requestedType()));
+            for (DeclaredShapeBuilder anyShapeBuilder : r.dependentTypes()) {
+
+                documentBuilder.withTypes(() -> Collections.singletonList(anyShapeBuilder));
+            }
+        }
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    public String getTypeName() {
+
+        return ramlTypeNames.get(realType);
+    }
+
 
     @Override
-    public <T extends Annotation> Optional<T>
+    public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+
+        if (realType instanceof Class) {
+            return Optional.fromNullable(((Class<?>) realType).getAnnotation(annotationType));
+        } else {
+            return Optional.absent();
+        }
+    }
+
+    public boolean isRamlScalarType() {
+
+        Optional<ScalarType> st = ScalarType.fromType(realType);
+        return st.isPresent();
+    }
+
+    public void emit(LocalEmitter emitter) throws IOException {
+
+        emitter.emit(this);
+    }
+
+    public Collection<RamlProperty> getProperties() {
+        return properties.values();
+    }
+
+    public void emitExamples() throws IOException {
+
+        this.emit(new ExampleModelEmitter(allBuilders.get(getTypeName())));
+    }
+
+    private static class SimpleAnnotable implements Annotable {
+
+        private final Property property;
+
+        public SimpleAnnotable(Property property) {
+            this.property = property;
+        }
+
+        @Override
+        public <T extends Annotation> Optional<T>
         getAnnotation(Class<T> annotationType) {
-      return property
-          .getAnnotation(annotationType);
-    }
-  }
-
-  private class Fixer extends RamlAdjuster.Helper {
-
-    private final List<RamlSupportedAnnotation> supportedAnnotations;
-    private final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties;
-
-    public Fixer(List<RamlSupportedAnnotation> supportedAnnotations,
-                 List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties) {
-      this.supportedAnnotations = supportedAnnotations;
-      this.pojoToRamlProperties = pojoToRamlProperties;
+            return property
+                    .getAnnotation(annotationType);
+        }
     }
 
-    @Override
-    public TypeShapeBuilder adjustType(Type actualType, String typeName, TypeShapeBuilder typeBuilder) {
+    private class Fixer extends RamlAdjuster.Helper {
 
-      try {
-        ModelEmitterAnnotations.annotate(supportedAnnotations, RamlType.this, typeBuilder);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+        private final List<RamlSupportedAnnotation> supportedAnnotations;
+        private final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties;
 
-      if (descriptor.describe().isPresent()) {
+        public Fixer(List<RamlSupportedAnnotation> supportedAnnotations,
+                     List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties) {
+            this.supportedAnnotations = supportedAnnotations;
+            this.pojoToRamlProperties = pojoToRamlProperties;
+        }
 
-        typeBuilder.description(descriptor.describe().get());
-      }
+        @Override
+        public TypeShapeBuilder adjustType(Type actualType, String typeName, TypeShapeBuilder typeBuilder) {
 
-      return typeBuilder;
+            try {
+                ModelEmitterAnnotations.annotate(supportedAnnotations, RamlType.this, typeBuilder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (descriptor.describe().isPresent()) {
+
+                typeBuilder.description(descriptor.describe().get());
+            }
+
+            return typeBuilder;
+        }
+
+
+        @Override
+        public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration, Property property,
+                                                         PropertyShapeBuilder propertyShapeBuilder) {
+
+            try {
+                // todo fix: annotable should be outside
+                ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {
+
+                    @Override
+                    public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+                        return property.getAnnotation(annotationType);
+                    }
+                }, propertyShapeBuilder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), propertyShapeBuilder));
+            return propertyShapeBuilder;
+        }
+
+        @Override
+        public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration, Property property,
+                                                           PropertyShapeBuilder propertyShapeBuilder) {
+
+            try {
+                // todo fix: annotable should be outside
+                ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {
+
+                    @Override
+                    public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
+                        return property.getAnnotation(annotationType);
+                    }
+                }, propertyShapeBuilder);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), propertyShapeBuilder));
+            return propertyShapeBuilder;
+        }
     }
 
+    private class OldFactory implements AdjusterFactory {
 
-    @Override
-    public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration, Property property,
-                                                     PropertyShapeBuilder propertyShapeBuilder) {
+        private final PojoToRamlExtensionFactory toRamlClassParserFactory;
+        private final List<RamlSupportedAnnotation> supportedAnnotations;
+        private final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties;
 
-      try {
-        // todo fix: annotable should be outside
-        ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {
+        public OldFactory(PojoToRamlExtensionFactory toRamlClassParserFactory, List<RamlSupportedAnnotation> supportedAnnotations, List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties) {
+            this.toRamlClassParserFactory = toRamlClassParserFactory;
+            this.supportedAnnotations = supportedAnnotations;
+            this.pojoToRamlProperties = pojoToRamlProperties;
+        }
 
-          @Override
-          public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
-            return property.getAnnotation(annotationType);
-          }
-        }, propertyShapeBuilder);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+        @Override
+        public RamlAdjuster createAdjuster(Type clazz) {
+            RamlAdjuster adjuster =
+                    toRamlClassParserFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties),
+                            new RamlAdjuster.Helper() {
 
-      pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), propertyShapeBuilder));
-      return propertyShapeBuilder;
+                                @Override
+                                public TypeShapeBuilder adjustType(Type type, String typeName,
+                                                                   TypeShapeBuilder builder) {
+
+                                    allTypes.put(builder.id(), new RamlType(type, new Descriptor() {
+
+                                        @Override
+                                        public java.util.Optional<String> describe() {
+                                            return java.util.Optional.empty();
+                                        }
+                                    }, pojoToRaml));
+                                    allBuilders.put(typeName, builder);
+                                    ramlTypeNames.put(type, typeName);
+                                    return super.adjustType(type, typeName, builder);
+                                }
+
+                                @Override
+                                public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration,
+                                                                                 Property property,
+                                                                                 PropertyShapeBuilder propertyShapeBuilder) {
+
+                                    allTypes
+                                            .get(typeDeclaration.asTypeShapeBuilder().id())
+                                            .addProperty(new RamlProperty(property.name(),
+                                                    new SimpleAnnotable(property), true));
+                                    return super.adjustScalarProperty(typeDeclaration, property,
+                                            propertyShapeBuilder);
+                                }
+
+                                @Override
+                                public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration,
+                                                                                   Property property,
+                                                                                   PropertyShapeBuilder propertyShapeBuilder) {
+
+                                    String id = typeDeclaration.asTypeShapeBuilder().id();
+                                    allTypes.get(id)
+                                            .addProperty(new
+                                                    RamlProperty(property.name(),
+                                                    new SimpleAnnotable(property), true));
+
+                                    return super.adjustComposedProperty(typeDeclaration, property,
+                                            propertyShapeBuilder);
+                                }
+                            });
+            return adjuster;
+        }
     }
-
-    @Override
-    public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration, Property property,
-                                                       PropertyShapeBuilder propertyShapeBuilder) {
-
-      try {
-        // todo fix: annotable should be outside
-        ModelEmitterAnnotations.annotate(supportedAnnotations, new Annotable() {
-
-          @Override
-          public <T extends Annotation> Optional<T> getAnnotation(Class<T> annotationType) {
-            return property.getAnnotation(annotationType);
-          }
-        }, propertyShapeBuilder);
-
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-
-      pojoToRamlProperties.add(ImmutablePair.create(new SimpleAnnotable(property), propertyShapeBuilder));
-      return propertyShapeBuilder;
-    }
-  }
 }

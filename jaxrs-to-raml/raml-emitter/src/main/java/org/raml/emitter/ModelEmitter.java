@@ -16,6 +16,7 @@
 package org.raml.emitter;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.raml.api.*;
@@ -28,6 +29,7 @@ import org.raml.jaxrs.emitters.ParameterEmitter;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
+import org.raml.pojotoraml.PojoToRaml;
 import webapi.WebApiDocument;
 
 import java.io.IOException;
@@ -36,6 +38,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static org.raml.builder.PayloadBuilder.body;
 import static org.raml.builder.PropertyShapeBuilder.property;
@@ -45,7 +48,9 @@ import static org.raml.builder.PropertyShapeBuilder.property;
  */
 public class ModelEmitter implements Emitter {
 
-  private final TypeRegistry typeRegistry = new TypeRegistry();
+  private Supplier<TypeHandler> typeHandler;
+  private final TypeRegistry typeRegistry;
+  private final Supplier<PojoToRaml> pojoToRaml;
 
   private final List<ResponseHandler> responseHandlerAlternatives = Collections
       .<ResponseHandler>singletonList(new DefaultResponseHandler());
@@ -54,17 +59,18 @@ public class ModelEmitter implements Emitter {
 
   private PrintWriter writer;
 
-  public ModelEmitter(PrintWriter writer) {
+  public ModelEmitter(PrintWriter writer, Supplier<PojoToRaml> pojoToRaml) {
 
     this.writer = writer;
+    typeRegistry = new TypeRegistry(pojoToRaml);
+    this.pojoToRaml = pojoToRaml;
   }
 
   @Override
   public void emit(RamlApi modelApi) throws RamlEmissionException {
 
     supportedAnnotations = modelApi.getSupportedAnnotation();
-    topPackage = modelApi.getTopPackage();
-
+    typeHandler = Suppliers.memoize(() -> new PojoToRamlTypeHandler(pojoToRaml.get()));
     org.raml.simpleemitter.Emitter emitter = new org.raml.simpleemitter.Emitter();
 
     RamlDocumentBuilder documentBuilder = RamlDocumentBuilder.document();
@@ -168,7 +174,7 @@ public class ModelEmitter implements Emitter {
             } else {
               Type type = method.getConsumedType().get().getType();
 
-              TypeHandler typeHandler = pickTypeHandler(type);
+              TypeHandler typeHandler = pickTypeHandler();
               body.ofType(typeHandler.writeType(typeRegistry, method.getConsumedType().get()));
             }
           }
@@ -191,7 +197,7 @@ public class ModelEmitter implements Emitter {
 
       @Override
       public TypeHandler pickTypeWriter(RamlResourceMethod method, RamlMediaType producedMediaType) throws IOException {
-        return pickTypeHandler(method.getProducedType().get().getType());
+        return pickTypeHandler();
       }
     };
     handler.writeResponses(typeRegistry, methods, selector, operationBuilder);
@@ -202,7 +208,7 @@ public class ModelEmitter implements Emitter {
   private void writeHeaderParameters(Iterable<RamlHeaderParameter> headerParameters, OperationBuilder builder) throws IOException {
     for (RamlHeaderParameter parameter : headerParameters) {
 
-      TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
+      TypeHandler typeHandler = pickTypeHandler();
       ParameterEmitter parameterEmitter = new ParameterEmitter(typeRegistry, typeHandler);
       ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter);
       builder.withHeaderParameters(parameterBuilder);
@@ -214,7 +220,7 @@ public class ModelEmitter implements Emitter {
 
     for (RamlQueryParameter parameter : queryParameters) {
 
-      TypeHandler typeHandler = pickTypeHandler(parameter.getEntity().getType());
+      TypeHandler typeHandler = pickTypeHandler();
       ParameterEmitter parameterEmitter = new ParameterEmitter(typeRegistry, typeHandler);
       ParameterBuilder parameterBuilder = parameterEmitter.emit(parameter);
       builder.withQueryParameter(parameterBuilder);
@@ -251,7 +257,7 @@ public class ModelEmitter implements Emitter {
     for (RamlMultiFormDataParameter formDatum : formData) {
 
       Type type = formDatum.getPartEntity().getType();
-      TypeHandler typeHandler = pickTypeHandler(type);
+      TypeHandler typeHandler = pickTypeHandler();
 
       typeBuilder.withProperty(PropertyShapeBuilder.property(formDatum.getName(),
                                                              typeHandler.writeType(typeRegistry, formDatum.getPartEntity())));
@@ -260,9 +266,9 @@ public class ModelEmitter implements Emitter {
     body.ofType(typeBuilder);
   }
 
-  private TypeHandler pickTypeHandler(Type type) throws IOException {
+  private TypeHandler pickTypeHandler() throws IOException {
 
-    return new PojoToRamlTypeHandler(topPackage != null ? Package.getPackage(topPackage) : null);
+    return typeHandler.get();
   }
 
   private void annotationTypes(RamlDocumentBuilder builder, RamlApi modelApi) throws IOException {

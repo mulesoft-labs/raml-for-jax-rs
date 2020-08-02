@@ -15,6 +15,7 @@
  */
 package org.raml.emitter.plugins;
 
+import com.github.jsonldjava.shaded.com.google.common.base.Suppliers;
 import org.raml.api.RamlEntity;
 import org.raml.builder.TypeShapeBuilder;
 import org.raml.jaxrs.plugins.TypeHandler;
@@ -25,23 +26,21 @@ import org.raml.pojotoraml.PojoToRamlBuilder;
 import org.raml.pojotoraml.plugins.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
 
+import java.util.function.Supplier;
+
 /**
  * Created. There, you have it.
  */
 public class PojoToRamlTypeHandler implements TypeHandler {
 
-  private final Package topPackage;
+  private final PojoToRaml pojoToRaml;
 
-  public PojoToRamlTypeHandler(Package topPackage) {
-    this.topPackage = topPackage;
+  public PojoToRamlTypeHandler(PojoToRaml pojoToRaml) {
+    this.pojoToRaml = pojoToRaml;
   }
 
   @Override
   public TypeShapeBuilder<?, ?> writeType(final TypeRegistry registry, RamlEntity type) {
-
-    AdjusterFactory factory = clazz -> new PojoToRamlExtensionFactory(topPackage).createAdjusters(clazz);
-
-    final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
 
     TypeShapeBuilder name = pojoToRaml.typeShapeBuilder(type.getType());
     registry.registerType(name.id(), type);

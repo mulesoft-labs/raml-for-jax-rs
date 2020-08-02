@@ -18,10 +18,9 @@ package org.raml.jaxrs.types;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.builder.RamlDocumentBuilder;
-import org.raml.builder.TypeShapeBuilder;
+import org.raml.pojotoraml.PojoToRaml;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -31,6 +30,11 @@ import java.util.function.Supplier;
 public class TypeRegistry {
 
   private Map<String, RamlType> types = new HashMap<>();
+  private final Supplier<PojoToRaml> pojoToRaml;
+
+  public TypeRegistry(Supplier<PojoToRaml> pojoToRaml) {
+    this.pojoToRaml = pojoToRaml;
+  }
 
   public RamlType registerType(final String name, final RamlEntity type) {
 
@@ -38,7 +42,7 @@ public class TypeRegistry {
       return types.get(name);
     } else {
 
-      final RamlType ramlType = new RamlType(type.getType(), type::getDescription);
+      final RamlType ramlType = new RamlType(type.getType(), type::getDescription, pojoToRaml);
 
 
       if (ramlType.isRamlScalarType()) {

@@ -31,8 +31,8 @@ public class SourceParsers {
     }
 
     @Override
-    public Optional<String> getDocumentationFor(Type method) {
-      return Optional.absent();
+    public java.util.Optional<String> getDocumentationFor(Type method) {
+      return java.util.Optional.empty();
     }
   };
 

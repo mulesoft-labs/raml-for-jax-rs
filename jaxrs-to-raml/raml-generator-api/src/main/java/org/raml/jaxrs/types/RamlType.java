@@ -19,7 +19,10 @@ import com.google.common.base.Optional;
 import org.raml.api.Annotable;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.api.ScalarType;
-import org.raml.builder.*;
+import org.raml.builder.DeclaredShapeBuilder;
+import org.raml.builder.PropertyShapeBuilder;
+import org.raml.builder.RamlDocumentBuilder;
+import org.raml.builder.TypeShapeBuilder;
 import org.raml.jaxrs.emitters.Emittable;
 import org.raml.jaxrs.emitters.ExampleModelEmitter;
 import org.raml.jaxrs.emitters.LocalEmitter;
@@ -92,8 +95,8 @@ public class RamlType implements Annotable, Emittable {
                                                          allTypes.put(builder.id(), new RamlType(type, new Descriptor() {
 
                                                            @Override
-                                                           public Optional<String> describe() {
-                                                             return Optional.absent();
+                                                           public java.util.Optional<String> describe() {
+                                                             return java.util.Optional.empty();
                                                            }
                                                          }));
                                                          allBuilders.put(typeName, builder);
@@ -138,10 +141,10 @@ public class RamlType implements Annotable, Emittable {
     // new ExampleModelEmitter(this, pojoToRamlProperties);
 
     if (r.requestedType() != null) {
-      documentBuilder.withTypes(r.requestedType());
+      documentBuilder.withTypes(() -> Collections.singletonList(r.requestedType()));
       for (DeclaredShapeBuilder anyShapeBuilder : r.dependentTypes()) {
 
-        documentBuilder.withTypes(anyShapeBuilder);
+        documentBuilder.withTypes(() -> Collections.singletonList(anyShapeBuilder));
       }
     }
   }

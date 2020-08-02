@@ -24,5 +24,5 @@ public interface SourceParser {
 
   Optional<String> getDocumentationFor(Method method);
 
-  Optional<String> getDocumentationFor(Type method);
+  java.util.Optional<String> getDocumentationFor(Type method);
 }

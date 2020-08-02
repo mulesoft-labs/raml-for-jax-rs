@@ -26,6 +26,6 @@ import java.io.IOException;
  */
 public interface TypeHandler {
 
-  TypeShapeBuilder writeType(TypeRegistry registry, RamlEntity type) throws IOException;
+  TypeShapeBuilder<?, ?> writeType(TypeRegistry registry, RamlEntity type) throws IOException;
 
 }

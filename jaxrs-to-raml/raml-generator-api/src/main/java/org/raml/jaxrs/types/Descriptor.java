@@ -15,7 +15,7 @@
  */
 package org.raml.jaxrs.types;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * Created. There, you have it.

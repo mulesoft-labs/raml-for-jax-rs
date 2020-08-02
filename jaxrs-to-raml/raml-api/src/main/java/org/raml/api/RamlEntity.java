@@ -15,9 +15,8 @@
  */
 package org.raml.api;
 
-import com.google.common.base.Optional;
-
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones

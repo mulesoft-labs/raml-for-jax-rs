@@ -45,7 +45,7 @@ public class JerseyJaxRsEntity implements JaxRsEntity {
   }
 
   @Override
-  public Optional<String> getDescription() {
+  public java.util.Optional<String> getDescription() {
     return sourceParser.getDocumentationFor(input);
   }
 

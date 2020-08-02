@@ -47,7 +47,7 @@ public class JaxRsRamlEntity implements RamlEntity {
   }
 
   @Override
-  public Optional<String> getDescription() {
+  public java.util.Optional<String> getDescription() {
     return entity.getDescription();
   }
 

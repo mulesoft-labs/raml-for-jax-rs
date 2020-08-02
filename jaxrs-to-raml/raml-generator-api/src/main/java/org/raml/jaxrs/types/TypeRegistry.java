@@ -15,16 +15,15 @@
  */
 package org.raml.jaxrs.types;
 
-import com.google.common.base.Optional;
 import org.raml.api.RamlEntity;
 import org.raml.api.RamlSupportedAnnotation;
 import org.raml.builder.RamlDocumentBuilder;
-import org.raml.jaxrs.emitters.ExampleModelEmitter;
+import org.raml.builder.TypeShapeBuilder;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -39,13 +38,7 @@ public class TypeRegistry {
       return types.get(name);
     } else {
 
-      final RamlType ramlType = new RamlType(type.getType(), new Descriptor() {
-
-        @Override
-        public Optional<String> describe() {
-          return type.getDescription();
-        }
-      });
+      final RamlType ramlType = new RamlType(type.getType(), type::getDescription);
 
 
       if (ramlType.isRamlScalarType()) {
@@ -70,5 +63,4 @@ public class TypeRegistry {
     }
 
   }
-
 }

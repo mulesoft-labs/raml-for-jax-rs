@@ -29,28 +29,22 @@ import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
 /**
  * Created. There, you have it.
  */
-public class RamlToPojoTypeHandler implements TypeHandler {
+public class PojoToRamlTypeHandler implements TypeHandler {
 
   private final Package topPackage;
 
-  public RamlToPojoTypeHandler(Package topPackage) {
+  public PojoToRamlTypeHandler(Package topPackage) {
     this.topPackage = topPackage;
   }
 
   @Override
-  public TypeShapeBuilder writeType(final TypeRegistry registry, RamlEntity type) {
+  public TypeShapeBuilder<?, ?> writeType(final TypeRegistry registry, RamlEntity type) {
 
-    AdjusterFactory factory = new AdjusterFactory() {
-
-      @Override
-      public RamlAdjuster createAdjuster(Class<?> clazz) {
-        return new PojoToRamlExtensionFactory(topPackage).createAdjusters(clazz);
-      }
-    };
+    AdjusterFactory factory = new PojoToRamlExtensionFactory(topPackage)::createAdjusters;
 
     final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
 
-    TypeShapeBuilder name = pojoToRaml.name(type.getType());
+    TypeShapeBuilder name = pojoToRaml.typeShapeBuilder(type.getType());
     registry.registerType(name.id(), type);
     return name;
   }

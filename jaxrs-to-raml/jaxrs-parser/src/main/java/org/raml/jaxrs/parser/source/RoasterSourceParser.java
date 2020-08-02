@@ -66,14 +66,14 @@ class RoasterSourceParser implements SourceParser {
   }
 
   @Override
-  public Optional<String> getDocumentationFor(Type clazz) {
+  public java.util.Optional<String> getDocumentationFor(Type clazz) {
 
     Path classFileRelativePath = Utilities.getSourceFileRelativePath(clazz);
     Path relativeFromRoot = sourceRoot.resolve(classFileRelativePath);
 
     if (!Files.isRegularFile(relativeFromRoot)) {
       logger.warn("could not find source file {} for class {}", relativeFromRoot, clazz);
-      return Optional.absent();
+      return java.util.Optional.empty();
     }
 
     return parseDocumentationFor((Class<?>) clazz, relativeFromRoot);
@@ -96,16 +96,16 @@ class RoasterSourceParser implements SourceParser {
     }
   }
 
-  private Optional<String> parseDocumentationFor(Class<?> clazz, Path file) {
+  private java.util.Optional<String> parseDocumentationFor(Class<?> clazz, Path file) {
     try {
       JavaType<?> parsed = Roaster.parse(file.toFile());
       JavaDoc<?> s = parsed.getJavaDoc();
-      return Optional.of(s.getText());
+      return java.util.Optional.of(s.getText());
 
     } catch (FileNotFoundException e) {
       logger.warn("exception occurred while attempting to parse file {} for class {}", file,
                   clazz, e);
-      return Optional.absent();
+      return java.util.Optional.empty();
     }
   }
 

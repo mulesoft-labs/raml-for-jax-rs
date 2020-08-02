@@ -28,7 +28,7 @@ public interface JaxRsEntity {
 
   Type getType();
 
-  Optional<String> getDescription();
+  java.util.Optional<String> getDescription();
 
   JaxRsEntity createJaxRsEntity(Type entity);
 

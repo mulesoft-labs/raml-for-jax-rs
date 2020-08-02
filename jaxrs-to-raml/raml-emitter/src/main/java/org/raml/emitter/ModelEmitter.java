@@ -15,26 +15,19 @@
  */
 package org.raml.emitter;
 
-import amf.client.model.domain.WebApi;
 import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.raml.api.*;
 import org.raml.builder.*;
 import org.raml.emitter.plugins.DefaultResponseHandler;
-import org.raml.emitter.plugins.RamlToPojoTypeHandler;
+import org.raml.emitter.plugins.PojoToRamlTypeHandler;
 import org.raml.emitter.plugins.ResponseHandler;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 import org.raml.jaxrs.emitters.ParameterEmitter;
 import org.raml.jaxrs.plugins.TypeHandler;
 import org.raml.jaxrs.plugins.TypeSelector;
 import org.raml.jaxrs.types.TypeRegistry;
-import org.raml.v2.api.model.v10.api.Api;
-import org.raml.v2.internal.impl.commons.RamlHeader;
-import org.raml.yagi.framework.model.NodeModel;
-import org.raml.yagi.framework.nodes.ErrorNode;
-import org.raml.yagi.framework.nodes.Node;
-import org.raml.yagi.framework.phase.GrammarPhase;
 import webapi.WebApiDocument;
 
 import java.io.IOException;
@@ -46,15 +39,13 @@ import java.util.*;
 
 import static org.raml.builder.PayloadBuilder.body;
 import static org.raml.builder.PropertyShapeBuilder.property;
-import static org.raml.v2.api.model.v10.RamlFragment.Default;
-import static org.raml.v2.internal.impl.commons.RamlVersion.RAML_10;
 
 /**
  * Created. There, you have it.
  */
 public class ModelEmitter implements Emitter {
 
-  private TypeRegistry typeRegistry = new TypeRegistry();
+  private final TypeRegistry typeRegistry = new TypeRegistry();
 
   private final List<ResponseHandler> responseHandlerAlternatives = Collections
       .<ResponseHandler>singletonList(new DefaultResponseHandler());
@@ -106,22 +97,23 @@ public class ModelEmitter implements Emitter {
 
     for (RamlResource ramlResource : modelApi.getResources()) {
 
-      ResourceBuilder resourceBuilder = handleResource(ramlResource);
+      ResourceBuilder resourceBuilder = handleResource(builder, ramlResource);
 
-      builder.with(resourceBuilder);
+      builder.withResources(resourceBuilder);
     }
   }
 
 
-  private void resources(ResourceBuilder builder, RamlResource ramlResource) throws IOException {
+  private void resources(RamlDocumentBuilder ramlDocumentBuilder, ResourceBuilder builder, RamlResource ramlResource)
+      throws IOException {
 
-    ResourceBuilder resourceBuilder = handleResource(ramlResource);
+    ResourceBuilder resourceBuilder = handleResource(ramlDocumentBuilder, ramlResource);
 
-    builder.with(resourceBuilder);
+    ramlDocumentBuilder.withResources(resourceBuilder);
   }
 
 
-  private ResourceBuilder handleResource(RamlResource ramlResource) throws IOException {
+  private ResourceBuilder handleResource(RamlDocumentBuilder ramlDocumentBuilder, RamlResource ramlResource) throws IOException {
     ResourceBuilder resourceBuilder = ResourceBuilder.resource(ramlResource.getPath());
     Multimap<String, RamlResourceMethod> methods = ArrayListMultimap.create();
 
@@ -134,11 +126,11 @@ public class ModelEmitter implements Emitter {
 
       OperationBuilder operationBuilder = OperationBuilder.method(key);
       writeMethod(methods.get(key), operationBuilder);
-      resourceBuilder.with(operationBuilder);
+      resourceBuilder.withMethods(operationBuilder);
     }
 
     for (RamlResource child : ramlResource.getChildren()) {
-      resources(resourceBuilder, child);
+      resources(ramlDocumentBuilder, resourceBuilder, child);
     }
     return resourceBuilder;
   }
@@ -270,7 +262,7 @@ public class ModelEmitter implements Emitter {
 
   private TypeHandler pickTypeHandler(Type type) throws IOException {
 
-    return new RamlToPojoTypeHandler(topPackage != null ? Package.getPackage(topPackage) : null);
+    return new PojoToRamlTypeHandler(topPackage != null ? Package.getPackage(topPackage) : null);
   }
 
   private void annotationTypes(RamlDocumentBuilder builder, RamlApi modelApi) throws IOException {

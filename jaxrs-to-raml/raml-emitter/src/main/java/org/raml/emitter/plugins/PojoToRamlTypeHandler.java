@@ -22,7 +22,6 @@ import org.raml.jaxrs.types.TypeRegistry;
 import org.raml.pojotoraml.AdjusterFactory;
 import org.raml.pojotoraml.PojoToRaml;
 import org.raml.pojotoraml.PojoToRamlBuilder;
-import org.raml.pojotoraml.RamlAdjuster;
 import org.raml.pojotoraml.plugins.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
 
@@ -40,7 +39,7 @@ public class PojoToRamlTypeHandler implements TypeHandler {
   @Override
   public TypeShapeBuilder<?, ?> writeType(final TypeRegistry registry, RamlEntity type) {
 
-    AdjusterFactory factory = new PojoToRamlExtensionFactory(topPackage)::createAdjusters;
+    AdjusterFactory factory = clazz -> new PojoToRamlExtensionFactory(topPackage).createAdjusters(clazz);
 
     final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), factory);
 

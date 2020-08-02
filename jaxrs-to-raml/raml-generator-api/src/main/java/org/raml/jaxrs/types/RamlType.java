@@ -83,7 +83,7 @@ public class RamlType implements Annotable, Emittable {
     final PojoToRaml pojoToRaml = PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(topPackage), new AdjusterFactory() {
 
       @Override
-      public RamlAdjuster createAdjuster(Class<?> clazz) {
+      public RamlAdjuster createAdjuster(Type clazz) {
         RamlAdjuster adjuster =
             toRamlClassParserFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties),
                                                      new RamlAdjuster.Helper() {

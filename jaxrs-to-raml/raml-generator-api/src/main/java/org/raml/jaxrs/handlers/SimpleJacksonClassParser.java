@@ -29,10 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by Jean-Philippe Belanger on 3/26/17. Just potential zeroes and ones
@@ -40,7 +37,14 @@ import java.util.TreeMap;
 public class SimpleJacksonClassParser implements ClassParser {
 
   @Override
-  public List<Property> properties(Class<?> classToParse) {
+  public List<Property> properties(Type typeToParse) {
+
+    if (!(typeToParse instanceof Class)) {
+
+      return Collections.emptyList();
+    }
+    Class<?> classToParse = (Class<?>) typeToParse;
+
 
     Map<String, PojoToRamlProperty> properties = new TreeMap<>();
     forFields(classToParse, properties);
@@ -58,7 +62,7 @@ public class SimpleJacksonClassParser implements ClassParser {
 
 
   @Override
-  public Collection<Type> parentClasses(Class<?> classToParse) {
+  public Collection<Type> parentClasses(Type classToParse) {
     return null;
   }
 

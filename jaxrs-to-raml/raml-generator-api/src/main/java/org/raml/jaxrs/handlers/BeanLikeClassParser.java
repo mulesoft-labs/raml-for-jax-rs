@@ -35,7 +35,7 @@ import java.util.List;
 public class BeanLikeClassParser implements ClassParser {
 
   @Override
-  public List<Property> properties(Class<?> classToParse) {
+  public List<Property> properties(Type classToParse) {
 
     Class currentInterface = Cast.toClass(classToParse);
 
@@ -58,7 +58,7 @@ public class BeanLikeClassParser implements ClassParser {
   }
 
   @Override
-  public Collection<Type> parentClasses(Class<?> classToParse) {
+  public Collection<Type> parentClasses(Type classToParse) {
 
     Class currentInterface = Cast.toClass(classToParse);
     Class[] interfaces = currentInterface.getInterfaces();

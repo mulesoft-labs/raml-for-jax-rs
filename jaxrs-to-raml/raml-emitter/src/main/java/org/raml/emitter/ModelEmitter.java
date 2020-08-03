@@ -103,24 +103,26 @@ public class ModelEmitter implements Emitter {
 
     for (RamlResource ramlResource : modelApi.getResources()) {
 
-      ResourceBuilder resourceBuilder = handleResource(builder, ramlResource);
+      ResourceBuilder resourceBuilder = handleResource(builder, ramlResource, "");
 
       builder.withResources(resourceBuilder);
     }
   }
 
 
-  private void resources(RamlDocumentBuilder ramlDocumentBuilder, ResourceBuilder builder, RamlResource ramlResource)
+  private void resources(RamlDocumentBuilder ramlDocumentBuilder, ResourceBuilder builder, RamlResource ramlResource,
+                         String parentPath)
       throws IOException {
 
-    ResourceBuilder resourceBuilder = handleResource(ramlDocumentBuilder, ramlResource);
+    ResourceBuilder resourceBuilder = handleResource(ramlDocumentBuilder, ramlResource, parentPath);
 
     ramlDocumentBuilder.withResources(resourceBuilder);
   }
 
 
-  private ResourceBuilder handleResource(RamlDocumentBuilder ramlDocumentBuilder, RamlResource ramlResource) throws IOException {
-    ResourceBuilder resourceBuilder = ResourceBuilder.resource(ramlResource.getPath());
+  private ResourceBuilder handleResource(RamlDocumentBuilder ramlDocumentBuilder, RamlResource ramlResource, String parentPath)
+      throws IOException {
+    ResourceBuilder resourceBuilder = ResourceBuilder.resource(parentPath + ramlResource.getPath());
     Multimap<String, RamlResourceMethod> methods = ArrayListMultimap.create();
 
     for (RamlResourceMethod method : ramlResource.getMethods()) {
@@ -136,7 +138,7 @@ public class ModelEmitter implements Emitter {
     }
 
     for (RamlResource child : ramlResource.getChildren()) {
-      resources(ramlDocumentBuilder, resourceBuilder, child);
+      resources(ramlDocumentBuilder, resourceBuilder, child, parentPath + ramlResource.getPath());
     }
     return resourceBuilder;
   }

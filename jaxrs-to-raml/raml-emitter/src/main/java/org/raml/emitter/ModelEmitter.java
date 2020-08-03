@@ -84,7 +84,7 @@ public class ModelEmitter implements Emitter {
       annotationTypes(documentBuilder, modelApi);
       resources(documentBuilder, modelApi);
 
-      typeRegistry.writeAll(supportedAnnotations, topPackage != null ? Package.getPackage(topPackage) : null, documentBuilder);
+      typeRegistry.writeAll(supportedAnnotations, topPackage, documentBuilder);
 
     } catch (IOException e) {
 

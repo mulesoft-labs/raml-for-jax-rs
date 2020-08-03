@@ -54,7 +54,7 @@ public class TypeRegistry {
     }
   }
 
-  public void writeAll(List<RamlSupportedAnnotation> supportedAnnotations, Package topPackage, RamlDocumentBuilder documentBuilder)
+  public void writeAll(List<RamlSupportedAnnotation> supportedAnnotations, String topPackage, RamlDocumentBuilder documentBuilder)
       throws IOException {
     for (RamlType ramlType : types.values()) {
 

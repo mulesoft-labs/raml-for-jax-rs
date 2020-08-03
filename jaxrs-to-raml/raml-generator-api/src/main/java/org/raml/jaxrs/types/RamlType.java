@@ -28,9 +28,7 @@ import org.raml.jaxrs.emitters.ExampleModelEmitter;
 import org.raml.jaxrs.emitters.LocalEmitter;
 import org.raml.jaxrs.emitters.ModelEmitterAnnotations;
 import org.raml.pojotoraml.*;
-import org.raml.pojotoraml.plugins.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
-import org.raml.ramltopojo.RamlToPojo;
 import org.raml.utilities.tuples.ImmutablePair;
 import org.raml.utilities.tuples.Pair;
 import org.raml.utilities.types.Cast;
@@ -74,7 +72,7 @@ public class RamlType implements Annotable, Emittable {
     properties.put(property.getName(), property);
   }
 
-  public void write(final List<RamlSupportedAnnotation> supportedAnnotations, Package topPackage,
+  public void write(final List<RamlSupportedAnnotation> supportedAnnotations, String topPackage,
                     RamlDocumentBuilder documentBuilder)
       throws IOException {
 

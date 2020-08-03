@@ -19,6 +19,7 @@ import com.github.jsonldjava.shaded.com.google.common.base.Suppliers;
 import org.raml.api.RamlApi;
 import org.raml.pojotoraml.AdjusterFactory;
 import org.raml.pojotoraml.PojoToRamlBuilder;
+import org.raml.pojotoraml.RamlAdjuster;
 import org.raml.pojotoraml.plugins.PojoToRamlClassParserFactory;
 import org.raml.pojotoraml.plugins.PojoToRamlExtensionFactory;
 import org.slf4j.Logger;
@@ -60,8 +61,9 @@ public class FileEmitter implements Emitter {
       Emitter innerEmitter =
           new ModelEmitter(writer, Suppliers.memoize(() -> {
             AdjusterFactory factory =
-                clazz -> new PojoToRamlExtensionFactory(Package.getPackage(api.getTopPackage())).createAdjusters(clazz);
-            return PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(Package.getPackage(api.getTopPackage())), factory);
+                clazz -> new PojoToRamlExtensionFactory(api.getTopPackage()).createAdjusters(clazz);
+            return PojoToRamlBuilder.create(new PojoToRamlClassParserFactory(api.getTopPackage()),
+                                            (clazz) -> RamlAdjuster.NULL_ADJUSTER);
           }));
       innerEmitter.emit(api);
     } catch (IOException | RamlEmissionException e) {

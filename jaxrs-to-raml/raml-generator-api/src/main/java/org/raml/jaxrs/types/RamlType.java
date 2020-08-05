@@ -82,7 +82,7 @@ public class RamlType implements Annotable, Emittable {
     final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties = new ArrayList<>();
     final PojoToRamlExtensionFactory toRamlClassParserFactory = new PojoToRamlExtensionFactory(topPackage);
 
-    Result r = pojoToRaml.get().classToRaml(c);
+    Result r = pojoToRaml.get().classToRaml(ttype);
 
     // new ExampleModelEmitter(this, pojoToRamlProperties);
 

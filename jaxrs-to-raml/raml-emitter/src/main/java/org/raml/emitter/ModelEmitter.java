@@ -105,7 +105,9 @@ public class ModelEmitter implements Emitter {
 
       ResourceBuilder resourceBuilder = handleResource(builder, ramlResource, "");
 
-      builder.withResources(resourceBuilder);
+      if (resourceBuilder != null) {
+        builder.withResources(resourceBuilder);
+      }
     }
   }
 
@@ -116,7 +118,9 @@ public class ModelEmitter implements Emitter {
 
     ResourceBuilder resourceBuilder = handleResource(ramlDocumentBuilder, ramlResource, parentPath);
 
-    ramlDocumentBuilder.withResources(resourceBuilder);
+    if (resourceBuilder != null) {
+      ramlDocumentBuilder.withResources(resourceBuilder);
+    }
   }
 
 
@@ -139,6 +143,10 @@ public class ModelEmitter implements Emitter {
 
     for (RamlResource child : ramlResource.getChildren()) {
       resources(ramlDocumentBuilder, resourceBuilder, child, parentPath + ramlResource.getPath());
+    }
+
+    if (methods.size() == 0) {
+      return null;
     }
     return resourceBuilder;
   }

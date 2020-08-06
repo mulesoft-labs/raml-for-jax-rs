@@ -45,9 +45,9 @@ import java.util.function.Supplier;
 
 public class RamlType implements Annotable, Emittable {
 
-  static private Map<String, RamlType> allTypes = new HashMap<>();
-  static private Map<String, TypeShapeBuilder> allBuilders = new HashMap<>();
-  static private Map<Type, String> ramlTypeNames = new HashMap<>();
+  static private final Map<String, RamlType> allTypes = new HashMap<>();
+  static private final Map<String, DeclaredShapeBuilder<?>> allBuilders = new HashMap<>();
+  static private final Map<Type, String> ramlTypeNames = new HashMap<>();
 
   private final Type realType;
   private final Descriptor descriptor;
@@ -87,10 +87,17 @@ public class RamlType implements Annotable, Emittable {
     // new ExampleModelEmitter(this, pojoToRamlProperties);
 
     if (r.requestedType() != null) {
-      documentBuilder.withTypes(() -> Collections.singletonList(r.requestedType()));
-      for (DeclaredShapeBuilder anyShapeBuilder : r.dependentTypes()) {
+      if (!allBuilders.containsKey(r.requestedType().name())) {
+        allBuilders.put(r.requestedType().name(), r.requestedType());
+        documentBuilder.withTypes(() -> Collections.singletonList(r.requestedType()));
+      }
+      for (DeclaredShapeBuilder<?> anyShapeBuilder : r.dependentTypes()) {
 
-        documentBuilder.withTypes(() -> Collections.singletonList(anyShapeBuilder));
+        if (!allBuilders.containsKey(anyShapeBuilder.name())) {
+          allBuilders.put(anyShapeBuilder.name(), anyShapeBuilder);
+
+          documentBuilder.withTypes(() -> Collections.singletonList(anyShapeBuilder));
+        }
       }
     }
   }
@@ -129,7 +136,7 @@ public class RamlType implements Annotable, Emittable {
 
   public void emitExamples() throws IOException {
 
-    this.emit(new ExampleModelEmitter(allBuilders.get(getTypeName())));
+    // this.emit(new ExampleModelEmitter(allBuilders.get(getTypeName())));
   }
 
   private static class SimpleAnnotable implements Annotable {
@@ -221,70 +228,70 @@ public class RamlType implements Annotable, Emittable {
     }
   }
 
-  private class OldFactory implements AdjusterFactory {
-
-    private final PojoToRamlExtensionFactory toRamlClassParserFactory;
-    private final List<RamlSupportedAnnotation> supportedAnnotations;
-    private final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties;
-
-    public OldFactory(PojoToRamlExtensionFactory toRamlClassParserFactory, List<RamlSupportedAnnotation> supportedAnnotations,
-                      List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties) {
-      this.toRamlClassParserFactory = toRamlClassParserFactory;
-      this.supportedAnnotations = supportedAnnotations;
-      this.pojoToRamlProperties = pojoToRamlProperties;
-    }
-
-    @Override
-    public RamlAdjuster createAdjuster(Type clazz) {
-      RamlAdjuster adjuster =
-          toRamlClassParserFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties),
-                                                   new RamlAdjuster.Helper() {
-
-                                                     @Override
-                                                     public TypeShapeBuilder adjustType(Type type, String typeName,
-                                                                                        TypeShapeBuilder builder) {
-
-                                                       allTypes.put(builder.id(), new RamlType(type, new Descriptor() {
-
-                                                         @Override
-                                                         public java.util.Optional<String> describe() {
-                                                           return java.util.Optional.empty();
-                                                         }
-                                                       }, pojoToRaml));
-                                                       allBuilders.put(typeName, builder);
-                                                       ramlTypeNames.put(type, typeName);
-                                                       return super.adjustType(type, typeName, builder);
-                                                     }
-
-                                                     @Override
-                                                     public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration,
-                                                                                                      Property property,
-                                                                                                      PropertyShapeBuilder propertyShapeBuilder) {
-
-                                                       allTypes
-                                                           .get(typeDeclaration.asTypeShapeBuilder().id())
-                                                           .addProperty(new RamlProperty(property.name(),
-                                                                                         new SimpleAnnotable(property), true));
-                                                       return super.adjustScalarProperty(typeDeclaration, property,
-                                                                                         propertyShapeBuilder);
-                                                     }
-
-                                                     @Override
-                                                     public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration,
-                                                                                                        Property property,
-                                                                                                        PropertyShapeBuilder propertyShapeBuilder) {
-
-                                                       String id = typeDeclaration.asTypeShapeBuilder().id();
-                                                       allTypes.get(id)
-                                                           .addProperty(new
-                                                                        RamlProperty(property.name(),
-                                                                                     new SimpleAnnotable(property), true));
-
-                                                       return super.adjustComposedProperty(typeDeclaration, property,
-                                                                                           propertyShapeBuilder);
-                                                     }
-                                                   });
-      return adjuster;
-    }
-  }
+  // private class OldFactory implements AdjusterFactory {
+  //
+  // private final PojoToRamlExtensionFactory toRamlClassParserFactory;
+  // private final List<RamlSupportedAnnotation> supportedAnnotations;
+  // private final List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties;
+  //
+  // public OldFactory(PojoToRamlExtensionFactory toRamlClassParserFactory, List<RamlSupportedAnnotation> supportedAnnotations,
+  // List<Pair<SimpleAnnotable, PropertyShapeBuilder>> pojoToRamlProperties) {
+  // this.toRamlClassParserFactory = toRamlClassParserFactory;
+  // this.supportedAnnotations = supportedAnnotations;
+  // this.pojoToRamlProperties = pojoToRamlProperties;
+  // }
+  //
+  // @Override
+  // public RamlAdjuster createAdjuster(Type clazz) {
+  // RamlAdjuster adjuster =
+  // toRamlClassParserFactory.createAdjusters(clazz, new Fixer(supportedAnnotations, pojoToRamlProperties),
+  // new RamlAdjuster.Helper() {
+  //
+  // @Override
+  // public TypeShapeBuilder adjustType(Type type, String typeName,
+  // TypeShapeBuilder builder) {
+  //
+  // allTypes.put(builder.id(), new RamlType(type, new Descriptor() {
+  //
+  // @Override
+  // public java.util.Optional<String> describe() {
+  // return java.util.Optional.empty();
+  // }
+  // }, pojoToRaml));
+  // allBuilders.put(typeName, builder);
+  // ramlTypeNames.put(type, typeName);
+  // return super.adjustType(type, typeName, builder);
+  // }
+  //
+  // @Override
+  // public PropertyShapeBuilder adjustScalarProperty(DeclaredShapeBuilder typeDeclaration,
+  // Property property,
+  // PropertyShapeBuilder propertyShapeBuilder) {
+  //
+  // allTypes
+  // .get(typeDeclaration.asTypeShapeBuilder().id())
+  // .addProperty(new RamlProperty(property.name(),
+  // new SimpleAnnotable(property), true));
+  // return super.adjustScalarProperty(typeDeclaration, property,
+  // propertyShapeBuilder);
+  // }
+  //
+  // @Override
+  // public PropertyShapeBuilder adjustComposedProperty(DeclaredShapeBuilder typeDeclaration,
+  // Property property,
+  // PropertyShapeBuilder propertyShapeBuilder) {
+  //
+  // String id = typeDeclaration.asTypeShapeBuilder().id();
+  // allTypes.get(id)
+  // .addProperty(new
+  // RamlProperty(property.name(),
+  // new SimpleAnnotable(property), true));
+  //
+  // return super.adjustComposedProperty(typeDeclaration, property,
+  // propertyShapeBuilder);
+  // }
+  // });
+  // return adjuster;
+  // }
+  // }
 }
